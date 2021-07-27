@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.IO;
 
@@ -45,7 +46,8 @@ namespace DotNet.Util
             //services.Configure<GlobalFilter>(configuration.GetSection("GlobalFilter"));
             
             var provider = services.BuildServiceProvider();
-            IWebHostEnvironment environment = provider.GetRequiredService<IWebHostEnvironment>();
+            //IWebHostEnvironment environment = provider.GetRequiredService<IWebHostEnvironment>();
+            var environment = provider.GetService<IHostEnvironment>();
             CurrentPath = Path.Combine(environment.ContentRootPath, "").ReplacePath();
 
             _connection = provider.GetRequiredService<IOptions<Connection>>().Value;

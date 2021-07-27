@@ -23,15 +23,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netstandard2.1"
+          "netstandard2.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netstandard2.1": {
-            "targetAlias": "netstandard2.1",
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
             "projectReferences": {
               "E:\\Github\\DotNet.Util\\src\\DotNet.Util\\DotNet.Util.csproj": {
                 "projectPath": "E:\\Github\\DotNet.Util\\src\\DotNet.Util\\DotNet.Util.csproj"
@@ -46,20 +46,26 @@
         }
       },
       "frameworks": {
-        "netstandard2.1": {
-          "targetAlias": "netstandard2.1",
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
           "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
             "NPOI": {
               "target": "Package",
               "version": "[2.5.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[12.0.3, )"
+              "version": "[13.0.1, )"
             },
             "System.DirectoryServices": {
               "target": "Package",
-              "version": "[5.0.0-preview.8.20407.11, )"
+              "version": "[5.0.0, )"
             }
           },
           "imports": [
@@ -72,11 +78,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "NETStandard.Library": {
-              "privateAssets": "all"
-            }
-          },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.6.21355.2\\RuntimeIdentifierGraph.json"
         }
       }
@@ -126,6 +127,10 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",
               "version": "[2.2.2, )"
@@ -150,6 +155,10 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "Microsoft.Windows.Compatibility": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -164,9 +173,13 @@
               "version": "[2.0.3, )",
               "autoReferenced": true
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
-              "version": "[2.19.100, )"
+              "version": "[2.19.110, )"
             },
             "System.Data.SqlClient": {
               "target": "Package",
@@ -179,6 +192,10 @@
             "System.Management": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "System.Runtime.Loader": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "imports": [

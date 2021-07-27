@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>DotNet.Util</RootNamespace>
     <AssemblyVersion>5.0.2020.0908</AssemblyVersion>
     <FileVersion>5.0.2020.0908</FileVersion>
@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NPOI" Version="2.5.1" />
-    <PackageReference Include="System.DirectoryServices" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

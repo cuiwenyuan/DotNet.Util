@@ -36,10 +36,7 @@ namespace DotNet.Util
     {
         public override DbProviderFactory GetInstance()
         {
-            // 需要安装客户端安装驱动
-            //return DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
-            // 2016.07.04 不需要客户端驱动
-            return DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.Client");
+            return OracleClientFactory.Instance;
         }
 
         #region public override CurrentDbType CurrentDbType  当前数据库类型

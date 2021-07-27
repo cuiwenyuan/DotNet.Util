@@ -49,6 +49,10 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",
               "version": "[2.2.2, )"
@@ -73,6 +77,10 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "Microsoft.Windows.Compatibility": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -87,9 +95,13 @@
               "version": "[2.0.3, )",
               "autoReferenced": true
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
-              "version": "[2.19.100, )"
+              "version": "[2.19.110, )"
             },
             "System.Data.SqlClient": {
               "target": "Package",
@@ -102,6 +114,10 @@
             "System.Management": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "System.Runtime.Loader": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "imports": [
