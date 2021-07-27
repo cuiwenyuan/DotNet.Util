@@ -1,2 +1,2 @@
 # DotNet.Util
-ASP.NET Utilities
+DotNet.Util is a set of .NET Standard 2.0 utilities.
