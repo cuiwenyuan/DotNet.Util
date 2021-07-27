@@ -1,4 +1,0 @@
-E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Release\netstandard2.1\DotNet.Util.Plus.csprojAssemblyReference.cache
-E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Release\netstandard2.1\DotNet.Util.Plus.AssemblyInfoInputs.cache
-E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Release\netstandard2.1\DotNet.Util.Plus.AssemblyInfo.cs
-E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Release\netstandard2.1\DotNet.Util.Plus.csproj.CoreCompileInputs.cache
