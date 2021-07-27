@@ -1,5 +1,0 @@
-E:\Github\DotNet.Util\src\DotNet.Util\obj\Debug\netstandard2.0\DotNet.Util.csproj.AssemblyReference.cache
-E:\Github\DotNet.Util\src\DotNet.Util\obj\Debug\netstandard2.0\DotNet.Util.GeneratedMSBuildEditorConfig.editorconfig
-E:\Github\DotNet.Util\src\DotNet.Util\obj\Debug\netstandard2.0\DotNet.Util.AssemblyInfoInputs.cache
-E:\Github\DotNet.Util\src\DotNet.Util\obj\Debug\netstandard2.0\DotNet.Util.AssemblyInfo.cs
-E:\Github\DotNet.Util\src\DotNet.Util\obj\Debug\netstandard2.0\DotNet.Util.csproj.CoreCompileInputs.cache
