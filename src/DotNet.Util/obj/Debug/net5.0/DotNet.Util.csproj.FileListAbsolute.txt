@@ -1,0 +1,12 @@
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.GeneratedMSBuildEditorConfig.editorconfig
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.AssemblyInfoInputs.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.AssemblyInfo.cs
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.csproj.CoreCompileInputs.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\bin\Debug\net5.0\DotNet.Util.dll.config
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\bin\Debug\net5.0\DotNet.Util.deps.json
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\bin\Debug\net5.0\DotNet.Util.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\bin\Debug\net5.0\ref\DotNet.Util.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\bin\Debug\net5.0\DotNet.Util.pdb
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\ref\DotNet.Util.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util\obj\Debug\net5.0\DotNet.Util.pdb

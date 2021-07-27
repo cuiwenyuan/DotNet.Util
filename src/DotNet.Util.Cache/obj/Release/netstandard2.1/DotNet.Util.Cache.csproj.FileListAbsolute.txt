@@ -1,0 +1,13 @@
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.Cache.deps.json
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.Cache.dll
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.Cache.pdb
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.dll
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.pdb
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\bin\Release\netstandard2.1\DotNet.Util.dll.config
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.csprojAssemblyReference.cache
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.AssemblyInfoInputs.cache
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.AssemblyInfo.cs
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.csproj.CoreCompileInputs.cache
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.csproj.CopyComplete
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.dll
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Cache\obj\Release\netstandard2.1\DotNet.Util.Cache.pdb

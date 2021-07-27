@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>DotNet.Util</RootNamespace>
+    <AssemblyVersion>5.0.2020.0908</AssemblyVersion>
+    <FileVersion>5.0.2020.0908</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ExcelUtil.Import.cs" />
+    <Compile Remove="ImportUtil.cs" />
+    <Compile Remove="WeChatMiniProgramUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
+    <PackageReference Include="System.DirectoryServices" Version="5.0.0-preview.8.20407.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,10 @@
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.AssemblyInfoInputs.cache
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.AssemblyInfo.cs
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.csproj.CoreCompileInputs.cache
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\bin\Debug\netstandard2.1\DotNet.Util.Plus.deps.json
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\bin\Debug\netstandard2.1\DotNet.Util.Plus.dll
+E:\VS\DotNet.Jirigala.4.1\DotNet.Kernel.Standard\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.csprojAssemblyReference.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.csprojAssemblyReference.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.AssemblyInfoInputs.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.AssemblyInfo.cs
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Plus\obj\Debug\netstandard2.1\DotNet.Util.Plus.csproj.CoreCompileInputs.cache

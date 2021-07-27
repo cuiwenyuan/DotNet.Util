@@ -1,0 +1,16 @@
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.Cache.deps.json
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.Cache.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\ref\DotNet.Util.Cache.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.Cache.pdb
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.pdb
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\bin\Debug\net5.0\DotNet.Util.dll.config
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.GeneratedMSBuildEditorConfig.editorconfig
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.AssemblyInfoInputs.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.AssemblyInfo.cs
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.csproj.CoreCompileInputs.cache
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.csproj.CopyComplete
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\ref\DotNet.Util.Cache.dll
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.pdb
+E:\VS\DotNet.V5\DotNet.Kernel\DotNet.Util.Cache\obj\Debug\net5.0\DotNet.Util.Cache.csproj.AssemblyReference.cache
