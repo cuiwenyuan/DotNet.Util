@@ -124,7 +124,7 @@ namespace DotNet.Util
         {
             // 这里是每次都获取新的数据库连接,否则会有并发访问的问题存在
             var dbHelperClass = DbHelper.GetDbHelperClass(dbType);
-            var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util").CreateInstance(dbHelperClass, true);
+            var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
             if (dbHelper != null)
             {
                 if (!string.IsNullOrEmpty(connectionString))
