@@ -40,6 +40,7 @@
 
 	<ItemGroup>
 	  <Compile Include="DbUtilities\CurrentDbType.cs" />
+	  <Compile Include="DbUtilities\DbOperation.cs" />
 	  <Compile Include="DbUtilities\DbUtil.cs" />
 	  <Compile Include="DbUtilities\Extension\DataReaderExtension.cs" />
 	  <Compile Include="DbUtilities\Extension\DataTableExtension.cs" />
