@@ -49,7 +49,7 @@ namespace DotNet.Util
 
         public static IDbDataParameter MakeParameter(string targetFiled, object targetValue)
         {
-            var dbHelper = DbHelperFactory.GetHelper(DbType);
+            var dbHelper = DbHelperFactory.GetHelper(DbHelper.DbType);
             return dbHelper.MakeParameter(targetFiled, targetValue);
         }
 

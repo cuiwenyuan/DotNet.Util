@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Util
@@ -25,7 +26,9 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-                    filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+                    //filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
                 }
                 try
                 {
@@ -53,7 +56,7 @@ namespace DotNet.Util
         /// <param name="toFilePath">被追加节点的XML文档绝对路径</param>
         /// <param name="toXPath">范例: @"Skill/First/SkillItem"</param>
         /// <returns></returns>
-        public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath)
+        public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath, IFileProvider fileProvider)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
@@ -94,7 +97,7 @@ namespace DotNet.Util
         /// <param name="xPath">范例: @"Skill/First/SkillItem"</param>
         /// <param name="value">节点的值</param>
         /// <returns></returns>
-        public static bool UpdateNodeInnerText(string filePath, string xPath, string value)
+        public static bool UpdateNodeInnerText(string filePath, string xPath, string value, IFileProvider fileProvider)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
@@ -125,7 +128,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="filePath">XML文件绝对路径</param>
         /// <returns></returns>
-        public static XmlDocument LoadXmlDoc(string filePath)
+        public static XmlDocument LoadXmlDoc(string filePath, IFileProvider fileProvider)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
@@ -273,7 +276,7 @@ namespace DotNet.Util
          * XmlHelper.Read(path, "/Node", "")
          * XmlHelper.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
          ************************************************/
-        public static string Read(string filePath, string node, string attribute, string nameSpace = "")
+        public static string Read(string filePath, string node, string attribute, string nameSpace = "", IFileProvider fileProvider)
         {
             var value = string.Empty;
             if (!string.IsNullOrEmpty(filePath))

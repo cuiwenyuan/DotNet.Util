@@ -133,7 +133,7 @@ namespace DotNet.Util
             BaseSystemInfo.BusinessDbConnection = GetValue("BusinessDbConnection");
             BaseSystemInfo.UserCenterDbConnection = GetValue("UserCenterDbConnection");
 
-            BaseSystemInfo.BusinessDbType = DbHelper.GetDbType(GetValue("DbType"));
+            BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue("DbType"));
             BaseSystemInfo.RegisterKey = GetValue("RegisterKey");
         }
         #endregion

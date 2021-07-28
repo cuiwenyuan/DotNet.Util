@@ -7,7 +7,7 @@
 		<Authors>崔文远Troy.Cui</Authors>
 		<Company>DotNet</Company>
 		<RootNamespace>DotNet.Util</RootNamespace>
-		<AssemblyName>DotNet.Util</AssemblyName>
+		<AssemblyName>DotNet.Util.Db</AssemblyName>
 		<AssemblyVersion>5.6.2021.0706</AssemblyVersion>
 		<FileVersion>5.6.2021.0706</FileVersion>
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
@@ -24,27 +24,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="DbUtilities\**" />
-	  <EmbeddedResource Remove="DbUtilities\**" />
-	  <None Remove="DbUtilities\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="Extend\CaptchaUtil.cs" />
-		<Compile Remove="Extend\RequestUtil.cs" />
-		<Compile Remove="Extend\SessionUtil.cs" />
-		<Compile Remove="Extend\ThumbnailUtil.cs" />
-		<Compile Remove="Extend\WatermarkUtil.cs" />
-		<Compile Remove="Extend\WebUpload.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="DbUtilities\CurrentDbType.cs" />
-	  <Compile Include="DbUtilities\DbUtil.cs" />
-	  <Compile Include="DbUtilities\Extension\DataReaderExtension.cs" />
-	  <Compile Include="DbUtilities\Extension\DataTableExtension.cs" />
-	  <Compile Include="DbUtilities\Extension\IDbHelper.Expand.cs" />
-	  <Compile Include="DbUtilities\Extension\ListExtension.cs" />
+	  <Compile Remove="DbUtilities\Extension\**" />
+	  <EmbeddedResource Remove="DbUtilities\Extension\**" />
+	  <None Remove="DbUtilities\Extension\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +48,10 @@
 		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 		<PackageReference Include="System.Management" Version="5.0.0" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -640,7 +640,7 @@ namespace DotNet.Util
             }
             if (Exists("UserCenterDbType"))
             {
-                BaseSystemInfo.UserCenterDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "UserCenterDbType"));
+                BaseSystemInfo.UserCenterDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "UserCenterDbType"));
                 BaseSystemInfo.MessageDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.BusinessDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.WorkFlowDbType = BaseSystemInfo.UserCenterDbType;
@@ -649,75 +649,75 @@ namespace DotNet.Util
             // 打开数据库连接
             if (Exists("MessageDbType"))
             {
-                BaseSystemInfo.MessageDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "MessageDbType"));
+                BaseSystemInfo.MessageDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "MessageDbType"));
             }
             if (Exists("WorkFlowDbType"))
             {
-                BaseSystemInfo.WorkFlowDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "WorkFlowDbType"));
+                BaseSystemInfo.WorkFlowDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WorkFlowDbType"));
             }
             if (Exists("BusinessDbType"))
             {
-                BaseSystemInfo.BusinessDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "BusinessDbType"));
+                BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "BusinessDbType"));
             }
             if (Exists("LoginLogDbType"))
             {
-                BaseSystemInfo.LoginLogDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "LoginLogDbType"));
+                BaseSystemInfo.LoginLogDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "LoginLogDbType"));
             }
             if (Exists("WebAppDbType"))
             {
-                BaseSystemInfo.WebAppDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "WebAppDbType"));
+                BaseSystemInfo.WebAppDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebAppDbType"));
             }
             if (Exists("BPMDbType"))
             {
-                BaseSystemInfo.BpmDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "BPMDbType"));
+                BaseSystemInfo.BpmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "BPMDbType"));
             }
             if (Exists("ERPDbType"))
             {
-                BaseSystemInfo.ErpDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "ERPDbType"));
+                BaseSystemInfo.ErpDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "ERPDbType"));
             }
             if (Exists("MESDbType"))
             {
-                BaseSystemInfo.MesDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "MESDbType"));
+                BaseSystemInfo.MesDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "MESDbType"));
             }
             if (Exists("HRMDbType"))
             {
-                BaseSystemInfo.HrmDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "HRMDbType"));
+                BaseSystemInfo.HrmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "HRMDbType"));
             }
             if (Exists("CRMDbType"))
             {
-                BaseSystemInfo.CrmDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "CRMDbType"));
+                BaseSystemInfo.CrmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CRMDbType"));
             }
             if (Exists("OADbType"))
             {
-                BaseSystemInfo.OaDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "OADbType"));
+                BaseSystemInfo.OaDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "OADbType"));
             }
             if (Exists("LabelDbType"))
             {
-                BaseSystemInfo.LabelDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "LabelDbType"));
+                BaseSystemInfo.LabelDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "LabelDbType"));
             }
             if (Exists("WebsiteDbType"))
             {
-                BaseSystemInfo.WebsiteDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "WebsiteDbType"));
+                BaseSystemInfo.WebsiteDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebsiteDbType"));
             }
             if (Exists("CmsDbType"))
             {
-                BaseSystemInfo.CmsDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "CmsDbType"));
+                BaseSystemInfo.CmsDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CmsDbType"));
             }
             if (Exists("DTcmsDbType"))
             {
-                BaseSystemInfo.DTcmsDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "DTcmsDbType"));
+                BaseSystemInfo.DTcmsDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "DTcmsDbType"));
             }
             if (Exists("FlowPortalDbType"))
             {
-                BaseSystemInfo.FlowPortalDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "FlowPortalDbType"));
+                BaseSystemInfo.FlowPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "FlowPortalDbType"));
             }
             if (Exists("CustomerPortalDbType"))
             {
-                BaseSystemInfo.CustomerPortalDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "CustomerPortalDbType"));
+                BaseSystemInfo.CustomerPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CustomerPortalDbType"));
             }
             if (Exists("SupplierPortalDbType"))
             {
-                BaseSystemInfo.SupplierPortalDbType = DbHelper.GetDbType(GetValue(_xmlDocument, "SupplierPortalDbType"));
+                BaseSystemInfo.SupplierPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "SupplierPortalDbType"));
             }
             if (Exists("UserCenterDbConnection"))
             {

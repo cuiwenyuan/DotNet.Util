@@ -8,9 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExcelUtil.cs" />
+    <Compile Remove="ExcelUtil.Export.cs" />
     <Compile Remove="ExcelUtil.Import.cs" />
     <Compile Remove="ImportUtil.cs" />
+    <Compile Remove="LocationUtil.cs" />
+    <Compile Remove="QqwryUtil.cs" />
     <Compile Remove="WeChatMiniProgramUtil.cs" />
+    <Compile Remove="XmlUtil.cs" />
   </ItemGroup>
 
   <ItemGroup>
