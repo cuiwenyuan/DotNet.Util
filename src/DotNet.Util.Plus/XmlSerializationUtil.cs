@@ -4,8 +4,14 @@ using System.Xml.Serialization;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// XML序列化工具
+    /// </summary>
     public class XmlSerializationUtil
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public XmlSerializationUtil() { }
 
         /// <summary>

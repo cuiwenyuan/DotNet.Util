@@ -274,9 +274,20 @@ namespace DotNet.Util
         /// <param name="cellHeader">单元头的Key和Value：{ { "UserName", "姓名" }, { "Age", "年龄" } };</param>
         /// <param name="filePath">保存文件绝对路径</param>
         /// <param name="errorMsg">错误信息</param>
+        /// <param name="startIndex">开始行索引（默认1）</param>
         /// <returns>转换好的List对象集合</returns>
         private static List<T> Excel2003ToEntityList<T>(Dictionary<string, string> cellHeader, string filePath, out StringBuilder errorMsg, int startIndex = 1) where T : new()
         {
+            if (cellHeader is null)
+            {
+                throw new ArgumentNullException(nameof(cellHeader));
+            }
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentException($"'{nameof(filePath)}' cannot be null or empty.", nameof(filePath));
+            }
+
             errorMsg = new StringBuilder(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
             var enlist = new List<T>(); // 转换后的集合
             try

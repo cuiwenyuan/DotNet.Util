@@ -11,14 +11,23 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 验证码图片
+    /// </summary>
     public class VerifyCodeImage
     {
+        /// <summary>
+        /// 验证码图片
+        /// </summary>
         public VerifyCodeImage()
         {
         }
 
         #region 验证码长度(默认4个验证码的长度)
         int _length = 4;
+        /// <summary>
+        /// 长度
+        /// </summary>
         public int Length
         {
             get => _length;
@@ -28,6 +37,9 @@ namespace DotNet.Util
 
         #region 验证码字体大小(为了显示扭曲效果，默认40像素，可以自行修改)
         int _fontSize = 50;
+        /// <summary>
+        /// 字体大小
+        /// </summary>
         public int FontSize
         {
             get => _fontSize;
@@ -37,6 +49,9 @@ namespace DotNet.Util
 
         #region 边框补(默认1像素)
         int _padding = 2;
+        /// <summary>
+        /// 边距
+        /// </summary>
         public int Padding
         {
             get => _padding;
@@ -46,6 +61,9 @@ namespace DotNet.Util
 
         #region 是否输出燥点(默认不输出)
         bool _chaos = true;
+        /// <summary>
+        /// 噪点
+        /// </summary>
         public bool Chaos
         {
             get => _chaos;
@@ -55,6 +73,9 @@ namespace DotNet.Util
 
         #region 输出燥点的颜色(默认灰色)
         Color _chaosColor = Color.LightGray;
+        /// <summary>
+        /// 噪点颜色
+        /// </summary>
         public Color ChaosColor
         {
             get => _chaosColor;
@@ -64,6 +85,9 @@ namespace DotNet.Util
 
         #region 自定义背景色(默认白色)
         Color _backgroundColor = Color.White;
+        /// <summary>
+        /// 背景色
+        /// </summary>
         public Color BackgroundColor
         {
             get => _backgroundColor;
@@ -73,6 +97,9 @@ namespace DotNet.Util
 
         #region 自定义随机颜色数组
         Color[] _colors = { Color.Black, Color.Red, Color.DarkBlue, Color.Green, Color.Orange, Color.Brown, Color.DarkCyan, Color.Purple };
+        /// <summary>
+        /// 颜色
+        /// </summary>
         public Color[] Colors
         {
             get => _colors;
@@ -154,6 +181,12 @@ namespace DotNet.Util
         #endregion
 
         #region 生成校验码图片
+        /// <summary>
+        /// 创建验证码图片
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="multValue"></param>
+        /// <returns></returns>
         public Bitmap CreateImage(string code, double multValue)
         {
             var fSize = FontSize;
@@ -233,6 +266,11 @@ namespace DotNet.Util
         #endregion
 
         #region 生成随机字符码
+        /// <summary>
+        /// 创建验证码
+        /// </summary>
+        /// <param name="codeLength"></param>
+        /// <returns></returns>
         public string CreateVerifyCode(int codeLength)
         {
             if (codeLength == 0)
@@ -250,7 +288,10 @@ namespace DotNet.Util
             }
             return code;
         }
-
+        /// <summary>
+        /// 创建验证码
+        /// </summary>
+        /// <returns></returns>
         public string CreateVerifyCode()
         {
             return CreateVerifyCode(0);
@@ -263,13 +304,15 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="code">验证码</param>
         /// <param name="multValue">扭曲度(越大越扭曲)</param>
-        public void CreateImageOnPage(string code, double multValue)
+        /// <param name="httpContext">上下文</param>
+        public void CreateImageOnPage(string code, double multValue, HttpContext httpContext)
         {
+            var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
-
-            ToBase64(bitmap);
-            //TODO
-
+            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            //to-do
+            memoryStream.Close();
+            memoryStream = null;
             bitmap.Dispose();
             bitmap = null;
         }

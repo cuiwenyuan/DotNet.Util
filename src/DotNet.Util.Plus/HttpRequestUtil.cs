@@ -20,7 +20,7 @@ namespace DotNet.Util
         /// <summary>
         /// WebClient的Get请求
         /// </summary>
-        /// <param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&pwd=123456";</param>
+        /// <param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&amp;pwd=123456";</param>
         /// <returns></returns>
         public static string WcGet(string url)
         {
@@ -36,7 +36,7 @@ namespace DotNet.Util
         /// 表单提交模式[application/x-www-form-urlencoded]
         /// </summary>
         /// <param name="url">请求地址,单纯的地址,没有数据拼接</param>
-        /// <param name="data">请求数据,格式为:"userName=admin&pwd=123456"</param>
+        /// <param name="data">请求数据,格式为:"userName=admin&amp;pwd=123456"</param>
         /// <returns></returns>
         public static string WcPost(string url, string data)
         {
@@ -74,7 +74,7 @@ namespace DotNet.Util
         /// <summary>
         /// HttpWebRequest的Get请求
         /// </summary>
-        /// <param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&pwd=123456";</param>
+        /// <param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&amp;pwd=123456";</param>
         /// <returns></returns>
         public static string HwGet(string url)
         {
@@ -101,7 +101,7 @@ namespace DotNet.Util
         /// 表单提交模式[application/x-www-form-urlencoded]
         /// </summary>
         /// <param name="url">请求地址,单纯的地址,没有数据拼接</param>
-        /// <param name="data">请求数据,格式为:"userName=admin&pwd=123456"</param>
+        /// <param name="data">请求数据,格式为:"userName=admin&amp;pwd=123456"</param>
         /// <returns></returns>
         public static string HwPost(string url, string data)
         {
@@ -180,7 +180,7 @@ namespace DotNet.Util
         /// <summary>
         /// HttpClient的Get请求
         /// </summary>
-        ///<param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&pwd=123456";</param>
+        ///<param name="url">请求地址,含拼接数据，请求格式为："http://XXXX?userName=admin&amp;pwd=123456";</param>
         /// <returns></returns>
         public static string HcGet(string url)
         {
@@ -196,7 +196,7 @@ namespace DotNet.Util
         /// 表单提交模式[application/x-www-form-urlencoded]
         /// </summary>
         /// <param name="url">请求地址,单纯的地址,没有数据拼接</param>
-        /// <param name="data">请求数据,格式为:"userName=admin&pwd=123456"</param>
+        /// <param name="data">请求数据,格式为:"userName=admin&amp;pwd=123456"</param>
         /// <returns></returns>
         public static string HcPost(string url, string data)
         {

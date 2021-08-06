@@ -23,7 +23,7 @@ namespace DotNet.Util
     ///		2006.01.21 JiRiGaLa 版本：1.0 远程传递参数用属性才可以。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2015.05.17</date>
     /// </author> 
     /// </summary>
@@ -338,16 +338,29 @@ namespace DotNet.Util
             return _systemCode;
         }
 
+        /// <summary>
+        /// 镜像数据
+        /// </summary>
+        /// <param name="userInfo"></param>
         public void CloneData(BaseUserInfo userInfo)
         {
             _systemCode = userInfo.SystemCode;
         }
 
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <returns></returns>
         public string Serialize()
         {
             return JsonUtil.ObjectToJson(this);
         }
 
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         public static BaseUserInfo Deserialize(string response)
         {
             BaseUserInfo userInfo = null;

@@ -10,11 +10,24 @@ using System.Reflection;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// ∑¥…‰π§æﬂ
+    /// </summary>
     public static partial class ReflectionUtil
     {
+        /// <summary>
+        /// BindingFlags
+        /// </summary>
         public static BindingFlags Bf = BindingFlags.DeclaredOnly | BindingFlags.Public |
                                         BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
+        /// <summary>
+        /// InvokeMethod
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static object InvokeMethod(object obj, string methodName, object[] args)
         {
             object objReturn = null;
@@ -22,13 +35,24 @@ namespace DotNet.Util
             objReturn = type.InvokeMember(methodName, Bf | BindingFlags.InvokeMethod, null, obj, args);
             return objReturn;
         }
-
+        /// <summary>
+        /// SetField
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
         public static void SetField(object obj, string name, object value)
         {
             var fi = obj.GetType().GetField(name, Bf);
             fi.SetValue(obj, value);
         }
 
+        /// <summary>
+        /// GetField
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static object GetField(object obj, string name)
         {
             var fi = obj.GetType().GetField(name, Bf);
@@ -45,6 +69,12 @@ namespace DotNet.Util
             propertyInfo.SetValue(obj, objValue, null);
         }
 
+        /// <summary>
+        /// ChangeType2
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="conversionType"></param>
+        /// <returns></returns>
         public static object ChangeType2(object value, Type conversionType)
         {
             if (value is DBNull || value == null||string.IsNullOrWhiteSpace(value.ToString()))
@@ -99,7 +129,11 @@ namespace DotNet.Util
 
             return nameList;
         }
-
+        /// <summary>
+        /// CreateTable
+        /// </summary>
+        /// <param name="objSource"></param>
+        /// <returns></returns>
         public static DataTable CreateTable(object objSource)
         {
             DataTable table = null;

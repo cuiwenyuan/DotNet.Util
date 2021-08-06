@@ -205,7 +205,10 @@ namespace DotNet.Util
             }
             return cpuSerialNo;
         }
-
+        /// <summary>
+        /// 获取硬盘信息
+        /// </summary>
+        /// <returns></returns>
         public static string GetHardDiskInfo()
         {
             var hardDisk = string.Empty;
@@ -223,7 +226,10 @@ namespace DotNet.Util
             }
             return hardDisk;
         }
-
+        /// <summary>
+        /// 设置本地时间
+        /// </summary>
+        /// <param name="dateTime"></param>
         public static void SetLocalTime(DateTime dateTime)
         {
             var systemTime = new SystemTime();
@@ -236,15 +242,37 @@ namespace DotNet.Util
             systemTime.vSecond = (ushort)dateTime.Second;
             SetSystemDateTime.SetLocalTime(systemTime);
         }
-
+        /// <summary>
+        /// 获取本地默认
+        /// </summary>
+        /// <returns></returns>
         [DllImport("kernel32.dll", EntryPoint = "GetSystemDefaultLCID")]
         public static extern int GetSystemDefaultLCID();
+        /// <summary>
+        /// 设置Locale信息
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <param name="lcType"></param>
+        /// <param name="lpLcData"></param>
+        /// <returns></returns>
         [DllImport("kernel32.dll", EntryPoint = "SetLocaleInfoA")]
         public static extern int SetLocaleInfo(int locale, int lcType, string lpLcData);
+        /// <summary>
+        /// LocaleSlongdate
+        /// </summary>
         public const int LocaleSlongdate = 0x20;
+        /// <summary>
+        /// LocaleSshortdate
+        /// </summary>
         public const int LocaleSshortdate = 0x1F;
+        /// <summary>
+        /// LocaleStime
+        /// </summary>
         public const int LocaleStime = 0x1003;
 
+        /// <summary>
+        /// 设置日期时间格式
+        /// </summary>
         public static void SetDateTimeFormat()
         {
             try
@@ -295,23 +323,56 @@ namespace DotNet.Util
             return result;
         }
     }
-
+    /// <summary>
+    /// 系统时间
+    /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential)]
     public class SystemTime
     {
+        /// <summary>
+        /// vYear
+        /// </summary>
         public ushort vYear;
+        /// <summary>
+        /// vMonth
+        /// </summary>
         public ushort vMonth;
+        /// <summary>
+        /// vDayOfWeek
+        /// </summary>
         public ushort vDayOfWeek;
+        /// <summary>
+        /// vDay
+        /// </summary>
         public ushort vDay;
+        /// <summary>
+        /// vHour
+        /// </summary>
         public ushort vHour;
+        /// <summary>
+        /// vMinute
+        /// </summary>
         public ushort vMinute;
+        /// <summary>
+        /// vSecond
+        /// </summary>
         public ushort vSecond;
     }
-
+    /// <summary>
+    /// 设置系统时间
+    /// </summary>
     public class SetSystemDateTime
     {
+        /// <summary>
+        /// 获取本地时间
+        /// </summary>
+        /// <param name="systemTime"></param>
         [DllImportAttribute("Kernel32.dll")]
         public static extern void GetLocalTime(SystemTime systemTime);
+        /// <summary>
+        /// 设置本地时间
+        /// </summary>
+        /// <param name="systemTime"></param>
         [DllImportAttribute("Kernel32.dll")]
         public static extern void SetLocalTime(SystemTime systemTime);
     }

@@ -28,7 +28,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Redis缓存60秒
+                    //设置默认Redis缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.RedisCacheMillisecond);
                 }
                 return RedisCache<T>(cacheKey, proc, isFromCache, refreshCache, cacheTime);
@@ -37,7 +37,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Memory缓存60秒
+                    //设置默认Memory缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond);
                 }
                 return MemoryCache<T>(cacheKey, proc, isFromCache, refreshCache, cacheTime);

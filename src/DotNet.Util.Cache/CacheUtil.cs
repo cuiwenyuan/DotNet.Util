@@ -26,7 +26,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Redis缓存60秒
+                    //设置默认Redis缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.RedisCacheMillisecond);
                 }
                 return RedisCache<T>(cacheKey, proc, isFromCache, refreshCache, cacheTime);
@@ -35,7 +35,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Memory缓存60秒
+                    //设置默认Memory缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond);
                 }
                 return MemoryCache<T>(cacheKey, proc, isFromCache, refreshCache, cacheTime);
@@ -60,7 +60,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Redis缓存60秒
+                    //设置默认Redis缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.RedisCacheMillisecond);
                 }
                 return RedisUtil.Set<T>(cacheKey, t, cacheTime);
@@ -69,7 +69,7 @@ namespace DotNet.Util
             {
                 if (cacheTime == default(TimeSpan))
                 {
-                    //设置默认Redis缓存60秒
+                    //设置默认Redis缓存1毫秒
                     cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond);
                 }
                 MemoryUtil.Set<T>(cacheKey, t, cacheTime);
@@ -161,7 +161,11 @@ namespace DotNet.Util
         #endregion
 
         #region Contains
-
+        /// <summary>
+        /// 包含
+        /// </summary>
+        /// <param name="cacheKey">缓存的Key</param>
+        /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
             //string cacheType = BaseSystemInfo.CacheType;

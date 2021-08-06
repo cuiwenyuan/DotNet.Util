@@ -169,19 +169,21 @@ namespace DotNet.Util
 
         }
 
+        /// <summary>
+        /// 缓存失效回调
+        /// </summary>
+        /// <param name="cacheKey">缓存key值</param>
+        /// <param name="cacheValue">缓存的对象</param>
+        /// <param name="reasonToRemove">缓存移出原因</param>
         private static void MyCallback(object cacheKey, object cacheValue, EvictionReason reason, object state)
         {
-
-            //LogHelper.WriteCacheLog(string.Format("{0} {1}:{2}--缓存：{3}", new object[] { DateTime.Now.ToString(CultureInfo.InvariantCulture) + "." + DateTime.Now.Millisecond.ToString(), "缓存失效  原因", reasonToRemove.ToString(), cacheKey }));
             var sb = new StringBuilder();
-            sb.AppendLine(
-                string.Format("{0} {1}:{2}--缓存：{3}",
-                    new object[]
-                    {
-                        DateTime.Now.ToString(CultureInfo.InvariantCulture) + "." + DateTime.Now.Millisecond,
-                        "缓存失效  原因", reason.ToString(), cacheKey
-                    }));
-            //LogHelper.OracleInfo(null, "缓存失效回调", reason, "CacheItemRemovedCallback", typeof(MemoryCacheHelper));
+            sb.Append(
+            string.Format("Cache Key: {0} invalid at {1} with reason {2}",
+                new object[]
+                {
+                    cacheKey, DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat), reason.ToString()
+                }));
             LogUtil.WriteLog(sb.ToString(), "Cache", null, "Cache");
         }
 

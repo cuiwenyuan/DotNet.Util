@@ -56,8 +56,7 @@ namespace DotNet.Util
         /// <summary>
         /// 设置注册表
         /// </summary>
-        /// <param name="subKey">注册表子项</param>
-        /// <param name="registryKey">键</param>
+        /// <param name="key">键</param>
         /// <param name="keyValue">值</param>
         public static void SetValue(string key, string keyValue)
         {

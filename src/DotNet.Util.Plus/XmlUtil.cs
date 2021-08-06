@@ -9,6 +9,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// XML工具
+    /// </summary>
     public static class XmlUtil
     {
         #region 增、删、改操作==============================================

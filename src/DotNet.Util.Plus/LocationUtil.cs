@@ -59,10 +59,19 @@ namespace DotNet.Util
         /// </summary>
         public class obj
         {
+            /// <summary>
+            /// dataone List
+            /// </summary>
             public List<dataone> data { get; set; }
         }
+        /// <summary>
+        /// dataone
+        /// </summary>
         public class dataone
         {
+            /// <summary>
+            /// location
+            /// </summary>
             public string location { get; set; }
         }
         /// <summary>
@@ -70,43 +79,102 @@ namespace DotNet.Util
         /// </summary>
         public class objex
         {
+            /// <summary>
+            /// resultcode
+            /// </summary>
             public string resultcode { get; set; }
+            /// <summary>
+            /// result
+            /// </summary>
             public dataoneex result { get; set; }
+            /// <summary>
+            /// reason
+            /// </summary>
             public string reason { get; set; }
+            /// <summary>
+            /// error_code
+            /// </summary>
             public string error_code { get; set; }
         }
+        /// <summary>
+        /// dataoneex
+        /// </summary>
         public class dataoneex
         {
+            /// <summary>
+            /// area
+            /// </summary>
             public string area { get; set; }
+            /// <summary>
+            /// location
+            /// </summary>
             public string location { get; set; }
         }
         #region Newtonsoft.Json
+        /// <summary>
+        /// 转换为Json
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static object ToJson(this string json)
         {
-            return json == null ? null : JsonConvert.DeserializeObject(json);
+            return json == null ? null : JsonUtil.ObjectToJson(json);
         }
+        /// <summary>
+        /// 转换为Json
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ToJson(this object obj)
         {
             var timeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
             return JsonConvert.SerializeObject(obj, timeConverter);
         }
+        /// <summary>
+        /// 转换为Json
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="datetimeformats"></param>
+        /// <returns></returns>
         public static string ToJson(this object obj, string datetimeformats)
         {
             var timeConverter = new IsoDateTimeConverter { DateTimeFormat = datetimeformats };
             return JsonConvert.SerializeObject(obj, timeConverter);
         }
+        /// <summary>
+        /// 转换为Object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Json"></param>
+        /// <returns></returns>
         public static T ToObject<T>(this string Json)
         {
-            return Json == null ? default(T) : JsonConvert.DeserializeObject<T>(Json);
+            return Json == null ? default(T) : JsonUtil.JsonToObject<T>(Json);
         }
+        /// <summary>
+        /// 转换为Json
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static List<T> ToList<T>(this string json)
         {
-            return json == null ? null : JsonConvert.DeserializeObject<List<T>>(json);
+            return json == null ? null : JsonUtil.JsonToObject<List<T>>(json);
         }
+        /// <summary>
+        /// 转换为DataTable
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static DataTable ToTable(this string json)
         {
-            return json == null ? null : JsonConvert.DeserializeObject<DataTable>(json);
+            return json == null ? null : JsonUtil.JsonToObject<DataTable>(json);
         }
+        /// <summary>
+        /// 转换为JObject
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static JObject ToJObject(this string json)
         {
             return json == null ? JObject.Parse("{}") : JObject.Parse(json.Replace("&nbsp;", ""));

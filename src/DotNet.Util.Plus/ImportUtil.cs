@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2019, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,6 +11,9 @@ using NPOI.SS.UserModel;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 导入工具
+    /// </summary>
     public class ImportUtil
     {
         private int _returnStatus = 0;
@@ -177,7 +180,7 @@ namespace DotNet.Util
         /// 判断是否存在这一列
         /// </summary>
         /// <param name="columnNames">当前存在的列组</param>
-        /// <param name="needCheckColumnNames">要求的列名组</param>
+        /// <param name="needCheckColumnName">要求的列名组</param>
         /// <returns>提示信息</returns>
         public static string CheckColumnExist(string columnNames, string needCheckColumnName)
         {
@@ -194,7 +197,7 @@ namespace DotNet.Util
         /// <summary>
         /// 判断是选中段的值否为空
         /// </summary>
-        /// <param name="dr">DataTable</param>
+        /// <param name="dt">DataTable</param>
         /// <param name="checkStrings">检查的字段串</param>
         /// <returns>返回提示</returns>
         public static string CheckIsNullOrEmpty(DataTable dt, string[] checkStrings)

@@ -7,8 +7,9 @@ using System.Net;
 
 namespace DotNet.Util
 {
-    
-
+    /// <summary>
+    /// Qqwry工具
+    /// </summary>
     public static class QqwryUtil
     {
         #region 成员变量
@@ -45,7 +46,7 @@ namespace DotNet.Util
             if (flag == 0) return _beginIndex;
             else if (flag < 0) return -1;
 
-            for (long i = _beginIndex, j = _endIndex; i < j; )
+            for (long i = _beginIndex, j = _endIndex; i < j;)
             {
                 index = GetMiddleOffset(i, j);
 

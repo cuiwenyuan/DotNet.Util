@@ -8,8 +8,16 @@ using System.DirectoryServices;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 域工具
+    /// </summary>
     public static class DomainUtil
     {
+        /// <summary>
+        /// 获取域用户信息
+        /// </summary>
+        /// <param name="domainUserName"></param>
+        /// <returns></returns>
         public static DomainUserInfo GetDomainUserInfo(string domainUserName)
         {
             try
@@ -51,12 +59,26 @@ namespace DotNet.Util
 
             return null;
         }
-
+        /// <summary>
+        /// 域用户信息
+        /// </summary>
         public sealed class DomainUserInfo
         {
+            /// <summary>
+            /// SamAccountName
+            /// </summary>
             public string SamAccountName;
+            /// <summary>
+            /// GivenName
+            /// </summary>
             public string GivenName;
+            /// <summary>
+            /// CN
+            /// </summary>
             public string Cn;
+            /// <summary>
+            /// Email
+            /// </summary>
             public string Email;
         }
     }

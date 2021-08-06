@@ -187,6 +187,7 @@ namespace DotNet.Util
         /// <param name="isWater">是否打水印</param>
         /// <param name="itemCode">物品编码</param>
         /// <param name="subFolder">子目录</param>
+        /// <param name="thumbnailMode">缩略图裁剪模式</param>
         /// <returns>上传后文件信息</returns>
         public string ItemCodeFileSaveAs(HttpPostedFile postedFile, bool isThumbnail, bool isWater, string itemCode, string subFolder = "ItemCode", string thumbnailMode = "Cut")
         {

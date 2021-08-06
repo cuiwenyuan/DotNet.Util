@@ -13,12 +13,12 @@ namespace DotNet.Util
     ///  
     ///  2016.05.12 版本：2.1 JiRiGaLa 增加 Signature 数字签名。
     ///  2016.01.07 版本：2.0 JiRiGaLa 增加 RecordCount。
-    ///  2015.11.16 版本：1.1 SongBiao 增加JsonResult<T> 泛型 可以带数据返回。
+    ///  2015.11.16 版本：1.1 SongBiao 增加JsonResult泛型 可以带数据返回。
     ///      2015.09.16 版本：1.1 JiRiGaLa Result 修改为 Status。
     ///      2015.09.15 版本：1.0 JiRiGaLa 添加返回标准定义。
     /// 		
     ///      <author>
-    ///          <name>Troy Cui</name>
+    ///          <name>JiRiGaLa</name>
     ///          <date>2016.05.12</date>
     ///      </author> 
     ///  

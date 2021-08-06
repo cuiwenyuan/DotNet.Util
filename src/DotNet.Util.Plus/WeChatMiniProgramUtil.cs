@@ -10,6 +10,9 @@ using Newtonsoft.Json;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 微信小程序工具
+    /// </summary>
     public partial class WeChatMiniProgramUtil
     {
         #region GetQrCode
@@ -19,7 +22,7 @@ namespace DotNet.Util
         /// <param name="typeId">1：普通二维码（无参数），2：微信小程序码有数量限制（可把参数放path里面），3：微信小程序码无数量限制（scene传参数，开发后台须配置普通链接二维码规则）。客户端6.5.7版本以上才可识别小程序码。</param>
         /// <param name="path">页面，注意pages前没有/，最大长度128字节，不能为空</param>
         /// <param name="width">默认屏幕尺寸px，最小280，最大1280。（请按照43像素的整数倍设置）</param>
-        /// <param name="scene">TypeId为3时才生效！传参数如：id=1，最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）</param>
+        /// <param name="scene">TypeId为3时才生效！传参数如：id=1，最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&amp;'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）</param>
         /// <param name="autoColor">TypeId为2、3时才生效！自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调</param>
         /// <param name="lineColorR">TypeId为2、3时才生效！auto_color 为 false 时生效，使用 rgb 设置颜色，十进制表示</param>
         /// <param name="lineColorG">TypeId为2、3时才生效！auto_color 为 false 时生效，使用 rgb 设置颜色，十进制表示</param>

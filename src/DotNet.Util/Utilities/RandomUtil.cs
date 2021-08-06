@@ -29,29 +29,60 @@ namespace DotNet.Util
     /// </summary>
     public partial class RandomUtil
     {
+        /// <summary>
+        /// 最小值
+        /// </summary>
         public static int Minimum = 100000;
+        /// <summary>
+        /// 最大值
+        /// </summary>
         public static int Maximal = 999999;
+        /// <summary>
+        /// 随机数长度
+        /// </summary>
         public static int RandomLength = 6;
 
-        private static string _randomString = "0123456789ABCDEFGHIJKMLNPQRSTUVWXYZ";
-        private static Random _random = new Random(DateTime.Now.Second);
+        private const string _randomString = "0123456789ABCDEFGHIJKMLNPQRSTUVWXYZ";
+        private const string _randomNumber = "0123456789";
+        private static Random _random = new Random(DateTime.Now.Millisecond);
 
-        #region public static string GetRandomString() 产生随机字符
+        #region public static string GetString() 产生随机字符
         /// <summary>
         /// 产生随机字符
         /// </summary>
         /// <returns>字符串</returns>
-        public static string GetRandomString(int randomLength = 0)
+        public static string GetString(int length = 0)
         {
             var result = string.Empty;
-            if (randomLength == 0)
+            if (length <= 0)
             {
-                randomLength = RandomLength;
+                length = RandomLength;
             }
-            for (var i = 0; i < randomLength; i++)
+            for (var i = 0; i < length; i++)
             {
                 var r = _random.Next(0, _randomString.Length - 1);
                 result += _randomString[r];
+            }
+            return result;
+        }
+        #endregion
+
+        #region public static string GetNumber() 产生随机整数
+        /// <summary>
+        /// 产生随机整数
+        /// </summary>
+        /// <returns>整数字符串</returns>
+        public static string GetNumber(int length = 0)
+        {
+            var result = string.Empty;
+            if (length <= 0)
+            {
+                length = RandomLength;
+            }
+            for (var i = 0; i < length; i++)
+            {
+                var r = _random.Next(0, _randomNumber.Length - 1);
+                result += _randomNumber[r];
             }
             return result;
         }
