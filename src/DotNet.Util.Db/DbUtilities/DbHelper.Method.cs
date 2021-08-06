@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -21,6 +21,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbHelper
     {
+        #region GetDbNow
         /// <summary>
         /// 获得数据库当前日期
         /// </summary>
@@ -46,12 +47,21 @@ namespace DotNet.Util
             }
             return result;
         }
+        #endregion
 
+        #region MakeParameter
+        /// <summary>
+        /// 制作参数
+        /// </summary>
+        /// <param name="targetFiled"></param>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static IDbDataParameter MakeParameter(string targetFiled, object targetValue)
         {
             var dbHelper = DbHelperFactory.GetHelper(DbHelper.DbType);
             return dbHelper.MakeParameter(targetFiled, targetValue);
         }
+        #endregion
 
         #region public static string GetParameter(string parameter) 获得参数Sql表达式
         /// <summary>
@@ -69,6 +79,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获得参数Sql表达式
         /// </summary>
+        /// <param name="currentDbType">数据库类型</param>
         /// <param name="parameter">参数名称</param>
         /// <returns>字符串</returns>
         public static string GetParameter(CurrentDbType currentDbType, string parameter)

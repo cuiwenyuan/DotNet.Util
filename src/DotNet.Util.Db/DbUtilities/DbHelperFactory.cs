@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
-//using DotNet.Util.DbUtilities;
-//using DotNet.Util.DbUtilities.Syntax;
+//using DotNet.Util.DbUtil;
+//using DotNet.Util.DbUtil.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;

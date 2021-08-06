@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -107,7 +107,9 @@ namespace DotNet.Util
 
             set => _inTransaction = value;
         }
-
+        /// <summary>
+        /// 日志文件名
+        /// </summary>
         public string FileName = "BaseDbHelper.txt";    // sql查询句日志
 
         //默认打开关闭数据库选项（默认为否）

@@ -38,11 +38,12 @@ namespace DotNet.Util
         private string _watermarkfont = "";
         private int _watermarkfontsize = 12;
 
-        //private Model.siteconfig siteConfig;
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public WebUpload()
         {
-            //siteConfig = new BLL.siteconfig().loadConfig();
+            
         }
 
         /// <summary>

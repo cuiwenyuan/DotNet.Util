@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -47,7 +47,7 @@ namespace DotNet.Util
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2009.09.08</date>
     /// </author> 
     /// </summary>
@@ -91,12 +91,20 @@ namespace DotNet.Util
             }
             return keys.ToArray();
         }
-
+        /// <summary>
+        /// 获取审核状态
+        /// </summary>
+        /// <param name="auditStatus"></param>
+        /// <returns></returns>
         public static string GetAuditStatus(AuditStatus auditStatus)
         {
             return GetAuditStatus(auditStatus.ToString());
         }
-
+        /// <summary>
+        /// 获取审核状态
+        /// </summary>
+        /// <param name="auditStatus"></param>
+        /// <returns></returns>
         public static string GetAuditStatus(int auditStatus)
         {
             var result = auditStatus.ToString();
@@ -113,7 +121,11 @@ namespace DotNet.Util
             result = enumStatus.ToDescription();
             return result;
         }
-
+        /// <summary>
+        /// 获取审核状态
+        /// </summary>
+        /// <param name="auditStatus"></param>
+        /// <returns></returns>
         public static string GetAuditStatus(string auditStatus)
         {
             var result = auditStatus;
@@ -291,46 +303,6 @@ namespace DotNet.Util
         // WebService 传递参数的专用方法
         //
 
-        #region public static byte[] GetBinaryFormatData(DataTable dt) 服务器上面取数据,填充数据权限,转换为二进制格式.
-        /// <summary>
-        /// 服务器上面取数据,填充数据权限,转换为二进制格式.
-        /// </summary>
-        /// <param name="dt">数据表</param>
-        /// <returns>二进制格式</returns>
-        //public static byte[] GetBinaryFormatData(DataTable dt)
-        //{
-        //    byte[] arrayResult = null;
-        //    dt.RemotingFormat = SerializationFormat.Binary;
-        //    var memoryStream = new MemoryStream();
-        //    IFormatter formatter = new BinaryFormatter();
-        //    formatter.Serialize(memoryStream, dt);
-        //    arrayResult = memoryStream.ToArray();
-        //    memoryStream.Close();
-        //    memoryStream.Dispose();
-        //    return arrayResult;
-        //}
-        #endregion
-
-        #region public static DataTable RetrieveDataSet(byte[] ArrayResult) 客户端接收到byte[]格式的数据,对其进行反序列化,得到数据权限,进行客户端操作.
-        /// <summary>
-        /// 客户端接收到byte[]格式的数据,对其进行反序列化,得到数据权限,进行客户端操作.
-        /// </summary>
-        /// <param name="ArrayResult">二进制格式</param>
-        /// <returns>数据表</returns>
-        //public static DataTable RetrieveDataTable(byte[] arrayResult)
-        //{
-        //    DataTable dt = null;
-        //    var memoryStream = new MemoryStream(arrayResult);
-        //    IFormatter formatter = new BinaryFormatter();
-        //    var targetObject = formatter.Deserialize(memoryStream);
-        //    memoryStream.Close();
-        //    memoryStream.Dispose();
-        //    dt = (DataTable)targetObject;
-        //    return dt;
-        //}
-        #endregion
-
-
         #region private static int SetClassValue(object sourceObject, string field, object targetObject) 设置对象的属性
         /// <summary>
         /// 设置对象的属性
@@ -416,12 +388,11 @@ namespace DotNet.Util
         }
         #endregion
 
-
-        //
-        // 调试信息
-        //
-
-        // 写入开始调试信息
+        /// <summary>
+        /// 写入开始调试信息
+        /// </summary>
+        /// <param name="methodBase"></param>
+        /// <returns></returns>
         public static int StartDebug(MethodBase methodBase)
         {
             // 输出访问日志
@@ -433,7 +404,12 @@ namespace DotNet.Util
 
             return Environment.TickCount;
         }
-
+        /// <summary>
+        /// 开始调试
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <param name="methodBase"></param>
+        /// <returns></returns>
         public static int StartDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {
             // 写入访问日志
@@ -452,7 +428,14 @@ namespace DotNet.Util
             return Environment.TickCount;
         }
 
-        // 写入结束调试信息
+        /// <summary>
+        /// 写入结束调试信息
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <param name="methodBase"></param>
+        /// <param name="milliStart"></param>
+        /// <param name="consoleColor"></param>
+        /// <returns></returns>
         public static int EndDebug(BaseUserInfo userInfo, MethodBase methodBase, int milliStart, ConsoleColor consoleColor)
         {
             var milliEnd = Environment.TickCount;
@@ -481,18 +464,27 @@ namespace DotNet.Util
             return milliEnd - milliStart;
         }
 
-        // 写入结束调试信息
+        /// <summary>
+        /// 写入结束调试信息
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <param name="methodBase"></param>
+        /// <param name="milliStart"></param>
+        /// <returns></returns>
         public static int EndDebug(BaseUserInfo userInfo, MethodBase methodBase, int milliStart)
         {
             return EndDebug(userInfo, methodBase, milliStart, ConsoleColor.White);
         }
 
-        // 写入调试信息
+        /// <summary>
+        /// 写入调试信息
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <param name="methodBase"></param>
         public static void WriteDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {
 #if (DEBUG)
             Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
-            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " " + userInfo.IPAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
         }
     }

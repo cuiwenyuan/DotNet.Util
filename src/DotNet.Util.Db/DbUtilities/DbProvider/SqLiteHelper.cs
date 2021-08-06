@@ -32,7 +32,9 @@ namespace DotNet.Util
     public class SqLiteHelper : BaseDbHelper, IDbHelper
     {
         #region   构造方法
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public SqLiteHelper()
         {
             FileName = "SQLite.txt";   // sql查询句日志
@@ -134,8 +136,8 @@ namespace DotNet.Util
         /// <summary>
         /// 获取参数
         /// </summary>
-        /// <param name="targetFiled">目标字段</param>
-        /// <param name="targetValue">值</param>
+        /// <param name="targetFileds">目标字段</param>
+        /// <param name="targetValues">值</param>
         /// <returns>参数集</returns>
         public override IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
         {

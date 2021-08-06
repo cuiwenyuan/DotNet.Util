@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -17,7 +17,7 @@ namespace DotNet.Util
     ///		2007.05.16 版本：1.0 JiRiGaLa	重新调整主键的规范化。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2007.05.16</date>
     /// </author> 
     /// </summary>
@@ -26,19 +26,39 @@ namespace DotNet.Util
     {
         private SortedList<String, String> _indexs = new SortedList<String, String>();
 
+        /// <summary>
+        /// Language
+        /// </summary>
         [XmlElement("language")]
         public string Language = string.Empty;
+        /// <summary>
+        /// DisplayName
+        /// </summary>
         [XmlElement("displayName")]
         public string DisplayName = string.Empty;
+        /// <summary>
+        /// Version
+        /// </summary>
         [XmlElement("version")]
         public string Version = string.Empty;
+        /// <summary>
+        /// Author
+        /// </summary>
         [XmlElement("author")]
         public string Author = string.Empty;
+        /// <summary>
+        /// Description
+        /// </summary>
         [XmlElement("description")]
         public string Description = string.Empty;
+        /// <summary>
+        /// Items
+        /// </summary>
         [XmlElement("items", typeof(Items))]
         public Items Items;
-
+        /// <summary>
+        /// 创建索引
+        /// </summary>
         public void CreateIndex()
         {
             _indexs.Clear();
@@ -63,7 +83,11 @@ namespace DotNet.Util
 #endif
             }
         }
-
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string Get(string key)
         {
             if (!_indexs.ContainsKey(key))
@@ -74,7 +98,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// JiRiGaLa 2007.05.02
+        /// Set
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
@@ -97,18 +121,31 @@ namespace DotNet.Util
             return true;
         }
     }
-
+    /// <summary>
+    /// Items
+    /// </summary>
     public class Items
     {
+        /// <summary>
+        /// items
+        /// </summary>
         [XmlElement("item", typeof(Item))]
         public Item[] items;
     }
 
-
+    /// <summary>
+    /// Item
+    /// </summary>
     public class Item
     {
+        /// <summary>
+        /// Key
+        /// </summary>
         [XmlAttribute("key")]
         public string Key = string.Empty;
+        /// <summary>
+        /// Value
+        /// </summary>
         [XmlText]
         public string Value = string.Empty;
     }

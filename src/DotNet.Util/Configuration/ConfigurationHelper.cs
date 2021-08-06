@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -27,6 +27,12 @@ namespace DotNet.Util
     /// </summary>
     public partial class ConfigurationHelper
     {
+        /// <summary>
+        /// AppSettting
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="encrypt"></param>
+        /// <returns></returns>
         public static string AppSettings(string key, bool encrypt)
         {
             var result = string.Empty;
@@ -252,6 +258,9 @@ namespace DotNet.Util
         #endregion
 
         #region 数据库配置信息
+        /// <summary>
+        /// 数据库配置信息
+        /// </summary>
         public static void GetDatabaseConfig()
         {
             // 数据库连接
@@ -526,8 +535,8 @@ namespace DotNet.Util
             BaseSystemInfo.UserCenterWriteDbConnection = BaseSystemInfo.UserCenterDbConnection;
 
             // 这里重新给静态数据库连接对象进行赋值
-            // DotNet.Util.DbHelper.DbConnection = BaseSystemInfo.BusinessDbConnection;
-            // DotNet.Util.DbHelper.DbType = BaseSystemInfo.BusinessDbType;
+            // DotNet.Util.DbUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
+            // DotNet.Util.DbUtil.DbType = BaseSystemInfo.BusinessDbType;
 
             // 这里是处理读写分离功能，读取数据与写入数据进行分离的方式
             if (ConfigurationManager.AppSettings["UserCenterReadDbConnection"] != null)
@@ -542,6 +551,9 @@ namespace DotNet.Util
         #endregion
 
         #region Mail邮件配置信息
+        /// <summary>
+        /// Mail邮件配置信息
+        /// </summary>
         public static void GetMailConfig()
         {
             //SMTP邮件服务器
@@ -584,6 +596,9 @@ namespace DotNet.Util
         #endregion
 
         #region MQTT配置信息
+        /// <summary>
+        /// MQTT配置信息
+        /// </summary>
         public static void GetMqttConfig()
         {
             if (ConfigurationManager.AppSettings["Mqtterver"] != null)
@@ -617,6 +632,9 @@ namespace DotNet.Util
         #endregion
 
         #region WebApi配置信息
+        /// <summary>
+        /// WebApi配置信息
+        /// </summary>
         public static void GetWebApiConfig()
         {
             if (ConfigurationManager.AppSettings["WebApiEnableMonitor"] != null)
@@ -640,6 +658,9 @@ namespace DotNet.Util
         #endregion
 
         #region User用户配置信息
+        /// <summary>
+        /// User用户配置信息
+        /// </summary>
         public static void GetUserConfig()
         {
             // 用户名强制手机号
@@ -678,6 +699,9 @@ namespace DotNet.Util
         #endregion
 
         #region Cookie配置信息
+        /// <summary>
+        /// Cookie配置信息
+        /// </summary>
         public static void GetCookieConfig()
         {
             if (ConfigurationManager.AppSettings["CookieName"] != null)
@@ -699,6 +723,9 @@ namespace DotNet.Util
         #endregion
 
         #region WebApp基本配置信息
+        /// <summary>
+        /// WebApp基本配置信息
+        /// </summary>
         public static void GetWebAppConfig()
         {
             if (ConfigurationManager.AppSettings["SystemCode"] != null)
@@ -764,6 +791,9 @@ namespace DotNet.Util
         #endregion
 
         #region FTP配置信息
+        /// <summary>
+        /// FTP配置信息
+        /// </summary>
         public static void GetFtpConfig()
         {
             if (ConfigurationManager.AppSettings["Ftperver"] != null)
@@ -797,6 +827,9 @@ namespace DotNet.Util
         #endregion
 
         #region Redis配置信息
+        /// <summary>
+        /// Redis配置信息
+        /// </summary>
         public static void GetRedisConfig()
         {
             if (ConfigurationManager.AppSettings["RedisServer"] != null)

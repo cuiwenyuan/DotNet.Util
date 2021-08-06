@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -44,6 +44,9 @@ namespace DotNet.Util
         /// </summary>
         bool MustCloseConnection { get; set; }
 
+        /// <summary>
+        /// 连接字符串
+        /// </summary>
         string ConnectionString { get; set; }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -19,7 +19,7 @@ namespace DotNet.Util
     ///		2012.04.05 版本：1.0	JiRiGaLa 改进 GetPermissionScope(string[] organizeIds)。
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2012.04.05</date>
     /// </author> 
     /// </summary>
@@ -164,10 +164,25 @@ namespace DotNet.Util
         {
             return GetProperty(dt, FieldId, id, targetField);
         }
+        /// <summary>
+        /// GetPropertyDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <param name="targetField"></param>
+        /// <returns></returns>
         public static string GetPropertyDyn(dynamic lstT, string id, string targetField)
         {
             return GetPropertyDyn(lstT, FieldId, id, targetField);
         }
+        /// <summary>
+        /// GetPropertyDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="targetField"></param>
+        /// <returns></returns>
         public static string GetPropertyDyn(dynamic lstT, string fieldName, string fieldValue, string targetField)
         {
             var result = string.Empty;
@@ -220,6 +235,14 @@ namespace DotNet.Util
         {
             return SetProperty(dt, FieldId, id, targetField, targetValue);
         }
+        /// <summary>
+        /// 设置一个属性
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id">主键</param>
+        /// <param name="targetField">更新字段</param>
+        /// <param name="targetValue">目标值</param>
+        /// <returns></returns>
         public static int SetPropertyDyn(dynamic lstT, string id, string targetField, object targetValue)
         {
             return SetPropertyDyn(lstT, FieldId, id, targetField, targetValue);
@@ -253,6 +276,15 @@ namespace DotNet.Util
             }
             return result;
         }
+        /// <summary>
+        /// SetPropertyDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="targetField"></param>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static int SetPropertyDyn(dynamic lstT, string fieldName, string fieldValue, string targetField, object targetValue)
         {
             var result = 0;

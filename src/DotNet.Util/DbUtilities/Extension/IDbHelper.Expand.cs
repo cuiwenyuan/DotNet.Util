@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -7,7 +7,7 @@ using System.Data;
 namespace DotNet.Util
 {
     /// <summary>
-    /// IDbHelperExpand
+    /// IDbUtilExpand
     /// 数据库访问扩展接口
     /// 
     /// 修改记录

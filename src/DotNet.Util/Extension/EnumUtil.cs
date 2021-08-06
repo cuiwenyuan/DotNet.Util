@@ -5,7 +5,9 @@ using System.Reflection;
 
 namespace DotNet.Util
 {
-    /// <summary>枚举类型助手类 - 来自NewLife</summary>
+    /// <summary>
+    /// 枚举类型助手类 - 来自NewLife
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class EnumHelper
     {

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -10,24 +10,54 @@ namespace DotNet.Util
     /// </summary>
     public enum MessageFunction
     {
-        Message = 0,        // 0 消息。
+        /// <summary>
+        /// 0 消息
+        /// </summary>
+        Message = 0,
 
-        Remind = 1,         // 1 提示。
-        
-        Warning = 2,        // 2 警示。
-        
-        WaitForAudit = 3,   // 3 待审核事项。
-        
-        Comment = 4,        // 4 评论。
-        
-        TodoList = 5,       // 5 待审核。
-        
-        Note = 6,           // 6 备忘录。
+        /// <summary>
+        /// 1 提示
+        /// </summary>
+        Remind = 1,
 
+        /// <summary>
+        /// 2 警示
+        /// </summary>
+        Warning = 2,
+
+        /// <summary>
+        /// 3 待审核事项
+        /// </summary>
+        WaitForAudit = 3,
+
+        /// <summary>
+        /// 4 评论
+        /// </summary>
+        Comment = 4,
+
+        /// <summary>
+        /// 5 待审核
+        /// </summary>
+        TodoList = 5,
+
+        /// <summary>
+        /// 6 备忘录
+        /// </summary>
+        Note = 6,
+
+        /// <summary>
+        /// 7 用户消息
+        /// </summary>
         UserMessage = 7,
-        
+
+        /// <summary>
+        /// 8 角色消息
+        /// </summary>
         RoleMessage = 8,
-        
+
+        /// <summary>
+        /// 9 组织消息
+        /// </summary>
         OrganizeMessage = 9,
 
         /// <summary>

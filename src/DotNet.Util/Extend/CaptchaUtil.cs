@@ -5,6 +5,9 @@ using System.Text;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 验证码工具
+    /// </summary>
     public partial class CaptchaUtil
     {
         /// <summary>

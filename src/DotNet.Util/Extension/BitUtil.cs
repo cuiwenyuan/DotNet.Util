@@ -2,7 +2,9 @@
 
 namespace DotNet.Util
 {
-    /// <summary>数据位助手 - 来自NewLife</summary>
+    /// <summary>
+    /// 数据位助手 - 来自NewLife
+    /// </summary>
     public static class BitUtil
     {
         /// <summary>设置数据位</summary>

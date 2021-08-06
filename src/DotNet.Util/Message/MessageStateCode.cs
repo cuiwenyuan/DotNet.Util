@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -10,8 +10,14 @@ namespace DotNet.Util
     /// </summary>
     public enum MessageStateCode
     {
-        Old = 0,    // 0 已读消息
-        New = 1     // 1 未读消息
+        /// <summary>
+        /// 0 已读消息
+        /// </summary>
+        Old = 0,
+        /// <summary>
+        /// 1 未读消息
+        /// </summary>
+        New = 1
     }
     #endregion
 }

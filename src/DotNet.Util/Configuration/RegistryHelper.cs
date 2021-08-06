@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using Microsoft.Win32;
@@ -37,11 +37,10 @@ namespace DotNet.Util
 
         #region public static string GetValue(string key) 读取注册表
         /// <summary>
-        /// 读取注册表
-        /// </summary>
-        /// <param name="subKey">注册表子项</param>
-        /// <param name="registryKey">键</param>
-        /// <returns>值</returns>
+	/// 读取注册表
+	/// </summary>
+        /// <param name="key">注册表子项</param>
+		/// <returns>值</returns>
         public static string GetValue(string key)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

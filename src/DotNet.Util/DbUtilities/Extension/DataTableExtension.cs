@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -10,6 +10,9 @@ using System.Reflection;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// DataTable扩展
+    /// </summary>
     public static class DataTableExtension
     {
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -28,6 +28,10 @@ namespace DotNet.Util
     /// </summary>
     public class SqlHelper : BaseDbHelper, IDbHelper, IDbHelperExpand
     {
+        /// <summary>
+        /// GetInstance
+        /// </summary>
+        /// <returns></returns>
         public override DbProviderFactory GetInstance()
         {
             return SqlClientFactory.Instance;
@@ -160,8 +164,8 @@ namespace DotNet.Util
         /// <summary>
         /// 获取参数数组集合
         /// </summary>
-        /// <param name="targetFiled">目标字段</param>
-        /// <param name="targetValue">值</param>
+        /// <param name="targetFileds">目标字段</param>
+        /// <param name="targetValues">值</param>
         /// <returns>参数集</returns>
         public override IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
         {
@@ -297,10 +301,12 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dbType">数据类型</param>
         /// <returns>转换结果</returns>
-        private System.Data.SqlDbType ConvertToSqlDbType(System.Data.DbType dbType)
+        private SqlDbType ConvertToSqlDbType(DbType dbType)
         {
-            var sqlParameter = new SqlParameter();
-            sqlParameter.DbType = dbType;
+            var sqlParameter = new SqlParameter
+            {
+                DbType = dbType
+            };
             return sqlParameter.SqlDbType;
         }
         #endregion

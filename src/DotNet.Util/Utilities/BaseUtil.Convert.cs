@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -42,31 +42,45 @@ namespace DotNet.Util
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2009.09.08</date>
     /// </author> 
     /// </summary>
     public partial class BaseUtil
-    {     
-        /// 
-        ///  类型转换
-        ///
-
+    {
+        /// <summary>
+        /// 整型转为布尔型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Boolean ConvertIntToBoolean(Object targetValue)
         {
             return targetValue != DBNull.Value && (targetValue.ToString().Equals("1") || targetValue.ToString().Equals(true.ToString()));
         }
-
+        /// <summary>
+        /// 转为布尔型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Boolean ConvertToBoolean(Object targetValue)
         {
             return targetValue != DBNull.Value && (targetValue.ToString().Equals(true.ToString()) || targetValue.ToString().Equals("1"));
         }
-
+        /// <summary>
+        /// 转为字符串
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static string ConvertToString(Object targetValue)
         {
             return targetValue != DBNull.Value ? Convert.ToString(targetValue) : null;
         }
-
+        /// <summary>
+        /// 转为整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
         public static int ConvertToInt(Object targetValue, int defaultValue  = 0)
         {
             if (targetValue == DBNull.Value)
@@ -82,7 +96,11 @@ namespace DotNet.Util
 
             return result;
         }
-
+        /// <summary>
+        /// 转为可为NULL的整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static int? ConvertToNullableInt(Object targetValue)
         {
             int? returnValue = null;
@@ -97,7 +115,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为字节整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Byte ConvertToByteInt(Object targetValue)
         {
             Byte returnValue = 0;
@@ -112,7 +134,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL字节整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Byte? ConvertToNullableByteInt(Object targetValue)
         {
             Byte? returnValue = null;
@@ -127,7 +153,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为32位整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Int32 ConvertToInt32(Object targetValue)
         {
             var returnValue = 0;
@@ -142,7 +172,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的32位整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Int32? ConvertToNullableInt32(Object targetValue)
         {
             Int32? returnValue = null;
@@ -157,7 +191,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为64位整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Int64 ConvertToInt64(Object targetValue)
         {
             Int64 returnValue = 0;
@@ -172,7 +210,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的64位整型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Int64? ConvertToNullableInt64(Object targetValue)
         {
             Int64? returnValue = null;
@@ -187,7 +229,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为Long类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static long ConvertToLong(Object targetValue)
         {
             long returnValue = 0;
@@ -202,7 +248,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的Long类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static long? ConvertToNullableLong(Object targetValue)
         {
             long? returnValue = null;
@@ -217,7 +267,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为Double类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Double ConvertToDouble(Object targetValue)
         {
             Double returnValue = 0;
@@ -232,7 +286,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的Double类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static Double? ConvertToNullableDouble(Object targetValue)
         {
             Double? returnValue = null;
@@ -247,7 +305,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为Float类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static float ConvertToFloat(Object targetValue)
         {
             float returnValue = 0;
@@ -262,7 +324,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的Float类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static float? ConvertToNullableFloat(Object targetValue)
         {
             float? returnValue = null;
@@ -277,7 +343,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为Decimal类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static decimal ConvertToDecimal(Object targetValue)
         {
             decimal returnValue = 0;
@@ -292,7 +362,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的Decimal类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static decimal? ConvertToNullableDecimal(Object targetValue)
         {
             decimal? returnValue = null;
@@ -308,7 +382,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为时间类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static DateTime ConvertToDateTime(Object targetValue)
         {
             var returnValue = DateTime.MinValue;
@@ -320,7 +398,11 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为可为NULL的时间类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static DateTime? ConvertToNullableDateTime(Object targetValue)
         {
             DateTime? returnValue = null;
@@ -333,14 +415,22 @@ namespace DotNet.Util
 
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为日期类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static string ConvertToDateToString(Object targetValue)
         {
             var returnValue = string.Empty;
             returnValue = targetValue != DBNull.Value ? DateTime.Parse(targetValue.ToString()).ToString(BaseSystemInfo.DateFormat) : null;
             return returnValue;
         }
-
+        /// <summary>
+        /// 转为字节类型
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static byte[] ConvertToByte(Object targetValue)
         {
             return targetValue != DBNull.Value ? (byte[])targetValue : null;

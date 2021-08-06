@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,12 +11,22 @@ using System.Collections.Specialized;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// Ip信息
+    /// </summary>
     public class IpInfo
     {
+        /// <summary>
+        /// 省份
+        /// </summary>
         public string Province { get; set; }
-
+        /// <summary>
+        /// 城市
+        /// </summary>
         public string City { get; set; }
-
+        /// <summary>
+        /// IP地址
+        /// </summary>
         public string Ip { get; set; }
     }
     /// <summary>
@@ -33,7 +43,10 @@ namespace DotNet.Util
         private static IpUtil _instance;
 
         private static object _lock = new object();
-
+        /// <summary>
+        /// 获取实例
+        /// </summary>
+        /// <returns></returns>
         public static IpUtil GetInstance()
         {
             if (_instance == null)
@@ -50,7 +63,10 @@ namespace DotNet.Util
             return _instance;
         }
 
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="filePath"></param>
         public IpUtil(string filePath = null)
         {
             try
@@ -130,7 +146,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// 查找IP
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
         public IpInfo FindIp(string ip)
         {
             ip = ip.Split(',')[0].Trim();
@@ -151,7 +171,11 @@ namespace DotNet.Util
             }
             return new IpInfo { Province = location[1], City = location[2], Ip = ip };
         }
-
+        /// <summary>
+        /// FindName
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
         public string FindName(string ip)
         {
             var result = string.Empty;
@@ -172,7 +196,11 @@ namespace DotNet.Util
             }
             return result;
         }
-
+        /// <summary>
+        /// 是否本地IP
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
         public static bool IsLocalIp(string ipAddress)
         {
             var result = false;

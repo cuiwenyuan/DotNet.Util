@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -15,15 +15,20 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     /// 
-    ///		2011.10.13 版本：1.0 Troy Cui 创建。
+    ///		2011.10.13 版本：1.0 JiRiGaLa 创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2011.10.13</date>
     /// </author> 
     /// </summary>    
     public static partial class EnumExtensions
     {
+        /// <summary>
+        /// ToDescription
+        /// </summary>
+        /// <param name="enumeration"></param>
+        /// <returns></returns>
         public static string ToDescription(this Enum enumeration) 
         {
             var type = enumeration.GetType();

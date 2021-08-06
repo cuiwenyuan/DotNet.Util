@@ -1,5 +1,5 @@
 ﻿//-------------------------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-------------------------------------------------------------------------------------
 
 using System;
@@ -9,9 +9,6 @@ using System.Data.Common;
 
 namespace DotNet.Util
 {
-    // 需要安装客户端安装驱动
-    //using Oracle.DataAccess.Client;
-    // 2016.07.04 不需要客户端驱动
     using Oracle.ManagedDataAccess.Client;
 
     /// <summary>
@@ -34,6 +31,10 @@ namespace DotNet.Util
     /// </summary>
     public class OracleHelper : BaseDbHelper, IDbHelper
     {
+        /// <summary>
+        /// GetInstance
+        /// </summary>
+        /// <returns></returns>
         public override DbProviderFactory GetInstance()
         {
             return OracleClientFactory.Instance;
@@ -180,8 +181,8 @@ namespace DotNet.Util
         /// <summary>
         /// 获取参数
         /// </summary>
-        /// <param name="targetFiled">目标字段</param>
-        /// <param name="targetValue">值</param>
+        /// <param name="targetFileds">目标字段</param>
+        /// <param name="targetValues">值</param>
         /// <returns>参数集</returns>
         public override IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
         {
@@ -223,7 +224,7 @@ namespace DotNet.Util
             return dbParameters.ToArray();
         }
         #endregion
-		
+
         #region public IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters) 获取参数
         /// <summary>
         /// 获取参数
@@ -252,9 +253,10 @@ namespace DotNet.Util
         /// <summary>
         /// 获取输出参数
         /// </summary>
-        /// <param name="paramName">目标字段</param>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="parameterValue">参数值</param>
         /// <param name="dbType">数据类型</param>
-        /// <param name="size">长度</param>
+        /// <param name="parameterSize">长度</param>
         /// <returns>参数</returns>
         public IDbDataParameter MakeOutParam(string parameterName, object parameterValue, DbType dbType, int parameterSize)
         {
@@ -266,10 +268,10 @@ namespace DotNet.Util
         /// <summary>
         /// 获取输入参数
         /// </summary>
-        /// <param name="paramName">目标字段</param>
+        /// <param name="parameterName">目标字段</param>
         /// <param name="dbType">数据类型</param>
-        /// <param name="size">值</param>
-        /// <param name="value"></param>
+        /// <param name="parameterValue">值</param>
+        /// <param name="parameterSize"></param>
         /// <returns>参数</returns>
         public IDbDataParameter MakeInParam(string parameterName, object parameterValue, DbType dbType, int parameterSize)
         {
@@ -281,11 +283,11 @@ namespace DotNet.Util
         /// <summary>
         /// 获取参数
         /// </summary>
-        /// <param name="paramName">目标字段</param>
+        /// <param name="parameterName">目标字段</param>
         /// <param name="dbType">数据类型</param>
-        /// <param name="size">长度</param>
-        /// <param name="direction">参数类型</param>
-        /// <param name="value">值</param>
+        /// <param name="parameterValue">长度</param>
+        /// <param name="parameterSize">参数类型</param>
+        /// <param name="parameterDirection">方向</param>
         /// <returns>参数</returns>
 
         public override IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
@@ -333,10 +335,12 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dbType">数据类型</param>
         /// <returns>转换结果</returns>
-        private OracleDbType ConvertToOracleDbType(System.Data.DbType dbType)
+        private OracleDbType ConvertToOracleDbType(DbType dbType)
         {
-            var oracleParameter = new OracleParameter();
-            oracleParameter.DbType = dbType;
+            var oracleParameter = new OracleParameter
+            {
+                DbType = dbType
+            };
             return oracleParameter.OracleDbType;
         }
         #endregion

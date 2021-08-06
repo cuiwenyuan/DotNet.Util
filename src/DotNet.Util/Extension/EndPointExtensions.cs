@@ -3,11 +3,13 @@ using System.Net;
 
 namespace System
 {
-    /// <summary>网络结点扩展 - 来自NewLife</summary>
+    /// <summary>
+    /// 网络结点扩展 - 来自NewLife
+    /// </summary>
     public static class EndPointExtensions
     {
         /// <summary>
-        /// 
+        /// ToAddress
         /// </summary>
         /// <param name="endpoint"></param>
         /// <returns></returns>
@@ -17,7 +19,7 @@ namespace System
         }
 
         /// <summary>
-        /// 
+        /// ToAddress
         /// </summary>
         /// <param name="endpoint"></param>
         /// <returns></returns>
@@ -27,7 +29,7 @@ namespace System
         }
 
         /// <summary>
-        /// 
+        /// ToEndPoint
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
@@ -44,7 +46,7 @@ namespace System
         }
 
         /// <summary>
-        /// 
+        /// ToEndPoint
         /// </summary>
         /// <param name="addresses"></param>
         /// <returns></returns>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -7,6 +7,9 @@ using System.Globalization;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 日期工具
+    /// </summary>
     public partial class DateUtil
     {
         #region public static string GetDayOfWeek(string dayOfWeek) 获得数字星期几
@@ -584,6 +587,93 @@ namespace DotNet.Util
                 default:
                     return now.AddDays(7 - (int)now.DayOfWeek);
             }
+        }
+        #endregion
+
+        #region GetTimeStamp
+        /// <summary>
+        /// 获取时间戳
+        /// </summary>
+        /// <param name="dt">不要用UTC时间，直接用本地时间</param>
+        /// <param name="precision">精度(秒：s,毫秒：ms)</param>
+        /// <returns></returns>
+        public static long GetTimeStamp(string dt, string precision = "s")
+        {
+            long currentTicks = DateTime.Now.ToUniversalTime().Ticks;
+            if (ValidateUtil.IsDateTime(dt))
+            {
+                currentTicks = DateTime.Parse(dt).ToUniversalTime().Ticks;
+            }
+            if (precision.Equals("ms", StringComparison.OrdinalIgnoreCase))
+            {
+                //毫秒
+                return (currentTicks - 621355968000000000) / 10000;
+            }
+            else if (precision.Equals("s", StringComparison.OrdinalIgnoreCase))
+            {
+                //秒
+                return (currentTicks - 621355968000000000) / 10000000;
+            }
+            else
+            {
+                return (currentTicks - 621355968000000000) / 10000000;
+            }
+        }
+        #endregion
+
+        #region GetTimeStamp
+        /// <summary>
+        /// 获取时间戳(秒)
+        /// </summary>
+        /// <param name="precision">精度(秒：s,毫秒：ms)</param>
+        /// <returns></returns>
+        public static long GetTimeStamp(string precision = "s")
+        {
+            if (precision.Equals("ms", StringComparison.OrdinalIgnoreCase))
+            {
+                //毫秒
+                return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
+            }
+            else if (precision.Equals("s", StringComparison.OrdinalIgnoreCase))
+            {
+                //秒
+                return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
+            }
+            else
+            {
+                return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
+            }
+        }
+        #endregion
+
+        #region GetLocalTime根据时间戳获取本地时间
+        /// <summary>
+        /// 根据时间戳获取本地时间
+        /// </summary>
+        /// <param name="timestamp">时间戳</param>
+        /// <param name="precision">精度(秒：s,毫秒：ms)</param>
+        /// <returns></returns>
+        public static DateTime GetLocalTime(long timestamp, string precision = "s")
+        {
+            DateTime converted = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            if (precision.Equals("ms", StringComparison.OrdinalIgnoreCase))
+            {
+                //毫秒
+                DateTime newDateTime = converted.AddMilliseconds(timestamp);
+                return newDateTime.ToLocalTime();
+            }
+            else if (precision.Equals("s", StringComparison.OrdinalIgnoreCase))
+            {
+                //秒
+                DateTime newDateTime = converted.AddSeconds(timestamp);
+                return newDateTime.ToLocalTime();
+            }
+            else
+            {
+                DateTime newDateTime = converted.AddSeconds(timestamp);
+                return newDateTime.ToLocalTime();
+            }
+
         }
         #endregion
     }

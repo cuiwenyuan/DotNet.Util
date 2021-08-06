@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -17,7 +17,7 @@ namespace DotNet.Util
     ///		2007.05.16 版本：1.0 JiRiGaLa	重新调整主键的规范化。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2007.05.16</date>
     /// </author> 
     /// </summary>
@@ -25,6 +25,9 @@ namespace DotNet.Util
     {
         private volatile static ResourceManager _instance = null;
         private static object _locker = new Object();
+        /// <summary>
+        /// 实例
+        /// </summary>
         public static ResourceManager Instance
         {
             get
@@ -44,13 +47,23 @@ namespace DotNet.Util
         }
 
         private string _folderPath = string.Empty;
+        /// <summary>
+        /// 语言资源
+        /// </summary>
         public SortedList<String, Resources> LanguageResources = new SortedList<String, Resources>();
-
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <param name="resources"></param>
+        /// <param name="filePath"></param>
         public void Serialize(Resources resources, string filePath)
         {
             ResourcesSerializer.Serialize(filePath, resources);
         }
-
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="filePath"></param>
         public void Init(string filePath)
         {
             _folderPath = filePath;
@@ -68,7 +81,10 @@ namespace DotNet.Util
                 LanguageResources.Add(resources.Language, resources);
             }
         }
-
+        /// <summary>
+        /// 获取语言
+        /// </summary>
+        /// <returns></returns>
         public Hashtable GetLanguages()
         {
             var hashtable = new Hashtable();
@@ -79,7 +95,11 @@ namespace DotNet.Util
             }
             return hashtable;
         }
-
+        /// <summary>
+        /// 获取语言
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public Hashtable GetLanguages(string path)
         {
             var hashtable = new Hashtable();
@@ -96,7 +116,11 @@ namespace DotNet.Util
             }
             return hashtable;
         }
-
+        /// <summary>
+        /// 获取资源
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public Resources GetResources(string filePath)
         {
             var resources = new Resources();
@@ -107,7 +131,12 @@ namespace DotNet.Util
             }
             return resources;
         }
-
+        /// <summary>
+        /// 获取
+        /// </summary>
+        /// <param name="language"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string Get(string language, string key)
         {
             if (string.IsNullOrEmpty(language))

@@ -128,7 +128,7 @@ namespace DotNet.Util
         /// <summary> 
         /// 一个重载，将字符串先转换成数字在调用CmycurD(decimal num) 
         /// </summary> 
-        /// <param name="num">用户输入的金额，字符串形式未转成decimal</param> 
+        /// <param name="numstr">用户输入的金额，字符串形式未转成decimal</param> 
         /// <returns></returns> 
         public static string Capital(string numstr)
         {

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -8,12 +8,22 @@ using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 验证工具
+    /// </summary>
     public static class ValidateUtil
     {
+        /// <summary>
+        /// 正整数
+        /// </summary>
         public static string PositiveInteger = @"^[0-9]*[1-9][0-9]*$";// 正整数正则表达式
-
+        /// <summary>
+        /// 整数
+        /// </summary>
         public static string Integer = @"^-?\d+$";// 整数正则表达式
-
+        /// <summary>
+        /// 浮点数
+        /// </summary>
         public static string Float = @"^[+|-]?\d*\.?\d*$";// 浮点数正则表达式
 
         /// <summary>
@@ -157,7 +167,11 @@ namespace DotNet.Util
             }
             return result;
         }
-
+        /// <summary>
+        /// 是否为Boolean
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static bool IsBoolean(string expression)
         {
             var result = false;
@@ -212,7 +226,11 @@ namespace DotNet.Util
             return reg.IsMatch(inputNumeric);
         }
         */
-
+        /// <summary>
+        /// 是否为Double
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static bool IsDouble(object expression)
         {
             var result = false;
@@ -297,7 +315,11 @@ namespace DotNet.Util
             }
             return result;
         }
-
+        /// <summary>
+        /// 检查邮件
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public static bool CheckEmail(string email)
         {
             var result = true;

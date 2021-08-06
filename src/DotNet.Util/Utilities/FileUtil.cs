@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -21,23 +21,36 @@ namespace DotNet.Util
     ///		2012.05.03 版本：1.3    Pcsky增加一个读取文本文件内容的方法(GetTextFileContent)
     ///		2011.07.31 版本：1.2    Sunplay增加一个删除文件的方法(DeleteFile)。
     ///		2011.07.31 版本：1.1    Sunplay增加一个获取文件大小的方法(GetFileSize)。
-    ///		2010.07.10 版本：1.0	Troy Cui 创建。
+    ///		2010.07.10 版本：1.0	JiRiGaLa 创建。
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2015.03.22</date>
     /// </author> 
     /// </summary>
     public partial class FileUtil
     {
-        // 播放音乐
+        /// <summary>
+        /// 播放音乐
+        /// </summary>
+        /// <param name="pszSound"></param>
+        /// <param name="hmod"></param>
+        /// <param name="fdwSound"></param>
+        /// <returns></returns>
         [DllImport("winmm.dll")]
         public static extern bool PlaySound(string pszSound, int hmod, int fdwSound);
-
+        /// <summary>
+        /// SndFilename
+        /// </summary>
         public const int SndFilename = 0x00020000;
-
+        /// <summary>
+        /// SndAsync
+        /// </summary>
         public const int SndAsync = 0x0001;
-
+        /// <summary>
+        /// 播放声音
+        /// </summary>
+        /// <param name="file"></param>
         public static void PlaySound(string file)
         {
             if (File.Exists(file))
@@ -45,7 +58,10 @@ namespace DotNet.Util
                 PlaySound(file, 0, SndAsync | SndFilename);
             }
         }
-
+        /// <summary>
+        /// 回调
+        /// </summary>
+        /// <returns></returns>
         public static bool ThumbnailCallback() { return false; }
 
         /// <summary>
@@ -144,7 +160,11 @@ namespace DotNet.Util
             fileStream.Write(file, 0, file.Length);
             fileStream.Close();
         }
-
+        /// <summary>
+        /// 图片转字节
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public static byte[] ImageToByte(Image image)
         {
             var memoryStream = new MemoryStream();
@@ -153,7 +173,11 @@ namespace DotNet.Util
             memoryStream.Close();
             return file;
         }
-
+        /// <summary>
+        /// 字节转图片
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
         public static Image ByteToImage(byte[] buffer)
         {
             Image image;
@@ -244,7 +268,7 @@ namespace DotNet.Util
             }
             // Console.WriteLine("写入二进制文件信息结束。");
         }
-        
+
         /// <summary>
         /// 测试向从二进制文件中读取数据，并显示到终端上.
         /// </summary>
@@ -290,8 +314,8 @@ namespace DotNet.Util
                 var buffer = new byte[count];
                 br.Read(buffer, 0, buffer.Length);
                 message = Encoding.Default.GetString(buffer);
-               // message = br.ReadString();
-                
+                // message = br.ReadString();
+
                 // 读取完毕，关闭.
                 br.Close();
                 fs.Close();
@@ -363,6 +387,7 @@ namespace DotNet.Util
             }
         }
 
+        #region 获取文件大小
         /// <summary>
         /// 根据文件名，得到文件的大小，单位分别是GB/MB/KB
         /// </summary>
@@ -372,8 +397,8 @@ namespace DotNet.Util
         {
             if (File.Exists(fileName) == true)
             {
-                var fileInfo = new FileInfo(fileName);
-                var fl = fileInfo.Length;
+                var fi = new FileInfo(fileName);
+                var fl = fi.Length;
                 if (fl > 1024 * 1024 * 1024)
                 {
                     return Convert.ToString(Math.Round((fl + 0.00) / (1024 * 1024 * 1024), 2)) + " GB";
@@ -387,11 +412,54 @@ namespace DotNet.Util
                     return Convert.ToString(Math.Round((fl + 0.00) / 1024, 2)) + " KB";
                 }
             }
-            else 
+            else
             {
                 return null;
             }
         }
+
+        /// <summary>
+        /// 根据文件名，得到文件的大小，单位分别是GB/MB/KB
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <returns>返回文件大小</returns>
+        public static string GetReadableSize(string fileName)
+        {
+            if (File.Exists(fileName) == true)
+            {
+                var fi = new FileInfo(fileName);
+                var fl = fi.Length;
+                return BytesToReadableSize(fl);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static readonly string[] Suffixes = new string[] { " B", " KB", " MB", " GB", " TB", " PB" };
+        /// <summary>
+        /// 获取指定字节大小的显示字符串
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static string BytesToReadableSize(long number)
+        {
+            double last = 1;
+            for (int i = 0; i < Suffixes.Length; i++)
+            {
+                var current = Math.Pow(1024, i + 1);
+                var temp = number / current;
+                if (temp < 1)
+                {
+                    return (number / last).ToString("n2") + Suffixes[i];
+                }
+                last = current;
+            }
+            return number.ToString();
+        }
+
+        #endregion
 
         /// <summary>
         /// 读取文件文件内容
@@ -520,7 +588,7 @@ namespace DotNet.Util
                     {
                         File.Copy(sourceFileName, destFileName, overWrite);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         LogUtil.WriteException(ex);
                         //if any error return
@@ -532,7 +600,7 @@ namespace DotNet.Util
                         File.Delete(sourceFileName);
                     }
 
-                    
+
                 }
             }
         }
@@ -580,6 +648,7 @@ namespace DotNet.Util
         /// (ansi格式容易产生乱码)
         /// </summary>
         /// <param name="fileName">文件名</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static string GetTextFileContent(string fileName, string encoding = "gb2312")
         {

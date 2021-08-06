@@ -7,8 +7,17 @@ using System.Text;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// List工具
+    /// </summary>
     public static partial class ListUtil
     {
+        /// <summary>
+        /// ListToDataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static DataTable ListToDataTable<T>(List<T> list) where T : class
         {
             var dt = new DataTable();

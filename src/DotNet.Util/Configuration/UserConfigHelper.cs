@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -33,12 +33,21 @@ namespace DotNet.Util
     /// </summary>
     public partial class UserConfigHelper
     {
+        /// <summary>
+        /// LogOnTo
+        /// </summary>
         public static string LogOnTo = "Config";
-
+        /// <summary>
+        /// 配置文件名
+        /// </summary>
         public static string FileName => LogOnTo + ".xml";
-
+        /// <summary>
+        /// 选择路径
+        /// </summary>
         public static string SelectPath = "//appSettings/add";
-
+        /// <summary>
+        /// 配置文件名
+        /// </summary>
         public static string ConfigFileName
         {
             get
@@ -75,11 +84,20 @@ namespace DotNet.Util
         }
         #endregion      
 
+        /// <summary>
+        /// 是否存在
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static bool Exists(string key)
         {
             return !string.IsNullOrEmpty(GetValue(key));
         }
-
+        /// <summary>
+        /// 获取选项值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static string[] GetOptions(string key)
         {
             var option = string.Empty;
@@ -202,6 +220,10 @@ namespace DotNet.Util
         }
         #endregion
 
+        /// <summary>
+        /// 是否存在
+        /// </summary>
+        /// <returns></returns>
         public static bool Exists()
         {
             return File.Exists(ConfigFileName);
@@ -227,6 +249,10 @@ namespace DotNet.Util
 
         private static XmlDocument _xmlDocument = new XmlDocument();
 
+        /// <summary>
+        /// 获取配置
+        /// </summary>
+        /// <param name="stream"></param>
         public static void GetConfig(Stream stream)
         {
             _xmlDocument.Load(stream);
@@ -373,10 +399,10 @@ namespace DotNet.Util
             }
             if (Exists("CookieExpires"))
             {
-                if(ValidateUtil.IsInt(GetValue(_xmlDocument, "CookieExpires")))
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "CookieExpires")))
                 {
                     BaseSystemInfo.CookieExpires = int.Parse(GetValue(_xmlDocument, "CookieExpires"));
-                }                
+                }
             }
             #endregion
 
@@ -1060,8 +1086,8 @@ namespace DotNet.Util
             }
 
             // 这里重新给静态数据库连接对象进行赋值
-            // DotNet.Util.DbHelper.DbConnection = BaseSystemInfo.BusinessDbConnection;
-            // DotNet.Util.DbHelper.DbType = BaseSystemInfo.BusinessDbType;
+            // DotNet.Util.DbUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
+            // DotNet.Util.DbUtil.DbType = BaseSystemInfo.BusinessDbType;
 
             // 这里是处理读写分离功能，读取数据与写入数据进行分离的方式
             if (Exists("UserCenterReadDbConnection"))
@@ -1116,6 +1142,12 @@ namespace DotNet.Util
         }
         #endregion
 
+        /// <summary>
+        /// 设置值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="keyValue"></param>
+        /// <param name="checkExists"></param>
         public static void SetValue(string key, string keyValue, bool checkExists = false)
         {
             if (File.Exists(ConfigFileName))
@@ -1127,11 +1159,28 @@ namespace DotNet.Util
             }
         }
 
+        /// <summary>
+        /// 设置值
+        /// </summary>
+        /// <param name="xmlDocument"></param>
+        /// <param name="key"></param>
+        /// <param name="keyValue"></param>
+        /// <param name="checkExists"></param>
+        /// <returns></returns>
         public static bool SetValue(XmlDocument xmlDocument, string key, string keyValue, bool checkExists = false)
         {
             return SetValue(xmlDocument, SelectPath, key, keyValue, checkExists);
         }
 
+        /// <summary>
+        /// 设置值
+        /// </summary>
+        /// <param name="xmlDocument"></param>
+        /// <param name="selectPath"></param>
+        /// <param name="key"></param>
+        /// <param name="keyValue"></param>
+        /// <param name="checkExists"></param>
+        /// <returns></returns>
         public static bool SetValue(XmlDocument xmlDocument, string selectPath, string key, string keyValue, bool checkExists = false)
         {
             var result = false;

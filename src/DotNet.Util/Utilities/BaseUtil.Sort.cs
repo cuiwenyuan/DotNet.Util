@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -18,7 +18,7 @@ namespace DotNet.Util
     ///		2007.03.01 版本：   1.0 JiRiGaLa 将主键从 BUBaseUtil 类分离出来。
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2007.12.10</date>
     /// </author> 
     /// </summary>
@@ -52,10 +52,23 @@ namespace DotNet.Util
         {
             return GetNextId(dataView, id, BaseUtil.FieldId);
         }
+        /// <summary>
+        /// GetNextIdDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static string GetNextIdDyn(dynamic lstT, string id)
         {
             return GetNextIdDyn(lstT, id, BaseUtil.FieldId);
         }
+        /// <summary>
+        /// GetNextIdDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
         public static string GetNextIdDyn(dynamic lstT, string id, string field)
         {
             var result = string.Empty;
@@ -151,7 +164,6 @@ namespace DotNet.Util
         /// 获取上一条记录主键
         /// </summary>
         /// <param name="dt">数据表</param>
-        /// <param name="tableName">当前表</param>
         /// <param name="id">当前主键</param>
         /// <param name="field">当前字段</param>
         /// <returns>主键</returns>
@@ -203,6 +215,13 @@ namespace DotNet.Util
             result += BaseUtil.SetProperty(dt, targetId, BaseUtil.FieldSortCode, sortCode);
             return result;
         }
+        /// <summary>
+        /// SwapDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <param name="targetId"></param>
+        /// <returns></returns>
         public static int SwapDyn(dynamic lstT, string id, string targetId)
         {
             var result = 0;
@@ -213,12 +232,23 @@ namespace DotNet.Util
             return result;
         }
         #endregion
-
+        /// <summary>
+        /// GetPreviousIdDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static string GetPreviousIdDyn(dynamic lstT, string id)
         {
             return GetPreviousIdDyn(lstT, id, BaseUtil.FieldId);
         }
-
+        /// <summary>
+        /// GetPreviousIdDyn
+        /// </summary>
+        /// <param name="lstT"></param>
+        /// <param name="id"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
         public static string GetPreviousIdDyn(dynamic lstT, string id, string field)
         {
             var result = string.Empty;

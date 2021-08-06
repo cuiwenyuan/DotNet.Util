@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -10,8 +10,14 @@ namespace DotNet.Util
     /// </summary>
     public enum MessageCategory
     {
-        Send = 0,       // 0 发送。
-        Receiver = 1    // 1 接收。
+        /// <summary>
+        /// 0 发送
+        /// </summary>
+        Send = 0,
+        /// <summary>
+        /// 1 接收
+        /// </summary>
+        Receiver = 1
     }
     #endregion
 }

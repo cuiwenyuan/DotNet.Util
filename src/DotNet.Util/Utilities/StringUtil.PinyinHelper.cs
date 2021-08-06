@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -63,6 +63,11 @@ namespace DotNet.Util
             return result;   
         }
 
+        /// <summary>
+        /// 获取简拼
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static string GetSimpleSpelling(string targetValue)
         {
             var result = string.Empty;
@@ -123,6 +128,11 @@ namespace DotNet.Util
         #endregion
 
         #region 汉字转换成全拼的拼音
+        /// <summary>
+        /// 汉字转换成全拼的拼音
+        /// </summary>
+        /// <param name="targetValue"></param>
+        /// <returns></returns>
         public static string GetPinyin(string targetValue)
         {
             var result = string.Empty;

@@ -3,7 +3,9 @@ using System.Linq;
 
 namespace System.Collections.Generic
 {
-    /// <summary>扩展List，支持遍历中修改元素 - 来自NewLife</summary>
+    /// <summary>
+    /// 扩展List，支持遍历中修改元素 - 来自NewLife
+    /// </summary>
     public static class ListExtension
     {
         /// <summary>线程安全，搜索并返回第一个，支持遍历中修改元素</summary>

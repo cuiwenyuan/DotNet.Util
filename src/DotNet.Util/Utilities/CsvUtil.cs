@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -193,11 +193,11 @@ namespace DotNet.Util
             StreamWriter streamWriter = null;
             if (BaseSystemInfo.CurrentLanguage.Equals("zh-CN"))
             {
-                streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("gb2312"));
+                streamWriter = new StreamWriter(fileName, false, Encoding.GetEncoding("gb2312"));
             }
             else
             {
-                streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("utf-8"));
+                streamWriter = new StreamWriter(fileName, false, Encoding.GetEncoding("utf-8"));
             }
             streamWriter.WriteLine(GetCsvFormatData(dt).ToString());
             streamWriter.Flush();
@@ -216,11 +216,11 @@ namespace DotNet.Util
             StreamWriter streamWriter = null;
             if (BaseSystemInfo.CurrentLanguage.Equals("zh-CN"))
             {
-                streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("gb2312"));
+                streamWriter = new StreamWriter(fileName, false, Encoding.GetEncoding("gb2312"));
             }
             else
             {
-                streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("utf-8"));
+                streamWriter = new StreamWriter(fileName, false, Encoding.GetEncoding("utf-8"));
             }
             streamWriter.WriteLine(GetCsvFormatData(dataSet).ToString());
             streamWriter.Flush();
@@ -237,7 +237,7 @@ namespace DotNet.Util
         //public static void GetResponseCsv(DataTable dt, string fileName)
         //{
         //    HttpContext.Current.Response.ClearHeaders();
-        //    HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.GetEncoding("utf-8");
+        //    HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
         //    HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
         //    HttpContext.Current.Response.ContentType = "application/ms-excel";
         //    HttpContext.Current.Response.Write(GetCsvFormatData(dt).ToString());
@@ -254,7 +254,7 @@ namespace DotNet.Util
         public static void GetResponseCsv(DataSet dataSet, string fileName)
         {
             //HttpContext.Current.Response.ClearHeaders();
-            //HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.GetEncoding("utf-8");
+            //HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
             //HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
             //HttpContext.Current.Response.ContentType = "application/ms-excel";
             //HttpContext.Current.Response.Write(GetCsvFormatData(dataSet).ToString());

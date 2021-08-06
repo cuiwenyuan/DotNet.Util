@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -22,28 +22,79 @@ namespace DotNet.Util
     ///     2006.11.23 版本：1.0 JiRiGaLa 结构优化整理。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>JiRiGaLa</name>
     ///		<date>2007.09.18</date>
     /// </author> 
     /// </summary>
     public enum DefaultRole
     {
-        Config,                 // 系统配置员
-        Administrator,          // 系统管理员
-        Administrators,         // 系统管理组
-        ChairmanOfTheBoard,     // 董事长
-        VicePrecident,          // 副总裁
-        GeneralManager,         // 总经理
-        ViceManager,            // 副经理
-        Minister,               // 部长
-        ViceMinsiter,           // 副部长
-        HumanResourceManager,   // 人力资源主管
-        HumanResource,          // 人力资源
-        FinanceManager,         // 财务人员
-        Finance,                // 财务人员
-        EquipmentManager,       // 设备管理主管
-        Equipment,              // 设备管理人员
-        Staff,                  // 普通员工
-        User                    // 普通用户
+        /// <summary>
+        /// 系统配置员
+        /// </summary>
+        Config,
+        /// <summary>
+        /// 系统管理员
+        /// </summary>
+        Administrator,
+        /// <summary>
+        /// 系统管理组
+        /// </summary>
+        Administrators,
+        /// <summary>
+        /// 董事长
+        /// </summary>
+        ChairmanOfTheBoard,
+        /// <summary>
+        /// 副总裁
+        /// </summary>
+        VicePrecident,
+        /// <summary>
+        /// 总经理
+        /// </summary>
+        GeneralManager,
+        /// <summary>
+        /// 副经理
+        /// </summary>
+        ViceManager,
+        /// <summary>
+        /// 部长
+        /// </summary>
+        Minister,
+        /// <summary>
+        /// 副部长
+        /// </summary>
+        ViceMinsiter,
+        /// <summary>
+        /// 人力资源主管
+        /// </summary>
+        HumanResourceManager,
+        /// <summary>
+        /// 人力资源
+        /// </summary>
+        HumanResource,
+        /// <summary>
+        /// 财务经理
+        /// </summary>
+        FinanceManager,
+        /// <summary>
+        /// 财务人员
+        /// </summary>
+        Finance,
+        /// <summary>
+        /// 设备管理主管
+        /// </summary>
+        EquipmentManager,
+        /// <summary>
+        /// 设备管理人员
+        /// </summary>
+        Equipment,
+        /// <summary>
+        /// 普通员工
+        /// </summary>
+        Staff,
+        /// <summary>
+        /// 普通用户
+        /// </summary>
+        User  
     }
 }  

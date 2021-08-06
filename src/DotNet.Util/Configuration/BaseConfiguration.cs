@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// // All Rights Reserved. Copyright (C) 2020, DotNet.
+// // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;

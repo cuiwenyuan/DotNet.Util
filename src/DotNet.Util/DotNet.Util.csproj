@@ -46,6 +46,7 @@
 	  <Compile Include="DbUtilities\Extension\DataTableExtension.cs" />
 	  <Compile Include="DbUtilities\Extension\IDbHelper.Expand.cs" />
 	  <Compile Include="DbUtilities\Extension\ListExtension.cs" />
+	  <Compile Include="DbUtilities\IDbHelper.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

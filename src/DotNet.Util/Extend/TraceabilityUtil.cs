@@ -7,6 +7,9 @@ using System.Text;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 追溯工具
+    /// </summary>
     public class TraceabilityUtil
     {
         /// <summary>

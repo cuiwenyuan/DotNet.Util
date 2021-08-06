@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2019, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -391,7 +391,7 @@ namespace DotNet.Util
         /// <returns>字符加</returns>
         public new string PlusSign()
         {
-            
+
             var result = " + ";
 
             return result;

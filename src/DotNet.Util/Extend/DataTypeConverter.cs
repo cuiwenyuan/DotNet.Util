@@ -4,12 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 数据类型转换
+    /// </summary>
     public class DataTypeConverter
     {
         /// <summary>
         /// string型转换为bool型
         /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
+        /// <param name="expression">要转换的字符串</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>转换后的bool类型结果</returns>
         public static bool StrToBool(object expression, bool defValue)
@@ -23,7 +26,7 @@ namespace DotNet.Util
         /// <summary>
         /// string型转换为bool型
         /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
+        /// <param name="expression">要转换的字符串</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>转换后的bool类型结果</returns>
         public static bool StrToBool(string expression, bool defValue)
@@ -41,8 +44,7 @@ namespace DotNet.Util
         /// <summary>
         /// 将对象转换为Int32类型
         /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
+        /// <param name="expression">要转换的字符串</param>
         /// <returns>转换后的int类型结果</returns>
         public static int ObjectToInt(object expression)
         {
@@ -52,7 +54,7 @@ namespace DotNet.Util
         /// <summary>
         /// 将对象转换为Int32类型
         /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
+        /// <param name="expression">要转换的字符串</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>转换后的int类型结果</returns>
         public static int ObjectToInt(object expression, int defValue)
@@ -123,7 +125,6 @@ namespace DotNet.Util
         /// string型转换为float型
         /// </summary>
         /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
         /// <returns>转换后的int类型结果</returns>
         public static float ObjectToFloat(object strValue)
         {
@@ -163,11 +164,6 @@ namespace DotNet.Util
             }
             return intValue;
         }
-
-
-
-
-        /////////
 
         /// <summary>
         /// string型转换为decimal型
@@ -240,7 +236,7 @@ namespace DotNet.Util
                 decimal.TryParse(strValue, out intValue);
                 return intValue;
 
-            }   
+            }
         }
 
         /// <summary>
