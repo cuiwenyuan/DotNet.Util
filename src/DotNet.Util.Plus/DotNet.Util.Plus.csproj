@@ -1,31 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>DotNet.Util</RootNamespace>
-    <AssemblyVersion>5.0.2020.0908</AssemblyVersion>
-    <FileVersion>5.0.2020.0908</FileVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Description>A set of .NET Standard 2.0 utilities. Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Company>www.cuiwenyuan.com</Company>
+		<Version>1.0.0</Version>
+		<Authors>´ÞÎÄÔ¶Troy Cui</Authors>
+		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
+		<PackageTags>DotNet Util Utilities</PackageTags>
+		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageId>WangCaiSoft.DotNet.Util.Plus</PackageId>
+		<!--<PackageIcon>logo_128.png</PackageIcon>-->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>DotNet.Util.Plus</AssemblyName>
+		<RootNamespace>DotNet.Util</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ApplicationIcon>App.ico</ApplicationIcon>
+		<RepositoryType>git</RepositoryType>
+		<AssemblyVersion>5.6.2021.0706</AssemblyVersion>
+		<FileVersion>5.6.2021.0706</FileVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="ExcelUtil.cs" />
-    <Compile Remove="ExcelUtil.Export.cs" />
-    <Compile Remove="ExcelUtil.Import.cs" />
-    <Compile Remove="ImportUtil.cs" />
-    <Compile Remove="LocationUtil.cs" />
-    <Compile Remove="QqwryUtil.cs" />
-    <Compile Remove="WeChatMiniProgramUtil.cs" />
-    <Compile Remove="XmlUtil.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="ExcelUtil.cs" />
+		<Compile Remove="ExcelUtil.Export.cs" />
+		<Compile Remove="ExcelUtil.Import.cs" />
+		<Compile Remove="ImportUtil.cs" />
+		<Compile Remove="LocationUtil.cs" />
+		<Compile Remove="QqwryUtil.cs" />
+		<Compile Remove="WeChatMiniProgramUtil.cs" />
+		<Compile Remove="XmlUtil.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NPOI" Version="2.5.1" />
-    <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NPOI" Version="2.5.1" />
+		<PackageReference Include="System.DirectoryServices" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
+	</ItemGroup>
 
 </Project>
