@@ -53,6 +53,7 @@ namespace DotNet.Util
                 }
                 _doc.AppendChild(_doc.CreateXmlDeclaration("1.0", "UTF-8", null));
                 _doc.AppendChild(_doc.CreateElement("root"));
+                CreateNode(DefaultNodeName);
                 _doc.Save(_fullName);
             }
 
@@ -88,8 +89,25 @@ namespace DotNet.Util
             try
             {
                 CreateNode(nodeName);
-                var xmlElement = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
-                return xmlElement == null ? "" : xmlElement.GetAttribute("value");
+                var node = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var item = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                if (item == null)
+                {
+                    //自动创建item                    
+                    var itemNew = _doc.CreateElement("item");
+                    itemNew.SetAttribute("key", key);
+                    itemNew.SetAttribute("value", "");
+                    node?.AppendChild(itemNew);
+                    if (_autoSave)
+                    {
+                        Save();
+                    }
+                    return string.Empty;
+                }
+                else
+                {
+                    return item.GetAttribute("value");
+                }
             }
             catch (Exception ex)
             {
@@ -101,29 +119,33 @@ namespace DotNet.Util
         /// <summary>
         /// 更改指定键的值 没有则添加
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="nodeName"></param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="nodeName">节点名</param>
         public bool SetValue(string key, string value, string nodeName = DefaultNodeName)
         {
             try
             {
                 CreateNode(nodeName);
-                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
-                var node = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
-                if (node == null)
+                var node = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var item = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                if (item == null)
                 {
-                    var newNode = _doc.CreateElement("item");
-                    newNode.SetAttribute("key", key);
-                    newNode.SetAttribute("value", value);
-                    keyValue?.AppendChild(newNode);
+                    //自动创建item
+                    var itemNew = _doc.CreateElement("item");
+                    itemNew.SetAttribute("key", key);
+                    itemNew.SetAttribute("value", value);
+                    node?.AppendChild(itemNew);
                 }
                 else
                 {
-                    node.SetAttribute("value", value);
+                    item.SetAttribute("value", value);
                 }
 
-                if (_autoSave) Save();
+                if (_autoSave)
+                {
+                    Save();
+                }
             }
             catch (Exception ex)
             {
@@ -235,7 +257,10 @@ namespace DotNet.Util
                     keyValue.RemoveChild(xmlElement);
                 }
 
-                if (_autoSave) Save();
+                if (_autoSave)
+                {
+                    Save();
+                }
             }
             catch (Exception ex)
             {
