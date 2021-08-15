@@ -22,9 +22,14 @@ namespace DotNet.Util
         public const string DefaultNodeName = "default";
 
         /// <summary>
+        /// 默认键值对节点名
+        /// </summary>
+        public const string DefaultItemName = "item";
+
+        /// <summary>
         /// xml文档
         /// </summary>
-        private readonly XmlDocument _doc = new XmlDocument();
+        private readonly XmlDocument _doc = new();
 
         /// <summary>
         /// 配置文件全名
@@ -82,27 +87,38 @@ namespace DotNet.Util
         /// 获取指定键的值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <param name="nodeName">节点名</param>
+        /// <param name="itemName">键值对节点名</param>
         /// <returns></returns>
-        public string GetValue(string key, string nodeName = DefaultNodeName)
+        public string GetValue(string key, string defaultValue = null, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
+            defaultValue ??= string.Empty;
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
-                CreateNode(nodeName);
-                var node = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
-                var item = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                var node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                if (node == null)
+                {
+                    CreateNode(nodeName);
+                    node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                }
+                var item = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
                 if (item == null)
                 {
                     //自动创建item                    
-                    var itemNew = _doc.CreateElement("item");
+                    var itemNew = _doc.CreateElement(itemName);
                     itemNew.SetAttribute("key", key);
-                    itemNew.SetAttribute("value", "");
-                    node?.AppendChild(itemNew);
+                    itemNew.SetAttribute("value", defaultValue);
+                    node.AppendChild(itemNew);
                     if (_autoSave)
                     {
                         Save();
                     }
-                    return string.Empty;
+                    return defaultValue;
                 }
                 else
                 {
@@ -122,20 +138,30 @@ namespace DotNet.Util
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="nodeName">节点名</param>
-        public bool SetValue(string key, string value, string nodeName = DefaultNodeName)
+        /// <param name="itemName">键值对节点名</param>
+        public bool SetValue(string key, string value, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
+            value ??= string.Empty;
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
-                CreateNode(nodeName);
-                var node = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
-                var item = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                var node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                if (node == null)
+                {
+                    CreateNode(nodeName);
+                    node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                }
+                var item = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
                 if (item == null)
                 {
                     //自动创建item
-                    var itemNew = _doc.CreateElement("item");
+                    var itemNew = _doc.CreateElement(itemName);
                     itemNew.SetAttribute("key", key);
                     itemNew.SetAttribute("value", value);
-                    node?.AppendChild(itemNew);
+                    node.AppendChild(itemNew);
                 }
                 else
                 {
@@ -162,10 +188,14 @@ namespace DotNet.Util
         /// <returns></returns>
         public List<string> GetAllKey(string nodeName = DefaultNodeName)
         {
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
                 var keys = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
                 if (xmlElement != null)
                 {
                     foreach (XmlElement node in xmlElement)
@@ -190,10 +220,14 @@ namespace DotNet.Util
         /// <returns></returns>
         public List<string> GetAllValue(string nodeName = DefaultNodeName)
         {
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
                 var keys = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
                 if (xmlElement != null)
                 {
                     foreach (XmlElement node in xmlElement)
@@ -218,10 +252,14 @@ namespace DotNet.Util
         /// <returns></returns>
         public Dictionary<string, string> GetAllKeyValue(string nodeName = DefaultNodeName)
         {
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
                 var keyValues = new Dictionary<string, string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
                 if (xmlElement != null)
                 {
                     foreach (XmlElement node in xmlElement)
@@ -245,13 +283,19 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="nodeName">节点名</param>
-        public bool DeleteValue(string key, string nodeName = DefaultNodeName)
+        /// <param name="itemName">键值对节点名</param>
+        /// 
+        public bool DeleteValue(string key, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                nodeName = DefaultNodeName;
+            }
             try
             {
                 CreateNode(nodeName);
-                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
-                var xmlElement = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                var keyValue = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
                 if (keyValue != null && xmlElement != null)
                 {
                     keyValue.RemoveChild(xmlElement);
@@ -280,7 +324,7 @@ namespace DotNet.Util
             try
             {
                 var nodes = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root");
+                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root");
                 if (xmlElement != null)
                 {
                     foreach (XmlElement node in xmlElement)
@@ -305,9 +349,13 @@ namespace DotNet.Util
         /// <param name="nodeName"></param>
         private void CreateNode(string nodeName = DefaultNodeName)
         {
-            if (_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}") == null)
+            if (string.IsNullOrEmpty(nodeName))
             {
-                _doc.DocumentElement?.AppendChild(_doc.CreateElement(nodeName));
+                nodeName = DefaultNodeName;
+            }
+            if (_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}") == null)
+            {
+                _doc.DocumentElement.AppendChild(_doc.CreateElement(nodeName));
             }
         }
 
@@ -320,8 +368,8 @@ namespace DotNet.Util
         {
             try
             {
-                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root");
-                var xmlElement = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var keyValue = _doc.DocumentElement.SelectSingleNode($"/root");
+                var xmlElement = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
 
                 if (keyValue != null && xmlElement != null)
                 {
