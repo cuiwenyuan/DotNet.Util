@@ -125,7 +125,7 @@ namespace DotNet.Util
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -137,7 +137,7 @@ namespace DotNet.Util
                     }
                 }
                 sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.ToString(), "Slow.DbHelper.ExecuteReader");
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteReader");
             }
             return dbDataReader;
         }
@@ -264,7 +264,7 @@ namespace DotNet.Util
             }
             catch (Exception e)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -275,7 +275,7 @@ namespace DotNet.Util
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
                 }
-                LogUtil.WriteException(e, sb.ToString());
+                LogUtil.WriteException(e, sb.Put());
             }
             finally
             {
@@ -295,7 +295,7 @@ namespace DotNet.Util
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -307,7 +307,7 @@ namespace DotNet.Util
                     }
                 }
                 sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.ToString(), "Slow.DbHelper.ExecuteNonQuery");
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteNonQuery");
             }
             return result;
         }
@@ -427,7 +427,7 @@ namespace DotNet.Util
             }
             catch (Exception e)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -438,7 +438,7 @@ namespace DotNet.Util
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
                 }
-                LogUtil.WriteException(e, sb.ToString());
+                LogUtil.WriteException(e, sb.Put());
             }
             finally
             {
@@ -457,7 +457,7 @@ namespace DotNet.Util
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -469,7 +469,7 @@ namespace DotNet.Util
                     }
                 }
                 sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.ToString(), "Slow.DbHelper.ExecuteScalar");
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteScalar");
             }
             return result;
         }
@@ -620,7 +620,7 @@ namespace DotNet.Util
                 //Troy.Cui 2020.05.13
                 dt = null;
                 //记录异常
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -631,7 +631,7 @@ namespace DotNet.Util
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
                 }
-                LogUtil.WriteException(e, sb.ToString());
+                LogUtil.WriteException(e, sb.Put());
             }
             finally
             {
@@ -649,7 +649,7 @@ namespace DotNet.Util
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
@@ -661,7 +661,7 @@ namespace DotNet.Util
                     }
                 }
                 sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.ToString(), "Slow.DbHelper.Fill");
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
             }
 
             return dt;
@@ -781,7 +781,7 @@ namespace DotNet.Util
                     //Troy.Cui 2020.05.13
                     dataSet = null;
                     //记录异常
-                    var sb = new StringBuilder();
+                    var sb = Pool.StringBuilder.Get();
                     sb.Append(commandText);
                     sb.Append(tableName);
                     sb.Append(commandType.ToString());
@@ -793,7 +793,7 @@ namespace DotNet.Util
                             sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                         }
                     }
-                    LogUtil.WriteException(e, sb.ToString());
+                    LogUtil.WriteException(e, sb.Put());
                 }
                 finally
                 {
@@ -813,7 +813,7 @@ namespace DotNet.Util
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
                 sb.Append(tableName);
                 sb.Append(commandType.ToString());
@@ -826,7 +826,7 @@ namespace DotNet.Util
                     }
                 }
                 sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.ToString(), "Slow.DbHelper.Fill");
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
             }
 
             return dataSet;

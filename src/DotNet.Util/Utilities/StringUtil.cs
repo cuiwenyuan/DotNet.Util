@@ -382,14 +382,14 @@ namespace DotNet.Util
             target = string.Equals(target, "N/A", StringComparison.OrdinalIgnoreCase) ? "" : target;
             var charbuffers = target.ToCharArray();
             byte[] buffer;
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             foreach (var t in charbuffers)
             {
                 buffer = Encoding.Unicode.GetBytes(t.ToString());
                 sb.Append(string.Format("\\u{0:X2}{1:X2}", buffer[1], buffer[0]));
             }
 
-            return sb.ToString();
+            return sb.Put();
         }
 
         /// <summary>

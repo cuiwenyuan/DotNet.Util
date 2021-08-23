@@ -69,7 +69,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static String NextString(Int32 length, Boolean symbol = false)
         {
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (var i = 0; i < length; i++)
             {
                 var ch = ' ';
@@ -88,7 +88,7 @@ namespace DotNet.Util
                 sb.Append(ch);
             }
 
-            return sb.ToString();
+            return sb.Put();
         }
     }
 }

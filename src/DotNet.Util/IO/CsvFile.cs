@@ -171,7 +171,7 @@ namespace DotNet.Util
         /// <returns></returns>
         protected virtual String BuildLine(IEnumerable<Object> line)
         {
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
 
             foreach (var item in line)
             {
@@ -193,7 +193,7 @@ namespace DotNet.Util
                     sb.Append(str);
             }
 
-            return sb.ToString();
+            return sb.Put();
         }
 
         private StreamWriter _writer;

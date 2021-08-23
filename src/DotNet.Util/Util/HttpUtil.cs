@@ -7,8 +7,20 @@ using System.Threading.Tasks;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// HttpUtil
+    /// </summary>
     public static partial class HttpUtil
     {
+        /// <summary>
+        /// HttpPostAsync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="postData"></param>
+        /// <param name="contentType"></param>
+        /// <param name="timeOut"></param>
+        /// <param name="headers"></param>
+        /// <returns></returns>
         public static Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -44,6 +56,12 @@ namespace DotNet.Util
             }
 
         }
+        /// <summary>
+        /// HttpGetAsync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="headers"></param>
+        /// <returns></returns>
         public static Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null)
         {
             try

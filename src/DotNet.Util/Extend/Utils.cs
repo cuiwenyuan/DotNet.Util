@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 
 namespace DotNet.Util
@@ -476,12 +477,12 @@ namespace DotNet.Util
         ///// </summary>
         //public static string GetSpacesString(int spacesCount)
         //{
-        //    var sb = new StringBuilder();
+        //    var sb = Pool.StringBuilder.Get();
         //    for (var i = 0; i < spacesCount; i++)
         //    {
         //        sb.Append(" &nbsp;&nbsp;");
         //    }
-        //    return sb.ToString();
+        //    return sb.Put();
         //}
 
         ///// <summary>
@@ -2645,49 +2646,51 @@ namespace DotNet.Util
         //}
         //#endregion
 
-        //#region TXT代码转换成HTML格式
-        ///// <summary>
-        ///// 字符串字符处理
-        ///// </summary>
-        ///// <param name="chr">等待处理的字符串</param>
-        ///// <returns>处理后的字符串</returns>
-        ///// //把TXT代码转换成HTML格式
-        //public static String ToHtml(string input)
-        //{
-        //    var sb = new StringBuilder(input);
-        //    sb.Replace("'", "&apos;");
-        //    sb.Replace("&", "&amp;");
-        //    sb.Replace("<", "&lt;");
-        //    sb.Replace(">", "&gt;");
-        //    sb.Replace("\r\n", "<br />");
-        //    sb.Replace("\n", "<br />");
-        //    sb.Replace("\t", " ");
-        //    //sb.Replace(" ", "&nbsp;");
-        //    return sb.ToString();
-        //}
-        //#endregion
+        #region TXT代码转换成HTML格式
+        /// <summary>
+        /// 字符串字符处理
+        /// </summary>
+        /// <param name="input">等待处理的字符串</param>
+        /// <returns>处理后的字符串</returns>
+        /// //把TXT代码转换成HTML格式
+        public static String ToHtml(string input)
+        {
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(input);
+            sb.Replace("'", "&apos;");
+            sb.Replace("&", "&amp;");
+            sb.Replace("<", "&lt;");
+            sb.Replace(">", "&gt;");
+            sb.Replace("\r\n", "<br />");
+            sb.Replace("\n", "<br />");
+            sb.Replace("\t", " ");
+            //sb.Replace(" ", "&nbsp;");
+            return sb.Put();
+        }
+        #endregion
 
-        //#region HTML代码转换成TXT格式
-        ///// <summary>
-        ///// 字符串字符处理
-        ///// </summary>
-        ///// <param name="chr">等待处理的字符串</param>
-        ///// <returns>处理后的字符串</returns>
-        ///// //把HTML代码转换成TXT格式
-        //public static String ToTxt(String input)
-        //{
-        //    var sb = new StringBuilder(input);
-        //    sb.Replace("&nbsp;", " ");
-        //    sb.Replace("<br>", "\r\n");
-        //    sb.Replace("<br>", "\n");
-        //    sb.Replace("<br />", "\n");
-        //    sb.Replace("<br />", "\r\n");
-        //    sb.Replace("&lt;", "<");
-        //    sb.Replace("&gt;", ">");
-        //    sb.Replace("&amp;", "&");
-        //    return sb.ToString();
-        //}
-        //#endregion
+        #region HTML代码转换成TXT格式
+        /// <summary>
+        /// 字符串字符处理
+        /// </summary>
+        /// <param name="chr">等待处理的字符串</param>
+        /// <returns>处理后的字符串</returns>
+        /// //把HTML代码转换成TXT格式
+        public static String ToTxt(String input)
+        {
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(input);
+            sb.Replace("&nbsp;", " ");
+            sb.Replace("<br>", "\r\n");
+            sb.Replace("<br>", "\n");
+            sb.Replace("<br />", "\n");
+            sb.Replace("<br />", "\r\n");
+            sb.Replace("&lt;", "<");
+            sb.Replace("&gt;", ">");
+            sb.Replace("&amp;", "&");
+            return sb.Put();
+        }
+        #endregion
 
         //#region URL请求数据
         ///// <summary>

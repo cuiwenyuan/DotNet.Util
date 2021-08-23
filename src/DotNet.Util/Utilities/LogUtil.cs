@@ -58,9 +58,6 @@ namespace DotNet.Util
                 Directory.CreateDirectory(logDirectory);
             }
             var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + specificName + "." + suffix;
-            //var sb = new StringBuilder();
-            //sb.AppendLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat));
-            //sb.AppendLine(exception);
             FileLogUtil.WriteLog(logDirectory, fileName, exception);
         }
 
@@ -76,7 +73,7 @@ namespace DotNet.Util
         public static void WriteLog(Exception exception, string extraInfo, string folder = "Log", string prefix = null, string suffix = "log")
         {
 
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             sb.Append(extraInfo);
             if (exception != null)
             {
@@ -86,7 +83,7 @@ namespace DotNet.Util
                 sb.Append(" Message:" + exception.Message);
                 sb.Append(" StackTrace:" + exception.StackTrace);
             }
-            WriteLog(sb.ToString(), folder, prefix, suffix);
+            WriteLog(sb.Put(), folder, prefix, suffix);
         }
     }
 }

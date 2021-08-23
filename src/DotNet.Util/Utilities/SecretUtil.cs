@@ -11,6 +11,9 @@ using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// SecretUtil
+    /// </summary>
     public static partial class SecretUtil
     {
         #region public static string SqlSafe(string inputValue) 检查参数的安全性
@@ -175,12 +178,12 @@ namespace DotNet.Util
                 #region 方法2
                 //MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider();
                 //byte[] data = md5Hasher.ComputeHash(new UTF8Encoding().GetBytes(password));
-                //var sb = new StringBuilder();
+                //var sb = Pool.StringBuilder.Get();
                 //foreach (var t in data)
                 //{
                 //    sb.Append(t.ToString("x2"));
                 //}
-                //result = sb.ToString();
+                //result = sb.Put();
                 #endregion
 
                 #region 方法3
@@ -193,13 +196,13 @@ namespace DotNet.Util
                 //释放资源
                 md5.Clear();
                 //4.将计算后的结果直接显示为字符串
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 foreach (var t in md5Buffer)
                 {
                     //x2:把每个数字转换为16进制，并保留两位数字。
                     sb.Append(t.ToString("x2"));
                 }
-                result = sb.ToString();
+                result = sb.Put();
                 #endregion
 
                 //16位MD5加密（取32位加密的9~25字符）
@@ -232,13 +235,13 @@ namespace DotNet.Util
                 sha1.Clear();
                 //sha1.Dispose();//释放当前实例使用的所有资源
                 //4.将计算后的结果直接显示为字符串
-                var sb = new StringBuilder();
+                var sb = Pool.StringBuilder.Get();
                 foreach (var t in sha1Buffer)
                 {
                     //x2:把每个数字转换为16进制，并保留两位数字。
                     sb.Append(t.ToString("x2"));
                 }
-                result = sb.ToString();
+                result = sb.Put();
                 #endregion
             }
             return result;

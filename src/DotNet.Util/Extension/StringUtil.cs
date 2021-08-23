@@ -122,7 +122,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static String Join(this IEnumerable value, String separator = ",")
         {
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             if (value != null)
             {
                 foreach (var item in value)
@@ -130,7 +130,7 @@ namespace DotNet.Util
                     sb.Separate(separator).Append(item + "");
                 }
             }
-            return sb.ToString();
+            return sb.Put();
         }
 
         /// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
@@ -140,7 +140,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static String Join<T>(this IEnumerable<T> value, String separator = ",", Func<T, Object?>? func = null)
         {
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             if (value != null)
             {
                 if (func == null) func = obj => obj;
@@ -149,7 +149,7 @@ namespace DotNet.Util
                     sb.Separate(separator).Append(func(item));
                 }
             }
-            return sb.ToString();
+            return sb.Put();
         }
 
         /// <summary>追加分隔符字符串，忽略开头，常用于拼接</summary>

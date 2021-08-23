@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// ICacheService
+    /// </summary>
     public partial interface ICacheService : IDisposable
     {
         /// <summary>
@@ -55,6 +58,14 @@ namespace DotNet.Util
         /// <returns></returns>
         bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false);
 
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiresIn"></param>
+        /// <param name="isSliding"></param>
+        /// <returns></returns>
         bool Add(string key, string value, TimeSpan? expiresIn = null, bool isSliding = false);
 
         /// <summary>
@@ -68,7 +79,7 @@ namespace DotNet.Util
         /// <summary>
         /// 批量删除缓存
         /// </summary>
-        /// <param name="key">缓存Key集合</param>
+        /// <param name="keys">缓存Key集合</param>
         /// <returns></returns>
         void RemoveAll(IEnumerable<string> keys);
 

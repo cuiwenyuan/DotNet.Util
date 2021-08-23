@@ -7,12 +7,19 @@ using System.Text;
 
 namespace DotNet.Util.Util
 {
+    /// <summary>
+    /// DrawingUtil
+    /// </summary>
     public class DrawingUtil
     {//颜色列表，用于验证码、噪线、噪点 
         private readonly Color[] _colors = new[] { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
 
         private readonly StringHelper _stringHelper;
 
+        /// <summary>
+        /// DrawingUtil
+        /// </summary>
+        /// <param name="stringHelper"></param>
         public DrawingUtil(StringHelper stringHelper)
         {
             _stringHelper = stringHelper;

@@ -733,7 +733,7 @@ namespace DotNet.Util
                 // 扣除间隔
                 if (!String.IsNullOrEmpty(separate)) _ = g * separate.Length;
             }
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (var i = 0; i < count; i++)
             {
                 if (sb.Length > 0)
@@ -749,7 +749,7 @@ namespace DotNet.Util
                 sb.Append(GetHexValue(b % 0x10));
             }
 
-            return sb.ToString();
+            return sb.Put();
         }
 
         private static Char GetHexValue(Int32 i)

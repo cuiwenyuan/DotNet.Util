@@ -237,6 +237,7 @@ namespace DotNet.Util
         /// 消息处理机制
         /// </summary>
         /// <param name="jsonMessage"></param>
+        /// <param name="messageCode"></param>
         /// <returns></returns>
         private static string MessageHandle(string jsonMessage, out string messageCode)
         {

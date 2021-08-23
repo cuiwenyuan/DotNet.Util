@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.AspNetCore.Http
 {
+    /// <summary>
+    /// ConfigurationExtensions
+    /// </summary>
     public static class ConfigurationExtensions
     {
         /// <summary>

@@ -5,10 +5,20 @@ using System.Linq;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// MemoryCacheService
+    /// </summary>
     public class MemoryCacheService : ICacheService
     {
+        /// <summary>
+        /// _cache
+        /// </summary>
         protected IMemoryCache _cache;
 
+        /// <summary>
+        /// MemoryCacheService
+        /// </summary>
+        /// <param name="cache"></param>
         public MemoryCacheService(IMemoryCache cache)
         {
             _cache = cache;
@@ -48,6 +58,14 @@ namespace DotNet.Util
             return Exists(key);
         }
 
+        /// <summary>
+        /// AddObject
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiresIn"></param>
+        /// <param name="isSliding"></param>
+        /// <returns></returns>
         public bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
             if (expiresIn != null)
@@ -63,22 +81,51 @@ namespace DotNet.Util
 
             return true;
         }
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiresIn"></param>
+        /// <param name="isSliding"></param>
+        /// <returns></returns>
         public bool Add(string key, string value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
             return AddObject(key, value, expiresIn, isSliding);
         }
+        /// <summary>
+        /// ListLeftPush
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
         public void ListLeftPush(string key, string val)
         {
 
         }
+        /// <summary>
+        /// ListDequeue
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public T ListDequeue<T>(string key) where T : class
         {
             return null;
         }
+        /// <summary>
+        /// ListDequeue
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public object ListDequeue(string key)
         {
             return null;
         }
+        /// <summary>
+        /// ListRemove
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="keepIndex"></param>
         public void ListRemove(string key, int keepIndex)
         {
         }
@@ -160,7 +207,7 @@ namespace DotNet.Util
         /// <summary>
         /// 批量删除缓存
         /// </summary>
-        /// <param name="key">缓存Key集合</param>
+        /// <param name="keys">缓存Key集合</param>
         /// <returns></returns>
         public void RemoveAll(IEnumerable<string> keys)
         {
@@ -171,6 +218,11 @@ namespace DotNet.Util
 
             keys.ToList().ForEach(item => _cache.Remove(item));
         }
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string Get(string key)
         {
             return _cache.Get(key)?.ToString();
@@ -278,6 +330,9 @@ namespace DotNet.Util
 
             return Add(key, value, expiresIn, isSliding);
         }
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public void Dispose()
         {
             if (_cache != null)

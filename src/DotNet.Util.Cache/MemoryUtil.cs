@@ -174,17 +174,18 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="cacheKey">缓存key值</param>
         /// <param name="cacheValue">缓存的对象</param>
-        /// <param name="reasonToRemove">缓存移出原因</param>
+        /// <param name="reason">缓存移出原因</param>
+        /// <param name="state"></param>
         private static void MyCallback(object cacheKey, object cacheValue, EvictionReason reason, object state)
         {
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             sb.Append(
             string.Format("Cache Key: {0} invalid at {1} with reason {2}",
                 new object[]
                 {
                     cacheKey, DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat), reason.ToString()
                 }));
-            LogUtil.WriteLog(sb.ToString(), "Cache", null, "Cache");
+            LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
         }
 
         /// <summary>

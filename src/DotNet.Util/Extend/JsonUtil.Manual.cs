@@ -22,7 +22,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetJsonStr(Dictionary<string, string> jsonDict)
         {
-            var sb = new StringBuilder("{");
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("{");
             var i = 0;
             foreach (var jd in jsonDict)
             {
@@ -39,7 +40,7 @@ namespace DotNet.Util
             }
 
             sb.Append("}");
-            return sb.ToString();
+            return sb.Put();
         }
 
         /// <summary>

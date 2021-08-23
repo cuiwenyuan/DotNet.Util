@@ -47,7 +47,7 @@ namespace DotNet.Util
             {
                 fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + _fileName;
             }
-            var sb = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             //sb.AppendLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat));
             //InvariantCulture输出全球地区文化统一的日期格式
             //sb.AppendLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat));
@@ -71,7 +71,7 @@ namespace DotNet.Util
                 Directory.CreateDirectory(logDirectory);
             }
             //高并发日志写法 Troy.Cui 2017-07-25
-            FileLogUtil.WriteLog(logDirectory, fileName, sb.ToString());
+            FileLogUtil.WriteLog(logDirectory, fileName, sb.Put());
 
         }
 

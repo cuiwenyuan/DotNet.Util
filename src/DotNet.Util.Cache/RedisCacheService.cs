@@ -6,15 +6,23 @@ using System.Linq;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// RedisCacheService
+    /// </summary>
     public class RedisCacheService : ICacheService
     {
+        /// <summary>
+        /// _cache
+        /// </summary>
         protected StackExchange.Redis.IDatabase _cache;
 
         private ConnectionMultiplexer _connection;
 
         private readonly string _instance;
 
-
+        /// <summary>
+        /// RedisCacheService
+        /// </summary>
         public RedisCacheService()
         {
             _connection = ConnectionMultiplexer.Connect(AppSetting.RedisConnectionString);
@@ -22,6 +30,11 @@ namespace DotNet.Util
             _instance = "nc";
         }
 
+        /// <summary>
+        /// GetKeyForRedis
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string GetKeyForRedis(string key)
         {
             return _instance + key;
@@ -39,18 +52,31 @@ namespace DotNet.Util
             }
             return _cache.KeyExists(key);
         }
-
+        /// <summary>
+        /// ListLeftPush
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
         public void ListLeftPush(string key, string val)
         {
             _cache.ListLeftPush(key, val);
         }
-
+        /// <summary>
+        /// ListRightPush
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
         public void ListRightPush(string key, string val)
         {
             _cache.ListRightPush(key, val);
         }
 
-
+        /// <summary>
+        /// ListDequeue
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public T ListDequeue<T>(string key) where T : class
         {
             RedisValue redisValue = _cache.ListRightPop(key);
@@ -58,6 +84,11 @@ namespace DotNet.Util
                 return null;
             return JsonConvert.DeserializeObject<T>(redisValue);
         }
+        /// <summary>
+        /// ListDequeue
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public object ListDequeue(string key)
         {
             RedisValue redisValue = _cache.ListRightPop(key);
@@ -77,6 +108,14 @@ namespace DotNet.Util
             _cache.ListTrim(key, keepIndex, -1);
         }
 
+        /// <summary>
+        /// AddObject
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiresIn"></param>
+        /// <param name="isSliding"></param>
+        /// <returns></returns>
         public bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
             return _cache.StringSet(key, JsonConvert.SerializeObject(value), expiresIn);
@@ -110,7 +149,7 @@ namespace DotNet.Util
         /// <summary>
         /// 批量删除缓存
         /// </summary>
-        /// <param name="key">缓存Key集合</param>
+        /// <param name="keys">缓存Key集合</param>
         /// <returns></returns>
         public void RemoveAll(IEnumerable<string> keys)
         {
@@ -229,6 +268,9 @@ namespace DotNet.Util
             return AddObject(key, value);
 
         }
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public void Dispose()
         {
             if (_connection != null)

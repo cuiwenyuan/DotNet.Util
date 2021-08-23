@@ -482,7 +482,7 @@ namespace System
             //return value.ToString("yyyy-MM-dd HH:mm:ss");
 
             //var dt = value;
-            //var sb = new StringBuilder();
+            //var sb = Pool.StringBuilder.Get();
             //sb.Append(dt.Year.ToString().PadLeft(4, '0'));
             //sb.Append("-");
             //sb.Append(dt.Month.ToString().PadLeft(2, '0'));
@@ -496,7 +496,7 @@ namespace System
             //sb.Append(":");
             //sb.Append(dt.Second.ToString().PadLeft(2, '0'));
 
-            //return sb.ToString();
+            //return sb.Put();
 
             var cs = "yyyy-MM-dd HH:mm:ss".ToCharArray();
 
