@@ -16,9 +16,9 @@ namespace DotNet.Util
     public class AliyunSmsUtil
     {
         private const string FieldUrl = "dysmsapi.aliyuncs.com";
-        private const string FieldAccessKeyId = "LTAIaYsI2dAApOkD";
-        private const string FieldAccessKeySecret = "jfwiIBTK2dRk83Lz3qAasn7JkB08t6";
-        private const string FieldSignName = "威格博尔";
+        private const string FieldAccessKeyId = "";
+        private const string FieldAccessKeySecret = "";
+        private const string FieldSignName = "";
 
         /// <summary>
         /// 发货信息
