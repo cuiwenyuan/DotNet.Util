@@ -56,7 +56,7 @@ namespace DotNet.Util
         private static string HttpPost(string url, Dictionary<string, string> param)
         {
             var result = "";
-            var postData = new StringBuilder();
+            var postData = Pool.StringBuilder.Get();
             if (param != null && param.Count > 0)
             {
                 foreach (var p in param)
@@ -70,7 +70,7 @@ namespace DotNet.Util
                     postData.Append(p.Value);
                 }
             }
-            var byteData = Encoding.GetEncoding("UTF-8").GetBytes(postData.ToString());
+            var byteData = Encoding.GetEncoding("UTF-8").GetBytes(postData.Put());
             try
             {
 

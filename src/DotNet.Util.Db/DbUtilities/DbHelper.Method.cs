@@ -58,7 +58,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDbDataParameter MakeParameter(string targetFiled, object targetValue)
         {
-            var dbHelper = DbHelperFactory.GetHelper(DbHelper.DbType);
+            var dbHelper = DbHelperFactory.GetHelper(DbType);
             return dbHelper.MakeParameter(targetFiled, targetValue);
         }
         #endregion

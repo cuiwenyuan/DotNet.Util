@@ -90,7 +90,7 @@ namespace DotNet.Util
         public static bool LogException = true;
 
         /// <summary>
-        /// 是否登记数据库操作
+        /// 是否记录数据库操作日志
         /// </summary>
         public static bool LogSql = false;
 

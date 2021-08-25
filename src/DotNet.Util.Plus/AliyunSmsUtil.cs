@@ -72,7 +72,7 @@ namespace DotNet.Util
             //4.参数key排序
             var ascDic = keyValues.OrderBy(o => o.Key).ToDictionary(o => o.Key, p => p.Value.ToString());
             //5.构造待签名的字符串
-            var builder = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             foreach (var item in ascDic)
             {
                 if (item.Key == "SignName")
@@ -80,26 +80,26 @@ namespace DotNet.Util
                 }
                 else
                 {
-                    builder.Append("&").Append(SpecialUrlEncode(item.Key)).Append("=").Append(SpecialUrlEncode(item.Value));
+                    sb.Append("&").Append(SpecialUrlEncode(item.Key)).Append("=").Append(SpecialUrlEncode(item.Value));
                 }
                 if (item.Key == "RegionId")
                 {
-                    builder.Append("&").Append(SpecialUrlEncode("SignName")).Append("=").Append(SpecialUrlEncode(keyValues["SignName"]));
+                    sb.Append("&").Append(SpecialUrlEncode("SignName")).Append("=").Append(SpecialUrlEncode(keyValues["SignName"]));
                 }
             }
-            var sortedQueryString = builder.ToString().Substring(1);
+            var sortedQueryString = sb.Put().Substring(1);
 
-            var stringToSign = new StringBuilder();
+            var stringToSign = Pool.StringBuilder.Get();
             stringToSign.Append("GET").Append("&");
             stringToSign.Append(SpecialUrlEncode("/")).Append("&");
             stringToSign.Append(SpecialUrlEncode(sortedQueryString));
 
-            var sign = MySign(FieldAccessKeySecret + "&", stringToSign.ToString());
+            var sign = MySign(FieldAccessKeySecret + "&", stringToSign.Put());
             //6.签名最后也要做特殊URL编码
             var signature = SpecialUrlEncode(sign);
 
             //最终打印出合法GET请求的URL
-            var url = string.Format("http://{0}/?Signature={1}{2}", FieldUrl, signature, builder);
+            var url = string.Format("http://{0}/?Signature={1}{2}", FieldUrl, signature, sb);
             message = HttpGet(url, out result);
             return result;
         }
@@ -177,21 +177,21 @@ namespace DotNet.Util
         /// <returns></returns>
         private static string SpecialUrlEncode(string value)
         {
-            var stringBuilder = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (var i = 0; i < value.Length; i++)
             {
                 var t = value[i].ToString();
                 var k = HttpUtility.UrlEncode(t, Encoding.UTF8);
                 if (t == k)
                 {
-                    stringBuilder.Append(t);
+                    sb.Append(t);
                 }
                 else
                 {
-                    stringBuilder.Append(k.ToUpper());
+                    sb.Append(k.ToUpper());
                 }
             }
-            return stringBuilder.ToString().Replace("+", "%20").Replace("*", "%2A").Replace("%7E", "~");
+            return sb.Put().Replace("+", "%20").Replace("*", "%2A").Replace("%7E", "~");
         }
 
         /// <summary>

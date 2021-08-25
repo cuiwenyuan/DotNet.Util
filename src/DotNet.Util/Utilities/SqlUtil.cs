@@ -35,22 +35,14 @@ namespace DotNet.Util
         /// <param name="commandText">SQL语句</param>
         /// <param name="dbParameters">参数</param>
         /// <param name="statisticsText">耗时</param>
-        /// <param name="fileName">文件名</param>
-        public static void WriteLog(string commandText, IDbDataParameter[] dbParameters = null, string statisticsText = null, string fileName = null)
+        public static void WriteLog(string commandText, IDbDataParameter[] dbParameters = null, string statisticsText = null)
         {
             // 系统里应该可以配置是否记录异常现象
             if (!BaseSystemInfo.LogSql)
             {
                 return;
             }
-            if (string.IsNullOrEmpty(fileName))
-            {
-                fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + _fileName;
-            }
             var sb = Pool.StringBuilder.Get();
-            //sb.AppendLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat));
-            //InvariantCulture输出全球地区文化统一的日期格式
-            //sb.AppendLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat));
             sb.Append(commandText);
             if (dbParameters != null)
             {
@@ -64,14 +56,9 @@ namespace DotNet.Util
             {
                 sb.Append(statisticsText);
             }
-            // 将异常信息写入本地文件中
-            var logDirectory = BaseSystemInfo.StartupPath + @"\Log\SqlTrace";
-            if (!Directory.Exists(logDirectory))
-            {
-                Directory.CreateDirectory(logDirectory);
-            }
-            //高并发日志写法 Troy.Cui 2017-07-25
-            FileLogUtil.WriteLog(logDirectory, fileName, sb.Put());
+            //将异常信息写入本地文件中
+            //高并发日志写法+Winform日志目录bug修复 Troy.Cui 2021-08-13
+            LogUtil.WriteLog(sb.Put(), "SqlTrace");
 
         }
 

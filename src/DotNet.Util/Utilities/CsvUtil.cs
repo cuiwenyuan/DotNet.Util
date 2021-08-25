@@ -61,9 +61,9 @@ namespace DotNet.Util
         {
             const string separator = ",";
             // 返回总字符串
-            var csvRows = new StringBuilder();
+            var csvRows = Pool.StringBuilder.Get();
             // 表头内容字符串
-            var stringBuilder = new StringBuilder();
+            var stringBuilder = Pool.StringBuilder.Get();
             // 循环输出表头内容
             for (var index = 0; index < dataReader.FieldCount; index++)
             {
@@ -83,7 +83,7 @@ namespace DotNet.Util
             // 循环获取表中的所有内容
             while (dataReader.Read())
             {
-                stringBuilder = new StringBuilder();
+                stringBuilder.Clear();
                 for (var index = 0; index < dataReader.FieldCount - 1; index++)
                 {
                     if (!dataReader.IsDBNull(index))
@@ -121,7 +121,7 @@ namespace DotNet.Util
                 {
                     stringBuilder.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, " "));
                 }
-                csvRows.AppendLine(stringBuilder.ToString());
+                csvRows.AppendLine(stringBuilder.Put());
             }
             dataReader.Close();
             return csvRows;
@@ -136,13 +136,13 @@ namespace DotNet.Util
         /// <returns>CSV字符串数据</returns>
         public static StringBuilder GetCsvFormatData(DataTable dt)
         {
-            var stringBuilder = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             // 写出表头
             foreach (DataColumn dataColumn in dt.Columns)
             {
-                stringBuilder.Append(dataColumn.ColumnName + ",");
+                sb.Append(dataColumn.ColumnName + ",");
             }
-            stringBuilder.Append("\n");
+            sb.Append("\n");
 
             // 写出数据
             foreach (DataRowView dataRowView in dt.DefaultView)
@@ -151,9 +151,9 @@ namespace DotNet.Util
                 {
                     foreach (DataColumn dataColumn in dt.Columns)
                     {
-                        stringBuilder.Append(dataRowView[dataColumn.ColumnName] + ",");
+                        sb.Append(dataRowView[dataColumn.ColumnName] + ",");
                     }
-                    stringBuilder.Append("\n");
+                    sb.Append("\n");
                 }
                 catch (Exception)
                 {
@@ -161,7 +161,7 @@ namespace DotNet.Util
                 }
             }
 
-            return stringBuilder;
+            return sb;
         }
         #endregion
 
@@ -173,12 +173,12 @@ namespace DotNet.Util
         /// <returns>CSV字符串数据</returns>
         public static StringBuilder GetCsvFormatData(DataSet dataSet)
         {
-            var stringBuilder = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             foreach (DataTable dt in dataSet.Tables)
             {
-                stringBuilder.Append(GetCsvFormatData(dt));
+                sb.Append(GetCsvFormatData(dt));
             }
-            return stringBuilder;
+            return sb;
         }
         #endregion
 

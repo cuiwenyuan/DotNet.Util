@@ -202,19 +202,19 @@ namespace DotNet.Util
         /// <returns>返回提示</returns>
         public static string CheckIsNullOrEmpty(DataTable dt, string[] checkStrings)
         {
-            StringBuilder result = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (int j = 0; j < dt.Rows.Count; j++)
             {
                 for (int i = 0; i < checkStrings.Length; i++)
                 {
                     if (string.IsNullOrEmpty(dt.Rows[j][checkStrings[i]].ToString()))
                     {
-                        result.Append("\"" + checkStrings[i] + "\"不能为空。");
-                        dt.Rows[j]["错误信息"] = result;
+                        sb.Append("\"" + checkStrings[i] + "\"不能为空。");
+                        dt.Rows[j]["错误信息"] = sb;
                     }
                 }
             }
-            return result.ToString();
+            return sb.Put();
         }
         #endregion
 
@@ -226,16 +226,16 @@ namespace DotNet.Util
         /// <returns>转换后的字符串</returns>
         public static string DataTableColumn2String(DataTable dt)
         {
-            StringBuilder columnNames = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 if (i > 0)
                 {
-                    columnNames.Append(",");
+                    sb.Append(",");
                 }
-                columnNames.Append(dt.Columns[i].ColumnName);
+                sb.Append(dt.Columns[i].ColumnName);
             }
-            return columnNames.ToString();
+            return sb.Put();
         }
         #endregion
 

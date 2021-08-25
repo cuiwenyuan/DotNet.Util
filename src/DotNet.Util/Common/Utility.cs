@@ -480,24 +480,7 @@ namespace System
             if (emptyValue != null && value <= DateTime.MinValue) return emptyValue;
 
             //return value.ToString("yyyy-MM-dd HH:mm:ss");
-
-            //var dt = value;
-            //var sb = Pool.StringBuilder.Get();
-            //sb.Append(dt.Year.ToString().PadLeft(4, '0'));
-            //sb.Append("-");
-            //sb.Append(dt.Month.ToString().PadLeft(2, '0'));
-            //sb.Append("-");
-            //sb.Append(dt.Day.ToString().PadLeft(2, '0'));
-            //sb.Append(" ");
-
-            //sb.Append(dt.Hour.ToString().PadLeft(2, '0'));
-            //sb.Append(":");
-            //sb.Append(dt.Minute.ToString().PadLeft(2, '0'));
-            //sb.Append(":");
-            //sb.Append(dt.Second.ToString().PadLeft(2, '0'));
-
-            //return sb.Put();
-
+            
             var cs = "yyyy-MM-dd HH:mm:ss".ToCharArray();
 
             var k = 0;

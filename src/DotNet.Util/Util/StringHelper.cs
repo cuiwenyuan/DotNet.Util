@@ -36,13 +36,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public string GenerateRandom(int length = 32)
         {
-            var newRandom = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var rd = new Random();
             for (int i = 0; i < length; i++)
             {
-                newRandom.Append(_constant[rd.Next(_constant.Length)]);
+                sb.Append(_constant[rd.Next(_constant.Length)]);
             }
-            return newRandom.ToString();
+            return sb.Put();
         }
 
         /// <summary>
@@ -52,13 +52,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public string GenerateRandomNumber(int length = 6)
         {
-            var newRandom = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var rd = new Random();
             for (int i = 0; i < length; i++)
             {
-                newRandom.Append(_constant[rd.Next(10)]);
+                sb.Append(_constant[rd.Next(10)]);
             }
-            return newRandom.ToString();
+            return sb.Put();
         }
     }
 }

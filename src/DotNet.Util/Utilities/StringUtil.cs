@@ -306,17 +306,17 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DeleteUnVisibleChar(string sourceString)
         {
-            var sBuilder = new StringBuilder(131);
+            var sb = Pool.StringBuilder.Get();
             foreach (var t in sourceString)
             {
                 int unicode = t;
                 if (unicode >= 16)
                 {
-                    sBuilder.Append(t.ToString());
+                    sb.Append(t.ToString());
                 }
             }
 
-            return sBuilder.ToString();
+            return sb.Put();
         }
 
         /// <summary>
@@ -442,13 +442,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string BytesToHexString(byte[] input)
         {
-            var hexString = new StringBuilder(64);
+            var sb = Pool.StringBuilder.Get();
             foreach (var t in input)
             {
-                hexString.Append(string.Format("{0:X2}", t));
+                sb.Append(string.Format("{0:X2}", t));
             }
 
-            return hexString.ToString();
+            return sb.Put();
         }
 
         /// <summary>

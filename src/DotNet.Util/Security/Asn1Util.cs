@@ -246,7 +246,7 @@ namespace DotNet.Util
         private const Int64 LONG_LIMIT = (Int64.MaxValue >> 7) - 0x7f;
         private static String MakeOidStringFromBytes(Byte[] bytes)
         {
-            var objId = new StringBuilder();
+            var objId = Pool.StringBuilder.Get();
             Int64 value = 0;
             //BigInteger bigValue;
             var first = true;
@@ -316,7 +316,7 @@ namespace DotNet.Util
                 //}
             }
 
-            return objId.ToString();
+            return objId.Put();
         }
         #endregion
     }

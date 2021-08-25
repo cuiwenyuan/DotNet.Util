@@ -196,26 +196,26 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ToXml(string json, bool isWithAttr)
         {
-            var xml = new StringBuilder();
-            xml.Append("<?xml version=\"1.0\"  standalone=\"yes\"?>");
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("<?xml version=\"1.0\"  standalone=\"yes\"?>");
             var dicList = JsonSplit.Split(json);
             if (dicList != null && dicList.Count > 0)
             {
                 var addRoot = dicList.Count > 1 || dicList[0].Count > 1;
                 if (addRoot)
                 {
-                    xml.Append("<root>");//</root>";
+                    sb.Append("<root>");//</root>";
                 }
 
-                xml.Append(GetXmlList(dicList, isWithAttr));
+                sb.Append(GetXmlList(dicList, isWithAttr));
 
                 if (addRoot)
                 {
-                    xml.Append("</root>");//</root>";
+                    sb.Append("</root>");//</root>";
                 }
 
             }
-            return xml.ToString();
+            return sb.Put();
         }
 
         private static string GetXmlList(List<Dictionary<string, string>> dicList, bool isWithAttr)
@@ -224,24 +224,24 @@ namespace DotNet.Util
             {
                 return string.Empty;
             }
-            var xml = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (var i = 0; i < dicList.Count; i++)
             {
-                xml.Append(GetXml(dicList[i], isWithAttr));
+                sb.Append(GetXml(dicList[i], isWithAttr));
             }
-            return xml.ToString();
+            return sb.Put();
         }
 
         private static string GetXml(Dictionary<string, string> dic, bool isWithAttr)
         {
-            var xml = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var isJson = false;
             foreach (var item in dic)
             {
                 isJson = IsJson(item.Value);
                 if (!isJson)
                 {
-                    xml.AppendFormat("<{0}>{1}</{0}>", item.Key, FormatCdata(item.Value));
+                    sb.AppendFormat("<{0}>{1}</{0}>", item.Key, FormatCdata(item.Value));
                 }
                 else
                 {
@@ -250,38 +250,38 @@ namespace DotNet.Util
                     {
                         if (!isWithAttr)
                         {
-                            xml.AppendFormat("<{0}>", item.Key);
+                            sb.AppendFormat("<{0}>", item.Key);
                         }
                         for (var j = 0; j < jsonList.Count; j++)
                         {
                             if (isWithAttr)
                             {
-                                xml.Append(GetXmlElement(item.Key, jsonList[j]));
+                                sb.Append(GetXmlElement(item.Key, jsonList[j]));
                             }
                             else
                             {
-                                xml.Append(GetXml(jsonList[j], isWithAttr));
+                                sb.Append(GetXml(jsonList[j], isWithAttr));
                             }
                         }
                         if (!isWithAttr)
                         {
-                            xml.AppendFormat("</{0}>", item.Key);
+                            sb.AppendFormat("</{0}>", item.Key);
                         }
                     }
                     else // 空Json {}
                     {
-                        xml.AppendFormat("<{0}></{0}>", item.Key);
+                        sb.AppendFormat("<{0}></{0}>", item.Key);
                     }
                 }
             }
-            return xml.ToString();
+            return sb.Put();
         }
 
         private static string GetXmlElement(string parentName, Dictionary<string, string> dic)
         {
-            var xml = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var jsonDic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            xml.Append("<" + parentName);
+            sb.Append("<" + parentName);
             foreach (var kv in dic)
             {
                 if (kv.Value.IndexOf('"') > -1 || IsJson(kv.Value)) // 属性不能带双引号，所以转到元素处理。
@@ -295,21 +295,21 @@ namespace DotNet.Util
             {
                 if (!jsonDic.ContainsKey(kv.Key) && (kv.Key != parentName || !useForInnerText))
                 {
-                    xml.AppendFormat(" {0}=\"{1}\"", kv.Key, kv.Value);//先忽略同名属性，内部InnerText节点，
+                    sb.AppendFormat(" {0}=\"{1}\"", kv.Key, kv.Value);//先忽略同名属性，内部InnerText节点，
                 }
             }
-            xml.Append(">");
+            sb.Append(">");
             if (useForInnerText)
             {
-                xml.Append(FormatCdata(dic[parentName]));//InnerText。
+                sb.Append(FormatCdata(dic[parentName]));//InnerText。
             }
             else if (jsonDic.Count > 0)
             {
-                xml.Append(GetXml(jsonDic, true));//数组，当元素处理。
+                sb.Append(GetXml(jsonDic, true));//数组，当元素处理。
             }
-            xml.Append("</" + parentName + ">");
+            sb.Append("</" + parentName + ">");
 
-            return xml.ToString();
+            return sb.Put();
         }
         private static string FormatCdata(string text)
         {

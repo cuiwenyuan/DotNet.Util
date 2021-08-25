@@ -501,6 +501,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LogSql = (string.Compare(GetValue(_xmlDocument, "LogSql"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
+            if (Exists("LogCache"))
+            {
+                BaseSystemInfo.LogCache = (string.Compare(GetValue(_xmlDocument, "LogCache"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+            }
             if (Exists("EventLog"))
             {
                 BaseSystemInfo.EventLog = (string.Compare(GetValue(_xmlDocument, "EventLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
@@ -1291,6 +1295,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "CheckIPAddress", BaseSystemInfo.CheckIpAddress.ToString());
             SetValue(xmlDocument, "LogException", BaseSystemInfo.LogException.ToString());
             SetValue(xmlDocument, "LogSql", BaseSystemInfo.LogSql.ToString());
+            SetValue(xmlDocument, "LogCache", BaseSystemInfo.LogCache.ToString());
             SetValue(xmlDocument, "EventLog", BaseSystemInfo.EventLog.ToString());
             SetValue(xmlDocument, "UploadBlockSize", BaseSystemInfo.UploadBlockSize.ToString());
 

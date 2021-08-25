@@ -50,8 +50,6 @@ namespace DotNet.Util
             //Troy.Cui 2020-02-29 返回各种.NET项目的当前运行路径
             var logDirectory = string.Format(@"{0}\Log\" + folder, AppDomain.CurrentDomain.BaseDirectory);
 
-            //Windows form only
-            //string logDirectory = BaseSystemInfo.StartupPath + @"\Log\"+ folder;
             //记录错误日志文件的路径
             if (!Directory.Exists(logDirectory))
             {

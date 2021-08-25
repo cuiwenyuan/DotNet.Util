@@ -28,17 +28,17 @@ namespace DotNet.Util
                 paras.GenerateInMemory = true;
 
                 //创建动态代码
-                var classSource = new StringBuilder();
-                classSource.Append("public class " + className + "\n");
-                classSource.Append("{\n");
-                classSource.Append(" public object " + methodName + "()\n");
-                classSource.Append(" {\n");
-                classSource.Append(" return " + expression + ";\n");
-                classSource.Append(" }\n");
-                classSource.Append("}");
+                var sb = Pool.StringBuilder.Get();
+                sb.Append("public class " + className + "\n");
+                sb.Append("{\n");
+                sb.Append(" public object " + methodName + "()\n");
+                sb.Append(" {\n");
+                sb.Append(" return " + expression + ";\n");
+                sb.Append(" }\n");
+                sb.Append("}");
 
                 //编译代码
-                var result = new CSharpCodeProvider().CompileAssemblyFromSource(paras, classSource.ToString());
+                var result = new CSharpCodeProvider().CompileAssemblyFromSource(paras, sb.Put());
 
                 //获取编译后的程序集。 
                 var assembly = result.CompiledAssembly;

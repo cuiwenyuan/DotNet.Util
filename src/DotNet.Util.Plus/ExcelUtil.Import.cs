@@ -171,7 +171,7 @@ namespace DotNet.Util
         /// 判断是否存在这一列
         /// </summary>
         /// <param name="columnNames">当前存在的列组</param>
-        /// <param name="needCheckColumnNames">要求的列名组</param>
+        /// <param name="needCheckColumnName">要求的列名组</param>
         /// <returns>提示信息</returns>
         public static string CheckColumnExist(string columnNames, string needCheckColumnName)
         {
@@ -188,12 +188,12 @@ namespace DotNet.Util
         /// <summary>
         /// 判断是选中段的值否为空
         /// </summary>
-        /// <param name="dr">DataTable</param>
+        /// <param name="dt">DataTable</param>
         /// <param name="checkStrings">检查的字段串</param>
         /// <returns>返回提示</returns>
         public static string CheckIsNullOrEmpty(DataTable dt, string[] checkStrings)
         {
-            var result = new StringBuilder();
+            var result = Pool.StringBuilder.Get();
             for (var j = 0; j < dt.Rows.Count; j++)
             {
                 for (var i = 0; i < checkStrings.Length; i++)
@@ -205,7 +205,7 @@ namespace DotNet.Util
                     }
                 }
             }
-            return result.ToString();
+            return result.Put();
         }
         #endregion
 
@@ -217,16 +217,16 @@ namespace DotNet.Util
         /// <returns>转换后的字符串</returns>
         public static string DataTableColumn2String(DataTable dt)
         {
-            var columnNames = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             for (var i = 0; i < dt.Columns.Count; i++)
             {
                 if (i > 0)
                 {
-                    columnNames.Append(",");
+                    sb.Append(",");
                 }
-                columnNames.Append(dt.Columns[i].ColumnName);
+                sb.Append(dt.Columns[i].ColumnName);
             }
-            return columnNames.ToString();
+            return sb.Put();
         }
         #endregion
 

@@ -312,7 +312,7 @@ namespace DotNet.Util
                 return string.Empty;
             }
 
-            var result = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var des = new DESCryptoServiceProvider();
             var inputByteArray = Encoding.Default.GetBytes(targetValue);
             //通过两次哈希密码设置对称算法的初始化向量   
@@ -325,9 +325,9 @@ namespace DotNet.Util
             cs.FlushFinalBlock();
             foreach (var b in ms.ToArray())
             {
-                result.AppendFormat("{0:X2}", b);
+                sb.AppendFormat("{0:X2}", b);
             }
-            return result.ToString();
+            return sb.Put();
         }
 
 

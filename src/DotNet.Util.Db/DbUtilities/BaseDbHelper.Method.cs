@@ -120,7 +120,6 @@ namespace DotNet.Util
             }
 
             stopwatch.Stop();
-            //var statisticsText = $"Elapsed time : {stopwatch.Elapsed.Hours:00}:{stopwatch.Elapsed.Minutes:00}:{stopwatch.Elapsed.Seconds:00}.{stopwatch.Elapsed.Milliseconds:000} ({stopwatch.Elapsed.TotalMilliseconds:0}ms)";
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
             SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)

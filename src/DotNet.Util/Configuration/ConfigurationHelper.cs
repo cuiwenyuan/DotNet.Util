@@ -227,6 +227,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LogSql = ConfigurationManager.AppSettings["LogSql"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
+            if (ConfigurationManager.AppSettings["LogCache"] != null)
+            {
+                BaseSystemInfo.LogCache = ConfigurationManager.AppSettings["LogCache"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
             if (ConfigurationManager.AppSettings["EventLog"] != null)
             {
                 BaseSystemInfo.EventLog = ConfigurationManager.AppSettings["EventLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
