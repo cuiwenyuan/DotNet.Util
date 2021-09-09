@@ -15,6 +15,8 @@ namespace DotNet.Util
     /// </summary>
     public static class DataTableExtension
     {
+        #region 底层使用DotNet.Business的用法
+
         /// <summary>
         /// DataTable转泛型（dynamic方式）
         /// </summary>
@@ -28,7 +30,7 @@ namespace DotNet.Util
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    lstT.Add(dr.ToObject<T>());
+                    lstT.Add(dr.ToEntity<T>());
                 }
             }
             return lstT;
@@ -39,11 +41,15 @@ namespace DotNet.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public static T ToObject<T>(this DataRow dr) where T : new()
+        public static T ToEntity<T>(this DataRow dr) where T : new()
         {
             dynamic dynTemp = new T();
             return dynTemp.GetFrom(dr);
         }
+
+        #endregion
+
+        #region 反射方式，可任意使用
 
         /// <summary>
         /// DataTable转泛型(纯反射，无需定义Entity的GetFrom)
@@ -51,11 +57,11 @@ namespace DotNet.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="dt">DataTable</param>
         /// <returns></returns>
-        public static List<T> ToList2<T>(this DataTable dt) where T : class, new()
+        public static List<T> ToAnyList<T>(this DataTable dt) where T : class, new()
         {
             var t = typeof(T);
             var properties = t.GetProperties();
-            var list = new List<T>();
+            var ls = new List<T>();
             if (dt != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
@@ -103,10 +109,12 @@ namespace DotNet.Util
                             }
                         }
                     }
-                    list.Add(entity);
+                    ls.Add(entity);
                 }
             }
-            return list;
+            return ls;
         }
+
+        #endregion
     }
 }
