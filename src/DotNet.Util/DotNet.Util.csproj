@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 utilities. Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.6</Version>
