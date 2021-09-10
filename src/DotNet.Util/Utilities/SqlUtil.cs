@@ -26,16 +26,16 @@ namespace DotNet.Util
     /// </summary>
     public class SqlUtil
     {
-        private static string _fileName = "Sql.log";
+        #region public static void WriteLog(string commandText, string commandType, IDbDataParameter[] dbParameters = null, string statisticsText = null)
 
-        #region public static void WriteLog(string commandText, IDbDataParameter[] dbParameters = null, string fileName = null)
         /// <summary>
         /// 写入sql查询句日志
         /// </summary>
         /// <param name="commandText">SQL语句</param>
+        /// <param name="commandType">命令类型</param>
         /// <param name="dbParameters">参数</param>
         /// <param name="statisticsText">耗时</param>
-        public static void WriteLog(string commandText, IDbDataParameter[] dbParameters = null, string statisticsText = null)
+        public static void WriteLog(string commandText, string commandType, IDbDataParameter[] dbParameters = null, string statisticsText = null)
         {
             // 系统里应该可以配置是否记录异常现象
             if (!BaseSystemInfo.LogSql)
@@ -44,6 +44,8 @@ namespace DotNet.Util
             }
             var sb = Pool.StringBuilder.Get();
             sb.Append(commandText);
+            sb.Append(" ");
+            sb.Append(commandType);
             if (dbParameters != null)
             {
                 sb.Append(" dbParameters: ");
@@ -51,6 +53,10 @@ namespace DotNet.Util
                 {
                     sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                 }
+            }
+            else
+            {
+                sb.Append(" ");
             }
             if (!string.IsNullOrEmpty(statisticsText))
             {

@@ -106,7 +106,7 @@ namespace DotNet.Util
             }
 
             // 写入日志
-            SqlUtil.WriteLog(commandText, dbParameters);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
 
             // 这里要关闭数据库才可以的
             DbDataReader dbDataReader = null;
@@ -121,11 +121,12 @@ namespace DotNet.Util
 
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -134,6 +135,10 @@ namespace DotNet.Util
                     {
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
+                }
+                else
+                {
+                    sb.Append(" ");
                 }
                 sb.Append(statisticsText);
                 LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteReader");
@@ -251,7 +256,7 @@ namespace DotNet.Util
                     }
                 }
                 //写入日志 
-                SqlUtil.WriteLog(commandText, dbParameters);
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
 
                 result = _dbCommand.ExecuteNonQuery();
 
@@ -265,6 +270,7 @@ namespace DotNet.Util
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -291,11 +297,12 @@ namespace DotNet.Util
 
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -304,6 +311,10 @@ namespace DotNet.Util
                     {
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
+                }
+                else
+                {
+                    sb.Append(" ");
                 }
                 sb.Append(statisticsText);
                 LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteNonQuery");
@@ -415,7 +426,7 @@ namespace DotNet.Util
                     }
                 }
                 //写入日志 
-                SqlUtil.WriteLog(commandText, dbParameters);
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
                 result = _dbCommand.ExecuteScalar();
 
                 // 这里进行输出参数的处理
@@ -428,6 +439,7 @@ namespace DotNet.Util
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -453,11 +465,12 @@ namespace DotNet.Util
             }
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -466,6 +479,10 @@ namespace DotNet.Util
                     {
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
+                }
+                else
+                {
+                    sb.Append(" ");
                 }
                 sb.Append(statisticsText);
                 LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteScalar");
@@ -621,6 +638,7 @@ namespace DotNet.Util
                 //记录异常
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -640,16 +658,17 @@ namespace DotNet.Util
                     Close();
                 }
                 //记录日志，任何时候都写跟踪日志，出错了也要写
-                SqlUtil.WriteLog(commandText, dbParameters);
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
             }
 
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -658,6 +677,10 @@ namespace DotNet.Util
                     {
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
+                }
+                else
+                {
+                    sb.Append(" ");
                 }
                 sb.Append(statisticsText);
                 LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
@@ -767,7 +790,7 @@ namespace DotNet.Util
                     }
 
                     //记录日志
-                    SqlUtil.WriteLog(commandText, dbParameters);
+                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
 
                     _dbDataAdapter = GetInstance().CreateDataAdapter();
                     _dbDataAdapter.SelectCommand = _dbCommand;
@@ -782,7 +805,9 @@ namespace DotNet.Util
                     //记录异常
                     var sb = Pool.StringBuilder.Get();
                     sb.Append(commandText);
+                    sb.Append(" ");
                     sb.Append(tableName);
+                    sb.Append(" ");
                     sb.Append(commandType.ToString());
                     if (dbParameters != null)
                     {
@@ -809,12 +834,14 @@ namespace DotNet.Util
 
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, dbParameters, statisticsText);
+            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
                 var sb = Pool.StringBuilder.Get();
                 sb.Append(commandText);
+                sb.Append(" ");
                 sb.Append(tableName);
+                sb.Append(" ");
                 sb.Append(commandType.ToString());
                 if (dbParameters != null)
                 {
@@ -823,6 +850,10 @@ namespace DotNet.Util
                     {
                         sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
                     }
+                }
+                else
+                {
+                    sb.Append(" ");
                 }
                 sb.Append(statisticsText);
                 LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");

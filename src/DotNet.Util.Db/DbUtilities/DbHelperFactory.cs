@@ -6,7 +6,6 @@
 //using DotNet.Util.DbUtil.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace DotNet.Util

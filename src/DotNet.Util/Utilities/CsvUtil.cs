@@ -44,7 +44,7 @@ namespace DotNet.Util
             using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 var streamWriter = new StreamWriter(fileStream, Encoding.Default);
-                streamWriter.WriteLine(GetCsvFormatData(dataReader).ToString());
+                streamWriter.WriteLine(GetCsvFormatData(dataReader).Put());
                 streamWriter.Close();
                 fileStream.Close();
             }
@@ -63,27 +63,27 @@ namespace DotNet.Util
             // 返回总字符串
             var csvRows = Pool.StringBuilder.Get();
             // 表头内容字符串
-            var stringBuilder = Pool.StringBuilder.Get();
+            var sb = Pool.StringBuilder.Get();
             // 循环输出表头内容
             for (var index = 0; index < dataReader.FieldCount; index++)
             {
                 //如果表头名字不为空，获取内容
                 if (dataReader.GetName(index) != null)
                 {
-                    stringBuilder.Append(dataReader.GetName(index));
+                    sb.Append(dataReader.GetName(index));
                 }
                 //在获取表头内容之后加上,
                 if (index < dataReader.FieldCount - 1)
                 {
-                    stringBuilder.Append(separator);
+                    sb.Append(separator);
                 }
             }
             // 先把表头正行数据加载到StringBuilder对象csvRows中
-            csvRows.AppendLine(stringBuilder.ToString());
+            csvRows.AppendLine(sb.Put());
             // 循环获取表中的所有内容
             while (dataReader.Read())
             {
-                stringBuilder.Clear();
+                sb = Pool.StringBuilder.Get();
                 for (var index = 0; index < dataReader.FieldCount - 1; index++)
                 {
                     if (!dataReader.IsDBNull(index))
@@ -109,19 +109,19 @@ namespace DotNet.Util
                                 value = "\"" + value + "\"";
                             }
                         }
-                        stringBuilder.Append(value);
+                        sb.Append(value);
                     }
                     if (index < dataReader.FieldCount - 1)
                     {
-                        stringBuilder.Append(separator);
+                        sb.Append(separator);
                     }
                 }
                 // 最后一个逗号用空来替代
                 if (!dataReader.IsDBNull(dataReader.FieldCount - 1))
                 {
-                    stringBuilder.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, " "));
+                    sb.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, " "));
                 }
-                csvRows.AppendLine(stringBuilder.Put());
+                csvRows.AppendLine(sb.Put());
             }
             dataReader.Close();
             return csvRows;

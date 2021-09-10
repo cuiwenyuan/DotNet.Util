@@ -2036,8 +2036,8 @@ namespace DotNet.Util
         ///// <returns></returns>
         //public static StringBuilder DataTableToJson(System.Data.DataTable dt, bool dtDispose)
         //{
-        //    var stringBuilder = new StringBuilder();
-        //    stringBuilder.Append("[\r\n");
+        //    var sb = Pool.StringBuilder.Get();
+        //    sb.Append("[\r\n");
 
         //    //数据表字段名和类型数组
         //    var dtField = new string[dt.Columns.Count];
@@ -2091,15 +2091,15 @@ namespace DotNet.Util
         //            i++;
         //        }
         //        i = 0;
-        //        stringBuilder.Append(string.Format(formatStr, objectArray));
+        //        sb.Append(string.Format(formatStr, objectArray));
         //    }
-        //    if (stringBuilder.ToString().EndsWith(","))
-        //        stringBuilder.Remove(stringBuilder.Length - 1, 1);//去掉尾部","号
+        //    if (sb.ToString().EndsWith(","))
+        //        sb.Remove(sb.Length - 1, 1);//去掉尾部","号
 
         //    if (dtDispose)
         //        dt.Dispose();
 
-        //    return stringBuilder.Append("\r\n];");
+        //    return sb.Append("\r\n];");
         //}
 
         /// <summary>
