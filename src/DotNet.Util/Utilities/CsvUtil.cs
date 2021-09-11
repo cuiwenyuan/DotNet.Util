@@ -8,8 +8,9 @@ using System.IO;
 using System.Text;
 using System.Web;
 using DotNet.Util;
+#if NETSTANDARD2_0_OR_GREATER
 using Microsoft.AspNetCore.Http;
-
+#endif
 namespace DotNet.Util
 {
     /// <summary>

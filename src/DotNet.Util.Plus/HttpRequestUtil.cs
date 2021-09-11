@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if NET40
 using System.Net;
+#endif
+#if NETSTANDARD2_0_OR_GREATER
 using System.Net.Http;
+#endif
 using System.Text;
 using Newtonsoft.Json;
 
@@ -14,9 +18,10 @@ namespace DotNet.Util
     /// </summary>
     public static class HttpRequestUtil
     {
-        #region WebClient
+#if NET40
+#region WebClient
 
-        #region WebClient的Get请求
+#region WebClient的Get请求
         /// <summary>
         /// WebClient的Get请求
         /// </summary>
@@ -28,9 +33,9 @@ namespace DotNet.Util
             wc.Encoding = Encoding.UTF8;
             return wc.DownloadString(url);
         }
-        #endregion
+#endregion
 
-        #region WebClient的Post请求
+#region WebClient的Post请求
         /// <summary>
         /// WebClient的Post请求
         /// 表单提交模式[application/x-www-form-urlencoded]
@@ -46,9 +51,9 @@ namespace DotNet.Util
             wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
             return wc.UploadString(url, data);
         }
-        #endregion
+#endregion
 
-        #region WebClient的Post请求（JSON）
+#region WebClient的Post请求（JSON）
         /// <summary>
         /// WebClient的Post请求
         /// Json提交模式[application/json]
@@ -64,13 +69,13 @@ namespace DotNet.Util
             wc.Headers.Add("Content-Type", "application/json");
             return wc.UploadString(url, JsonConvert.SerializeObject(data));
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region HttpWebRequest
+#region HttpWebRequest
 
-        #region HttpWebRequest的Get请求
+#region HttpWebRequest的Get请求
         /// <summary>
         /// HttpWebRequest的Get请求
         /// </summary>
@@ -93,9 +98,9 @@ namespace DotNet.Util
             }
             return result;
         }
-        #endregion
+#endregion
 
-        #region HttpWebRequest的Post请求
+#region HttpWebRequest的Post请求
         /// <summary>
         /// HttpWebRequest的Post请求
         /// 表单提交模式[application/x-www-form-urlencoded]
@@ -119,7 +124,7 @@ namespace DotNet.Util
                 var postStream = request.GetRequestStream();
                 postStream.Write(data2, 0, data2.Length);
                 postStream.Close();
-                
+
                 using (var res = request.GetResponse() as HttpWebResponse)
                 {
                     if (res != null && res.StatusCode == HttpStatusCode.OK)
@@ -131,9 +136,9 @@ namespace DotNet.Util
             }
             return result;
         }
-        #endregion
+#endregion
 
-        #region HttpWebRequest的Post请求（JSON）
+#region HttpWebRequest的Post请求（JSON）
         /// <summary>
         /// HttpWebRequest的Post请求
         /// Json提交模式[application/json]
@@ -158,7 +163,7 @@ namespace DotNet.Util
                 var postStream = request.GetRequestStream();
                 postStream.Write(data2, 0, data2.Length);
                 postStream.Close();
-                
+
                 using (var res = request.GetResponse() as HttpWebResponse)
                 {
                     if (res.StatusCode == HttpStatusCode.OK)
@@ -170,13 +175,15 @@ namespace DotNet.Util
             }
             return result;
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
+#endif
 
-        #region HttpWebRequest
+#if NETSTANDARD2_0_OR_GREATER
+#region HttpClient
 
-        #region HttpClient的Get请求
+#region HttpClient的Get请求
         /// <summary>
         /// HttpClient的Get请求
         /// </summary>
@@ -188,9 +195,9 @@ namespace DotNet.Util
             var response1 = http.GetAsync(url).Result;
             return response1.Content.ReadAsStringAsync().Result;
         }
-        #endregion
+#endregion
 
-        #region HttpClient的Post请求
+#region HttpClient的Post请求
         /// <summary>
         /// HttpClient的Post请求
         /// 表单提交模式[application/x-www-form-urlencoded]
@@ -205,9 +212,9 @@ namespace DotNet.Util
             var response = http.PostAsync(url, content).Result;
             return response.Content.ReadAsStringAsync().Result;
         }
-        #endregion
+#endregion
 
-        #region HttpClient的Post请求（JSON）
+#region HttpClient的Post请求（JSON）
         /// <summary>
         /// HttpClient的Post请求
         /// Json提交模式[application/json]
@@ -222,12 +229,14 @@ namespace DotNet.Util
             var response = http.PostAsync(url, content).Result;
             return response.Content.ReadAsStringAsync().Result;
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
+#endif
+
     }
-
-    #region HttpClientFactory2
+#if NETSTANDARD2_0_OR_GREATER
+#region HttpClientFactory2
     /// <summary>
     /// 将HttpClient做成单例的，不用Using，全局只有一个
     /// 来解决tcp连接不能释放的问题，但仍有DNS变更不会反应的问题
@@ -260,5 +269,6 @@ namespace DotNet.Util
             return _httpClient;
         }
     }
-    #endregion
+#endregion
+#endif
 }

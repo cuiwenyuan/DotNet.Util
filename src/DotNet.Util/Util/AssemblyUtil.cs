@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyModel;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using Microsoft.Extensions.DependencyModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,3 +57,4 @@ namespace DotNet.Util.Util
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET40
+using System;
 using System.Collections;
 using System.Web;
 using System.IO;
@@ -563,3 +564,4 @@ namespace DotNet.Util
 
     }
 }
+#endif

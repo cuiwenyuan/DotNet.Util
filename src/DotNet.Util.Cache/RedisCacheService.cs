@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -281,3 +282,4 @@ namespace DotNet.Util
 
     }
 }
+#endif

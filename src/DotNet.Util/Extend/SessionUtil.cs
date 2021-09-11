@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NET40
+using System.Web;
+#elif NETSTANDARD2_0_OR_GREATER
 using Microsoft.AspNetCore.Session;
-
-namespace DotNet.Utilities
+#endif
+namespace DotNet.Util
 {
     /// <summary>
     /// Session操作类
@@ -19,21 +22,23 @@ namespace DotNet.Utilities
         //    options.CookieHttpOnly = true;
         //});
 
+#if NET40
         #region Set
         /// <summary>
         /// 设置Session值
         /// </summary>
         /// <param name="sessionName">Session名称</param>
         /// <param name="sessionValue">Session名称对应的值</param>
-        public static void Set(string sessionName, object sessionValue)
+        /// <param name="timeout"></param>
+        public static void Set(string sessionName, object sessionValue, int timeout = 20)
         {
-            //默认过期
+            // 默认过期
+            HttpContext.Current.Session.Timeout = timeout;
             HttpContext.Current.Session[sessionName] = sessionValue;
             //if (sessionValue.ToString().Length == 0)
             //{
             //    HttpContext.Current.Session.Remove(sessionName);
             //}
-            HttpContext.Session.SetString("Key", Value);
         }
         #endregion
 
@@ -41,8 +46,7 @@ namespace DotNet.Utilities
         /// <summary>
         /// 获取Session值
         /// </summary>
-        /// <param name="SessionName">Session名称</param>
-        /// <param name="SessionValue">Session名称对应的值</param>
+        /// <param name="sessionName">Session名称</param>
         public static string Get(string sessionName)
         {
             if (HttpContext.Current.Session[sessionName] != null)
@@ -51,7 +55,7 @@ namespace DotNet.Utilities
             }
             else
             {
-                return sessionex;
+                return null;
             }
         }
         #endregion
@@ -76,5 +80,6 @@ namespace DotNet.Utilities
             HttpContext.Current.Session.Clear();
         }
         #endregion
+#endif
     }
 }

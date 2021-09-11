@@ -6,8 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+#if NET40
+using System.Web;
+using System.Web.Caching;
+#elif NETSTANDARD2_0_OR_GREATER
 using Microsoft.Extensions.Caching.Memory;
-
+#endif
 namespace DotNet.Util
 {
     /// <summary>
@@ -15,8 +19,12 @@ namespace DotNet.Util
     /// </summary>
     public static class MemoryUtil
     {
+#if NET40
+        //HttpRuntime.Cache可用于Web和WinForm
+        static readonly Cache Cache = HttpRuntime.Cache;
+#elif NETSTANDARD2_0_OR_GREATER
         static MemoryCache Cache = new MemoryCache(new MemoryCacheOptions());
-
+#endif
         /// <summary>
         /// 是否存在指定CacheKey
         /// </summary>
@@ -24,8 +32,12 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
+#if NET40
+            if (!string.IsNullOrEmpty(cacheKey) && Cache[cacheKey] == null)
+#elif NETSTANDARD2_0_OR_GREATER
             object obj = null;
             if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+#endif
             {
                 return true;
             }
@@ -42,6 +54,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static object Get(string cacheKey)
         {
+#if NET40
+            return Cache[cacheKey];
+#elif NETSTANDARD2_0_OR_GREATER
             object obj = null;
             if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
             {
@@ -51,6 +66,7 @@ namespace DotNet.Util
             {
                 return default(object);
             }
+#endif
         }
 
         /// <summary>
@@ -72,9 +88,100 @@ namespace DotNet.Util
         public static void Set(string cacheKey, object cacheValue)
         {
             //向cacheKey对象插入项,使用此方法改写具有相同cacheKey的现有cacheKey项。
+#if NET40
+            Cache.Insert(cacheKey, cacheValue);
+#elif NETSTANDARD2_0_OR_GREATER
             Cache.Set(cacheKey, cacheValue);
+#endif
+        }
+#if NET40
+        /// <summary>
+        /// 设置当前应用程序指定CacheKey的Cache值
+        /// </summary>
+        /// <param name="cacheKey"></param>
+        /// <param name="cacheValue"></param>
+        /// <param name="slidingExpiration">弹性过期</param>
+        public static void Set(string cacheKey, object cacheValue, TimeSpan slidingExpiration)
+        {
+            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
+            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
+            Cache.Insert(cacheKey, cacheValue, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
         }
 
+        /// <summary>
+        /// 设置当前应用程序指定CacheKey的Cache值
+        /// </summary>
+        /// <param name="cacheKey"></param>
+        /// <param name="t"></param>
+        /// <param name="slidingExpiration">弹性过期</param>
+        public static void Set<T>(string cacheKey, T t, TimeSpan slidingExpiration)
+        {
+            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
+            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
+            Cache.Insert(cacheKey, t, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
+        }
+
+        /// <summary>
+        /// 设置当前应用程序指定CacheKey的Cache值
+        /// </summary>
+        /// <param name="cacheKey"></param>
+        /// <param name="cacheValue"></param>
+        /// <param name="absoluteExpiration">绝对过期</param>
+        public static void Set(string cacheKey, object cacheValue, DateTime absoluteExpiration)
+        {
+            Cache.Insert(cacheKey, cacheValue, null, absoluteExpiration, TimeSpan.Zero, CacheItemPriority.High, CacheItemRemovedCallback);
+        }
+
+        /// <summary>
+        /// 设置当前应用程序指定CacheKey的Cache值
+        /// </summary>
+        /// <param name="cacheKey"></param>
+        /// <param name="cacheValue"></param>
+        /// <param name="dependencies"></param>
+        /// <param name="absoluteExpiration">绝对过期</param>
+        /// <param name="slidingExpiration">弹性过期</param>
+        /// <param name="cacheItemPriority"></param>
+        /// <param name="onRemoveCallback"></param>
+        public static void Set(string cacheKey, object cacheValue, CacheDependency dependencies, DateTime absoluteExpiration, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority, CacheItemRemovedCallback onRemoveCallback)
+        {
+            //将指定项添加到 Cache 对象，该对象具有依赖项、过期和优先级策略以及一个委托（可用于在从 Cache 移除插入项时通知应用程序）。如果 Cache 中已保存了具有相同 key 参数的项，则对此方法的调用将失败。若要使用相同的 key 参数改写现有的 Cache 项，请使用 Insert 方法.
+            Cache.Add(cacheKey, cacheValue, null, absoluteExpiration, Cache.NoSlidingExpiration, cacheItemPriority, onRemoveCallback);
+        }
+
+        /// <summary>
+        /// 移除缓存
+        /// </summary>
+        /// <param name="cacheKey"></param>
+        public static bool Remove(string cacheKey)
+        {
+            return Cache.Remove(cacheKey) != null;
+        }
+        /// <summary>
+        /// 这个不能固定  
+        /// </summary>
+        public static object UserLock = new object();
+        /// <summary>
+        /// 缓存失效回调
+        /// </summary>
+        /// <param name="cacheKey">缓存key值</param>
+        /// <param name="cacheValue">缓存的对象</param>
+        /// <param name="reasonToRemove">缓存移出原因</param>
+        public static void CacheItemRemovedCallback(string cacheKey, object cacheValue, CacheItemRemovedReason reasonToRemove)
+        {
+            if (BaseSystemInfo.LogCache)
+            {
+                var sb = Pool.StringBuilder.Get();
+                sb.Append(
+                    string.Format("Cache Key: {0} invalid at {1} with reason {2}",
+                        new object[]
+                        {
+                            cacheKey, DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat),
+                            reasonToRemove.ToString()
+                        }));
+                LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
+            }
+        }
+#elif NETSTANDARD2_0_OR_GREATER
         /// <summary>
         /// 设置当前应用程序指定CacheKey的Cache值
         /// </summary>
@@ -187,21 +294,20 @@ namespace DotNet.Util
                 }));
             LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
         }
-
+#endif
         /// <summary>
         /// 删除所有缓存
         /// </summary>
         public static void RemoveAll()
         {
             var keys = new List<string>();
-            //.NET Framework
-            //var iDictionaryEnumerator = Cache.GetEnumerator();
-            //while (iDictionaryEnumerator.MoveNext())
-            //{
-            //    Cache.Remove(Convert.ToString(iDictionaryEnumerator.Key));
-            //}
-
-            //.NET Core
+#if NET40
+            var iDictionaryEnumerator = Cache.GetEnumerator();
+            while (iDictionaryEnumerator.MoveNext())
+            {
+                Cache.Remove(Convert.ToString(iDictionaryEnumerator.Key));
+            }
+#elif NETSTANDARD2_0_OR_GREATER
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
             var cacheItems = entries as IDictionary;
@@ -212,7 +318,7 @@ namespace DotNet.Util
                     keys.Add(cacheItem.Key.ToString());
                 }
             }
-
+#endif
         }
         /// <summary>
         /// 删除匹配到的缓存
@@ -247,13 +353,13 @@ namespace DotNet.Util
         public static List<string> GetAllKeys()
         {
             var keys = new List<string>();
-            //.NET Framework
-            //var iDictionaryEnumerator = Cache.GetEnumerator();
-            //while (iDictionaryEnumerator.MoveNext())
-            //{
-            //    keys.Add(Convert.ToString(iDictionaryEnumerator.Key));
-            //}
-            //.NET Core
+#if NET40
+            var iDictionaryEnumerator = Cache.GetEnumerator();
+            while (iDictionaryEnumerator.MoveNext())
+            {
+                keys.Add(Convert.ToString(iDictionaryEnumerator.Key));
+            }
+#elif NETSTANDARD2_0_OR_GREATER
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
             var cacheItems = entries as IDictionary;
@@ -264,6 +370,7 @@ namespace DotNet.Util
                     keys.Add(cacheItem.Key.ToString());
                 }
             }
+#endif
             return keys;
         }
     }

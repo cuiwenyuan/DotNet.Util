@@ -1,14 +1,12 @@
+#if NET40
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace DotNet.Util
 {
@@ -17,104 +15,106 @@ namespace DotNet.Util
     /// </summary>
     public partial class RequestUtil
     {
+
         /// <summary>
         /// 得到当前完整主机头
         /// </summary>
         /// <returns></returns>
         public static string GetCurrentFullHost()
-		{
-		    var result = string.Empty;
-		    if (Microsoft.AspNetCore.Http.HttpContext.Current != null)
-		    {
-		        if (!request.Url.IsDefaultPort)
-		        {
-		            result = string.Format("{0}:{1}", request.Url.Host, request.Url.Port);
-		        }
-		        else
-		        {
-		            result = request.Url.Host;
+        {
+            var result = string.Empty;
+            if (HttpContext.Current != null)
+            {
+                var request = HttpContext.Current.Request;
+                if (!request.Url.IsDefaultPort)
+                {
+                    result = string.Format("{0}:{1}", request.Url.Host, request.Url.Port);
                 }
-		    }
-		    return result;
-		}
-
-		/// <summary>
-		/// 得到主机头
-		/// </summary>
-		/// <returns></returns>
-		public static string GetHost()
-		{
-		    var result = string.Empty;
-		    if (HttpContext.Current != null) result = HttpContext.Current.Request.Url.Host;
-		    return result;
-		}
-
-
-		/// <summary>
-		/// 获取当前请求的原始 URL(URL 中域信息之后的部分,包括查询字符串(如果存在))
-		/// </summary>
-		/// <returns>原始 URL</returns>
-		public static string GetRawUrl()
-		{
-		    var result = string.Empty;
-		    if (HttpContext.Current != null) result = HttpContext.Current.Request.RawUrl;
-		    return result;
+                else
+                {
+                    result = request.Url.Host;
+                }
+            }
+            return result;
         }
 
-		/// <summary>
-		/// 判断当前访问是否来自浏览器软件
-		/// </summary>
-		/// <returns>当前访问是否来自浏览器软件</returns>
-		public static bool IsBrowserGet()
-		{
-			string[] browserName = {"ie", "opera", "netscape", "mozilla", "konqueror", "firefox"};
-			var curBrowser = HttpContext.Current.Request.Browser.Type.ToLower();
-			foreach (var t in browserName)
-			{
-			    if (curBrowser.IndexOf(t, StringComparison.OrdinalIgnoreCase) >= 0)
-			        return true;
-			}
-			return false;
-		}
+        /// <summary>
+        /// 得到主机头
+        /// </summary>
+        /// <returns></returns>
+        public static string GetHost()
+        {
+            var result = string.Empty;
+            if (HttpContext.Current != null) result = HttpContext.Current.Request.Url.Host;
+            return result;
+        }
 
-		/// <summary>
-		/// 判断是否来自搜索引擎链接
-		/// </summary>
-		/// <returns>是否来自搜索引擎链接</returns>
-		public static bool IsSearchEnginesGet()
-		{
+
+        /// <summary>
+        /// 获取当前请求的原始 URL(URL 中域信息之后的部分,包括查询字符串(如果存在))
+        /// </summary>
+        /// <returns>原始 URL</returns>
+        public static string GetRawUrl()
+        {
+            var result = string.Empty;
+            if (HttpContext.Current != null) result = HttpContext.Current.Request.RawUrl;
+            return result;
+        }
+
+        /// <summary>
+        /// 判断当前访问是否来自浏览器软件
+        /// </summary>
+        /// <returns>当前访问是否来自浏览器软件</returns>
+        public static bool IsBrowserGet()
+        {
+            string[] browserName = { "ie", "opera", "netscape", "mozilla", "konqueror", "firefox" };
+            var curBrowser = HttpContext.Current.Request.Browser.Type.ToLower();
+            foreach (var t in browserName)
+            {
+                if (curBrowser.IndexOf(t, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 判断是否来自搜索引擎链接
+        /// </summary>
+        /// <returns>是否来自搜索引擎链接</returns>
+        public static bool IsSearchEnginesGet()
+        {
             if (HttpContext.Current.Request.UrlReferrer == null)
                 return false;
 
-            string[] searchEngine = {"google", "yahoo", "msn", "baidu", "sogou", "sohu", "sina", "163", "lycos", "tom", "yisou", "iask", "soso", "gougou", "zhongsou"};
-			var tmpReferrer = HttpContext.Current.Request.UrlReferrer.ToString().ToLower();
-			for (var i = 0; i < searchEngine.Length; i++)
-			{
-				if (tmpReferrer.IndexOf(searchEngine[i], StringComparison.OrdinalIgnoreCase) >= 0)
-					return true;
-			}
-			return false;
-		}
+            string[] searchEngine = { "google", "yahoo", "msn", "baidu", "sogou", "sohu", "sina", "163", "lycos", "tom", "yisou", "iask", "soso", "gougou", "zhongsou" };
+            var tmpReferrer = HttpContext.Current.Request.UrlReferrer.ToString().ToLower();
+            for (var i = 0; i < searchEngine.Length; i++)
+            {
+                if (tmpReferrer.IndexOf(searchEngine[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
+        }
 
-		/// <summary>
-		/// 获得当前完整Url地址
-		/// </summary>
-		/// <returns>当前完整Url地址</returns>
-		public static string GetUrl()
-		{
-			return HttpContext.Current.Request.Url.ToString();
-		}
-		
+        /// <summary>
+        /// 获得当前完整Url地址
+        /// </summary>
+        /// <returns>当前完整Url地址</returns>
+        public static string GetUrl()
+        {
+            return HttpContext.Current.Request.Url.ToString();
+        }
 
-		/// <summary>
-		/// 获得指定Url参数的值
-		/// </summary>
-		/// <param name="strName">Url参数</param>
-		/// <returns>Url参数的值</returns>
-		public static string GetQueryString(string strName)
-		{
+
+        /// <summary>
+        /// 获得指定Url参数的值
+        /// </summary>
+        /// <param name="strName">Url参数</param>
+        /// <returns>Url参数的值</returns>
+        public static string GetQueryString(string strName)
+        {
             return GetQueryString(strName, false);
-		}
+        }
 
         /// <summary>
         /// 获得指定Url参数的值
@@ -133,35 +133,35 @@ namespace DotNet.Util
             return HttpContext.Current.Request.QueryString[strName];
         }
 
-		/// <summary>
-		/// 获得当前页面的名称
-		/// </summary>
-		/// <returns>当前页面的名称</returns>
-		public static string GetPageName()
-		{
-			var urlArr = HttpContext.Current.Request.Url.AbsolutePath.Split('/');
-			return urlArr[urlArr.Length - 1].ToLower();
-		}
+        /// <summary>
+        /// 获得当前页面的名称
+        /// </summary>
+        /// <returns>当前页面的名称</returns>
+        public static string GetPageName()
+        {
+            var urlArr = HttpContext.Current.Request.Url.AbsolutePath.Split('/');
+            return urlArr[urlArr.Length - 1].ToLower();
+        }
 
-		/// <summary>
-		/// 返回表单或Url参数的总个数
-		/// </summary>
-		/// <returns></returns>
-		public static int GetParamCount()
-		{
-			return HttpContext.Current.Request.Form.Count + HttpContext.Current.Request.QueryString.Count;
-		}
+        /// <summary>
+        /// 返回表单或Url参数的总个数
+        /// </summary>
+        /// <returns></returns>
+        public static int GetParamCount()
+        {
+            return HttpContext.Current.Request.Form.Count + HttpContext.Current.Request.QueryString.Count;
+        }
 
 
-		/// <summary>
-		/// 获得指定表单参数的值
-		/// </summary>
-		/// <param name="strName">表单参数</param>
-		/// <returns>表单参数的值</returns>
-		public static string GetFormString(string strName)
-		{
-			return GetFormString(strName, false);
-		}
+        /// <summary>
+        /// 获得指定表单参数的值
+        /// </summary>
+        /// <param name="strName">表单参数</param>
+        /// <returns>表单参数的值</returns>
+        public static string GetFormString(string strName)
+        {
+            return GetFormString(strName, false);
+        }
 
         /// <summary>
         /// 获得指定表单参数的值
@@ -180,15 +180,15 @@ namespace DotNet.Util
             return HttpContext.Current.Request.Form[strName];
         }
 
-		/// <summary>
-		/// 获得Url或表单参数的值, 先判断Url参数是否为空字符串, 如为True则返回表单参数的值
-		/// </summary>
-		/// <param name="strName">参数</param>
-		/// <returns>Url或表单参数的值</returns>
-		public static string GetString(string strName)
-		{
+        /// <summary>
+        /// 获得Url或表单参数的值, 先判断Url参数是否为空字符串, 如为True则返回表单参数的值
+        /// </summary>
+        /// <param name="strName">参数</param>
+        /// <returns>Url或表单参数的值</returns>
+        public static string GetString(string strName)
+        {
             return GetString(strName, false);
-		}
+        }
 
         /// <summary>
         /// 获得Url或表单参数的值, 先判断Url参数是否为空字符串, 如为True则返回表单参数的值
@@ -215,79 +215,79 @@ namespace DotNet.Util
         }
 
 
-		/// <summary>
-		/// 获得指定Url参数的int类型值
-		/// </summary>
-		/// <param name="strName">Url参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>Url参数的int类型值</returns>
-		public static int GetQueryInt(string strName, int defValue)
-		{
-			return Utils.StrToInt(HttpContext.Current.Request.QueryString[strName], defValue);
-		}
+        /// <summary>
+        /// 获得指定Url参数的int类型值
+        /// </summary>
+        /// <param name="strName">Url参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>Url参数的int类型值</returns>
+        public static int GetQueryInt(string strName, int defValue)
+        {
+            return Utils.StrToInt(HttpContext.Current.Request.QueryString[strName], defValue);
+        }
 
 
-		/// <summary>
-		/// 获得指定表单参数的int类型值
-		/// </summary>
-		/// <param name="strName">表单参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>表单参数的int类型值</returns>
-		public static int GetFormInt(string strName, int defValue)
-		{
-			return Utils.StrToInt(HttpContext.Current.Request.Form[strName], defValue);
-		}
+        /// <summary>
+        /// 获得指定表单参数的int类型值
+        /// </summary>
+        /// <param name="strName">表单参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>表单参数的int类型值</returns>
+        public static int GetFormInt(string strName, int defValue)
+        {
+            return Utils.StrToInt(HttpContext.Current.Request.Form[strName], defValue);
+        }
 
-		/// <summary>
-		/// 获得指定Url或表单参数的int类型值, 先判断Url参数是否为缺省值, 如为True则返回表单参数的值
-		/// </summary>
-		/// <param name="strName">Url或表单参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>Url或表单参数的int类型值</returns>
-		public static int GetInt(string strName, int defValue)
-		{
-			if (GetQueryInt(strName, defValue) == defValue)
-				return GetFormInt(strName, defValue);
-			else
-				return GetQueryInt(strName, defValue);
-		}
+        /// <summary>
+        /// 获得指定Url或表单参数的int类型值, 先判断Url参数是否为缺省值, 如为True则返回表单参数的值
+        /// </summary>
+        /// <param name="strName">Url或表单参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>Url或表单参数的int类型值</returns>
+        public static int GetInt(string strName, int defValue)
+        {
+            if (GetQueryInt(strName, defValue) == defValue)
+                return GetFormInt(strName, defValue);
+            else
+                return GetQueryInt(strName, defValue);
+        }
 
-		/// <summary>
-		/// 获得指定Url参数的float类型值
-		/// </summary>
-		/// <param name="strName">Url参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>Url参数的int类型值</returns>
-		public static float GetQueryFloat(string strName, float defValue)
-		{
-			return Utils.StrToFloat(HttpContext.Current.Request.QueryString[strName], defValue);
-		}
+        /// <summary>
+        /// 获得指定Url参数的float类型值
+        /// </summary>
+        /// <param name="strName">Url参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>Url参数的int类型值</returns>
+        public static float GetQueryFloat(string strName, float defValue)
+        {
+            return Utils.StrToFloat(HttpContext.Current.Request.QueryString[strName], defValue);
+        }
 
 
-		/// <summary>
-		/// 获得指定表单参数的float类型值
-		/// </summary>
-		/// <param name="strName">表单参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>表单参数的float类型值</returns>
-		public static float GetFormFloat(string strName, float defValue)
-		{
-			return Utils.StrToFloat(HttpContext.Current.Request.Form[strName], defValue);
-		}
-		
-		/// <summary>
-		/// 获得指定Url或表单参数的float类型值, 先判断Url参数是否为缺省值, 如为True则返回表单参数的值
-		/// </summary>
-		/// <param name="strName">Url或表单参数</param>
-		/// <param name="defValue">缺省值</param>
-		/// <returns>Url或表单参数的int类型值</returns>
-		public static float GetFloat(string strName, float defValue)
-		{
-			if (Math.Abs(GetQueryFloat(strName, defValue) - defValue) < 0.001)
-				return GetFormFloat(strName, defValue);
-			else
-				return GetQueryFloat(strName, defValue);
-		}
+        /// <summary>
+        /// 获得指定表单参数的float类型值
+        /// </summary>
+        /// <param name="strName">表单参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>表单参数的float类型值</returns>
+        public static float GetFormFloat(string strName, float defValue)
+        {
+            return Utils.StrToFloat(HttpContext.Current.Request.Form[strName], defValue);
+        }
+
+        /// <summary>
+        /// 获得指定Url或表单参数的float类型值, 先判断Url参数是否为缺省值, 如为True则返回表单参数的值
+        /// </summary>
+        /// <param name="strName">Url或表单参数</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>Url或表单参数的int类型值</returns>
+        public static float GetFloat(string strName, float defValue)
+        {
+            if (Math.Abs(GetQueryFloat(strName, defValue) - defValue) < 0.001)
+                return GetFormFloat(strName, defValue);
+            else
+                return GetQueryFloat(strName, defValue);
+        }
 
         /// <summary>
         /// 获得指定Url参数的Decimal类型值
@@ -326,32 +326,32 @@ namespace DotNet.Util
                 return GetQueryDecimal(strName, defValue);
         }
 
-		/// <summary>
-		/// 获得当前页面客户端的IP-不推荐直接使用，请使用Utils.GetIp()
-		/// </summary>
-		/// <returns>当前页面客户端的IP</returns>
-		public static string GetIp()
-		{
-		    var result = string.Empty;
+        /// <summary>
+        /// 获得当前页面客户端的IP-不推荐直接使用，请使用Utils.GetIp()
+        /// </summary>
+        /// <returns>当前页面客户端的IP</returns>
+        public static string GetIp()
+        {
+            var result = string.Empty;
 
             if (HttpContext.Current != null)
-		    {
-		        result = HttpContext.Current.Request.Headers["X-Real-IP"];
-		        if (string.IsNullOrEmpty(result))
-		        {
-		            result = HttpContext.Current.Request.Headers["X-Forwarded-For"];
-		        }
-		        if (string.IsNullOrEmpty(result))
-		        {
-		            result = HttpContext.Current.Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString();
-		        }
+            {
+                result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                }
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = HttpContext.Current.Request.UserHostAddress;
+                }
             }
-		    if (string.IsNullOrEmpty(result) || !Utils.IsIp(result))
-		    {
-		        return "127.0.0.1";
-		    }
-			return result;
-		}
+            if (string.IsNullOrEmpty(result) || !Utils.IsIp(result))
+            {
+                return "127.0.0.1";
+            }
+            return result;
+        }
 
         /// <summary>
         /// 通过判断是否使用代理获取用户的真实IP地址
@@ -362,13 +362,13 @@ namespace DotNet.Util
             var result = string.Empty;
             if (HttpContext.Current != null)
             {
-                if (!string.IsNullOrEmpty(HttpContext.Current.Request.Headers["X-Forwarded-For"]))
+                if (HttpContext.Current.Request.ServerVariables["HTTP_VIA"] != null)
                 {
-                    result = HttpContext.Current.Request.Headers["X-Forwarded-For"];
+                    result = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
                 }
                 else
                 {
-                    result = HttpContext.Current.Request.Headers["X-Real-IP"];
+                    result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
                 }
                 if (!string.IsNullOrEmpty(result))
                 {
@@ -439,7 +439,7 @@ namespace DotNet.Util
             return regex.IsMatch(str);
         }
 
-        #region public static string GetResponse(string url)
+#region public static string GetResponse(string url)
         /// <summary>
         /// 获取一个网页
         /// </summary>
@@ -476,7 +476,7 @@ namespace DotNet.Util
             }
             return result;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// 获取全部请求参数，get和post的 简化版
@@ -494,7 +494,7 @@ namespace DotNet.Util
                 list.Add(key + "=" + nvc[key]);
             }
             var form = HttpContext.Current.Request.Form;
-            foreach (var key in form.Keys)
+            foreach (var key in form.AllKeys)
             {
                 list.Add(key + "=" + form[key]);
             }
@@ -543,3 +543,4 @@ namespace DotNet.Util
         }
     }
 }
+#endif

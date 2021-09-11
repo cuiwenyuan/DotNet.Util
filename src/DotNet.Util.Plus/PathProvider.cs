@@ -1,7 +1,9 @@
-﻿using System;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 using Microsoft.AspNetCore.Hosting;
 
 
@@ -33,3 +35,4 @@ namespace DotNet.Util
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -6,6 +7,7 @@ using System.Threading;
 
 namespace DotNet.Util
 {
+
     /// <summary>
     /// HttpContext 上下文实用类
     /// </summary>
@@ -60,4 +62,6 @@ namespace DotNet.Util
             }
         }
     }
+
 }
+#endif

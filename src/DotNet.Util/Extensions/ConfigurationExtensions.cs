@@ -1,9 +1,9 @@
-﻿using System;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.Text;
 using DotNet.Util;
 using Microsoft.Extensions.Configuration;
-
 namespace Microsoft.AspNetCore.Http
 {
     /// <summary>
@@ -31,3 +31,4 @@ namespace Microsoft.AspNetCore.Http
         }
     }
 }
+#endif

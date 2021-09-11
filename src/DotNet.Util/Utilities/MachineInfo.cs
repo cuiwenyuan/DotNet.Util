@@ -191,6 +191,17 @@ namespace DotNet.Util
         public static string GetCpuSerialNo()
         {
             var cpuSerialNo = string.Empty;
+#if NET40
+            var managementClass = new ManagementClass("Win32_Processor");
+            var managementObjectCollection = managementClass.GetInstances();
+            foreach (var o in managementObjectCollection)
+            {
+                var managementObject = (ManagementObject)o;
+                // 可能是有多个
+                cpuSerialNo = managementObject.Properties["ProcessorId"].Value.ToString();
+                break;
+            }
+#elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var managementClass = new ManagementClass("Win32_Processor");
@@ -203,6 +214,7 @@ namespace DotNet.Util
                     break;
                 }
             }
+#endif
             return cpuSerialNo;
         }
         /// <summary>
@@ -212,6 +224,17 @@ namespace DotNet.Util
         public static string GetHardDiskInfo()
         {
             var hardDisk = string.Empty;
+#if NET40
+            var managementClass = new ManagementClass("Win32_DiskDrive");
+            var managementObjectCollection = managementClass.GetInstances();
+            foreach (var o in managementObjectCollection)
+            {
+                var managementObject = (ManagementObject)o;
+                // 可能是有多个
+                hardDisk = (string)managementObject.Properties["Model"].Value;
+                break;
+            }
+#elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var managementClass = new ManagementClass("Win32_DiskDrive");
@@ -224,6 +247,7 @@ namespace DotNet.Util
                     break;
                 }
             }
+#endif
             return hardDisk;
         }
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -505,13 +506,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GenerateRandomNumber(this int length)
         {
-            System.Text.StringBuilder newRandom = new System.Text.StringBuilder(62);
+            var sb = new StringBuilder(62);
             Random rd = new Random();
             for (int i = 0; i < length; i++)
             {
-                newRandom.Append(randomConstant[rd.Next(62)]);
+                sb.Append(randomConstant[rd.Next(62)]);
             }
-            return newRandom.ToString();
+            return sb.ToString();
         }
 
         /// <summary>
@@ -783,3 +784,4 @@ namespace DotNet.Util
 
     }
 }
+#endif

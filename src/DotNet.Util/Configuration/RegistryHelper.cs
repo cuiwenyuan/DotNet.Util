@@ -3,8 +3,9 @@
 //-----------------------------------------------------------------
 
 using Microsoft.Win32;
+#if NETSTANDARD2_0_OR_GREATER
 using System.Runtime.InteropServices;
-
+#endif
 namespace DotNet.Util
 {
     /// <summary>
@@ -37,18 +38,23 @@ namespace DotNet.Util
 
         #region public static string GetValue(string key) 读取注册表
         /// <summary>
-	/// 读取注册表
-	/// </summary>
+        /// 读取注册表
+        /// </summary>
         /// <param name="key">注册表子项</param>
-		/// <returns>值</returns>
+        /// <returns>值</returns>
         public static string GetValue(string key)
         {
+#if NET40
+            var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
+            return (string)registryKey.GetValue(key);
+#elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
                 return (string)registryKey.GetValue(key);
             }
             return null;
+#endif
         }
         #endregion
 
@@ -60,11 +66,16 @@ namespace DotNet.Util
         /// <param name="keyValue">值</param>
         public static void SetValue(string key, string keyValue)
         {
+#if NET40
+            var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
+            registryKey.SetValue(key, keyValue);
+#elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
                 registryKey.SetValue(key, keyValue);
             }
+#endif
         }
         #endregion
 
@@ -78,9 +89,9 @@ namespace DotNet.Util
         {
             return Exists(SubKey, key);
         }
-        #endregion
+#endregion
 
-        #region public static bool Exists(string subKey, string key)
+#region public static bool Exists(string subKey, string key)
         /// <summary>
         /// 判断一个注册表项是否存在
         /// </summary>
@@ -90,6 +101,18 @@ namespace DotNet.Util
         public static bool Exists(string subKey, string key)
         {
             var result = false;
+#if NET40
+            var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
+            var subKeyNames = registryKey.GetSubKeyNames();
+            for (var i = 0; i < subKeyNames.Length; i++)
+            {
+                if (key.Equals(subKeyNames[i]))
+                {
+                    result = true;
+                    break;
+                }
+            }
+#elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
@@ -103,11 +126,12 @@ namespace DotNet.Util
                     }
                 }
             }
+#endif
             return result;
         }
-        #endregion
+#endregion
 
-        #region private static void GetValues() 获取注册表的值
+#region private static void GetValues() 获取注册表的值
         /// <summary>
         /// 获取注册表的值
         /// </summary>
@@ -134,9 +158,9 @@ namespace DotNet.Util
             BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue("DbType"));
             BaseSystemInfo.RegisterKey = GetValue("RegisterKey");
         }
-        #endregion
+#endregion
 
-        #region private static void SetValues() 设置注册表的值
+#region private static void SetValues() 设置注册表的值
         /// <summary>
         /// 设置注册表的值
         /// </summary>
@@ -159,9 +183,9 @@ namespace DotNet.Util
             SetValue("DbType", CurrentDbType.SqlServer.ToString());
             SetValue("RegisterKey", "DotNet");
         }
-        #endregion
+#endregion
 
-        #region public static void GetConfig() 读取注册表信息
+#region public static void GetConfig() 读取注册表信息
         /// <summary>
         /// 读取注册表信息
         /// 获取系统配置信息，在系统的原头解决问题，呵呵不错
@@ -189,6 +213,6 @@ namespace DotNet.Util
                 GetValues();
             }
         }
-        #endregion
+#endregion
     }
 }

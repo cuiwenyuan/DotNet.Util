@@ -1,4 +1,7 @@
 ﻿using System;
+#if NET40
+using System.Web;
+#endif
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -11,6 +14,7 @@ namespace DotNet.Util
     /// </summary>
     public class WatermarkUtil
     {
+#if NET40
         /// <summary>
         /// 图片水印来自DTcms
         /// </summary>
@@ -241,5 +245,6 @@ namespace DotNet.Util
             g.Dispose();
             img.Dispose();
         }
+#endif
     }
 }
