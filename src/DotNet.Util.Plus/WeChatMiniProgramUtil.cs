@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
+using System.Net;
 using System.Xml;
 using Newtonsoft.Json;
+#if NETSTANDARD2_0_OR_GREATER
+using Microsoft.Net.Http;
+using Microsoft.Net.Http.Headers;
+#endif
 
 namespace DotNet.Util
 {
@@ -15,7 +18,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WeChatMiniProgramUtil
     {
-        #region GetQrCode
+#region GetQrCode
         /// <summary>
         /// 获取带参数小程序码并保存到服务器上，返回小程序码图片路径
         /// </summary>
@@ -135,7 +138,7 @@ namespace DotNet.Util
                 var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
                 var model = new AccessToken();
 
-                var returnContent = HttpRequestUtil.HcGet(strUrl);
+                var returnContent = HttpRequestUtil.HwGet(strUrl);
 
                 var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
                 model.access_token = accessToken.access_token;
@@ -159,18 +162,20 @@ namespace DotNet.Util
         public static string DownloadBufferImage(string requestUri, string jsonString)
         {
             var result = string.Empty;
+
+#if NETSTANDARD2_0_OR_GREATER
             try
             {
                 HttpContent httpContent = new StringContent(jsonString);
                 httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 //注意大量并发的时候不能释放资源的问题
-                //using (var httpClient = new HttpClient())
-                //{
-                //停止使用using，使用HttpClientFactory
-                var httpClient = HttpClientFactory2.GetHttpClient();
+                using (var httpClient = new HttpClient())
+                {
+                    //停止使用using，使用HttpClientFactory
+                    //var httpClient = HttpClientFactory2.GetHttpClient();
 
-                httpClient.PostAsync(requestUri, httpContent).ContinueWith(
+                    httpClient.PostAsync(requestUri, httpContent).ContinueWith(
                    (requestTask) =>
                    {
                        var response = requestTask.Result;
@@ -215,13 +220,13 @@ namespace DotNet.Util
                        }
 
                    }).Wait(5000);
+                }
             }
-            //}
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
             }
-
+#endif
             return result;
         }
 
@@ -240,7 +245,7 @@ namespace DotNet.Util
             /// </summary>  
             public string expires_in { get; set; }
         }
-        #endregion
+#endregion
 
     }
 }

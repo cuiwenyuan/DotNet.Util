@@ -36,8 +36,10 @@ namespace DotNet.Util
                     //IP地址
                     if (string.IsNullOrEmpty(_userInfo.IpAddress))
                     {
+#if NET40
                         //按照Web应用获取IP地址
-                        //_userInfo.IpAddress = Utils.GetIp();
+                        _userInfo.IpAddress = Utils.GetIp();
+#endif
                     }
                     //Mac地址  add by zgl
                     if (string.IsNullOrEmpty(_userInfo.MacAddress))

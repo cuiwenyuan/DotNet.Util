@@ -8,11 +8,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+
 #if NET40
 using System.Web;
 using System.Web.UI;
 using System.Net;
 using System.Web.Hosting;
+#elif NETSTANDARD2_0_OR_GREATER
+using Microsoft.Extensions.Hosting.Internal;
 #endif
 
 namespace DotNet.Util
@@ -252,43 +255,6 @@ namespace DotNet.Util
         {
             return CutString(str, startIndex, str.Length);
         }
-
-
-
-        /// <summary>
-        /// 获得当前绝对路径
-        /// </summary>
-        /// <param name="virtualPath">指定的路径</param>
-        /// <returns>绝对路径</returns>
-        public static string GetMapPath(string virtualPath)
-        {
-            //HttpContext.Current并非无处不在
-            if (HttpContext.Current != null)
-            {
-                return HttpContext.Current.Server.MapPath(virtualPath);
-            }
-            else
-            {
-                //非web程序引用
-                virtualPath = virtualPath.Replace("/", "\\");
-                if (virtualPath.StartsWith("~"))
-                {
-                    return HostingEnvironment.MapPath(virtualPath);
-                }
-                else
-                {
-                    return HostingEnvironment.MapPath("~/" + virtualPath);
-                }
-                //Troy Cui 2017-10-30弃用以下代码，改用上述代码
-                //if (strPath.StartsWith("\\"))
-                //{
-                //    strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
-                //}
-                //return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
-            }
-        }
-
-
 
         /// <summary>
         /// 返回文件是否存在
@@ -2082,9 +2048,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetRamCode()
         {
-            #region
+        #region
             return DateTime.Now.ToString("yyyyMMddHHmmssffff");
-            #endregion
+        #endregion
         }
         #endregion
 
@@ -2631,6 +2597,47 @@ namespace DotNet.Util
                 return true;
 
             return false;
+        }
+
+        /// <summary>
+        /// 获得当前绝对路径
+        /// </summary>
+        /// <param name="virtualPath">指定的路径</param>
+        /// <returns>绝对路径</returns>
+        public static string GetMapPath(string virtualPath)
+        {
+#if NET40
+            //HttpContext.Current并非无处不在
+            if (HttpContext.Current != null)
+            {
+                return HttpContext.Current.Server.MapPath(virtualPath);
+            }
+            else
+            {
+                //非web程序引用
+                virtualPath = virtualPath.Replace("/", "\\");
+                if (virtualPath.StartsWith("~"))
+                {
+                    return HostingEnvironment.MapPath(virtualPath);
+                }
+                else
+                {
+                    return HostingEnvironment.MapPath("~/" + virtualPath);
+                }
+            }
+#elif NETSTANDARD2_0_OR_GREATER
+            //非web程序引用
+            virtualPath = virtualPath.Replace("/", "\\");
+            if (virtualPath.StartsWith("~"))
+            {
+                //HostingEnvironment.MapPath(@"~/Views/Emails");
+                return Path.GetFullPath(virtualPath);
+            }
+            else
+            {
+                return Path.GetFullPath("~/" + virtualPath);
+            }
+#endif
         }
     }
 }
