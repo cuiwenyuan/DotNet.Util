@@ -5,12 +5,15 @@ using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// Validator
+    /// </summary>
     public class Validator
     {
         /// <summary>
         /// 判断对象是否为Int32类型的数字
         /// </summary>
-        /// <param name="Expression"></param>
+        /// <param name="expression"></param>
         /// <returns></returns>
         public static bool IsNumeric(object expression)
         {
@@ -24,7 +27,7 @@ namespace DotNet.Util
         /// <summary>
         /// 判断对象是否为Int32类型的数字
         /// </summary>
-        /// <param name="Expression"></param>
+        /// <param name="expression"></param>
         /// <returns></returns>
         public static bool IsNumeric(string expression)
         {

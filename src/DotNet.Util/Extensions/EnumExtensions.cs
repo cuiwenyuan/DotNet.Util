@@ -50,6 +50,12 @@ namespace DotNet.Util
             return desc;
         }
 
+        /// <summary>
+        /// ToResult
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="ignoreUnKnown"></param>
+        /// <returns></returns>
         public static List<OptionResultModel> ToResult(this Enum value, bool ignoreUnKnown = false)
         {
             var enumType = value.GetType();

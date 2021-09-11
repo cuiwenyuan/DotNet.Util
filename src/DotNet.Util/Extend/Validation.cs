@@ -3,6 +3,9 @@ using System.IO;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// Validation
+    /// </summary>
     public class Validation
     {
         /// <summary>
@@ -30,7 +33,7 @@ namespace DotNet.Util
         /// <summary>
         /// 文件名检查
         /// </summary>
-        /// <param name="folderName">文件名</param>
+        /// <param name="fileName">文件名</param>
         /// <returns>检查通过</returns>
         public static bool CheckFileName(string fileName)
         {
@@ -118,7 +121,7 @@ namespace DotNet.Util
         /// <summary>
         /// 检查邮件是否合法
         /// </summary>
-        /// <param name="inputEmail"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
         public static bool IsEmail(string email)
         {
@@ -155,16 +158,16 @@ namespace DotNet.Util
         /// <summary>
         /// 验证用户名格式
         /// </summary>
-        /// <param name="password">密码</param>
+        /// <param name="loginName">密码</param>
         /// <returns>成功与否</returns>
-        public static bool IsLoginName(string loginname)
+        public static bool IsLoginName(string loginName)
         {
             // 1-30位
             // \w 匹配字母或数字或下划线或汉字
             // \W 匹配任意不是字母，数字，下划线，汉字的字符
             // \S 匹配任意不是空白符的字符 
             var format = @"^\S{1,30}$";
-            return Regex.IsMatch(loginname, format);
+            return Regex.IsMatch(loginName, format);
         }
 
         /// <summary>

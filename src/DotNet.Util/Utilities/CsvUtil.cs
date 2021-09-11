@@ -229,21 +229,23 @@ namespace DotNet.Util
         }
         #endregion
 
+#if NET40
+
         #region public static void GetResponseCSV(DataTable dt, string fileName) 在浏览器中获得CSV格式文件
         /// <summary>
         /// 在浏览器中获得CSV格式文件
         /// </summary>
         /// <param name="dt">数据表</param>
         /// <param name="fileName">输出文件名</param>
-        //public static void GetResponseCsv(DataTable dt, string fileName)
-        //{
-        //    HttpContext.Current.Response.ClearHeaders();
-        //    HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
-        //    HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
-        //    HttpContext.Current.Response.ContentType = "application/ms-excel";
-        //    HttpContext.Current.Response.Write(GetCsvFormatData(dt).ToString());
-        //    HttpContext.Current.Response.End();
-        //}
+        public static void GetResponseCsv(DataTable dt, string fileName)
+        {
+            HttpContext.Current.Response.ClearHeaders();
+            HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
+            HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
+            HttpContext.Current.Response.ContentType = "application/ms-excel";
+            HttpContext.Current.Response.Write(GetCsvFormatData(dt).ToString());
+            HttpContext.Current.Response.End();
+        }
         #endregion
 
         #region public static void GetResponseCSV(DataSet dataSet, string fileName) 在浏览器中获得CSV格式文件
@@ -254,13 +256,13 @@ namespace DotNet.Util
         /// <param name="fileName">输出文件名</param>
         public static void GetResponseCsv(DataSet dataSet, string fileName)
         {
-            //HttpContext.Current.Response.ClearHeaders();
-            //HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
-            //HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
-            //HttpContext.Current.Response.ContentType = "application/ms-excel";
-            //HttpContext.Current.Response.Write(GetCsvFormatData(dataSet).ToString());
-            //HttpContext.Current.Response.End();
-            // 读取文件下载
+            HttpContext.Current.Response.ClearHeaders();
+            HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
+            HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
+            HttpContext.Current.Response.ContentType = "application/ms-excel";
+            HttpContext.Current.Response.Write(GetCsvFormatData(dataSet).ToString());
+            HttpContext.Current.Response.End();
+            //读取文件下载
             //String OutTemplateCSV = Server.MapPath("~/DownLoadFiles/ExcelExport/Common/Log/LogGeneral.csv");
             //StreamWriter StreamWriter = new StreamWriter(OutTemplateCSV, false, System.Text.Encoding.GetEncoding("gb2312"));
             //StreamWriter.WriteLine(GetCSVFormatData(dataSet).ToString());
@@ -268,6 +270,7 @@ namespace DotNet.Util
             //StreamWriter.Close();
             //Response.Redirect("../../../DownLoadFiles/ExcelExport/Common/Log/LogGeneral.csv");
         }
-        #endregion 
+        #endregion
+#endif
     }
 }
