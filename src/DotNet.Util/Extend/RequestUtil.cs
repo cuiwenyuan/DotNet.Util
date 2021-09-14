@@ -1,4 +1,4 @@
-#if NET40
+#if NET40_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -541,6 +541,34 @@ namespace DotNet.Util
                 nvc.Add(m.Result("$2").ToLower(), m.Result("$3"));
             }
         }
+    }
+}
+#elif NETSTANDARD2_0_OR_GREATER
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Text;
+
+namespace DotNet.Util
+{
+    /// <summary>
+    /// Request操作类
+    /// </summary>
+    public partial class RequestUtil
+    {
+        #region public static string GetResponse(string url)
+        /// <summary>
+        /// 获取一个网页
+        /// </summary>
+        /// <param name="url">地址</param>
+        /// <returns>字符串返回值</returns>
+        public static string GetResponse(string url)
+        {
+            string result = null;
+            // TO-DO
+            return result;
+        }
+        #endregion
     }
 }
 #endif

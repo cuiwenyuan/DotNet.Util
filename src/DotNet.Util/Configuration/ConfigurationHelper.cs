@@ -335,9 +335,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LabelDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["LabelDbType"]);
             }
-            if (ConfigurationManager.AppSettings["WebsiteDbType"] != null)
+            if (ConfigurationManager.AppSettings["WebDbType"] != null)
             {
-                BaseSystemInfo.WebsiteDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["WebsiteDbType"]);
+                BaseSystemInfo.WebDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["WebDbType"]);
             }
             if (ConfigurationManager.AppSettings["CMSDbType"] != null)
             {
@@ -425,9 +425,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LabelDbConnectionString = ConfigurationManager.AppSettings["LabelDbConnection"];
             }
-            if (ConfigurationManager.AppSettings["WebsiteDbConnection"] != null)
+            if (ConfigurationManager.AppSettings["WebDbConnection"] != null)
             {
-                BaseSystemInfo.WebsiteDbConnectionString = ConfigurationManager.AppSettings["WebsiteDbConnection"];
+                BaseSystemInfo.WebDbConnectionString = ConfigurationManager.AppSettings["WebDbConnection"];
             }
             if (ConfigurationManager.AppSettings["CMSDbConnection"] != null)
             {
@@ -491,7 +491,7 @@ namespace DotNet.Util
                 BaseSystemInfo.CrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CrmDbConnectionString);
                 BaseSystemInfo.OaDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.OaDbConnectionString);
                 BaseSystemInfo.LabelDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LabelDbConnectionString);
-                BaseSystemInfo.WebsiteDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WebsiteDbConnectionString);
+                BaseSystemInfo.WebDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WebDbConnectionString);
                 BaseSystemInfo.CmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CmsDbConnectionString);
                 BaseSystemInfo.DTcmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.DTcmsDbConnectionString);
                 BaseSystemInfo.FlowPortalDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.FlowPortalDbConnectionString);
@@ -521,7 +521,7 @@ namespace DotNet.Util
                 BaseSystemInfo.CrmDbConnection = BaseSystemInfo.CrmDbConnectionString;
                 BaseSystemInfo.OaDbConnection = BaseSystemInfo.OaDbConnectionString;
                 BaseSystemInfo.LabelDbConnection = BaseSystemInfo.LabelDbConnectionString;
-                BaseSystemInfo.WebsiteDbConnection = BaseSystemInfo.WebsiteDbConnectionString;
+                BaseSystemInfo.WebDbConnection = BaseSystemInfo.WebDbConnectionString;
                 BaseSystemInfo.CmsDbConnection = BaseSystemInfo.CmsDbConnectionString;
                 BaseSystemInfo.DTcmsDbConnection = BaseSystemInfo.DTcmsDbConnectionString;
                 BaseSystemInfo.FlowPortalDbConnection = BaseSystemInfo.FlowPortalDbConnectionString;
@@ -746,6 +746,17 @@ namespace DotNet.Util
                 BaseSystemInfo.IsProduction = ConfigurationManager.AppSettings["IsProduction"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
+            if (ConfigurationManager.AppSettings["ApplicationId"] != null)
+            {
+                BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
+                if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
+                {
+#if NET40_OR_GREATER
+                    BaseSystemInfo.ApplicationId = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
+#endif
+                }
+            }
+
             if (ConfigurationManager.AppSettings["MainPage"] != null)
             {
                 BaseSystemInfo.MainPage = ConfigurationManager.AppSettings["MainPage"];
@@ -792,9 +803,9 @@ namespace DotNet.Util
                 BaseSystemInfo.PasswordErrorLockCycle = int.Parse(ConfigurationManager.AppSettings["PasswordErrorLockCycle"]);
             }
         }
-        #endregion
+#endregion
 
-        #region FTP配置信息
+#region FTP配置信息
         /// <summary>
         /// FTP配置信息
         /// </summary>
@@ -828,9 +839,9 @@ namespace DotNet.Util
                 BaseSystemInfo.FtpPassword = ConfigurationManager.AppSettings["FtpPassword"];
             }
         }
-        #endregion
+#endregion
 
-        #region Redis配置信息
+#region Redis配置信息
         /// <summary>
         /// Redis配置信息
         /// </summary>
@@ -880,6 +891,6 @@ namespace DotNet.Util
                 }
             }
         }
-        #endregion
+#endregion
     }
 }

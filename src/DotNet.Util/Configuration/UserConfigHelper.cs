@@ -725,9 +725,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LabelDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "LabelDbType"));
             }
-            if (Exists("WebsiteDbType"))
+            if (Exists("WebDbType"))
             {
-                BaseSystemInfo.WebsiteDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebsiteDbType"));
+                BaseSystemInfo.WebDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebDbType"));
             }
             if (Exists("CmsDbType"))
             {
@@ -816,9 +816,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.LabelDbConnectionString = GetValue(_xmlDocument, "LabelDbConnection");
             }
-            if (Exists("WebsiteDbConnection"))
+            if (Exists("WebDbConnection"))
             {
-                BaseSystemInfo.WebsiteDbConnectionString = GetValue(_xmlDocument, "WebsiteDbConnection");
+                BaseSystemInfo.WebDbConnectionString = GetValue(_xmlDocument, "WebDbConnection");
             }
             if (Exists("CMSDbConnection"))
             {
@@ -878,7 +878,7 @@ namespace DotNet.Util
             BaseSystemInfo.CrmDbConnection = BaseSystemInfo.CrmDbConnectionString;
             BaseSystemInfo.OaDbConnection = BaseSystemInfo.OaDbConnectionString;
             BaseSystemInfo.LabelDbConnection = BaseSystemInfo.LabelDbConnectionString;
-            BaseSystemInfo.WebsiteDbConnection = BaseSystemInfo.WebsiteDbConnectionString;
+            BaseSystemInfo.WebDbConnection = BaseSystemInfo.WebDbConnectionString;
             BaseSystemInfo.CmsDbConnection = BaseSystemInfo.CmsDbConnectionString;
             BaseSystemInfo.DTcmsDbConnection = BaseSystemInfo.DTcmsDbConnectionString;
             BaseSystemInfo.FlowPortalDbConnection = BaseSystemInfo.FlowPortalDbConnectionString;
@@ -911,7 +911,7 @@ namespace DotNet.Util
                     BaseSystemInfo.CrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CrmDbConnectionString);
                     BaseSystemInfo.OaDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.OaDbConnectionString);
                     BaseSystemInfo.LabelDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LabelDbConnectionString);
-                    BaseSystemInfo.WebsiteDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WebsiteDbConnectionString);
+                    BaseSystemInfo.WebDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WebDbConnectionString);
                     BaseSystemInfo.CmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CmsDbConnectionString);
                     BaseSystemInfo.DTcmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.DTcmsDbConnectionString);
                     BaseSystemInfo.FlowPortalDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.FlowPortalDbConnectionString);
@@ -976,9 +976,9 @@ namespace DotNet.Util
                 {
                     // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=LabelDB;Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.WebsiteDbConnection))
+                if (string.IsNullOrEmpty(BaseSystemInfo.WebDbConnection))
                 {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=WebsiteDB;Integrated Security=SSPI;";
+                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=WebDB;Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.CmsDbConnection))
                 {
@@ -1103,6 +1103,10 @@ namespace DotNet.Util
                 BaseSystemInfo.UserCenterWriteDbConnection = GetValue(_xmlDocument, "UserCenterWriteDbConnection");
             }
 
+            if (Exists("ApplicationId"))
+            {
+                BaseSystemInfo.ApplicationId = GetValue(_xmlDocument, "ApplicationId");
+            }
             if (Exists("MainPage"))
             {
                 BaseSystemInfo.MainPage = GetValue(_xmlDocument, "MainPage");
@@ -1366,7 +1370,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "CRMDbType", BaseSystemInfo.CrmDbType.ToString());
             SetValue(xmlDocument, "OADbType", BaseSystemInfo.OaDbType.ToString());
             SetValue(xmlDocument, "LabelDbType", BaseSystemInfo.LabelDbType.ToString());
-            SetValue(xmlDocument, "WebsiteDbType", BaseSystemInfo.WebsiteDbType.ToString());
+            SetValue(xmlDocument, "WebDbType", BaseSystemInfo.WebDbType.ToString());
             SetValue(xmlDocument, "CMSDbType", BaseSystemInfo.CmsDbType.ToString());
             SetValue(xmlDocument, "DTcmsDbType", BaseSystemInfo.DTcmsDbType.ToString());
             SetValue(xmlDocument, "FlowPortalDbType", BaseSystemInfo.FlowPortalDbType.ToString());
@@ -1387,7 +1391,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "CrmDbConnection", BaseSystemInfo.CrmDbConnectionString);
             SetValue(xmlDocument, "OaDbConnection", BaseSystemInfo.OaDbConnectionString);
             SetValue(xmlDocument, "LabelDbConnection", BaseSystemInfo.LabelDbConnectionString);
-            SetValue(xmlDocument, "WebsiteDbConnection", BaseSystemInfo.WebsiteDbConnectionString);
+            SetValue(xmlDocument, "WebDbConnection", BaseSystemInfo.WebDbConnectionString);
             SetValue(xmlDocument, "CmsDbConnection", BaseSystemInfo.CmsDbConnectionString);
             SetValue(xmlDocument, "DTcmsDbConnection", BaseSystemInfo.DTcmsDbConnectionString);
             SetValue(xmlDocument, "FlowPortalDbConnection", BaseSystemInfo.FlowPortalDbConnectionString);
@@ -1401,6 +1405,7 @@ namespace DotNet.Util
 
             SetValue(xmlDocument, "RegisterKey", BaseSystemInfo.RegisterKey);
 
+            SetValue(xmlDocument, "ApplicationId", BaseSystemInfo.ApplicationId);
             SetValue(xmlDocument, "MainPage", BaseSystemInfo.MainPage);
             SetValue(xmlDocument, "IsProduction", BaseSystemInfo.IsProduction.ToString());
             SetValue(xmlDocument, "SmsEnabled", BaseSystemInfo.SmsEnabled.ToString());

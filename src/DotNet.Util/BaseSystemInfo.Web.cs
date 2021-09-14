@@ -12,12 +12,17 @@ namespace DotNet.Util
     ///		2018.07.06 版本：1.0 Troy.Cui	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2018.07.06</date>
     /// </author>
     /// </summary>
     public partial class BaseSystemInfo
     {
+        /// <summary>
+        /// 应用编号
+        /// </summary>
+        public static string ApplicationId = "";
+
         /// <summary>
         /// 主页面
         /// </summary>

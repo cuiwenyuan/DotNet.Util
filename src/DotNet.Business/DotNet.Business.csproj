@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
+		<ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
+		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
+		<ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj" />
+		<ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
+	</ItemGroup>
+
+</Project>

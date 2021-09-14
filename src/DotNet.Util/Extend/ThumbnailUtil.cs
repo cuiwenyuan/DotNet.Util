@@ -1,4 +1,4 @@
-#if NET40
+#if NET40_OR_GREATER
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;

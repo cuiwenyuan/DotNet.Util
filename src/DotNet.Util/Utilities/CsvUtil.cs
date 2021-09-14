@@ -229,7 +229,7 @@ namespace DotNet.Util
         }
         #endregion
 
-#if NET40
+#if NET40_OR_GREATER
 
         #region public static void GetResponseCSV(DataTable dt, string fileName) 在浏览器中获得CSV格式文件
         /// <summary>

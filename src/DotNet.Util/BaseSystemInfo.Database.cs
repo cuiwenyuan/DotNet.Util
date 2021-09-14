@@ -11,14 +11,14 @@ namespace DotNet.Util
     /// 这是系统的核心基础信息部分
     /// 
     /// 修改记录
-    ///
+    ///     
     ///     2020.08.16 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:OMS
     ///     2018.10.31 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:DealerPortal
     ///     2018.08.09 版本：1.8 Troy Cui	增加常用外部系统的数据库连接:SCM,IMS,Member
     ///     2018.08.08 版本：1.7 Troy Cui	增加常用外部系统的数据库连接:Report
     ///     2018.08.01 版本：1.6 Troy Cui	增加常用外部系统的数据库连接:CustomerPortal,SupplierPortal
     ///     2018.03.11 版本：1.5 Troy Cui	增加常用外部系统的数据库连接:DTcms,FlowPortal
-    ///     2017.12.05 版本：1.4 Troy Cui	重新布局并增加常用外部系统的数据库连接:BPM,ERP,MES,HRM,CRM,OA,Website,CMS
+    ///     2017.12.05 版本：1.4 Troy Cui	重新布局并增加常用外部系统的数据库连接:BPM,ERP,MES,HRM,CRM,OA,Web,CMS
     ///     2017.02.05 版本：1.3 Troy Cui	增加WebApp数据库连接
     ///     2016.12.05 版本：1.2 Troy Cui	增加Label数据库连接
     ///		2015.02.03 版本：1.1 JiRiGaLa	登录日志很庞大时，需要有专门的登录日志服务器，因为大家会查自己的登录日志是否安全。
@@ -655,43 +655,43 @@ namespace DotNet.Util
 
         #endregion
 
-        #region Website
+        #region Web
         /// <summary>
-        /// WebSite数据库类别
+        /// Web数据库类别
         /// </summary>
-        public static CurrentDbType WebsiteDbType = CurrentDbType.SqlServer;
+        public static CurrentDbType WebDbType = CurrentDbType.SqlServer;
         /// <summary>
-        /// WebSite数据库
+        /// Web数据库
         /// </summary>
-        private static string _websiteDbConnection = string.Empty;
+        private static string _webDbConnection = string.Empty;
         /// <summary>
-        /// WebSite数据库连接
+        /// Web数据库连接
         /// </summary>
-        public static string WebsiteDbConnection
+        public static string WebDbConnection
         {
             get
             {
-                if (string.IsNullOrEmpty(_websiteDbConnection))
+                if (string.IsNullOrEmpty(_webDbConnection))
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WebSiteDbConnection"]))
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WebDbConnection"]))
                     {
-                        _websiteDbConnection = ConfigurationManager.AppSettings["WebSiteDbConnection"];
+                        _webDbConnection = ConfigurationManager.AppSettings["WebDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_websiteDbConnection))
+                    if (string.IsNullOrEmpty(_webDbConnection))
                     {
-                        _websiteDbConnection = "Data Source=localhost;Initial Catalog=Business_WebSite;Integrated Security=SSPI;";
+                        _webDbConnection = "Data Source=localhost;Initial Catalog=Business_Web;Integrated Security=SSPI;";
                     }
                 }
                 // 默认的数据库连接
-                return _websiteDbConnection;
+                return _webDbConnection;
             }
             // 默认的数据库连接
-            set => _websiteDbConnection = value;
+            set => _webDbConnection = value;
         }
         /// <summary>
-        /// WebSite数据库（连接串，可能是加密的）
+        /// Web数据库（连接串，可能是加密的）
         /// </summary>
-        public static string WebsiteDbConnectionString = string.Empty;
+        public static string WebDbConnectionString = string.Empty;
         #endregion
 
         #region CMS

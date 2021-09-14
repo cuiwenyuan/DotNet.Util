@@ -6,7 +6,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-#if NET40
+#if NET40_OR_GREATER
 using System.Web;
 #endif
 #if NETSTANDARD2_0_OR_GREATER

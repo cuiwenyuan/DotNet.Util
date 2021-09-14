@@ -47,7 +47,7 @@ namespace DotNet.Util
         /// <summary>是否Mono环境</summary>
         public static Boolean Mono { get; } = Type.GetType("Mono.Runtime") != null;
 
-#if NET40
+#if NET40_OR_GREATER
         /// <summary>是否Web环境</summary>
         public static Boolean IsWeb => !String.IsNullOrEmpty(System.Web.HttpRuntime.AppDomainAppId);
 

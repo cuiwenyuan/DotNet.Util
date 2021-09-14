@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
+	</ItemGroup>
+
+</Project>

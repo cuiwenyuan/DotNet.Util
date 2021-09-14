@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-#if NET40
+#if NET40_OR_GREATER
 using System.Web;
 using System.Web.UI;
 using System.Net;
@@ -25,7 +25,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class Utils
     {
-#if NET40
+#if NET40_OR_GREATER
         /// <summary>
         /// 得到正则编译参数设置
         /// </summary>
@@ -708,27 +708,6 @@ namespace DotNet.Util
         public static bool IsTime(string timeval)
         {
             return Regex.IsMatch(timeval, @"^((([0-1]?[0-9])|(2[0-3])):([0-5]?[0-9])(:[0-5]?[0-9])?)$");
-        }
-
-        /// <summary>
-        /// 推荐使用的获取IP方式
-        /// </summary>
-        /// <returns></returns>
-        public static string GetIp()
-        {
-            //优先使用GetRealIp
-            var result = RequestUtil.GetRealIp();
-            //其次使用GetIp
-            if (string.IsNullOrEmpty(result))
-            {
-                result = RequestUtil.GetIp();
-            }
-            //最后使用MachineInfo
-            if (string.IsNullOrEmpty(result))
-            {
-                result = MachineInfo.GetIpAddress();
-            }
-            return result;
         }
 
         /// <summary>
@@ -2408,6 +2387,31 @@ namespace DotNet.Util
         }
         #endregion
 #endif
+
+        /// <summary>
+        /// 推荐使用的获取IP方式
+        /// </summary>
+        /// <returns></returns>
+        public static string GetIp()
+        {
+            var result = string.Empty;
+#if NET40_OR_GREATER
+            //优先使用GetRealIp
+            result = RequestUtil.GetRealIp();
+            //其次使用GetIp
+            if (string.IsNullOrEmpty(result))
+            {
+                result = RequestUtil.GetIp();
+            }
+#endif
+            //最后使用MachineInfo
+            if (string.IsNullOrEmpty(result))
+            {
+                result = MachineInfo.GetIpAddress();
+            }
+            return result;
+        }
+
         /// <summary>
         /// 清除字符串数组中的重复项
         /// </summary>
@@ -2606,7 +2610,7 @@ namespace DotNet.Util
         /// <returns>绝对路径</returns>
         public static string GetMapPath(string virtualPath)
         {
-#if NET40
+#if NET40_OR_GREATER
             //HttpContext.Current并非无处不在
             if (HttpContext.Current != null)
             {
