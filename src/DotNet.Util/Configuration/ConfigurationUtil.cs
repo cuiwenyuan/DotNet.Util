@@ -8,7 +8,7 @@ using System.Configuration;
 namespace DotNet.Util
 {
     /// <summary>
-    /// ConfigurationHelper
+    /// ConfigurationUtil
     /// 连接配置。
     /// 
     /// 修改记录
@@ -25,7 +25,7 @@ namespace DotNet.Util
     ///		<date>2016.03.14</date>
     /// </author> 
     /// </summary>
-    public partial class ConfigurationHelper
+    public partial class ConfigurationUtil
     {
         /// <summary>
         /// AppSettting
@@ -803,9 +803,9 @@ namespace DotNet.Util
                 BaseSystemInfo.PasswordErrorLockCycle = int.Parse(ConfigurationManager.AppSettings["PasswordErrorLockCycle"]);
             }
         }
-#endregion
+        #endregion
 
-#region FTP配置信息
+        #region FTP配置信息
         /// <summary>
         /// FTP配置信息
         /// </summary>
@@ -839,9 +839,9 @@ namespace DotNet.Util
                 BaseSystemInfo.FtpPassword = ConfigurationManager.AppSettings["FtpPassword"];
             }
         }
-#endregion
+        #endregion
 
-#region Redis配置信息
+        #region Redis配置信息
         /// <summary>
         /// Redis配置信息
         /// </summary>
@@ -891,6 +891,6 @@ namespace DotNet.Util
                 }
             }
         }
-#endregion
+        #endregion
     }
 }

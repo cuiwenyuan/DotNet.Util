@@ -33,7 +33,7 @@ namespace DotNet.Business
         public int Synchronous(bool all = false)
         {
             var result = 0;
-            var connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             string condition = null;
             if (!all)
             {
@@ -63,7 +63,7 @@ namespace DotNet.Business
             var result = 0;
             if (string.IsNullOrEmpty(connectionString))
             {
-                connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
+                connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             }
             if (!string.IsNullOrEmpty(connectionString))
             {

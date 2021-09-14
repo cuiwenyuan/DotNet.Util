@@ -74,17 +74,17 @@ namespace DotNet.Util
             // 读取配置文件
             if (BaseSystemInfo.ConfigurationFrom == ConfigurationCategory.Configuration)
             {
-                ConfigurationHelper.GetConfig();
+                ConfigurationUtil.GetConfig();
             }
             // 读取个性化配置文件
             if (BaseSystemInfo.ConfigurationFrom == ConfigurationCategory.UserConfig)
             {
-                UserConfigHelper.GetConfig();
+                UserConfigUtil.GetConfig();
             }
             // 读取注册表
             if (BaseSystemInfo.ConfigurationFrom == ConfigurationCategory.RegistryKey)
             {
-                RegistryHelper.GetConfig();
+                RegistryUtil.GetConfig();
             }
         }
         #endregion

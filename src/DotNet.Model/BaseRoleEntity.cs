@@ -1,12 +1,12 @@
 ﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
-using System.ComponentModel.DataAnnotations;
+
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DotNet.Model
 {
-    
     using Util;
 
     /// <summary>

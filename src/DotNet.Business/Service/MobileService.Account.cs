@@ -40,7 +40,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -172,7 +172,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -227,7 +227,7 @@ namespace DotNet.Business
             var result = 0;
 
             // 这里需要帐户余额减掉
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))

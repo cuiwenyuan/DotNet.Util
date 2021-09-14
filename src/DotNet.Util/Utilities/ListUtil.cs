@@ -30,7 +30,7 @@ namespace DotNet.Util
                 var row = dt.NewRow();
                 foreach (var info in typeof(T).GetProperties())
                 {
-                    //todo: 如果T的属性有List<>类型的，这里不会得到预期的结果，需要进一步处理
+                    //TODO: 如果T的属性有List<>类型的，这里不会得到预期的结果，需要进一步处理
                     row[info.Name] = info.GetValue(item, null);
                 }
                 dt.Rows.Add(row);

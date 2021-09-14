@@ -24,7 +24,7 @@
 		<RepositoryType>git</RepositoryType>
 		<AssemblyVersion>5.6.2021.0914</AssemblyVersion>
 		<FileVersion>5.6.2021.0914</FileVersion>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

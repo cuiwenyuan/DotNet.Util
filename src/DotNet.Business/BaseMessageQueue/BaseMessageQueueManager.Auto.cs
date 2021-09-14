@@ -204,9 +204,7 @@ namespace DotNet.Business
             //设置默认的Source为站点的
             if (string.IsNullOrWhiteSpace(entity.Source))
             {
-#if NET40_OR_GREATER
-                entity.Source = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
-#endif
+                entity.Source = BaseSystemInfo.ApplicationId;
             }
 
             if (UserInfo != null)

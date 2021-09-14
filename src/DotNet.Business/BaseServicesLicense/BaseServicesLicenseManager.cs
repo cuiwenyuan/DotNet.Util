@@ -124,7 +124,7 @@ namespace DotNet.Business
             // 把缓存里的先清理掉
             ResetServiceByCache(userId);
 
-            // todo 吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
+            //TODO 吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
             var commandText = "UPDATE " + BaseServicesLicenseEntity.TableName
                         + "   SET " + BaseServicesLicenseEntity.FieldDeleted + " = 1 "
                         + "     , " + BaseServicesLicenseEntity.FieldEnabled + " = 0 "

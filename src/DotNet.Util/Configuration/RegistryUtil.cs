@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace DotNet.Util
 {
     /// <summary>
-    /// RegistryHelper
+    /// RegistryUtil
     /// 访问注册表的类。
     /// 
     /// 修改记录
@@ -29,7 +29,7 @@ namespace DotNet.Util
     ///		<date>2007.04.14</date>
     /// </author> 
     /// </summary>
-    public partial class RegistryHelper
+    public partial class RegistryUtil
     {
         /// <summary>
         /// 注册表中的位置
@@ -89,9 +89,9 @@ namespace DotNet.Util
         {
             return Exists(SubKey, key);
         }
-#endregion
+        #endregion
 
-#region public static bool Exists(string subKey, string key)
+        #region public static bool Exists(string subKey, string key)
         /// <summary>
         /// 判断一个注册表项是否存在
         /// </summary>
@@ -129,9 +129,9 @@ namespace DotNet.Util
 #endif
             return result;
         }
-#endregion
+        #endregion
 
-#region private static void GetValues() 获取注册表的值
+        #region private static void GetValues() 获取注册表的值
         /// <summary>
         /// 获取注册表的值
         /// </summary>
@@ -158,9 +158,9 @@ namespace DotNet.Util
             BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue("DbType"));
             BaseSystemInfo.RegisterKey = GetValue("RegisterKey");
         }
-#endregion
+        #endregion
 
-#region private static void SetValues() 设置注册表的值
+        #region private static void SetValues() 设置注册表的值
         /// <summary>
         /// 设置注册表的值
         /// </summary>
@@ -183,9 +183,9 @@ namespace DotNet.Util
             SetValue("DbType", CurrentDbType.SqlServer.ToString());
             SetValue("RegisterKey", "DotNet");
         }
-#endregion
+        #endregion
 
-#region public static void GetConfig() 读取注册表信息
+        #region public static void GetConfig() 读取注册表信息
         /// <summary>
         /// 读取注册表信息
         /// 获取系统配置信息，在系统的原头解决问题，呵呵不错
@@ -213,6 +213,6 @@ namespace DotNet.Util
                 GetValues();
             }
         }
-#endregion
+        #endregion
     }
 }

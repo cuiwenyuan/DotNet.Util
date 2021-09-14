@@ -493,7 +493,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private static Stream GetRemoteImage(string url)
         {
-            var request = (HttpWebRequest)HttpWebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentLength = 0;
             request.Timeout = 20000;

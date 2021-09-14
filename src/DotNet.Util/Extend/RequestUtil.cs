@@ -439,7 +439,7 @@ namespace DotNet.Util
             return regex.IsMatch(str);
         }
 
-#region public static string GetResponse(string url)
+        #region public static string GetResponse(string url)
         /// <summary>
         /// 获取一个网页
         /// </summary>
@@ -476,7 +476,7 @@ namespace DotNet.Util
             }
             return result;
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// 获取全部请求参数，get和post的 简化版
@@ -565,7 +565,7 @@ namespace DotNet.Util
         public static string GetResponse(string url)
         {
             string result = null;
-            // TO-DO
+            //TODO:.NET STANDARD 2.0的实现方式
             return result;
         }
         #endregion

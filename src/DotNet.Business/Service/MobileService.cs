@@ -68,7 +68,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -103,7 +103,7 @@ namespace DotNet.Business
         public int GetSendVerificationCodeCount(string mobile)
         {
             var result = 0;
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -142,9 +142,9 @@ namespace DotNet.Business
             var result = false;
             if (string.IsNullOrEmpty(system))
             {
-                system = "中通中天核心系统";
+                system = "核心系统";
             }
-            // todo 需要增加一天只能收取几次验证码的限制，8个小时内最多只能发送3次验证码
+            //TODO 需要增加一天只能收取几次验证码的限制，8个小时内最多只能发送3次验证码
             var sendVerificationCodeCount = GetSendVerificationCodeCount(mobile);
             if (sendVerificationCodeCount < 6)
             {
@@ -186,7 +186,7 @@ namespace DotNet.Business
                 return false;
             }
 
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -233,7 +233,7 @@ namespace DotNet.Business
         public int GetSendUserPasswordCount(string mobile)
         {
             var result = 0;
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -271,7 +271,7 @@ namespace DotNet.Business
 
             var result = false;
             var system = "核心系统";
-            // todo 需要增加一天只能收取几次验证码的限制，8个小时内最多只能发送3次验证码
+            //TODO 需要增加一天只能收取几次验证码的限制，8个小时内最多只能发送3次验证码
             if (!string.IsNullOrEmpty(userPassword))
             {
                 // 产生随机验证码、数字的、六位长度
@@ -506,7 +506,7 @@ namespace DotNet.Business
         {
             var connectionString = string.Empty;
             DataTable result = null;
-            connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 using (var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.SqlServer, connectionString))
@@ -598,14 +598,14 @@ namespace DotNet.Business
             DataTable result = null;
 
             recordCount = 0;
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 if (SecretUtil.IsSqlSafe(conditions))
                 {
                     // 2016-02-24 吉日嘎拉 查询历史支持各种数据库访问方式
                     var openMasDbType = string.Empty;
-                    openMasDbType = ConfigurationHelper.AppSettings("OpenMasDbType", BaseSystemInfo.EncryptDbConnection);
+                    openMasDbType = ConfigurationUtil.AppSettings("OpenMasDbType", BaseSystemInfo.EncryptDbConnection);
                     var dbType = CurrentDbType.SqlServer;
                     if (!string.IsNullOrEmpty(openMasDbType))
                     {
@@ -645,7 +645,7 @@ namespace DotNet.Business
             DataTable result = null;
 
             recordCount = 0;
-            var connectionString = ConfigurationHelper.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("OpenMasDbConnection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 if (SecretUtil.IsSqlSafe(conditions))

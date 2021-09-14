@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -32,74 +33,170 @@ namespace DotNet.Util
         /// <param name="to">收件人邮箱地址（多个用英文,或;分割）</param>
         /// <param name="subject">主题</param>
         /// <param name="body">内容</param>
+        /// <param name="attachmentPaths">附件路径</param>
         /// <param name="encoding">编码</param>
         /// <param name="isBodyHtml">是否Html</param>
         /// <returns>是否成功</returns>
-        public static bool Send(string to, string subject, string body, string encoding = "UTF-8", bool isBodyHtml = true)
+        public static bool Send(string to, string subject, string body, string attachmentPaths = null, string encoding = "UTF-8", bool isBodyHtml = true)
         {
-            try
+            var result = false;
+            if (!string.IsNullOrEmpty(to))
             {
-                var message = new MailMessage();
-
-                //接收人邮箱地址
-                if (!to.Contains(",") && !to.Contains(";"))
+                try
                 {
-                    message.To.Add(new MailAddress(to));
-                }
-                else if(!string.IsNullOrWhiteSpace(to))
-                {
-                    string[] tos = null;
-                    if (to.Contains(","))
+                    if(BaseSystemInfo.MailServerEnableSsl && BaseSystemInfo.MailServerPort == 465)
                     {
-                        tos = to.Split(",".ToCharArray());
-                    }
-                    else if (to.Contains(";"))
-                    {
-                        tos = to.Split(";".ToCharArray());
+#if NET40_OR_GREATER
+                        var message = new System.Web.Mail.MailMessage();
+                        //接收人邮箱地址
+                        message.To = to;
 
-                    }
-                    foreach (var t in tos)
-                    {
-                        message.To.Add(new MailAddress(t));
-                    }
-                }
+                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        {
+                            message.Bcc = BaseSystemInfo.MailBcc;
+                        }
 
-                if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
-                {
-                    message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
+                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        {
+                            message.From = BaseSystemInfo.MailFrom;
+                        }
+
+                        //在有附件的情况下添加附件
+                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        {
+                            message.Attachments.Clear();
+                            try
+                            {
+                                string[] attachPath = attachmentPaths.Split(';');
+                                System.Web.Mail.MailAttachment attachFile = null;
+                                foreach (string path in attachPath)
+                                {
+                                    //string extName = Path.GetExtension(path).ToLower(); //获取扩展名
+                                    //FileStream fs = new FileStream(HostingEnvironment.MapPath("/") + pathFileName, FileMode.Open, FileAccess.Read);
+                                    ////将附件添加到mailmessage对象  
+                                    //attachment = new Attachment(fs, dictionary[i]);
+                                    attachFile = new System.Web.Mail.MailAttachment(path);
+                                    message.Attachments.Add(attachFile);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.WriteException(ex);
+                            }
+                        }
+                        message.BodyEncoding = Encoding.GetEncoding(encoding);
+                        message.Body = body;
+                        message.Subject = subject;
+                        if (isBodyHtml)
+                        {
+                            message.BodyFormat = System.Web.Mail.MailFormat.Html;
+                        }
+
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate", "1");
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", BaseSystemInfo.MailUserName);
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", BaseSystemInfo.MailPassword);
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", BaseSystemInfo.MailServerPort);//端口 
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpusessl", BaseSystemInfo.MailServerEnableSsl);
+
+                        System.Web.Mail.SmtpMail.SmtpServer = BaseSystemInfo.MailServer;
+                        System.Web.Mail.SmtpMail.Send(message);
+#endif
+                    }
+                    else
+                    {
+                        var message = new MailMessage();
+                        //接收人邮箱地址
+                        if (!to.Contains(",") && !to.Contains(";"))
+                        {
+                            message.To.Add(new MailAddress(to));
+                        }
+                        else if (!string.IsNullOrWhiteSpace(to))
+                        {
+                            string[] tos = null;
+                            if (to.Contains(","))
+                            {
+                                tos = to.Split(",".ToCharArray());
+                            }
+                            else if (to.Contains(";"))
+                            {
+                                tos = to.Split(";".ToCharArray());
+
+                            }
+
+                            foreach (var t in tos)
+                            {
+                                message.To.Add(new MailAddress(t));
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        {
+                            message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
+                        }
+
+                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        {
+                            message.From = new MailAddress(BaseSystemInfo.MailFrom);
+                        }
+
+                        //在有附件的情况下添加附件
+                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        {
+                            message.Attachments.Clear();
+                            try
+                            {
+                                string[] attachPath = attachmentPaths.Split(';');
+                                Attachment attachFile = null;
+                                foreach (string path in attachPath)
+                                {
+                                    //string extName = Path.GetExtension(path).ToLower(); //获取扩展名  
+                                    //FileStream fs = new FileStream(HostingEnvironment.MapPath("/") + pathFileName, FileMode.Open, FileAccess.Read);
+                                    ////将附件添加到mailmessage对象  
+                                    //attachment = new Attachment(fs, dictionary[i]);
+                                    attachFile = new Attachment(path);
+                                    message.Attachments.Add(attachFile);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.WriteException(ex);
+                            }
+                        }
+                        message.BodyEncoding = Encoding.GetEncoding(encoding);
+                        message.Body = body;
+                        message.SubjectEncoding = Encoding.GetEncoding(encoding);
+                        message.Subject = subject;
+                        message.IsBodyHtml = isBodyHtml;
+
+                        var smtpClient = new SmtpClient(BaseSystemInfo.MailServer, BaseSystemInfo.MailServerPort)
+                        {
+                            Credentials = new NetworkCredential(BaseSystemInfo.MailUserName, BaseSystemInfo.MailPassword),
+                            //SSL设置
+                            EnableSsl = BaseSystemInfo.MailServerEnableSsl
+                        };
+
+                        smtpClient.Send(message);
+                    }
+                    
+                    result = true;
                 }
-                else
+#if NET40_OR_GREATER
+                catch (System.Web.HttpException ex)
                 {
-                    message.Bcc.Add(new MailAddress("17185490@qq.com"));
+                    LogUtil.WriteException(ex);
                 }
-                if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+#endif
+                catch (SmtpException ex)
                 {
-                    message.From = new MailAddress(BaseSystemInfo.MailFrom);
+                    LogUtil.WriteException(ex);
                 }
-                else
+                catch (Exception ex)
                 {
-                    message.From = new MailAddress("17185490@qq.com", "崔文远");
+                    LogUtil.WriteException(ex);
                 }
-                message.BodyEncoding = Encoding.GetEncoding(encoding);
-                message.Body = body;
-                message.SubjectEncoding = Encoding.GetEncoding(encoding);
-                message.Subject = subject;
-                message.IsBodyHtml = isBodyHtml;
-                var smtpclient = new SmtpClient(BaseSystemInfo.MailServer, BaseSystemInfo.MailServerPort)
-                {
-                    Credentials = new NetworkCredential(BaseSystemInfo.MailUserName, BaseSystemInfo.MailPassword),
-                    //SSL设置
-                    EnableSsl = BaseSystemInfo.MailServerEnableSsl
-                };
-                smtpclient.Send(message);
-                return true;
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine(e.ToString());
-                LogUtil.WriteException(ex);
-                return false;
-            }
+
+            return result;
         }
 
         /// <summary>
@@ -128,18 +225,18 @@ namespace DotNet.Util
                     //设置优先级
                     objMailMessage.Priority = MailPriority.High;
                     //消息发送人
-                    objMailMessage.From = new MailAddress(BaseSystemInfo.MailUserName, "登录提醒", System.Text.Encoding.UTF8);
+                    objMailMessage.From = new MailAddress(BaseSystemInfo.MailUserName, "登录提醒", Encoding.UTF8);
                     //收件人
                     objMailMessage.To.Add(to);
                     //标题
                     objMailMessage.Subject = title.Trim();
                     //标题字符编码
-                    objMailMessage.SubjectEncoding = System.Text.Encoding.UTF8;
+                    objMailMessage.SubjectEncoding = Encoding.UTF8;
                     //正文
                     objMailMessage.Body = body.Trim();
                     objMailMessage.IsBodyHtml = true;
                     //内容字符编码
-                    objMailMessage.BodyEncoding = System.Text.Encoding.UTF8;
+                    objMailMessage.BodyEncoding = Encoding.UTF8;
                     //发送
                     smtp.Send(objMailMessage);
                 }

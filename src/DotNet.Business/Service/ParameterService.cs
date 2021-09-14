@@ -40,7 +40,7 @@ namespace DotNet.Business
         /// <returns>配置内容</returns>
         public string GetServiceConfig(BaseUserInfo userInfo, string key)
         {
-            return UserConfigHelper.GetValue(key);
+            return UserConfigUtil.GetValue(key);
         }
 
         #region public BaseOrganizeEntity GetObject(BaseUserInfo userInfo, string tableName, string id)

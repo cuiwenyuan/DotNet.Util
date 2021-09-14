@@ -31,7 +31,7 @@ namespace DotNet.Business
         /// <param name="entity">用户实体</param>
         public virtual void AfterUpdate(BaseUserContactEntity entity)
         {
-            var connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
@@ -60,7 +60,7 @@ namespace DotNet.Business
         /// </summary>
         public void Synchronous()
         {
-            var connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
+            var connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 var userContactManager = new BaseUserContactManager();

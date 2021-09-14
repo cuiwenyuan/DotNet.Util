@@ -298,7 +298,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable Search(string[] userIds, string search, bool? enabled, bool onlyOnLine)
         {
-            // todo 吉日嘎拉，这里需要从2个表读取，2013-04-21
+            //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
             var sql = "SELECT " + BaseUserEntity.TableName + ".* "
                             + " FROM " + BaseUserEntity.TableName

@@ -4,7 +4,7 @@
 		<TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 utilities(partial (great majority) support .net framework 4.0). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.8</Version>
+		<Version>1.0.9</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -23,7 +23,7 @@
 		<RepositoryType>git</RepositoryType>
 		<AssemblyVersion>5.6.2021.0909</AssemblyVersion>
 		<FileVersion>5.6.2021.0909</FileVersion>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

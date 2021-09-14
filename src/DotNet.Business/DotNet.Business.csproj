@@ -3,7 +3,33 @@
 	<PropertyGroup>
 		<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+		<Description>DotNet.Business is sample for User,Role,Menu, Permission etc. A set of .NET Standard 2.0 utilities(partial (great majority) support .net framework 4.0). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Company>www.cuiwenyuan.com</Company>
+		<Version>1.0.0</Version>
+		<Authors>崔文远Troy Cui</Authors>
+		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
+		<PackageTags>DotNet Business</PackageTags>
+		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageId>WangCaiSoft.DotNet.Business</PackageId>
+		<PackageIcon>logo.128.png</PackageIcon>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>DotNet.Business</AssemblyName>
+		<RootNamespace>DotNet.Business</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ApplicationIcon>App.ico</ApplicationIcon>
+		<RepositoryType>git</RepositoryType>
+		<AssemblyVersion>5.6.2021.0914</AssemblyVersion>
+		<FileVersion>5.6.2021.0914</FileVersion>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="logo.128.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="Microsoft.CSharp" />

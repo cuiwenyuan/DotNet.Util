@@ -115,6 +115,7 @@ namespace DotNet.Business
                     result.StatusMessage = "不合法签名、访问被拒绝";
                     return result;
                 }
+
                 var ipAddress = Utils.GetIp();
                 // 6: 判断对方的ip是否合法的？1个服务程序，可以有多个ip。可以把服务当一个用户看待，一个目标用户可能也配置了多个服务，一般是远程连接。
                 //int? checkIpAddress = 0;

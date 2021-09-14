@@ -12,7 +12,7 @@ using System.Xml;
 namespace DotNet.Util
 {
     /// <summary>
-    /// UserConfigHelper
+    /// UserConfigUtil
     /// 访问用户配置文件的类
     /// 
     /// 修改记录
@@ -31,7 +31,7 @@ namespace DotNet.Util
     ///		<date>2008.04.22</date>
     /// </author> 
     /// </summary>
-    public partial class UserConfigHelper
+    public partial class UserConfigUtil
     {
         /// <summary>
         /// LogOnTo

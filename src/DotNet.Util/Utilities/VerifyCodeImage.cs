@@ -26,7 +26,7 @@ namespace DotNet.Util
         {
         }
 
-#region 验证码长度(默认4个验证码的长度)
+        #region 验证码长度(默认4个验证码的长度)
         int _length = 4;
         /// <summary>
         /// 长度
@@ -36,9 +36,9 @@ namespace DotNet.Util
             get => _length;
             set => _length = value;
         }
-#endregion
+        #endregion
 
-#region 验证码字体大小(为了显示扭曲效果，默认40像素，可以自行修改)
+        #region 验证码字体大小(为了显示扭曲效果，默认40像素，可以自行修改)
         int _fontSize = 50;
         /// <summary>
         /// 字体大小
@@ -48,9 +48,9 @@ namespace DotNet.Util
             get => _fontSize;
             set => _fontSize = value;
         }
-#endregion
+        #endregion
 
-#region 边框补(默认1像素)
+        #region 边框补(默认1像素)
         int _padding = 2;
         /// <summary>
         /// 边距
@@ -60,9 +60,9 @@ namespace DotNet.Util
             get => _padding;
             set => _padding = value;
         }
-#endregion
+        #endregion
 
-#region 是否输出燥点(默认不输出)
+        #region 是否输出燥点(默认不输出)
         bool _chaos = true;
         /// <summary>
         /// 噪点
@@ -72,9 +72,9 @@ namespace DotNet.Util
             get => _chaos;
             set => _chaos = value;
         }
-#endregion
+        #endregion
 
-#region 输出燥点的颜色(默认灰色)
+        #region 输出燥点的颜色(默认灰色)
         Color _chaosColor = Color.LightGray;
         /// <summary>
         /// 噪点颜色
@@ -84,9 +84,9 @@ namespace DotNet.Util
             get => _chaosColor;
             set => _chaosColor = value;
         }
-#endregion
+        #endregion
 
-#region 自定义背景色(默认白色)
+        #region 自定义背景色(默认白色)
         Color _backgroundColor = Color.White;
         /// <summary>
         /// 背景色
@@ -96,9 +96,9 @@ namespace DotNet.Util
             get => _backgroundColor;
             set => _backgroundColor = value;
         }
-#endregion
+        #endregion
 
-#region 自定义随机颜色数组
+        #region 自定义随机颜色数组
         Color[] _colors = { Color.Black, Color.Red, Color.DarkBlue, Color.Green, Color.Orange, Color.Brown, Color.DarkCyan, Color.Purple };
         /// <summary>
         /// 颜色
@@ -108,9 +108,9 @@ namespace DotNet.Util
             get => _colors;
             set => _colors = value;
         }
-#endregion
+        #endregion
 
-#region 自定义字体数组
+        #region 自定义字体数组
         string[] _fonts = { "Arial", "Georgia" };
         /// <summary>
         /// Fonts
@@ -120,9 +120,9 @@ namespace DotNet.Util
             get => _fonts;
             set => _fonts = value;
         }
-#endregion
+        #endregion
 
-#region 自定义随机码字符串序列(使用逗号分隔)
+        #region 自定义随机码字符串序列(使用逗号分隔)
         //  去除 0,1,i,l,o,I,L,O
         string _codeSerial = "2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,j,k,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,M,N,P,Q,R,S,T,U,V,W,X,Y,Z";
         /// <summary>
@@ -133,9 +133,9 @@ namespace DotNet.Util
             get => _codeSerial;
             set => _codeSerial = value;
         }
-#endregion
+        #endregion
 
-#region 产生波形滤镜效果
+        #region 产生波形滤镜效果
         //private const double PI = 3.1415926535897932384626433832795;
         private const double Pi2 = 6.283185307179586476925286766559;
         /// <summary>
@@ -181,9 +181,9 @@ namespace DotNet.Util
             }
             return bitmap;
         }
-#endregion
+        #endregion
 
-#region 生成校验码图片
+        #region 生成校验码图片
         /// <summary>
         /// 创建验证码图片
         /// </summary>
@@ -266,9 +266,9 @@ namespace DotNet.Util
 
             return bitmap;
         }
-#endregion
+        #endregion
 
-#region 生成随机字符码
+        #region 生成随机字符码
         /// <summary>
         /// 创建验证码
         /// </summary>
@@ -299,9 +299,9 @@ namespace DotNet.Util
         {
             return CreateVerifyCode(0);
         }
-#endregion
+        #endregion
 
-#region 将创建好的图片输出到页面
+        #region 将创建好的图片输出到页面
         /// <summary>
         /// 将创建好的图片输出到页面
         /// </summary>
@@ -313,7 +313,14 @@ namespace DotNet.Util
             var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
             bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-            //to-do
+#if NET40_OR_GREATER
+            httpContext.Response.ClearContent();
+            httpContext.Response.ContentType = "image/Jpeg";
+            httpContext.Response.BinaryWrite(memoryStream.GetBuffer());
+#elif NETSTANDARD2_0_OR_GREATER
+            //TODO:.NET STANDARD 2.0的实现方式
+#endif
+
             memoryStream.Close();
             memoryStream = null;
             bitmap.Dispose();

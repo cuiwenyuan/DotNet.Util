@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Model", "DotNet.Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business", "DotNet.Business\DotNet.Business.csproj", "{EEFB10F9-33BA-427D-8AF3-6D9B31ED97DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.IService", "DotNet.IService\DotNet.IService.csproj", "{8C000DF4-68CD-4E13-B641-A42744242776}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.IService", "DotNet.IService\DotNet.IService.csproj", "{8C000DF4-68CD-4E13-B641-A42744242776}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Business.Web", "DotNet.Business.Web\DotNet.Business.Web.csproj", "{D28A7016-B114-4BFD-9BBC-884BCE039DF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{8C000DF4-68CD-4E13-B641-A42744242776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C000DF4-68CD-4E13-B641-A42744242776}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C000DF4-68CD-4E13-B641-A42744242776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

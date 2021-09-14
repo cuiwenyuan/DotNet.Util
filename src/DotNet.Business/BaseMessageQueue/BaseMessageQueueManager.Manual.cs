@@ -132,19 +132,13 @@ namespace DotNet.Business
         public int ResendEmail(int maxFailCount = 5)
         {
             var result = 0;
-#if NET40_OR_GREATER
-            var host = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
-#elif NETSTANDARD2_0_OR_GREATER
-//TO-DO
-            var host = string.Empty;
-#endif
 
             //每次发一封，避免超时，任务不停启动而listEntity并未重新获取
-            var cacheKey = "List." + host + "." + CurrentTableName + ".Email";
+            var cacheKey = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName + ".Email";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var messageType = "Email";
-            var listEntity = CacheUtil.Cache<List<BaseMessageQueueEntity>>(cacheKey, () => GetList<BaseMessageQueueEntity>(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldMessageType, messageType), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldSource, host) }, 1, BaseMessageQueueEntity.FieldId), true, false, cacheTime);
+            var listEntity = CacheUtil.Cache<List<BaseMessageQueueEntity>>(cacheKey, () => GetList<BaseMessageQueueEntity>(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldMessageType, messageType), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldSource, BaseSystemInfo.ApplicationId) }, 1, BaseMessageQueueEntity.FieldId), true, false, cacheTime);
 
             foreach (var entity in listEntity)
             {
