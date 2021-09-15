@@ -137,9 +137,7 @@ namespace DotNet.Business
             return userInfo;
         }
         #endregion
-#endif
 
-#if NET40_OR_GREATER
         #region 上传下载文件部分
 
         #region public static string UpLoadFile(string categoryId, string objectId, System.Web.HttpPostedFile httpPostedFile, ref string loadDirectory, bool deleteFile) 上传文件
@@ -238,9 +236,6 @@ namespace DotNet.Business
         #endregion
 
         #endregion
-#endif
-
-#if NET40_OR_GREATER
         #region 表格选择记录功能部分 GridView
 
         #region public static string[] GetSelecteIds(GridView gv) 获得已选的表格行代码数组
@@ -348,9 +343,6 @@ namespace DotNet.Business
         #endregion
 
         #endregion
-#endif
-
-#if NET40_OR_GREATER
         #region 表格选择记录功能部分 repeater
 
         #region public static string[] GetSelecteIds(Repeater repeater) 获得已选的表格行代码数组
@@ -450,9 +442,6 @@ namespace DotNet.Business
         #endregion
 
         #endregion
-#endif
-
-#if NET40_OR_GREATER
         #region 表格选择记录功能部分 DataGrid
 
         #region public static string[] GetSelecteIds(DataGrid dataGrid) 获得已选的表格行代码数组

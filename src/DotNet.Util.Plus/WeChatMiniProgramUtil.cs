@@ -6,10 +6,8 @@ using System.Text;
 using System.Net;
 using System.Xml;
 using Newtonsoft.Json;
-#if NETSTANDARD2_0_OR_GREATER
-using Microsoft.Net.Http;
-using Microsoft.Net.Http.Headers;
-#endif
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace DotNet.Util
 {
@@ -163,7 +161,6 @@ namespace DotNet.Util
         {
             var result = string.Empty;
 
-#if NETSTANDARD2_0_OR_GREATER
             try
             {
                 HttpContent httpContent = new StringContent(jsonString);
@@ -197,7 +194,7 @@ namespace DotNet.Util
                        if (data.Length > 1130)
                        {
                            fileName = Guid.NewGuid().ToString("D") + ".jpg";
-                           var filePath = string.Format(@"{0}\QRCode\" + fileName, AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
+                           var filePath = string.Format(@"{0}\QRCode\" + fileName, AppDomain.CurrentDomain.BaseDirectory);
 
                            var folder = Path.GetDirectoryName(filePath);
                            if (!Directory.Exists(folder))
@@ -226,7 +223,6 @@ namespace DotNet.Util
             {
                 LogUtil.WriteException(ex);
             }
-#endif
             return result;
         }
 

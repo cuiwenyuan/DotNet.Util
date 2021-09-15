@@ -307,7 +307,7 @@ namespace DotNet.Business
                 if (string.IsNullOrEmpty(result) && useUserCenterHost)
                 {
                     //停用远程获取 Troy.Cui 2018.07.23
-                    //result = LogOnUtilities.GetUserOpenId(userInfo, cachingSystemCode);
+                    //result = LogOnUtil.GetUserOpenId(userInfo, cachingSystemCode);
                 }
 
                 // 从数据库获取,这里要考虑读写分离的做法

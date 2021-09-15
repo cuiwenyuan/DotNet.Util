@@ -62,7 +62,7 @@ namespace DotNet.Business
             };
 
             // 远程添加模式
-            //LogUtilities.AddLog(serviceInfo.UserInfo, entity);
+            //LogUtil.AddLog(serviceInfo.UserInfo, entity);
 
             // 直接写入本地数据库的方法
             var logManager = new BaseLogManager(serviceInfo.UserInfo);

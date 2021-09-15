@@ -158,7 +158,7 @@ namespace DotNet.Business
             {
                 result.Status = false;
                 result.StatusMessage = ex.Message;
-                //LogUtilities.WriteException(ex);
+                //LogUtil.WriteException(ex);
             }
 
             return result;

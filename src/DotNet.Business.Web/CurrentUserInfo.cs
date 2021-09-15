@@ -25,13 +25,6 @@ namespace DotNet.Business
     public class CurrentUserInfo : BaseUserInfo
     {
         /// <summary>
-        /// 扩展的信息，从哪里读取？
-        /// 数据库？
-        /// 远程URL读取？
-        /// </summary>
-        public bool GetExtensionsFromDb = false;
-
-        /// <summary>
         /// 当前用户信息
         /// </summary>
         public CurrentUserInfo()
@@ -50,21 +43,21 @@ namespace DotNet.Business
             }
         }
 
-        /// <summary>
-        /// 当前的组织结构公司名称
-        /// </summary>
-        public BaseOrganizeEntity Company
-        {
-            get
-            {
-                BaseOrganizeEntity company = null;
-                // 读取组织机构的信息
-                if (!string.IsNullOrEmpty(CompanyId))
-                {
-                    //company = new BaseOrganizeManager().GetObjectByCache(CompanyId);
-                }
-                return company;
-            }
-        }
+        ///// <summary>
+        ///// 当前的组织结构公司名称
+        ///// </summary>
+        //public BaseOrganizeEntity Company
+        //{
+        //    get
+        //    {
+        //        BaseOrganizeEntity company = null;
+        //        // 读取组织机构的信息
+        //        if (!string.IsNullOrEmpty(CompanyId))
+        //        {
+        //            company = new BaseOrganizeManager().GetObject(CompanyId);
+        //        }
+        //        return company;
+        //    }
+        //}
     }
 }
