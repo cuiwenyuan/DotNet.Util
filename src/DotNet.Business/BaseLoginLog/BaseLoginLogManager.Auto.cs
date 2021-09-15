@@ -235,7 +235,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseLoginLogEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseLoginLogEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -269,7 +269,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldIpAddress, entity.IpAddress);
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldIpAddressName, entity.IpAddressName);
 
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

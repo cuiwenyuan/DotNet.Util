@@ -296,7 +296,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseDepartmentEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseDepartmentEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -327,7 +327,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManager, entity.Manager);
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManagerQq, entity.ManagerQq);
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManagerMobile, entity.ManagerMobile);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

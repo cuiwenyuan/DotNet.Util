@@ -7,7 +7,7 @@ using System.Data;
 namespace DotNet.Util
 {
     /// <summary>
-    /// IDbUtilExpand
+    /// IDbUtilExtend
     /// 数据库访问扩展接口
     /// 
     /// 修改记录
@@ -19,7 +19,7 @@ namespace DotNet.Util
     ///		<date>2010.07.13</date>
     /// </author> 
     /// </summary>
-    public partial interface IDbHelperExpand
+    public partial interface IDbHelperExtend
     {
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快

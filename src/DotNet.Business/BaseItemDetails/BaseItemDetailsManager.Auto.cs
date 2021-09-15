@@ -308,7 +308,7 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -328,7 +328,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldSortCode, entity.SortCode);
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

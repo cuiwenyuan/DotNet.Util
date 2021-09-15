@@ -310,7 +310,7 @@ namespace DotNet.Model
             ModifiedUserId = BaseUtil.ConvertToString(dr[FieldUpdateUserId]);
             ModifiedBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

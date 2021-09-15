@@ -277,7 +277,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseCalendarEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseCalendarEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -286,7 +286,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseCalendarEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldFiscalYear, entity.FiscalYear);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldFiscalMonth, entity.FiscalMonth);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldFiscalDay, entity.FiscalDay);

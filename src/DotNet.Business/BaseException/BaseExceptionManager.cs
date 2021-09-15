@@ -221,7 +221,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseExceptionEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseExceptionEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -230,7 +230,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseExceptionEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldEventId, entity.EventId);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldCategory, entity.Category);

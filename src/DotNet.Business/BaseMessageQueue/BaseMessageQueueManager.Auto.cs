@@ -289,7 +289,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseMessageQueueEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseMessageQueueEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -298,7 +298,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseMessageQueueEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldSource, entity.Source);
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldMessageType, entity.MessageType);
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldRecipient, entity.Recipient);

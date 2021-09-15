@@ -272,7 +272,7 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserRoleEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserRoleEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -291,7 +291,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDeleted, entity.DeletionStateCode);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

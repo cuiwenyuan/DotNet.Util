@@ -208,7 +208,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -217,7 +217,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldWechatRemind, entity.WechatRemind);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldEmailRemind, entity.EmailRemind);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldMobileRemind, entity.MobileRemind);

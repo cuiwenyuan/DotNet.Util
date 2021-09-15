@@ -135,7 +135,7 @@ namespace DotNet.Model
         /// <param name="dr">数据行</param>
         protected override BaseEntity GetFrom(IDataRow dr)
         {
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[FieldUpdateTime]);
             IdcardPhotoHand = BaseUtil.ConvertToString(dr[FieldIdcardPhotoHand]);
             OrganizeFullname = BaseUtil.ConvertToString(dr[FieldOrganizeFullname]);

@@ -282,7 +282,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -298,7 +298,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldMark, entity.Mark);
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

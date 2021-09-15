@@ -233,7 +233,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseLanguageEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseLanguageEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseLanguageEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldLanguageCode, entity.LanguageCode);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldMessageCode, entity.MessageCode);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldCaption, entity.Caption);

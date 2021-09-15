@@ -126,7 +126,7 @@ namespace DotNet.Model
             ModifiedBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
             ModifiedUserId = BaseUtil.ConvertToString(dr[FieldUpdateUserId]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

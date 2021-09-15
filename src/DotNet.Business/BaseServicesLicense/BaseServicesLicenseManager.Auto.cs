@@ -242,7 +242,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -258,7 +258,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldEndDate, entity.EndTime);
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldEnabled, entity.Enabled ? 1 : 0);
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldDeleted, entity.DeletionStateCode);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

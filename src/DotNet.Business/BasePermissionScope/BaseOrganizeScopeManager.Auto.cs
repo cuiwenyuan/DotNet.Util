@@ -227,7 +227,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseOrganizeScopeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOrganizeScopeEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -236,7 +236,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizeScopeEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseOrganizeScopeEntity.FieldResourceCategory, entity.ResourceCategory);
             sqlBuilder.SetValue(BaseOrganizeScopeEntity.FieldResourceId, entity.ResourceId);
             sqlBuilder.SetValue(BaseOrganizeScopeEntity.FieldPermissionId, entity.PermissionId);

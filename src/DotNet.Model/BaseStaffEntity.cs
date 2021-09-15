@@ -561,7 +561,7 @@ namespace DotNet.Model
             DutyType = BaseUtil.ConvertToString(dr[FieldDutyType]);
             DutyLevel = BaseUtil.ConvertToString(dr[FieldDutyLevel]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

@@ -218,7 +218,7 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseRoleOrganizeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseRoleOrganizeEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -232,7 +232,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldDeleted, entity.DeletionStateCode);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

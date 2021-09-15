@@ -62,7 +62,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseOrganizeEntity entity)
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOrganizeEntity entity)
         {
             sqlBuilder.SetValue(BaseOrganizeEntity.FieldStatisticalName, entity.StatisticalName);
             sqlBuilder.SetValue(BaseOrganizeEntity.FieldWeightRatio, entity.WeightRatio);

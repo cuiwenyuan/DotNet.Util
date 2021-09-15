@@ -40,7 +40,7 @@ namespace DotNet.Business
         ///// 设置实体
         ///// </summary>
         ///// <param name="sqlBuilder">实体</param>
-        //public void SetEntityExpand(SqlBuilder sqlBuilder);
+        //public void SetEntityExtend(SqlBuilder sqlBuilder);
 
         /// <summary>
         /// 数据表主键，需要用单一字段做为主键，建议默认为Id字段

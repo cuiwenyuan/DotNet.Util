@@ -118,7 +118,7 @@ namespace DotNet.Model
             CreateUserId = BaseUtil.ConvertToString(dr[FieldCreateUserId]);
             CreateBy = BaseUtil.ConvertToString(dr[FieldCreateBy]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

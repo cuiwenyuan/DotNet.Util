@@ -38,25 +38,25 @@ namespace DotNet.Model
         /// 从数据行读取
         /// </summary>
         /// <param name="dr">数据行</param>
-        public virtual void GetFromExpand(DataRow dr)
+        public virtual void GetFromExtend(DataRow dr)
         {
-            GetFromExpand(new DrDataRow(dr));
+            GetFromExtend(new DrDataRow(dr));
         }
 
         /// <summary>
         /// 从数据流读取
         /// </summary>
         /// <param name="dataReader">数据流</param>
-        public virtual void GetFromExpand(IDataReader dataReader)
+        public virtual void GetFromExtend(IDataReader dataReader)
         {
-            GetFromExpand(new DrDataReader(dataReader));
+            GetFromExtend(new DrDataReader(dataReader));
         }
 
         /// <summary>
         /// 从自定义数据流读取
         /// </summary>
         /// <param name="dr">数据流</param>
-        public virtual void GetFromExpand(IDataRow dr)
+        public virtual void GetFromExtend(IDataRow dr)
         {
 
         }

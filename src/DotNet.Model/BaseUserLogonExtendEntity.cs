@@ -99,7 +99,7 @@ namespace DotNet.Model
             MobileRemind = BaseUtil.ConvertToNullableDecimal(dr[FieldMobileRemind]);
             UsernamePasswordLogon = BaseUtil.ConvertToNullableDecimal(dr[FieldUsernamePasswordLogon]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

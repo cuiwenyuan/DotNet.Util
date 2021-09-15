@@ -231,7 +231,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseFolderEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseFolderEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -249,7 +249,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseFolderEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseFolderEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BaseFolderEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

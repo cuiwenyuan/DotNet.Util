@@ -227,7 +227,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserAddressEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserAddressEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -256,7 +256,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserAddressEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BaseUserAddressEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseUserAddressEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

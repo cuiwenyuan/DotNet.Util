@@ -227,7 +227,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BasePermissionScopeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BasePermissionScopeEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -248,7 +248,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

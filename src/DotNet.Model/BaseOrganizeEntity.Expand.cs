@@ -304,7 +304,7 @@ namespace DotNet.Model
         /// 从数据行读取
         /// </summary>
         /// <param name="dr">数据行</param>
-        public override void GetFromExpand(IDataRow dr)
+        public override void GetFromExtend(IDataRow dr)
         {
             if (dr.ContainsColumn(FieldWeightRatio))
             {

@@ -275,7 +275,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseLogEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseLogEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -284,7 +284,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseLogEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseLogEntity.FieldCompanyId, entity.CompanyId);
             sqlBuilder.SetValue(BaseLogEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseLogEntity.FieldUserName, entity.UserName);

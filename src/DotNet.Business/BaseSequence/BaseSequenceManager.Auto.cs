@@ -227,7 +227,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseSequenceEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseSequenceEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -244,7 +244,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseSequenceEntity.FieldStep, entity.Step);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

@@ -171,7 +171,7 @@ namespace DotNet.Model
         /// <param name="dr">数据流</param>
         protected override BaseEntity GetFrom(IDataRow dr)
         {
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             Id = BaseUtil.ConvertToString(dr[FieldId]);
             ContactId = BaseUtil.ConvertToString(dr[FieldContactId]);
             Category = BaseUtil.ConvertToString(dr[FieldCategory]);

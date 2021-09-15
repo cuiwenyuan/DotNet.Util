@@ -167,7 +167,7 @@ namespace DotNet.Model
             IpAddressName = BaseUtil.ConvertToString(dr[FieldIpAddressName]);
             LogLevel = BaseUtil.ConvertToInt(dr[FieldLogLevel]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

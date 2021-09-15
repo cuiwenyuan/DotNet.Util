@@ -145,7 +145,7 @@ namespace DotNet.Model
         /// <param name="dr">数据行</param>
         protected override BaseEntity GetFrom(IDataRow dr)
         {
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             if (dr.ContainsColumn(FieldId))
             {
                 Id = BaseUtil.ConvertToInt(dr[FieldId]);

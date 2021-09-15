@@ -208,7 +208,7 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseFileEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseFileEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -234,7 +234,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseFileEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseFileEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseFileEntity.FieldSortCode, entity.SortCode);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

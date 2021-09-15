@@ -223,7 +223,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserExpressEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserExpressEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -232,7 +232,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseUserExpressEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserExpressEntity.FieldTransferAddFee, entity.TransferAddFee);
             //增加所属承包区ID
             sqlBuilder.SetValue(BaseUserExpressEntity.FieldOwnerId, entity.OwnerId);

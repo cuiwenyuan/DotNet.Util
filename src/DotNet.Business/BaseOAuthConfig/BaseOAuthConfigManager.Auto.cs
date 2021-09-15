@@ -257,7 +257,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -266,7 +266,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldTypeId, entity.TypeId);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldName, entity.Name);

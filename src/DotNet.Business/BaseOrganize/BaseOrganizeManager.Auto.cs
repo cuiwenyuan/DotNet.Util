@@ -276,7 +276,7 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseOrganizeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOrganizeEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -334,7 +334,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseOrganizeEntity.FieldSortCode, entity.SortCode);
             sqlBuilder.SetValue(BaseOrganizeEntity.FieldDescription, entity.Description);
 
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

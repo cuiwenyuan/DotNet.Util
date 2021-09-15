@@ -207,7 +207,7 @@ namespace DotNet.Model
             ParentCode = BaseUtil.ConvertToString(dr[FieldParentCode]);
             ManagerId = BaseUtil.ConvertToString(dr[FieldManagerId]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

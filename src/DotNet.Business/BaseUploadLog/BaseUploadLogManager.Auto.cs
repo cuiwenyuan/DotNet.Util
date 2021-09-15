@@ -283,7 +283,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUploadLogEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUploadLogEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -292,7 +292,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseUploadLogEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFileName, entity.FileName);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFileExtension, entity.FileExtension);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFilePath, entity.FilePath);

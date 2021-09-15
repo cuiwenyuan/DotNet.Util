@@ -168,7 +168,7 @@ namespace DotNet.Model
         /// <param name="dr">数据行</param>
         protected override BaseEntity GetFrom(IDataRow dr)
         {
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             Id = BaseUtil.ConvertToString(dr[FieldId]);
             ResourceCategory = BaseUtil.ConvertToString(dr[FieldResourceCategory]);
             ResourceId = BaseUtil.ConvertToString(dr[FieldResourceId]);

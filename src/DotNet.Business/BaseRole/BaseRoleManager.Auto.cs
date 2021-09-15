@@ -255,7 +255,7 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseRoleEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseRoleEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -275,7 +275,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseRoleEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseRoleEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseRoleEntity.FieldDescription, entity.Description);
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
         }
 
         /// <summary>

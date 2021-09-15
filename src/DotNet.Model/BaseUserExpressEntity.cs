@@ -110,7 +110,7 @@ namespace DotNet.Model
             CreateOn = BaseUtil.ConvertToNullableDateTime(dr[FieldCreateTime]);
             CreateUserId = BaseUtil.ConvertToString(dr[FieldCreateUserId]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

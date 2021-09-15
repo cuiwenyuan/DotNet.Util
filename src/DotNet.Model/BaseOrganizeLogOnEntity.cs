@@ -108,7 +108,7 @@ namespace DotNet.Model
             IpAddress = BaseUtil.ConvertToString(dr[FieldIpAddress]);
             ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[BaseOrganizeEntity.FieldUpdateTime]);
             // 获取扩展属性
-            GetFromExpand(dr);
+            GetFromExtend(dr);
             return this;
         }
 

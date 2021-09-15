@@ -186,7 +186,7 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseMessageEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseMessageEntity entity);
 
         /// <summary>
         /// 设置实体
@@ -195,7 +195,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseMessageEntity entity)
         {
-            SetEntityExpand(sqlBuilder, entity);
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseMessageEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseMessageEntity.FieldReceiverDepartmentId, entity.ReceiverDepartmentId);
             sqlBuilder.SetValue(BaseMessageEntity.FieldReceiverDepartmentName, entity.ReceiverDepartmentName);
