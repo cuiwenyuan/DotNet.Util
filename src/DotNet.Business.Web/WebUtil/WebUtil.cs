@@ -21,7 +21,7 @@ namespace DotNet.Business
     using Util;
     using Model;
 
-    public partial class Utilities
+    public partial class WebUtil
     {
         /// <summary>
         /// 上传文件的路径定义
@@ -77,11 +77,8 @@ namespace DotNet.Business
         /// </summary>
         public static string UserIsNotAdminPage = @"~/Modules/Common/System/AccessDeny.aspx";
 
-        /// <summary>
-        /// 选择是简易管理模式，是否部门管理权限管理角色管理等页面很复杂？
-        /// </summary>
-        protected bool SimpleManagerMode = true;
-
+#if NET40_OR_GREATER
+        #region GetOpenId
         /// <summary>
         /// 获取OpenId
         /// </summary>
@@ -96,6 +93,7 @@ namespace DotNet.Business
             }
             return openId;
         }
+        #endregion
 
         #region public static BaseUserInfo GetUserInfo() 获取用户信息
         /// <summary>
@@ -139,11 +137,11 @@ namespace DotNet.Business
             return userInfo;
         }
         #endregion
+#endif
 
-        //
-        // 上传下载文件部分
-        //
 #if NET40_OR_GREATER
+        #region 上传下载文件部分
+
         #region public static string UpLoadFile(string categoryId, string objectId, System.Web.HttpPostedFile httpPostedFile, ref string loadDirectory, bool deleteFile) 上传文件
 
         /// <summary>
@@ -238,11 +236,13 @@ namespace DotNet.Business
             return upLoadFilePath;
         }
         #endregion
+
+        #endregion
 #endif
-        //
-        // 表格选择记录功能部分 GridView
-        //
+
 #if NET40_OR_GREATER
+        #region 表格选择记录功能部分 GridView
+
         #region public static string[] GetSelecteIds(GridView gv) 获得已选的表格行代码数组
         /// <summary>
         /// 获得已选的表格行代码数组
@@ -346,11 +346,13 @@ namespace DotNet.Business
             return ids;
         }
         #endregion
+
+        #endregion
 #endif
-        //
-        // 表格选择记录功能部分 repeater
-        //
+
 #if NET40_OR_GREATER
+        #region 表格选择记录功能部分 repeater
+
         #region public static string[] GetSelecteIds(Repeater repeater) 获得已选的表格行代码数组
         /// <summary>
         /// 获得已选的表格行代码数组
@@ -446,11 +448,13 @@ namespace DotNet.Business
             return ids;
         }
         #endregion
+
+        #endregion
 #endif
-        //
-        // 表格选择记录功能部分 DataGrid
-        //
+
 #if NET40_OR_GREATER
+        #region 表格选择记录功能部分 DataGrid
+
         #region public static string[] GetSelecteIds(DataGrid dataGrid) 获得已选的表格行代码数组
         /// <summary>
         /// 获得已选的表格行代码数组
@@ -527,84 +531,8 @@ namespace DotNet.Business
             return paramIDs;
         }
         #endregion
+
+        #endregion
 #endif
-        //
-        // 获取图标地址
-        //
-
-        #region public static string GetFileIcon(string fileName) 获取图标地址
-        /// <summary>
-        /// 获取图标地址
-        /// </summary>
-        /// <param name="fileName">文件名</param>
-        /// <returns>图标地址</returns>
-        public static string GetFileIcon(string fileName)
-        {
-            // 这里是默认的图标
-            var imageUrl = "Themes/Default/Images/Download.gif";
-            // 截取后缀名,GetExtension读出来的后缀带"."的
-            var extension = Path.GetExtension(fileName).ToLower().Substring(1);
-            // 这里查找是否有指定的图标
-            if (File.Exists(HttpContext.Current.Server.MapPath("~/") + "Themes/Default/Images/" + extension + ".png"))
-            {
-                // 获取图标地址
-                imageUrl = "Themes/Default/Images/" + extension + ".png";
-            }
-            return imageUrl;
-        }
-        #endregion
-
-        #region public static bool CheckLAN()
-        /// <summary>
-        /// 当前电脑是否在局域网络里
-        /// </summary>
-        /// <returns></returns>
-        public static bool CheckLan()
-        {
-            var ipAddress = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            if ((ipAddress.Substring(0, 3) == "127") || (ipAddress.Substring(0, 3) == "192") || (ipAddress.Substring(0, 3) == "10."))
-            {
-                return true;
-            }
-            return false;
-        }
-        #endregion
-
-        #region public static void CloseWindow(bool refreshOpener = null)
-        /// <summary>
-        /// 关闭窗体
-        /// </summary>
-        /// <param name="refreshOpener">是否刷新父窗体</param>
-        public static void CloseWindow(bool refreshOpener = false)
-        {
-            HttpContext.Current.Response.Write("<script language=\"JavaScript\">" + Environment.NewLine);
-            if (refreshOpener)
-            {
-                // window.opener != null 这个错误的调用方法
-                HttpContext.Current.Response.Write("if(window.opener && !window.opener.closed){" + Environment.NewLine);
-                HttpContext.Current.Response.Write("window.opener.location.href=window.opener.location.href;" + Environment.NewLine);
-                HttpContext.Current.Response.Write("}" + Environment.NewLine);
-            }
-            HttpContext.Current.Response.Write("window.opener=null;" + Environment.NewLine);
-            HttpContext.Current.Response.Write("window.open('','_self');" + Environment.NewLine);
-            HttpContext.Current.Response.Write("window.close();");
-            HttpContext.Current.Response.Write("</script>" + Environment.NewLine);
-        }
-        #endregion
-
-        #region public static string GetItemName(string itemsTableName,string itemValue) 获取选项名称
-        /// <summary>
-        /// 将选项值转换为名称
-        /// </summary>
-        /// <param name="itemsTableName"></param>
-        /// <param name="itemValue"></param>
-        /// <returns></returns>
-        public static string GetItemName(string itemsTableName, string itemValue)
-        {
-            if (string.IsNullOrEmpty(itemValue))
-                return null;
-            return new BaseItemDetailsManager(itemsTableName).GetProperty(new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldItemValue, itemValue), BaseItemDetailsEntity.FieldItemName);
-        }
-        #endregion
     }
 }

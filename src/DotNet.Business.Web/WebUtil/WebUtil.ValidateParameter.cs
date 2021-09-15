@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2016-09-02</date>
     /// </author>
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
 #if NET40_OR_GREATER
         /// <summary>

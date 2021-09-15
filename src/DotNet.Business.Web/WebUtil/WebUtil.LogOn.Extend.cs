@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// <summary>
     /// 登录功能相关部分
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
 #if NET40_OR_GREATER
         #region public static void Logout(bool useSso, BaseUserInfo userInfo)

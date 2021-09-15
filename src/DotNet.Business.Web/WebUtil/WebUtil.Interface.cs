@@ -15,7 +15,7 @@ namespace DotNet.Business
     using Util;
     using Model;
 
-    public partial class Utilities
+    public partial class WebUtil
     {
         #region public static string BuildUrl(string url, string paramText, string paramValue)
         /// <summary>

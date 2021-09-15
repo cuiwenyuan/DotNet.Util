@@ -8,13 +8,12 @@ using DotNet.Util;
 
 namespace DotNet.Business
 {
-    using Model;
-
     /// <summary>
     /// LDAP登录功能相关部分
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
+#if NET40_OR_GREATER
         //LDAP域用户登录部分：包括Windows AD域用户登录
         #region public static BaseUserInfo LogOnByLDAP(string domain, string lDAP, string userName, string password, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
 
@@ -212,6 +211,6 @@ namespace DotNet.Business
 
         }
         #endregion
-
+#endif
     }
 }

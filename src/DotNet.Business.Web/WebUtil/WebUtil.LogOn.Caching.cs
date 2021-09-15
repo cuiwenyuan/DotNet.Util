@@ -17,7 +17,7 @@ namespace DotNet.Business
     /// <summary>
     /// 登录功能相关部分
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
         /// <summary>
         /// 端口

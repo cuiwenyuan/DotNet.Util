@@ -23,8 +23,9 @@ namespace DotNet.Business
     ///		2015.11.20 版本：1.0 JiRiGaLa 进行改进。
     ///		
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
+#if NET40_OR_GREATER
         /// <summary>
         /// 检查前端传来的用户信息是否正确
         /// 一些接口调用需要检查
@@ -53,7 +54,7 @@ namespace DotNet.Business
                         return jsonResult;
                     }
                     // 这里需要是已经登录的用户，不是已经被踢掉的用户
-                    if (!DotNet.Business.Utilities.ValidateOpenId(userInfo.Id, userInfo.OpenId))
+                    if (!DotNet.Business.WebUtil.ValidateOpenId(userInfo.Id, userInfo.OpenId))
                     {
                         jsonResult.Status = false;
                         jsonResult.StatusCode = Status.ParameterError.ToString();
@@ -322,6 +323,7 @@ namespace DotNet.Business
 
             return result;
         }
+#endif
         /// <summary>
         /// 设置用户OpenId
         /// </summary>

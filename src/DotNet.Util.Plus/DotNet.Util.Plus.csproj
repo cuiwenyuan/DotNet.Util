@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
-		<Description>A set of .NET Standard 2.0 utilities(support .net framework 4.0). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Description>A set of .NET Standard 2.0 utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.5</Version>
 		<Authors>崔文远Troy Cui</Authors>
@@ -55,7 +55,7 @@
 		<PackageReference Include="System.DirectoryServices" Version="5.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40'  Or $(TargetFramework)' == 'net45' Or $(TargetFramework)' == 'net46'">
 		<PackageReference Include="Portable.BouncyCastle" Version="1.8.6" />
 		<PackageReference Include="SharpZipLib" Version="0.86.0" />
 		<Reference Include="System.DirectoryServices" />

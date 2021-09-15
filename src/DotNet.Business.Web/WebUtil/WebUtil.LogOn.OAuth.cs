@@ -7,13 +7,12 @@ using DotNet.Util;
 
 namespace DotNet.Business
 {
-    using Model;
-
     /// <summary>
     /// LDAP登录功能相关部分
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
+#if NET40_OR_GREATER
         #region OAuth登录
 
         /// <summary>
@@ -113,6 +112,6 @@ namespace DotNet.Business
             return result;
         }
         #endregion
-
+#endif
     }
 }

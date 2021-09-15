@@ -21,7 +21,7 @@ namespace DotNet.Business
     /// <summary>
     /// 登录功能相关部分
     /// </summary>
-    public partial class Utilities
+    public partial class WebUtil
     {
         /// <summary>
         /// 数据库连接串，改进性能只读取一次就可以了
@@ -83,25 +83,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public static bool UserIsAdministrator() 判断当前用户是否为系统管理员
-        /// <summary>
-        /// 判断当前用户是否为系统管理员
-        /// </summary>
-        /// <returns>是否</returns>
-        public static bool UserIsAdministrator()
-        {
-            var result = false;
-            if (UserIsLogOn())
-            {
-                if (HttpContext.Current.Session != null)
-                {
-                    var userInfo = (BaseUserInfo)HttpContext.Current.Session["UserInfo"];
-                    result = userInfo.IsAdministrator;
-                }
-            }
-            return result;
-        }
-        #endregion
+#if NET40_OR_GREATER
 
         #region public static bool CheckIsLogOn(string accessDenyUrl = null) 检查是否已登录
         /// <summary>
@@ -144,82 +126,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public static void CheckIsAdministrator() 检查判断当前用户是否为系统管理员
-        /// <summary> 
-        /// 检查判断当前用户是否为系统管理员
-        /// </summary>
-        public static void CheckIsAdministrator()
-        {
-            // 检查是否已登录
-            CheckIsLogOn();
-            // 是否系统管理员
-            if (!UserIsAdministrator())
-            {
-                HttpContext.Current.Response.Redirect(UserIsNotAdminPage);
-            }
-        }
-        #endregion
-
-        #region 第1部分：用户注册
-
-        #region private static string GetAfterUserRegisterBody(BaseUserEntity userEntity) 用户注册之后，给用户发的激活账户的邮件
-        /// <summary>
-        /// 用户注册之后，给用户发的激活账户的邮件
-        /// </summary>
-        /// <param name="userEntity">用户实体</param>
-        /// <returns>邮件主题</returns>
-        private static string GetAfterUserRegisterBody(BaseUserEntity userEntity)
-        {
-            // openId,有空时改进
-            var sb = Pool.StringBuilder.Get();
-            sb.Append("<body style=\"font-size:10pt\">");
-            sb.Append("<div style=\"font-size:10pt; font-weight:bold\">尊敬的用户 " + userEntity.UserName + " 您好：</div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 请点击此处激活您的账号：<a href='" + BaseSystemInfo.WebHost + "/Modules/User/Activation.aspx?Id=" + userEntity.Id + "'><font size=\"3\" color=\"#6699cc\">" + userEntity.UserName + "</font></a></div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 也可以直接在url中输入网址下面的网址 http://" + BaseSystemInfo.WebHost + "/Modules/User/Activation.aspx?Id=" + userEntity.Id + " 激活账户</div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如有任何疑问，欢迎致联系：" + BaseSystemInfo.CompanyPhone + "我们将热情为您解答。</div>");
-            sb.Append("<br>");
-            sb.Append("<div style=\"text-align:center\">" + BaseSystemInfo.CustomerCompanyName + "</div>");
-            sb.Append("<div style=\"text-align:center\">" + DateTime.Now.Year + "年" + DateTime.Now.Month + "月" + DateTime.Now.Day + "日</div></body>");
-            return sb.Put();
-        }
-        #endregion
-
-        #region public static bool AfterUserRegister(BaseUserEntity userEntity) 用户注册之后，给用户发的激活账户的邮件
-        /// <summary>
-        /// 用户注册之后，给用户发的激活账户的邮件
-        /// </summary>
-        /// <param name="userEntity">用户实体</param>
-        /// <returns>成功发送邮件</returns>
-        public static bool AfterUserRegister(BaseUserEntity userEntity)
-        {
-            var result = false;
-            BaseUserInfo userInfo = null;
-
-            using (var mailMessage = new System.Net.Mail.MailMessage())
-            {
-                // 接收人邮箱地址
-                // mailMessage.To.Add(new System.Net.Mail.MailAddress(userEntity.Email));
-                mailMessage.Body = GetAfterUserRegisterBody(userEntity);
-                mailMessage.From = new System.Net.Mail.MailAddress(BaseSystemInfo.MailFrom);
-                mailMessage.BodyEncoding = Encoding.GetEncoding("GB2312");
-                mailMessage.Subject = "新密码。";
-                mailMessage.IsBodyHtml = true;
-                var smtpclient = new System.Net.Mail.SmtpClient("SMTP.163.COM", 25);
-                smtpclient.Credentials = new NetworkCredential("xlf8255363@163.com", "youxikuang");
-                smtpclient.EnableSsl = false;
-                smtpclient.Send(mailMessage);
-                result = true;
-            }
-            return result;
-        }
-        #endregion
-
-        #endregion
-
-        #region 第2部分：判断用户是否已登录部分
+        #region 判断用户是否已登录部分
 
         #region public static bool UserIsLogOn() 判断用户是否已登录
         /// <summary>
@@ -298,7 +205,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 第3部分：判断当前的CheckCookie内容情况
+        #region 判断当前的CheckCookie内容情况
 
         #region public static BaseUserInfo CheckCookie()
         /// <summary>
@@ -407,11 +314,6 @@ namespace DotNet.Business
             return userInfo;
         }
         #endregion
-
-        //public static BaseUserInfo GetUserCookie()
-        //{
-        //    return GetUserCookie();
-        //}
 
         #region public static BaseUserInfo GetUserCookie() 获取用户相应的Cookies信息
         /// <summary>
@@ -623,7 +525,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 第4部分：用OpenId登录部分
+        #region 用OpenId登录部分
         /// <summary>
         /// 授权码登录
         /// </summary>
@@ -719,7 +621,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 第5部分：用用户名密码登录部分
+        #region 用用户名密码登录部分
 
         #region public static BaseUserInfo LogOn(string userName, string password, bool checkUserPassword = true)
         /// <summary>
@@ -919,7 +821,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 第6部分：安全退出部分
+        #region 安全退出部分
 
         #region public static void RemoveUserCookie()
         /// <summary>
@@ -1015,46 +917,9 @@ namespace DotNet.Business
         #endregion
 
         #endregion
+#endif
 
-        //
-        //  七 用户修改密码部分
-        //
-
-
-        //
-        // 八 读取用户信息，更新用户信息部分
-        //
-
-
-        //
-        // 九 忘记密码部分
-        //
-
-        #region private static string GetResetPasswordBody(BaseUserEntity userEntity, string password) 获取忘记密码邮件主题内容部分
-        /// <summary>
-        /// 获取忘记密码邮件主题内容部分
-        /// </summary>
-        /// <param name="userEntity">用户实体</param>
-        /// <param name="password">密码</param>
-        /// <returns>邮件主题</returns>
-        private static string GetResetPasswordBody(BaseUserEntity userEntity, string password)
-        {
-            var sb = Pool.StringBuilder.Get();
-            sb.Append("<body style=\"font-size:10pt\">");
-            sb.Append("<div style=\"font-size:10pt; font-weight:bold\">尊敬的用户 " + userEntity.UserName + " 您好：</div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 您的新密码是：<font size=\"3\" color=\"#6699cc\">" + password + "</font></div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 请重新登录系统 <a href='http://wangcaisoft.com'>" + BaseSystemInfo.SoftFullName + "</a></div>");
-            sb.Append("<br>");
-            sb.Append("<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如有任何疑问，请联系系统管理员。</div>");
-            sb.Append("<br>");
-            sb.Append("<div style=\"text-align:center\">用户服务中心</div>");
-            sb.Append("<div style=\"text-align:center\">" + DateTime.Now.Year + "年" + DateTime.Now.Month + "月" + DateTime.Now.Day + "日</div></body>");
-            return sb.Put();
-        }
-        #endregion
-
+        #region 密码相关
 
         #region public static bool ResetPassword(string email, out string statusCode, out string statusMessage, out string newPassword) 用户忘记密码，发送密码
 
@@ -1189,9 +1054,9 @@ namespace DotNet.Business
         }
         #endregion
 
-        //
-        // 十 字符串加密解密部分
-        //
+        #endregion
+        
+        #region 字符串加密解密部分
 
         #region public static string Encrypt(string targetValue) DES数据加密
         /// <summary>
@@ -1241,6 +1106,8 @@ namespace DotNet.Business
         {
             return SecretUtil.DesDecrypt(targetValue, key);
         }
+        #endregion
+
         #endregion
     }
 }

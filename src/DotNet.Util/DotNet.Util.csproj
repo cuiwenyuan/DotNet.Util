@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
-		<Description>A set of .NET Standard 2.0 utilities(partial (great majority) support .net framework 4.0). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<Description>A set of .NET Standard 2.0 utilities(partial (great majority) support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.9</Version>
 		<Authors>崔文远Troy Cui</Authors>
@@ -64,6 +64,17 @@
 		<Reference Include="System.Management" />
 		<Reference Include="System.Net" />
 		<Reference Include="System.Web" />
+		<Reference Include="System.Web.Extensions" />
+		<PackageReference Include="System.Net.Http" Version="2.0.20710" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.Web" />
+		<Reference Include="System.Web.Extensions" />		
 	</ItemGroup>
 
 </Project>
