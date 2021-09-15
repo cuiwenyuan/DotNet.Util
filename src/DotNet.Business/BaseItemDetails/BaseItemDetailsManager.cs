@@ -36,7 +36,7 @@ namespace DotNet.Business
 	///		2006.01.23 版本：1.0 JiRiGaLa  获取ItemDetails方法的改进。
 	///		2004.11.12 版本：1.0 JiRiGaLa  主键进行了绝对的优化，基本上看上去还过得去了。
     ///     2007.12.03 版本：2.2 JiRiGaLa  进行规范化整理。
-    ///     2007.05.30 版本：2.1 JiRiGaLa  整理主键，调整GetFrom()方法,增加AddObject(),UpdateObject(),DeleteObject()
+    ///     2007.05.30 版本：2.1 JiRiGaLa  整理主键，调整GetFrom()方法,增加AddEntity(),UpdateEntity(),DeleteObject()
     ///		2007.01.15 版本：2.0 JiRiGaLa  重新整理主键。
 	///		2006.02.06 版本：1.1 JiRiGaLa  重新调整主键的规范化。
 	///		2005.10.03 版本：1.0 JiRiGaLa  表中添加是否可删除，可修改字段。
@@ -145,7 +145,7 @@ namespace DotNet.Business
             */
 
             // 运行成功
-            result = AddObject(entity);
+            result = AddEntity(entity);
             statusCode = Status.OkAdd.ToString();
             return result;
         }
@@ -187,7 +187,7 @@ namespace DotNet.Business
                 statusCode = Status.Exist.ToString();
                 return result;
             }
-            result = UpdateObject(entity);
+            result = UpdateEntity(entity);
             if (result == 1)
             {
                 statusCode = Status.OkUpdate.ToString();
@@ -246,7 +246,7 @@ namespace DotNet.Business
                         // 判断是否允许编辑
                         if (entity.AllowEdit == 1)
                         {
-                            result += UpdateObject(entity);
+                            result += UpdateEntity(entity);
                         }
                         else
                         {
@@ -263,7 +263,7 @@ namespace DotNet.Business
                     {
                         entity.IsPublic = 1;
                     }
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -292,17 +292,17 @@ namespace DotNet.Business
                 CurrentTableName = tableName;
                 foreach (var entity in list)
                 {
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     if (result == 0)
                     {
-                        AddObject(entity);
+                        AddEntity(entity);
                     }
                 }
                 /*
                 this.Delete();
                 foreach (var entity in list)
                 {
-                    result += this.AddObject(entity).Length > 0 ? 1 : 0;
+                    result += this.AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 */
             }
@@ -326,7 +326,7 @@ namespace DotNet.Business
                 foreach (DataRow dr in dt.Rows)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
             }
             return result;
@@ -396,7 +396,7 @@ namespace DotNet.Business
         /// <param name="tableName"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static BaseItemDetailsEntity GetObjectByCache(string tableName, string id)
+        public static BaseItemDetailsEntity GetEntityByCache(string tableName, string id)
         {
             BaseItemDetailsEntity result = null;
             var key = "ItemDetails:" + tableName;
@@ -404,7 +404,7 @@ namespace DotNet.Business
             {
                 key = "ItemDetails:" + tableName + ":" + id;
             }
-            result = CacheUtil.Cache(key, () => new BaseItemDetailsManager().GetObject(id), true);
+            result = CacheUtil.Cache(key, () => new BaseItemDetailsManager().GetEntity(id), true);
             return result;
         }
 

@@ -6,7 +6,9 @@ using System;
 using System.Data;
 using System.IO;
 using System.Text;
+#if NET40_OR_GREATER
 using System.Windows.Forms;
+#endif
 using NPOI.SS.UserModel;
 
 namespace DotNet.Util
@@ -34,7 +36,7 @@ namespace DotNet.Util
         {
             get { return _returnMessage; }
         }
-
+#if NET40_OR_GREATER
         /// <summary>
         /// 选择要导入的Excel文件
         /// </summary>
@@ -98,7 +100,7 @@ namespace DotNet.Util
                 return "";
             }
         }
-
+#endif
         /// <summary>
         /// 读取Excel
         /// 默认第一行为标头

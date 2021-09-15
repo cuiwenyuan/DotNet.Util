@@ -119,7 +119,7 @@ namespace DotNet.Business
             var result = string.Empty;
             Identity = identity;
             ReturnId = returnId;
-            result = AddObject(entity);
+            result = AddEntity(entity);
 
             if (!string.IsNullOrEmpty(result))
             {
@@ -135,23 +135,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseModifyRecordEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseModifyRecordEntity GetObject(string id)
+        public BaseModifyRecordEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseModifyRecordEntity GetObject(int id)
+        public BaseModifyRecordEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseModifyRecordEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseModifyRecordEntity.FieldId, id)));
             // return BaseEntity.Create<BaseModifyRecordEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
@@ -161,7 +161,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseModifyRecordEntity entity)
+        public string AddEntity(BaseModifyRecordEntity entity)
         {
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -195,7 +195,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseModifyRecordEntity.FieldCreateUserId, UserInfo.Id);
@@ -221,26 +221,26 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseModifyRecordEntity entity)
+        public int UpdateEntity(BaseModifyRecordEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             return sqlBuilder.EndUpdate();
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseModifyRecordEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseModifyRecordEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseModifyRecordEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseModifyRecordEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldTableCode, entity.TableCode);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldTableDescription, entity.TableDescription);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldColumnCode, entity.ColumnCode);

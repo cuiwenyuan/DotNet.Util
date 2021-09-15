@@ -14,7 +14,7 @@ namespace DotNet.Business
 	/// 参数类
 	/// 
 	/// 修改记录
-	///     2011.04.05 版本：2.2 zgl        修改AddObject 为public 方法，ip限制功能中使用
+	///     2011.04.05 版本：2.2 zgl        修改AddEntity 为public 方法，ip限制功能中使用
 	///     2009.04.01 版本：2.1 JiRiGaLa   创建者、修改者进行完善。
 	///     2008.04.30 版本：2.0 JiRiGaLa   按面向对象，面向服务进行改进。
 	///     2007.06.08 版本：1.4 JiRiGaLa   重新调整方法。
@@ -111,7 +111,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseParameterEntity GetObject(string id)
+        public BaseParameterEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseParameterEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseParameterEntity.FieldId, id)));
             // return BaseEntity.Create<BaseParameterEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseParameterEntity.FieldId, id)));
@@ -121,7 +121,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseParameterEntity entity)
+        public string AddEntity(BaseParameterEntity entity)
         {
             var result = string.Empty;
             //if (!entity.SortCode.HasValue)
@@ -169,7 +169,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
@@ -254,11 +254,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseParameterEntity entity)
+        public int UpdateEntity(BaseParameterEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseParameterEntity.FieldUpdateUserId, UserInfo.Id);
@@ -283,14 +283,14 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseParameterEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseParameterEntity entity);
 
 	    /// <summary>
 	    /// 设置实体
 	    /// </summary>
 	    /// <param name="sqlBuilder">SQL语句生成器</param>
 	    /// <param name="entity">实体</param>
-	    private void SetObject(SqlBuilder sqlBuilder, BaseParameterEntity entity)
+	    private void SetEntity(SqlBuilder sqlBuilder, BaseParameterEntity entity)
         {
             sqlBuilder.SetValue(BaseParameterEntity.FieldCategoryCode, entity.CategoryCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterCode, entity.ParameterCode);
@@ -299,7 +299,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseParameterEntity.FieldWorked, entity.Worked ? 1 : 0);
             sqlBuilder.SetValue(BaseParameterEntity.FieldEnabled, entity.Enabled ? 1 : 0);
             sqlBuilder.SetValue(BaseParameterEntity.FieldDeleted, entity.DeletionStateCode);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

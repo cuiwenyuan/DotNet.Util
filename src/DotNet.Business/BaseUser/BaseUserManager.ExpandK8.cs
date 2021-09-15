@@ -36,7 +36,7 @@ namespace DotNet.Business
         public int ImportUser(System.Data.IDataReader dataReader, BaseOrganizeManager organizeManager, BaseUserLogOnManager userLogOnManager, BaseUserContactManager userContactManager)
         {
             var result = 0;
-            var userEntity = GetObject(dataReader["ID"].ToString());
+            var userEntity = GetEntity(dataReader["ID"].ToString());
             if (userEntity == null)
             {
                 userEntity = new BaseUserEntity
@@ -81,13 +81,13 @@ namespace DotNet.Business
             userEntity.Enabled = int.Parse(dataReader["BL_LOCK_FLAG"].ToString());
             Console.WriteLine("ImportK8User:" + userEntity.Id + ":" + userEntity.RealName);
             // 02：可以把读取到的数据能写入到用户中心的。
-            result = UpdateObject(userEntity);
+            result = UpdateEntity(userEntity);
             if (result == 0)
             {
-                AddObject(userEntity);
+                AddEntity(userEntity);
             }
             // 添加用户密码表
-            var userLogOnEntity = userLogOnManager.GetObject(userEntity.Id);
+            var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
             if (userLogOnEntity == null)
             {
                 userLogOnEntity = new BaseUserLogOnEntity
@@ -106,7 +106,7 @@ namespace DotNet.Business
                 {
                     userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
-                userLogOnManager.AddObject(userLogOnEntity);
+                userLogOnManager.AddEntity(userLogOnEntity);
             }
             else
             {
@@ -117,10 +117,10 @@ namespace DotNet.Business
                 {
                     userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
-                result = userLogOnManager.UpdateObject(userLogOnEntity);
+                result = userLogOnManager.UpdateEntity(userLogOnEntity);
             }
             // 用户的联系方式
-            var userContactEntity = userContactManager.GetObject(userEntity.Id);
+            var userContactEntity = userContactManager.GetEntity(userEntity.Id);
             if (userContactEntity == null)
             {
                 userContactEntity = new BaseUserContactEntity
@@ -130,7 +130,7 @@ namespace DotNet.Business
                     Mobile = dataReader["Mobile"].ToString(),
                     Email = dataReader["Email"].ToString()
                 };
-                userContactManager.AddObject(userContactEntity);
+                userContactManager.AddEntity(userContactEntity);
             }
             else
             {
@@ -146,7 +146,7 @@ namespace DotNet.Business
                 {
                     userContactEntity.Email = dataReader["Email"].ToString();
                 }
-                userContactManager.UpdateObject(userContactEntity);
+                userContactManager.UpdateEntity(userContactEntity);
             }
             return result;
         }

@@ -31,7 +31,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseDepartmentEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseDepartmentEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 判断字段是否重复

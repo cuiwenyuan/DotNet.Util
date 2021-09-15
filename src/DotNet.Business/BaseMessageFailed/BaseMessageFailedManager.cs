@@ -160,7 +160,7 @@ namespace DotNet.Business
         {
             var result = 0;
             errorMessage = string.Empty;
-            var entity = GetObject(id);
+            var entity = GetEntity(id);
             if (entity != null)
             {
                 if (entity.Enabled == 0 || entity.DeletionStateCode == 1)
@@ -196,7 +196,7 @@ namespace DotNet.Business
             errorMessage = string.Empty;
             foreach (var id in ids)
             {
-                var entity = GetObject(id);
+                var entity = GetEntity(id);
                 if (entity != null)
                 {
                     if (entity.Enabled == 0 || entity.DeletionStateCode == 1)
@@ -235,7 +235,7 @@ namespace DotNet.Business
         {
             var result = 0;
             errorMessage = string.Empty;
-            var entity = GetObject(id);
+            var entity = GetEntity(id);
             if (entity != null)
             {
                 if (entity.Enabled == 1 || entity.DeletionStateCode == 0)
@@ -271,7 +271,7 @@ namespace DotNet.Business
             errorMessage = string.Empty;
             foreach (var id in ids)
             {
-                var entity = GetObject(id);
+                var entity = GetEntity(id);
                 if (entity != null)
                 {
                     if (entity.Enabled == 1 || entity.DeletionStateCode == 0)

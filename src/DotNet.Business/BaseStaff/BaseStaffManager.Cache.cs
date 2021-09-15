@@ -82,13 +82,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static BaseStaffEntity GetObjectByCodeByCache(string code)
+        public static BaseStaffEntity GetEntityByCodeByCache(string code)
         {
             BaseStaffEntity result = null;
             if (!string.IsNullOrEmpty(code))
             {
                 var cacheKey = "StaffByCode" + code;
-                result = CacheUtil.Cache(cacheKey, () => new BaseStaffManager().GetObjectByCode(code), true);
+                result = CacheUtil.Cache(cacheKey, () => new BaseStaffManager().GetEntityByCode(code), true);
             }
             return result;
         }

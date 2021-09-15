@@ -32,7 +32,7 @@ namespace DotNet.IService
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
         
-        BaseLanguageEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseLanguageEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 添加

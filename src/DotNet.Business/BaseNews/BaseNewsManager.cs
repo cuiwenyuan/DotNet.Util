@@ -48,7 +48,7 @@ namespace DotNet.Business
             var result = 0;
             for (var i = 0; i < ids.Length; i++)
             {
-                // if (this.GetObject(ids[i].ToString()).AuditStatus.Equals(AuditStatus.Draft.ToString()))
+                // if (this.GetEntity(ids[i].ToString()).AuditStatus.Equals(AuditStatus.Draft.ToString()))
                 // {
                 result += SetDeleted(ids[i], enabled, recordUser, tableVersion);
                 //}
@@ -65,7 +65,7 @@ namespace DotNet.Business
         {
             // 阅读次数要加一
             UpdateReadCount(id);
-            return GetObject(id);
+            return GetEntity(id);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace DotNet.Business
                     Title = title,
                     Contents = contents
                 };
-                result = AddObject(fileEntity);
+                result = AddEntity(fileEntity);
             }
             return result;
         }
@@ -210,7 +210,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(fileEntity);
+                result = AddEntity(fileEntity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -227,7 +227,7 @@ namespace DotNet.Business
         public int Update(BaseNewsEntity fileEntity, out string statusCode)
         {
             statusCode = string.Empty;
-            var result = UpdateObject(fileEntity);
+            var result = UpdateEntity(fileEntity);
             statusCode = result > 0 ? Status.OkUpdate.ToString() : Status.ErrorDeleted.ToString();
             return result;
         }

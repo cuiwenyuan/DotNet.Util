@@ -98,7 +98,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseDepartmentEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -121,23 +121,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseDepartmentEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseDepartmentEntity GetObject(int? id)
+        public BaseDepartmentEntity GetEntity(int? id)
         {
-            return GetObject(id.ToString());
+            return GetEntity(id.ToString());
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseDepartmentEntity GetObject(string id)
+        public BaseDepartmentEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseDepartmentEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseDepartmentEntity.FieldId, id)));
             // return BaseEntity.Create<BaseDepartmentEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseDepartmentEntity.FieldId, id)));
@@ -147,7 +147,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseDepartmentEntity entity)
+        public string AddEntity(BaseDepartmentEntity entity)
         {
             var sequence = string.Empty;
             if (!entity.SortCode.HasValue)
@@ -192,7 +192,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
@@ -273,11 +273,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseDepartmentEntity entity)
+        public int UpdateEntity(BaseDepartmentEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseDepartmentEntity.FieldUpdateUserId, UserInfo.Id);
@@ -296,14 +296,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseDepartmentEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseDepartmentEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseDepartmentEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseDepartmentEntity entity)
         {
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldCode, entity.Code);
@@ -327,7 +327,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManager, entity.Manager);
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManagerQq, entity.ManagerQq);
             sqlBuilder.SetValue(BaseDepartmentEntity.FieldManagerMobile, entity.ManagerMobile);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

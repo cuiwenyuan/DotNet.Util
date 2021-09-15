@@ -89,7 +89,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseServicesLicenseEntity GetObject(string id)
+        public BaseServicesLicenseEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseServicesLicenseEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseServicesLicenseEntity.FieldId, id)));
         }
@@ -98,7 +98,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseServicesLicenseEntity entity)
+        public string AddEntity(BaseServicesLicenseEntity entity)
         {
             var result = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -138,7 +138,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
@@ -219,11 +219,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseServicesLicenseEntity entity)
+        public int UpdateEntity(BaseServicesLicenseEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldUpdateUserId, UserInfo.Id);
@@ -242,14 +242,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseServicesLicenseEntity entity)
         {
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldPrivateKey, entity.PrivateKey);
@@ -258,7 +258,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldEndDate, entity.EndTime);
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldEnabled, entity.Enabled ? 1 : 0);
             sqlBuilder.SetValue(BaseServicesLicenseEntity.FieldDeleted, entity.DeletionStateCode);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

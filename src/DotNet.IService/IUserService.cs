@@ -56,7 +56,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseUserEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 获取实体
@@ -64,7 +64,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObjectByCache(BaseUserInfo userInfo, string id);
+        BaseUserEntity GetEntityByCache(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 获取实体按编号
@@ -72,7 +72,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObjectByCode(BaseUserInfo userInfo, string code);
+        BaseUserEntity GetEntityByCode(BaseUserInfo userInfo, string code);
 
         /// <summary>
         /// 获取实体按名称
@@ -80,7 +80,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="userName">用户名</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObjectByUserName(BaseUserInfo userInfo, string userName);
+        BaseUserEntity GetEntityByUserName(BaseUserInfo userInfo, string userName);
 
         /// <summary>
         /// 获取实体按名称
@@ -88,7 +88,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="realName">姓名</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObjectByRealName(BaseUserInfo userInfo, string realName);
+        BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string realName);
 
         /// <summary>
         /// 获取实体按昵称
@@ -96,7 +96,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="nickName">昵称</param>
         /// <returns>实体</returns>
-        BaseUserEntity GetObjectByNickName(BaseUserInfo userInfo, string nickName);
+        BaseUserEntity GetEntityByNickName(BaseUserInfo userInfo, string nickName);
 
         /// <summary>
         /// 获取实体

@@ -69,12 +69,12 @@ namespace DotNet.Business
                 // 2: 是否正确的用户？
                 appKey = appKey.Trim();
                 var userId = string.Empty;
-                var userEntity = BaseUserManager.GetObjectByCodeByCache(appKey);
+                var userEntity = BaseUserManager.GetEntityByCodeByCache(appKey);
                 if (userEntity == null)
                 {
                     result.Status = false;
                     result.StatusCode = Status.AccessDeny.ToString();
-                    result.StatusMessage = "appKey:" + appKey + ", GetObjectByCodeByCache " + Status.ParameterError.ToDescription();
+                    result.StatusMessage = "appKey:" + appKey + ", GetEntityByCodeByCache " + Status.ParameterError.ToDescription();
                     return result;
                 }
                 else
@@ -119,7 +119,7 @@ namespace DotNet.Business
                 var ipAddress = Utils.GetIp();
                 // 6: 判断对方的ip是否合法的？1个服务程序，可以有多个ip。可以把服务当一个用户看待，一个目标用户可能也配置了多个服务，一般是远程连接。
                 //int? checkIpAddress = 0;
-                var userLogOnEntity = BaseUserLogOnManager.GetObjectByCache(userId);
+                var userLogOnEntity = BaseUserLogOnManager.GetEntityByCache(userId);
                 if (!BaseUserManager.CheckIpAddressByCache(userId, userLogOnEntity, ipAddress, true))
                 {
                     result.Status = false;

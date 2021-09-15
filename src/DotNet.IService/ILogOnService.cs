@@ -56,7 +56,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseUserLogOnEntity GetObject(string taskId, BaseUserInfo userInfo, string id);
+        BaseUserLogOnEntity GetEntity(string taskId, BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 更新

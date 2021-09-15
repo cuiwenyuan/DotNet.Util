@@ -48,7 +48,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseServicesLicenseEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseServicesLicenseEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 更新

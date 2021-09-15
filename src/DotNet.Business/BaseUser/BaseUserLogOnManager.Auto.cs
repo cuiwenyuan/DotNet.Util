@@ -111,7 +111,7 @@ namespace DotNet.Business
 		/// <returns>主键</returns>
 		public string Add(BaseUserLogOnEntity entity)
 		{
-			return AddObject(entity);
+			return AddEntity(entity);
 		}
 
 		/// <summary>
@@ -125,14 +125,14 @@ namespace DotNet.Business
 		{
 			Identity = identity;
 			ReturnId = returnId;
-			return AddObject(entity);
+			return AddEntity(entity);
 		}
 
 		/// <summary>
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserLogOnEntity GetObject(int? id)
+		public BaseUserLogOnEntity GetEntity(int? id)
 		{
             return BaseEntity.Create<BaseUserLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserLogOnEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
@@ -142,7 +142,7 @@ namespace DotNet.Business
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserLogOnEntity GetObject(string id)
+		public BaseUserLogOnEntity GetEntity(string id)
 		{
             return BaseEntity.Create<BaseUserLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserLogOnEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
@@ -152,7 +152,7 @@ namespace DotNet.Business
 		/// 添加实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public string AddObject(BaseUserLogOnEntity entity)
+		public string AddEntity(BaseUserLogOnEntity entity)
 		{
 			var result = string.Empty;
 			if (string.IsNullOrEmpty(entity.Id))
@@ -197,7 +197,7 @@ namespace DotNet.Business
 					}
 				}
 			}
-			SetObject(sqlBuilder, entity);
+			SetEntity(sqlBuilder, entity);
 			if (UserInfo != null)
 			{
 				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldCreateUserId, UserInfo.Id);
@@ -226,11 +226,11 @@ namespace DotNet.Business
 		/// 更新实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public int UpdateObject(BaseUserLogOnEntity entity)
+		public int UpdateEntity(BaseUserLogOnEntity entity)
 		{
 			var sqlBuilder = new SqlBuilder(DbHelper);
 			sqlBuilder.BeginUpdate(CurrentTableName);
-			SetObject(sqlBuilder, entity);
+			SetEntity(sqlBuilder, entity);
 			if (UserInfo != null)
 			{
 				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateUserId, UserInfo.Id);
@@ -246,7 +246,7 @@ namespace DotNet.Business
 	    /// </summary>
 	    /// <param name="sqlBuilder">SQL语句生成器</param>
 	    /// <param name="entity">实体</param>
-	    private void SetObject(SqlBuilder sqlBuilder, BaseUserLogOnEntity entity)
+	    private void SetEntity(SqlBuilder sqlBuilder, BaseUserLogOnEntity entity)
 		{
             // 2016-03-02 吉日嘎拉 增加按公司可以区别数据的功能。
             if (DbHelper.CurrentDbType == CurrentDbType.MySql)

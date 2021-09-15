@@ -133,14 +133,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseOrganizeEntity entity = null;
 
@@ -148,20 +148,20 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetObjectByCode(BaseUserInfo userInfo, string code)
+        #region public BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         /// <summary>
         /// 按编号获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetObjectByCode(BaseUserInfo userInfo, string code)
+        public BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         {
             BaseOrganizeEntity entity = null;
 
@@ -169,20 +169,20 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                entity = manager.GetObjectByCode(code);
+                entity = manager.GetEntityByCode(code);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetObjectByName(BaseUserInfo userInfo, string fullName)
+        #region public BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="fullName">名称</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetObjectByName(BaseUserInfo userInfo, string fullName)
+        public BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
         {
             BaseOrganizeEntity entity = null;
 
@@ -190,7 +190,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                entity = manager.GetObjectByName(fullName);
+                entity = manager.GetEntityByName(fullName);
             });
             return entity;
         }

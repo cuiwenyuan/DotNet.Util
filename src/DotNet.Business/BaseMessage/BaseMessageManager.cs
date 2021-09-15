@@ -143,7 +143,7 @@ namespace DotNet.Business
                 // messageEntity.ParentId = null;
                 entity.Id = Guid.NewGuid().ToString("N");
                 entity.CategoryCode = MessageCategory.Receiver.ToString();
-                userEntity = BaseUserManager.GetObjectByCache(receiverIds[i]);
+                userEntity = BaseUserManager.GetEntityByCache(receiverIds[i]);
                 if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
                 {
                     entity.ReceiverRealName = userEntity.RealName;
@@ -154,7 +154,7 @@ namespace DotNet.Business
                 entity.IsNew = 1;
                 // 接收信息
                 //string parentId = this.Add(entity, this.Identity, false);
-                var parentId = AddObject(entity);
+                var parentId = AddEntity(entity);
                 if (saveSend)
                 {
                     // 已发送信息
@@ -164,7 +164,7 @@ namespace DotNet.Business
                     entity.CategoryCode = MessageCategory.Send.ToString();
                     entity.DeletionStateCode = 0;
                     //this.Add(entity, this.Identity, false);
-                    AddObject(entity);
+                    AddEntity(entity);
                 }
                 result++;
             }
@@ -178,7 +178,7 @@ namespace DotNet.Business
                 entity.CategoryCode = MessageCategory.Send.ToString();
                 entity.DeletionStateCode = 0;
                 //this.Add(entity, this.Identity, false);
-                AddObject(entity);
+                AddEntity(entity);
             }
 
             return result;

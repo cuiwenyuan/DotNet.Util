@@ -202,7 +202,7 @@ namespace DotNet.Business
             var result = 0;
 
             /*
-            BaseStaffEntity staffEntity = staffManager.GetObject(dataReader["Id"].ToString());
+            BaseStaffEntity staffEntity = staffManager.GetEntity(dataReader["Id"].ToString());
             if (staffEntity == null)
             {
                 staffEntity = new BaseStaffEntity();
@@ -223,15 +223,15 @@ namespace DotNet.Business
 
             System.Console.WriteLine("ImportK8Staff:" + staffEntity.Id + ":" + staffEntity.RealName);
             // 02：可以把读取到的数据能写入到用户中心的。
-            result = staffManager.UpdateObject(staffEntity);
+            result = staffManager.UpdateEntity(staffEntity);
             if (result == 0)
             {
-                staffManager.AddObject(staffEntity);
+                staffManager.AddEntity(staffEntity);
             }
             */
 
             /*
-            BaseUserExpressEntity sTAFF_EXPRESSEntity = sTAFF_EXPRESSManager.GetObject(dataReader["Id"].ToString());
+            BaseUserExpressEntity sTAFF_EXPRESSEntity = sTAFF_EXPRESSManager.GetEntity(dataReader["Id"].ToString());
             if (sTAFF_EXPRESSEntity == null)
             {
                 sTAFF_EXPRESSEntity = new BaseUserExpressEntity();
@@ -272,7 +272,7 @@ namespace DotNet.Business
             };
             if (string.IsNullOrEmpty(userEntity.CompanyId))
             {
-                userEntity.CompanyId = BaseOrganizeManager.GetObjectByNameByCache(userEntity.CompanyName).Id;
+                userEntity.CompanyId = BaseOrganizeManager.GetEntityByNameByCache(userEntity.CompanyName).Id;
                 if (string.IsNullOrEmpty(userEntity.CompanyId))
                 {
                     Console.WriteLine("无CompanyId " + userEntity.Id + ":" + userEntity.UserName + ":" + userEntity.RealName);
@@ -301,24 +301,24 @@ namespace DotNet.Business
                 }
             }
             // 修改日期需要同步
-            // result = userManager.UpdateObject(userEntity);
+            // result = userManager.UpdateEntity(userEntity);
             if (result == 0)
             {
-                userManager.AddObject(userEntity);
+                userManager.AddEntity(userEntity);
 
                 var userContactEntity = new BaseUserContactEntity
                 {
                     Id = dataReader["ID"].ToString(),
                     Telephone = dataReader["PHONE"].ToString()
                 };
-                new BaseUserContactManager().AddObject(userContactEntity);
+                new BaseUserContactManager().AddEntity(userContactEntity);
 
                 var userLogOnEntity = new BaseUserLogOnEntity
                 {
                     Id = dataReader["ID"].ToString(),
                     UserPassword = dataReader["BAR_PASSWORD"].ToString()
                 };
-                userLogOnManager.AddObject(userLogOnEntity);
+                userLogOnManager.AddEntity(userLogOnEntity);
             }
             
             // 处理角色
@@ -328,7 +328,7 @@ namespace DotNet.Business
             userManager.AddToRole("PDA", userEntity.Id, roleName);
 
             // 添加用户密码表
-            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetObject(userEntity.Id);
+            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
             if (userLogOnEntity == null)
             {
                 userLogOnEntity = new BaseUserLogOnEntity();
@@ -339,7 +339,7 @@ namespace DotNet.Business
                 //{
                 //    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 //}
-                userLogOnManager.AddObject(userLogOnEntity);
+                userLogOnManager.AddEntity(userLogOnEntity);
             }
             else
             {
@@ -350,7 +350,7 @@ namespace DotNet.Business
                 //{
                 //    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 //}
-                result = userLogOnManager.UpdateObject(userLogOnEntity);
+                result = userLogOnManager.UpdateEntity(userLogOnEntity);
             }
              */
 

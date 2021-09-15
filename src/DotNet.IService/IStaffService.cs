@@ -99,7 +99,7 @@ namespace DotNet.IService
         /// <param name="userInfo"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        BaseStaffEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseStaffEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 按主键获取

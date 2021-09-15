@@ -54,7 +54,7 @@ namespace DotNet.Business
         //        // 读取组织机构的信息
         //        if (!string.IsNullOrEmpty(CompanyId))
         //        {
-        //            company = new BaseOrganizeManager().GetObject(CompanyId);
+        //            company = new BaseOrganizeManager().GetEntity(CompanyId);
         //        }
         //        return company;
         //    }

@@ -67,13 +67,13 @@ namespace DotNet.Business
             else
             {
                 // 获取原始实体信息
-                var entityOld = GetObject(entity.Id);
+                var entityOld = GetEntity(entity.Id);
                 // 保存修改记录
                 UpdateEntityLog(entity, entityOld);
                 // 2015-07-14 吉日嘎拉 只有允许修改的，才可以修改，不允许修改的，不让修改，但是把修改记录会保存起来的。
                 if (entityOld.AllowEdit.HasValue && entityOld.AllowEdit.Value == 1)
                 {
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     statusCode = Status.AccessDeny.ToString();
                 }
                 if (result == 1)

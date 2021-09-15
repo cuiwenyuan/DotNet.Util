@@ -259,7 +259,7 @@ namespace DotNet.Business
         /// <returns>OpenId</returns>
         public string UpdateVisitDate(string userId)
         {
-            var userLogOnEntity = GetObject(userId);
+            var userLogOnEntity = GetEntity(userId);
             return UpdateVisitDate(userLogOnEntity);
         }
         #endregion

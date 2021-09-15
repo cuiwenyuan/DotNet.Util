@@ -68,7 +68,7 @@ namespace DotNet.Business
             // 检查记录是否重复
             if (!PermissionExists(permissionEntity.PermissionId, permissionEntity.ResourceCategory, permissionEntity.ResourceId))
             {
-                result = AddObject(permissionEntity);
+                result = AddEntity(permissionEntity);
             }
             return result;
         }
@@ -120,7 +120,7 @@ namespace DotNet.Business
             //    return false;
             //}
 
-            var permissionEntity = BaseModuleManager.GetObjectByCacheByCode(systemCode, permissionCode);
+            var permissionEntity = BaseModuleManager.GetEntityByCacheByCode(systemCode, permissionCode);
             // 没有找到这个权限
             if (permissionEntity == null)
             {
@@ -752,7 +752,7 @@ namespace DotNet.Business
                     // 这里是防止主键重复？
                     // permissionEntity.ID = BaseUtil.NewGuid();
                     BaseModuleManager moduleManager = new BaseModuleManager();
-                    moduleManager.AddObject(permissionEntity);
+                    moduleManager.AddEntity(permissionEntity);
                 }
                 else
                 {

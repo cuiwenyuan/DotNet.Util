@@ -111,7 +111,7 @@ namespace DotNet.Business
                 if (!Exists(new KeyValuePair<string, object>(BaseContactDetailsEntity.FieldContactId, contactId)
                     , new KeyValuePair<string, object>(BaseContactDetailsEntity.FieldReceiverId, receiverIds[i])))
                 {
-                    useEntity = userManager.GetObject(receiverIds[i]);
+                    useEntity = userManager.GetEntity(receiverIds[i]);
                     // 是有效的用户，而且是未必删除的用户才发邮件
                     if (useEntity.Enabled == 1 && useEntity.DeletionStateCode == 0)
                     {
@@ -142,7 +142,7 @@ namespace DotNet.Business
                 return string.Empty;
             }
             var userManager = new BaseUserManager(DbHelper, UserInfo);
-            var useEntity = userManager.GetObject(receiverId);
+            var useEntity = userManager.GetEntity(receiverId);
             var contactDetailsEntity = new BaseContactDetailsEntity
             {
                 // 这里一定要给个不可猜测的主键，为了提高安全性

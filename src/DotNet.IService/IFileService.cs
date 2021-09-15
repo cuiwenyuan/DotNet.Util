@@ -97,7 +97,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseFileEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseFileEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 按文件夹获取列表

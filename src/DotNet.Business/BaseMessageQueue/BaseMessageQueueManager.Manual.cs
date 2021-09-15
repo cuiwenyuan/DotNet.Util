@@ -116,7 +116,7 @@ namespace DotNet.Business
                     {
                         //更新MessageQueue表中的失败次数
                         entity.FailCount = entity.FailCount + 1;
-                        UpdateObject(entity);
+                        UpdateEntity(entity);
                     }
                 }
             }
@@ -215,7 +215,7 @@ namespace DotNet.Business
                     {
                         //更新MessageQueue表中的失败次数
                         entity.FailCount = entity.FailCount + 1;
-                        UpdateObject(entity);
+                        UpdateEntity(entity);
                     }
                 }
 

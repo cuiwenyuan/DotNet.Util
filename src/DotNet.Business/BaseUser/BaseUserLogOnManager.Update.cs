@@ -33,7 +33,7 @@ namespace DotNet.Business
         {
             var result = 0;
             // 获取原始实体信息
-            var entityOld = GetObject(entity.Id);
+            var entityOld = GetEntity(entity.Id);
             //2016-11-23 欧腾飞加入判断 原始实体信息如果为null 则不去保存修改记录(原始方法 实体可能为null如果去保存修改记录则会报错)
             if (entityOld != null)
             {
@@ -41,7 +41,7 @@ namespace DotNet.Business
                 UpdateEntityLog(entity, entityOld);
             }
             // 更新数据
-            result = UpdateObject(entity);
+            result = UpdateEntity(entity);
             // 重新缓存
 
             return result;

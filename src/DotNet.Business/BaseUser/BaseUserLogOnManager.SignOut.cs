@@ -46,7 +46,7 @@ namespace DotNet.Business
             // 从缓存读取、效率高
             if (!string.IsNullOrWhiteSpace(openId))
             {
-                var userEntity = BaseUserManager.GetObjectByOpenIdByCache(openId);
+                var userEntity = BaseUserManager.GetEntityByOpenIdByCache(openId);
                 if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
                 {
                     var ipAddressName = string.Empty;

@@ -112,7 +112,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="fullName">序列名称</param>
         /// <returns>实体</returns>
-        BaseSequenceEntity GetObjectByName(string fullName)
+        BaseSequenceEntity GetEntityByName(string fullName)
         {
             BaseSequenceEntity sequenceEntity = null;
             var dt = GetDataTable(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, fullName));
@@ -134,9 +134,9 @@ namespace DotNet.Business
         /// <param name="defaultDelimiter">默认分隔符</param>
         /// <param name="defaultIsVisable">默认的可见性</param>
         /// <returns>序列实体</returns>
-        BaseSequenceEntity GetObjectByAdd(string fullName, int? defaultSequence = null, int? defaultReduction = null, int? defaultStep = null, string defaultPrefix = "", string defaultDelimiter = "", int? defaultIsVisable = null)
+        BaseSequenceEntity GetEntityByAdd(string fullName, int? defaultSequence = null, int? defaultReduction = null, int? defaultStep = null, string defaultPrefix = "", string defaultDelimiter = "", int? defaultIsVisable = null)
         {
-            BaseSequenceEntity sequenceEntity = GetObjectByName(fullName);
+            BaseSequenceEntity sequenceEntity = GetEntityByName(fullName);
             if (sequenceEntity == null)
             {
                 sequenceEntity = new BaseSequenceEntity
@@ -208,7 +208,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -232,7 +232,7 @@ namespace DotNet.Business
             else
             {
                 // 进行更新操作
-                result = UpdateObject(entity);
+                result = UpdateEntity(entity);
                 if (result == 1)
                 {
                     statusCode = Status.OkUpdate.ToString();
@@ -361,7 +361,7 @@ namespace DotNet.Business
                 DefaultReduction = defaultSequence;
                 DefaultSequence = defaultSequence + 1;
 
-                var entity = GetObjectByAdd(fullName);
+                var entity = GetEntityByAdd(fullName);
                 sequence = Increment(entity);
             }
             return sequence;
@@ -490,7 +490,7 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        entity = GetObjectByAdd(fullName);
+                        entity = GetEntityByAdd(fullName);
                         UpdateSequence(fullName);
                         break;
                     case CurrentDbType.Oracle:
@@ -643,7 +643,7 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        sequenceEntity = GetObjectByAdd(fullName);
+                        sequenceEntity = GetEntityByAdd(fullName);
                         UpdateReduction(fullName);
                         break;
                     case CurrentDbType.Oracle:
@@ -745,7 +745,7 @@ namespace DotNet.Business
         /// <returns>序列实体</returns>
         protected BaseSequenceEntity GetSequenceByLock(string fullName, int defaultSequence)
         {
-            var sequenceEntity = GetObjectByAdd(fullName);
+            var sequenceEntity = GetEntityByAdd(fullName);
             if (sequenceEntity == null)
             {
                 // 这里添加记录时加锁机制。
@@ -762,7 +762,7 @@ namespace DotNet.Business
                         sequenceEntity.Reduction = defaultSequence - 1;
                         sequenceEntity.Sequence = defaultSequence;
                         sequenceEntity.Step = DefaultStep;
-                        AddObject(sequenceEntity);
+                        AddEntity(sequenceEntity);
 
                         StatusCode = Status.LockOk.ToString();
                         break;
@@ -775,7 +775,7 @@ namespace DotNet.Business
                 if (StatusCode == Status.LockOk.ToString())
                 {
                     // JiRiGaLa 这个是否能省略
-                    sequenceEntity = GetObjectByAdd(fullName);
+                    sequenceEntity = GetEntityByAdd(fullName);
                 }
             }
             else
@@ -789,7 +789,7 @@ namespace DotNet.Business
                     var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.TableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, fullName));
                     if (lockCount > 0)
                     {
-                        sequenceEntity = GetObjectByAdd(fullName);
+                        sequenceEntity = GetEntityByAdd(fullName);
                         StatusCode = Status.LockOk.ToString();
                         break;
                     }
@@ -866,7 +866,7 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        var entity = GetObjectByAdd(fullName);
+                        var entity = GetEntityByAdd(fullName);
                         UpdateSequence(fullName, sequenceCount);
                         // 这里循环产生ID数组
                         result = Increment(entity, sequenceCount);
@@ -917,7 +917,7 @@ namespace DotNet.Business
                 if (ids[i].Length > 0)
                 {
                     // 若有相应的表，那就把序列号都计算好
-                    sequenceEntity = GetObject(ids[i]);
+                    sequenceEntity = GetEntity(ids[i]);
                     var commandText = string.Format(@"UPDATE BaseSequence
                                                SET Sequence = (SELECT MAX(SortCode) + 1  AS MaxSortCode FROM {0})
 	                                               , Reduction = ( SELECT MIN(SortCode) -1 AS MinSortCode FROM {0})

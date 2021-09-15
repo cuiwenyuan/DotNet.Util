@@ -358,7 +358,7 @@ namespace DotNet.Business
             return dataSet;
         }
 
-        #region public BaseItemDetailsEntity GetObject(BaseUserInfo userInfo, string tableName, string id) 获取實體
+        #region public BaseItemDetailsEntity GetEntity(BaseUserInfo userInfo, string tableName, string id) 获取實體
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -366,7 +366,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         /// <param name="id">主键</param>
         /// <returns>数据表</returns>
-        public BaseItemDetailsEntity GetObject(BaseUserInfo userInfo, string tableName, string id)
+        public BaseItemDetailsEntity GetEntity(BaseUserInfo userInfo, string tableName, string id)
         {
             var dt = new DataTable(BaseItemDetailsEntity.TableName);
             BaseItemDetailsEntity entity = null;
@@ -375,13 +375,13 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var itemDetailsManager = new BaseItemDetailsManager(dbHelper, userInfo, tableName);
-                entity = itemDetailsManager.GetObject(id);
+                entity = itemDetailsManager.GetEntity(id);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseItemDetailsEntity GetObjectByCode(BaseUserInfo userInfo, string tableName, string code) 获取實體
+        #region public BaseItemDetailsEntity GetEntityByCode(BaseUserInfo userInfo, string tableName, string code) 获取實體
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -389,7 +389,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         /// <param name="code">编码</param>
         /// <returns>数据表</returns>
-        public BaseItemDetailsEntity GetObjectByCode(BaseUserInfo userInfo, string tableName, string code)
+        public BaseItemDetailsEntity GetEntityByCode(BaseUserInfo userInfo, string tableName, string code)
         {
             var itemDetailsEntity = new BaseItemDetailsEntity();
 

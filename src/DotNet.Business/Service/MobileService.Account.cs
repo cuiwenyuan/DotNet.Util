@@ -78,7 +78,7 @@ namespace DotNet.Business
                             //string id = organizeManager.GetPermissionIdByCode(accountCode);
                             //if (!string.IsNullOrEmpty(id))
                             //{
-                            //    BaseOrganizeEntity organizeEntity = organizeManager.GetObject(id);
+                            //    BaseOrganizeEntity organizeEntity = organizeManager.GetEntity(id);
                             //    if (organizeEntity != null)
                             //    {
                             //        string accountName = organizeEntity.FullName;

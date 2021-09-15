@@ -34,7 +34,7 @@ namespace DotNet.IService
         /// <param name="tableName">表名</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseParameterEntity GetObject(BaseUserInfo userInfo, string tableName, string id);
+        BaseParameterEntity GetEntity(BaseUserInfo userInfo, string tableName, string id);
 
         /// <summary>
         /// 添加实体

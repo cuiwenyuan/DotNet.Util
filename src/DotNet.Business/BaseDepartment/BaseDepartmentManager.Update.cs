@@ -65,12 +65,12 @@ namespace DotNet.Business
                 else
                 {
                     // 获取原始实体信息
-                    var entityOld = GetObject(entity.Id);
+                    var entityOld = GetEntity(entity.Id);
                     // 保存修改记录
                     UpdateEntityLog(entity, entityOld);
 
                     // 1:更新部门的信息
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     // 2:组织机构修改时，用户表的公司，部门，工作组数据给同步更新。
                     var userManager = new BaseUserManager(DbHelper, UserInfo);
                     userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.FullName));

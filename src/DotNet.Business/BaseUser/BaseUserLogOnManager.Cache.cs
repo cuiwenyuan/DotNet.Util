@@ -46,7 +46,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static BaseUserLogOnEntity GetObjectByCache(string id)
+        public static BaseUserLogOnEntity GetEntityByCache(string id)
         {
             BaseUserLogOnEntity result = null;
 
@@ -70,7 +70,7 @@ namespace DotNet.Business
             BaseUserLogOnEntity result = null;
 
             var manager = new BaseUserLogOnManager();
-            result = manager.GetObject(id);
+            result = manager.GetEntity(id);
             if (result != null)
             {
                 SetCache(result);

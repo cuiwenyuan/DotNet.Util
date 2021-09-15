@@ -377,7 +377,7 @@ namespace DotNet.Business
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
 
-                var userEntity = GetObjectByNickNameByCache(nickName);
+                var userEntity = GetEntityByNickNameByCache(nickName);
                 if (userEntity != null)
                 {
                     // 进行登录校验
@@ -645,7 +645,7 @@ namespace DotNet.Business
                     //if (logOnAllCompany)
                     //{
                     //    // 用户登录
-                    //    BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetObjectByNameByCache(companyName);
+                    //    BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByNameByCache(companyName);
                     //    if (organizeEntity != null)
                     //    {
                     //        userEntity.CompanyId = organizeEntity.Id.ToString();
@@ -837,7 +837,7 @@ namespace DotNet.Business
             {
                 var baseUserLogOnManager = new BaseUserLogOnManager(userInfo);
                 //获取密码
-                var userLogOnEntity = baseUserLogOnManager.GetObject(userEntity.Id);
+                var userLogOnEntity = baseUserLogOnManager.GetEntity(userEntity.Id);
                 var password = userLogOnEntity.UserPassword;
                 //再进行登录，这里密码不能是AD的密码，所以不检验密码
                 result = userManager.LogOnByUserName(userName, password, systemCode, null, null, null, false, false);
@@ -1068,7 +1068,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(id))
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
-                var userEntity = GetObject(id);
+                var userEntity = GetEntity(id);
                 result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             return result;
@@ -1140,7 +1140,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(id))
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
-                var userEntity = GetObject(id);
+                var userEntity = GetEntity(id);
                 result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             return result;
@@ -1203,7 +1203,7 @@ namespace DotNet.Business
                     //Troy 20160520 取消OpenId过期时间判断start
                     //if (userLogOnEntity.OpenIdTimeout.HasValue && userLogOnEntity.OpenIdTimeout > DateTime.Now)
                     //{
-                    var userEntity = GetObject(dt.Rows[0][BaseUserLogOnEntity.FieldId].ToString());
+                    var userEntity = GetEntity(dt.Rows[0][BaseUserLogOnEntity.FieldId].ToString());
                     result = LogOnByEntity(userEntity, userLogOnEntity.UserPassword, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, false);
                     //}
                     //else
@@ -1267,7 +1267,7 @@ namespace DotNet.Business
                 var parameters = new List<KeyValuePair<string, object>>();
 
                 var userLogOnManager = new BaseUserLogOnManager(UserInfo, UserLogOnTable);
-                var userLogOnEntity = userLogOnManager.GetObject(userEntity.Id);
+                var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
                 // 2015-12-24 吉日嘎拉进行代码分离、重复利用这部分代码、需要检查接口安全认证
                 result = CheckUser(userEntity, userLogOnEntity);
                 // 2015-12-26 吉日嘎拉，修改状态判断，成功验证才可以。
@@ -1292,7 +1292,7 @@ namespace DotNet.Business
                                 errorMark = 10;
                                 BaseUserContactEntity userContactEntity = null;
                                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
-                                userContactEntity = BaseUserContactManager.GetObjectByCache(userLogOnEntity.Id);
+                                userContactEntity = BaseUserContactManager.GetEntityByCache(userLogOnEntity.Id);
 
                                 var needVerification = false;
                                 if (userContactEntity.MobileVerificationDate.HasValue)
@@ -1758,7 +1758,7 @@ namespace DotNet.Business
                     return false;
                 }
                 var userLogOnManager = new BaseUserLogOnManager(DbHelper, UserInfo);
-                userLogOnEntity = userLogOnManager.GetObject(userEntity.Id);
+                userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
                 if (!string.IsNullOrEmpty(userEntity.AuditStatus)
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString())
                     && userLogOnEntity.PasswordErrorCount == 0)

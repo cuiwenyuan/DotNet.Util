@@ -40,7 +40,7 @@ namespace DotNet.Business
         ///// 设置实体
         ///// </summary>
         ///// <param name="sqlBuilder">实体</param>
-        //public void SetObjectExpand(SqlBuilder sqlBuilder);
+        //public void SetEntityExpand(SqlBuilder sqlBuilder);
 
         /// <summary>
         /// 数据表主键，需要用单一字段做为主键，建议默认为Id字段
@@ -261,7 +261,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns></returns>
-        public virtual string AddObject(object entity)
+        public virtual string AddEntity(object entity)
         {
             return string.Empty;
         }
@@ -271,7 +271,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns></returns>
-        public virtual int UpdateObject(object entity)
+        public virtual int UpdateEntity(object entity)
         {
             return 0;
         }

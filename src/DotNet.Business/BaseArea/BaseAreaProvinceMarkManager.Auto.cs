@@ -98,7 +98,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseAreaProvinceMarkEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -112,23 +112,23 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseAreaProvinceMarkEntity GetObject(int? id)
+        public BaseAreaProvinceMarkEntity GetEntity(int? id)
         {
-            return GetObject(id.ToString());
+            return GetEntity(id.ToString());
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseAreaProvinceMarkEntity GetObject(string id)
+        public BaseAreaProvinceMarkEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseAreaProvinceMarkEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseAreaProvinceMarkEntity.FieldId, id)));
             // return BaseEntity.Create<BaseAreaProvinceMarkEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseAreaProvinceMarkEntity.FieldId, id)));
@@ -138,7 +138,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseAreaProvinceMarkEntity entity)
+        public string AddEntity(BaseAreaProvinceMarkEntity entity)
         {
             var sequence = string.Empty;
             
@@ -178,7 +178,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
@@ -259,11 +259,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseAreaProvinceMarkEntity entity)
+        public int UpdateEntity(BaseAreaProvinceMarkEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldUpdateUserId, UserInfo.Id);
@@ -282,14 +282,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseAreaProvinceMarkEntity entity)
         {
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldArea, entity.Area);
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldAreaId, entity.AreaId);
@@ -298,7 +298,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldMark, entity.Mark);
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseAreaProvinceMarkEntity.FieldDescription, entity.Description);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

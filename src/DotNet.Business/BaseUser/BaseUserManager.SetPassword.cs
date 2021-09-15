@@ -130,7 +130,7 @@ namespace DotNet.Business
                     userLogOnEntity.CreateUserId = UserInfo.Id;
                     userLogOnEntity.CreateBy = UserInfo.RealName;
                 }
-                userLogOnManager.AddObject(userLogOnEntity);
+                userLogOnManager.AddEntity(userLogOnEntity);
                 result = 1;
             }
 

@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseExceptionManager : BaseManager
     {
-        #region public string AddObject(Exception ex, string url) 记录异常情况
+        #region public string AddEntity(Exception ex, string url) 记录异常情况
 
         /// <summary>
         /// 记录异常情况
@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <param name="ex">异常</param>
         /// <param name="url">网址</param>
         /// <returns>主键</returns>
-        public string AddObject(Exception ex, string url)
+        public string AddEntity(Exception ex, string url)
         {
             var entity = new BaseExceptionEntity
             {
@@ -64,7 +64,7 @@ namespace DotNet.Business
                 entity.CreateBy = entity.CreateBy;
             }
             
-            return AddObject(entity);
+            return AddEntity(entity);
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace DotNet.Business
 
             //判断一下数据库是否打开状态，若数据库都没能打开，还记录啥错误，不是又抛出另一个错误了？
             var exceptionManager = new BaseExceptionManager(dbHelper, userInfo);
-            result = exceptionManager.AddObject(ex, url);
+            result = exceptionManager.AddEntity(ex, url);
 
             return result;
         }

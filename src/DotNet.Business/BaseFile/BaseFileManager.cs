@@ -36,13 +36,13 @@ namespace DotNet.Business
     /// </remarks>
     public partial class BaseFileManager : BaseManager
     {
-        #region public BaseFileEntity GetObject(string id) 获取信息
+        #region public BaseFileEntity GetEntity(string id) 获取信息
         /// <summary>
         /// 获取信息
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>数据权限</returns>
-        public BaseFileEntity GetObject(string id)
+        public BaseFileEntity GetEntity(string id)
         {
             var sql = "SELECT " + BaseFileEntity.FieldId
                     + "        ," + BaseFileEntity.FieldFolderId
@@ -160,7 +160,7 @@ namespace DotNet.Business
                     Contents = file,
                     Enabled = enabled ? 1 : 0
                 };
-                result = AddObject(entity);
+                result = AddEntity(entity);
             }
             else
             {
@@ -172,7 +172,7 @@ namespace DotNet.Business
                     Contents = file,
                     Enabled = enabled ? 1 : 0
                 };
-                result = AddObject(entity);
+                result = AddEntity(entity);
             }
             return result;
         }
@@ -217,7 +217,7 @@ namespace DotNet.Business
                     FileSize = filesize,
                     Enabled = enabled ? 1 : 0
                 };
-                result = AddObject(entity);
+                result = AddEntity(entity);
             }
             else
             {
@@ -231,7 +231,7 @@ namespace DotNet.Business
                     FileSize = filesize,
                     Enabled = enabled ? 1 : 0
                 };
-                result = AddObject(entity);
+                result = AddEntity(entity);
             }
             return result;
         }        
@@ -334,14 +334,14 @@ namespace DotNet.Business
                     {
                         entity.GetFrom(dr);
                         // 判断是否允许编辑
-                        result += UpdateObject(entity);
+                        result += UpdateEntity(entity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -422,7 +422,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -456,7 +456,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -489,7 +489,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     if (result == 1)
                     {
                         // 运行成功

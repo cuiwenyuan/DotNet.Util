@@ -122,7 +122,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            entity.Id = int.Parse(AddObject(entity));
+            entity.Id = int.Parse(AddEntity(entity));
             return entity.Id.ToString();
         }
 
@@ -132,23 +132,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseUserOAuthEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseUserOAuthEntity GetObject(string id)
+        public BaseUserOAuthEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public BaseUserOAuthEntity GetObject(int id)
+        public BaseUserOAuthEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseUserOAuthEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
@@ -160,7 +160,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseUserOAuthEntity entity)
+        public string AddEntity(BaseUserOAuthEntity entity)
         {
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -194,7 +194,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateUserId, UserInfo.Id);
@@ -235,11 +235,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseUserOAuthEntity entity)
+        public int UpdateEntity(BaseUserOAuthEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateUserId, UserInfo.Id);
@@ -257,16 +257,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseUserOAuthEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserOAuthEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseUserOAuthEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseUserOAuthEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserOAuthEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseUserOAuthEntity.FieldName, entity.Name);

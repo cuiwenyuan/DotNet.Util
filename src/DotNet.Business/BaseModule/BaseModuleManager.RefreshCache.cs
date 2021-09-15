@@ -82,7 +82,7 @@ namespace DotNet.Business
             var result = 0;
 
             // 2016-02-29 吉日嘎拉 强制刷新缓存
-            GetObjectByCache(systemCode, moduleId, true);
+            GetEntityByCache(systemCode, moduleId, true);
 
             return result;
         }
@@ -99,7 +99,7 @@ namespace DotNet.Business
             foreach (var entity in list)
             {
                 // 2016-02-29 吉日嘎拉 强制刷新缓存
-                GetObjectByCache(systemCode, entity.Id, true);
+                GetEntityByCache(systemCode, entity.Id, true);
             }
 
             return result;

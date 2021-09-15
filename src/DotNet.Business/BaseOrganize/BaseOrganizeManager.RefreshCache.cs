@@ -29,7 +29,7 @@ namespace DotNet.Business
             var result = 0;
 
             // 2016-02-29 吉日嘎拉 强制刷新缓存
-            var organizeEntity = GetObjectByCache(organizeId, true);
+            var organizeEntity = GetEntityByCache(organizeId, true);
             if (organizeEntity != null)
             {
                 var systemCodes = BaseSystemManager.GetSystemCodes();

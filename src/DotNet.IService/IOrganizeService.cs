@@ -31,7 +31,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 获取实体按编号
@@ -39,7 +39,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetObjectByCode(BaseUserInfo userInfo, string code);
+        BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code);
 
         /// <summary>
         /// 获取实体按名称
@@ -47,7 +47,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="fullName">名称</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetObjectByName(BaseUserInfo userInfo, string fullName);
+        BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName);
 
         /// <summary>
         /// 判断字段是否重复

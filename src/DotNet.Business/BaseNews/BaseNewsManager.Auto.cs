@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseNewsEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseNewsEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseNewsEntity GetObject(string id)
+        public BaseNewsEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseNewsEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseNewsEntity.FieldId, id)));
             // return BaseEntity.Create<BaseNewsEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseNewsEntity.FieldId, id)));
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseNewsEntity entity)
+        public string AddEntity(BaseNewsEntity entity)
         {
             var sequence = entity.Id;
             if (entity.SortCode == 0)
@@ -177,7 +177,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 entity.CreateUserId = UserInfo.Id;
@@ -213,11 +213,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseNewsEntity entity)
+        public int UpdateEntity(BaseNewsEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseNewsEntity.FieldUpdateUserId, UserInfo.Id);
@@ -228,14 +228,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseNewsEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseNewsEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseNewsEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseNewsEntity entity)
         {
             if (entity.Contents == null)
             {
@@ -268,7 +268,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseNewsEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseNewsEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseNewsEntity.FieldSortCode, entity.SortCode);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

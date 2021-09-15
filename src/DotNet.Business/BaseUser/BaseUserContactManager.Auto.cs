@@ -106,7 +106,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseUserContactEntity GetObject(int? id)
+        public BaseUserContactEntity GetEntity(int? id)
         {
             return BaseEntity.Create<BaseUserContactEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserContactEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserContactEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserContactEntity.FieldId, id)));
@@ -116,7 +116,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseUserContactEntity GetObject(string id)
+        public BaseUserContactEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseUserContactEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserContactEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserContactEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserContactEntity.FieldId, id)));
@@ -126,12 +126,12 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseUserContactEntity entity)
+        public string AddEntity(BaseUserContactEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
             sqlBuilder.BeginInsert(CurrentTableName, BaseUserContactEntity.FieldId);
             sqlBuilder.SetValue(BaseUserContactEntity.FieldId, entity.Id);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserEntity.FieldCreateUserId, UserInfo.Id);
@@ -152,11 +152,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseUserContactEntity entity)
+        public int UpdateEntity(BaseUserContactEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserEntity.FieldUpdateUserId, UserInfo.Id);
@@ -172,7 +172,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseUserContactEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseUserContactEntity entity)
         {
             // 2016-03-02 吉日嘎拉 增加按公司可以区别数据的功能。
             sqlBuilder.SetValue(BaseUserContactEntity.FieldCompanyId, entity.CompanyId);

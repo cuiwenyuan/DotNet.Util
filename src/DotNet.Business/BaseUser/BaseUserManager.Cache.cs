@@ -52,7 +52,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="nickName"></param>
         /// <returns></returns>
-        public static BaseUserEntity GetObjectByNickNameByCache(string nickName)
+        public static BaseUserEntity GetEntityByNickNameByCache(string nickName)
         {
             // 2016-01-25 黄斌 添加, 从缓存中 通过唯一用户名获取
             BaseUserEntity result = null;
@@ -61,7 +61,7 @@ namespace DotNet.Business
                 return result;
             }
             var key = "User:ByNickName:" + nickName.ToLower();
-            result = CacheUtil.Cache(key, () => new BaseUserManager().GetObjectByNickName(nickName), true);
+            result = CacheUtil.Cache(key, () => new BaseUserManager().GetEntityByNickName(nickName), true);
             return result;
         }
 
@@ -113,7 +113,7 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         /// <param name="refreshCache">刷新缓存</param>
         /// <returns>实体</returns>
-        public static BaseUserEntity GetObjectByCache(string id, bool refreshCache = false)
+        public static BaseUserEntity GetEntityByCache(string id, bool refreshCache = false)
         {
             BaseUserEntity result = null;
 
@@ -123,7 +123,7 @@ namespace DotNet.Business
             }
 
             var key = "User:" + id;
-            result = CacheUtil.Cache(key, () => new BaseUserManager().GetObject(id), true, refreshCache);
+            result = CacheUtil.Cache(key, () => new BaseUserManager().GetEntity(id), true, refreshCache);
 
             return result;
         }
@@ -133,12 +133,12 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userCode"></param>
         /// <returns></returns>
-        public static BaseUserEntity GetObjectByCodeByCache(string userCode)
+        public static BaseUserEntity GetEntityByCodeByCache(string userCode)
         {
             BaseUserEntity result = null;
 
             var key = "User:ByCode:" + userCode;
-            result = CacheUtil.Cache(key, () => new BaseUserManager().GetObjectByCode(userCode), true);
+            result = CacheUtil.Cache(key, () => new BaseUserManager().GetEntityByCode(userCode), true);
             return result;
         }
 
@@ -151,7 +151,7 @@ namespace DotNet.Business
         {
             string result = null;
 
-            var userEntity = GetObjectByCodeByCache(userCode);
+            var userEntity = GetEntityByCodeByCache(userCode);
             if (userEntity != null)
             {
                 result = userEntity.Id;
@@ -166,7 +166,7 @@ namespace DotNet.Business
         /// <param name="companyId"></param>
         /// <param name="userCode"></param>
         /// <returns></returns>
-        public static BaseUserEntity GetObjectByCompanyIdByCodeByCache(string companyId, string userCode)
+        public static BaseUserEntity GetEntityByCompanyIdByCodeByCache(string companyId, string userCode)
         {
             BaseUserEntity result = null;
             // 检查参数有效性
@@ -175,7 +175,7 @@ namespace DotNet.Business
                 return result;
             }
             var key = "User:ByCompanyId:ByCode" + companyId + ":" + userCode;
-            result = CacheUtil.Cache(key, () => new BaseUserManager().GetObjectByCompanyIdByCode(companyId, userCode), true);
+            result = CacheUtil.Cache(key, () => new BaseUserManager().GetEntityByCompanyIdByCode(companyId, userCode), true);
 
             return result;
         }
@@ -197,7 +197,7 @@ namespace DotNet.Business
                 return result;
             }
             var key = "User:ByCompanyCode:ByCode" + companyCode + ":" + userCode;
-            result = CacheUtil.Cache(key, () => new BaseUserManager().GetObjectByCompanyCodeByCode(companyCode, userCode) != null, true);
+            result = CacheUtil.Cache(key, () => new BaseUserManager().GetEntityByCompanyCodeByCode(companyCode, userCode) != null, true);
 
             return result;
         }
@@ -207,7 +207,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="openId">唯一键</param>
         /// <returns>用户实体</returns>
-        public static BaseUserEntity GetObjectByOpenIdByCache(string openId)
+        public static BaseUserEntity GetEntityByOpenIdByCache(string openId)
         {
             BaseUserEntity result = null;
             var userId = string.Empty;
@@ -224,7 +224,7 @@ namespace DotNet.Business
                     userId = new BaseUserLogOnManager().GetIdByOpenId(openId);
                     if (!string.IsNullOrWhiteSpace(userId))
                     {
-                        return new BaseUserManager().GetObject(userId);
+                        return new BaseUserManager().GetEntity(userId);
                     }
                     else
                     {

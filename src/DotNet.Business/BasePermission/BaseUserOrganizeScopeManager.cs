@@ -225,7 +225,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    organizeScopeEntity = organizeScopeManager.GetObject(result);
+                    organizeScopeEntity = organizeScopeManager.GetEntity(result);
                 }
                 organizeScopeEntity.AllData = (permissionScope == PermissionOrganizeScope.AllData ? 1 : 0);
                 organizeScopeEntity.Province = (permissionScope == PermissionOrganizeScope.Province ? 1 : 0);

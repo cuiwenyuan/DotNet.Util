@@ -54,7 +54,7 @@ namespace DotNet.Business
                 var folderManager = new BaseFolderManager(dbHelper, userInfo);
                 // 检查相应的系统必备文件夹
                 folderManager.FolderCheck();
-                var userEntity = new BaseUserManager(dbHelper, userInfo).GetObject(toUserId);
+                var userEntity = new BaseUserManager(dbHelper, userInfo).GetEntity(toUserId);
                 if (!string.IsNullOrEmpty(userEntity.Id))
                 {
                     // 04:判断发送者的空间是否存在？
@@ -66,7 +66,7 @@ namespace DotNet.Business
                         folderEntity.Id = userEntity.Id;
                         folderEntity.Enabled = 1;
                         folderEntity.DeletionStateCode = 0;
-                        folderManager.AddObject(folderEntity);
+                        folderManager.AddEntity(folderEntity);
                     }
                     // 06:判断来自谁的文件夹是否存在？
                     // 07:判断发给谁的文件夹是否存在？
@@ -77,7 +77,7 @@ namespace DotNet.Business
                         folderEntity.Id = toUserId + "_Receive";
                         folderEntity.Enabled = 1;
                         folderEntity.DeletionStateCode = 0;
-                        folderManager.AddObject(folderEntity);
+                        folderManager.AddEntity(folderEntity);
                     }
                     if (!folderManager.Exists(userInfo.Id + "_Send_" + toUserId))
                     {
@@ -86,7 +86,7 @@ namespace DotNet.Business
                         folderEntity.Id = userInfo.Id + "_Send_" + toUserId;
                         folderEntity.Enabled = 1;
                         folderEntity.DeletionStateCode = 0;
-                        folderManager.AddObject(folderEntity);
+                        folderManager.AddEntity(folderEntity);
                     }
                     if (!folderManager.Exists(toUserId + "_Receive_" + userInfo.Id))
                     {
@@ -95,7 +95,7 @@ namespace DotNet.Business
                         folderEntity.Id = toUserId + "_Receive_" + userInfo.Id;
                         folderEntity.Enabled = 1;
                         folderEntity.DeletionStateCode = 0;
-                        folderManager.AddObject(folderEntity);
+                        folderManager.AddEntity(folderEntity);
                     }
                     // 08:已发送文件夹多一个文件。
                     // 09:已接收文件夹多一个文件。
@@ -112,9 +112,9 @@ namespace DotNet.Business
                         ModifiedOn = DateTime.Now
                     };
                     var fileManager = new BaseFileManager(dbHelper, userInfo);
-                    fileManager.AddObject(fileEntity);
+                    fileManager.AddEntity(fileEntity);
                     fileEntity.FolderId = toUserId + "_Receive_" + userInfo.Id;
-                    result = fileManager.AddObject(fileEntity);
+                    result = fileManager.AddEntity(fileEntity);
                     // string webHostUrl = BaseSystemInfo.WebHost;
                     // if (string.IsNullOrEmpty(webHostUrl))
                     // {
@@ -176,14 +176,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseFileEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseFileEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseFileEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseFileEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseFileEntity entity = null;
 
@@ -191,7 +191,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseFileManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
             return entity;
         }
@@ -267,7 +267,7 @@ namespace DotNet.Business
                 if (BaseSystemInfo.UploadStorageMode == "Disk")
                 {
                     manager.UpdateReadCount(id);// 阅读次数要加一
-                    var entity = manager.GetObject(id);
+                    var entity = manager.GetEntity(id);
 
                     FileStream fs = null;
                     //建立二进制读取

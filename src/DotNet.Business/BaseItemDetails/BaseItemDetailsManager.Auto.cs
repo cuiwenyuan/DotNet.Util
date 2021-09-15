@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseItemDetailsEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -133,23 +133,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseItemDetailsEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseItemDetailsEntity GetObject(int id)
+        public BaseItemDetailsEntity GetEntity(int id)
         {
-            return GetObject(id.ToString());
+            return GetEntity(id.ToString());
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseItemDetailsEntity GetObject(string id)
+        public BaseItemDetailsEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseItemDetailsEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldId, id)));
             // return BaseEntity.Create<BaseItemDetailsEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldId, id)));
@@ -159,7 +159,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseItemDetailsEntity entity)
+        public string AddEntity(BaseItemDetailsEntity entity)
         {
             var result = string.Empty;
             if (!entity.SortCode.HasValue)
@@ -202,7 +202,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
@@ -287,11 +287,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseItemDetailsEntity entity)
+        public int UpdateEntity(BaseItemDetailsEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseItemDetailsEntity.FieldUpdateUserId, UserInfo.Id);
@@ -308,14 +308,14 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseItemDetailsEntity entity)
         {
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldItemCode, entity.ItemCode);
@@ -328,7 +328,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldSortCode, entity.SortCode);
             sqlBuilder.SetValue(BaseItemDetailsEntity.FieldDescription, entity.Description);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

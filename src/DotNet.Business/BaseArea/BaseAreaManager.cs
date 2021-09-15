@@ -443,7 +443,7 @@ namespace DotNet.Business
                             // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                             entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.FullName).ToLower();
                         }
-                        result = AddObject(entity);
+                        result = AddEntity(entity);
                         // 运行成功
                         statusCode = Status.OkAdd.ToString();
                     }
@@ -468,7 +468,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = AddObject(entity);
+                    result = AddEntity(entity);
                     // 运行成功
                     statusCode = Status.OkAdd.ToString();
                 }
@@ -689,7 +689,7 @@ namespace DotNet.Business
                     if (id.Length > 0)
                     {
                         entity.GetFrom(dr);
-                        result += UpdateObject(entity);
+                        result += UpdateEntity(entity);
                     }
                 }
                 // 添加状态, 远程接口调用序列化时都会变成添加状态
@@ -698,18 +698,18 @@ namespace DotNet.Business
                     entity.GetFrom(dr);
                     if (!string.IsNullOrEmpty(entity.Id))
                     {
-                        if (UpdateObject(entity) > 0)
+                        if (UpdateEntity(entity) > 0)
                         {
                             result++;
                         }
                         else
                         {
-                            result += AddObject(entity).Length > 0 ? 1 : 0;
+                            result += AddEntity(entity).Length > 0 ? 1 : 0;
                         }
                     }
                     else
                     {
-                        result += AddObject(entity).Length > 0 ? 1 : 0;
+                        result += AddEntity(entity).Length > 0 ? 1 : 0;
                     }
                 }
                 if (dr.RowState == DataRowState.Unchanged)
@@ -825,7 +825,7 @@ namespace DotNet.Business
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.FullName).ToLower();
                 }
-                result += UpdateObject(entity);
+                result += UpdateEntity(entity);
             }
             return result;
         }
@@ -903,7 +903,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public static BaseAreaEntity GetObjectByCache(string id)
+        public static BaseAreaEntity GetEntityByCache(string id)
         {
             BaseAreaEntity result = null;
             var cacheKey = "Area:";
@@ -911,7 +911,7 @@ namespace DotNet.Business
             {
                 cacheKey += id;
             }
-            result = CacheUtil.Cache(cacheKey, () => new BaseAreaManager().GetObject(id), true);
+            result = CacheUtil.Cache(cacheKey, () => new BaseAreaManager().GetEntity(id), true);
             return result;
         }
 
@@ -924,7 +924,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.FullName;

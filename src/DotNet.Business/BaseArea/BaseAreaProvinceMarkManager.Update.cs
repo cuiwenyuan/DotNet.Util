@@ -33,11 +33,11 @@ namespace DotNet.Business
         public int Update(BaseAreaProvinceMarkEntity entity)
         {
             // 获取原始实体信息
-            var entityOld = GetObject(entity.Id);
+            var entityOld = GetEntity(entity.Id);
             // 保存修改记录
             UpdateEntityLog(entity, entityOld);
 
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         #region public void UpdateEntityLog(BaseAreaProvinceMarkEntity newEntity, BaseAreaProvinceMarkEntity oldEntity)

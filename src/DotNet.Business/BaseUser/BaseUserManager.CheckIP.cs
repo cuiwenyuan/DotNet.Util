@@ -38,7 +38,7 @@ namespace DotNet.Business
         {
             // 判断用户是否限制ip访问，有的是不限制访问的
             var userLogOnManager = new BaseUserLogOnManager();
-            var userLogOnEntity = userLogOnManager.GetObject(userId);
+            var userLogOnEntity = userLogOnManager.GetEntity(userId);
             return CheckIpAddressByCache(userId, userLogOnEntity, ipAddress, autoAdd);
         }
 

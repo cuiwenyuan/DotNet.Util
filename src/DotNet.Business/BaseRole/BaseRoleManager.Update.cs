@@ -74,11 +74,11 @@ namespace DotNet.Business
                 else
                 {
                     // 获取原始实体信息
-                    var entityOld = GetObject(entity.Id);
+                    var entityOld = GetEntity(entity.Id);
                     // 保存修改记录
                     UpdateEntityLog(entity, entityOld);
 
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     if (result == 1)
                     {
                         statusCode = Status.OkUpdate.ToString();

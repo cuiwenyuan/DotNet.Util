@@ -44,7 +44,7 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
-        BaseItemsEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseItemsEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 获取子列表

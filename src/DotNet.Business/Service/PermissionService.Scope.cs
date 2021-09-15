@@ -300,7 +300,7 @@ namespace DotNet.Business
                         AllowDelete = 0
                     };
                     permissionEntity.AllowDelete = 0;
-                    new BaseModuleManager(userInfo).AddObject(permissionEntity);
+                    new BaseModuleManager(userInfo).AddEntity(permissionEntity);
                 }
                 dt = new BaseModuleManager().GetDataTableByUser(userInfo.SystemCode, userId, permissionCode);
                 dt.TableName = BaseModuleEntity.TableName;

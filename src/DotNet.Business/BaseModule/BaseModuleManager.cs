@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="code">编号</param>
-        public BaseModuleEntity GetObjectByCode(string code)
+        public BaseModuleEntity GetEntityByCode(string code)
         {
             BaseModuleEntity result = null;
 
@@ -113,7 +113,7 @@ namespace DotNet.Business
                     entity.AllowEdit = 1;
                     // 这里是防止主键重复？
                     // permissionEntity.Id = BaseUtil.NewGuid();
-                    result = this.AddObject(entity);
+                    result = this.AddEntity(entity);
                 }
                 */
             }
@@ -341,7 +341,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -383,7 +383,7 @@ namespace DotNet.Business
                         // 判断是否允许编辑
                         if (BaseUserManager.IsAdministrator(UserInfo.Id) || entity.AllowEdit == 1)
                         {
-                            result += UpdateObject(entity);
+                            result += UpdateEntity(entity);
                         }
                     }
                 }
@@ -391,7 +391,7 @@ namespace DotNet.Business
                 if (dr.RowState == DataRowState.Added)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -631,9 +631,9 @@ namespace DotNet.Business
         /// 从缓存获取获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public static BaseModuleEntity GetObjectByCache(string id)
+        public static BaseModuleEntity GetEntityByCache(string id)
         {
-            return GetObjectByCache("Base", id);
+            return GetEntityByCache("Base", id);
         }
 
         /// <summary>
@@ -641,9 +641,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="id">主键</param>
-        public static BaseModuleEntity GetObjectByCache(BaseUserInfo userInfo, string id)
+        public static BaseModuleEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         {
-            return GetObjectByCache(userInfo.SystemCode, id);
+            return GetEntityByCache(userInfo.SystemCode, id);
         }
 
         /// <summary>
@@ -652,7 +652,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编码</param>
         /// <param name="id">主键</param>
         /// <param name="refreshCache">刷新缓存</param>
-        public static BaseModuleEntity GetObjectByCache(string systemCode, string id, bool refreshCache = false)
+        public static BaseModuleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
         {
             BaseModuleEntity result = null;
 
@@ -667,7 +667,7 @@ namespace DotNet.Business
             //    // 动态读取表中的数据
             //    var tableName = systemCode + "Module";
             //    var manager = new BaseModuleManager(tableName);
-            //    return manager.GetObject(id);
+            //    return manager.GetEntity(id);
             //}, true, refreshCache);
 
             var tableName = systemCode + "Module";
@@ -695,7 +695,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="code">编号</param>
         /// <returns>权限实体</returns>
-        public static BaseModuleEntity GetObjectByCacheByCode(string systemCode, string code)
+        public static BaseModuleEntity GetEntityByCacheByCode(string systemCode, string code)
         {
             BaseModuleEntity result = null;
 
@@ -709,7 +709,7 @@ namespace DotNet.Business
             //    // 动态读取表中的数据
             //    var tableName = systemCode + "Module";
             //    var manager = new BaseModuleManager(tableName);
-            //    return manager.GetObjectByCode(code);
+            //    return manager.GetEntityByCode(code);
             //}, true);
 
             var tableName = systemCode + "Module";
@@ -743,7 +743,7 @@ namespace DotNet.Business
 
             if (!string.IsNullOrEmpty(code))
             {
-                var moduleEntity = GetObjectByCacheByCode(systemCode, code);
+                var moduleEntity = GetEntityByCacheByCode(systemCode, code);
                 if (moduleEntity != null)
                 {
                     result = moduleEntity.Id;
@@ -769,7 +769,7 @@ namespace DotNet.Business
 
             if (!string.IsNullOrEmpty(id))
             {
-                var moduleEntity = GetObjectByCache(systemCode, id);
+                var moduleEntity = GetEntityByCache(systemCode, id);
                 if (moduleEntity != null)
                 {
                     result = moduleEntity.FullName;

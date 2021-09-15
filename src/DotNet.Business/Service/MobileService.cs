@@ -208,7 +208,7 @@ namespace DotNet.Business
                 // 手机验证码通过审核了
                 if (result && userInfo != null)
                 {
-                    BaseUserContactEntity userContactEntity = BaseUserContactManager.GetObjectByCache(userInfo.Id);
+                    BaseUserContactEntity userContactEntity = BaseUserContactManager.GetEntityByCache(userInfo.Id);
 
                     if (userContactEntity != null)
                     {
@@ -696,7 +696,7 @@ namespace DotNet.Business
                 {
                     userManager = new BaseUserManager();
                     var userNameOk = true;
-                    var userEntity = userManager.GetObject(id);
+                    var userEntity = userManager.GetEntity(id);
                     if (!string.IsNullOrEmpty(userName))
                     {
                         if (!string.IsNullOrEmpty(userEntity.UserName) && !userEntity.UserName.Equals(userName, StringComparison.Ordinal))

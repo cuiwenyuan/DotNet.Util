@@ -38,7 +38,7 @@ namespace DotNet.Business
             {
                 var id = ids[i].ToString();
 
-                var entity = GetObjectByCache(id);
+                var entity = GetEntityByCache(id);
 
                 CachePreheatingSpelling(entity);
 

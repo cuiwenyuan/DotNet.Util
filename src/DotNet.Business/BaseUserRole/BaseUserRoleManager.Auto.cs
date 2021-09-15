@@ -121,7 +121,7 @@ namespace DotNet.Business
             };
             if (!Exists(whereParameters))
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
             }
             else
             {
@@ -157,7 +157,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -166,14 +166,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseUserRoleEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseUserRoleEntity GetObject(int id)
+        public BaseUserRoleEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseUserRoleEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldId, id)));
         }
@@ -182,7 +182,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseUserRoleEntity entity)
+        public string AddEntity(BaseUserRoleEntity entity)
         {
             var result = string.Empty;
 
@@ -219,7 +219,7 @@ namespace DotNet.Business
                 //}
             }
 
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateUserId, UserInfo.Id);
@@ -251,11 +251,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseUserRoleEntity entity)
+        public int UpdateEntity(BaseUserRoleEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateUserId, UserInfo.Id);
@@ -272,14 +272,14 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseUserRoleEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserRoleEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
         {
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldRoleId, entity.RoleId);
@@ -291,7 +291,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDeleted, entity.DeletionStateCode);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

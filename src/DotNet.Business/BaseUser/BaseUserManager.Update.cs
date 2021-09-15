@@ -80,12 +80,12 @@ namespace DotNet.Business
                     }
 
                     // 获取原始实体信息
-                    var entityOld = GetObject(entity.Id);
+                    var entityOld = GetEntity(entity.Id);
                     // 保存修改记录
                     UpdateEntityLog(entity, entityOld);
 
                     // 01：先更新自己的数据
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     // 02：用户修改时，用户文件夹同步更新
                     // BaseFolderManager manager = new BaseFolderManager(this.DbHelper, this.UserInfo);
                     // manager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
@@ -160,12 +160,12 @@ namespace DotNet.Business
         /// <returns></returns>
         public int ChangeEnabled(string id)
         {
-            var userEntity = GetObject(id);
+            var userEntity = GetEntity(id);
             if (userEntity.Enabled != 1)
             {
                 // 若用户要生效了，那就需要修改锁定的时间了，否则被锁定的用户有效后也无法登录系统了
                 var manager = new BaseUserLogOnManager(DbHelper, UserInfo);
-                var entity = manager.GetObject(id);
+                var entity = manager.GetEntity(id);
                 entity.LockStartDate = null;
                 entity.LockEndDate = null;
                 manager.Update(entity);
@@ -179,7 +179,7 @@ namespace DotNet.Business
                 userEntity.Enabled = 0;
             }
 
-            return UpdateObject(userEntity);
+            return UpdateEntity(userEntity);
         }
 
         /// <summary>
@@ -188,11 +188,11 @@ namespace DotNet.Business
         /// <param name="userInfo">实体</param>
         /// <param name="userPassword">用户密码</param>
         /// <returns>更新、添加成功？</returns>
-        public bool SetObject(BaseUserInfo userInfo, string userPassword)
+        public bool SetEntity(BaseUserInfo userInfo, string userPassword)
         {
             var result = false;
 
-            var userEntity = GetObject(userInfo.Id);
+            var userEntity = GetEntity(userInfo.Id);
             if (userEntity == null)
             {
                 userEntity = new BaseUserEntity
@@ -226,24 +226,24 @@ namespace DotNet.Business
             // 若有主键就是先更新，没主键就是添加
             if (!string.IsNullOrEmpty(userEntity.Id))
             {
-                result = UpdateObject(userEntity) > 0;
+                result = UpdateEntity(userEntity) > 0;
                 // 若不存在，就是添加的意思
                 if (!result)
                 {
                     // 更新不成功表示没数据，需要添加数据，这时候要注意主键不能出错
-                    result = !string.IsNullOrEmpty(AddObject(userEntity));
+                    result = !string.IsNullOrEmpty(AddEntity(userEntity));
                 }
             }
             else
             {
                 // 若没有主键就是添加数据
-                result = !string.IsNullOrEmpty(AddObject(userEntity));
+                result = !string.IsNullOrEmpty(AddEntity(userEntity));
             }
             SetPassword(userInfo.Id, userPassword, true, true, false);
 
             /*
             BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(this.DbHelper, this.UserInfo);
-            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetObject(userInfo.Id);
+            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetEntity(userInfo.Id);
             if (userLogOnEntity == null)
             {
                 userLogOnEntity = new BaseUserLogOnEntity();

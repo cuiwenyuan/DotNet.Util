@@ -114,7 +114,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -123,14 +123,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseUserLogonExtendEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseUserLogonExtendEntity GetObject(string id)
+        public BaseUserLogonExtendEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseUserLogonExtendEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogonExtendEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserLogonExtendEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
@@ -140,7 +140,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseUserLogonExtendEntity entity)
+        public string AddEntity(BaseUserLogonExtendEntity entity)
         {
             var key = string.Empty;
             if (entity != null)
@@ -178,7 +178,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -198,26 +198,26 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseUserLogonExtendEntity entity)
+        public int UpdateEntity(BaseUserLogonExtendEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             return sqlBuilder.EndUpdate();
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseUserLogonExtendEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldWechatRemind, entity.WechatRemind);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldEmailRemind, entity.EmailRemind);
             sqlBuilder.SetValue(BaseUserLogonExtendEntity.FieldMobileRemind, entity.MobileRemind);

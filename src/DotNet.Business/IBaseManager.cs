@@ -48,13 +48,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        string AddObject(object entity);
+        string AddEntity(object entity);
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        int UpdateObject(object entity);
+        int UpdateEntity(object entity);
         /// <summary>
         /// 删除
         /// </summary>

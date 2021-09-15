@@ -43,7 +43,7 @@ namespace DotNet.Business
             return UserConfigUtil.GetValue(key);
         }
 
-        #region public BaseOrganizeEntity GetObject(BaseUserInfo userInfo, string tableName, string id)
+        #region public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string tableName, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -51,7 +51,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseParameterEntity GetObject(BaseUserInfo userInfo, string tableName, string id)
+        public BaseParameterEntity GetEntity(BaseUserInfo userInfo, string tableName, string id)
         {
             BaseParameterEntity entity = null;
 
@@ -59,7 +59,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseParameterManager(dbHelper, userInfo, tableName);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
 
             return entity;

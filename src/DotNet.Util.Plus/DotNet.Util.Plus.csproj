@@ -34,9 +34,6 @@
 		<Compile Remove="ExcelUtil.cs" />
 		<Compile Remove="ExcelUtil.Export.cs" />
 		<Compile Remove="ExcelUtil.Import.cs" />
-		<Compile Remove="ImportUtil.cs" />
-		<Compile Remove="LocationUtil.cs" />
-		<Compile Remove="QqwryUtil.cs" />
 		<Compile Remove="XmlUtil.cs" />
 	</ItemGroup>
 
@@ -63,6 +60,7 @@
 		<Reference Include="System.DirectoryServices" />
 		<Reference Include="System.Net" />
 		<Reference Include="System.Web" />
+		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net45' Or '$(TargetFramework)'=='net46'">

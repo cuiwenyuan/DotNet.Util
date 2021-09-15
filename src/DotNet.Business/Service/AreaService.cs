@@ -54,14 +54,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseAreaEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseAreaEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseAreaEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseAreaEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseAreaEntity entity = null;
 
@@ -69,7 +69,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseAreaManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
             return entity;
         }

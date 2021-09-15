@@ -88,7 +88,7 @@ namespace DotNet.Business
                     while (dr.Read())
                     {
                         // 这里需要从数据库读取、否则容易造成丢失数据
-                        BaseOrganizeEntity entity = organizeManager.GetObject(dr["ID"].ToString());
+                        BaseOrganizeEntity entity = organizeManager.GetEntity(dr["ID"].ToString());
                         if (entity == null)
                         {
                             entity = new BaseOrganizeEntity();
@@ -120,10 +120,10 @@ namespace DotNet.Business
                             entity.SortCode = int.Parse(dr["ORDER_BY"].ToString());
                         }
                         // 02：可以把读取到的数据能写入到用户中心的。
-                        result = organizeManager.UpdateObject(entity);
+                        result = organizeManager.UpdateEntity(entity);
                         if (result == 0)
                         {
-                            organizeManager.AddObject(entity);
+                            organizeManager.AddEntity(entity);
                         }
                     }
                     dr.Close();

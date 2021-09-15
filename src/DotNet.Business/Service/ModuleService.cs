@@ -136,7 +136,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseModuleEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseModuleEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseModuleEntity result = null;
 
@@ -145,7 +145,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Module";
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
-                result = manager.GetObject(id);
+                result = manager.GetEntity(id);
             });
 
             return result;
@@ -157,7 +157,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        public BaseModuleEntity GetObjectByCode(BaseUserInfo userInfo, string code)
+        public BaseModuleEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         {
             BaseModuleEntity result = null;
 
@@ -179,7 +179,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="formName">窗体名称</param>
         /// <returns>实体</returns>
-        public BaseModuleEntity GetObjectByFormName(BaseUserInfo userInfo, string formName)
+        public BaseModuleEntity GetEntityByFormName(BaseUserInfo userInfo, string formName)
         {
             BaseModuleEntity result = null;
 
@@ -394,7 +394,7 @@ namespace DotNet.Business
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
                 foreach (var id in ids)
                 {
-                    var entityOld = manager.GetObject(id);
+                    var entityOld = manager.GetEntity(id);
                     // 2015-07-14 吉日嘎拉 只有允许删除的，才可以删除，不允许删除的，不让删除。
                     if (entityOld.AllowEdit.HasValue && entityOld.AllowDelete.Value == 1)
                     {

@@ -64,7 +64,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public static BaseUserLogonExtendEntity GetObjectByCache(string id)
+        public static BaseUserLogonExtendEntity GetEntityByCache(string id)
         {
             BaseUserLogonExtendEntity result = null;
             var cacheKey = _cacheKeyPrefix;
@@ -73,7 +73,7 @@ namespace DotNet.Business
                 cacheKey = cacheKey + id;
             }
 
-            result = CacheUtil.Cache(cacheKey, () => new BaseUserLogonExtendManager().GetObject(id), true);
+            result = CacheUtil.Cache(cacheKey, () => new BaseUserLogonExtendManager().GetEntity(id), true);
 
             return result;
         }

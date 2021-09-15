@@ -38,7 +38,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace DotNet.Business
             BaseUserContactEntity result = null;
 
             var manager = new BaseUserContactManager();
-            result = manager.GetObject(id);
+            result = manager.GetEntity(id);
             if (result != null)
             {
                 SetCache(result);
@@ -123,7 +123,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Email;
@@ -143,7 +143,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Mobile;
@@ -160,7 +160,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Telephone;

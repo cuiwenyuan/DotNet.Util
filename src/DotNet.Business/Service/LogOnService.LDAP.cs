@@ -59,7 +59,7 @@ namespace DotNet.Business
                  {
                      var baseUserLogOnManager = new BaseUserLogOnManager(userInfo);
                     //获取密码
-                    var userLogOnEntity = baseUserLogOnManager.GetObject(userEntity.Id);
+                    var userLogOnEntity = baseUserLogOnManager.GetEntity(userEntity.Id);
                      var password = userLogOnEntity.UserPassword;
                     //再进行登录，这里密码不能是AD的密码，所以不检验密码
                     result = userManager.LogOnByUserName(userName, password, systemCode, null, null, null, false, false);

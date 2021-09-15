@@ -233,7 +233,7 @@ namespace DotNet.Business
             int checkIPAddress = 1;
             BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(this.UserInfo);
             BaseUserLogOnEntity userLogOnEntity = new BaseUserLogOnEntity();
-            userLogOnEntity = userLogOnManager.GetObject(entity.Id);
+            userLogOnEntity = userLogOnManager.GetEntity(entity.Id);
             if (userLogOnEntity != null)
             {
                 int.TryParse(userLogOnEntity.CheckIPAddress.ToString(), out checkIPAddress);

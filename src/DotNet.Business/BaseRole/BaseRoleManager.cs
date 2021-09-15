@@ -70,7 +70,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache("Base", id);
+            var entity = GetEntityByCache("Base", id);
             if (entity != null)
             {
                 result = entity.RealName;
@@ -128,7 +128,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCacheByCode(systemCode, code);
+            var entity = GetEntityByCacheByCode(systemCode, code);
             if (entity != null)
             {
                 result = entity.Id;
@@ -147,7 +147,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCacheByName(systemCode, realName);
+            var entity = GetEntityByCacheByName(systemCode, realName);
             if (entity != null)
             {
                 result = entity.RealName;
@@ -161,7 +161,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        public BaseRoleEntity GetObjectByCode(string code)
+        public BaseRoleEntity GetEntityByCode(string code)
         {
             BaseRoleEntity result = null;
 
@@ -179,7 +179,7 @@ namespace DotNet.Business
         /// 按名称获取实体
         /// </summary>
         /// <param name="realName">名称</param>
-        public BaseRoleEntity GetObjectByName(string realName)
+        public BaseRoleEntity GetEntityByName(string realName)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -342,14 +342,14 @@ namespace DotNet.Business
                     if (!string.IsNullOrEmpty(id))
                     {
                         roleEntity.GetFrom(dr);
-                        result += this.UpdateObject(roleEntity);
+                        result += this.UpdateEntity(roleEntity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     roleEntity.GetFrom(dr);
-                    result += this.AddObject(roleEntity).Length > 0 ? 1 : 0;
+                    result += this.AddEntity(roleEntity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -365,7 +365,7 @@ namespace DotNet.Business
             var result = 0;
             foreach (var entity in entities)
             {
-                result += UpdateObject(entity);
+                result += UpdateEntity(entity);
             }
             return result;
         }
@@ -648,9 +648,9 @@ namespace DotNet.Business
         /// 从缓存获取获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public static BaseRoleEntity GetObjectByCache(string id)
+        public static BaseRoleEntity GetEntityByCache(string id)
         {
-            return GetObjectByCache("Base", id);
+            return GetEntityByCache("Base", id);
         }
 
         /// <summary>
@@ -658,9 +658,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">UserInfo</param>
         /// <param name="id">主键</param>
-        public static BaseRoleEntity GetObjectByCache(BaseUserInfo userInfo, string id)
+        public static BaseRoleEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         {
-            return GetObjectByCache(userInfo.SystemCode, id);
+            return GetEntityByCache(userInfo.SystemCode, id);
         }
 
         /// <summary>
@@ -670,7 +670,7 @@ namespace DotNet.Business
         /// <param name="id"></param>
         /// <param name="refreshCache"></param>
         /// <returns></returns>
-        public static BaseRoleEntity GetObjectByCache(string systemCode, string id, bool refreshCache = false)
+        public static BaseRoleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
         {
             BaseRoleEntity result = null;
 
@@ -696,7 +696,7 @@ namespace DotNet.Business
             result = listRole.Find(t => t.Id == id);
             //直接读取数据库
             //BaseRoleManager manager = new BaseRoleManager(tableName);
-            //result = manager.GetObject(id);
+            //result = manager.GetEntity(id);
             return result;
         }
 
@@ -706,7 +706,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="code">编号</param>
         /// <returns>权限实体</returns>
-        public static BaseRoleEntity GetObjectByCacheByCode(string systemCode, string code)
+        public static BaseRoleEntity GetEntityByCacheByCode(string systemCode, string code)
         {
             BaseRoleEntity result = null;
 
@@ -733,7 +733,7 @@ namespace DotNet.Business
             result = listRole.Find(t => t.Code == code);
             //直接读取数据库
             //BaseRoleManager manager = new BaseRoleManager(tableName);
-            //result = manager.GetObjectByCode(code);
+            //result = manager.GetEntityByCode(code);
 
             return result;
         }
@@ -744,7 +744,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="realName">名称</param>
         /// <returns>权限实体</returns>
-        public static BaseRoleEntity GetObjectByCacheByName(string systemCode, string realName)
+        public static BaseRoleEntity GetEntityByCacheByName(string systemCode, string realName)
         {
             BaseRoleEntity result = null;
 
@@ -771,7 +771,7 @@ namespace DotNet.Business
             result = listRole.Find(t => t.RealName == realName);
             //直接读取数据库
             //BaseRoleManager manager = new BaseRoleManager(tableName);
-            //result = manager.GetObjectByName(realName);
+            //result = manager.GetEntityByName(realName);
 
             return result;
         }

@@ -101,7 +101,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -110,14 +110,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseMessageEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseMessageEntity GetObject(string id)
+        public BaseMessageEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseMessageEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseMessageEntity.FieldId, id)));
             // return BaseEntity.Create<BaseMessageEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseMessageEntity.FieldId, id)));
@@ -128,7 +128,7 @@ namespace DotNet.Business
         /// 20151008 吉日嘎拉 把排序码去掉，排序码没有意义
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseMessageEntity entity)
+        public string AddEntity(BaseMessageEntity entity)
         {
             var result = string.Empty;
 
@@ -144,7 +144,7 @@ namespace DotNet.Business
             sqlBuilder.BeginInsert(CurrentTableName, BaseMessageEntity.FieldId);
             sqlBuilder.SetValue(BaseMessageEntity.FieldId, entity.Id);
 
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             if (UserInfo != null)
             {
@@ -171,13 +171,13 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseMessageEntity entity)
+        public int UpdateEntity(BaseMessageEntity entity)
         {
             var result = 0;
 
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
 
             sqlBuilder.SetWhere(BaseMessageEntity.FieldId, entity.Id);
             result = sqlBuilder.EndUpdate();
@@ -186,16 +186,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseMessageEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseMessageEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseMessageEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseMessageEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseMessageEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseMessageEntity.FieldReceiverDepartmentId, entity.ReceiverDepartmentId);
             sqlBuilder.SetValue(BaseMessageEntity.FieldReceiverDepartmentName, entity.ReceiverDepartmentName);

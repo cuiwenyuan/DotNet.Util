@@ -56,14 +56,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public static BaseUserContactEntity GetObjectByCache(string id)
+        public static BaseUserContactEntity GetEntityByCache(string id)
         {
             BaseUserContactEntity result = null;
             
             if (!string.IsNullOrEmpty(id))
             {
                 var key = "UserContact:" + id;
-                result = CacheUtil.Cache(key, () => new BaseUserContactManager().GetObject(id), true);
+                result = CacheUtil.Cache(key, () => new BaseUserContactManager().GetEntity(id), true);
             }
 
             return result;

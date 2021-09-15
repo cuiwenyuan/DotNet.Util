@@ -119,7 +119,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseModuleEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -142,14 +142,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseModuleEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseModuleEntity GetObject(string id)
+        public BaseModuleEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseModuleEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseModuleEntity.FieldId, id)));
         }
@@ -158,16 +158,16 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseModuleEntity GetObject(int id)
+        public BaseModuleEntity GetEntity(int id)
         {
-            return GetObject(id.ToString());
+            return GetEntity(id.ToString());
         }
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseModuleEntity entity)
+        public string AddEntity(BaseModuleEntity entity)
         {
             var result = string.Empty;
 
@@ -204,7 +204,7 @@ namespace DotNet.Business
                 //}
             }
 
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseModuleEntity.FieldCreateUserId, UserInfo.Id);
@@ -236,11 +236,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseModuleEntity entity)
+        public int UpdateEntity(BaseModuleEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateUserId, UserInfo.Id);
@@ -258,16 +258,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseModuleEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseModuleEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseModuleEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseModuleEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseModuleEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseModuleEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseModuleEntity.FieldFullName, entity.FullName);

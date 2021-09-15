@@ -85,13 +85,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static BaseDepartmentEntity GetObjectByCodeByCache(string code)
+        public static BaseDepartmentEntity GetEntityByCodeByCache(string code)
         {
             BaseDepartmentEntity result = null;
 
             if (!string.IsNullOrEmpty(code))
             {
-                result = CacheUtil.Cache(code, () => new BaseDepartmentManager().GetObjectByCode(code));
+                result = CacheUtil.Cache(code, () => new BaseDepartmentManager().GetEntityByCode(code));
             }
             return result;
         }
@@ -102,14 +102,14 @@ namespace DotNet.Business
         /// <param name="companyId">公司主键</param>
         /// <param name="fullName">部门名称</param>
         /// <returns>实体</returns>
-        public static BaseDepartmentEntity GetObjectByNameByCache(string companyId, string fullName)
+        public static BaseDepartmentEntity GetEntityByNameByCache(string companyId, string fullName)
         {
             BaseDepartmentEntity result = null;
 
             if (!string.IsNullOrEmpty(companyId) && !string.IsNullOrEmpty(fullName))
             {
                 var key = "DBN:" + companyId + ":" + fullName;
-                result = CacheUtil.Cache(key, () => new BaseDepartmentManager().GetObjectByName(companyId, fullName));
+                result = CacheUtil.Cache(key, () => new BaseDepartmentManager().GetEntityByName(companyId, fullName));
             }
 
             return result;

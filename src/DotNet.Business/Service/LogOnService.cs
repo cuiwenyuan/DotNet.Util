@@ -304,7 +304,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseUserLogOnEntity GetObject(string taskId, BaseUserInfo userInfo, string id)
+        public BaseUserLogOnEntity GetEntity(string taskId, BaseUserInfo userInfo, string id)
         {
             BaseUserLogOnEntity result = null;
 
@@ -316,7 +316,7 @@ namespace DotNet.Business
                 if (userManager.UserIsLogOn(userInfo))
                 {
                     var userLogOnManager = new BaseUserLogOnManager();
-                    result = userLogOnManager.GetObject(id);
+                    result = userLogOnManager.GetEntity(id);
                 }
             });
 
@@ -494,10 +494,10 @@ namespace DotNet.Business
                 {
                     // 被锁定15分钟，不允许15分钟内登录，这时间是按服务器的时间来的。
                     var userLogOnManager = new BaseUserLogOnManager();
-                    var userLogOnEntity = userLogOnManager.GetObject(userEntity.Id);
+                    var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
                     userLogOnEntity.LockStartDate = DateTime.Now;
                     userLogOnEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
-                    result = userLogOnManager.UpdateObject(userLogOnEntity) > 0;
+                    result = userLogOnManager.UpdateEntity(userLogOnEntity) > 0;
                 }
             });
 
@@ -583,7 +583,7 @@ namespace DotNet.Business
             {
                 var userManager = new BaseUserManager();
                 var userNameOk = true;
-                var userEntity = userManager.GetObject(id);
+                var userEntity = userManager.GetEntity(id);
                 if (!string.IsNullOrEmpty(userName))
                 {
                     if (!string.IsNullOrEmpty(userEntity.UserName) && !userEntity.UserName.Equals(userName, StringComparison.Ordinal))

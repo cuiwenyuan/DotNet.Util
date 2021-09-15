@@ -57,7 +57,7 @@ namespace DotNet.Util
         /// <param name="expiresIn">缓存时长</param>
         /// <param name="isSliding">是否滑动过期（如果在过期时间内有操作，则以当前时间点延长过期时间） //new TimeSpan(0, 60, 0);</param>
         /// <returns></returns>
-        bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false);
+        bool AddEntity(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false);
 
         /// <summary>
         /// Add

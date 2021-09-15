@@ -36,7 +36,7 @@ namespace DotNet.Business
             var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId);
             if (entity != null)
             {
-                var entityUser = new BaseUserManager(UserInfo).GetObject(entity.UserId);
+                var entityUser = new BaseUserManager(UserInfo).GetEntity(entity.UserId);
                 if (entityUser != null)
                 {
                     // 统一的登录服务

@@ -86,7 +86,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseFolderEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseFolderEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseFolderEntity folderEntity = null;
 
@@ -94,7 +94,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var folderManager = new BaseFolderManager(dbHelper, userInfo);
-                folderEntity = folderManager.GetObject(id);
+                folderEntity = folderManager.GetEntity(id);
             });
             return folderEntity;
         }

@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseSequenceEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseSequenceEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseSequenceEntity GetObject(string id)
+        public BaseSequenceEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseSequenceEntity.FieldId, id)));
             // return BaseEntity.Create<BaseSequenceEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseSequenceEntity.FieldId, id)));
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseSequenceEntity entity)
+        public string AddEntity(BaseSequenceEntity entity)
         {
             var sequence = string.Empty;
             Identity = false; 
@@ -184,7 +184,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateUserId, UserInfo.Id);
@@ -212,11 +212,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseSequenceEntity entity)
+        public int UpdateEntity(BaseSequenceEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateUserId, UserInfo.Id);
@@ -227,14 +227,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseSequenceEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseSequenceEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseSequenceEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseSequenceEntity entity)
         {
             sqlBuilder.SetValue(BaseSequenceEntity.FieldFullName, entity.FullName);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldPrefix, entity.Prefix);
@@ -244,7 +244,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseSequenceEntity.FieldStep, entity.Step);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldDescription, entity.Description);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

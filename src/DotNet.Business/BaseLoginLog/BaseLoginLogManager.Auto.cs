@@ -121,7 +121,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -130,14 +130,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseLoginLogEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseLoginLogEntity GetObject(string id)
+        public BaseLoginLogEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseLoginLogEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseLoginLogEntity.FieldId, id)));
             // return BaseEntity.Create<BaseLoginLogEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
@@ -147,7 +147,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseLoginLogEntity entity)
+        public string AddEntity(BaseLoginLogEntity entity)
         {
             var result = string.Empty;
 
@@ -203,7 +203,7 @@ namespace DotNet.Business
             }
             */
 
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetDbNow(BaseLoginLogEntity.FieldCreateTime);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
@@ -225,24 +225,24 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseLoginLogEntity entity)
+        public int UpdateEntity(BaseLoginLogEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             return sqlBuilder.EndUpdate();
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseLoginLogEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseLoginLogEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">sql生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseLoginLogEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseLoginLogEntity entity)
         {
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldUserName, entity.UserName);
@@ -269,7 +269,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldIpAddress, entity.IpAddress);
             sqlBuilder.SetValue(BaseLoginLogEntity.FieldIpAddressName, entity.IpAddressName);
 
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

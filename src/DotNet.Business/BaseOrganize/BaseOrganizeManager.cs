@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///     2015-09-10 版本：3.4 JiRiGaLa   缓存预热,强制重新缓存。
     ///     2015-05-06 版本：3.3 PanQiMin   添加根据城市Id获取外网展示网点的方法。
     ///     2015-04-09 版本：3.3 PanQiMin   添加记录修改日志方法。
-    ///     2007.12.02 版本：3.3 JiRiGaLa   增加 SetObject 方法，优化主键。
+    ///     2007.12.02 版本：3.3 JiRiGaLa   增加 SetEntity 方法，优化主键。
     ///     2007.05.31 版本：3.2 JiRiGaLa   OkAdd，OkUpdate，OkDelete 状态进行改进整理。
     ///     2007.05.29 版本：3.1 JiRiGaLa   ErrorDeleted，ErrorChanged 状态进行改进整理。
     ///	    2007.05.29 版本：3.1 JiRiGaLa   BatchSave，ErrorDataRelated，force 进行改进整理。
@@ -69,7 +69,7 @@ namespace DotNet.Business
         /// 按编号获取实体
         /// </summary>
         /// <param name="code">编号</param>
-        public BaseOrganizeEntity GetObjectByCode(string code)
+        public BaseOrganizeEntity GetEntityByCode(string code)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -83,7 +83,7 @@ namespace DotNet.Business
         /// 按名称获取实体
         /// </summary>
         /// <param name="fullName">名称</param>
-        public BaseOrganizeEntity GetObjectByName(string fullName)
+        public BaseOrganizeEntity GetEntityByName(string fullName)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -138,9 +138,9 @@ namespace DotNet.Business
         {
             foreach (DataRow dr in dt.Rows)
             {
-                var subCompanyNameEntity = GetObject(dr[BaseOrganizeEntity.FieldParentId].ToString());
+                var subCompanyNameEntity = GetEntity(dr[BaseOrganizeEntity.FieldParentId].ToString());
                 dr[BaseOrganizeEntity.FieldFullName] = subCompanyNameEntity.FullName + "--" + dr[BaseOrganizeEntity.FieldFullName];
-                var companyEntity = GetObject(subCompanyNameEntity.ParentId);
+                var companyEntity = GetEntity(subCompanyNameEntity.ParentId);
                 dr[BaseOrganizeEntity.FieldFullName] = companyEntity.FullName + "--" + dr[BaseOrganizeEntity.FieldFullName];
             }
             return dt;
@@ -173,14 +173,14 @@ namespace DotNet.Business
                     if (id.Length > 0)
                     {
                         entity.GetFrom(dr);
-                        result += UpdateObject(entity);
+                        result += UpdateEntity(entity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -450,7 +450,7 @@ namespace DotNet.Business
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.FullName).ToLower();
                 }
-                result += UpdateObject(entity);
+                result += UpdateEntity(entity);
             }
             return result;
         }
@@ -683,7 +683,7 @@ namespace DotNet.Business
 
             if (!string.IsNullOrEmpty(id))
             {
-                var entity = GetObjectByCache(id);
+                var entity = GetEntityByCache(id);
                 if (entity != null)
                 {
                     result = entity.ParentId;
@@ -707,7 +707,7 @@ namespace DotNet.Business
             var result = string.Empty;
             if (!string.IsNullOrEmpty(fullName))
             {
-                var entity = GetObjectByNameByCache(fullName);
+                var entity = GetEntityByNameByCache(fullName);
                 if (entity != null)
                 {
                     result = entity.Id;
@@ -725,7 +725,7 @@ namespace DotNet.Business
             var result = string.Empty;
             if (!string.IsNullOrEmpty(code))
             {
-                var entity = GetObjectByCodeByCache(code);
+                var entity = GetEntityByCodeByCache(code);
                 if (entity != null)
                 {
                     result = entity.FullName;
@@ -743,7 +743,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCodeByCache(code);
+            var entity = GetEntityByCodeByCache(code);
             if (entity != null)
             {
                 result = entity.Id;
@@ -765,7 +765,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.FullName;
@@ -784,7 +784,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Code;
@@ -803,7 +803,7 @@ namespace DotNet.Business
             BaseOrganizeEntity result = null;
 
             var manager = new BaseOrganizeManager();
-            result = manager.GetObject(id);
+            result = manager.GetEntity(id);
 
             if (result != null)
             {
@@ -852,7 +852,7 @@ namespace DotNet.Business
         /// <param name="id"></param>
         /// <param name="refreshCache"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetObjectByCache(string id, bool refreshCache = false)
+        public static BaseOrganizeEntity GetEntityByCache(string id, bool refreshCache = false)
         {
             BaseOrganizeEntity result = null;
 
@@ -860,7 +860,7 @@ namespace DotNet.Business
             {
                 var cacheKey = "O:";
                 cacheKey += id;
-                result = CacheUtil.Cache(cacheKey, () => new BaseOrganizeManager().GetObject(id),true, refreshCache);
+                result = CacheUtil.Cache(cacheKey, () => new BaseOrganizeManager().GetEntity(id),true, refreshCache);
             }
             
             return result;

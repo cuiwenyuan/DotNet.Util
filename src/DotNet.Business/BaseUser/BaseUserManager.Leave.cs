@@ -42,14 +42,14 @@ namespace DotNet.Business
             if (userEntity != null)
             {
                 // 更新用户实体
-                UpdateObject(userEntity);
+                UpdateEntity(userEntity);
             }
 
             // 更新登录信息
             if (userLogOnEntity != null)
             {
                 var userLogOnManager = new BaseUserLogOnManager(UserInfo);
-                userLogOnManager.UpdateObject(userLogOnEntity);
+                userLogOnManager.UpdateEntity(userLogOnEntity);
             }
 
             // 填写评论
@@ -87,7 +87,7 @@ namespace DotNet.Business
             {
                 BaseUserContactEntity userContactEntity = null;
                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
-                userContactEntity = BaseUserContactManager.GetObjectByCache(userEntity.Id);
+                userContactEntity = BaseUserContactManager.GetEntityByCache(userEntity.Id);
 
                 if (userContactEntity != null && !string.IsNullOrEmpty(userContactEntity.CompanyMail))
                 {

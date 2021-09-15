@@ -34,7 +34,7 @@ namespace DotNet.Business
             if (userInfo != null && IsAdministrator(userInfo.Id))
             {
                 // 登录成功发送
-                var userContactEntity = new BaseUserContactManager().GetObject(userInfo.Id);
+                var userContactEntity = new BaseUserContactManager().GetEntity(userInfo.Id);
                 if (userContactEntity != null)
                 {
                     var emailAddress = userContactEntity.Email;

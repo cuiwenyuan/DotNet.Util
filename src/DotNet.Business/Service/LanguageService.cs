@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseLanguageEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseLanguageEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseLanguageEntity entity = null;
 
@@ -43,7 +43,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseLanguageManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
 
             return entity;

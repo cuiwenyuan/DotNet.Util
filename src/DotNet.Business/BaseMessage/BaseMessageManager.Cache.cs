@@ -97,14 +97,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public static BaseMessageEntity GetObjectByCache(string id)
+        public static BaseMessageEntity GetEntityByCache(string id)
         {
             BaseMessageEntity result = null;
             var cacheKey = "m";
             if (!string.IsNullOrEmpty(id))
             {
                 cacheKey += id;
-                result = CacheUtil.Cache(cacheKey, () => new BaseMessageManager().GetObject(id), true);
+                result = CacheUtil.Cache(cacheKey, () => new BaseMessageManager().GetEntity(id), true);
             }
             return result;
         }

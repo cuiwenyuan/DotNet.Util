@@ -144,7 +144,7 @@ namespace DotNet.Business
             // 检查记录是否重复
             if (!PermissionScopeExists(resourcePermissionScope.PermissionId, resourcePermissionScope.ResourceCategory, resourcePermissionScope.ResourceId, resourcePermissionScope.TargetCategory, resourcePermissionScope.TargetId))
             {
-                result = AddObject(resourcePermissionScope);
+                result = AddEntity(resourcePermissionScope);
             }
             return result;
         }
@@ -484,7 +484,7 @@ namespace DotNet.Business
             // 这里需要判断,是系统权限？
             var isAdmin = false;
 
-            var userEntity = BaseUserManager.GetObjectByCache(userId);
+            var userEntity = BaseUserManager.GetEntityByCache(userId);
 
             var userManager = new BaseUserManager(DbHelper, UserInfo);
             // 用户管理员,这里需要判断,是业务权限？
@@ -628,7 +628,7 @@ namespace DotNet.Business
             // 这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
             if (ids != null && ids.Length > 0)
             {
-                var userEntity = BaseUserManager.GetObjectByCache(managerUserId);
+                var userEntity = BaseUserManager.GetEntityByCache(managerUserId);
                 for (var i = 0; i < ids.Length; i++)
                 {
                     if (ids[i].Equals(((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
@@ -793,7 +793,7 @@ namespace DotNet.Business
                 {
                     userManager = new BaseUserManager(DbHelper, UserInfo);
                 }
-                var userEntity = userManager.GetObject(userId);
+                var userEntity = userManager.GetEntity(userId);
 
                 for (var i = 0; i < resourceIds.Length; i++)
                 {
@@ -885,7 +885,7 @@ namespace DotNet.Business
             if (BaseSystemInfo.UseOrganizePermission)
             {
                 sql = string.Empty;
-                var userEntity = new BaseUserManager(DbHelper).GetObject(userId);
+                var userEntity = new BaseUserManager(DbHelper).GetEntity(userId);
                 sql = "SELECT TargetId "
                            + " FROM " + CurrentTableName
                            + "  WHERE (" + CurrentTableName + ".ResourceCategory = '" +

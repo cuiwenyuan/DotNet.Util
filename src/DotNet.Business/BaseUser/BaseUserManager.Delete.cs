@@ -58,7 +58,7 @@ namespace DotNet.Business
             for (var i = 0; i < ids.Length; i++)
             {
                 var id = ids[i].ToString();
-                var entity = GetObjectByCache(id);
+                var entity = GetEntityByCache(id);
                 AfterUpdate(entity);
             }
            

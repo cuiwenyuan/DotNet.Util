@@ -60,14 +60,14 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// AddObject
+        /// AddEntity
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="expiresIn"></param>
         /// <param name="isSliding"></param>
         /// <returns></returns>
-        public bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
+        public bool AddEntity(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
             if (expiresIn != null)
             {
@@ -92,7 +92,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public bool Add(string key, string value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
-            return AddObject(key, value, expiresIn, isSliding);
+            return AddEntity(key, value, expiresIn, isSliding);
         }
         /// <summary>
         /// ListLeftPush

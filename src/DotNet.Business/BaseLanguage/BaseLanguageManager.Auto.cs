@@ -111,7 +111,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            entity.Id = int.Parse(AddObject(entity));
+            entity.Id = int.Parse(AddEntity(entity));
             return entity.Id.ToString();
         }
 
@@ -121,23 +121,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseLanguageEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseLanguageEntity GetObject(string id)
+        public BaseLanguageEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseLanguageEntity GetObject(int id)
+        public BaseLanguageEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseLanguageEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseLanguageEntity.FieldId, id)));
             // return BaseEntity.Create<BaseLanguageEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
@@ -147,7 +147,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseLanguageEntity entity)
+        public string AddEntity(BaseLanguageEntity entity)
         {
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -181,7 +181,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseLanguageEntity.FieldCreateUserId, UserInfo.Id);
@@ -217,11 +217,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseLanguageEntity entity)
+        public int UpdateEntity(BaseLanguageEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseLanguageEntity.FieldUpdateUserId, UserInfo.Id);
@@ -233,16 +233,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseLanguageEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseLanguageEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseLanguageEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseLanguageEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldLanguageCode, entity.LanguageCode);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldMessageCode, entity.MessageCode);
             sqlBuilder.SetValue(BaseLanguageEntity.FieldCaption, entity.Caption);

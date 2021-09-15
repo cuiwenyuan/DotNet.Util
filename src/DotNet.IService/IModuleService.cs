@@ -53,7 +53,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseModuleEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseModuleEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 按编号获取实体
@@ -61,7 +61,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        BaseModuleEntity GetObjectByCode(BaseUserInfo userInfo, string code);
+        BaseModuleEntity GetEntityByCode(BaseUserInfo userInfo, string code);
 
         /// <summary>
         /// 按窗体名称获取实体
@@ -69,7 +69,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="formName">窗体名称</param>
         /// <returns>实体</returns>
-        BaseModuleEntity GetObjectByFormName(BaseUserInfo userInfo, string formName);
+        BaseModuleEntity GetEntityByFormName(BaseUserInfo userInfo, string formName);
 
         /// <summary>
         /// 判断字段是否重复

@@ -96,7 +96,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetObjectByCodeByCache(string code)
+        public static BaseOrganizeEntity GetEntityByCodeByCache(string code)
         {
             BaseOrganizeEntity result = null;
 
@@ -104,7 +104,7 @@ namespace DotNet.Business
             {
                 // string key = "OrganizeByCode:" + code;
                 var key = "OBC:" + code;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetObjectByCode(code), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetEntityByCode(code), true);
             }
 
             return result;
@@ -115,14 +115,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="fullName"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetObjectByNameByCache(string fullName)
+        public static BaseOrganizeEntity GetEntityByNameByCache(string fullName)
         {
             BaseOrganizeEntity result = null;
             if (!string.IsNullOrEmpty(fullName))
             {
                 // string key = "OrganizeByName:" + fullName;
                 var key = "OBN:" + fullName;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetObjectByName(fullName), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetEntityByName(fullName), true);
             }
 
             return result;

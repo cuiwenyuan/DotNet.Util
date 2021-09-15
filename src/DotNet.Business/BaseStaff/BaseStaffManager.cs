@@ -42,7 +42,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public BaseStaffEntity GetObjectByCode(string code)
+        public BaseStaffEntity GetEntityByCode(string code)
         {
             BaseStaffEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -63,7 +63,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="realName"></param>
         /// <returns></returns>
-        public BaseStaffEntity GetObjectByRealName(string realName)
+        public BaseStaffEntity GetEntityByRealName(string realName)
         {
             BaseStaffEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -177,7 +177,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = AddObject(staffEntity);
+                    result = AddEntity(staffEntity);
                     // 运行成功
                     statusCode = Status.OkAdd.ToString();
                 }
@@ -212,7 +212,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = UpdateObject(staffEntity);
+                    result = UpdateEntity(staffEntity);
                     // 按员工的修改信息，把用户信息进行修改
                     UpdateUser(staffEntity.Id.ToString());
                     if (result > 0)
@@ -248,7 +248,7 @@ namespace DotNet.Business
             //else
             //{
             // 进行更新操作
-            result = UpdateObject(staffEntity);
+            result = UpdateEntity(staffEntity);
             if (result == 1)
             {
                 // 按员工的修改信息，把用户信息进行修改
@@ -792,14 +792,14 @@ namespace DotNet.Business
                     if (id.Length > 0)
                     {
                         var staffEntity = BaseEntity.Create<BaseStaffEntity>(dr);
-                        result += UpdateObject(staffEntity);
+                        result += UpdateEntity(staffEntity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     var staffEntity = BaseEntity.Create<BaseStaffEntity>(dr);
-                    result += AddObject(staffEntity).Length > 0 ? 1 : 0;
+                    result += AddEntity(staffEntity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -829,7 +829,7 @@ namespace DotNet.Business
             //{
             //    // 员工信息改变时，用户信息也跟着改变。
             //    BaseUserManager userManager = new BaseUserManager(DbHelper, UserInfo);
-            //    BaseUserEntity userEntity = userManager.GetObject(staffEntity.UserId);
+            //    BaseUserEntity userEntity = userManager.GetEntity(staffEntity.UserId);
             //    // userEntity.Company = staffEntity.CompanyName;
             //    // userEntity.Department = staffEntity.DepartmentName;
             //    // userEntity.Workgroup = staffEntity.WorkgroupName;
@@ -859,7 +859,7 @@ namespace DotNet.Business
         public int DeleteUser(string staffId)
         {
             var result = 0;
-            var userId = GetObject(staffId).UserId.ToString();
+            var userId = GetEntity(staffId).UserId.ToString();
             if (!string.IsNullOrEmpty(userId))
             {
                 // 删除用户
@@ -923,7 +923,7 @@ namespace DotNet.Business
         public int Delete(string id)
         {
             var result = 0;
-            var staffEntity = GetObject(id);
+            var staffEntity = GetEntity(id);
             if (staffEntity != null)
             {
                 var parameters = new List<KeyValuePair<string, object>>();

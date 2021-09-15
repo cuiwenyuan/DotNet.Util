@@ -73,20 +73,20 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDbWithTransaction(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseServicesLicenseManager(dbHelper, userInfo);
-                result = manager.AddObject(entity);
+                result = manager.AddEntity(entity);
             });
 
             return result;
         }
 
-        #region public BaseServicesLicenseEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseServicesLicenseEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseServicesLicenseEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseServicesLicenseEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseServicesLicenseEntity entity = null;
 
@@ -94,7 +94,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseServicesLicenseManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
 
             return entity;
@@ -120,7 +120,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseServicesLicenseManager(dbHelper, userInfo, tableName);
-                result = manager.UpdateObject(entity);
+                result = manager.UpdateEntity(entity);
             });
 
             return result;

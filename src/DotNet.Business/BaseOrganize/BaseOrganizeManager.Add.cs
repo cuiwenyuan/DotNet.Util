@@ -69,7 +69,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = AddObject(entity);
+                    result = AddEntity(entity);
                     //运行成功
                     StatusCode = Status.OkAdd.ToString();
                     StatusMessage = Status.OkAdd.ToDescription();

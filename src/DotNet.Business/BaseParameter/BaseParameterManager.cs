@@ -18,7 +18,7 @@ namespace DotNet.Business
     /// 修改记录
     /// 
     ///     2015.07.16 版本：3.0 JiRiGaLa   进行分表保存。
-    ///     2011.04.05 版本：2.2 JiRiGaLa   修改AddObject 为public 方法，ip限制功能中使用
+    ///     2011.04.05 版本：2.2 JiRiGaLa   修改AddEntity 为public 方法，ip限制功能中使用
     ///     2009.04.01 版本：2.1 JiRiGaLa   创建者、修改者进行完善。
     ///     2008.04.30 版本：2.0 JiRiGaLa   按面向对象，面向服务进行改进。
     ///     2007.06.08 版本：1.4 JiRiGaLa   重新调整方法。
@@ -70,7 +70,7 @@ namespace DotNet.Business
                 {
                     entity.Id = Guid.NewGuid().ToString("N");
                 }
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 StatusCode = Status.OkAdd.ToString();
             }
@@ -105,7 +105,7 @@ namespace DotNet.Business
             else
             {
                 // 进行更新操作
-                result = UpdateObject(entity);
+                result = UpdateEntity(entity);
                 if (result == 1)
                 {
                     StatusCode = Status.OkUpdate.ToString();
@@ -346,7 +346,7 @@ namespace DotNet.Business
                 Enabled = true,
                 DeletionStateCode = 0
             };
-            result = AddObject(entity);
+            result = AddEntity(entity);
             /*
                 }
             }

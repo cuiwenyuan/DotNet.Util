@@ -111,7 +111,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            entity.Id = int.Parse(AddObject(entity));
+            entity.Id = int.Parse(AddEntity(entity));
             return entity.Id.ToString();
         }
 
@@ -121,23 +121,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseExceptionEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseExceptionEntity GetObject(string id)
+        public BaseExceptionEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseExceptionEntity GetObject(int id)
+        public BaseExceptionEntity GetEntity(int id)
         {
             //return BaseEntity.Create<BaseExceptionEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
             return BaseEntity.Create<BaseExceptionEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseExceptionEntity.FieldId, id)));
@@ -147,7 +147,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseExceptionEntity entity)
+        public string AddEntity(BaseExceptionEntity entity)
         {
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -181,7 +181,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null) 
             { 
                 sqlBuilder.SetValue(BaseExceptionEntity.FieldCreateUserId, UserInfo.Id);
@@ -211,26 +211,26 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseExceptionEntity entity)
+        public int UpdateEntity(BaseExceptionEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             return sqlBuilder.EndUpdate();
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseExceptionEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseExceptionEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseExceptionEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseExceptionEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldEventId, entity.EventId);
             sqlBuilder.SetValue(BaseExceptionEntity.FieldCategory, entity.Category);

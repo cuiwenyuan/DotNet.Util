@@ -115,14 +115,14 @@ namespace DotNet.Business
 		{
 			Identity = identity;
 			ReturnId = returnId;
-			return AddObject(entity);
+			return AddEntity(entity);
 		}
 
 		/// <summary>
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserEntity GetObject(int? id)
+		public BaseUserEntity GetEntity(int? id)
 		{
             return BaseEntity.Create<BaseUserEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserEntity.FieldId, id)));
@@ -132,7 +132,7 @@ namespace DotNet.Business
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserEntity GetObject(string id)
+		public BaseUserEntity GetEntity(string id)
 		{
             return BaseEntity.Create<BaseUserEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserEntity.FieldId, id)));
             // return BaseEntity.Create<BaseUserEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserEntity.FieldId, id)));
@@ -142,7 +142,7 @@ namespace DotNet.Business
 		/// 添加实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public string AddObject(BaseUserEntity entity)
+		public string AddEntity(BaseUserEntity entity)
 		{
 			var result = string.Empty;
 
@@ -202,7 +202,7 @@ namespace DotNet.Business
 				}
 			}
 
-			SetObject(sqlBuilder, entity);
+			SetEntity(sqlBuilder, entity);
 
 			if (UserInfo != null)
 			{
@@ -239,7 +239,7 @@ namespace DotNet.Business
 		/// 更新实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public int UpdateObject(BaseUserEntity entity)
+		public int UpdateEntity(BaseUserEntity entity)
 		{
 			if (string.IsNullOrEmpty(entity.QuickQuery))
 			{
@@ -256,7 +256,7 @@ namespace DotNet.Business
 			sqlBuilder.BeginUpdate(CurrentTableName);
             // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
 			entity.QuickQuery = StringUtil.GetPinyin(entity.RealName).ToLower();
-			SetObject(sqlBuilder, entity);
+			SetEntity(sqlBuilder, entity);
 			if (UserInfo != null)
 			{
 				sqlBuilder.SetValue(BaseUserEntity.FieldUpdateUserId, UserInfo.Id);
@@ -280,7 +280,7 @@ namespace DotNet.Business
 	    /// </summary>
 	    /// <param name="sqlBuilder">SQL语句生成器</param>
 	    /// <param name="entity">实体</param>
-	    private void SetObject(SqlBuilder sqlBuilder, BaseUserEntity entity)
+	    private void SetEntity(SqlBuilder sqlBuilder, BaseUserEntity entity)
 		{
 			sqlBuilder.SetValue(BaseUserEntity.FieldUserFrom, entity.UserFrom);
 			sqlBuilder.SetValue(BaseUserEntity.FieldCode, entity.Code);

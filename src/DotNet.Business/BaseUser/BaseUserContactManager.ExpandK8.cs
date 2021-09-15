@@ -70,7 +70,7 @@ namespace DotNet.Business
                 {
                     while (dataReader.Read())
                     {
-                        var entity = userContactManager.GetObject(dataReader["ID"].ToString());
+                        var entity = userContactManager.GetEntity(dataReader["ID"].ToString());
                         if (entity != null)
                         {
                             var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);

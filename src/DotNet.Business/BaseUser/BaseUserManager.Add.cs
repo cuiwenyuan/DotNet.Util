@@ -94,7 +94,7 @@ namespace DotNet.Business
 
             if (StatusCode == Status.OkAdd.ToString())
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
 
                 // 用户登录表里，插入一条记录
                 if (userLogOnEntity == null)

@@ -311,7 +311,7 @@ namespace DotNet.Business
             {
                 // 是否超级管理员
                 // 是超级管理员,就不用继续判断权限了
-                var userEntity = BaseUserManager.GetObjectByCache(userId);
+                var userEntity = BaseUserManager.GetEntityByCache(userId);
                 if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
                 {
                     result = BaseUserManager.IsAdministrator(userId);
@@ -352,7 +352,7 @@ namespace DotNet.Business
             {
                 // 是否超级管理员
                 // 是超级管理员,就不用继续判断权限了
-                var userEntity = BaseUserManager.GetObjectByCache(userId);
+                var userEntity = BaseUserManager.GetEntityByCache(userId);
                 if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
                 {
                     result = BaseUserManager.IsAdministrator(userId);
@@ -498,7 +498,7 @@ namespace DotNet.Business
                 foreach (DataRow dr in result.Rows)
                 {
                     var id = dr["PermissionId"].ToString();
-                    var moduleEntity = BaseModuleManager.GetObjectByCache(userInfo, id);
+                    var moduleEntity = BaseModuleManager.GetEntityByCache(userInfo, id);
                     if (moduleEntity != null)
                     {
                         dr["PermissionName"] = moduleEntity.FullName;
@@ -507,7 +507,7 @@ namespace DotNet.Business
                     if (dr["ResourceCategory"].ToString().Equals(BaseUserEntity.TableName))
                     {
                         id = dr["ResourceId"].ToString();
-                        var userEntity = BaseUserManager.GetObjectByCache(id);
+                        var userEntity = BaseUserManager.GetEntityByCache(id);
                         if (userEntity != null)
                         {
                             dr["ResourceName"] = userEntity.RealName;
@@ -518,7 +518,7 @@ namespace DotNet.Business
                     else if (dr["ResourceCategory"].ToString().Equals(BaseOrganizeEntity.TableName))
                     {
                         id = dr["ResourceId"].ToString();
-                        var organizeEntity = BaseOrganizeManager.GetObjectByCache(id);
+                        var organizeEntity = BaseOrganizeManager.GetEntityByCache(id);
                         if (organizeEntity != null)
                         {
                             dr["ResourceName"] = organizeEntity.FullName;
@@ -528,7 +528,7 @@ namespace DotNet.Business
                     else if (dr["ResourceCategory"].ToString().Equals(BaseRoleEntity.TableName))
                     {
                         id = dr["ResourceId"].ToString();
-                        var roleEntity = BaseRoleManager.GetObjectByCache(userInfo, id);
+                        var roleEntity = BaseRoleManager.GetEntityByCache(userInfo, id);
                         if (roleEntity != null)
                         {
                             dr["ResourceName"] = roleEntity.RealName;

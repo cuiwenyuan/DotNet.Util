@@ -112,7 +112,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseOrganizeLogOnEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -126,14 +126,14 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeLogOnEntity GetObject(int? id)
+        public BaseOrganizeLogOnEntity GetEntity(int? id)
         {
             return BaseEntity.Create<BaseOrganizeLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizeLogOnEntity.FieldId, id)));
         }
@@ -142,7 +142,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeLogOnEntity GetObject(string id)
+        public BaseOrganizeLogOnEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseOrganizeLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizeLogOnEntity.FieldId, id)));
         }
@@ -151,7 +151,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseOrganizeLogOnEntity entity)
+        public string AddEntity(BaseOrganizeLogOnEntity entity)
         {
             var result = string.Empty;
             if (string.IsNullOrEmpty(entity.Id))
@@ -196,7 +196,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetDbNow(BaseOrganizeLogOnEntity.FieldUpdateTime);
             if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
             {
@@ -214,11 +214,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseOrganizeLogOnEntity entity)
+        public int UpdateEntity(BaseOrganizeLogOnEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             sqlBuilder.SetDbNow(BaseOrganizeLogOnEntity.FieldUpdateTime);
             sqlBuilder.SetWhere(BaseOrganizeLogOnEntity.FieldId, entity.Id);
             return sqlBuilder.EndUpdate();
@@ -229,7 +229,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseOrganizeLogOnEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizeLogOnEntity entity)
         {
             sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldAgree, entity.Agree);
             sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldOppose, entity.Oppose);

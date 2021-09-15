@@ -107,7 +107,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseItemsEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseItemsEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseItemsEntity entity = null;
 
@@ -120,7 +120,7 @@ namespace DotNet.Business
                     tableName = userInfo.SystemCode + "Items";
                 }
                 var itemsManager = new BaseItemsManager(dbHelper, userInfo, tableName);
-                entity = itemsManager.GetObject(id);
+                entity = itemsManager.GetEntity(id);
             });
             return entity;
         }

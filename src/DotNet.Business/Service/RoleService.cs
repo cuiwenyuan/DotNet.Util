@@ -355,7 +355,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseRoleEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseRoleEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseRoleEntity result = null;
 
@@ -364,7 +364,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Role";
                 var manager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                result = manager.GetObject(id);
+                result = manager.GetEntity(id);
             });
 
             return result;
@@ -555,7 +555,7 @@ namespace DotNet.Business
                 foreach (var id in ids)
                 {
                     // 逐个删除，逐个备份
-                    roleEntity = manager.GetObject(id);
+                    roleEntity = manager.GetEntity(id);
                     // 先添加到被删除的表里，这时候原先数据的主键需要保留的，否则恢复数据时可能会乱套
                     roleDeletedManager.Add(roleEntity);
                     // 数据备份好后再进行删除处理

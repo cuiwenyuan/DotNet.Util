@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseFileEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseFileEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseFileEntity entity)
+        public string AddEntity(BaseFileEntity entity)
         {
             var sequence = entity.Id;
             if (entity.SortCode == 0)
@@ -167,7 +167,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseFileEntity.FieldCreateUserId, UserInfo.Id);
@@ -193,11 +193,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseFileEntity entity)
+        public int UpdateEntity(BaseFileEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseFileEntity.FieldUpdateUserId, UserInfo.Id);
@@ -208,14 +208,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseFileEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseFileEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseFileEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseFileEntity entity)
         {
             sqlBuilder.SetValue(BaseFileEntity.FieldFolderId, entity.FolderId);
             sqlBuilder.SetValue(BaseFileEntity.FieldFileName, entity.FileName);
@@ -234,7 +234,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseFileEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseFileEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseFileEntity.FieldSortCode, entity.SortCode);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

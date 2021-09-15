@@ -51,7 +51,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -92,7 +92,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     if (result == 1)
                     {
                         statusCode = Status.OkUpdate.ToString();
@@ -144,7 +144,7 @@ namespace DotNet.Business
                     ModifiedOn = DateTime.Now,
                     CreateOn = DateTime.Now
                 };
-                AddObject(entity);
+                AddEntity(entity);
                 result++;
             }
             return result;
@@ -161,7 +161,7 @@ namespace DotNet.Business
             var result = 0;
             foreach (var entity in entities)
             {
-                result += UpdateObject(entity);
+                result += UpdateEntity(entity);
             }
             return result;
         }

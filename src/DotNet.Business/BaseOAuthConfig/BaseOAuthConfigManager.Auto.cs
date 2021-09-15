@@ -122,7 +122,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            entity.Id = int.Parse(AddObject(entity));
+            entity.Id = int.Parse(AddEntity(entity));
             return entity.Id.ToString();
         }
 
@@ -132,23 +132,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseOAuthConfigEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOAuthConfigEntity GetObject(string id)
+        public BaseOAuthConfigEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOAuthConfigEntity GetObject(int id)
+        public BaseOAuthConfigEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseOAuthConfigEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
@@ -160,7 +160,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseOAuthConfigEntity entity)
+        public string AddEntity(BaseOAuthConfigEntity entity)
         {
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -194,7 +194,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldCreateUserId, UserInfo.Id);
@@ -235,11 +235,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseOAuthConfigEntity entity)
+        public int UpdateEntity(BaseOAuthConfigEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldUpdateUserId, UserInfo.Id);
@@ -257,16 +257,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseOAuthConfigEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldTypeId, entity.TypeId);
             sqlBuilder.SetValue(BaseOAuthConfigEntity.FieldName, entity.Name);

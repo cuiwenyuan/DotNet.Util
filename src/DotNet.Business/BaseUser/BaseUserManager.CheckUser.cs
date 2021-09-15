@@ -32,11 +32,11 @@ namespace DotNet.Business
         public UserLogOnResult CheckUser(string userId)
         {
             // 这个从缓存获取，效率高，一般不会有经常在修改的事情，缓存的时间很短才可以，否则读取脏数据了
-            var userEntity = GetObject(userId);
+            var userEntity = GetEntity(userId);
 
             // 获取登录状态表
             var userLogOnManager = new BaseUserLogOnManager(UserInfo, UserLogOnTable);
-            var userLogOnEntity = userLogOnManager.GetObject(userId);
+            var userLogOnEntity = userLogOnManager.GetEntity(userId);
 
             return CheckUser(userEntity, userLogOnEntity);
         }

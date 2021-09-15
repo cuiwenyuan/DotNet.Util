@@ -32,7 +32,7 @@ namespace DotNet.Business
 	///		2006.01.23 版本：1.0 JiRiGaLa  获取ItemDetails方法的改进。
 	///		2004.11.12 版本：1.0 JiRiGaLa  主键进行了绝对的优化，基本上看上去还过得去了。
     ///     2007.12.03 版本：2.2 JiRiGaLa  进行规范化整理。
-    ///     2007.05.30 版本：2.1 JiRiGaLa  整理主键，调整GetFrom()方法,增加AddObject(),UpdateObject(),DeleteObject()
+    ///     2007.05.30 版本：2.1 JiRiGaLa  整理主键，调整GetFrom()方法,增加AddEntity(),UpdateEntity(),DeleteObject()
     ///		2007.01.15 版本：2.0 JiRiGaLa  重新整理主键。
 	///		2006.02.06 版本：1.1 JiRiGaLa  重新调整主键的规范化。
 	///		2005.10.03 版本：1.0 JiRiGaLa  表中添加是否可删除，可修改字段。
@@ -70,7 +70,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = AddObject(entity);
+                    result = AddEntity(entity);
                     // 运行成功
                     statusCode = Status.OkAdd.ToString();
                 }
@@ -113,7 +113,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        result = UpdateObject(entity);
+                        result = UpdateEntity(entity);
                         if (result == 1)
                         {
                             statusCode = Status.OkUpdate.ToString();
@@ -257,7 +257,7 @@ create table {tableName}
                         // 判断是否允许编辑
                         if (itemsEntity.AllowEdit == 1)
                         {
-                            result += UpdateObject(itemsEntity);
+                            result += UpdateEntity(itemsEntity);
                         }
                         else
                         {
@@ -270,7 +270,7 @@ create table {tableName}
                 if (dr.RowState == DataRowState.Added)
                 {
                     itemsEntity.GetFrom(dr);
-                    result += AddObject(itemsEntity).Length > 0 ? 1 : 0;
+                    result += AddEntity(itemsEntity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {

@@ -54,7 +54,7 @@ namespace DotNet.Business
                 }
             }
             // 判断输入原始密码是否正确
-            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetObject(UserInfo.Id);
+            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetEntity(UserInfo.Id);
             if (entity.UserPassword == null)
             {
                 entity.UserPassword = string.Empty;
@@ -163,7 +163,7 @@ namespace DotNet.Business
                     parameterEntity.DeletionStateCode = 0;
                     parameterEntity.Enabled = true;
                     parameterEntity.Worked = true;
-                    parameterManager.AddObject(parameterEntity);
+                    parameterManager.AddEntity(parameterEntity);
                 }
                 */
                 

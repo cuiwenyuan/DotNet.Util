@@ -112,11 +112,11 @@ namespace DotNet.Business
 
                 try
                 {
-                    organizeEntity = BaseOrganizeManager.GetObjectByCache(userInfo.CompanyId);
+                    organizeEntity = BaseOrganizeManager.GetEntityByCache(userInfo.CompanyId);
                 }
                 catch (System.Exception ex)
                 {
-                    string writeMessage = "BaseOrganizeManager.GetObjectByCache:发生时间:" + DateTime.Now
+                    string writeMessage = "BaseOrganizeManager.GetEntityByCache:发生时间:" + DateTime.Now
                         + System.Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + System.Environment.NewLine + "Message:" + ex.Message
                         + System.Environment.NewLine + "Source:" + ex.Source
@@ -130,11 +130,11 @@ namespace DotNet.Business
                 if (organizeEntity == null)
                 {
                     var organizeManager = new BaseOrganizeManager();
-                    organizeEntity = organizeManager.GetObject(userInfo.CompanyId);
+                    organizeEntity = organizeManager.GetEntity(userInfo.CompanyId);
                     // 2015-12-06 吉日嘎拉 进行记录日志功能改进
                     if (organizeEntity == null)
                     {
-                        var writeMessage = "BaseOrganizeManager.GetObject:发生时间:" + DateTime.Now
+                        var writeMessage = "BaseOrganizeManager.GetEntity:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + Environment.NewLine + "BaseUserInfo:" + userInfo.Serialize();
 
@@ -151,7 +151,7 @@ namespace DotNet.Business
              * 
             if (!validateUserOnly && !string.IsNullOrEmpty(userInfo.DepartmentId))
             {
-                organizeEntity = BaseOrganizeManager.GetObjectByCache(userInfo.DepartmentId);
+                organizeEntity = BaseOrganizeManager.GetEntityByCache(userInfo.DepartmentId);
             }
             else
             {
@@ -159,7 +159,7 @@ namespace DotNet.Business
                 {
                     organizeManager = new Business.BaseOrganizeManager();
                 }
-                organizeEntity = organizeManager.GetObject(userInfo.DepartmentId);
+                organizeEntity = organizeManager.GetEntity(userInfo.DepartmentId);
             }
             if (organizeEntity != null)
             {
@@ -175,7 +175,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userCode">用户编号</param>
         /// <returns>用户实体</returns>
-        public BaseUserEntity GetObjectByCode(string userCode)
+        public BaseUserEntity GetEntityByCode(string userCode)
         {
             BaseUserEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <param name="companyId"></param>
         /// <param name="userCode"></param>
         /// <returns></returns>
-        public BaseUserEntity GetObjectByCompanyIdByCode(string companyId, string userCode)
+        public BaseUserEntity GetEntityByCompanyIdByCode(string companyId, string userCode)
         {
             BaseUserEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -222,10 +222,10 @@ namespace DotNet.Business
         /// <param name="companyCode"></param>
         /// <param name="userCode"></param>
         /// <returns></returns>
-        public BaseUserEntity GetObjectByCompanyCodeByCode(string companyCode, string userCode)
+        public BaseUserEntity GetEntityByCompanyCodeByCode(string companyCode, string userCode)
         {
             BaseUserEntity result = null;
-            var organizeEntity = BaseOrganizeManager.GetObjectByCodeByCache(companyCode);
+            var organizeEntity = BaseOrganizeManager.GetEntityByCodeByCache(companyCode);
             if (organizeEntity == null)
             {
                 return result;
@@ -251,7 +251,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userName">用户名</param>
         /// <returns>用户实体</returns>
-        public BaseUserEntity GetObjectByUserName(string userName)
+        public BaseUserEntity GetEntityByUserName(string userName)
         {
             BaseUserEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -282,7 +282,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="realName">姓名</param>
         /// <returns>用户实体</returns>
-        public BaseUserEntity GetObjectByRealName(string realName)
+        public BaseUserEntity GetEntityByRealName(string realName)
         {
             BaseUserEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -304,7 +304,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="nickName">昵称</param>
         /// <returns>用户实体</returns>
-        public BaseUserEntity GetObjectByNickName(string nickName)
+        public BaseUserEntity GetEntityByNickName(string nickName)
         {
             BaseUserEntity entity = null;
             var parameters = new List<KeyValuePair<string, object>>
@@ -331,7 +331,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="openId"></param>
         /// <returns></returns>
-        public BaseUserEntity GetObjectByOpenId(string openId)
+        public BaseUserEntity GetEntityByOpenId(string openId)
         {
             BaseUserEntity userEntity = null;
 
@@ -371,7 +371,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public BaseUserEntity GetObjectByEmail(string email)
+        public BaseUserEntity GetEntityByEmail(string email)
         {
             BaseUserEntity userEntity = null;
 
@@ -452,7 +452,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.RealName;
@@ -472,7 +472,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Code;
@@ -495,7 +495,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.DepartmentName;
@@ -515,7 +515,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.CompanyId;
@@ -535,7 +535,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = GetObjectByCache(id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.CompanyName;
@@ -612,7 +612,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public bool IsAdministratorById(string userId)
         {
-            var entity = GetObject(userId);
+            var entity = GetEntity(userId);
             return IsAdministrator(entity);
         }
         /// <summary>
@@ -627,7 +627,7 @@ namespace DotNet.Business
             BaseUserEntity entity = null;
             foreach (var id in ids)
             {
-                entity = GetObject(id);
+                entity = GetEntity(id);
                 if (entity != null && !string.IsNullOrEmpty(entity.RealName))
                 {
                     userRealNames += "," + entity.RealName;
@@ -723,7 +723,7 @@ namespace DotNet.Business
         {
             BaseUserInfo userInfo = null;
             // 获得登录信息
-            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetObject(id);
+            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetEntity(id);
             // 只允许登录一次，需要检查是否自己重新登录了，或者自己扮演自己了
             if (!UserInfo.Id.Equals(id))
             {
@@ -737,7 +737,7 @@ namespace DotNet.Business
                 }
             }
 
-            var userEntity = GetObject(id);
+            var userEntity = GetEntity(id);
             userInfo = ConvertToUserInfo(userEntity);
             if (userEntity.IsStaff.Equals("1"))
             {
@@ -861,14 +861,14 @@ namespace DotNet.Business
                     if (!string.IsNullOrEmpty(id))
                     {
                         userEntity.GetFrom(dr);
-                        result += UpdateObject(userEntity);
+                        result += UpdateEntity(userEntity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     userEntity.GetFrom(dr);
-                    result += AddObject(userEntity).Length > 0 ? 1 : 0;
+                    result += AddEntity(userEntity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -890,7 +890,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public int GetSortNum(int userId)
         {
-            var entity = GetObject(userId);
+            var entity = GetEntity(userId);
             var sql = "SELECT COUNT(*) AS UserCount "
                             + " FROM " + CurrentTableName
                             + " inner JOIN " + BaseStaffEntity.TableName + " ON " + BaseStaffEntity.TableName + ".Id = " + CurrentTableName + ".Id"
@@ -921,7 +921,7 @@ namespace DotNet.Business
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.RealName).ToLower();
                 }
-                result += UpdateObject(entity);
+                result += UpdateEntity(entity);
             }
             return result;
         }
@@ -957,7 +957,7 @@ namespace DotNet.Business
             BaseUserEntity result = null;
 
             var manager = new BaseUserManager();
-            result = manager.GetObject(id);
+            result = manager.GetEntity(id);
 
             if (result != null)
             {

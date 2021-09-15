@@ -87,7 +87,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseAreaEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseAreaEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 更新一个

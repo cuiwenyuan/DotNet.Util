@@ -55,7 +55,7 @@ namespace DotNet.Business
         /// 按编号获取实体
         /// </summary>
         /// <param name="code">编号</param>
-        public BaseDepartmentEntity GetObjectByCode(string code)
+        public BaseDepartmentEntity GetEntityByCode(string code)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="fullName">名称</param>
-        public BaseDepartmentEntity GetObjectByName(string companyId, string fullName)
+        public BaseDepartmentEntity GetEntityByName(string companyId, string fullName)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -121,7 +121,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        result = AddObject(entity);
+                        result = AddEntity(entity);
                         // 运行成功
                         statusCode = Status.OkAdd.ToString();
 
@@ -148,7 +148,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = AddObject(entity);
+                    result = AddEntity(entity);
                     // 运行成功
                     statusCode = Status.OkAdd.ToString();
 
@@ -200,14 +200,14 @@ namespace DotNet.Business
                     if (id.Length > 0)
                     {
                         entity.GetFrom(dr);
-                        result += UpdateObject(entity);
+                        result += UpdateEntity(entity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {
@@ -238,14 +238,14 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         /// <param name="refreshCache"></param>
         /// <returns>实体</returns>
-        public static BaseDepartmentEntity GetObjectByCache(string id, bool refreshCache = false)
+        public static BaseDepartmentEntity GetEntityByCache(string id, bool refreshCache = false)
         {
             BaseDepartmentEntity result = null;
             if (!string.IsNullOrEmpty(id))
             {
                 var key = "D:" + id;
 
-                result = CacheUtil.Cache(key, () => new BaseDepartmentManager().GetObject(id), true, refreshCache);
+                result = CacheUtil.Cache(key, () => new BaseDepartmentManager().GetEntity(id), true, refreshCache);
             }
 
             return result;

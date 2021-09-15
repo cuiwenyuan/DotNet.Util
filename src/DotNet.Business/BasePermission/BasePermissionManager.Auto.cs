@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BasePermissionEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BasePermissionEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BasePermissionEntity GetObject(int id)
+        public BasePermissionEntity GetEntity(int id)
         {
             return BaseEntity.Create<BasePermissionEntity>(ExecuteReader(new KeyValuePair<string, object>(BasePermissionEntity.FieldId, id)));
             // return BaseEntity.Create<BasePermissionEntity>(this.GetDataTable(new KeyValuePair<string, object>(BasePermissionEntity.FieldId, id)));
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BasePermissionEntity entity)
+        public string AddEntity(BasePermissionEntity entity)
         {
             var result = string.Empty;
 
@@ -172,7 +172,7 @@ namespace DotNet.Business
                 //}
             }
 
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BasePermissionEntity.FieldCreateUserId, UserInfo.Id);
@@ -201,11 +201,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BasePermissionEntity entity)
+        public int UpdateEntity(BasePermissionEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BasePermissionEntity.FieldUpdateUserId, UserInfo.Id);
@@ -216,14 +216,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BasePermissionEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BasePermissionEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BasePermissionEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BasePermissionEntity entity)
         {
             sqlBuilder.SetValue(BasePermissionEntity.FieldResourceId, entity.ResourceId);
             sqlBuilder.SetValue(BasePermissionEntity.FieldResourceCategory, entity.ResourceCategory);
@@ -234,7 +234,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BasePermissionEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BasePermissionEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BasePermissionEntity.FieldDescription, entity.Description);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

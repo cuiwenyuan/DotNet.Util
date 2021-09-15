@@ -78,7 +78,7 @@ namespace DotNet.Business
         public void Add(BaseLogEntity entity)
         {
             //本地添加模式
-            AddObject(entity);
+            AddEntity(entity);
         }
         #endregion
 
@@ -129,7 +129,7 @@ namespace DotNet.Business
             entity.IPAddress = ipAddress;
             entity.UserId = userId;
             entity.UserRealName = userName;
-            this.AddObject(entity);
+            this.AddEntity(entity);
             */
         }
         /// <summary>

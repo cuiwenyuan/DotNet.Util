@@ -269,7 +269,7 @@ namespace DotNet.Business
                 // 2015-07-03 吉日嘎拉 若是没有公司相关的信息，就把公司区分出来，每个公司可以看每个公司的数据
                 if (string.IsNullOrEmpty(permissionEntity.CompanyId))
                 {
-                    var entity = BaseUserManager.GetObjectByCache(userId);
+                    var entity = BaseUserManager.GetEntityByCache(userId);
                     if (entity != null)
                     {
                         permissionEntity.CompanyId = entity.CompanyId;

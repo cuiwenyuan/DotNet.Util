@@ -100,7 +100,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,23 +109,23 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseStaffEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseStaffEntity GetObject(string id)
+        public BaseStaffEntity GetEntity(string id)
         {
-            return GetObject(int.Parse(id));
+            return GetEntity(int.Parse(id));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseStaffEntity GetObject(int id)
+        public BaseStaffEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseStaffEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id)));
             // return BaseEntity.Create<BaseStaffEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id)));
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseStaffEntity entity)
+        public string AddEntity(BaseStaffEntity entity)
         {
             var sequence = string.Empty;
             if (entity.SortCode == 0)
@@ -182,7 +182,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserId, UserInfo.Id);
@@ -210,11 +210,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseStaffEntity entity)
+        public int UpdateEntity(BaseStaffEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateUserId, UserInfo.Id);
@@ -226,16 +226,16 @@ namespace DotNet.Business
         }
 
         // 这个是声明扩展方法
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseStaffEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseStaffEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseStaffEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseStaffEntity entity)
         {
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseStaffEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseStaffEntity.FieldUserName, entity.UserName);
             sqlBuilder.SetValue(BaseStaffEntity.FieldRealName, entity.RealName);

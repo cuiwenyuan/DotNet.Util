@@ -403,7 +403,7 @@ namespace DotNet.Business
             BaseContactDetailsEntity contactDetailsEntity = null;
             for (int i = 0; i < receiverIds.Length; i++)
             {
-                useEntity = userManager.GetObject(receiverIds[i]);
+                useEntity = userManager.GetEntity(receiverIds[i]);
                 // 是有效的用户，而且是未必删除的用户才发邮件
                 if (useEntity.Enabled == 1 && useEntity.DeletionStateCode == 0)
                 {
@@ -452,7 +452,7 @@ namespace DotNet.Business
         public string Send(string contactId)
         {
             BaseUserManager userManager = new BaseUserManager(DbHelper, UserInfo);
-            BaseUserEntity useEntity = userManager.GetObject(UserInfo.Id);
+            BaseUserEntity useEntity = userManager.GetEntity(UserInfo.Id);
             BaseContactDetailsEntity contactDetailsEntity = new BaseContactDetailsEntity
             {
                 // 这里一定要给个不可猜测的主键，为了提高安全性
@@ -672,7 +672,7 @@ namespace DotNet.Business
             List<BaseContactEntity> result = new List<BaseContactEntity>();
             // 获取用户信息
             string commandText = string.Empty;
-            BaseUserEntity userEntity = BaseUserManager.GetObjectByCache(userId);
+            BaseUserEntity userEntity = BaseUserManager.GetEntityByCache(userId);
             if (userEntity != null)
             {
                 commandText = " (Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND AuditStatus=2 AND IsOpen = 1) OR (Enabled = 1 AND AuditStatus=2 AND " + BaseUserEntity.FieldDeleted + " = 0 AND Id IN (";
@@ -681,7 +681,7 @@ namespace DotNet.Business
                     commandText = " (ParentId = '" + parentId + "' AND Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND AuditStatus=2 AND IsOpen = 1) OR (ParentId = '" + parentId + "' AND Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND Id IN (";
                 }
                 // 获取用户所在的单位的信息
-                BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetObjectByCache(userEntity.CompanyId);
+                BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByCache(userEntity.CompanyId);
                 if (organizeEntity != null)
                 {
                     // 所在省
@@ -745,7 +745,7 @@ namespace DotNet.Business
             string commandText = string.Empty;
 
             // 获取用户所在的单位的信息
-            BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetObjectByCache(companyId);
+            BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByCache(companyId);
 
             if (organizeEntity != null)
             {

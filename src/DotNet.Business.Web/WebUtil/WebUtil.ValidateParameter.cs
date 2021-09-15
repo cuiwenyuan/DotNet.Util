@@ -161,7 +161,7 @@ namespace DotNet.Business
                 }
 
                 // 从接口确定当前调用者
-                var userEntity = BaseUserManager.GetObjectByCodeByCache(appKey);
+                var userEntity = BaseUserManager.GetEntityByCodeByCache(appKey);
                 if (userEntity != null)
                 {
                     userInfo = new BaseUserInfo();

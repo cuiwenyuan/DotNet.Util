@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string Add(BaseTableColumnsEntity entity)
         {
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddObject(entity);
+            return AddEntity(entity);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public int Update(BaseTableColumnsEntity entity)
         {
-            return UpdateObject(entity);
+            return UpdateEntity(entity);
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseTableColumnsEntity GetObject(int id)
+        public BaseTableColumnsEntity GetEntity(int id)
         {
             return BaseEntity.Create<BaseTableColumnsEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseTableColumnsEntity.FieldId, id)));
             // return BaseEntity.Create<BaseTableColumnsEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseTableColumnsEntity.FieldId, id)));
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddObject(BaseTableColumnsEntity entity)
+        public string AddEntity(BaseTableColumnsEntity entity)
         {
             var sequence = string.Empty;
             if (entity.SortCode == 0)
@@ -180,7 +180,7 @@ namespace DotNet.Business
                     }
                 }
             }
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseTableColumnsEntity.FieldCreateUserId, UserInfo.Id);
@@ -208,11 +208,11 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateObject(BaseTableColumnsEntity entity)
+        public int UpdateEntity(BaseTableColumnsEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            SetObject(sqlBuilder, entity);
+            SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseTableColumnsEntity.FieldUpdateUserId, UserInfo.Id);
@@ -223,14 +223,14 @@ namespace DotNet.Business
             return sqlBuilder.EndUpdate();
         }
 
-        partial void SetObjectExpand(SqlBuilder sqlBuilder, BaseTableColumnsEntity entity);
+        partial void SetEntityExpand(SqlBuilder sqlBuilder, BaseTableColumnsEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetObject(SqlBuilder sqlBuilder, BaseTableColumnsEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseTableColumnsEntity entity)
         {
             sqlBuilder.SetValue(BaseTableColumnsEntity.FieldTableCode, entity.TableCode);
             sqlBuilder.SetValue(BaseTableColumnsEntity.FieldColumnCode, entity.ColumnCode);
@@ -242,7 +242,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseTableColumnsEntity.FieldDeleted, entity.DeletionStateCode);
             sqlBuilder.SetValue(BaseTableColumnsEntity.FieldSortCode, entity.SortCode);
             sqlBuilder.SetValue(BaseTableColumnsEntity.FieldDescription, entity.Description);
-            SetObjectExpand(sqlBuilder, entity);
+            SetEntityExpand(sqlBuilder, entity);
         }
 
         /// <summary>

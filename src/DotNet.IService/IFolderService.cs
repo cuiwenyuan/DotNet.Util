@@ -41,7 +41,7 @@ namespace DotNet.IService
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
         
-        BaseFolderEntity GetObject(BaseUserInfo userInfo, string id);
+        BaseFolderEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 按目录获取列表

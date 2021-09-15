@@ -159,14 +159,14 @@ namespace DotNet.Business
         #endregion
 
 
-        #region public BaseUserEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseUserEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取用户实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseUserEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseUserEntity entity = null;
 
@@ -177,21 +177,21 @@ namespace DotNet.Business
                 // 判断是否已经登录的用户？
                 if (userManager.UserIsLogOn(userInfo))
                 {
-                    entity = userManager.GetObject(id);
+                    entity = userManager.GetEntity(id);
                 }
             });
             return entity;
         }
         #endregion
 
-        #region public BaseUserEntity GetObjectByCache(BaseUserInfo userInfo, string id)
+        #region public BaseUserEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取用户实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObjectByCache(BaseUserInfo userInfo, string id)
+        public BaseUserEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         {
             BaseUserEntity entity = null;
 
@@ -202,7 +202,7 @@ namespace DotNet.Business
                 // 判断是否已经登录的用户？
                 // if (userManager.UserIsLogOn(userInfo))
                 // {
-                entity = BaseUserManager.GetObjectByCache(id);
+                entity = BaseUserManager.GetEntityByCache(id);
                 // }
             });
             return entity;
@@ -210,14 +210,14 @@ namespace DotNet.Business
         #endregion
 
 
-        #region public BaseUserEntity GetObjectByCode(BaseUserInfo userInfo, string code)
+        #region public BaseUserEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         /// <summary>
         /// 按编号获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObjectByCode(BaseUserInfo userInfo, string code)
+        public BaseUserEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         {
             BaseUserEntity entity = null;
 
@@ -225,20 +225,20 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseUserManager(dbHelper, userInfo);
-                entity = manager.GetObjectByCode(code);
+                entity = manager.GetEntityByCode(code);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseUserEntity GetObjectByName(BaseUserInfo userInfo, string userName)
+        #region public BaseUserEntity GetEntityByName(BaseUserInfo userInfo, string userName)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userName">用户名</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObjectByUserName(BaseUserInfo userInfo, string userName)
+        public BaseUserEntity GetEntityByUserName(BaseUserInfo userInfo, string userName)
         {
             BaseUserEntity entity = null;
 
@@ -246,20 +246,20 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseUserManager(dbHelper, userInfo);
-                entity = manager.GetObjectByUserName(userName);
+                entity = manager.GetEntityByUserName(userName);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseUserEntity GetObjectByRealName(BaseUserInfo userInfo, string fullName)
+        #region public BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string fullName)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="realName">名称</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObjectByRealName(BaseUserInfo userInfo, string realName)
+        public BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string realName)
         {
             BaseUserEntity entity = null;
 
@@ -267,21 +267,21 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseUserManager(dbHelper, userInfo);
-                entity = manager.GetObjectByRealName(realName);
+                entity = manager.GetEntityByRealName(realName);
             });
             return entity;
         }
         #endregion
 
 
-        #region public BaseUserEntity GetObjectByRealName(BaseUserInfo userInfo, string nickName)
+        #region public BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string nickName)
         /// <summary>
         /// 按昵称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="nickName">昵称</param>
         /// <returns>实体</returns>
-        public BaseUserEntity GetObjectByNickName(BaseUserInfo userInfo, string nickName)
+        public BaseUserEntity GetEntityByNickName(BaseUserInfo userInfo, string nickName)
         {
             BaseUserEntity entity = null;
 
@@ -289,7 +289,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseUserManager(dbHelper, userInfo);
-                entity = manager.GetObjectByNickName(nickName);
+                entity = manager.GetEntityByNickName(nickName);
             });
             return entity;
         }
@@ -314,7 +314,7 @@ namespace DotNet.Business
                 if (userManager.UserIsLogOn(userInfo))
                 {
                     var userContactManager = new BaseUserContactManager(dbHelper, userInfo);
-                    entity = userContactManager.GetObject(id);
+                    entity = userContactManager.GetEntity(id);
                 }
             });
 
@@ -334,7 +334,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                entity = BaseUserContactManager.GetObjectByCache(id);
+                entity = BaseUserContactManager.GetEntityByCache(id);
             });
 
             return entity;
@@ -714,7 +714,7 @@ namespace DotNet.Business
                         if (userManager.StatusCode == Status.ErrorUserExist.ToString()
                             || userManager.StatusCode == Status.ErrorCodeExist.ToString())
                         {
-                            result = userManager.UpdateObject(entity);
+                            result = userManager.UpdateEntity(entity);
                         }
                     }
                 }
@@ -727,7 +727,7 @@ namespace DotNet.Business
                 if (userContactEntity != null)
                 {
                     var userContactManager = new BaseUserContactManager(dbHelper, userInfo);
-                    userContactManager.SetObject(userContactEntity);
+                    userContactManager.SetEntity(userContactEntity);
                 }
                 if (result == 1)
                 {
@@ -744,7 +744,7 @@ namespace DotNet.Business
                         //string staffId = staffManager.GetIdByUserId(entity.Id);
                         //if (!string.IsNullOrEmpty(staffId))
                         //{
-                        //    BaseStaffEntity staffEntity = staffManager.GetObject(staffId);
+                        //    BaseStaffEntity staffEntity = staffManager.GetEntity(staffId);
                         //    staffEntity.Code = entity.Code;
                         //    staffEntity.Birthday = entity.Birthday;
                         //    staffEntity.Gender = entity.Gender;

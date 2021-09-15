@@ -51,7 +51,7 @@ namespace DotNet.Business
             }
             else
             {
-                result = AddObject(entity);
+                result = AddEntity(entity);
                 // 运行成功
                 statusCode = Status.OkAdd.ToString();
             }
@@ -84,7 +84,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    result = UpdateObject(entity);
+                    result = UpdateEntity(entity);
                     if (result == 1)
                     {
                         // 运行成功
@@ -158,7 +158,7 @@ namespace DotNet.Business
                 entity.AllowEdit = 0;
                 entity.IsPublic = 0;
                 entity.Id = "CompanyFile";
-                AddObject(entity);
+                AddEntity(entity);
             }
             // 01:判断公司文件夹是否存在？
             if (!Exists("ShareFolder"))
@@ -170,7 +170,7 @@ namespace DotNet.Business
                 entity.IsPublic = 1;
                 entity.Id = "ShareFolder";
                 entity.ParentId = "CompanyFile";
-                AddObject(entity);
+                AddEntity(entity);
             }
             // 02:部门文件夹
             if (!string.IsNullOrEmpty(departmentId) && !Exists(departmentId))
@@ -182,7 +182,7 @@ namespace DotNet.Business
                 entity.AllowDelete = 0;
                 entity.AllowEdit = 0;
                 entity.Id = departmentId;
-                AddObject(entity);
+                AddEntity(entity);
 
                 /*
                 if (!this.Exists(departmentId + "_Public"))
@@ -195,7 +195,7 @@ namespace DotNet.Business
                     folderEntity.AllowDelete = 0;
                     folderEntity.AllowEdit = 0;
                     folderEntity.Id = departmentId + "_Public";
-                    this.AddObject(folderEntity);
+                    this.AddEntity(folderEntity);
                 }
                 */
             }
@@ -207,7 +207,7 @@ namespace DotNet.Business
                 folderEntity.AllowDelete = 0;
                 folderEntity.AllowEdit = 0;
                 folderEntity.Id = "UserSpace";
-                this.AddObject(folderEntity);
+                this.AddEntity(folderEntity);
             }
             */
             // 04:判断用户的空间是否存在？
@@ -224,7 +224,7 @@ namespace DotNet.Business
                 entity.Enabled = 1;
                 entity.AllowDelete = 0;
                 entity.AllowEdit = 0;
-                AddObject(entity);
+                AddEntity(entity);
             }
             else
             {
@@ -245,7 +245,7 @@ namespace DotNet.Business
                     entity.IsPublic = 0;
                     entity.AllowEdit = 1;
                     entity.Id = UserInfo.Id + "_Send";
-                    AddObject(entity);
+                    AddEntity(entity);
                 }
                 // 06:判断接收文件是否存在？
                 if (!Exists(UserInfo.Id + "_Receive"))
@@ -257,7 +257,7 @@ namespace DotNet.Business
                     entity.IsPublic = 0;
                     entity.AllowEdit = 1;
                     entity.Id = UserInfo.Id + "_Receive";
-                    AddObject(entity);
+                    AddEntity(entity);
                 }
             }
         }
@@ -304,14 +304,14 @@ namespace DotNet.Business
                     if (id.Length > 0)
                     {
                         entity.GetFrom(dr);
-                        result += UpdateObject(entity);
+                        result += UpdateEntity(entity);
                     }
                 }
                 // 添加状态
                 if (dr.RowState == DataRowState.Added)
                 {
                     entity.GetFrom(dr);
-                    result += AddObject(entity).Length > 0 ? 1 : 0;
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
                 }
                 if (dr.RowState == DataRowState.Unchanged)
                 {

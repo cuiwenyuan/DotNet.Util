@@ -88,7 +88,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="tableName">目标表</param>
         /// <param name="id">主键</param>
-        BaseItemDetailsEntity GetObject(BaseUserInfo userInfo, string tableName, string id);
+        BaseItemDetailsEntity GetEntity(BaseUserInfo userInfo, string tableName, string id);
 
         /// <summary>
         /// 获取实体
@@ -97,7 +97,7 @@ namespace DotNet.IService
         /// <param name="tableName">主键</param>
         /// <param name="code">code</param>
         /// <returns>数据表</returns>
-        BaseItemDetailsEntity GetObjectByCode(BaseUserInfo userInfo, string tableName, string code);
+        BaseItemDetailsEntity GetEntityByCode(BaseUserInfo userInfo, string tableName, string code);
 
         /// <summary>
         /// 添加编码

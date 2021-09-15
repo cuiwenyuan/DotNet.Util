@@ -31,7 +31,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>更新、添加成功？</returns>
-        public bool SetObject(BaseUserContactEntity entity)
+        public bool SetEntity(BaseUserContactEntity entity)
         {
             var result = false;
 
@@ -73,7 +73,7 @@ namespace DotNet.Business
             var result = 0;
 
             // 获取原始实体信息
-            var entityOld = GetObject(entity.Id);
+            var entityOld = GetEntity(entity.Id);
             // 2015-12-26 吉日嘎拉 当新增时，需要判断这个是否为空
             if (entityOld != null)
             {
@@ -81,7 +81,7 @@ namespace DotNet.Business
                 UpdateEntityLog(entity, entityOld);
             }
             // 更新数据
-            result = UpdateObject(entity);
+            result = UpdateEntity(entity);
             // 同步数据
             // AfterUpdate(entity);
             // 重新设置缓存

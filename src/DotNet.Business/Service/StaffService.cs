@@ -236,7 +236,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseStaffEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseStaffEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseStaffEntity entity = null;
 
@@ -244,7 +244,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                entity = manager.GetObject(id);
+                entity = manager.GetEntity(id);
             });
             return entity;
         }
@@ -494,7 +494,7 @@ namespace DotNet.Business
                     {
                         result = manager.SetProperty(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId));
                         var userManager = new BaseUserManager(dbHelper, userInfo);
-                        var userEntity = userManager.GetObject(userId);
+                        var userEntity = userManager.GetEntity(userId);
                         result = manager.SetProperty(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, userEntity.UserName));
                     }
                 }
@@ -607,7 +607,7 @@ namespace DotNet.Business
                 for (var i = 0; i < ids.Length; i++)
                 {
                     // 删除相应的用户
-                    staffEntity = staffManager.GetObject(ids[i]);
+                    staffEntity = staffManager.GetEntity(ids[i]);
                     if (staffEntity.UserId != null)
                     {
                         userManager.SetDeleted(staffEntity.UserId);

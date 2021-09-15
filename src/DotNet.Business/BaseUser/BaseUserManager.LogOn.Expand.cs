@@ -48,8 +48,8 @@ namespace DotNet.Business
                     //获取提醒实体信息 提醒要求已设置且启用
                     var systemName = userInfo.SystemCode;
                     var manager = new BaseUserLogonExtendManager();
-                    var userLogonRemind = manager.GetObject(userInfo.Id);
-                    var userContactEntity = new BaseUserContactManager().GetObject(userInfo.Id);
+                    var userLogonRemind = manager.GetEntity(userInfo.Id);
+                    var userContactEntity = new BaseUserContactManager().GetEntity(userInfo.Id);
                     var webClient = new WebClient();
                     //提醒对象实体和联系信息实体存在则进行下一步
                     if (userLogonRemind != null && userContactEntity != null)

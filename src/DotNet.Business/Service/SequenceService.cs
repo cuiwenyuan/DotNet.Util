@@ -107,14 +107,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseSequenceEntity GetObject(BaseUserInfo userInfo, string id)
+        #region public BaseSequenceEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseSequenceEntity GetObject(BaseUserInfo userInfo, string id)
+        public BaseSequenceEntity GetEntity(BaseUserInfo userInfo, string id)
         {
             BaseSequenceEntity sequenceEntity = null;
 
@@ -122,7 +122,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseSequenceManager(dbHelper, userInfo);
-                sequenceEntity = manager.GetObject(id);
+                sequenceEntity = manager.GetEntity(id);
             });
 
             return sequenceEntity;
