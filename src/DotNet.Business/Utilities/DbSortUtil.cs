@@ -9,7 +9,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    ///	BaseDbSortLogic
+    ///	DbSortUtil
     /// 通用排序逻辑基类（程序OK）
     /// 
     /// 修改记录

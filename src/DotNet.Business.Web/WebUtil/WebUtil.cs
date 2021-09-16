@@ -236,6 +236,7 @@ namespace DotNet.Business
         #endregion
 
         #endregion
+
         #region 表格选择记录功能部分 GridView
 
         #region public static string[] GetSelecteIds(GridView gv) 获得已选的表格行代码数组
@@ -343,6 +344,7 @@ namespace DotNet.Business
         #endregion
 
         #endregion
+
         #region 表格选择记录功能部分 repeater
 
         #region public static string[] GetSelecteIds(Repeater repeater) 获得已选的表格行代码数组
@@ -442,6 +444,7 @@ namespace DotNet.Business
         #endregion
 
         #endregion
+
         #region 表格选择记录功能部分 DataGrid
 
         #region public static string[] GetSelecteIds(DataGrid dataGrid) 获得已选的表格行代码数组

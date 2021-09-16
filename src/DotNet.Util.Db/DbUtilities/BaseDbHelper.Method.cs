@@ -77,30 +77,30 @@ namespace DotNet.Util
                 Open();
                 MustCloseConnection = true;
             }
-            _dbCommand = DbConnection.CreateCommand();
-            _dbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
-            _dbCommand.CommandText = commandText;
+            DbCommand = DbConnection.CreateCommand();
+            DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+            DbCommand.CommandText = commandText;
             if (CurrentDbType == CurrentDbType.Oracle)
             {
                 // 针对Oracle，全局替换换行符，避免报错或不执行
                 // 仅当前系统的换行符
-                _dbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
+                DbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
                 // 各种平台的换行符
                 //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
             }
-            _dbCommand.CommandType = commandType;
+            DbCommand.CommandType = commandType;
             if (_dbTransaction != null)
             {
-                _dbCommand.Transaction = _dbTransaction;
+                DbCommand.Transaction = _dbTransaction;
             }
             if (dbParameters != null)
             {
-                _dbCommand.Parameters.Clear();
+                DbCommand.Parameters.Clear();
                 foreach (var t in dbParameters)
                 {
                     if (t != null)
                     {
-                        _dbCommand.Parameters.Add(((ICloneable)t).Clone());
+                        DbCommand.Parameters.Add(((ICloneable)t).Clone());
                     }
                 }
             }
@@ -112,11 +112,11 @@ namespace DotNet.Util
             DbDataReader dbDataReader = null;
             if (!MustCloseConnection)
             {
-                dbDataReader = _dbCommand.ExecuteReader();
+                dbDataReader = DbCommand.ExecuteReader();
             }
             else
             {
-                dbDataReader = _dbCommand.ExecuteReader(CommandBehavior.CloseConnection);
+                dbDataReader = DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
             }
 
             stopwatch.Stop();
@@ -228,37 +228,37 @@ namespace DotNet.Util
             var result = -1;
             try
             {
-                _dbCommand = DbConnection.CreateCommand();
-                _dbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
-                _dbCommand.CommandText = commandText;
+                DbCommand = DbConnection.CreateCommand();
+                DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                DbCommand.CommandText = commandText;
                 if (CurrentDbType == CurrentDbType.Oracle)
                 {
                     // 针对Oracle，全局替换换行符，避免报错或不执行
                     // 仅当前系统的换行符
-                    _dbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
+                    DbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
                     // 各种平台的换行符
                     //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
                 }
-                _dbCommand.CommandType = commandType;
+                DbCommand.CommandType = commandType;
                 if (_dbTransaction != null)
                 {
-                    _dbCommand.Transaction = _dbTransaction;
+                    DbCommand.Transaction = _dbTransaction;
                 }
                 if (dbParameters != null)
                 {
-                    _dbCommand.Parameters.Clear();
+                    DbCommand.Parameters.Clear();
                     for (var i = 0; i < dbParameters.Length; i++)
                     {
                         // if (dbParameters[i] != null)
                         //{
-                        _dbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                        DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
                         //}
                     }
                 }
                 //写入日志 
                 SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
 
-                result = _dbCommand.ExecuteNonQuery();
+                result = DbCommand.ExecuteNonQuery();
 
                 if (CurrentDbType == CurrentDbType.SqlServer)
                 {
@@ -291,7 +291,7 @@ namespace DotNet.Util
                 }
                 else
                 {
-                    _dbCommand.Parameters.Clear();
+                    DbCommand.Parameters.Clear();
                 }
             }
 
@@ -336,7 +336,7 @@ namespace DotNet.Util
                 {
                     if (dbParameters[i].Direction != ParameterDirection.Input)
                     {
-                        dbParameters[i].Value = _dbCommand.Parameters[i].Value;
+                        dbParameters[i].Value = DbCommand.Parameters[i].Value;
                     }
                 }
             }
@@ -395,39 +395,39 @@ namespace DotNet.Util
             object result = null;
             try
             {
-                _dbCommand = DbConnection.CreateCommand();
-                _dbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
-                _dbCommand.CommandText = commandText;
+                DbCommand = DbConnection.CreateCommand();
+                DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                DbCommand.CommandText = commandText;
                 if (CurrentDbType == CurrentDbType.Oracle)
                 {
                     // 针对Oracle，全局替换换行符，避免报错或不执行
                     // 仅当前系统的换行符
-                    _dbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
+                    DbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
                     // 各种平台的换行符
                     //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
                 }
-                _dbCommand.CommandType = commandType;
+                DbCommand.CommandType = commandType;
 
                 if (_dbTransaction != null)
                 {
-                    _dbCommand.Transaction = _dbTransaction;
+                    DbCommand.Transaction = _dbTransaction;
                 }
 
                 if (dbParameters != null)
                 {
-                    _dbCommand.Parameters.Clear();
+                    DbCommand.Parameters.Clear();
                     for (var i = 0; i < dbParameters.Length; i++)
                     {
                         if (dbParameters[i] != null)
                         {
-                            _dbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
                             // dbCommand.Parameters.Add(dbParameters[i]);
                         }
                     }
                 }
                 //写入日志 
                 SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
-                result = _dbCommand.ExecuteScalar();
+                result = DbCommand.ExecuteScalar();
 
                 // 这里进行输出参数的处理
                 if (CurrentDbType == CurrentDbType.SqlServer)
@@ -460,7 +460,7 @@ namespace DotNet.Util
                 }
                 else
                 {
-                    _dbCommand.Parameters.Clear();
+                    DbCommand.Parameters.Clear();
                 }
             }
             stopwatch.Stop();
@@ -589,36 +589,36 @@ namespace DotNet.Util
 
             try
             {
-                using (_dbCommand = DbConnection.CreateCommand())
+                using (DbCommand = DbConnection.CreateCommand())
                 {
-                    _dbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
-                    _dbCommand.CommandText = commandText;
+                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
                         // 针对Oracle，全局替换换行符，避免报错或不执行
                         // 仅当前系统的换行符
-                        _dbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
+                        DbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
                         // 各种平台的换行符
                         //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
                     }
-                    _dbCommand.CommandType = commandType;
+                    DbCommand.CommandType = commandType;
                     if (_dbTransaction != null)
                     {
-                        _dbCommand.Transaction = _dbTransaction;
+                        DbCommand.Transaction = _dbTransaction;
                     }
 
-                    _dbDataAdapter = GetInstance().CreateDataAdapter();
-                    var dbDataAdapter = _dbDataAdapter;
+                    DbDataAdapter = GetInstance().CreateDataAdapter();
+                    var dbDataAdapter = DbDataAdapter;
                     if (dbDataAdapter != null)
                     {
-                        dbDataAdapter.SelectCommand = _dbCommand;
+                        dbDataAdapter.SelectCommand = DbCommand;
                         if ((dbParameters != null) && (dbParameters.Length > 0))
                         {
                             foreach (var t in dbParameters)
                             {
                                 if (t != null)
                                 {
-                                    _dbCommand.Parameters.Add(((ICloneable)t).Clone());
+                                    DbCommand.Parameters.Add(((ICloneable)t).Clone());
                                 }
                             }
 
@@ -746,7 +746,7 @@ namespace DotNet.Util
                 MustCloseConnection = true;
             }
 
-            using (_dbCommand = DbConnection.CreateCommand())
+            using (DbCommand = DbConnection.CreateCommand())
             {
                 try
                 {
@@ -761,20 +761,20 @@ namespace DotNet.Util
                     //        }
                     //    }
                     //}
-                    _dbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
-                    _dbCommand.CommandText = commandText;
+                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
                         // 针对Oracle，全局替换换行符，避免报错或不执行
                         // 仅当前系统的换行符
-                        _dbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
+                        DbCommand.CommandText = commandText.Replace(Environment.NewLine, " ");
                         // 各种平台的换行符
                         //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
                     }
-                    _dbCommand.CommandType = commandType;
+                    DbCommand.CommandType = commandType;
                     if (_dbTransaction != null)
                     {
-                        _dbCommand.Transaction = _dbTransaction;
+                        DbCommand.Transaction = _dbTransaction;
                     }
 
                     if ((dbParameters != null) && (dbParameters.Length > 0))
@@ -783,7 +783,7 @@ namespace DotNet.Util
                         {
                             if (dbParameters[i] != null)
                             {
-                                _dbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
                             }
                         }
                         // dbCommand.Parameters.AddRange(dbParameters);
@@ -792,9 +792,9 @@ namespace DotNet.Util
                     //记录日志
                     SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
 
-                    _dbDataAdapter = GetInstance().CreateDataAdapter();
-                    _dbDataAdapter.SelectCommand = _dbCommand;
-                    _dbDataAdapter.Fill(dataSet, tableName);
+                    DbDataAdapter = GetInstance().CreateDataAdapter();
+                    DbDataAdapter.SelectCommand = DbCommand;
+                    DbDataAdapter.Fill(dataSet, tableName);
 
                     SetBackParamValue(dbParameters);
                 }
@@ -827,7 +827,7 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        _dbDataAdapter.SelectCommand.Parameters.Clear();
+                        DbDataAdapter.SelectCommand.Parameters.Clear();
                     }
                 }
             }

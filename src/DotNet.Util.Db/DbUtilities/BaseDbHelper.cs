@@ -60,68 +60,39 @@ namespace DotNet.Util
         }
 
         // 命令
-        private DbCommand _dbCommand = null;
         /// <summary>
         /// 命令
         /// </summary>
-        public DbCommand DbCommand
-        {
-            get => _dbCommand;
-
-            set => _dbCommand = value;
-        }
+        public DbCommand DbCommand { get; set; } = null;
 
         // 数据库适配器
-        private DbDataAdapter _dbDataAdapter = null;
         /// <summary>
         /// 数据库适配器
         /// </summary>
-        public DbDataAdapter DbDataAdapter
-        {
-            get => _dbDataAdapter;
-
-            set => _dbDataAdapter = value;
-        }
+        public DbDataAdapter DbDataAdapter { get; set; } = null;
 
         // 数据库连接
-        private string _connectionString = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
         /// <summary>
         /// 数据库连接
         /// </summary>
-        public string ConnectionString
-        {
-            get => _connectionString;
-            set => _connectionString = value;
-        }
+        public string ConnectionString { get; set; } = "Data Source=localhost;Initial Catalog=UserCenterV4;Integrated Security=SSPI;";
 
         private DbTransaction _dbTransaction = null;
 
-        // 是否已在事务之中
-        private bool _inTransaction = false;
         /// <summary>
-        /// 是否已采用事务
+        /// 是否已在事务之中
         /// </summary>
-        public bool InTransaction
-        {
-            get => _inTransaction;
+        public bool InTransaction { get; set; } = false;
 
-            set => _inTransaction = value;
-        }
         /// <summary>
         /// 日志文件名
         /// </summary>
         public string FileName = "BaseDbHelper.txt";    // sql查询句日志
 
-        //默认打开关闭数据库选项（默认为否）
-        private bool _mustCloseConnection = false;
         /// <summary>
         /// 默认打开关闭数据库选项（默认为否）
         /// </summary>
-        public bool MustCloseConnection
-        {
-            get => _mustCloseConnection;
-            set => _mustCloseConnection = value;
-        }
+        public bool MustCloseConnection { get; set; } = false;
 
         private DbProviderFactory _dbProviderFactory = null;
         /// <summary>
@@ -416,13 +387,13 @@ namespace DotNet.Util
         /// </summary>
         public void Dispose()
         {
-            if (_dbCommand != null)
+            if (DbCommand != null)
             {
-                _dbCommand.Dispose();
+                DbCommand.Dispose();
             }
-            if (_dbDataAdapter != null)
+            if (DbDataAdapter != null)
             {
-                _dbDataAdapter.Dispose();
+                DbDataAdapter.Dispose();
             }
             if (_dbTransaction != null)
             {
