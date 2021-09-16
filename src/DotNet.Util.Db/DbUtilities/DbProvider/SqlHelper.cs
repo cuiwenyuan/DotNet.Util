@@ -26,7 +26,7 @@ namespace DotNet.Util
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>
-    public class SqlHelper : BaseDbHelper, IDbHelper, IDbHelperExpand
+    public class SqlHelper : BaseDbHelper, IDbHelper, IDbHelperExtend
     {
         /// <summary>
         /// GetInstance
