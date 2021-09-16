@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///		2021.03.17 版本：1.0 Troy.Cui	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2021.03.17</date>
     /// </author>
     /// </summary>

@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///     2015.09.29 版本：1.0 JiRiGaLa 分离广播功能。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.04.06</date>
     /// </author>
     /// </summary>

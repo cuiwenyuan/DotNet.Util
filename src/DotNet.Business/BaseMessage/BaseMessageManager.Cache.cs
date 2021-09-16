@@ -19,7 +19,7 @@ namespace DotNet.Business
     ///	版本：1.0 2015.09.26  JiRiGaLa    消息的缓存服务。
     ///	
     /// <author>  
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.09.26</date>
     /// </author> 
     /// </remarks>

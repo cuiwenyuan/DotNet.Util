@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		2007.07.10 版本：1.0 JiRiGaLa 数据库访问类。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.04.30</date>
     /// </author> 
     /// </summary>

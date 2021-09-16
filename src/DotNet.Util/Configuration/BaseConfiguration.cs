@@ -27,7 +27,7 @@ namespace DotNet.Util
     ///		2005.12.29 版本：1.0 JiRiGaLa 从配置文件读取数据库连接。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.09.29</date>
     /// </author> 
     /// </summary>

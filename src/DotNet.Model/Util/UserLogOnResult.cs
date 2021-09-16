@@ -18,7 +18,7 @@ namespace DotNet.Model
     ///		2016.02.01 版本：1.0	JiRiGaLa 搬移位置。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.02.01</date>
     /// </author> 
     /// </summary>

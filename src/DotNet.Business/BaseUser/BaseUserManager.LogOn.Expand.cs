@@ -58,7 +58,7 @@ namespace DotNet.Business
                         if (!string.IsNullOrWhiteSpace(userInfo.NickName) && userLogonRemind.JixinRemind == 1)
                         {
                             //吉信接口地址 
-                            var url = "http://jixin.zt-express.com:8280/mng/httpservices/msg-sendMessageToUsers.action";
+                            var url = "http://jixin.wangcaisoft.com:8280/mng/httpservices/msg-sendMessageToUsers.action";
                             var postValues = new NameValueCollection();
                             //为空则无发送者，客户无回复按钮+(v1.1)
                             postValues.Add("sender", string.Empty);
@@ -77,7 +77,7 @@ namespace DotNet.Business
                             var content = "<div style='word-break:keep-all;'><font color='#FF7E00'>" + userInfo.NickName + "</font>，您的账号于<font color='#FF7E00'>" + DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + "</font>登录了<font color='#FF7E00'>" + systemName + "</font></div>"
                                 + "<div style='word-break:keep-all;margin-top:5px'>登录IP：<font color='#FF7E00'>" + userInfo.IpAddress + "</font></div>"
                                   + "<div style=' word-break:keep-all;margin-top:5px'>IP参考所在地：<font color='#FF7E00'>" + IpUtil.GetInstance().FindName(userInfo.IpAddress) + "</font></div>"
-                                + "<div style=' word-break:keep-all;margin-top:5px'>如果不是您自己登录，请马上联系：021-31165566,或即刻<a href='http://security.zt-express.com' target='_blank'>登录安全中心</a>修改密码。</div>";
+                                + "<div style=' word-break:keep-all;margin-top:5px'>如果不是您自己登录，请马上联系：021-31165566,或即刻<a href='http://security.wangcaisoft.com' target='_blank'>登录安全中心</a>修改密码。</div>";
                             postValues.Add("content", (string)content);
                             postValues.Add("width", "300");
                             postValues.Add("height", "180");
@@ -94,15 +94,15 @@ namespace DotNet.Business
                                 + "登录系统：" + systemName + "；<br/> " + Environment.NewLine
                                 + "登录IP：" + userInfo.IpAddress + "；<br/> " + Environment.NewLine
                                 + "MAC地址：" + userInfo.MacAddress + "；<br/>" + Environment.NewLine
-                                + "如果不是您自己登录，请马上联系021-31165566，或即刻登录系统修改密码。";
+                                + "如果不是您自己登录，请马上联系021-88888888，或即刻登录系统修改密码。";
                             var smtp = new SmtpClient();
                             //邮箱的smtp地址
-                            smtp.Host = "mail.zto.cn";//BaseSystemInfo.MailServer;
+                            smtp.Host = "mail.wangcaisoft.com";//BaseSystemInfo.MailServer;
                             //端口号
                             smtp.Port = 25;
                             //构建发件人的身份凭据类
                             //smtp.Credentials = new NetworkCredential(BaseSystemInfo.MailUserName, BaseSystemInfo.MailPassword);
-                            smtp.Credentials = new NetworkCredential("remind", "ztoremind#@!~");
+                            smtp.Credentials = new NetworkCredential("remind", "remind#@!~");
                             //构建消息类
                             var objMailMessage = new MailMessage();
                             //设置优先级
@@ -147,7 +147,7 @@ namespace DotNet.Business
                                 || !string.Equals((string)addressA, (string)addressB, StringComparison.OrdinalIgnoreCase)
                                 ))
                             {
-                                var url = "http://mas.zto.cn/WebAPIV42/API/Mobile/SendMessageByCompanyCode";
+                                var url = "http://mas.wangcaisoft.com/WebAPIV42/API/Mobile/SendMessageByCompanyCode";
                                 var postValues = new NameValueCollection();
                                 postValues.Add("companyCode", userInfo.CompanyCode);
                                 postValues.Add("mobiles", userContactEntity.Mobile);
@@ -160,13 +160,13 @@ namespace DotNet.Business
                         //微信提醒
                         if (!string.IsNullOrWhiteSpace(userContactEntity.WeChat) && userContactEntity.WeChatValiated == 1 && userLogonRemind.WechatRemind == 1)
                         {
-                            var url = "http://weixin.zto.cn/Template/WeiXinLogin";
+                            var url = "http://weixin.wangcaisoft.com/Template/WeiXinLogin";
                             var postValues = new NameValueCollection();
                             postValues.Add("first", "您已经成功登录系统");
                             postValues.Add("keyword1", userInfo.NickName);
                             postValues.Add("remark", userInfo.NickName + "，您的账号于" + DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + "登录了" + systemName);
                             postValues.Add("OpenId", userContactEntity.WeChat);
-                            //postValues.Add("url", "http://security.zt-express.com/changepassword"); 详情的链接
+                            //postValues.Add("url", "http://security.wangcaisoft.com/changepassword"); 详情的链接
                             webClient.UploadValues(url, postValues);
                         }
                     }

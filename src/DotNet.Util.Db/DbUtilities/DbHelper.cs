@@ -17,7 +17,7 @@ namespace DotNet.Util
     ///		2008.09.03 版本：1.0 Troy Cui 创建。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.09.18</date>
     /// </author> 
     /// </summary>

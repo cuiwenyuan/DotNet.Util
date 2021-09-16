@@ -13,7 +13,7 @@ namespace DotNet.Util
     ///     2008.03.16 版本：1.0 JiRiGaLa 结构优化整理。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.03.16</date>
     /// </author> 
     /// </summary>

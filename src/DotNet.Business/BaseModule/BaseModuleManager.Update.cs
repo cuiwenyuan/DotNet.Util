@@ -21,7 +21,7 @@ namespace DotNet.Business
     ///
     /// </summary>
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.07.02</date>
     /// </author>
     public partial class BaseModuleManager : BaseManager

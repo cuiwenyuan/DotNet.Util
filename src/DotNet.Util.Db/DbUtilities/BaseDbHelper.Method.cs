@@ -23,7 +23,7 @@ namespace DotNet.Util
     ///		2013.02.04 版本：1.0 JiRiGaLa 分离改进。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.02.04</date>
     /// </author> 
     /// </summary>

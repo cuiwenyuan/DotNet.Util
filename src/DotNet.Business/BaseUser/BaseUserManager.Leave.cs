@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		2015.04.23 版本：1.0 JiRiGaLa	主键整理。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.04.23</date>
     /// </author> 
     /// </summary>
@@ -134,8 +134,8 @@ namespace DotNet.Business
             var result = new BaseResult();
             try
             {
-                // 停止邮箱内网请求地址：http://192.168.0.201:6080/roperate.php?optcmd=modifyuserstatus&user=xumingyue&domain=zto.cn&status=1
-                // 开启邮箱内网请求地址：http://192.168.0.201:6080/roperate.php?optcmd=modifyuserstatus&user=xumingyue&domain=zto.cn&status=0
+                // 停止邮箱内网请求地址：http://192.168.0.201:6080/roperate.php?optcmd=modifyuserstatus&user=xumingyue&domain=wangcaisoft.com&status=1
+                // 开启邮箱内网请求地址：http://192.168.0.201:6080/roperate.php?optcmd=modifyuserstatus&user=xumingyue&domain=wangcaisoft.com&status=0
                 if (!string.IsNullOrEmpty(email))
                 {
                     var array = email.Split('@');
@@ -202,7 +202,7 @@ namespace DotNet.Business
         //        //返回：{"ret":0} 表示成功
         //        try
         //        {
-        //            var url = "http://jixin.zt-express.com:8280/mng/im.service";
+        //            var url = "http://jixin.wangcaisoft.com:8280/mng/im.service";
         //            var webClient = new WebClient();
         //            var postValues = new NameValueCollection();
         //            var ht = new Hashtable();

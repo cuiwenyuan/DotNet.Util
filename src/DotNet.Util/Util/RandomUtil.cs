@@ -24,7 +24,7 @@ namespace DotNet.Util
     ///     2005.08.13 版本：1.0 JiRiGaLa   参数格式标准化。
     ///     
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.06.30</date>
     /// </author> 
     /// </summary>

@@ -14,7 +14,7 @@ namespace DotNet.Util
     ///		2007.12.08 版本：1.0 JiRiGaLa 添加 Config、UpLoad、DownLoad 权限。 
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.12.08</date>
     /// </author>
     /// </summary>

@@ -48,7 +48,7 @@ namespace DotNet.Business
     ///		2004.03.22 版本：1.0 JiRiGaLa		变量名等进行修改，使用表结构定义等
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2006.02.05</date>
     /// </author> 
     /// </summary>

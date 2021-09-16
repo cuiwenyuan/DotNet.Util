@@ -31,7 +31,7 @@ namespace DotNet.Business
     ///		2004.08.29 版本：1.0 Jirigala   改进了错误提示，变得更友好一些，注意大小写错误取消。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.05.07</date>
     /// </author> 
     /// </summary>

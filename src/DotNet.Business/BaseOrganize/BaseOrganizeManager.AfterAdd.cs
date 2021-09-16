@@ -16,7 +16,7 @@ namespace DotNet.Business
     ///		2016.02.02 版本：1.0 JiRiGaLa	进行独立。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.02.02</date>
     /// </author>
     /// </summary>

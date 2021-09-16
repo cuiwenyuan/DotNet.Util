@@ -29,7 +29,7 @@ namespace DotNet.Business
     /// 版本：3.2
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015-09-14</date>
     /// </author>
     /// </summary>

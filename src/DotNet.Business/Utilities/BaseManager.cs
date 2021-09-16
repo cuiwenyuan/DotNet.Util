@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		2007.08.01 版本：1.0 JiRiGaLa 提炼了最基础的方法部分、觉得这些是很有必要的方法。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.02.04</date>
     /// </author> 
     /// </summary>

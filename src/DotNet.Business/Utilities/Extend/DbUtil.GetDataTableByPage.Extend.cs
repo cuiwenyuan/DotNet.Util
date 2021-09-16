@@ -17,7 +17,7 @@ namespace DotNet.Business
     /// 2016-05-21增加条件参数
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.05.21</date>
     /// </author> 
     /// </summary>

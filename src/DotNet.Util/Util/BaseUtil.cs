@@ -47,7 +47,7 @@ namespace DotNet.Util
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2009.09.08</date>
     /// </author> 
     /// </summary>

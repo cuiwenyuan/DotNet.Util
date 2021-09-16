@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///		2012.04.14 版本：1.0 JiRiGaLa	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.04.14</date>
     /// </author>
     /// </summary>

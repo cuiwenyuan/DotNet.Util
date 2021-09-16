@@ -19,7 +19,7 @@ namespace DotNet.IService
     ///		2015.04.30 版本：1.0 JiRiGaLa 支持调用存储过程的扩展。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.04.30</date>
     /// </author> 
     /// </summary>

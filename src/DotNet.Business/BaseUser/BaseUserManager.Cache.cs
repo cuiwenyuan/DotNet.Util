@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///	版本：1.0 2015.01.06    JiRiGaLa    缓存优化。
     ///	
     /// <author>  
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.01.18</date>
     /// </author> 
     /// </remarks>

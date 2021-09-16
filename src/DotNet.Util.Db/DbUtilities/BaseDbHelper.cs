@@ -24,7 +24,7 @@ namespace DotNet.Util
     ///		2009.11.25 版本：1.0 JiRiGaLa 改进ConnectionString。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.02.20</date>
     /// </author>
     /// </summary>

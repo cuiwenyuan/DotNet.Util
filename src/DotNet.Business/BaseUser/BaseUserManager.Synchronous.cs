@@ -13,7 +13,7 @@ namespace DotNet.Business
     ///		2013.11.11 版本：1.0 JiRiGaLa	主键整理。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.11.11</date>
     /// </author> 
     /// </summary>

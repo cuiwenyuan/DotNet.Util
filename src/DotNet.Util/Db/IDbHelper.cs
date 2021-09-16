@@ -22,7 +22,7 @@ namespace DotNet.Util
     ///		2008.03.20 版本：1.0 JiRiGaLa 创建标准接口，这次应该算是一次飞跃。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>

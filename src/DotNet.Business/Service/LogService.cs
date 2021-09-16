@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		2008.03.23 版本：1.0 JiRiGaLa 创建。 
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.03.23</date>
     /// </author> 
     /// </summary>

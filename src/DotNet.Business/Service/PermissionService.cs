@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		2008.05.30 版本：1.0 JiRiGaLa 创建权限判断服务。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.06.04</date>
     /// </author> 
     /// </summary>

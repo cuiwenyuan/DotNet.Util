@@ -27,7 +27,7 @@ namespace DotNet.Util
     ///	版本：1.2
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.04.22</date>
     /// </author> 
     /// </summary>
@@ -926,11 +926,11 @@ namespace DotNet.Util
             {
                 if (string.IsNullOrEmpty(BaseSystemInfo.UserCenterDbConnection))
                 {
-                    BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                    BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.LoginLogDbConnection))
                 {
-                    BaseSystemInfo.LoginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                    BaseSystemInfo.LoginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.MessageDbConnection))
                 {
@@ -938,15 +938,15 @@ namespace DotNet.Util
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.WorkFlowDbConnection))
                 {
-                    // BaseSystemInfo.WorkFlowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV5;Integrated Security=SSPI;";
+                    // BaseSystemInfo.WorkFlowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
                 {
-                    // BaseSystemInfo.BusinessDbConnection = "Data Source=localhost;Initial Catalog=ProjectV5;Integrated Security=SSPI;";
+                    // BaseSystemInfo.BusinessDbConnection = "Data Source=localhost;Initial Catalog=ProjectV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.WebAppDbConnection))
                 {
-                    // BaseSystemInfo.WebAppDbConnection = "Data Source=localhost;Initial Catalog=ProjectV5;Integrated Security=SSPI;";
+                    // BaseSystemInfo.WebAppDbConnection = "Data Source=localhost;Initial Catalog=ProjectV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.BpmDbConnection))
                 {
@@ -985,6 +985,14 @@ namespace DotNet.Util
                     // BaseSystemInfo.CmsDbConnection = "Data Source=localhost;Initial Catalog=CMSDB;Integrated Security=SSPI;";
                 }
 
+            }
+
+            if (Exists("DatabaseTableVersion"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "DatabaseTableVersion")))
+                {
+                    BaseSystemInfo.DatabaseTableVersion = int.Parse(GetValue(_xmlDocument, "DatabaseTableVersion"));
+                }
             }
 
             if (Exists("SecurityKey"))
@@ -1402,6 +1410,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "ImsDbConnection", BaseSystemInfo.ImsDbConnectionString);
             SetValue(xmlDocument, "OmsDbConnection", BaseSystemInfo.OmsDbConnectionString);
             SetValue(xmlDocument, "MemberDbConnection", BaseSystemInfo.MemberDbConnectionString);
+            SetValue(xmlDocument, "DatabaseTableVersion", BaseSystemInfo.DatabaseTableVersion.ToString());
 
             SetValue(xmlDocument, "RegisterKey", BaseSystemInfo.RegisterKey);
 

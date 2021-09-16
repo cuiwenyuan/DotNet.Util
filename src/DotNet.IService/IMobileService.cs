@@ -19,7 +19,7 @@ namespace DotNet.IService
     ///		2013.12.02 版本：1.0 JiRiGaLa 手机短信的服务脱离。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.12.02</date>
     /// </author> 
     /// </summary>

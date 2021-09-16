@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		2015.04.30 版本：3.0 JiRiGaLa 加强QL语句安全漏洞。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.04.30</date>
     /// </author> 
     /// </summary>

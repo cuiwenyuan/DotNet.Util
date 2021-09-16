@@ -19,7 +19,7 @@ namespace DotNet.IService
     ///		2014.12.08 版本：1.0 JiRiGaLa 添加。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2014.12.08</date>
     /// </author> 
     /// </summary>

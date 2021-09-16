@@ -11,7 +11,7 @@ namespace DotNet.Util
     /// 这是系统的核心基础信息部分
     /// 
     /// 修改记录
-    ///     
+    ///
     ///     2020.08.16 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:OMS
     ///     2018.10.31 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:DealerPortal
     ///     2018.08.09 版本：1.8 Troy Cui	增加常用外部系统的数据库连接:SCM,IMS,Member
@@ -25,7 +25,7 @@ namespace DotNet.Util
     ///		2012.04.14 版本：1.0 JiRiGaLa	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.02.03</date>
     /// </author>
     /// </summary>
@@ -67,7 +67,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_userCenterDbConnection))
                     {
-                        _userCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                        _userCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
                 }
                 // 默认的数据库连接
@@ -100,7 +100,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_userCenterWriteDbConnection))
                     {
-                        _userCenterWriteDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                        _userCenterWriteDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
                 }
                 return _userCenterWriteDbConnection;
@@ -124,7 +124,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_userCenterReadDbConnection))
                     {
-                        _userCenterReadDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                        _userCenterReadDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
                 }
                 return _userCenterReadDbConnection;
@@ -228,7 +228,7 @@ namespace DotNet.Util
         /// <summary>
         /// 工作流数据库
         /// </summary>
-        // public static string WorkFlowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV5;Integrated Security=SSPI;";
+        // public static string WorkFlowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
         private static string _workflowDbConnection = string.Empty;
         /// <summary>
         /// 工作流数据库连接
@@ -245,7 +245,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_workflowDbConnection))
                     {
-                        _workflowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV5;Integrated Security=SSPI;";
+                        _workflowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
                 }
                 // 默认的工作流数据库连接
@@ -270,7 +270,7 @@ namespace DotNet.Util
         /// 登录日志数据库
         /// </summary>
         private static string _loginLogDbConnection = string.Empty;
-        
+
         /// <summary>
         /// 登录日志数据库
         /// </summary>
@@ -286,7 +286,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_loginLogDbConnection))
                     {
-                        _loginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV5;Integrated Security=SSPI;";
+                        _loginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
                 }
                 // 默认的登录日志数据库连接
@@ -1122,5 +1122,10 @@ namespace DotNet.Util
         /// </summary>
         public static string MemberDbConnectionString = string.Empty;
         #endregion
+
+        /// <summary>
+        /// 数据库表版本(默认为4版本)
+        /// </summary>
+        public static int DatabaseTableVersion = 4;
     }
 }

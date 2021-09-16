@@ -20,7 +20,7 @@ namespace DotNet.Model
     ///	版本：1.0 2015.07.08  JiRiGaLa    IDataReader 进行完善。
     ///	
     /// <author>  
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.07.08</date>
     /// </author> 
     /// </remarks>

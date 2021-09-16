@@ -20,7 +20,7 @@ namespace DotNet.Util
     ///		2018.03.15 版本：1.0	Troy.Cui
     ///	
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2018.03.15</date>
     /// </author> 
     /// </summary>

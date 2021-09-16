@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///		2007.03.01 版本：   1.0 JiRiGaLa 将主键从 BUBaseUtil 类分离出来。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.12.10</date>
     /// </author> 
     /// </summary>

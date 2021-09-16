@@ -21,7 +21,7 @@ namespace DotNet.IService
     ///		2008.04.02 版本：1.0 JiRiGaLa 创建主键。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.03.10</date>
     /// </author> 
     /// </summary>

@@ -26,7 +26,7 @@ namespace DotNet.Util
     ///		2008.08.26 版本：1.0 JiRiGaLa 创建数据库服务工厂。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.10.09</date>
     /// </author> 
     /// </summary>

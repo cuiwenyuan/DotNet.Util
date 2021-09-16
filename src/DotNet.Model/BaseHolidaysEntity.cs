@@ -18,7 +18,7 @@ namespace DotNet.Model
     ///		2012-12-24 版本：1.0 JiRiGaLa 创建主键。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012-12-24</date>
     /// </author>
     /// </summary>

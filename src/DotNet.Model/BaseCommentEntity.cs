@@ -21,7 +21,7 @@ namespace DotNet.Model
     /// Important，PriorityId。
     /// 
     /// <author>
-    ///     <name>JiRiGaLa</name>
+    ///     <name>Troy.Cui</name>
     ///     <date>2012-05-14</date>
     /// </author>
     /// </summary>

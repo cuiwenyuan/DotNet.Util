@@ -18,7 +18,7 @@ namespace DotNet.IService
     ///		2008.04.02 版本：1.0 JiRiGaLa 添加接口定义。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.04.02</date>
     /// </author> 
     /// </summary>

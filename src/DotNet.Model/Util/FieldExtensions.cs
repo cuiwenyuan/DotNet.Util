@@ -15,7 +15,7 @@ namespace DotNet.Model
     ///		2014.12.01 版本：1.0 JiRiGaLa 创建。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2014.12.01</date>
     /// </author> 
     /// </summary>    

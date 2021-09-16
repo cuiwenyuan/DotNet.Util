@@ -17,7 +17,7 @@ namespace DotNet.IService
     ///		2013.11.12 版本：1.0 JiRiGaLa 添加权限。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.11.12</date>
     /// </author> 
     /// </summary>

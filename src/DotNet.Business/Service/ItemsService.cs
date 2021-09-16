@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		2007.05.15 版本：1.0 JiRiGaLa 基础编码管理。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.03.10</date>
     /// </author> 
     /// </summary>

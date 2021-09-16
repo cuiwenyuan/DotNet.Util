@@ -22,7 +22,7 @@ namespace DotNet.IService
     ///		2008.04.09 版本：1.0 JiRiGaLa 创建主键。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.11.26</date>
     /// </author> 
     /// </summary>

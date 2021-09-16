@@ -30,7 +30,7 @@ namespace DotNet.Business
     ///
     /// </summary>
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.12.10</date>
     /// </author>
     public partial class BaseModuleManager : BaseManager

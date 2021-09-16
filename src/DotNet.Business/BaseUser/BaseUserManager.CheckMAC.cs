@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		2015.12.21 版本：1.0 JiRiGaLa	进行代码分离、缓存优化、这个可以降低I/O的。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.05.09</date>
     /// </author> 
     /// </summary>

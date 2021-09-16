@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///		2009.04.15 版本：1.0 JiRiGaLa 添加接口定义。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2009.04.15</date>
     /// </author> 
     /// </summary>

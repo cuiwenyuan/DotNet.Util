@@ -19,7 +19,7 @@ namespace DotNet.Util
     ///		2012.04.05 版本：1.0	JiRiGaLa 改进 GetPermissionScope(string[] organizeIds)。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.04.05</date>
     /// </author> 
     /// </summary>

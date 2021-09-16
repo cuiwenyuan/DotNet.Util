@@ -2,9 +2,6 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
-using System;
-using System.Configuration;
-
 namespace DotNet.Util
 {
     /// <summary>
@@ -16,7 +13,7 @@ namespace DotNet.Util
     ///     2014.07.24 JiRiGaLa  版本：1.0 进行分离。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2014.07.24</date>
     /// </author> 
     /// </summary>

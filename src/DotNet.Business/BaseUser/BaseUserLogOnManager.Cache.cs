@@ -18,7 +18,7 @@ namespace DotNet.Business
     ///		2015.12.08 版本：1.1 JiRiGaLa	缓存预热功能实现。
     ///     
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.12.08</date>
     /// </author> 
     /// </summary>

@@ -18,7 +18,7 @@ namespace DotNet.IService
     ///		2011.03.27 版本：1.1 JiRiGaLa 离开时的日志记录WriteExit函数补充。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.04.02</date>
     /// </author> 
     /// </summary>

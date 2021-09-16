@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///		2015.07.02 版本：1.0 JiRiGaLa  修改记录独立化。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.07.02</date>
     /// </author>
     /// </summary>

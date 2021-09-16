@@ -15,7 +15,7 @@ namespace DotNet.Model
     ///		2012.11.11 版本：1.0 JiRiGaLa 整理接口。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.11.11</date>
     /// </author> 
     /// </summary>

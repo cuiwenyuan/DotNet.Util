@@ -19,7 +19,7 @@ namespace DotNet.Business
     ///		2013.08.17 版本：1.0 JiRiGaLa	用户登录后才设置验证码、获取验证码等。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.11.29</date>
     /// </author> 
     /// </summary>

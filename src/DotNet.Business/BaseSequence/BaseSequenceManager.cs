@@ -38,7 +38,7 @@ namespace DotNet.Business
     ///		2003.10.16 版本：1.0 JiRiGaLa	改进成以后可以扩展到多种数据库的结构形式。
     ///		 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2010.01.25</date>
     /// </author> 
     /// </summary>

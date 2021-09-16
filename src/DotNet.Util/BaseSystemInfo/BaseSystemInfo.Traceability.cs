@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///		2018.10.18 版本：1.0 Troy.Cui	针对追溯码。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2018.10.18</date>
     /// </author>
     /// </summary>

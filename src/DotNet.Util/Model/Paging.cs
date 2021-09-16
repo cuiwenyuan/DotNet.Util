@@ -31,26 +31,26 @@ namespace DotNet.Util
         /// </summary>
         public int RecordCount { get; set; } = 0;
 
-        ///// <summary>
-        ///// 总页数
-        ///// </summary>
-        //public int PageCount
-        //{
-        //    get
-        //    {
-        //        if (PageSize == 0)
-        //        {
-        //            return 0;
-        //        }
-        //        var pageCount = (double)RecordCount / PageSize;
-        //        return (int)Math.Ceiling(pageCount);
-        //    }
-        //}
+        /// <summary>
+        /// 总页数
+        /// </summary>
+        public int PageCount
+        {
+            get
+            {
+                if (PageSize == 0)
+                {
+                    return 0;
+                }
+                var pageCount = (double)RecordCount / PageSize;
+                return (int)Math.Ceiling(pageCount);
+            }
+        }
 
         /// <summary>
         /// 排序表达式（ORDER BY后的字段或多个字段）
         /// </summary>
-        public string SortExpression { get; set; } = "CreateOn";
+        public string SortExpression { get; set; } = BaseSystemInfo.DatabaseTableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime;
 
         /// <summary>
         /// 排序方向（DESC或ASC）

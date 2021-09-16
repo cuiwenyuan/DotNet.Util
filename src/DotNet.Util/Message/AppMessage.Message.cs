@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///		2007.05.17 版本：1.0	JiRiGaLa 建立，为了提高效率分开建立了类。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.05.17</date>
     /// </author> 
     /// </summary>

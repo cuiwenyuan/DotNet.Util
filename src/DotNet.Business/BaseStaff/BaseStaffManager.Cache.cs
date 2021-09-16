@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///	版本：1.0 2012.12.17    JiRiGaLa    选项管理从缓存读取，通过编号显示名称的函数完善。
     ///	
     /// <author>  
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.12.17</date>
     /// </author> 
     /// </remarks>

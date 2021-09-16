@@ -22,7 +22,7 @@ namespace DotNet.Util
     ///		2008.05.07 版本：1.0 Troy Cui 创建。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>

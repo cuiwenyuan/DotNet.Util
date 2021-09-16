@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		2012.03.27 版本：1.0 JiRiGaLa 窗体与数据库连接的分离。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.03.27</date>
     /// </author> 
     /// </summary>

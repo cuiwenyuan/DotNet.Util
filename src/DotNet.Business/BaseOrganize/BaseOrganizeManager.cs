@@ -36,7 +36,7 @@ namespace DotNet.Business
     ///		2004.11.12 版本：1.0 JiRiGaLa	有些思想进行了改进。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.12.02</date>
     /// </author>
     /// </summary>

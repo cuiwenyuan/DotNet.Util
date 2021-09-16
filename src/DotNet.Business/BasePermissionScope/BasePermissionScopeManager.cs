@@ -45,7 +45,7 @@ namespace DotNet.Business
     ///     2004.11.19 版本：1.0 JiRiGaLa 主键进行了绝对的优化，这是个好东西啊，平时要多用，用得要灵活些。
     ///     
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.03.03</date>
     /// </author>
     /// </summary>

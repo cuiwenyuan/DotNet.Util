@@ -24,7 +24,7 @@ namespace DotNet.Business
     /// 版本：2.0
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015-10-30</date>
     /// </author>
     /// </summary>

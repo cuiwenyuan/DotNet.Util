@@ -27,7 +27,7 @@ namespace DotNet.Model
     ///		2006.03.16 版本：1.0 JiRiGaLa 规范化主键。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2008.04.29</date>
     /// </author>
     /// </remarks>

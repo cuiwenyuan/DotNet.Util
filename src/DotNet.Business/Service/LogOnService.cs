@@ -28,7 +28,7 @@ namespace DotNet.Business
     ///		2009.04.15 版本：1.0 JiRiGaLa 添加接口定义。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.02.14</date>
     /// </author> 
     /// </summary>
@@ -623,7 +623,7 @@ namespace DotNet.Business
                 var mailTitle = BaseSystemInfo.SoftFullName + "忘记密码";
 
                 var mailBody = "您的新密码为：" + userPassword + " " + Environment.NewLine
-                    + "<br/> " + Environment.NewLine + BaseSystemInfo.SoftFullName + "访问地址： http://www.zto.cn/";
+                    + "<br/> " + Environment.NewLine + BaseSystemInfo.SoftFullName + "访问地址： http://www.wangcaisoft.com/";
                 // 读取模板文件
                 var file = BaseSystemInfo.StartupPath + "\\Forgot.Mail.txt";
                 if (System.IO.File.Exists(file))

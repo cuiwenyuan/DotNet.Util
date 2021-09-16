@@ -38,7 +38,7 @@ namespace DotNet.Business
 	///		2005.10.03 版本：1.0 JiRiGaLa  表中添加是否可删除，可修改字段。
 	///
 	/// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.12.03</date>
 	/// </author>
 	/// </summary>

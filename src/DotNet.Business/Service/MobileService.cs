@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		2013.11.22 版本：1.0 JiRiGaLa 创建。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.12.25</date>
     /// </author> 
     /// </summary>
@@ -413,8 +413,6 @@ namespace DotNet.Business
 
             var sb = Pool.StringBuilder.Get();
             // request.Append("http://192.168.0.130:8800/Send.ashx?");
-            sb.Append("http://mas.zto.cn:8800/Send.ashx?");
-            // request.Append("http://122.225.117.230:8800/Send.ashx?");
             sb.Append("V=").Append("02");
             sb.Append("&E=").Append("8");
             sb.Append("&C=").Append(AccountCode);

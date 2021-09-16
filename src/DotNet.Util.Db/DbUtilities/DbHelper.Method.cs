@@ -15,7 +15,7 @@ namespace DotNet.Util
     ///		2013.02.03 版本：1.0 JiRiGaLa 创建,分离方法。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2013.02.03</date>
     /// </author> 
     /// </summary>

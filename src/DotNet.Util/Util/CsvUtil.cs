@@ -24,7 +24,7 @@ namespace DotNet.Util
     ///     2006.12.01 版本：1.0 JiRiGaLa	新创建。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2009.07.08</date>
     /// </author> 
     /// </summary>

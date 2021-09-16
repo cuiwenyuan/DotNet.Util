@@ -21,7 +21,7 @@ namespace DotNet.IService
     ///		2011.07.15 版本：2.0 JiRiGaLa 获取服务器端配置的功能改进。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.07.15</date>
     /// </author> 
     /// </summary>

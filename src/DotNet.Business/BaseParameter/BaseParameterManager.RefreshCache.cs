@@ -18,7 +18,7 @@ namespace DotNet.Business
     ///		2016.03.01 版本：1.0 JiRiGaLa	分离代码。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.03.11</date>
     /// </author> 
     /// </summary>

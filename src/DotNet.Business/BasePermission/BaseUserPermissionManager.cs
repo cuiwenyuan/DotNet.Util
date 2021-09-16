@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///     2008.05.23 版本：1.0 JiRiGaLa 创建主键。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.02.25</date>
     /// </author>
     /// </summary>

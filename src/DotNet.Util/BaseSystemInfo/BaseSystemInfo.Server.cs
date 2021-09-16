@@ -15,7 +15,7 @@ namespace DotNet.Util
     ///		2012.04.14 版本：1.0 JiRiGaLa	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2012.04.14</date>
     /// </author>
     /// </summary>
@@ -30,7 +30,7 @@ namespace DotNet.Util
             get
             {
                 // 这个是测试用的
-                // return "http://mas.zt-express.com/";
+                // return "http://mas.wangcaisoft.com/";
 
                 if (string.IsNullOrEmpty(_userCenterHost))
                 {
@@ -57,21 +57,13 @@ namespace DotNet.Util
                     // 若还是都找不到配置，就用默认的配置文件
                     if (string.IsNullOrEmpty(_userCenterHost))
                     {
-                        _userCenterHost = "https://userCenter.zt-express.com/";
+                        _userCenterHost = "https://userCenter.wangcaisoft.com/";
                     }
                 }
                 return _userCenterHost;
             }
             set => _userCenterHost = value;
         }
-
-        /// <summary>
-        /// 短信服务器器的地址
-        /// 一般都是ip限制了，所以是不能负载均衡的独立的一个服务器
-        /// </summary>
-        // public static string MobileHost = "http://122.225.117.230/WebAPIV5/API/Mobile/";
-        // public static string MobileHost = "http://123.157.107.232/WebAPIV5/API/Mobile/";
-        // public static string MobileHost = "http://mas.zto.cn/WebAPIV5/API/Mobile/";
 
         private static string _mobileHost = string.Empty;
         /// <summary>
@@ -87,7 +79,7 @@ namespace DotNet.Util
                 }
                 if (string.IsNullOrEmpty(_mobileHost))
                 {
-                    _mobileHost = "http://mas.zto.cn/WebAPIV5/API/Mobile/";
+                    _mobileHost = "http://dotnet.wangcaisoft.com/WebAPIV" + BaseSystemInfo.DatabaseTableVersion + "/API/Mobile/";
                 }
                 return _mobileHost;
             }
@@ -101,9 +93,9 @@ namespace DotNet.Util
             get
             {
                 // 这个是测试用的
-                // return "http://mas.zt-express.com/";
+                // return "http://mas.wangcaisoft.com/";
 
-                var webHost = "http://userCenter.zt-express.com/";
+                var webHost = "http://userCenter.wangcaisoft.com/";
                 if (ConfigurationManager.AppSettings["WebHost"] != null)
                 {
                     webHost = ConfigurationManager.AppSettings["WebHost"];
@@ -127,12 +119,12 @@ namespace DotNet.Util
         /// </summary>
         public static bool RedisEnabled = false;
         /*
-        <add key="RedisHosts" value="ztredis6482(*)134&amp;^%xswed@redis-Read.ztosys.com:6482"/>
+        
         */
 
         private static string[] _redisHosts = null;
         /// <summary>
-        /// RedisHosts
+        /// RedisHosts：ztredis6482(*)134&amp;^%xswed@redis-Read.wangcaisoft.com:6482
         /// </summary>
         public static string[] RedisHosts
         {
@@ -146,7 +138,7 @@ namespace DotNet.Util
                     }
                     if (_redisHosts == null)
                     {
-                        _redisHosts = new string[] { "ztredis6482(*)134&^%xswed@redis-Read.ztosys.com:6482" };
+                        _redisHosts = new string[] { "ztredis6482(*)134&^%xswed@redis-Read.wangcaisoft.com:6482" };
                     }
                 }
                 return _redisHosts;
@@ -154,13 +146,9 @@ namespace DotNet.Util
             set => _redisHosts = value;
         }
 
-        /*
-        <add key="RedisHosts" value="ztredis6488(*)134&amp;^%xswed@redis.ztosys.com:6488"/>
-        */
-
         private static string[] _redisReadOnlyHosts = null;
         /// <summary>
-        /// RedisReadOnlyHosts
+        /// RedisReadOnlyHosts:ztredis6488(*)134&amp;^%xswed@redis.wangcaisoft.com:6488
         /// </summary>
         public static string[] RedisReadOnlyHosts
         {
@@ -174,7 +162,7 @@ namespace DotNet.Util
                     }
                     if (_redisReadOnlyHosts == null)
                     {
-                        _redisReadOnlyHosts = new string[] { "ztredis6488(*)134&^%xswed@redis.ztosys.com:6488" };
+                        _redisReadOnlyHosts = new string[] { "ztredis6488(*)134&^%xswed@redis.wangcaisoft.com:6488" };
                     }
                 }
                 return _redisReadOnlyHosts;

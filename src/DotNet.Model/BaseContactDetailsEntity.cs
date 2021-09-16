@@ -25,7 +25,7 @@ namespace DotNet.Model
     /// 版本：1.0
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015-10-30</date>
     /// </author>
     /// </summary>

@@ -22,7 +22,7 @@ namespace DotNet.Util
     ///		2011.07.15 版本：1.0 JiRiGaLa	主键创建。
     ///		
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.05.09</date>
     /// </author>
     /// </summary>
@@ -317,7 +317,6 @@ namespace DotNet.Util
 
         /// <summary>
         /// 获得真实IP信息 通过能提供IP查询的网站
-        /// 目前是GIS系统提供的IP地址：http://userCenter.zt-express.com/UserCenterV5/PermissionService.ashx?function=GetClientIP
         /// 2016-01-24 吉日嘎拉 改进服务器诊断能力
         /// </summary>
         /// <param name="ipUrl">提供IP显示的网址</param>
@@ -328,7 +327,7 @@ namespace DotNet.Util
 
             if (string.IsNullOrWhiteSpace(ipUrl))
             {
-                ipUrl = BaseSystemInfo.UserCenterHost + "/UserCenterV5/PermissionService.ashx?function=GetClientIP";
+                ipUrl = BaseSystemInfo.UserCenterHost + "/UserCenterV" + BaseSystemInfo.DatabaseTableVersion + "/PermissionService.ashx?function=GetClientIP";
             }
             try
             {

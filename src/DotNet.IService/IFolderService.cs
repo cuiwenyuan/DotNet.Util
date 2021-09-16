@@ -20,7 +20,7 @@ namespace DotNet.IService
     ///		2011.04.30 版本：2.0 JiRiGaLa 添加权限。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2011.04.30</date>
     /// </author> 
     /// </summary>

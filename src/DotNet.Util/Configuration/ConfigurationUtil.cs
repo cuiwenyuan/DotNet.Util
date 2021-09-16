@@ -21,7 +21,7 @@ namespace DotNet.Util
     ///		2008.06.08 版本：1.0 JiRiGaLa 将程序从 BaseConfiguration 进行了分离。
     /// 
     /// <author>
-    ///		<name>Troy Cui</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.03.14</date>
     /// </author> 
     /// </summary>
@@ -550,6 +550,14 @@ namespace DotNet.Util
             if (ConfigurationManager.AppSettings["UserCenterWriteDbConnection"] != null)
             {
                 BaseSystemInfo.UserCenterWriteDbConnection = ConfigurationManager.AppSettings["UserCenterWriteDbConnection"];
+            }
+
+            if (ConfigurationManager.AppSettings["DatabaseTableVersion"] != null)
+            {
+                if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["DatabaseTableVersion"]))
+                {
+                    BaseSystemInfo.DatabaseTableVersion = int.Parse(ConfigurationManager.AppSettings["DatabaseTableVersion"]);
+                }
             }
         }
         #endregion

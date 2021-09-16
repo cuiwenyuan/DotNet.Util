@@ -18,7 +18,7 @@ namespace DotNet.Business
     ///		2016.02.16 版本：1.0 JiRiGaLa 整理文件、完善日志记录功能。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.02.16</date>
     /// </author> 
     /// </summary>

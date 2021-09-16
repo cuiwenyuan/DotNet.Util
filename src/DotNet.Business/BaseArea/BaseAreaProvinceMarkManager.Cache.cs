@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///		2015-06-24 版本：1.0 JiRiGaLa 减少数据库的压力、空的也缓存起来。
     ///
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015-06-24</date>
     /// </author>
     /// </summary>

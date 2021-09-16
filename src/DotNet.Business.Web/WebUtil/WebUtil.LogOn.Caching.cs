@@ -26,7 +26,7 @@ namespace DotNet.Business
         /// <summary>
         /// 网址
         /// </summary>
-        public static string Url = "redis.ztosys.com:6379";
+        public static string Url = "redis.wangcaisoft.com:6379";
         /// <summary>
         /// 验证OpenId
         /// </summary>
