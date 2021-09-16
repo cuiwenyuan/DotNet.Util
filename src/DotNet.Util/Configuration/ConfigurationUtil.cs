@@ -749,13 +749,13 @@ namespace DotNet.Util
             if (ConfigurationManager.AppSettings["ApplicationId"] != null)
             {
                 BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
-                if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
-                {
-#if NET40_OR_GREATER
-                    BaseSystemInfo.ApplicationId = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
-#endif
-                }
             }
+#if NET40_OR_GREATER
+            if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
+            {
+                BaseSystemInfo.ApplicationId = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
+            }
+#endif
 
             if (ConfigurationManager.AppSettings["MainPage"] != null)
             {
