@@ -118,9 +118,6 @@ namespace DotNet.Util
         /// 启用Redis缓存
         /// </summary>
         public static bool RedisEnabled = false;
-        /*
-        
-        */
 
         private static string[] _redisHosts = null;
         /// <summary>
