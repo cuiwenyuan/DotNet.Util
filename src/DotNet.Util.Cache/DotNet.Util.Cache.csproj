@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
-		<Description>A set of .NET Standard 2.0 Cache utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Description>A set of .NET Standard 2.0 Memory/Redis Cache utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.5</Version>
 		<Authors>崔文远Troy Cui</Authors>

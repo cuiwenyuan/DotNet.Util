@@ -22,8 +22,8 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<AssemblyVersion>5.6.2021.0914</AssemblyVersion>
-		<FileVersion>5.6.2021.0914</FileVersion>
+		<AssemblyVersion>5.6.2021.0918</AssemblyVersion>
+		<FileVersion>5.6.2021.0918</FileVersion>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	
