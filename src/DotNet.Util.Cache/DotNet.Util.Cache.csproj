@@ -41,7 +41,7 @@
 		<PackageReference Include="ServiceStack.Interfaces" Version="5.9.2" />
 		<PackageReference Include="ServiceStack.Redis" Version="5.9.2" />
 		<PackageReference Include="ServiceStack.Text" Version="5.9.2" />
-		<PackageReference Include="StackExchange.Redis" Version="2.1.58" />
+		
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
