@@ -74,7 +74,8 @@
 		<Reference Include="System.Net.Http" />
 		<Reference Include="System.Management" />
 		<Reference Include="System.Web" />
-		<Reference Include="System.Web.Extensions" />		
+		<Reference Include="System.Web.Extensions" />
+		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 
 </Project>
