@@ -14,7 +14,15 @@ namespace DotNet.Util
     /// </summary>
     public static class StringExtensions
     {
+        /// <summary>
+        /// Windows Platform
+        /// </summary>
         public static bool _windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        /// <summary>
+        /// ReplacePath
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string ReplacePath(this string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -58,6 +66,11 @@ namespace DotNet.Util
         //    //  return urlPath + ((urlPath.IndexOf("?token") > 0 ? "&" : "?") + "uid=" + userId);
         //}
 
+        /// <summary>
+        /// IsUrl
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static bool IsUrl(this string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -86,18 +99,34 @@ namespace DotNet.Util
             return false;
         }
 
+        /// <summary>
+        /// GetGuid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="outId"></param>
+        /// <returns></returns>
         public static bool GetGuid(this string guid, out Guid outId)
         {
             Guid emptyId = Guid.Empty;
             return Guid.TryParse(guid, out outId);
         }
 
+        /// <summary>
+        /// IsGuid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         public static bool IsGuid(this string guid)
         {
             Guid newId;
             return guid.GetGuid(out newId);
         }
 
+        /// <summary>
+        /// IsInt
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static bool IsInt(this object obj)
         {
             if (obj == null)
@@ -106,6 +135,12 @@ namespace DotNet.Util
             return reslut;
 
         }
+
+        /// <summary>
+        /// IsDate
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static bool IsDate(this object str)
         {
             DateTime dateTime = DateTime.Now;
@@ -117,6 +152,13 @@ namespace DotNet.Util
             }
             return false;
         }
+
+        /// <summary>
+        /// IsDate
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         public static bool IsDate(this object str, out DateTime dateTime)
         {
             dateTime = DateTime.Now;
@@ -171,7 +213,11 @@ namespace DotNet.Util
             return Regex.IsMatch(str, pattern);
         }
 
-
+        /// <summary>
+        /// IsNullOrEmpty
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static bool IsNullOrEmpty(this object str)
         {
             if (str == null)
@@ -179,7 +225,11 @@ namespace DotNet.Util
             return str.ToString() == "";
         }
 
-
+        /// <summary>
+        /// GetInt
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static int GetInt(this object obj)
         {
             if (obj == null)
@@ -193,7 +243,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取 object 中的枚举值
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static long GetLong(this object obj)
@@ -214,7 +264,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取 object 中的 float
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
 
         public static float GetFloat(this object obj)
@@ -232,6 +282,11 @@ namespace DotNet.Util
             }
         }
 
+        /// <summary>
+        /// GetDouble
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static double GetDouble(this object obj)
         {
             if (System.DBNull.Value.Equals(obj) || null == obj)
@@ -249,7 +304,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取 object 中的 decimal
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static decimal GetDecimal(this object obj)
@@ -270,7 +325,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取 object 中的 decimal
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static dynamic GetDynamic(this object obj)
@@ -290,6 +345,11 @@ namespace DotNet.Util
             }
         }
 
+        /// <summary>
+        /// GetDateTime
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static DateTime? GetDateTime(this object obj)
         {
             if (System.DBNull.Value.Equals(obj) || null == obj)
@@ -300,8 +360,12 @@ namespace DotNet.Util
             return dateTime;
         }
 
-
-
+        /// <summary>
+        /// ParseTo
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static object ParseTo(this string str, string type)
         {
             switch (type)
@@ -338,6 +402,11 @@ namespace DotNet.Util
             throw new NotSupportedException(string.Format("The string of \"{0}\" can not be parsed to {1}", str, type));
         }
 
+        /// <summary>
+        /// ToSByte
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static sbyte? ToSByte(this string value)
         {
             sbyte value2;
@@ -348,6 +417,11 @@ namespace DotNet.Util
             return null;
         }
 
+        /// <summary>
+        /// ToByte
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static byte? ToByte(this string value)
         {
             byte value2;
@@ -358,6 +432,11 @@ namespace DotNet.Util
             return null;
         }
 
+        /// <summary>
+        /// ToUInt16
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static ushort? ToUInt16(this string value)
         {
             ushort value2;
@@ -367,7 +446,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToInt16
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static short? ToInt16(this string value)
         {
             if (short.TryParse(value, out short value2))
@@ -376,7 +459,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToUInt32
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static uint? ToUInt32(this string value)
         {
             uint value2;
@@ -386,7 +473,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToUInt64
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static ulong? ToUInt64(this string value)
         {
             ulong value2;
@@ -396,7 +487,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToInt64
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static long? ToInt64(this string value)
         {
             long value2;
@@ -406,7 +501,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToSingle
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static float? ToSingle(this string value)
         {
             float value2;
@@ -416,7 +515,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToDouble
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static double? ToDouble(this string value)
         {
             double value2;
@@ -426,7 +529,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToDecimal
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static decimal? ToDecimal(this string value)
         {
             decimal value2;
@@ -436,7 +543,11 @@ namespace DotNet.Util
             }
             return null;
         }
-
+        /// <summary>
+        /// ToBoolean
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool? ToBoolean(this string value)
         {
             bool value2;
@@ -447,8 +558,11 @@ namespace DotNet.Util
             return null;
         }
 
-
-
+        /// <summary>
+        /// ToGuid
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static Guid? ToGuid(this string str)
         {
             Guid value;
@@ -459,6 +573,11 @@ namespace DotNet.Util
             return null;
         }
 
+        /// <summary>
+        /// ToDateTime
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static DateTime? ToDateTime(this string value)
         {
             DateTime value2;
@@ -469,6 +588,11 @@ namespace DotNet.Util
             return null;
         }
 
+        /// <summary>
+        /// ToInt32
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static int? ToInt32(this string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -484,7 +608,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        ///     替换空格字符
+        /// 替换空格字符
         /// </summary>
         /// <param name="input"></param>
         /// <param name="replacement">替换为该字符</param>

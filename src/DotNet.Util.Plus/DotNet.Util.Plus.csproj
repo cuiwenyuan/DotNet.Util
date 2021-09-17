@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
-		<Description>A set of .NET Standard 2.0 utilities(support .net framework 4.0). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<Description>A set of .NET Standard 2.0 utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.4</Version>
+		<Version>1.0.5</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -23,38 +23,51 @@
 		<RepositoryType>git</RepositoryType>
 		<AssemblyVersion>5.6.2021.0706</AssemblyVersion>
 		<FileVersion>5.6.2021.0706</FileVersion>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="logo.128.png" Pack="true" PackagePath="\"/>
+		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="ExcelUtil.cs" />
 		<Compile Remove="ExcelUtil.Export.cs" />
 		<Compile Remove="ExcelUtil.Import.cs" />
-		<Compile Remove="ImportUtil.cs" />
-		<Compile Remove="LocationUtil.cs" />
-		<Compile Remove="QqwryUtil.cs" />
-		<Compile Remove="WeChatMiniProgramUtil.cs" />
 		<Compile Remove="XmlUtil.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NPOI" Version="2.5.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="NPOI" Version="2.5.4" />
+		<PackageReference Include="Microsoft.Net.Http.Headers">
+		  <Version>2.2.8</Version>
+		</PackageReference>
 		<PackageReference Include="System.DirectoryServices" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-		<PackageReference Include="Portable.BouncyCastle" Version="1.8.6" />
+		<PackageReference Include="NPOI" Version="2.5.1" />
+		<PackageReference Include="System.Net.Http" Version="2.0.20710" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
+		<PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
 		<PackageReference Include="SharpZipLib" Version="0.86.0" />
 		<Reference Include="System.DirectoryServices" />
 		<Reference Include="System.Net" />
 		<Reference Include="System.Web" />
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net45' Or '$(TargetFramework)'=='net46'">
+		<Reference Include="System.Net.Http" />
+		<PackageReference Include="NPOI" Version="2.5.4" />
+		<PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
+		<PackageReference Include="SharpZipLib" Version="1.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>

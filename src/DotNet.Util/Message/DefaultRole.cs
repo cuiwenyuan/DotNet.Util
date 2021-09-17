@@ -22,7 +22,7 @@ namespace DotNet.Util
     ///     2006.11.23 版本：1.0 JiRiGaLa 结构优化整理。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.09.18</date>
     /// </author> 
     /// </summary>

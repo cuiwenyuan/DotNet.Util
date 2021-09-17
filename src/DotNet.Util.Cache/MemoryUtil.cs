@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET40
+#if NET40_OR_GREATER
 using System.Web;
 using System.Web.Caching;
 #elif NETSTANDARD2_0_OR_GREATER
@@ -19,7 +19,7 @@ namespace DotNet.Util
     /// </summary>
     public static class MemoryUtil
     {
-#if NET40
+#if NET40_OR_GREATER
         //HttpRuntime.Cache可用于Web和WinForm
         static readonly Cache Cache = HttpRuntime.Cache;
 #elif NETSTANDARD2_0_OR_GREATER
@@ -32,7 +32,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
-#if NET40
+#if NET40_OR_GREATER
             if (!string.IsNullOrEmpty(cacheKey) && Cache[cacheKey] == null)
 #elif NETSTANDARD2_0_OR_GREATER
             object obj = null;
@@ -54,7 +54,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static object Get(string cacheKey)
         {
-#if NET40
+#if NET40_OR_GREATER
             return Cache[cacheKey];
 #elif NETSTANDARD2_0_OR_GREATER
             object obj = null;
@@ -88,13 +88,13 @@ namespace DotNet.Util
         public static void Set(string cacheKey, object cacheValue)
         {
             //向cacheKey对象插入项,使用此方法改写具有相同cacheKey的现有cacheKey项。
-#if NET40
+#if NET40_OR_GREATER
             Cache.Insert(cacheKey, cacheValue);
 #elif NETSTANDARD2_0_OR_GREATER
             Cache.Set(cacheKey, cacheValue);
 #endif
         }
-#if NET40
+#if NET40_OR_GREATER
         /// <summary>
         /// 设置当前应用程序指定CacheKey的Cache值
         /// </summary>
@@ -301,7 +301,7 @@ namespace DotNet.Util
         public static void RemoveAll()
         {
             var keys = new List<string>();
-#if NET40
+#if NET40_OR_GREATER
             var iDictionaryEnumerator = Cache.GetEnumerator();
             while (iDictionaryEnumerator.MoveNext())
             {
@@ -353,7 +353,7 @@ namespace DotNet.Util
         public static List<string> GetAllKeys()
         {
             var keys = new List<string>();
-#if NET40
+#if NET40_OR_GREATER
             var iDictionaryEnumerator = Cache.GetEnumerator();
             while (iDictionaryEnumerator.MoveNext())
             {

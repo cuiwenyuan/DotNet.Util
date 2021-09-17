@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+		<Description>DotNet.Business is sample for User,Role,Menu,Module,Permission etc Management. A set of .NET Standard 2.0 utilities(partial but great majority support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Company>www.cuiwenyuan.com</Company>
+		<Version>1.0.0</Version>
+		<Authors>崔文远Troy Cui</Authors>
+		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
+		<PackageTags>DotNet Business</PackageTags>
+		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageId>WangCaiSoft.DotNet.Business</PackageId>
+		<PackageIcon>logo.128.png</PackageIcon>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>DotNet.Business</AssemblyName>
+		<RootNamespace>DotNet.Business</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ApplicationIcon>App.ico</ApplicationIcon>
+		<RepositoryType>git</RepositoryType>
+		<AssemblyVersion>5.6.2021.0918</AssemblyVersion>
+		<FileVersion>5.6.2021.0918</FileVersion>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="logo.128.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
+		<ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
+		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
+		<ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj" />
+		<ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
+	</ItemGroup>
+
+</Project>

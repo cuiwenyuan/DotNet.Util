@@ -18,7 +18,7 @@ namespace DotNet.Util
     ///      2015.09.15 版本：1.0 JiRiGaLa 添加返回标准定义。
     /// 		
     ///      <author>
-    ///          <name>JiRiGaLa</name>
+    ///          <name>Troy.Cui</name>
     ///          <date>2016.05.12</date>
     ///      </author> 
     ///  

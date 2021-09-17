@@ -18,7 +18,7 @@ namespace DotNet.Util
     ///		2007.12.04 版本：1.0 JiRiGaLa 重新调整主键的规范化。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2016.04.13</date>
     /// </author> 
     /// </summary>    

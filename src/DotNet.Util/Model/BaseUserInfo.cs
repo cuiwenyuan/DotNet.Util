@@ -23,7 +23,7 @@ namespace DotNet.Util
     ///		2006.01.21 JiRiGaLa 版本：1.0 远程传递参数用属性才可以。
     ///		
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2015.05.17</date>
     /// </author> 
     /// </summary>

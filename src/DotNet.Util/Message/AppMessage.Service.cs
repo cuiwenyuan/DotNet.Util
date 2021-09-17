@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///		2007.05.17 版本：1.0	JiRiGaLa 建立，为了提高效率分开建立了类。
     ///	
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2007.05.17</date>
     /// </author> 
     /// </summary>
@@ -84,7 +84,7 @@ namespace DotNet.Util
         /// <summary>
         /// 取得实体
         /// </summary>
-        public static string FileServiceGetObject = "取得实体";
+        public static string FileServiceGetEntity = "取得实体";
 
         /// <summary>
         /// 判断是否存在
@@ -125,7 +125,7 @@ namespace DotNet.Util
         //public static string ItemDetailsServiceGetDataTableByParent = "依父节点取得列表";
         //public static string ItemDetailsServiceGetDataTableByCode = "依编号取得列表";
         //public static string ItemDetailsServiceGetDsByCodes = "批量取得资料";
-        //public static string ItemDetailsServiceGetObject = "取得实体";
+        //public static string ItemDetailsServiceGetEntity = "取得实体";
         //public static string ItemDetailsServiceAdd = "新增实体";
         //public static string ItemDetailsServiceUpdate = "更新实体";
         //public static string ItemDetailsServiceDelete = "删除实体";
@@ -137,7 +137,7 @@ namespace DotNet.Util
         //// ItemsService选项管理服务及相关的方法名称定义
         //public static string ItemsService = "选项管理服务";
         //public static string ItemsServiceGetDataTable = "取得列表";
-        //public static string ItemsServiceGetObject = "取得实体";
+        //public static string ItemsServiceGetEntity = "取得实体";
         //public static string ItemsServiceGetDataTableByParent = "依父节点取得列表";
         //public static string ItemsServiceAdd = "新增实体";
         //public static string ItemsServiceUpdate = "更新实体";
@@ -149,7 +149,7 @@ namespace DotNet.Util
 
         //// LogOnService登入服务及相关的方法名称定义
         //public static string LogOnService = "登入服务";
-        //public static string LogOnServiceGetObject = "登入服务获取实体";
+        //public static string LogOnServiceGetEntity = "登入服务获取实体";
         //public static string LogOnServiceUpdate = "登入服务更新实体";
         //public static string LogOnServiceGetUserDt = "取得用户列表";
         //public static string LogOnServiceGetStaffUserDt = "取得内部员工列表";
@@ -195,7 +195,7 @@ namespace DotNet.Util
         //// ModuleService菜单服务及相关的方法名称定义
         //public static string ModuleService = "菜单服务";
         //public static string ModuleServiceGetDataTable = "取得列表";
-        //public static string ModuleServiceGetObject = "取得实体";
+        //public static string ModuleServiceGetEntity = "取得实体";
         //public static string ModuleServiceGetFullNameByCode = "透过编号取得菜单名称";
         //public static string ModuleServiceAdd = "新增菜单";
         //public static string ModuleServiceUpdate = "更新菜单";
@@ -221,7 +221,7 @@ namespace DotNet.Util
         //public static string OrganizeService = "组织机构服务";
         //public static string OrganizeServiceAdd = "新增实体";
         //public static string OrganizeServiceAddByDetail = "依明细情况新增实体";
-        //public static string OrganizeServiceGetObject = "取得实体";
+        //public static string OrganizeServiceGetEntity = "取得实体";
         //public static string OrganizeServiceGetDataTable = "取得列表";
         //public static string OrganizeServiceGetDataTableByParent = "依父节点取得列表";
         //public static string OrganizeServiceGetInnerOrganizeDt = "取得内部组织机构";
@@ -259,7 +259,7 @@ namespace DotNet.Util
 
         //// PermissionService权限判断服务及相关的方法名称定义
         //public static string PermissionService = "权限服务";
-        //public static string PermissionServiceGetObjectByCode = "按编号获取模块实体";
+        //public static string PermissionServiceGetEntityByCode = "按编号获取模块实体";
         //public static string PermissionServiceIsInRole = "用户是否在指定的角色中";
         //public static string PermissionServiceIsAuthorized = "该用户是否有相应的操作权限";
         //public static string PermissionServiceCheckPermissionByRole = "该角色是否有相应的操作权限";
@@ -359,7 +359,7 @@ namespace DotNet.Util
         //public static string RoleServiceAdd = "新增角色";
         //public static string RoleServiceGetDataTable = "取得列表";
         //public static string RoleServiceGetDataTableByOrganize = "依组织机构取得角色列表";
-        //public static string RoleServiceGetObject = "取得实体";
+        //public static string RoleServiceGetEntity = "取得实体";
         //public static string RoleServiceUpdate = "更新实体";
         //public static string RoleServiceGetDataTableByIds = "依主键数组取得角色列表";
         //public static string RoleServiceSearch = "查询角色列表";
@@ -380,7 +380,7 @@ namespace DotNet.Util
         //public static string SequenceService = "序列管理服务";
         //public static string SequenceServiceAdd = "新增序列";
         //public static string SequenceServiceGetDataTable = "取得列表";
-        //public static string SequenceServiceGetObject = "取得实体";
+        //public static string SequenceServiceGetEntity = "取得实体";
         //public static string SequenceServiceUpdate = "更新序列";
         //public static string SequenceServiceReset = "批量重置序列";
         //public static string SequenceServiceDelete = "删除序列";
@@ -395,7 +395,7 @@ namespace DotNet.Util
         //public static string StaffServiceAddStaff = "新增职员";
         //public static string StaffServiceUpdateStaff = "更新职员";
         //public static string StaffServiceGetDataTable = "取得列表";
-        //public static string StaffServiceGetObject = "取得实体";
+        //public static string StaffServiceGetEntity = "取得实体";
         //public static string StaffServiceGetDataTableByIds = "取得职员列表";
         //public static string StaffServiceGetDataTableByCompany = "按公司取得列表";
         //public static string StaffServiceGetDataTableByDepartment = "按部门取得列表";
@@ -439,7 +439,7 @@ namespace DotNet.Util
         /// <summary>
         /// 取得实体
         /// </summary>
-        public static string UserServiceGetObject = "取得实体";
+        public static string UserServiceGetEntity = "取得实体";
 
         /// <summary>
         /// 取得列表

@@ -110,14 +110,14 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// AddObject
+        /// AddEntity
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="expiresIn"></param>
         /// <param name="isSliding"></param>
         /// <returns></returns>
-        public bool AddObject(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
+        public bool AddEntity(string key, object value, TimeSpan? expiresIn = null, bool isSliding = false)
         {
             return _cache.StringSet(key, JsonConvert.SerializeObject(value), expiresIn);
         }
@@ -216,7 +216,7 @@ namespace DotNet.Util
                 if (!Remove(key))
                     return false;
 
-            return AddObject(key, value);
+            return AddEntity(key, value);
 
         }
         /// <summary>
@@ -241,7 +241,7 @@ namespace DotNet.Util
             {
                 return Add(key, value.ToString(), expiresSliding);
             }
-            return AddObject(key, value, expiresSliding);
+            return AddEntity(key, value, expiresSliding);
 
 
         }
@@ -266,7 +266,7 @@ namespace DotNet.Util
             {
                 return Add(key, value.ToString());
             }
-            return AddObject(key, value);
+            return AddEntity(key, value);
 
         }
         /// <summary>
