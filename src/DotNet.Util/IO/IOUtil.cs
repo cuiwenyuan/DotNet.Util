@@ -288,7 +288,7 @@ namespace DotNet.Util
             var ms = Pool.MemoryStream.Get();
             stream.CopyTo(ms);
 
-            return ms.Put(true);
+            return ms.Put();
         }
 
         /// <summary>流转换为字符串</summary>
