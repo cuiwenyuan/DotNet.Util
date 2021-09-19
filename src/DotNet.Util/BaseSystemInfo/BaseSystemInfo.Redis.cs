@@ -44,8 +44,8 @@ namespace DotNet.Util
         public static string RedisPassword = string.Empty;
 
         /// <summary>
-        /// 默认Redis Cache缓存时间(6秒)
+        /// 默认Redis Cache缓存时间(1 秒=1000 毫秒、1 分=60000 毫秒、1 时=3600000 毫秒、1 天=86400000 毫秒)
         /// </summary>
-        public static int RedisCacheMillisecond = 6000;
+        public static int RedisCacheMillisecond = 1;
     }
 }

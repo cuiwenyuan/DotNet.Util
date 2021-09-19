@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business", "DotNet.B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.IService", "DotNet.IService\DotNet.IService.csproj", "{8C000DF4-68CD-4E13-B641-A42744242776}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Business.Web", "DotNet.Business.Web\DotNet.Business.Web.csproj", "{D28A7016-B114-4BFD-9BBC-884BCE039DF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business.Web", "DotNet.Business.Web\DotNet.Business.Web.csproj", "{D28A7016-B114-4BFD-9BBC-884BCE039DF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
