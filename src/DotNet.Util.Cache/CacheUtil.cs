@@ -7,6 +7,11 @@ namespace DotNet.Util
     /// </summary>
     public class CacheUtil
     {
+        /// <summary>
+        /// 是否启用Redis
+        /// </summary>
+        public static bool redisEnabled = BaseSystemInfo.RedisEnabled && !string.IsNullOrEmpty(BaseSystemInfo.RedisServer);
+
         #region 缓存（创建或刷新）
         /// <summary>
         /// 缓存（创建或刷新）
@@ -14,15 +19,14 @@ namespace DotNet.Util
         /// <typeparam name="T">泛型</typeparam>
         /// <param name="cacheKey">缓存的Key</param>
         /// <param name="proc">泛型委托</param>
-        /// <param name="isFromCache"></param>
-        /// <param name="refreshCache"></param>
-        /// <param name="cacheTime"></param>
+        /// <param name="isFromCache">是否从缓存获取</param>
+        /// <param name="refreshCache">是否强制刷新缓存</param>
+        /// <param name="cacheTime">缓存时间（默认1分钟）</param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static T Cache<T>(string cacheKey, Func<T> proc, bool isFromCache = false, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan))
+        public static T Cache<T>(string cacheKey, Func<T> proc, bool isFromCache = true, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan), bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 if (cacheTime == default(TimeSpan))
                 {
@@ -51,12 +55,11 @@ namespace DotNet.Util
         /// <param name="cacheKey">缓存的Key</param>
         /// <param name="t"></param>
         /// <param name="cacheTime"></param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static bool Set<T>(string cacheKey, T t, TimeSpan cacheTime = default(TimeSpan))
+        public static bool Set<T>(string cacheKey, T t, TimeSpan cacheTime = default(TimeSpan), bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 if (cacheTime == default(TimeSpan))
                 {
@@ -85,12 +88,11 @@ namespace DotNet.Util
         /// 获取缓存
         /// </summary>
         /// <param name="cacheKey">缓存的Key</param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static T Get<T>(string cacheKey)
+        public static T Get<T>(string cacheKey, bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 return RedisUtil.Get<T>(cacheKey);
             }
@@ -107,12 +109,11 @@ namespace DotNet.Util
         /// 删除缓存
         /// </summary>
         /// <param name="cacheKey">缓存的Key</param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static bool Remove(string cacheKey)
+        public static bool Remove(string cacheKey, bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 return RedisUtil.Remove(cacheKey);
             }
@@ -125,12 +126,11 @@ namespace DotNet.Util
         /// <summary>
         /// 删除全部缓存
         /// </summary>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static void RemoveAllCache()
+        public static void RemoveAllCache(bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 RedisUtil.RemoveAll();
             }
@@ -144,12 +144,11 @@ namespace DotNet.Util
         /// 删除缓存
         /// </summary>
         /// <param name="pattern">正则</param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static void RemoveByRegex(string pattern)
+        public static void RemoveByRegex(string pattern, bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 RedisUtil.RemoveByRegex(pattern);
             }
@@ -165,12 +164,11 @@ namespace DotNet.Util
         /// 包含
         /// </summary>
         /// <param name="cacheKey">缓存的Key</param>
+        /// <param name="isRedis">是否为Redis</param>
         /// <returns></returns>
-        public static bool Contains(string cacheKey)
+        public static bool Contains(string cacheKey, bool isRedis = false)
         {
-            //string cacheType = BaseSystemInfo.CacheType;
-            var cacheType = string.Empty;
-            if (cacheType.Equals("Redis"))
+            if (isRedis && redisEnabled)
             {
                 return RedisUtil.Contains(cacheKey);
             }
@@ -192,7 +190,7 @@ namespace DotNet.Util
         /// <param name="refreshCache">是否强制刷新</param>
         /// <param name="cacheTime"></param>
         /// <returns></returns>
-        private static T MemoryCache<T>(string cacheKey, Func<T> proc, bool isFromCache = false, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan))
+        private static T MemoryCache<T>(string cacheKey, Func<T> proc, bool isFromCache = true, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan))
         {
             T result;
             if (isFromCache)
@@ -252,7 +250,7 @@ namespace DotNet.Util
         /// <param name="refreshCache">是否强制刷新</param>
         /// <param name="cacheTime"></param>
         /// <returns></returns>
-        private static T RedisCache<T>(string cacheKey, Func<T> proc, bool isFromCache = false, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan))
+        private static T RedisCache<T>(string cacheKey, Func<T> proc, bool isFromCache = true, bool refreshCache = false, TimeSpan cacheTime = default(TimeSpan))
         {
             if (cacheTime == default(TimeSpan))
             {
