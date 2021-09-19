@@ -122,7 +122,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Redis服务器
+        /// Redis服务器（注意最终组合使用RedisPassword@RedisServer:RedisPort）
         /// </summary>
         public static string RedisServer = string.Empty;
 
@@ -130,6 +130,11 @@ namespace DotNet.Util
         /// Redis端口号
         /// </summary>
         public static int RedisPort = 6379;
+
+        /// <summary>
+        /// Redis初始Db
+        /// </summary>
+        public static long RedisInitialDb = 10;
 
         /// <summary>
         /// Redis是否启用SSL

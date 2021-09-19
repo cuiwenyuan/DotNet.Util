@@ -30,9 +30,9 @@ namespace DotNet.Util
                     {
                         if (_instance == null)
                         {
-                            //_initialDb = BaseSystemInfo.RedisInitialDb;
-                            _initialDb = 10;
-                            _url = BaseSystemInfo.RedisServer;
+                            _initialDb = BaseSystemInfo.RedisInitialDb;
+                            //RedisPassword@RedisServer:RedisPort
+                            _url = BaseSystemInfo.RedisPassword + "@" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort;
                             _instance = new PooledRedisClientManager(_initialDb, new string[] { _url });
                         }
                     }

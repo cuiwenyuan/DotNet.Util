@@ -289,6 +289,13 @@ namespace DotNet.Util
                     BaseSystemInfo.RedisPort = int.Parse(GetValue(_xmlDocument, "RedisPort"));
                 }
             }
+            if (Exists("RedisInitialDb"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "RedisInitialDb")))
+                {
+                    BaseSystemInfo.RedisInitialDb = int.Parse(GetValue(_xmlDocument, "RedisInitialDb"));
+                }
+            }
             if (Exists("RedisEnableSsl"))
             {
                 BaseSystemInfo.RedisEnableSsl = GetValue(_xmlDocument, "RedisEnableSsl").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
@@ -1251,8 +1258,10 @@ namespace DotNet.Util
             xmlDocument.Load(fileName);
 
             #region 写入Redis配置
+            SetValue(xmlDocument, "RedisEnabled", BaseSystemInfo.RedisEnabled.ToString());
             SetValue(xmlDocument, "RedisServer", BaseSystemInfo.RedisServer);
             SetValue(xmlDocument, "RedisPort", BaseSystemInfo.RedisPort.ToString());
+            SetValue(xmlDocument, "RedisInitialDb", BaseSystemInfo.RedisInitialDb.ToString());
             SetValue(xmlDocument, "RedisEnableSsl", BaseSystemInfo.RedisEnableSsl.ToString());
             SetValue(xmlDocument, "RedisUserName", BaseSystemInfo.RedisUserName);
             SetValue(xmlDocument, "RedisPassword", BaseSystemInfo.RedisPassword);
