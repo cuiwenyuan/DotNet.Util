@@ -63,5 +63,29 @@ namespace DotNet.Business
             return result;
         }
         #endregion
+
+        #region 删除缓存
+
+        /// <summary>
+        /// 删除缓存
+        /// </summary>
+        /// <param name="id">编号</param>
+        /// <returns></returns>
+        public virtual bool RemoveCache(long id)
+        {
+            var result = false;
+            var cacheKeyEntity = CurrentTableName + ".Entity.";
+            if (id == 0)
+            {
+                CacheUtil.RemoveByRegex("^" + cacheKeyEntity + "+\\d+$");
+            }
+            else
+            {
+                cacheKeyEntity += id;
+                result = CacheUtil.Remove(cacheKeyEntity);
+            }
+            return result;
+        }
+        #endregion
     }
 }
