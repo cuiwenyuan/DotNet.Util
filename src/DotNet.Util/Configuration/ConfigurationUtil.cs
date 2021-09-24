@@ -92,11 +92,6 @@ namespace DotNet.Util
                 BaseSystemInfo.TraceabilityKey = ConfigurationManager.AppSettings["TraceabilityKey"];
             }
 
-            //Redis配置
-            if (ConfigurationManager.AppSettings["RedisEnabled"] != null)
-            {
-                BaseSystemInfo.RedisEnabled = ConfigurationManager.AppSettings["RedisEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
-            }
             // 客户信息配置
             if (ConfigurationManager.AppSettings["CustomerCompanyId"] != null)
             {
@@ -855,6 +850,12 @@ namespace DotNet.Util
         /// </summary>
         public static void GetRedisConfig()
         {
+            //Redis配置
+            if (ConfigurationManager.AppSettings["RedisEnabled"] != null)
+            {
+                BaseSystemInfo.RedisEnabled = ConfigurationManager.AppSettings["RedisEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+
             if (ConfigurationManager.AppSettings["RedisServer"] != null)
             {
                 BaseSystemInfo.RedisServer = ConfigurationManager.AppSettings["RedisServer"];
@@ -865,6 +866,14 @@ namespace DotNet.Util
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["RedisPort"]))
                 {
                     BaseSystemInfo.RedisPort = int.Parse(ConfigurationManager.AppSettings["RedisPort"]);
+                }
+            }
+
+            if (ConfigurationManager.AppSettings["RedisInitialDb"] != null)
+            {
+                if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["RedisInitialDb"]))
+                {
+                    BaseSystemInfo.RedisInitialDb = long.Parse(ConfigurationManager.AppSettings["RedisInitialDb"]);
                 }
             }
 

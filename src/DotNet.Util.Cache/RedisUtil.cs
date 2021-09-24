@@ -12,11 +12,11 @@ namespace DotNet.Util
     public class RedisUtil
     {
         //默认缓存过期时间单位秒
-        private static int SecondsTimeOut = 30 * 60;
+        private static int _secondsTimeOut = 30 * 60;
         //数据库
-        private static long InitialDb;
+        private static long _initialDb;
         //地址
-        private static string Url;
+        private static string _url;
         private static PooledRedisClientManager _instance = null;
         private static readonly object Locker = new Object();
 
@@ -30,10 +30,10 @@ namespace DotNet.Util
                     {
                         if (_instance == null)
                         {
-                            //InitialDb = BaseSystemInfo.RedisInitialDb;
-                            InitialDb = 10;
-                            Url = BaseSystemInfo.RedisHosts[0];
-                            _instance = new PooledRedisClientManager(InitialDb, new string[] { Url });
+                            _initialDb = BaseSystemInfo.RedisInitialDb;
+                            //RedisPassword@RedisServer:RedisPort
+                            _url = BaseSystemInfo.RedisPassword + "@" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort;
+                            _instance = new PooledRedisClientManager(_initialDb, new string[] { _url });
                         }
                     }
                 }
@@ -77,9 +77,9 @@ namespace DotNet.Util
             {
                 if (timeout > 0)
                 {
-                    SecondsTimeOut = timeout;
+                    _secondsTimeOut = timeout;
                 }
-                return redisClient.Add<T>(key, t, DateTime.Now.AddHours(SecondsTimeOut));
+                return redisClient.Add<T>(key, t, DateTime.Now.AddHours(_secondsTimeOut));
             }
         }
         /// <summary>
@@ -112,9 +112,9 @@ namespace DotNet.Util
             {
                 if (timeout > 0)
                 {
-                    SecondsTimeOut = timeout;
+                    _secondsTimeOut = timeout;
                 }
-                return redisClient.Set<T>(key, t, DateTime.Now.AddSeconds(SecondsTimeOut));
+                return redisClient.Set<T>(key, t, DateTime.Now.AddSeconds(_secondsTimeOut));
             }
         }
         /// <summary>
@@ -223,8 +223,8 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                var iredisClient = redisClient.As<T>();
-                return iredisClient.Lists[listId];
+                var iRedisClient = redisClient.As<T>();
+                return iRedisClient.Lists[listId];
             }
         }
 
@@ -240,18 +240,18 @@ namespace DotNet.Util
             using (var redisClient = RedisUtil.GetClient())
             {
                 redisClient.Expire(listId, 60);
-                var iredisClient = redisClient.As<T>();
+                var iRedisClient = redisClient.As<T>();
                 if (timeout >= 0)
                 {
                     if (timeout > 0)
                     {
-                        SecondsTimeOut = timeout;
+                        _secondsTimeOut = timeout;
                     }
-                    redisClient.Expire(listId, SecondsTimeOut);
+                    redisClient.Expire(listId, _secondsTimeOut);
                 }
-                var redisList = iredisClient.Lists[listId];
+                var redisList = iRedisClient.Lists[listId];
                 redisList.AddRange(values);
-                iredisClient.Save();
+                iRedisClient.Save();
             }
         }
 
@@ -266,18 +266,18 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                var iredisClient = redisClient.As<T>();
+                var iRedisClient = redisClient.As<T>();
                 if (timeout >= 0)
                 {
                     if (timeout > 0)
                     {
-                        SecondsTimeOut = timeout;
+                        _secondsTimeOut = timeout;
                     }
-                    redisClient.Expire(listId, SecondsTimeOut);
+                    redisClient.Expire(listId, _secondsTimeOut);
                 }
-                var redisList = iredisClient.Lists[listId];
+                var redisList = iRedisClient.Lists[listId];
                 redisList.Add(item);
-                iredisClient.Save();
+                iRedisClient.Save();
             }
         }
 
@@ -291,10 +291,10 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                var iredisClient = redisClient.As<T>();
-                var redisList = iredisClient.Lists[listId];
+                var iRedisClient = redisClient.As<T>();
+                var redisList = iRedisClient.Lists[listId];
                 redisList.RemoveValue(t);
-                iredisClient.Save();
+                iRedisClient.Save();
             }
         }
 
@@ -306,11 +306,11 @@ namespace DotNet.Util
         /// <param name="func"></param>
         public static void RemoveEntityFromList<T>(string listId, Func<T, bool> func)
         {
-            var iredisClient = RedisUtil.GetClient().As<T>();
-            var redisList = iredisClient.Lists[listId];
+            var iRedisClient = RedisUtil.GetClient().As<T>();
+            var redisList = iRedisClient.Lists[listId];
             var value = redisList.Where(func).FirstOrDefault();
             redisList.RemoveValue(value);
-            iredisClient.Save();
+            iRedisClient.Save();
         }
         #endregion
 

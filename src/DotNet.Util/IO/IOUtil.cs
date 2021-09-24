@@ -24,19 +24,19 @@ namespace DotNet.Util
             var ms = outStream ?? new MemoryStream();
 
             // 第三个参数为true，保持数据流打开，内部不应该干涉外部，不要关闭外部的数据流
-            //#if NET4
+#if NET40
             using (var stream = new DeflateStream(ms, CompressionMode.Compress, true))
             {
                 inStream.CopyTo(stream);
                 stream.Flush();
             }
-            //#else
-            //using (var stream = new DeflateStream(ms, CompressionLevel.Optimal, true))
-            //{
-            //    inStream.CopyTo(stream);
-            //    stream.Flush();
-            //}
-            //#endif
+#else
+            using (var stream = new DeflateStream(ms, CompressionLevel.Optimal, true))
+            {
+                inStream.CopyTo(stream);
+                stream.Flush();
+            }
+#endif
 
             // 内部数据流需要把位置指向开头
             if (outStream == null) ms.Position = 0;
@@ -95,19 +95,19 @@ namespace DotNet.Util
             var ms = outStream ?? new MemoryStream();
 
             // 第三个参数为true，保持数据流打开，内部不应该干涉外部，不要关闭外部的数据流
-            //#if NET4
+#if NET40
             using (var stream = new GZipStream(ms, CompressionMode.Compress, true))
             {
                 inStream.CopyTo(stream);
                 stream.Flush();
             }
-            //#else
-            //            using (var stream = new GZipStream(ms, CompressionLevel.Optimal, true))
-            //            {
-            //                inStream.CopyTo(stream);
-            //                stream.Flush();
-            //            }
-            //#endif
+#else
+            using (var stream = new GZipStream(ms, CompressionLevel.Optimal, true))
+            {
+                inStream.CopyTo(stream);
+                stream.Flush();
+            }
+#endif
 
             // 内部数据流需要把位置指向开头
             if (outStream == null) ms.Position = 0;
@@ -285,10 +285,10 @@ namespace DotNet.Util
             }
 
             // 如果要读完数据，又不支持定位，则采用内存流搬运
-            var ms = new MemoryStream();
+            var ms = Pool.MemoryStream.Get();
             stream.CopyTo(ms);
 
-            return ms.ToArray();
+            return ms.Put();
         }
 
         /// <summary>流转换为字符串</summary>
@@ -840,6 +840,55 @@ namespace DotNet.Util
             data = data.Replace('-', '+').Replace('_', '/');
 
             return Convert.FromBase64String(data);
+        }
+        #endregion
+
+        #region 搜索
+        /// <summary>Boyer Moore 字符串搜索算法，比KMP更快，常用于IDE工具的查找</summary>
+        /// <param name="source"></param>
+        /// <param name="pattern"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static Int32 IndexOf(this Byte[] source, Byte[] pattern, Int32 offset = 0, Int32 count = -1)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+
+            var total = source.Length;
+            var length = pattern.Length;
+
+            if (count > 0 && total > offset + count) total = offset + count;
+            if (total == 0 || length == 0 || length > total) return -1;
+
+            // 初始化坏字符，即不匹配字符
+            var bads = new Int32[256];
+            for (var i = 0; i < 256; i++)
+            {
+                bads[i] = length;
+            }
+
+            // 搜索词每个字母在坏字符中的最小位置
+            var last = length - 1;
+            for (var i = 0; i < last; i++)
+            {
+                bads[pattern[i]] = last - i;
+            }
+
+            var index = offset;
+            while (index <= total - length)
+            {
+                // 尾部开始比较
+                for (var i = last; source[index + i] == pattern[i]; i--)
+                {
+                    if (i == 0) return index;
+                }
+
+                // 坏字符规则：后移位数 = 坏字符的位置 - 搜索词中的上一次出现位置
+                index += bads[source[index + last]];
+            }
+
+            return -1;
         }
         #endregion
     }

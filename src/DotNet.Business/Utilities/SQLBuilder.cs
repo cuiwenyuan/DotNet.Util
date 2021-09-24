@@ -732,7 +732,7 @@ namespace DotNet.Business
                 // 读取返回值
                 if (ReturnId)
                 {
-                    result = int.Parse(_dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray()).ToString());
+                    result = int.Parse(_dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray())?.ToString());
                 }
                 else
                 {
@@ -752,11 +752,6 @@ namespace DotNet.Business
             }
             // 清除查询参数
             DbParameters.Clear();
-
-            //写入日志
-            //没必要在这里写了，ExecuteNonQuery写日志就行了，Troy.Cui 2018-06-29
-            //SqlTrace.WriteLog(this.CommandText, dbParameters.ToArray());
-
             return result;
         }
         #endregion
