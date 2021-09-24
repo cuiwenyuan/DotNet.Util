@@ -1,13 +1,15 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Data;
 using System.IO;
+using System.Web;
 using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using System.Collections.Generic;
 
 namespace DotNet.Util
 {
@@ -53,7 +55,7 @@ namespace DotNet.Util
         /// <param name="dt">数据表</param>
         /// <param name="fieldList">数据表字段名-说明对应列表</param>
         /// <param name="fileName">文件名</param>
-        public static void ExportXlsByNpoi(DataTable dt, System.Collections.Generic.Dictionary<string, string> fieldList, string fileName)
+        public static void ExportXlsByNpoi(DataTable dt, Dictionary<string, string> fieldList, string fileName)
         {
             var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             var ms = new MemoryStream();
@@ -69,11 +71,6 @@ namespace DotNet.Util
             {
                 for (var i = 0; i < dt.Columns.Count; i++)
                 {
-                    //if (dt.Columns[i].Visible && (dt.Columns[i].Name.ToUpper() != "colSelected".ToUpper()))
-                    //{
-                    //headerRow.CreateCell(i).SetCellValue(fieldList[dt.Columns[i].ColumnName.ToLower()]);
-                    //}
-
                     //增加了try Catch，解决字典fieldList中没有table列中项时，会出错。
                     //此处采用跳过的方式,表现方式是此列的表头没值
                     try
@@ -207,7 +204,7 @@ namespace DotNet.Util
         /// <param name="fieldList">数据表字段名-说明对应列表</param>
         /// <param name="fileName">文件名</param>
         /// <param name="exportPicture">是否导出图片</param>
-        public static void ExportXlsxByNpoi(DataTable dt, System.Collections.Generic.Dictionary<string, string> fieldList, string fileName, bool exportPicture = false)
+        public static void ExportXlsxByNpoi(DataTable dt, Dictionary<string, string> fieldList, string fileName, bool exportPicture = false)
         {
             var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             var ms = new MemoryStream();
@@ -259,7 +256,7 @@ namespace DotNet.Util
             // 写出数据
             foreach (DataRow dtRow in dt.Rows)
             {
-                
+
                 var dataRow = sheet.CreateRow(rowIndex);
                 if (fieldList == null)
                 {
@@ -276,11 +273,11 @@ namespace DotNet.Util
                                     var suffix = filePath.Substring(
                                         filePath.LastIndexOf('.') + 1,
                                         filePath.Length - filePath.LastIndexOf('.') - 1
-                                    ).ToLower();
+                                    );
                                     hasPicture = false;
                                     if (exportPicture &&
-                                        (suffix == "jpg" || suffix == "bmp" || suffix == "jpeg" || suffix == "gif" ||
-                                         suffix == "png"))
+                                        (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) ||
+                                         suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                     {
                                         hasPicture = true;
                                         //正方形的例子50*20 x 10*256
@@ -343,9 +340,9 @@ namespace DotNet.Util
                                     var suffix = filePath.Substring(
                                     filePath.LastIndexOf('.') + 1,
                                     filePath.Length - filePath.LastIndexOf('.') - 1
-                                    ).ToLower();
+                                    );
                                     hasPicture = false;
-                                    if (exportPicture && (suffix == "jpg" || suffix == "bmp" || suffix == "jpeg" || suffix == "gif" || suffix == "png"))
+                                    if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                     {
                                         hasPicture = true;
                                         //正方形的例子50*20 x 10*256
@@ -353,7 +350,7 @@ namespace DotNet.Util
                                         sheet.SetColumnWidth(i, 20 * 256);
                                         AddPicture(workbook, sheet, filePath, rowIndex, i, suffix);
                                         //sheet.GetColumnWidth(i);
-                                        
+
                                     }
                                     else
                                     {
@@ -433,11 +430,11 @@ namespace DotNet.Util
                         {
                             var imagedId = 0;
                             var pictureType = new PictureType();
-                            if (suffix.ToLower().Equals("png"))
+                            if (suffix.Equals("png", StringComparison.OrdinalIgnoreCase))
                             {
                                 pictureType = PictureType.PNG;
                             }
-                            else if (suffix.ToLower().Equals("jpg"))
+                            else if (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase))
                             {
                                 pictureType = PictureType.JPEG;
                             }
@@ -466,7 +463,7 @@ namespace DotNet.Util
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
                 //此处采用跳过的方式

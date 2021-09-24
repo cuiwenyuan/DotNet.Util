@@ -4,7 +4,7 @@
 		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.5</Version>
+		<Version>1.0.6</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
