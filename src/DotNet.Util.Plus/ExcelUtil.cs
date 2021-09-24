@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2020, DotNet.
+// All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -28,7 +28,7 @@ namespace DotNet.Util
     ///     2017.10.31 版本：4.0 Troy Cui       新创建。
     /// 
     /// <author>
-    ///		<name>JiRiGaLa</name>
+    ///		<name>Troy.Cui</name>
     ///		<date>2009.07.08</date>
     /// </author> 
     /// </summary>
@@ -44,11 +44,11 @@ namespace DotNet.Util
         {
             var dt = new DataTable();
             IWorkbook workbook;
-            var fileExt = Path.GetExtension(file).ToLower();
+            var fileExt = Path.GetExtension(file);
             using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
                 //XSSFWorkbook 适用XLSX格式，HSSFWorkbook 适用XLS格式
-                if (fileExt == ".xlsx") { workbook = new XSSFWorkbook(fs); } else if (fileExt == ".xls") { workbook = new HSSFWorkbook(fs); } else { workbook = null; }
+                if (fileExt.Equals(".xlsx", StringComparison.OrdinalIgnoreCase)) { workbook = new XSSFWorkbook(fs); } else if (fileExt.Equals(".xls", StringComparison.OrdinalIgnoreCase)) { workbook = new HSSFWorkbook(fs); } else { workbook = null; }
                 if (workbook == null) { return null; }
                 var sheet = workbook.GetSheetAt(0);
 
@@ -63,7 +63,10 @@ namespace DotNet.Util
                         dt.Columns.Add(new DataColumn("Columns" + i));
                     }
                     else
+                    {
                         dt.Columns.Add(new DataColumn(obj.ToString()));
+                    }
+
                     columns.Add(i);
                 }
                 //数据  
@@ -215,19 +218,19 @@ namespace DotNet.Util
                     Directory.CreateDirectory(Utils.GetMapPath(excelPreviewFolder));
                 }
                 var htmlFileName = excelFilePath.Replace(".", DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day +
-                                                                 DateTime.Now.Hour+".");
+                                                                 DateTime.Now.Hour + ".");
                 var htmlFile = HttpContext.Current.Server.MapPath("/") + excelPreviewFolder + "/" + htmlFileName + ".html";
                 //输出的html文件   需创建对应的文件目录  这里是根目录下的doc文件夹
                 excelToHtmlConverter.Document.Save(htmlFile);
                 if (HttpContext.Current.Request.Url.Port == 80)
                 {
-                    HttpContext.Current.Response.Redirect("http://" + HttpContext.Current.Request.Url.Host + "/"+ excelPreviewFolder+ "/" + htmlFileName +
+                    HttpContext.Current.Response.Redirect("http://" + HttpContext.Current.Request.Url.Host + "/" + excelPreviewFolder + "/" + htmlFileName +
                                                           ".html");
                 }
                 else
                 {
                     HttpContext.Current.Response.Redirect("http://" + HttpContext.Current.Request.Url.Host + ":" +
-                                                          HttpContext.Current.Request.Url.Port + "/"+ excelPreviewFolder+ "/" + htmlFileName +
+                                                          HttpContext.Current.Request.Url.Port + "/" + excelPreviewFolder + "/" + htmlFileName +
                                                           ".html");
                 }
             }
@@ -289,7 +292,7 @@ namespace DotNet.Util
             }
 
             errorMsg = Pool.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
-            var enlist = new List<T>(); // 转换后的集合
+            var ls = new List<T>(); // 转换后的集合
             try
             {
                 using (var fs = File.OpenRead(filePath))
@@ -305,13 +308,12 @@ namespace DotNet.Util
                             break;
                         }
                         // 2.每一个Excel row转换为一个实体对象
-                        var en = new T();
-                        ExcelRowToEntity<T>(cellHeader, row, rowIndex, en, ref errorMsg);
-
-                        enlist.Add(en);
+                        var e = new T();
+                        ExcelRowToEntity<T>(cellHeader, row, rowIndex, e, ref errorMsg);
+                        ls.Add(e);
                     }
                 }
-                return enlist;
+                return ls;
             }
             catch (Exception ex)
             {
@@ -331,7 +333,7 @@ namespace DotNet.Util
         private static List<T> Excel2007ToEntityList<T>(Dictionary<string, string> cellHeader, string filePath, out StringBuilder errorMsg, int startIndex = 1) where T : new()
         {
             errorMsg = Pool.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
-            var enlist = new List<T>(); // 转换后的集合
+            var ls = new List<T>(); // 转换后的集合
             try
             {
                 using (var fs = File.OpenRead(filePath))
@@ -349,10 +351,10 @@ namespace DotNet.Util
                         // 2.每一个Excel row转换为一个实体对象
                         var en = new T();
                         ExcelRowToEntity<T>(cellHeader, row, rowIndex, en, ref errorMsg);
-                        enlist.Add(en);
+                        ls.Add(en);
                     }
                 }
-                return enlist;
+                return ls;
             }
             catch (Exception ex)
             {
@@ -368,10 +370,10 @@ namespace DotNet.Util
         /// 实体类集合导出到EXCLE2003
         /// </summary>
         /// <param name="cellHeader">单元头的Key和Value：{ { "UserName", "姓名" }, { "Age", "年龄" } };</param>
-        /// <param name="enList">数据源</param>
+        /// <param name="iList">数据源</param>
         /// <param name="sheetName">工作表名称</param>
         /// <returns>文件的下载地址</returns>
-        public static string EntityListToExcel2003(Dictionary<string, string> cellHeader, IList enList, string sheetName)
+        public static string EntityListToExcel2003(Dictionary<string, string> cellHeader, IList iList, string sheetName)
         {
             try
             {
@@ -398,7 +400,7 @@ namespace DotNet.Util
 
                 // 3.List对象的值赋值到Excel的单元格里
                 var rowIndex = 1; // 从第二行开始赋值(第一行已设置为单元头)
-                foreach (var en in enList)
+                foreach (var e in iList)
                 {
                     var rowTmp = sheet.CreateRow(rowIndex);
                     for (var i = 0; i < keys.Count; i++) // 根据指定的属性名称，获取对象指定属性的值
@@ -414,11 +416,11 @@ namespace DotNet.Util
                             var propertyArray = keys[i].Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
                             var subClassName = propertyArray[0]; // '.'前面的为子类的名称
                             var subClassPropertyName = propertyArray[1]; // '.'后面的为子类的属性名称
-                            var subClassInfo = en.GetType().GetProperty(subClassName); // 获取子类的类型
+                            var subClassInfo = e.GetType().GetProperty(subClassName); // 获取子类的类型
                             if (subClassInfo != null)
                             {
                                 // 3.1.2 获取子类的实例
-                                var subClassEn = en.GetType().GetProperty(subClassName)?.GetValue(en, null);
+                                var subClassEn = e.GetType().GetProperty(subClassName)?.GetValue(e, null);
                                 // 3.1.3 根据属性名称获取子类里的属性类型
                                 propertyInfo = subClassInfo.PropertyType.GetProperty(subClassPropertyName);
                                 if (propertyInfo != null)
@@ -430,10 +432,10 @@ namespace DotNet.Util
                         else
                         {
                             // 3.2 若不是子类的属性，直接根据属性名称获取对象对应的属性
-                            propertyInfo = en.GetType().GetProperty(keys[i]);
+                            propertyInfo = e.GetType().GetProperty(keys[i]);
                             if (propertyInfo != null)
                             {
-                                properotyValue = propertyInfo.GetValue(en, null);
+                                properotyValue = propertyInfo.GetValue(e, null);
                             }
                         }
 
@@ -479,9 +481,9 @@ namespace DotNet.Util
         /// <param name="cellHeader">单元头的Key和Value：{ { "UserName", "姓名" }, { "Age", "年龄" } };</param>
         /// <param name="row">Excel row</param>
         /// <param name="rowIndex">row index</param>
-        /// <param name="en">实体</param>
+        /// <param name="t">实体</param>
         /// <param name="errorMsg">错误信息</param>
-        private static void ExcelRowToEntity<T>(Dictionary<string, string> cellHeader, IRow row, int rowIndex, T en, ref StringBuilder errorMsg)
+        private static void ExcelRowToEntity<T>(Dictionary<string, string> cellHeader, IRow row, int rowIndex, T t, ref StringBuilder errorMsg)
         {
             var keys = cellHeader.Keys.ToList(); // 要赋值的实体对象属性名称
             var errStr = ""; // 当前行转换时，是否有错误信息，格式为：第1行数据转换异常：XXX列；
@@ -494,11 +496,11 @@ namespace DotNet.Util
                     var propertyArray = keys[i].Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
                     var subClassName = propertyArray[0]; // '.'前面的为子类的名称
                     var subClassPropertyName = propertyArray[1]; // '.'后面的为子类的属性名称
-                    var subClassInfo = en.GetType().GetProperty(subClassName); // 获取子类的类型
+                    var subClassInfo = t.GetType().GetProperty(subClassName); // 获取子类的类型
                     if (subClassInfo != null)
                     {
                         // 2)获取子类的实例
-                        var subClassEn = en.GetType().GetProperty(subClassName)?.GetValue(en, null);
+                        var subClassEn = t.GetType().GetProperty(subClassName)?.GetValue(t, null);
                         // 3)根据属性名称获取子类里的属性信息
                         var propertyInfo = subClassInfo.PropertyType.GetProperty(subClassPropertyName);
                         if (propertyInfo != null)
@@ -524,13 +526,13 @@ namespace DotNet.Util
                 else
                 {
                     // 2.给指定的属性赋值
-                    var propertyInfo = en.GetType().GetProperty(keys[i]);
+                    var propertyInfo = t.GetType().GetProperty(keys[i]);
                     if (propertyInfo != null)
                     {
                         try
                         {
                             // Excel单元格的值转换为对象属性的值，若类型不对，记录出错信息
-                            propertyInfo.SetValue(en, GetExcelCellToProperty(propertyInfo.PropertyType, row.GetCell(i)), null);
+                            propertyInfo.SetValue(t, GetExcelCellToProperty(propertyInfo.PropertyType, row.GetCell(i)), null);
                         }
                         catch (Exception ex)
                         {
@@ -600,27 +602,27 @@ namespace DotNet.Util
             var valueDataType = distanceType.Name;
 
             // 在这里进行特定类型的处理
-            switch (valueDataType.ToLower()) // 以防出错，全部小写
+            switch (valueDataType.ToUpper()) // 以防出错，全部大写
             {
-                case "string":
+                case "STRING":
                     if (sourceValue != null) rs = sourceValue.ToString();
                     break;
-                case "int":
-                case "int16":
-                case "int32":
+                case "INT":
+                case "INT16":
+                case "INT32":
                     rs = (int)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
-                case "float":
-                case "single":
+                case "FLOAT":
+                case "SINGLE":
                     rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
-                case "decimal":
+                case "DECIMAL":
                     rs = (decimal)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
-                case "datetime":
+                case "DATETIME":
                     rs = sourceCell.DateCellValue;
                     break;
-                case "guid":
+                case "GUID":
                     rs = (Guid)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     return rs;
             }
