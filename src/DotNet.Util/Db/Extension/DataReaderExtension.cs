@@ -61,11 +61,11 @@ namespace DotNet.Util
         /// <typeparam name="T">泛型实体T</typeparam>
         /// <param name="dr">DataReader对象</param>
         /// <returns></returns>
-        public static IList<T> ToAnyList<T>(this IDataReader dr)
+        public static List<T> ToAnyList<T>(this IDataReader dr)
         {
             var ls = new List<T>();
             //获取传入的数据类型
-            var modelType = typeof(T);
+            var t = typeof(T);
             //遍历DataReader对象
             while (dr.Read())
             {
@@ -77,7 +77,7 @@ namespace DotNet.Util
                     if (!IsNullOrDbNull(dr[i]))
                     {
                         //匹配字段名
-                        var pi = modelType.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                         if (pi != null)
                         {
                             //绑定实体对象中同名的字段  
@@ -127,21 +127,28 @@ namespace DotNet.Util
         /// <returns></returns>
         public static T ToAnyEntity<T>(this IDataReader dr)
         {
-            var modelType = typeof(T);
-            var count = dr.FieldCount;
-            var entity = Activator.CreateInstance<T>();
-            for (var i = 0; i < count; i++)
+            if (dr.Read())
             {
-                if (!IsNullOrDbNull(dr[i]))
+                var t = typeof(T);
+                var count = dr.FieldCount;
+                var entity = Activator.CreateInstance<T>();
+                for (var i = 0; i < count; i++)
                 {
-                    var pi = modelType.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                    if (pi != null)
+                    if (!IsNullOrDbNull(dr[i]))
                     {
-                        pi.SetValue(entity, CheckType(dr[i], pi.PropertyType), null);
+                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                        if (pi != null)
+                        {
+                            pi.SetValue(entity, CheckType(dr[i], pi.PropertyType), null);
+                        }
                     }
                 }
+                return entity;
             }
-            return entity;
+            else
+            {
+                return default(T);
+            }
         }
 
         #endregion

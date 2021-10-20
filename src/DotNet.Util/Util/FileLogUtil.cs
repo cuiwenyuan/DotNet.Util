@@ -84,7 +84,7 @@ namespace DotNet.Util
         private static string GetLogPath(string customDirectory, string preFile)
         {
             string newFilePath;
-            var logDir = string.IsNullOrEmpty(customDirectory) ? Path.Combine(Environment.CurrentDirectory, "logs") : customDirectory;
+            var logDir = string.IsNullOrEmpty(customDirectory) ? Path.Combine(Environment.CurrentDirectory, "Log") : customDirectory;
             if (!Directory.Exists(logDir))
             {
                 Directory.CreateDirectory(logDir);
