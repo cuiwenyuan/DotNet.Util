@@ -141,7 +141,7 @@ namespace DotNet.Business
         public string AddEntity(BaseAreaProvinceMarkEntity entity)
         {
             var sequence = string.Empty;
-            
+
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
             sqlBuilder.BeginInsert(CurrentTableName, BaseAreaProvinceMarkEntity.FieldId);
             if (!string.IsNullOrEmpty(entity.Id) || !Identity)

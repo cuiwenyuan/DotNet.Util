@@ -140,7 +140,7 @@ namespace DotNet.Business
         public BaseAreaEntity GetEntity(string id)
         {
             return BaseEntity.Create<BaseAreaEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseAreaEntity.FieldId, id)));
-			// return BaseEntity.Create<BaseAreaEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseAreaEntity.FieldId, id)));
+            // return BaseEntity.Create<BaseAreaEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseAreaEntity.FieldId, id)));
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace DotNet.Business
         public string AddEntity(BaseAreaEntity entity)
         {
             var sequence = string.Empty;
-            if (!entity.SortCode.HasValue)
+            if (entity.SortCode == 0)
             {
                 var managerSequence = new BaseSequenceManager(DbHelper, Identity);
                 sequence = managerSequence.Increment(CurrentTableName);
@@ -195,68 +195,22 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
 
             // 创建人信息
-            if (!string.IsNullOrEmpty(entity.CreateUserId))
+            if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldCreateUserId, entity.CreateUserId);
+                sqlBuilder.SetValue(BaseAreaEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseAreaEntity.FieldCreateBy, UserInfo.RealName);
             }
-            else
-            {
-                if (UserInfo != null)
-                {
-                    sqlBuilder.SetValue(BaseAreaEntity.FieldCreateUserId, UserInfo.Id);
-                }
-            }
-            if (!string.IsNullOrEmpty(entity.CreateBy))
-            {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldCreateBy, entity.CreateBy);
-            }
-            else
-            {
-                if (UserInfo != null)
-                {
-                    sqlBuilder.SetValue(BaseAreaEntity.FieldCreateBy, UserInfo.RealName);
-                }
-            }
-            if (entity.CreateOn.HasValue)
-            {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldCreateTime, entity.CreateOn);
-            }
-            else
-            {
-                sqlBuilder.SetDbNow(BaseAreaEntity.FieldCreateTime);
-            }
-            
+
+            sqlBuilder.SetDbNow(BaseAreaEntity.FieldCreateTime);
+
             // 修改人信息
-            if (!string.IsNullOrEmpty(entity.ModifiedUserId))
+            if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateUserId, entity.ModifiedUserId);
+                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateBy, UserInfo.RealName);
             }
-            else
-            {
-                if (UserInfo != null)
-                {
-                    sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateUserId, UserInfo.Id);
-                }
-            }
-            if (!string.IsNullOrEmpty(entity.ModifiedBy))
-            {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateBy, entity.ModifiedBy);
-            }
-            else
-            {
-                if (UserInfo != null)
-                {
-                    sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateBy, UserInfo.RealName);
-                }
-            }
-            if (entity.ModifiedOn.HasValue)
-            {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateTime, entity.ModifiedOn);
-            }
-            else
-            {
-                sqlBuilder.SetDbNow(BaseAreaEntity.FieldUpdateTime);
-            }
+
+            sqlBuilder.SetDbNow(BaseAreaEntity.FieldUpdateTime);
 
             if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
             {
@@ -285,14 +239,7 @@ namespace DotNet.Business
                 sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateBy, UserInfo.RealName);
             }
             // 若有修改时间标示，那就按修改时间来，不是按最新的时间来
-            if (entity.ModifiedOn.HasValue)
-            {
-                sqlBuilder.SetValue(BaseAreaEntity.FieldUpdateTime, entity.ModifiedOn.Value);
-            }
-            else
-            {
-                sqlBuilder.SetDbNow(BaseAreaEntity.FieldUpdateTime);
-            }
+            sqlBuilder.SetDbNow(BaseAreaEntity.FieldUpdateTime);
             sqlBuilder.SetWhere(BaseAreaEntity.FieldId, entity.Id);
             result = sqlBuilder.EndUpdate();
 
@@ -307,7 +254,7 @@ namespace DotNet.Business
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseAreaEntity entity)
-        {   
+        {
             sqlBuilder.SetValue(BaseAreaEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseAreaEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseAreaEntity.FieldFullName, entity.FullName);

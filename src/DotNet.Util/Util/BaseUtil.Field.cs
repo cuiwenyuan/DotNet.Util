@@ -2,6 +2,8 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using System;
+
 namespace DotNet.Util
 {
     /// <summary>
@@ -71,6 +73,7 @@ namespace DotNet.Util
         /// <summary>
         /// 是否删除
         /// </summary>
+        [Obsolete("V5版本请使用FieldDeleted")]
         public const string FieldDeletionStateCode = "DeletionStateCode";
 
         /// <summary>
@@ -106,26 +109,31 @@ namespace DotNet.Util
         /// <summary>
         /// 创建时间
         /// </summary>
+        [Obsolete("V5版本请使用FieldCreateTime")]
         public const string FieldCreateOn = "CreateOn";
 
         /// <summary>
         /// 最后修改者主键
         /// </summary>
+        [Obsolete("V5版本请使用FieldUpdateUserId")]
         public const string FieldModifiedUserId = "ModifiedUserId";
 
         /// <summary>
         /// 最后修改者用户名
         /// </summary>
+        [Obsolete("V5版本请使用FieldUpdateUserName")]
         public const string FieldModifiedUserName = "ModifiedUserName";
 
         /// <summary>
         /// 最后修改者
         /// </summary>
+        [Obsolete("V5版本请使用FieldUpdateBy")]
         public const string FieldModifiedBy = "ModifiedBy";
 
         /// <summary>
         /// 最后修改时间
         /// </summary>
+        [Obsolete("V5版本请使用FieldUpdateTime")]
         public const string FieldModifiedOn = "ModifiedOn";
 
         /// <summary>
@@ -173,6 +181,7 @@ namespace DotNet.Util
         /// <summary>
         /// 修改Ip
         /// </summary>
+        [Obsolete("V5版本请使用FieldUpdateIp")]
         public const string FieldModifiedIp = "ModifiedIp";
         /// <summary>
         /// 是否已审核 
