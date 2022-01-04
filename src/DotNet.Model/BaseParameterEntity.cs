@@ -151,8 +151,8 @@ namespace DotNet.Model
             ParameterId = BaseUtil.ConvertToString(dr[FieldParameterId]);
             ParameterCode = BaseUtil.ConvertToString(dr[FieldParameterCode]);
             ParameterContent = BaseUtil.ConvertToString(dr[FieldParameterContent]);
-            Worked = BaseUtil.ConvertIntToBoolean(dr[FieldWorked]);
-            Enabled = BaseUtil.ConvertIntToBoolean(dr[FieldEnabled]);
+            Worked = BaseUtil.ConvertToBoolean(dr[FieldWorked]);
+            Enabled = BaseUtil.ConvertToBoolean(dr[FieldEnabled]);
             SortCode = BaseUtil.ConvertToNullableInt(dr[FieldSortCode]);
             Description = BaseUtil.ConvertToString(dr[FieldDescription]);
             CreateUserId = BaseUtil.ConvertToString(dr[FieldCreateUserId]);

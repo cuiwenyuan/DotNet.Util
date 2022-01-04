@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
     /// <summary>
     /// SQLBuilder

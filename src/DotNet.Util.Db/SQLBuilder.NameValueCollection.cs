@@ -4,7 +4,7 @@
 
 using System.Collections.Specialized;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
     /// <summary>
     /// SQLBuilder
@@ -26,7 +26,7 @@ namespace DotNet.Business
         /// 设置条件
         /// </summary>
         /// <param name="parameters">条件</param>
-        /// <param name="relation">条件 AND OR</param>
+        /// <param name="relation">条件AND或OR</param>
         /// <returns>条件语句</returns>
         public void SetWhere(NameValueCollection parameters, string relation = " AND ")
         {
@@ -34,8 +34,6 @@ namespace DotNet.Business
             {
                 SetWhere(key, parameters[key], relation);
             }
-            // string result = this.WhereSql;
-            // return result;
         }
         #endregion
     }

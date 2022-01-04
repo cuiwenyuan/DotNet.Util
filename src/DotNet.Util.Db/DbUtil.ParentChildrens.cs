@@ -6,10 +6,8 @@ using System;
 using System.Data;
 using System.Linq;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
-
     /// <summary>
     ///	DbUtil
     /// 通用基类

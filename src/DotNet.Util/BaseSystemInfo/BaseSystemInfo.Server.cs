@@ -124,7 +124,7 @@ namespace DotNet.Util
         /// <summary>
         /// 端口号
         /// </summary>
-        public static int Port = 0;
+        public static int Port = 80;
 
         /// <summary>
         /// 强制Https访问

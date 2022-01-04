@@ -131,7 +131,7 @@ namespace DotNet.Util
         public const string FieldModifiedBy = "ModifiedBy";
 
         /// <summary>
-        /// 最后修改时间
+        /// 修改时间
         /// </summary>
         [Obsolete("V5版本请使用FieldUpdateTime")]
         public const string FieldModifiedOn = "ModifiedOn";

@@ -66,7 +66,7 @@ namespace DotNet.Util
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    var entity = new T();
+                    T entity = new T();
                     foreach (var pi in properties)
                     {
                         var typeName = pi.Name;
@@ -79,34 +79,60 @@ namespace DotNet.Util
                             {
                                 pi.SetValue(entity, value.ToString(), null);
                             }
-                            else if (pi.PropertyType == typeof(int) || pi.PropertyType == typeof(int?))
+                            else if (pi.PropertyType == typeof(int))
                             {
-                                pi.SetValue(entity, int.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToInt(value), null);
+
                             }
-                            else if (pi.PropertyType == typeof(long) || pi.PropertyType == typeof(long?))
+                            else if (pi.PropertyType == typeof(int?))
                             {
-                                pi.SetValue(entity, long.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableInt(value), null);
                             }
-                            else if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
+                            else if (pi.PropertyType == typeof(long))
                             {
-                                pi.SetValue(entity, DateTime.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToLong(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(long?))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableLong(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(DateTime))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToDateTime(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(DateTime?))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableDateTime(value), null);
                             }
                             else if (pi.PropertyType == typeof(float))
                             {
-                                pi.SetValue(entity, float.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToFloat(value), null);
                             }
-                            else if (pi.PropertyType == typeof(double))
+                            else if (pi.PropertyType == typeof(float?))
                             {
-                                pi.SetValue(entity, double.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableFloat(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(double?))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToDouble(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(double?))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableDouble(value), null);
                             }
                             else if (pi.PropertyType == typeof(decimal))
                             {
-                                pi.SetValue(entity, decimal.Parse(value.ToString()), null);
+                                pi.SetValue(entity, BaseUtil.ConvertToDecimal(value), null);
+                            }
+                            else if (pi.PropertyType == typeof(decimal?))
+                            {
+                                pi.SetValue(entity, BaseUtil.ConvertToNullableDecimal(value), null);
                             }
                             else
                             {
-                                pi.SetValue(entity, value, null);
+                                pi.SetValue(entity, BaseUtil.ChangeType(value, pi.PropertyType), null);
                             }
+
                         }
                     }
                     ls.Add(entity);
@@ -114,7 +140,6 @@ namespace DotNet.Util
             }
             return ls;
         }
-
         #endregion
     }
 }
