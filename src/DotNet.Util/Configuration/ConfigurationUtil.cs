@@ -265,7 +265,7 @@ namespace DotNet.Util
             // 数据库连接
             if (ConfigurationManager.AppSettings["ServerDbType"] != null)
             {
-                BaseSystemInfo.ServerDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["ServerDbType"]);
+                BaseSystemInfo.ServerDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["ServerDbType"]);
             }
             //慢查询毫秒数
             if (ConfigurationManager.AppSettings["SlowQueryMilliseconds"] != null)
@@ -277,82 +277,82 @@ namespace DotNet.Util
             }
             if (ConfigurationManager.AppSettings["UserCenterDbType"] != null)
             {
-                BaseSystemInfo.UserCenterDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
-                BaseSystemInfo.LoginLogDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
-                BaseSystemInfo.MessageDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
+                BaseSystemInfo.UserCenterDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
+                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
+                BaseSystemInfo.MessageDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
             }
             if (ConfigurationManager.AppSettings["BusinessDbType"] != null)
             {
-                BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["BusinessDbType"]);
+                BaseSystemInfo.BusinessDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["BusinessDbType"]);
             }
             if (ConfigurationManager.AppSettings["WorkFlowDbType"] != null)
             {
-                BaseSystemInfo.WorkFlowDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["WorkFlowDbType"]);
+                BaseSystemInfo.WorkFlowDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["WorkFlowDbType"]);
             }
             if (ConfigurationManager.AppSettings["LoginLogDbType"] != null)
             {
-                BaseSystemInfo.LoginLogDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["LoginLogDbType"]);
+                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["LoginLogDbType"]);
             }
             if (ConfigurationManager.AppSettings["MessageDbType"] != null)
             {
-                BaseSystemInfo.MessageDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["MessageDbType"]);
+                BaseSystemInfo.MessageDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["MessageDbType"]);
             }
 
             if (ConfigurationManager.AppSettings["WebAppDbType"] != null)
             {
-                BaseSystemInfo.WebAppDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["WebAppDbType"]);
+                BaseSystemInfo.WebAppDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["WebAppDbType"]);
             }
             if (ConfigurationManager.AppSettings["BPMDbType"] != null)
             {
-                BaseSystemInfo.BpmDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["BPMDbType"]);
+                BaseSystemInfo.BpmDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["BPMDbType"]);
             }
             if (ConfigurationManager.AppSettings["ERPDbType"] != null)
             {
-                BaseSystemInfo.ErpDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["ERPDbType"]);
+                BaseSystemInfo.ErpDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["ERPDbType"]);
             }
             if (ConfigurationManager.AppSettings["MESDbType"] != null)
             {
-                BaseSystemInfo.MesDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["MESDbType"]);
+                BaseSystemInfo.MesDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["MESDbType"]);
             }
             if (ConfigurationManager.AppSettings["HRMDbType"] != null)
             {
-                BaseSystemInfo.HrmDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["HRMDbType"]);
+                BaseSystemInfo.HrmDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["HRMDbType"]);
             }
             if (ConfigurationManager.AppSettings["CRMDbType"] != null)
             {
-                BaseSystemInfo.CrmDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["CRMDbType"]);
+                BaseSystemInfo.CrmDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["CRMDbType"]);
             }
             if (ConfigurationManager.AppSettings["OADbType"] != null)
             {
-                BaseSystemInfo.OaDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["OADbType"]);
+                BaseSystemInfo.OaDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["OADbType"]);
             }
             if (ConfigurationManager.AppSettings["LabelDbType"] != null)
             {
-                BaseSystemInfo.LabelDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["LabelDbType"]);
+                BaseSystemInfo.LabelDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["LabelDbType"]);
             }
             if (ConfigurationManager.AppSettings["WebDbType"] != null)
             {
-                BaseSystemInfo.WebDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["WebDbType"]);
+                BaseSystemInfo.WebDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["WebDbType"]);
             }
             if (ConfigurationManager.AppSettings["CMSDbType"] != null)
             {
-                BaseSystemInfo.CmsDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["CMSDbType"]);
+                BaseSystemInfo.CmsDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["CMSDbType"]);
             }
             if (ConfigurationManager.AppSettings["DTcmsDbType"] != null)
             {
-                BaseSystemInfo.DTcmsDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["DTcmsDbType"]);
+                BaseSystemInfo.DTcmsDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["DTcmsDbType"]);
             }
             if (ConfigurationManager.AppSettings["FlowPortalDbType"] != null)
             {
-                BaseSystemInfo.FlowPortalDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["FlowPortalDbType"]);
+                BaseSystemInfo.FlowPortalDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["FlowPortalDbType"]);
             }
             if (ConfigurationManager.AppSettings["CustomerPortalDbType"] != null)
             {
-                BaseSystemInfo.CustomerPortalDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["CustomerPortalDbType"]);
+                BaseSystemInfo.CustomerPortalDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["CustomerPortalDbType"]);
             }
             if (ConfigurationManager.AppSettings["SupplierPortalDbType"] != null)
             {
-                BaseSystemInfo.SupplierPortalDbType = DbUtil.GetDbType(ConfigurationManager.AppSettings["SupplierPortalDbType"]);
+                BaseSystemInfo.SupplierPortalDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["SupplierPortalDbType"]);
             }
             if (ConfigurationManager.AppSettings["EncryptDbConnection"] != null)
             {
@@ -534,8 +534,8 @@ namespace DotNet.Util
             BaseSystemInfo.UserCenterWriteDbConnection = BaseSystemInfo.UserCenterDbConnection;
 
             // 这里重新给静态数据库连接对象进行赋值
-            // DotNet.Util.DbUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
-            // DotNet.Util.DbUtil.DbType = BaseSystemInfo.BusinessDbType;
+            // DotNet.Util.DbTypeUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
+            // DotNet.Util.DbTypeUtil.DbType = BaseSystemInfo.BusinessDbType;
 
             // 这里是处理读写分离功能，读取数据与写入数据进行分离的方式
             if (ConfigurationManager.AppSettings["UserCenterReadDbConnection"] != null)

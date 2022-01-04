@@ -677,7 +677,7 @@ namespace DotNet.Util
             }
             if (Exists("UserCenterDbType"))
             {
-                BaseSystemInfo.UserCenterDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "UserCenterDbType"));
+                BaseSystemInfo.UserCenterDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "UserCenterDbType"));
                 BaseSystemInfo.MessageDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.BusinessDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.WorkFlowDbType = BaseSystemInfo.UserCenterDbType;
@@ -686,75 +686,75 @@ namespace DotNet.Util
             // 打开数据库连接
             if (Exists("MessageDbType"))
             {
-                BaseSystemInfo.MessageDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "MessageDbType"));
+                BaseSystemInfo.MessageDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "MessageDbType"));
             }
             if (Exists("WorkFlowDbType"))
             {
-                BaseSystemInfo.WorkFlowDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WorkFlowDbType"));
+                BaseSystemInfo.WorkFlowDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "WorkFlowDbType"));
             }
             if (Exists("BusinessDbType"))
             {
-                BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "BusinessDbType"));
+                BaseSystemInfo.BusinessDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "BusinessDbType"));
             }
             if (Exists("LoginLogDbType"))
             {
-                BaseSystemInfo.LoginLogDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "LoginLogDbType"));
+                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "LoginLogDbType"));
             }
             if (Exists("WebAppDbType"))
             {
-                BaseSystemInfo.WebAppDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebAppDbType"));
+                BaseSystemInfo.WebAppDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "WebAppDbType"));
             }
             if (Exists("BPMDbType"))
             {
-                BaseSystemInfo.BpmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "BPMDbType"));
+                BaseSystemInfo.BpmDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "BPMDbType"));
             }
             if (Exists("ERPDbType"))
             {
-                BaseSystemInfo.ErpDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "ERPDbType"));
+                BaseSystemInfo.ErpDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "ERPDbType"));
             }
             if (Exists("MESDbType"))
             {
-                BaseSystemInfo.MesDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "MESDbType"));
+                BaseSystemInfo.MesDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "MESDbType"));
             }
             if (Exists("HRMDbType"))
             {
-                BaseSystemInfo.HrmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "HRMDbType"));
+                BaseSystemInfo.HrmDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "HRMDbType"));
             }
             if (Exists("CRMDbType"))
             {
-                BaseSystemInfo.CrmDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CRMDbType"));
+                BaseSystemInfo.CrmDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "CRMDbType"));
             }
             if (Exists("OADbType"))
             {
-                BaseSystemInfo.OaDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "OADbType"));
+                BaseSystemInfo.OaDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "OADbType"));
             }
             if (Exists("LabelDbType"))
             {
-                BaseSystemInfo.LabelDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "LabelDbType"));
+                BaseSystemInfo.LabelDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "LabelDbType"));
             }
             if (Exists("WebDbType"))
             {
-                BaseSystemInfo.WebDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "WebDbType"));
+                BaseSystemInfo.WebDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "WebDbType"));
             }
             if (Exists("CmsDbType"))
             {
-                BaseSystemInfo.CmsDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CmsDbType"));
+                BaseSystemInfo.CmsDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "CmsDbType"));
             }
             if (Exists("DTcmsDbType"))
             {
-                BaseSystemInfo.DTcmsDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "DTcmsDbType"));
+                BaseSystemInfo.DTcmsDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "DTcmsDbType"));
             }
             if (Exists("FlowPortalDbType"))
             {
-                BaseSystemInfo.FlowPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "FlowPortalDbType"));
+                BaseSystemInfo.FlowPortalDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "FlowPortalDbType"));
             }
             if (Exists("CustomerPortalDbType"))
             {
-                BaseSystemInfo.CustomerPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "CustomerPortalDbType"));
+                BaseSystemInfo.CustomerPortalDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "CustomerPortalDbType"));
             }
             if (Exists("SupplierPortalDbType"))
             {
-                BaseSystemInfo.SupplierPortalDbType = DbUtil.GetDbType(GetValue(_xmlDocument, "SupplierPortalDbType"));
+                BaseSystemInfo.SupplierPortalDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "SupplierPortalDbType"));
             }
             if (Exists("UserCenterDbConnection"))
             {
@@ -1105,8 +1105,8 @@ namespace DotNet.Util
             }
 
             // 这里重新给静态数据库连接对象进行赋值
-            // DotNet.Util.DbUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
-            // DotNet.Util.DbUtil.DbType = BaseSystemInfo.BusinessDbType;
+            // DotNet.Util.DbTypeUtil.DbConnection = BaseSystemInfo.BusinessDbConnection;
+            // DotNet.Util.DbTypeUtil.DbType = BaseSystemInfo.BusinessDbType;
 
             // 这里是处理读写分离功能，读取数据与写入数据进行分离的方式
             if (Exists("UserCenterReadDbConnection"))

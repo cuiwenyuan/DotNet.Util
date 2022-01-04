@@ -232,6 +232,7 @@ namespace DotNet.Util
             return result;
         }
         #endregion
+
         /// <summary>
         /// GetPreviousIdDyn
         /// </summary>

@@ -42,8 +42,7 @@ namespace DotNet.Util
                 {
                     return 0;
                 }
-                var pageCount = (double)RecordCount / PageSize;
-                return (int)Math.Ceiling(pageCount);
+                return (int)Math.Ceiling((decimal)RecordCount / (decimal)PageSize);
             }
         }
 

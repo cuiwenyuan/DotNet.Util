@@ -20,6 +20,7 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     /// 
+    ///     2021.12.31 版本：5.0 Troy.Cui	ToDataTable方法增加fieldList和fieldListOnly用于读取控制
     ///     2021.09.21 版本：4.0 Troy.Cui	增加ToDataTable方法，并增加fieldList字典控制csv输出
     ///     2009.07.08 版本：3.0 JiRiGaLa	更新完善程序，将方法修改为静态方法。
     ///     2007.08.11 版本：2.0 JiRiGaLa	更新完善程序。
@@ -38,7 +39,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dataReader">IDataReader</param>
         /// <param name="fileName">文件全路径</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="encoding">编码类型</param>
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(IDataReader dataReader, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
@@ -64,10 +65,10 @@ namespace DotNet.Util
         /// 通过dataReader获得CSV格式数据
         /// </summary>
         /// <param name="dataReader"></param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="separator">分隔符</param>
         /// <returns></returns>
-        public static StringBuilder GetCsvFormatData(IDataReader dataReader, Dictionary<string, string> fieldList = null, string separator = ",")
+        private static StringBuilder GetCsvFormatData(IDataReader dataReader, Dictionary<string, string> fieldList = null, string separator = ",")
         {
             //TODO:fieldList的处理
             // 返回总字符串
@@ -130,7 +131,7 @@ namespace DotNet.Util
         /// 通过DataTable获得CSV格式数据
         /// </summary>
         /// <param name="dt">数据表</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="separator">分隔符</param>
         /// <returns>CSV字符串数据</returns>
         private static StringBuilder GetCsvFormatData(DataTable dt, Dictionary<string, string> fieldList = null, string separator = ",")
@@ -306,7 +307,7 @@ namespace DotNet.Util
         /// 通过DataSet获得CSV格式数据
         /// </summary>
         /// <param name="dataSet">数据权限</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="separator">分隔符</param>
         /// <returns>CSV字符串数据</returns>
         private static StringBuilder GetCsvFormatData(DataSet dataSet, Dictionary<string, string> fieldList = null, string separator = ",")
@@ -326,7 +327,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dt">数据表</param>
         /// <param name="fileName">文件名</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="encoding">编码类型</param>
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataTable dt, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
@@ -345,7 +346,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dataSet">数据权限</param>
         /// <param name="fileName">文件名</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="encoding">编码类型</param>
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataSet dataSet, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
@@ -365,7 +366,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dt">数据表</param>
         /// <param name="fileName">输出文件名</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         /// <param name="separator">分隔符</param>
         public static void GetResponseCsv(DataTable dt, string fileName, Dictionary<string, string> fieldList = null, string separator = ",")
         {
@@ -384,7 +385,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dataSet">数据权限</param>
         /// <param name="fileName">输出文件名</param>
-        /// <param name="fieldList">字段列表字典</param>
+        /// <param name="fieldList">字段列表字典(字段,描述)</param>
         public static void GetResponseCsv(DataSet dataSet, string fileName, Dictionary<string, string> fieldList = null)
         {
             HttpContext.Current.Response.ClearHeaders();
@@ -412,12 +413,14 @@ namespace DotNet.Util
         /// <param name="separator">分隔符，默认为标准的英文,</param>
         /// <param name="firstLineIsHeader">第一行是否为表头，默认为否</param>
         /// <param name="encoding">编码类型</param>
-        /// <returns>DataTable自定义列名或以C0-CN开头的列名</returns>
-        public static DataTable ToDataTable(string fileName, string separator = ",", bool firstLineIsHeader = false, Encoding encoding = null)
+        /// <param name="fieldList">字段列表字典(csv字段(无表头用C1,C2,C3,..格式),DataTable字段)</param>
+        /// <param name="fieldListOnly">仅按照字段列表字典导入</param>
+        /// <returns>DataTable自定义列名或以C1-CN开头的列名</returns>
+        public static DataTable ToDataTable(string fileName, string separator = ",", bool firstLineIsHeader = false, Encoding encoding = null, Dictionary<string, string> fieldList = null, bool fieldListOnly = false)
         {
             var dt = new DataTable();
             var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var sr = new StreamReader(fs, encoding ?? Encoding.UTF8);
+            var sr = new StreamReader(fs, encoding ?? EncodingUtil.Detect(fs));
             //记录每次读取的一行记录
             var line = "";
             //记录每行记录中的各字段内容
@@ -428,6 +431,8 @@ namespace DotNet.Util
             //字段是否已经添加
             var isColumnAdded = false;
 
+            //字段和列的对应关系，仅从指定列导入时会用到
+            var dicFieldIndex = new Dictionary<string, int>();
             //逐行读取CSV中的数据
             while ((line = sr.ReadLine()) != null)
             {
@@ -439,40 +444,104 @@ namespace DotNet.Util
                     firstLineIsHeader = false;
                     isColumnAdded = true;
                     headColumnCount = GetLength(arr, separator);
-                    //创建列
-                    for (int i = 0; i < headColumnCount; i++)
+                    #region 生成DataTable数据列
+                    //根据指定列名创建
+                    if (fieldList != null && fieldListOnly)
                     {
-                        var dc = new DataColumn(ReadSpecialCharacter(arr, i, separator));
-                        dt.Columns.Add(dc);
+                        foreach (var field in fieldList)
+                        {
+                            var dc = new DataColumn(field.Value);
+                            dt.Columns.Add(dc);
+                            //映射CSV的字段列索引
+                            for (int i = 0; i < headColumnCount; i++)
+                            {
+                                if (ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, i);
+                            }
+                        }
                     }
+                    else
+                    {
+                        //根据第一行实际列数，进行匹配映射来创建
+                        for (int i = 0; i < headColumnCount; i++)
+                        {
+                            var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList));
+                            dt.Columns.Add(dc);
+                        }
+                    }
+                    #endregion
                 }
                 else
                 {
+                    #region 生成DataTable数据列
                     if (!isColumnAdded)
                     {
                         isColumnAdded = true;
                         headColumnCount = GetLength(arr, separator);
-                        //创建列
-                        for (int i = 0; i < headColumnCount; i++)
+                        //根据指定列名创建
+                        if (fieldList != null && fieldListOnly)
                         {
-                            var dc = new DataColumn("C" + i);
-                            dt.Columns.Add(dc);
+                            var fieldListIndex = 0;
+                            foreach (var field in fieldList)
+                            {
+                                var dc = new DataColumn(field.Value);
+                                dt.Columns.Add(dc);
+                                //按照顺序映射列索引
+                                dicFieldIndex.Add(field.Value, fieldListIndex);
+                                fieldListIndex++;
+                            }
+                        }
+                        else
+                        {
+                            //根据第一行实际列数，进行匹配映射来创建
+                            for (int i = 0; i < headColumnCount; i++)
+                            {
+                                var dc = new DataColumn(ConvertColumnName("C" + (i + 1), fieldList: fieldList));
+                                dt.Columns.Add(dc);
+                            }
                         }
                     }
+                    #endregion
+
                     lineColumnCount = GetLength(arr, separator);
-                    if (lineColumnCount == headColumnCount)
+                    //
+                    //生成指定列或自动创建列
+                    #region 写数据行
+                    if (fieldList != null && fieldListOnly)
                     {
-                        var dr = dt.NewRow();
-                        for (int j = 0; j < lineColumnCount; j++)
+                        if (lineColumnCount > 0)
                         {
-                            dr[j] = ReadSpecialCharacter(arr, j, separator);
+                            var dr = dt.NewRow();
+                            foreach (var d in dicFieldIndex)
+                            {
+                                for (int j = 0; j < lineColumnCount; j++)
+                                {
+                                    if (j == d.Value)
+                                    {
+                                        dr[d.Key] = ReadSpecialCharacter(arr, j, separator);
+                                    }
+                                }
+                            }
+                            dt.Rows.Add(dr);
                         }
-                        dt.Rows.Add(dr);
                     }
                     else
                     {
-                        LogUtil.WriteLog(line + "\r\n");
+                        //此行的列数要跟表头的列数一致才认为有效
+                        if (lineColumnCount == headColumnCount)
+                        {
+                            var dr = dt.NewRow();
+                            for (int j = 0; j < lineColumnCount; j++)
+                            {
+                                dr[j] = ReadSpecialCharacter(arr, j, separator);
+                            }
+                            dt.Rows.Add(dr);
+                        }
+                        else
+                        {
+                            LogUtil.WriteLog("headColumnCount:" + headColumnCount + ",lineColumnCount:" + lineColumnCount + "line:" + line, "CsvUtil.InvalidLine");
+                        }
                     }
+                    #endregion
                 }
             }
 
@@ -482,7 +551,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region
+        #region ReadSpecialCharacter 读取CSV特殊字符
         /// <summary>
         /// 读取CSV特殊字符
         /// </summary>
@@ -523,7 +592,13 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region
+        #region GetLength 获取长度
+        /// <summary>
+        /// 获取长度
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         private static int GetLength(string[] arr, string separator)
         {
             var result = arr.Length;
@@ -555,6 +630,26 @@ namespace DotNet.Util
                 }
             }
             return result;
+        }
+        #endregion
+
+        #region 列名转换
+        /// <summary>
+        /// ConvertColumnName
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="fieldList">字段列表字典(csv字段(无表头用C1,C2,C3,..格式),DataTable字段)</param>
+        /// <returns></returns>
+        private static string ConvertColumnName(string columnName, Dictionary<string, string> fieldList = null)
+        {
+            if (fieldList != null)
+            {
+                if (fieldList.ContainsKey(columnName))
+                {
+                    columnName = fieldList[columnName];
+                }
+            }
+            return columnName;
         }
         #endregion
     }
