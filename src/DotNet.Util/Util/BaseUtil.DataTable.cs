@@ -97,6 +97,30 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region Filter对数据表进行过滤
+        /// <summary>
+        /// 对数据表进行过滤
+        /// </summary>
+        /// <param name="dt">数据表</param>
+        /// <param name="fieldName">字段名</param>
+        /// <param name="fieldValue">字段值</param>
+        /// <returns>数据权限</returns>
+        public static DataTable Filter(DataTable dt, string fieldName, string fieldValue)
+        {
+            var dtNew = dt.Clone();
+            var filterExpression = string.Empty;
+            if (!string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
+            {
+                filterExpression = fieldName + " = '" + fieldValue + "'";
+                DataRow[] row = dt.Select(filterExpression);
+                for (int i = 0; i < row.Length; i++)
+                {
+                    dtNew.ImportRow(row[i]);
+                }
+            }            
+            return dtNew;
+        }
+        #endregion
 
         #region public static DataTable SetFilter(DataTable dt, string fieldName, string fieldValue, bool equals = false) 对数据表进行过滤
         /// <summary>
@@ -190,7 +214,7 @@ namespace DotNet.Util
             {
                 if (ReflectionUtil.GetProperty(t, fieldName).ToString().Equals(fieldValue))
                 {
-                    result =ReflectionUtil.GetProperty(t, targetField).ToString();
+                    result = ReflectionUtil.GetProperty(t, targetField).ToString();
                     break;
                 }
             }
@@ -288,7 +312,8 @@ namespace DotNet.Util
         public static int SetPropertyDyn(dynamic lstT, string fieldName, string fieldValue, string targetField, object targetValue)
         {
             var result = 0;
-            for (var i = 0; i < lstT.Count; i++) {
+            for (var i = 0; i < lstT.Count; i++)
+            {
                 var t = lstT[i];
                 if (ReflectionUtil.GetProperty(t, fieldName).ToString().Equals(fieldValue))
                 {
@@ -297,7 +322,7 @@ namespace DotNet.Util
                     result++;
                     // break;
                 }
-            }            
+            }
             return result;
         }
         #endregion

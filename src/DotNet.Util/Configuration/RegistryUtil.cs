@@ -155,7 +155,7 @@ namespace DotNet.Util
             BaseSystemInfo.BusinessDbConnection = GetValue("BusinessDbConnection");
             BaseSystemInfo.UserCenterDbConnection = GetValue("UserCenterDbConnection");
 
-            BaseSystemInfo.BusinessDbType = DbUtil.GetDbType(GetValue("DbType"));
+            BaseSystemInfo.BusinessDbType = DbTypeUtil.GetDbType(GetValue("DbType"));
             BaseSystemInfo.RegisterKey = GetValue("RegisterKey");
         }
         #endregion

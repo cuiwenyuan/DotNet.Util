@@ -38,8 +38,8 @@ namespace DotNet.Util
             ServiceUserName = BaseSystemInfo.ServiceUserName;
             ServicePassword = BaseSystemInfo.ServicePassword;
             // CurrentLanguage = BaseSystemInfo.CurrentLanguage;
-			// 张祈璟20130619添加，为wcf取消延迟绑定
-			GetSystemCode();
+            // 张祈璟20130619添加，为wcf取消延迟绑定
+            GetSystemCode();
         }
 
         /// <summary>
@@ -59,7 +59,8 @@ namespace DotNet.Util
                 url = url.Replace("{UserName}", UserName);
                 url = url.Replace("{NickName}", NickName);
                 url = url.Replace("{Password}", Password);
-                url = url.Replace("{UserId}", Id);
+                url = url.Replace("{Id}", Id);
+                url = url.Replace("{UserId}", UserId.ToString());
                 url = url.Replace("{OpenId}", OpenId);
                 url = url.Replace("{CompanyId}", CompanyId);
                 url = url.Replace("{CompanyCode}", CompanyCode);
@@ -85,7 +86,7 @@ namespace DotNet.Util
                     }
                 }
             }
-            
+
             return url;
         }
 
@@ -110,12 +111,22 @@ namespace DotNet.Util
 
         private string _id = string.Empty;
         /// <summary>
-        /// 用户主键
+        /// 用户编号字符串(未登录用户为空)
         /// </summary>
         public virtual string Id
         {
             get => _id;
             set => _id = value;
+        }
+
+        private int _userId = 0;
+        /// <summary>
+        /// 用户编号(未登录用户为0)
+        /// </summary>
+        public virtual int UserId
+        {
+            get => _userId;
+            set => _userId = value;
         }
 
         private string _serviceUserName = "Troy.Cui";
@@ -186,6 +197,16 @@ namespace DotNet.Util
         {
             get => _code;
             set => _code = value;
+        }
+
+        private string _employeeNumber = string.Empty;
+        /// <summary>
+        /// 工号
+        /// </summary>
+        public virtual string EmployeeNumber
+        {
+            get => _employeeNumber;
+            set => _employeeNumber = value;
         }
 
         private string _companyId = null;

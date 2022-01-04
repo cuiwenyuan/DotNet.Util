@@ -21,7 +21,7 @@ namespace DotNet.Util
         /// <param name="extraInfo"></param>
         public static void WriteException(Exception exception, string extraInfo = null)
         {
-            WriteLog(exception, extraInfo, "Exception");
+            WriteLog(exception, extraInfo, folder: "Exception");
         }
 
         /// <summary>
@@ -30,21 +30,21 @@ namespace DotNet.Util
         /// <param name="exception">异常信息</param>
         /// <param name="folder">日志目录（默认根目录下的Log文件夹）</param>
         /// <param name="prefix">日志文件前缀</param>
-        /// <param name="specificName">指定名称</param>
-        /// <param name="suffix">日志文件后缀（默认为log）</param>
-        public static void WriteLog(string exception, string folder = "Log", string prefix = null, string specificName = null, string suffix = "log")
+        /// <param name="suffix">日志文件后缀</param>
+        /// <param name="extension">日志文件后缀(默认为log)</param>
+        public static void WriteLog(string exception, string folder = "Log", string prefix = null, string suffix = null, string extension = "log")
         {
             if (string.IsNullOrEmpty(folder))
             {
                 folder = "Log";
             }
+            if (string.IsNullOrEmpty(extension))
+            {
+                extension = "log";
+            }
             if (string.IsNullOrEmpty(suffix))
             {
                 suffix = "log";
-            }
-            if (string.IsNullOrEmpty(specificName))
-            {
-                specificName = "log";
             }
             //var logDirectory = string.Format(@"{0}\Log\"+ folder, AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
             //Troy.Cui 2020-02-29 返回各种.NET项目的当前运行路径
@@ -55,7 +55,7 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(logDirectory);
             }
-            var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + specificName + "." + suffix;
+            var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + suffix + "." + extension;
             FileLogUtil.WriteLog(logDirectory, fileName, exception);
         }
 
@@ -66,9 +66,10 @@ namespace DotNet.Util
         /// <param name="extraInfo">额外信息</param>
         /// <param name="folder">日志目录（默认根目录下的Log文件夹）</param>
         /// <param name="prefix">日志文件前缀</param>
-        /// <param name="suffix">日志文件后缀（默认为log）</param>
+        /// <param name="suffix">日志文件后缀</param>
+        /// <param name="extension">日志文件后缀(默认为log)</param>
         /// 错误信息
-        public static void WriteLog(Exception exception, string extraInfo, string folder = "Log", string prefix = null, string suffix = "log")
+        public static void WriteLog(Exception exception, string extraInfo, string folder = "Log", string prefix = null, string suffix = "log", string extension = "log")
         {
 
             var sb = Pool.StringBuilder.Get();
@@ -81,7 +82,7 @@ namespace DotNet.Util
                 sb.Append(" Message:" + exception.Message);
                 sb.Append(" StackTrace:" + exception.StackTrace);
             }
-            WriteLog(sb.Put(), folder, prefix, suffix);
+            WriteLog(sb.Put(), folder: folder, prefix: prefix, suffix: suffix);
         }
     }
 }

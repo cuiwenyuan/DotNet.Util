@@ -61,11 +61,11 @@ namespace DotNet.Util
         /// <typeparam name="T">泛型实体T</typeparam>
         /// <param name="dr">DataReader对象</param>
         /// <returns></returns>
-        public static IList<T> ToAnyList<T>(this IDataReader dr)
+        public static List<T> ToAnyList<T>(this IDataReader dr) where T : class, new()
         {
             var ls = new List<T>();
             //获取传入的数据类型
-            var modelType = typeof(T);
+            var t = typeof(T);
             //遍历DataReader对象
             while (dr.Read())
             {
@@ -74,14 +74,14 @@ namespace DotNet.Util
                 for (var i = 0; i < dr.FieldCount; i++)
                 {
                     //判断字段值是否为空或不存在的值
-                    if (!IsNullOrDbNull(dr[i]))
+                    if (!BaseUtil.IsNullOrDbNull(dr[i]))
                     {
                         //匹配字段名
-                        var pi = modelType.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                         if (pi != null)
                         {
                             //绑定实体对象中同名的字段  
-                            pi.SetValue(entity, CheckType(dr[i], pi.PropertyType), null);
+                            pi.SetValue(entity, BaseUtil.ChangeType(dr[i], pi.PropertyType), null);
                         }
                     }
                 }
@@ -91,35 +91,6 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 对可空类型进行判断转换(*要不然会报错)
-        /// </summary>
-        /// <param name="value">DataReader字段的值</param>
-        /// <param name="conversionType">该字段的类型</param>
-        /// <returns></returns>
-        private static object CheckType(object value, Type conversionType)
-        {
-            if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                if (value == null)
-                    return null;
-                var nullableConverter = new System.ComponentModel.NullableConverter(conversionType);
-                conversionType = nullableConverter.UnderlyingType;
-            }
-            return Convert.ChangeType(value, conversionType);
-        }
-
-        /// <summary>
-        /// 判断指定对象是否是有效值
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        private static bool IsNullOrDbNull(object obj)
-        {
-            return (obj == null || (obj is DBNull)) ? true : false;
-        }
-
-
-        /// <summary>
         /// IDataReader(while (dr.Read()){}中使用)循环读取转实体(纯反射，无需定义Entity的GetFrom)
         /// </summary>
         /// <typeparam name="T">T</typeparam>
@@ -127,21 +98,28 @@ namespace DotNet.Util
         /// <returns></returns>
         public static T ToAnyEntity<T>(this IDataReader dr)
         {
-            var modelType = typeof(T);
-            var count = dr.FieldCount;
-            var entity = Activator.CreateInstance<T>();
-            for (var i = 0; i < count; i++)
+            if (dr.Read())
             {
-                if (!IsNullOrDbNull(dr[i]))
+                var t = typeof(T);
+                var count = dr.FieldCount;
+                var entity = Activator.CreateInstance<T>();
+                for (var i = 0; i < count; i++)
                 {
-                    var pi = modelType.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                    if (pi != null)
+                    if (!BaseUtil.IsNullOrDbNull(dr[i]))
                     {
-                        pi.SetValue(entity, CheckType(dr[i], pi.PropertyType), null);
+                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                        if (pi != null)
+                        {
+                            pi.SetValue(entity, BaseUtil.ChangeType(dr[i], pi.PropertyType), null);
+                        }
                     }
                 }
+                return entity;
             }
-            return entity;
+            else
+            {
+                return default(T);
+            }
         }
 
         #endregion

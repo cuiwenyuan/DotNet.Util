@@ -371,13 +371,17 @@ namespace DotNet.Util
             var propertyInfoTarget = typeTarget.GetProperties();
             foreach (var t in propertyInfoTarget)
             {
-                foreach (var t1 in propertyInfoSource)
+                foreach (var s in propertyInfoSource)
                 {
-                    if (t.Name.Equals(t1.Name))
+                    if (!s.CanRead)
+                    {
+                        continue;
+                    }
+                    if (t.Name.Equals(s.Name))
                     {
                         if (t.CanWrite)
                         {
-                            var pValue = t1.GetValue(sourceObject, null);
+                            var pValue = s.GetValue(sourceObject, null);
                             t.SetValue(targetObject, pValue, null);
                         }
                         break;
