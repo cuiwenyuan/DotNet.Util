@@ -6,9 +6,8 @@ using System;
 using System.Data;
 using System.Collections.Generic;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
 
     /// <summary>
     ///	DbUtil

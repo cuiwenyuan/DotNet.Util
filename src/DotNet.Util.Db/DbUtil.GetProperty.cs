@@ -5,10 +5,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
-
     /// <summary>
     ///	DbUtil
     /// 通用基类
@@ -95,10 +93,10 @@ namespace DotNet.Business
                 }
             }
 
-            var returnObject = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(parameters));
-            if (returnObject != null && returnObject != DBNull.Value)
+            var obj = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(parameters));
+            if (obj != null && obj != DBNull.Value)
             {
-                result = returnObject.ToString();
+                result = obj.ToString();
             }
 
             return result;

@@ -607,7 +607,7 @@ namespace DotNet.Business
                     var dbType = CurrentDbType.SqlServer;
                     if (!string.IsNullOrEmpty(openMasDbType))
                     {
-                        dbType = DbHelper.GetDbType(openMasDbType, CurrentDbType.SqlServer);
+                        dbType = DbTypeUtil.GetDbType(openMasDbType, CurrentDbType.SqlServer);
                     }
 
                     using (var dbHelper = DbHelperFactory.GetHelper(dbType, connectionString))

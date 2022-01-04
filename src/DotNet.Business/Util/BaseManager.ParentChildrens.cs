@@ -2,6 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using DotNet.Util;
 using System.Data;
 
 namespace DotNet.Business
