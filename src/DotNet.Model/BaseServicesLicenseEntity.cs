@@ -119,7 +119,7 @@ namespace DotNet.Model
             PublicKey = BaseUtil.ConvertToString(dr[FieldPublicKey]);
             StartTime = BaseUtil.ConvertToNullableDateTime(dr[FieldStartDate]);
             EndTime = BaseUtil.ConvertToNullableDateTime(dr[FieldEndDate]);
-            Enabled = BaseUtil.ConvertIntToBoolean(dr[FieldEnabled]);
+            Enabled = BaseUtil.ConvertToBoolean(dr[FieldEnabled]);
             Description = BaseUtil.ConvertToString(dr[FieldDescription]);
             CreateUserId = BaseUtil.ConvertToString(dr[FieldCreateUserId]);
             CreateOn = BaseUtil.ConvertToNullableDateTime(dr[FieldCreateTime]);

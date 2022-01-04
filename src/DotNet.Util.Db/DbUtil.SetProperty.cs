@@ -4,10 +4,8 @@
 
 using System.Collections.Generic;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
-
     /// <summary>
     ///	DbUtil
     /// 通用基类 设置各种属性

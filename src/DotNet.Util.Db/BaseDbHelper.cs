@@ -117,7 +117,10 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public virtual string SqlSafe(string value)
         {
-            value = value.Replace("'", "''");
+            if (!string.IsNullOrEmpty(value))
+            {
+                value = value.Replace("'", "''");
+            }
             return value;
         }
         #endregion

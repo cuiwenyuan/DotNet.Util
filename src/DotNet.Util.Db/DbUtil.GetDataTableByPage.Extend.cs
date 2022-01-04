@@ -5,10 +5,8 @@
 using System;
 using System.Data;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
-
     /// <summary>
     ///	DbUtil
     /// 通用基类
@@ -37,7 +35,7 @@ namespace DotNet.Business
         /// <param name="dbParameters"></param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
-        /// <param name="tableVersion">表版本</param>
+        /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns></returns>
         public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int tableVersion = 4)
         {

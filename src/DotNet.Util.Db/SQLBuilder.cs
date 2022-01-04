@@ -9,16 +9,15 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace DotNet.Business
+namespace DotNet.Util
 {
-    using Util;
-
     /// <summary>
     /// SQLBuilder
     /// SQL语句生成器（适合简单的添加、删除、更新等语句，可以写出编译时强类型检查的效果）
     /// 
     /// 修改记录
     /// 
+    ///     2021.11.01 版本：5.0 Troy       改进性能，采用StringBuilderPool。
     ///     2013.04.01 版本：4.0 JiRiGaLa   改进性能，采用StringBuilder。
     ///     2012.03.17 版本：3.7 zhangyi    修改注释
     ///     2010.06.20 版本：3.1 JiRiGaLa	支持Oracle序列功能改进。
@@ -492,10 +491,15 @@ namespace DotNet.Business
                 _whereSql.Append(targetFiled + " IN (" + ObjectUtil.ToList((object[])targetValue, "'") + ")");
                 return;
             }
-            // 这里需要对 null 进行处理
-            if ((targetValue == null) || ((targetValue is string) && string.IsNullOrEmpty((string)targetValue)))
+            // NULL值
+            if ((targetValue == null))
             {
                 _whereSql.Append(targetFiled + " IS NULL ");
+            }
+            // 空值
+            else if (targetValue != null && (targetValue is string) && string.IsNullOrEmpty((string)targetValue))
+            {
+                _whereSql.Append(targetFiled + " = '' ");
             }
             else
             {
@@ -653,11 +657,11 @@ namespace DotNet.Business
                 _insertValue.Put(false);
                 if (_sqlOperation == DbOperation.ReplaceInto)
                 {
-                    CommandText = "REPLACE INTO " + _tableName + "(" + sbField.Put() + ") VALUES(" + sbValue.Put() + ") ";
+                    CommandText = "REPLACE INTO " + _tableName + " (" + sbField.Put() + ") VALUES (" + sbValue.Put() + ") ";
                 }
                 else
                 {
-                    CommandText = "INSERT INTO " + _tableName + "(" + sbField.Put() + ") VALUES(" + sbValue.Put() + ") ";
+                    CommandText = "INSERT INTO " + _tableName + " (" + sbField.Put() + ") VALUES (" + sbValue.Put() + ") ";
                 }
                 // 采用了自增量的方式
                 if (Identity)
