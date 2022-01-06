@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>WangCaiSoft.DotNet.Util</PackageId>
+		<PackageId>Wangcaisoft.DotNet.Util</PackageId>
 		<PackageIcon>logo.128.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>DotNet.Util</AssemblyName>

@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>WangCaiSoft.DotNet.Util.Db</PackageId>
+		<PackageId>Wangcaisoft.DotNet.Util.Db</PackageId>
 		<PackageIcon>logo.128.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>DotNet.Util.Db</AssemblyName>
