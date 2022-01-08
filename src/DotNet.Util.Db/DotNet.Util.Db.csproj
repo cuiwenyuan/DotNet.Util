@@ -7,7 +7,7 @@
 		<Version>1.0.8</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
-		<PackageTags>DotNet Util Utilities</PackageTags>
+		<PackageTags>DotNet DAL Util Utilities DbHelper DbUtil</PackageTags>
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
