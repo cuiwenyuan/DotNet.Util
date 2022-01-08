@@ -149,7 +149,6 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ExecuteReaderQueryString(IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
         {
-            var reslut = string.Empty;
             var sb = Pool.StringBuilder.Get();
 
             // 2015-12-28 吉日嘎拉，简化程序，简化逻辑。
@@ -234,7 +233,7 @@ namespace DotNet.Util
                     break;
             }
 
-            return reslut;
+            return sb.Put();
         }
 
         #region public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
