@@ -149,87 +149,91 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ExecuteReaderQueryString(IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
         {
-            var reslut = string.Empty;
+            var sb = Pool.StringBuilder.Get();
 
             // 2015-12-28 吉日嘎拉，简化程序，简化逻辑。
             switch (dbHelper.CurrentDbType)
             {
                 case CurrentDbType.Oracle:
-                    reslut = "SELECT " + selectFields;
+                    sb.Append("SELECT " + selectFields);
                     if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
                     {
-                        reslut += " FROM (" + tableName + ")";
+                        sb.Append(" FROM (" + tableName + ")");
                     }
                     else
                     {
-                        reslut += " FROM " + tableName;
+                        sb.Append(" FROM " + tableName);
                     }
                     if (!string.IsNullOrEmpty(condition))
                     {
-                        reslut += " WHERE " + condition;
+                        sb.Append(" WHERE " + condition);
                     }
                     if (!string.IsNullOrEmpty(order))
                     {
-                        reslut += " ORDER BY " + order;
+                        sb.Append(" ORDER BY " + order);
                     }
                     if (topLimit > 0)
                     {
-                        reslut = "SELECT * FROM (" + reslut + ") WHERE ROWNUM < = " + topLimit;
+                        sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
                     }
                     break;
 
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    reslut = "SELECT " + selectFields;
+
                     if (topLimit > 0)
                     {
-                        reslut = "SELECT TOP " + topLimit + " " + selectFields;
-                    }
-                    if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
-                    {
-                        reslut += " FROM  (" + tableName + ")";
+                        sb.Append("SELECT TOP " + topLimit + " " + selectFields);
                     }
                     else
                     {
-                        reslut += " FROM " + tableName;
+                        sb.Append("SELECT " + selectFields);
+                    }
+                    if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
+                    {
+                        sb.Append(" FROM (" + tableName + ")");
+                    }
+                    else
+                    {
+                        sb.Append(" FROM " + tableName);
                     }
                     if (!string.IsNullOrEmpty(condition))
                     {
-                        reslut += " WHERE " + condition;
+                        sb.Append(" WHERE " + condition);
                     }
                     if (!string.IsNullOrEmpty(order))
                     {
-                        reslut += " ORDER BY " + order;
+                        sb.Append(" ORDER BY " + order);
                     }
                     break;
 
                 case CurrentDbType.MySql:
                 case CurrentDbType.SqLite:
-                    reslut = "SELECT " + selectFields;
+                    sb.Append("SELECT " + selectFields);
                     if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
                     {
-                        reslut += " FROM (" + tableName + ")";
+                        sb.Append(" FROM (" + tableName + ")");
                     }
                     else
                     {
-                        reslut += " FROM " + tableName;
+                        sb.Append(" FROM " + tableName);
                     }
                     if (!string.IsNullOrEmpty(condition))
                     {
-                        reslut += " WHERE " + condition;
+                        sb.Append(" WHERE " + condition);
                     }
                     if (!string.IsNullOrEmpty(order))
                     {
-                        reslut += " ORDER BY " + order;
+                        sb.Append(" ORDER BY " + order);
                     }
                     if (topLimit > 0)
                     {
-                        reslut += " LIMIT 0, " + topLimit;
+                        sb.Append(" LIMIT 0, " + topLimit);
                     }
                     break;
             }
 
-            return reslut;
+            return sb.Put();
         }
 
         #region public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组

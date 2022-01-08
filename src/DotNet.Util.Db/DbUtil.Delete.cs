@@ -52,11 +52,11 @@ namespace DotNet.Util
         public static int Truncate(IDbHelper dbHelper, string tableName)
         {
             var sb = Pool.StringBuilder.Get();
-            sb.Append(" TRUNCATE TABLE " + tableName);
+            sb.Append("TRUNCATE TABLE " + tableName);
             // DB2 V9.7 以后才支持这个语句
             if (dbHelper.CurrentDbType == CurrentDbType.Db2)
             {
-                sb.Append(" ALTER TABLE " + tableName + " ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE ");
+                sb.Append("ALTER TABLE " + tableName + " ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE ");
             }
             return dbHelper.ExecuteNonQuery(sb.Put());
         }

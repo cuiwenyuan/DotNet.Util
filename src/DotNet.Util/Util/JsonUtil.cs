@@ -26,7 +26,8 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
-                throw new Exception("JsonUtil.ObjectToJson(): " + ex.Message);
+                return string.Empty;
+                //throw new Exception("JsonUtil.ObjectToJson(): " + ex.Message);
             }
         }
 
@@ -125,7 +126,8 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
-                throw new Exception("jsonUtil.JsonToObject(): " + ex.Message);
+                return default(T);
+                //throw new Exception("jsonUtil.JsonToObject(): " + ex.Message);
             }
         }
 
