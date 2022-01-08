@@ -12,7 +12,7 @@
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>WangCaiSoft.DotNet.Business</PackageId>
+		<PackageId>Wangcaisoft.DotNet.Business</PackageId>
 		<PackageIcon>logo.128.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>DotNet.Business</AssemblyName>

@@ -29,13 +29,13 @@ namespace DotNet.Util
     {
         // SqlServer By StoredProcedure
 
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
         /// <summary>
         /// 使用存储过程获取分页数据
         /// </summary>
         /// <param name="dbHelper">数据源</param>
         /// <param name="recordCount">返回的记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页记录数</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
@@ -43,7 +43,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
         {
             DataTable dt = null;
             recordCount = 0;
@@ -58,7 +58,7 @@ namespace DotNet.Util
             var dbParameters = new List<IDbDataParameter>();
             var dbDataParameter = dbHelper.MakeParameter("RecordCount", recordCount, DbType.Int64, 0, ParameterDirection.Output);
             dbParameters.Add(dbDataParameter);
-            dbParameters.Add(dbHelper.MakeParameter("PageIndex", pageIndex));
+            dbParameters.Add(dbHelper.MakeParameter("PageIndex", pageNo));
             dbParameters.Add(dbHelper.MakeParameter("PageSize", pageSize));
             dbParameters.Add(dbHelper.MakeParameter("SortExpression", sortExpression));
             dbParameters.Add(dbHelper.MakeParameter("SortDire", sortDirection));
@@ -71,14 +71,14 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageIndex, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
 
         /// <summary>
         /// 分页获取指定数量的数据
         /// </summary>
         /// <param name="dbHelper">数据源</param>
         /// <param name="recordCount">获取多少条</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页记录数</param>
         /// <param name="sql"></param>
         /// <param name="dbParameters"></param>
@@ -86,7 +86,7 @@ namespace DotNet.Util
         /// <param name="sortDirection">排序</param>
         /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageIndex, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int tableVersion = 4)
+        public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int tableVersion = 4)
         {
             if (string.IsNullOrEmpty(sortExpression))
             {
@@ -96,11 +96,11 @@ namespace DotNet.Util
             {
                 sortDirection = " DESC";
             }
-            var sqlCount = recordCount - ((pageIndex - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageIndex - 1) * pageSize)).ToString();
-            // string sqlStart = (pageIndex * pageSize).ToString();
-            // string sqlEnd = ((pageIndex + 1) * pageSize).ToString();
-            var sqlStart = ((pageIndex - 1) * pageSize).ToString();
-            var sqlEnd = (pageIndex * pageSize).ToString();
+            var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
+            // string sqlStart = (pageNo * pageSize).ToString();
+            // string sqlEnd = ((pageNo + 1) * pageSize).ToString();
+            var sqlStart = ((pageNo - 1) * pageSize).ToString();
+            var sqlEnd = (pageNo * pageSize).ToString();
 
             var commandText = string.Empty;
 
@@ -108,8 +108,8 @@ namespace DotNet.Util
             {
                 case CurrentDbType.SqlServer:
                 case CurrentDbType.Db2:
-                    sqlStart = ((pageIndex - 1) * pageSize).ToString();
-                    sqlEnd = (pageIndex * pageSize).ToString();
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    sqlEnd = (pageNo * pageSize).ToString();
                     commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + " " + sortDirection + ") AS ROWNUM, " + sql.Substring(7) + " ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
                     break;
                 case CurrentDbType.Access:
@@ -128,8 +128,8 @@ namespace DotNet.Util
                     {
                         sql = " (" + sql + ") ";
                     }
-                    sqlStart = ((pageIndex - 1) * pageSize).ToString();
-                    sqlEnd = (pageIndex * pageSize).ToString();
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    sqlEnd = (pageNo * pageSize).ToString();
                     commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, sqlEnd);
                     break;
             }
@@ -139,42 +139,42 @@ namespace DotNet.Util
 
         // Oracle GetDataTableByPage
 
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageIndex, int pageSize, string conditions, string orderBy)
+        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
         /// <summary>
         /// Oracle 获取分页数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">数据来源表名</param>
         /// <param name="selectField">选择字段</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageIndex, int pageSize, string conditions, string orderBy)
+        public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
         {
-            return GetDataTableByPage(dbHelper, tableName, selectField, pageIndex, pageSize, conditions, null, orderBy);
+            return GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy);
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageIndex, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         /// <summary>
         /// Oracle 获取分页数据（防注入功能的）
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">数据来源表名</param>
         /// <param name="selectField">选择字段</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前的索引</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageIndex, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        public static DataTable GetDataTableByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         {
-            var sqlStart = ((pageIndex - 1) * pageSize).ToString();
-            var sqlEnd = (pageIndex * pageSize).ToString();
+            var sqlStart = ((pageNo - 1) * pageSize).ToString();
+            var sqlEnd = (pageNo * pageSize).ToString();
             if (currentIndex == null)
             {
                 currentIndex = string.Empty;
@@ -227,7 +227,7 @@ namespace DotNet.Util
 
 
 
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageIndex, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
+        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
         /// <summary>
         /// 获取分页数据（防注入功能的） 
         /// </summary>
@@ -235,7 +235,7 @@ namespace DotNet.Util
         /// <param name="dbHelper">dbHelper</param>
         /// <param name="tableName">数据来源表名</param>
         /// <param name="selectField">选择字段</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="dbParameters">查询参数</param>
@@ -243,7 +243,7 @@ namespace DotNet.Util
         /// <param name="maxOutPut">最大输出数量</param>
         /// <param name="showRecordCount">是否显示分页数量</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageIndex, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool? showRecordCount = true)
+        public static DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool? showRecordCount = true)
         {
             DataTable result = null;
             recordCount = 0;
@@ -254,7 +254,7 @@ namespace DotNet.Util
                     recordCount = GetCount(dbHelper, tableName, conditions, dbParameters);
                     recordCount = recordCount > maxOutPut ? (int)maxOutPut : recordCount;
                 }
-                result = GetDataTableByPage(dbHelper, tableName, selectField, pageIndex, pageSize, conditions, dbParameters, orderBy);
+                result = GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy);
             }
             return result;
         }

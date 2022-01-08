@@ -12,7 +12,7 @@
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>WangCaiSoft.DotNet.IService</PackageId>
+		<PackageId>Wangcaisoft.DotNet.IService</PackageId>
 		<PackageIcon>logo.128.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>DotNet.IService</AssemblyName>
