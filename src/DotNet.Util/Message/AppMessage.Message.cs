@@ -875,9 +875,9 @@ namespace DotNet.Util
         public static string Msg9992 = "最后修改者主键";
 
         /// <summary>
-        /// 最后修改时间
+        /// 修改时间
         /// </summary>
-        public static string Msg9993 = "最后修改时间";
+        public static string Msg9993 = "修改时间";
 
         /// <summary>
         /// 排序

@@ -171,24 +171,12 @@ namespace DotNet.Util
             // 这里是获取一个连接的详细方法
             if (string.IsNullOrEmpty(ConnectionString))
             {
-                // 是否静态数据库里已经设置了连接？
-
-                /*
-                if (!string.IsNullOrEmpty(DbHelper.ConnectionString))
-                {
-                    ConnectionString = DbHelper.ConnectionString;
-                }
-                else
-                {
-                     读取配置文件？
-                }
-                */
-
                 // 默认打开业务数据库，而不是用户中心的数据库
                 if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
                 {
                     BaseConfiguration.GetSetting();
                 }
+                //读取不到，就用用户中心数据库
                 if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
