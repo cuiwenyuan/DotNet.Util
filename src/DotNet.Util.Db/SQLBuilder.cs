@@ -328,16 +328,16 @@ namespace DotNet.Util
 
         private string GetDbNow()
         {
-            var result = string.Empty;
+            var sb = Pool.StringBuilder.Get();
             if (_dbHelper != null)
             {
-                result = _dbHelper.GetDbNow();
+                sb.Append(_dbHelper.GetDbNow());
             }
             else
             {
-                result = DbHelper.GetDbNow(_dbType);
+                sb.Append(DbHelper.GetDbNow(_dbType));
             }
-            return result;
+            return sb.Put();
         }
 
         #region public void SetDBNow(string targetFiled) 设置为当前时间
