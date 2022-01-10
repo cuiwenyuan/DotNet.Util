@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace DotNet.Util
 {
+
     /// <summary>
     ///	DbUtil
     /// 通用基类

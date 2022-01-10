@@ -28,24 +28,24 @@ namespace DotNet.Util
         /// <returns>当前日期</returns>
         public static string GetDbNow(CurrentDbType dbType)
         {
-            var result = string.Empty;
+            var sb = Pool.StringBuilder.Get();
             if (dbType == CurrentDbType.SqlServer)
             {
-                result = " GETDATE() ";
+                sb.Append(" GETDATE() ");
             }
             else if (dbType == CurrentDbType.Oracle)
             {
-                result = " SYSDATE ";
+                sb.Append(" SYSDATE ");
             }
             else if (dbType == CurrentDbType.MySql)
             {
-                result = " NOW() ";
+                sb.Append(" NOW() ");
             }
             else if (dbType == CurrentDbType.SqLite)
             {
-                result = " datetime(CURRENT_TIMESTAMP, 'localtime') ";
+                sb.Append(" datetime(CURRENT_TIMESTAMP, 'localtime') ");
             }
-            return result;
+            return sb.Put();
         }
         #endregion
 
