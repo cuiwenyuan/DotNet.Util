@@ -110,13 +110,44 @@ namespace DotNet.Util
 
             // 这里要关闭数据库才可以的
             DbDataReader dbDataReader = null;
-            if (!MustCloseConnection)
+            try
             {
-                dbDataReader = DbCommand.ExecuteReader();
+                if (!MustCloseConnection)
+                {
+                    dbDataReader = DbCommand.ExecuteReader();
+                }
+                else
+                {
+                    dbDataReader = DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
+                }
             }
-            else
+            catch (Exception e)
             {
-                dbDataReader = DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
+                var sb = Pool.StringBuilder.Get();
+                sb.Append(commandText);
+                sb.Append(" ");
+                sb.Append(commandType.ToString());
+                if (dbParameters != null)
+                {
+                    sb.Append(" dbParameters: ");
+                    foreach (var parameter in dbParameters)
+                    {
+                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                    }
+                }
+                LogUtil.WriteException(e, sb.Put());
+            }
+            finally
+            {
+                //一定不要自动关闭连接
+                //if (MustCloseConnection)
+                //{
+                //    Close();
+                //}
+                if (DbCommand.Parameters != null)
+                {
+                    DbCommand.Parameters.Clear();
+                }
             }
 
             stopwatch.Stop();
