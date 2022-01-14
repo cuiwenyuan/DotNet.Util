@@ -29,15 +29,15 @@ namespace DotNet.Business
 
     public class StaffService : IStaffService
     {
-        #region public DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizeId, string searchKey)
+        #region public DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizationId, string searchKey)
         /// <summary>
         /// 获取内部通讯录
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询内容</param>
         /// <returns>数据表</returns>
-        public DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizeId, string searchKey)
+        public DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
 
@@ -45,26 +45,26 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                dt = manager.GetAddressDataTable(organizeId, searchKey);
+                dt = manager.GetAddressDataTable(organizationId, searchKey);
                 dt.TableName = BaseStaffEntity.TableName;
             });
             return dt;
         }
         #endregion
 
-        #region public DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizeId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
+        #region public DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizationId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
         /// <summary>
         /// 获取内部通讯录
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询内容</param>
         /// <param name="recordCount"></param>
         /// <param name="pageSize">分页的条数</param>
         /// <param name="sort"></param>
         /// <param name="pageIndex">当前页数</param>
         /// <returns>数据表</returns>
-        public DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizeId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
+        public DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizationId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
             var myrecordCount = 0;
@@ -77,7 +77,7 @@ namespace DotNet.Business
                 {
                     SelectFields = "Id, Code, RealName, DepartmentName, DutyName, OfficePhone, Extension, Mobile, ShortNumber, Email, QQ, Description"
                 };
-                dt = manager.GetAddressDataTableByPage(organizeId, searchKey, out myrecordCount, pageSize, pageIndex, sort);
+                dt = manager.GetAddressDataTableByPage(organizationId, searchKey, out myrecordCount, pageSize, pageIndex, sort);
                 dt.TableName = BaseStaffEntity.TableName;
             });
             recordCount = myrecordCount;
@@ -365,15 +365,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByOrganize(BaseUserInfo BaseUserInfo, string organizeId, bool containChildren) 按公司获取员工列表
+        #region public DataTable GetDataTableByOrganize(BaseUserInfo BaseUserInfo, string organizationId, bool containChildren) 按公司获取员工列表
         /// <summary>
         /// 按公司获取员工列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织主键</param>
+        /// <param name="organizationId">组织主键</param>
         /// <param name="containChildren">含子部门</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizeId, bool containChildren)
+        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool containChildren)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -388,11 +388,11 @@ namespace DotNet.Business
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 if (containChildren)
                 {
-                    dt = manager.GetChildrenStaffs(organizeId);
+                    dt = manager.GetChildrenStaffs(organizationId);
                 }
                 else
                 {
-                    dt = manager.GetDataTableByOrganize(organizeId);
+                    dt = manager.GetDataTableByOrganize(organizationId);
                 }
                 dt.TableName = BaseStaffEntity.TableName;
             });
@@ -404,9 +404,9 @@ namespace DotNet.Business
         /// 获取下属员工
         /// </summary>
         /// <param name="userInfo"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetChildrenStaffs(BaseUserInfo userInfo, string organizeId)
+        public DataTable GetChildrenStaffs(BaseUserInfo userInfo, string organizationId)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
 
@@ -415,7 +415,7 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                dt = manager.GetChildrenStaffs(organizeId);
+                dt = manager.GetChildrenStaffs(organizationId);
                 dt.DefaultView.Sort = BaseStaffEntity.FieldSortCode;
                 dt.TableName = BaseStaffEntity.TableName;
             });
@@ -425,9 +425,9 @@ namespace DotNet.Business
         /// 获取父级下属员工
         /// </summary>
         /// <param name="userInfo"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetParentChildrenStaffs(BaseUserInfo userInfo, string organizeId)
+        public DataTable GetParentChildrenStaffs(BaseUserInfo userInfo, string organizationId)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
 
@@ -436,22 +436,22 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                dt = manager.GetParentChildrenStaffs(organizeId);
+                dt = manager.GetParentChildrenStaffs(organizationId);
                 dt.DefaultView.Sort = BaseStaffEntity.FieldSortCode;
                 dt.TableName = BaseStaffEntity.TableName;
             });
             return dt;
         }
 
-        #region public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey) 获得员工列表
+        #region public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey) 获得员工列表
         /// <summary>
         /// 获得员工列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织主键</param>
+        /// <param name="organizationId">组织主键</param>
         /// <param name="searchKey">查询</param>
         /// <returns>数据表</returns>
-        public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
 
@@ -459,7 +459,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                dt = manager.Search(organizeId, searchKey, false);
+                dt = manager.Search(organizationId, searchKey, false);
                 dt.TableName = BaseStaffEntity.TableName;
             });
             return dt;
@@ -620,15 +620,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int MoveTo(BaseUserInfo userInfo, string id, string organizeId) 移动数据
+        #region public int MoveTo(BaseUserInfo userInfo, string id, string organizationId) 移动数据
         /// <summary>
         /// 移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">组织机构主键数组</param>
-        /// <param name="organizeId">父结点主键</param>
+        /// <param name="organizationId">父结点主键</param>
         /// <returns>影响行数</returns>
-        public int MoveTo(BaseUserInfo userInfo, string id, string organizeId)
+        public int MoveTo(BaseUserInfo userInfo, string id, string organizationId)
         {
             var result = 0;
 
@@ -636,22 +636,22 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                result = manager.SetProperty(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizeId));
+                result = manager.SetProperty(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
             });
 
             return result;
         }
         #endregion
 
-        #region public int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizeId) 移动数据
+        #region public int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizationId) 移动数据
         /// <summary>
         /// 批量移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="ids">组织机构主键数组</param>
-        /// <param name="organizeId">父结点主键</param>
+        /// <param name="organizationId">父结点主键</param>
         /// <returns>影响行数</returns>
-        public int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizeId)
+        public int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizationId)
         {
             var result = 0;
 
@@ -661,7 +661,7 @@ namespace DotNet.Business
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 for (var i = 0; i < ids.Length; i++)
                 {
-                    result += manager.SetProperty(ids[i], new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizeId));
+                    result += manager.SetProperty(ids[i], new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
                 }
             });
             return result;
@@ -713,7 +713,7 @@ namespace DotNet.Business
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 result = manager.BatchSave(dt);
-                // ReturnDataTable = Staff.GetDataTableByOrganize(organizeId);
+                // ReturnDataTable = Staff.GetDataTableByOrganize(organizationId);
             });
             return result;
         }

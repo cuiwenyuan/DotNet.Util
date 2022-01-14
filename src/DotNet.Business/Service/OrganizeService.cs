@@ -467,14 +467,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizeId)
+        #region public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取内部组织机构
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构</param>
+        /// <param name="organizationId">组织机构</param>
         /// <returns>数据表</returns>
-        public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizeId)
+        public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId)
         {
             var dt = new DataTable(BaseOrganizeEntity.TableName);
 
@@ -483,7 +483,7 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetInnerOrganize(organizeId);
+                dt = manager.GetInnerOrganize(organizationId);
                 dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
                 dt.TableName = BaseOrganizeEntity.TableName;
             });
@@ -491,14 +491,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetCompanyDT(BaseUserInfo userInfo, string organizeId)
+        #region public DataTable GetCompanyDT(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取公司列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetCompanyDT(BaseUserInfo userInfo, string organizeId)
+        public DataTable GetCompanyDT(BaseUserInfo userInfo, string organizationId)
         {
             var dt = new DataTable(BaseOrganizeEntity.TableName);
 
@@ -507,7 +507,7 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetCompanyDt(organizeId);
+                dt = manager.GetCompanyDt(organizationId);
                 dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
                 dt.TableName = BaseOrganizeEntity.TableName;
             });
@@ -515,14 +515,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizeId)
+        #region public DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取部门列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构</param>
+        /// <param name="organizationId">组织机构</param>
         /// <returns>数据表</returns>
-        public DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizeId)
+        public DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizationId)
         {
             var dt = new DataTable(BaseOrganizeEntity.TableName);
 
@@ -531,7 +531,7 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetOrganizeDataTable(organizeId);
+                dt = manager.GetOrganizeDataTable(organizationId);
                 dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
                 dt.TableName = BaseOrganizeEntity.TableName;
             });
@@ -561,15 +561,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        #region public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         /// <summary>
         /// 查询组织机构
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构</param>
+        /// <param name="organizationId">组织机构</param>
         /// <param name="searchKey">查询</param>
         /// <returns>数据表</returns>
-        public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
             var dt = new DataTable(BaseOrganizeEntity.TableName);
 
@@ -578,7 +578,7 @@ namespace DotNet.Business
             {
                 // 获得组织机构列表
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.Search(searchKey, organizeId);
+                dt = manager.Search(searchKey, organizationId);
                 dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
                 dt.TableName = BaseOrganizeEntity.TableName;
             });
@@ -801,10 +801,10 @@ namespace DotNet.Business
         /// 批量移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">主键数组</param>
+        /// <param name="organizationIds">主键数组</param>
         /// <param name="parentId">父节点主键</param>
         /// <returns>影响行数</returns>
-        public int BatchMoveTo(BaseUserInfo userInfo, string[] organizeIds, string parentId)
+        public int BatchMoveTo(BaseUserInfo userInfo, string[] organizationIds, string parentId)
         {
             var result = 0;
 
@@ -812,9 +812,9 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                for (var i = 0; i < organizeIds.Length; i++)
+                for (var i = 0; i < organizationIds.Length; i++)
                 {
-                    result += manager.MoveTo(organizeIds[i], parentId);
+                    result += manager.MoveTo(organizationIds[i], parentId);
                 }
             });
             return result;

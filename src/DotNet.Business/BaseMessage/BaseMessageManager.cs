@@ -185,20 +185,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int Send(BaseMessageEntity messageEntity, string organizeId, bool saveSend = true) 按部门群发短信
+        #region public int Send(BaseMessageEntity messageEntity, string organizationId, bool saveSend = true) 按部门群发短信
         /// <summary>
         /// 按部门群发短信
         /// </summary>
         /// <param name="messageEntity">实体</param>
-        /// <param name="organizeId">部门主键</param>
+        /// <param name="organizationId">部门主键</param>
         /// <param name="saveSend"></param>
         /// <returns>影响行数</returns>
-        public int Send(BaseMessageEntity messageEntity, string organizeId, bool saveSend = true)
+        public int Send(BaseMessageEntity messageEntity, string organizationId, bool saveSend = true)
         {
             var result = 0;
             //int i = 0;
             var userManager = new BaseUserManager(UserInfo);
-            var entityList = userManager.GetChildrenUserList(organizeId);
+            var entityList = userManager.GetChildrenUserList(organizationId);
             var receiverIds = new List<string>();
             foreach (var entity in entityList)
             {
@@ -213,53 +213,53 @@ namespace DotNet.Business
         /// 批量保存
         /// </summary>
         /// <param name="receiverIds"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="roleId"></param>
         /// <param name="entity"></param>
         /// <param name="saveSend"></param>
         /// <returns></returns>
-        public int BatchSend(string[] receiverIds, string organizeId, string roleId, BaseMessageEntity entity, bool saveSend = true)
+        public int BatchSend(string[] receiverIds, string organizationId, string roleId, BaseMessageEntity entity, bool saveSend = true)
         {
-            string[] organizeIds = null;
+            string[] organizationIds = null;
             string[] roleIds = null;
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                organizeIds = new string[] { organizeId };
+                organizationIds = new string[] { organizationId };
             }
             if (!string.IsNullOrEmpty(roleId))
             {
                 roleIds = new string[] { roleId };
             }
-            return BatchSend(receiverIds, organizeIds, roleIds, entity, saveSend);
+            return BatchSend(receiverIds, organizationIds, roleIds, entity, saveSend);
         }
 
         /// <summary>
         /// 批量发送
         /// </summary>
         /// <param name="receiverId"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="roleId"></param>
         /// <param name="entity"></param>
         /// <param name="saveSend"></param>
         /// <returns></returns>
-        public int BatchSend(string receiverId, string organizeId, string roleId, BaseMessageEntity entity, bool saveSend = true)
+        public int BatchSend(string receiverId, string organizationId, string roleId, BaseMessageEntity entity, bool saveSend = true)
         {
             string[] receiverIds = null;
-            string[] organizeIds = null;
+            string[] organizationIds = null;
             string[] roleIds = null;
             if (!string.IsNullOrEmpty(receiverId))
             {
                 receiverIds = new string[] { receiverId };
             }
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                organizeIds = new string[] { organizeId };
+                organizationIds = new string[] { organizationId };
             }
             if (!string.IsNullOrEmpty(roleId))
             {
                 roleIds = new string[] { roleId };
             }
-            return BatchSend(receiverIds, organizeIds, roleIds, entity, saveSend);
+            return BatchSend(receiverIds, organizationIds, roleIds, entity, saveSend);
         }
 
         #region public int BatchSend(string[] receiverIds, string[] ids, string[] roleIds, BaseMessageEntity entity, bool saveSend  = true) 批量发送消息
@@ -267,15 +267,15 @@ namespace DotNet.Business
         /// 批量发送消息
         /// </summary>
         /// <param name="receiverIds">接收者主键组</param>
-        /// <param name="organizeIds">组织机构主键组</param>
+        /// <param name="organizationIds">组织机构主键组</param>
         /// <param name="roleIds">角色主键组</param>
         /// <param name="entity"></param>
         /// <param name="saveSend"></param>
         /// <returns>影响行数</returns>
-        public int BatchSend(string[] receiverIds, string[] organizeIds, string[] roleIds, BaseMessageEntity entity, bool saveSend = true)
+        public int BatchSend(string[] receiverIds, string[] organizationIds, string[] roleIds, BaseMessageEntity entity, bool saveSend = true)
         {
             var userManager = new BaseUserManager(UserInfo);
-            receiverIds = userManager.GetUserIds(receiverIds, organizeIds, roleIds);
+            receiverIds = userManager.GetUserIds(receiverIds, organizationIds, roleIds);
             return Send(entity, receiverIds, saveSend);
         }
         #endregion

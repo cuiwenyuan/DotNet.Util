@@ -135,10 +135,10 @@ namespace DotNet.IService
         /// 移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="parentId">父结点主键</param>
         /// <returns>影响行数</returns>
-        int MoveTo(BaseUserInfo userInfo, string organizeId, string parentId);
+        int MoveTo(BaseUserInfo userInfo, string organizationId, string parentId);
 
         /// <summary>
         /// 批量移动数据

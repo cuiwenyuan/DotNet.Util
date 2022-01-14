@@ -300,19 +300,19 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int Send(string contactId, string[] receiverIds, string[] organizeIds, string[] roleIds)
+        #region public int Send(string contactId, string[] receiverIds, string[] organizationIds, string[] roleIds)
         /// <summary>
         /// 发送联络单
         /// </summary>
         /// <param name="contactId"></param>
         /// <param name="receiverIds">接收者</param>
-        /// <param name="organizeIds">组织机构数组</param>
+        /// <param name="organizationIds">组织机构数组</param>
         /// <param name="roleIds">角色数组</param>
         /// <returns>影响行数</returns>
-        public int Send(string contactId, string[] receiverIds, string[] organizeIds, string[] roleIds)
+        public int Send(string contactId, string[] receiverIds, string[] organizationIds, string[] roleIds)
         {
             BaseUserManager userManager = new BaseUserManager(DbHelper, UserInfo);
-            receiverIds = userManager.GetUserIds(receiverIds, organizeIds, roleIds);
+            receiverIds = userManager.GetUserIds(receiverIds, organizationIds, roleIds);
 
             // 删除邮件的处理技巧、发送给部门的、发送给角色的。
             // 删除邮件的列表过滤问题解决
@@ -320,10 +320,10 @@ namespace DotNet.Business
             BaseContactDetailsEntity contactDetailsEntity = null;
 
             // 组织机构数组
-            if (organizeIds != null)
+            if (organizationIds != null)
             {
                 BaseOrganizeManager organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-                for (int i = 0; i < organizeIds.Length; i++)
+                for (int i = 0; i < organizationIds.Length; i++)
                 {
                     contactDetailsEntity = new BaseContactDetailsEntity
                     {
@@ -331,8 +331,8 @@ namespace DotNet.Business
                         Id = Guid.NewGuid().ToString("N"),
                         ContactId = contactId,
                         Category = "Organize",
-                        ReceiverId = organizeIds[i],
-                        ReceiverRealName = organizeManager.GetProperty(organizeIds[i], BaseOrganizeEntity.FieldFullName),
+                        ReceiverId = organizationIds[i],
+                        ReceiverRealName = organizeManager.GetProperty(organizationIds[i], BaseOrganizeEntity.FieldFullName),
                         IsNew = 1,
                         Enabled = 1,
                         NewComment = 0

@@ -49,15 +49,15 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseRoleOrganizeEntity.FieldRoleId, roleId)
             };
 
-            var organizeIds = new List<string>();
+            var organizationIds = new List<string>();
             using (var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray()))
             {
                 while (dataReader.Read())
                 {
-                    organizeIds.Add(dataReader[BaseRoleOrganizeEntity.FieldOrganizeId].ToString());
+                    organizationIds.Add(dataReader[BaseRoleOrganizeEntity.FieldOrganizeId].ToString());
                 }
             }
-            result = organizeIds.ToArray();
+            result = organizationIds.ToArray();
 
             // 2015-12-08 吉日嘎拉 提高效率参数化执行
             // var dt = DbHelper.Fill(sql, dbParameters.ToArray());
@@ -101,16 +101,16 @@ namespace DotNet.Business
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="systemCode">系统编号</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>主键</returns>
-        public string AddToRole(string systemCode, string organizeId, string roleId)
+        public string AddToRole(string systemCode, string organizationId, string roleId)
         {
             var result = string.Empty;
 
             var entity = new BaseRoleOrganizeEntity
             {
-                OrganizeId = organizeId,
+                OrganizeId = organizationId,
                 RoleId = roleId,
                 Enabled = 1,
                 DeletionStateCode = 0
@@ -124,16 +124,16 @@ namespace DotNet.Business
         /// 添加到角色
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public int AddToRole(string systemCode, string[] organizeIds, string roleId)
+        public int AddToRole(string systemCode, string[] organizationIds, string roleId)
         {
             var result = 0;
 
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
-                AddToRole(systemCode, organizeIds[i], roleId);
+                AddToRole(systemCode, organizationIds[i], roleId);
                 result++;
             }
 
@@ -144,15 +144,15 @@ namespace DotNet.Business
         /// 移除角色成功
         /// </summary>
         /// <param name="systemCode">系统编号</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>影响行数</returns>
-        public int RemoveFormRole(string systemCode, string organizeId, string roleId)
+        public int RemoveFormRole(string systemCode, string organizationId, string roleId)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldRoleId, roleId),
-                new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldOrganizeId, organizeId)
+                new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldOrganizeId, organizationId)
             };
             var tableName = systemCode + "RoleOrganize";
             var manager = new BaseRoleOrganizeManager(DbHelper, UserInfo, tableName);
@@ -162,17 +162,17 @@ namespace DotNet.Business
         /// 从角色中删除
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public int RemoveFormRole(string systemCode, string[] organizeIds, string roleId)
+        public int RemoveFormRole(string systemCode, string[] organizationIds, string roleId)
         {
             var result = 0;
 
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
                 // 移除用户角色
-                result += RemoveFormRole(systemCode, organizeIds[i], roleId);
+                result += RemoveFormRole(systemCode, organizationIds[i], roleId);
             }
 
             return result;

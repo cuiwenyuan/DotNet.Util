@@ -90,45 +90,45 @@ namespace DotNet.Business
         /// 重置缓存
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public static string[] ResetPermissionByCache(string systemCode, string organizeId)
+        public static string[] ResetPermissionByCache(string systemCode, string organizationId)
         {
-            var key = "Permission:" + systemCode + ":Organize:" + organizeId;
+            var key = "Permission:" + systemCode + ":Organize:" + organizationId;
             CacheUtil.Remove(key);
-            return GetPermissionIdsByCache(systemCode, organizeId);
+            return GetPermissionIdsByCache(systemCode, organizationId);
         }
 
         /// <summary>
         /// 获取
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public static string[] GetPermissionIdsByCache(string systemCode, string organizeId)
+        public static string[] GetPermissionIdsByCache(string systemCode, string organizationId)
         {
             string[] result = null;
 
             var key = string.Empty;
-            key = "Permission:" + systemCode + ":Organize:" + organizeId;
-            result = CacheUtil.Cache(key, () => new BaseOrganizePermissionManager().GetPermissionIds(organizeId), true);
+            key = "Permission:" + systemCode + ":Organize:" + organizationId;
+            result = CacheUtil.Cache(key, () => new BaseOrganizePermissionManager().GetPermissionIds(organizationId), true);
             return result;
         }
 
-        #region public string[] GetPermissionIds(string organizeId) 获取组织机构的权限主键数组
+        #region public string[] GetPermissionIds(string organizationId) 获取组织机构的权限主键数组
         /// <summary>
         /// 获取组织机构的权限主键数组
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetPermissionIds(string organizeId)
+        public string[] GetPermissionIds(string organizationId)
         {
             string[] result = null;
 
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizeId),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)
             };
@@ -165,17 +165,17 @@ namespace DotNet.Business
         // 授予权限的实现部分
         //
 
-        #region private string Grant(BasePermissionManager permissionManager, string systemCode, string organizeId, string result, bool chekExists = true) 为了提高授权的运行速度
+        #region private string Grant(BasePermissionManager permissionManager, string systemCode, string organizationId, string result, bool chekExists = true) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="permissionManager">资源权限读写器</param>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="permissionId">权限主键</param>
         /// <param name="chekExists">判断是否存在</param>
         /// <returns>主键</returns>
-        private string Grant(BasePermissionManager permissionManager, string systemCode, string organizeId, string permissionId, bool chekExists = true)
+        private string Grant(BasePermissionManager permissionManager, string systemCode, string organizationId, string permissionId, bool chekExists = true)
         {
             var result = string.Empty;
 
@@ -186,7 +186,7 @@ namespace DotNet.Business
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizeId),
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
                 currentId = GetId(whereParameters);
@@ -212,7 +212,7 @@ namespace DotNet.Business
                 var resourcePermission = new BasePermissionEntity
                 {
                     ResourceCategory = BaseOrganizeEntity.TableName,
-                    ResourceId = organizeId,
+                    ResourceId = organizationId,
                     PermissionId = permissionId,
                     // 防止不允许为NULL的错误发生
                     Enabled = 1,
@@ -242,7 +242,7 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetFormula(BaseModifyRecordEntity.FieldId, "SEQ_" + BaseModifyRecordEntity.TableName + ".NEXTVAL");
             }
-            sqlBuilder.SetValue(BaseModifyRecordEntity.FieldRecordKey, organizeId);
+            sqlBuilder.SetValue(BaseModifyRecordEntity.FieldRecordKey, organizationId);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldColumnCode, permissionId);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldColumnDescription, BaseModuleManager.GetNameByCache(systemCode, permissionId));
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldOldValue, null);
@@ -257,17 +257,17 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Grant(string organizeId, string result) 组织机构授予权限
+        #region public string Grant(string organizationId, string result) 组织机构授予权限
         /// <summary>
         /// 组织机构授予权限
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="permissionId">权限主键</param>
-        public string Grant(string systemCode, string organizeId, string permissionId)
+        public string Grant(string systemCode, string organizationId, string permissionId)
         {
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            return Grant(permissionManager, systemCode, organizeId, permissionId);
+            return Grant(permissionManager, systemCode, organizationId, permissionId);
         }
         #endregion
 
@@ -275,16 +275,16 @@ namespace DotNet.Business
         /// 授权
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="permissionIds"></param>
         /// <returns></returns>
-        public int Grant(string systemCode, string organizeId, string[] permissionIds)
+        public int Grant(string systemCode, string organizationId, string[] permissionIds)
         {
             var result = 0;
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < permissionIds.Length; i++)
             {
-                Grant(permissionManager, systemCode, organizeId, permissionIds[i]);
+                Grant(permissionManager, systemCode, organizationId, permissionIds[i]);
                 result++;
             }
             return result;
@@ -294,17 +294,17 @@ namespace DotNet.Business
         /// 授权
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="permissionId"></param>
         /// <returns></returns>
-        public int Grant(string systemCode, string[] organizeIds, string permissionId)
+        public int Grant(string systemCode, string[] organizationIds, string permissionId)
         {
             var result = 0;
 
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
-                Grant(permissionManager, systemCode, organizeIds[i], permissionId);
+                Grant(permissionManager, systemCode, organizationIds[i], permissionId);
                 result++;
             }
 
@@ -315,19 +315,19 @@ namespace DotNet.Business
         /// 授权
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="permissionIds"></param>
         /// <returns></returns>
-        public int Grant(string systemCode, string[] organizeIds, string[] permissionIds)
+        public int Grant(string systemCode, string[] organizationIds, string[] permissionIds)
         {
             var result = 0;
 
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
                 for (var j = 0; j < permissionIds.Length; j++)
                 {
-                    Grant(permissionManager, systemCode, organizeIds[i], permissionIds[j]);
+                    Grant(permissionManager, systemCode, organizationIds[i], permissionIds[j]);
                     result++;
                 }
             }
@@ -340,23 +340,23 @@ namespace DotNet.Business
         //  撤销权限的实现部分
         //
 
-        #region private int Revoke(BasePermissionManager permissionManager, string systemCode, string organizeId, string result) 为了提高撤销的运行速度
+        #region private int Revoke(BasePermissionManager permissionManager, string systemCode, string organizationId, string result) 为了提高撤销的运行速度
         /// <summary>
         /// 为了提高撤销的运行速度
         /// </summary>
         /// <param name="permissionManager">资源权限读写器</param>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="permissionId">权限主键</param>
         /// <returns>影响行数</returns>
-        private int Revoke(BasePermissionManager permissionManager, string systemCode, string organizeId, string permissionId)
+        private int Revoke(BasePermissionManager permissionManager, string systemCode, string organizationId, string permissionId)
         {
             var result = 0;
 
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizeId),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
             };
             result = permissionManager.Delete(parameters);
@@ -367,7 +367,7 @@ namespace DotNet.Business
             sqlBuilder.BeginInsert(BaseModifyRecordEntity.TableName);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldTableCode, tableName);
             sqlBuilder.SetFormula(BaseModifyRecordEntity.FieldId, "SEQ_" + BaseModifyRecordEntity.TableName + ".NEXTVAL");
-            sqlBuilder.SetValue(BaseModifyRecordEntity.FieldRecordKey, organizeId);
+            sqlBuilder.SetValue(BaseModifyRecordEntity.FieldRecordKey, organizationId);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldColumnCode, permissionId);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldColumnDescription, BaseModuleManager.GetNameByCache(systemCode, permissionId));
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldOldValue, "1");
@@ -382,18 +382,18 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int Revoke(string systemCode, string organizeId, string result) 撤销组织机构权限
+        #region public int Revoke(string systemCode, string organizationId, string result) 撤销组织机构权限
         /// <summary>
         /// 撤销组织机构权限
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="permissionId">权限主键</param>
         /// <returns>影响行数</returns>
-        public int Revoke(string systemCode, string organizeId, string permissionId)
+        public int Revoke(string systemCode, string organizationId, string permissionId)
         {
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            return Revoke(permissionManager, systemCode, organizeId, permissionId);
+            return Revoke(permissionManager, systemCode, organizationId, permissionId);
         }
         #endregion
 
@@ -401,16 +401,16 @@ namespace DotNet.Business
         /// 撤回
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="permissionIds"></param>
         /// <returns></returns>
-        public int Revoke(string systemCode, string organizeId, string[] permissionIds)
+        public int Revoke(string systemCode, string organizationId, string[] permissionIds)
         {
             var result = 0;
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < permissionIds.Length; i++)
             {
-                result += Revoke(permissionManager, systemCode, organizeId, permissionIds[i]);
+                result += Revoke(permissionManager, systemCode, organizationId, permissionIds[i]);
             }
             return result;
         }
@@ -419,16 +419,16 @@ namespace DotNet.Business
         /// 撤回
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="permissionId"></param>
         /// <returns></returns>
-        public int Revoke(string systemCode, string[] organizeIds, string permissionId)
+        public int Revoke(string systemCode, string[] organizationIds, string permissionId)
         {
             var result = 0;
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
-                result += Revoke(permissionManager, systemCode, organizeIds[i], permissionId);
+                result += Revoke(permissionManager, systemCode, organizationIds[i], permissionId);
             }
             return result;
         }
@@ -437,38 +437,38 @@ namespace DotNet.Business
         /// 撤回
         /// </summary>
         /// <param name="systemCode"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="permissionIds"></param>
         /// <returns></returns>
-        public int Revoke(string systemCode, string[] organizeIds, string[] permissionIds)
+        public int Revoke(string systemCode, string[] organizationIds, string[] permissionIds)
         {
             var result = 0;
 
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
                 for (var j = 0; j < permissionIds.Length; j++)
                 {
-                    result += Revoke(permissionManager, systemCode, organizeIds[i], permissionIds[j]);
+                    result += Revoke(permissionManager, systemCode, organizationIds[i], permissionIds[j]);
                 }
             }
 
             return result;
         }
 
-        #region public int RevokeAll(string organizeId) 撤销组织机构全部权限
+        #region public int RevokeAll(string organizationId) 撤销组织机构全部权限
         /// <summary>
         /// 撤销组织机构全部权限
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int RevokeAll(string organizeId)
+        public int RevokeAll(string organizationId)
         {
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizeId)
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId)
             };
             return permissionManager.Delete(parameters);
         }

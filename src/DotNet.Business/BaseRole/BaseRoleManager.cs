@@ -210,17 +210,17 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public DataTable GetDataTableByOrganize(string organizeId) 获取列表
+        #region public DataTable GetDataTableByOrganize(string organizationId) 获取列表
         /// <summary>
         /// 获取列表
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(string organizeId)
+        public DataTable GetDataTableByOrganize(string organizationId)
         {
             var parametersList = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizeId, organizeId),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizeId, organizationId),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
             return GetDataTable(parametersList, BaseRoleEntity.FieldSortCode);
@@ -252,15 +252,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable Search(string organizeId, string searchKey,string categoryCode=null) 查询
+        #region public DataTable Search(string organizationId, string searchKey,string categoryCode=null) 查询
         /// <summary>
         /// 查询
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询字符串</param>
         /// <param name="categoryCode">分类编号</param>
         /// <returns>数据表</returns>
-        public DataTable Search(string organizeId, string searchKey, string categoryCode = null)
+        public DataTable Search(string organizationId, string searchKey, string categoryCode = null)
         {
             string sql = null;
             sql += "SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0 ";
@@ -270,9 +270,9 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetSearchString(searchKey);
                 sql += string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldRealName, searchKey, BaseRoleEntity.FieldDescription, searchKey);
             }
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                sql += string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldOrganizeId, organizeId);
+                sql += string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldOrganizeId, organizationId);
             }
             if (!string.IsNullOrEmpty(categoryCode))
             {
@@ -371,12 +371,12 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int ResetSortCode(string organizeId) 重置排序码
+        #region public int ResetSortCode(string organizationId) 重置排序码
         /// <summary>
         /// 重置排序码
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
-        public int ResetSortCode(string organizeId)
+        /// <param name="organizationId">组织机构主键</param>
+        public int ResetSortCode(string organizationId)
         {
             var result = 0;
             var dt = GetDataTable();
