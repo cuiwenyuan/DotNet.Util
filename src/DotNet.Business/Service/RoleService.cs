@@ -277,10 +277,10 @@ namespace DotNet.Business
         /// 按组织机构获取角色列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="showUser">显示用户</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizeId, bool showUser = true)
+        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool showUser = true)
         {
             var dt = new DataTable(BaseRoleEntity.TableName);
 
@@ -290,7 +290,7 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Role";
                 // 获得角色列表
                 var manager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                dt = manager.GetDataTableByOrganize(organizeId);
+                dt = manager.GetDataTableByOrganize(organizationId);
                 var userManager = new BaseUserManager(dbHelper, userInfo, tableName);
                 if (showUser)
                 {
@@ -425,10 +425,10 @@ namespace DotNet.Business
         /// 查询角色列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询字符串</param>
         /// <returns>数据表</returns>
-        public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
             var result = new DataTable(BaseRoleEntity.TableName);
 
@@ -438,7 +438,7 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Role";
                 // 获得角色列表
                 var manager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                result = manager.Search(organizeId, searchKey);
+                result = manager.Search(organizationId, searchKey);
                 result.TableName = BaseRoleEntity.TableName;
             });
 
@@ -493,9 +493,9 @@ namespace DotNet.Business
         /// 排序角色顺序
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int ResetSortCode(BaseUserInfo userInfo, string organizeId)
+        public int ResetSortCode(BaseUserInfo userInfo, string organizationId)
         {
             var result = 0;
 
@@ -504,7 +504,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Role";
                 var manager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                result = manager.ResetSortCode(organizeId);
+                result = manager.ResetSortCode(organizationId);
             });
 
             return result;

@@ -190,10 +190,10 @@ namespace DotNet.Business
                 // 这里获取用户的所有所在的部门，包括兼职的部门
                 /*
                 BaseUserManager userManager = new BaseUserManager(this.DbHelper, this.UserInfo);
-                string[] organizeIds = userManager.GetAllOrganizeIds(userId);
-                if (organizeIds != null
-                    && organizeIds.Length > 0
-                    && this.CheckUserOrganizePermission(systemCode, userId, permissionEntity.Id, organizeIds))
+                string[] organizationIds = userManager.GetAllOrganizeIds(userId);
+                if (organizationIds != null
+                    && organizationIds.Length > 0
+                    && this.CheckUserOrganizePermission(systemCode, userId, permissionEntity.Id, organizationIds))
                 {
                     return true;
                 }
@@ -204,7 +204,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        private bool CheckUserOrganizePermission(string systemCode, string userId, string permissionId, string[] organizeIds)
+        private bool CheckUserOrganizePermission(string systemCode, string userId, string permissionId, string[] organizationIds)
         {
             var result = false;
 
@@ -217,7 +217,7 @@ namespace DotNet.Business
             {
                 return false;
             }
-            if (organizeIds == null || organizeIds.Length == 0)
+            if (organizationIds == null || organizationIds.Length == 0)
             {
                 return false;
             }
@@ -230,7 +230,7 @@ namespace DotNet.Business
             }
 
             var tableName = systemCode + "Permission";
-            var ids = "(" + string.Join(",", organizeIds) + ")";
+            var ids = "(" + string.Join(",", organizationIds) + ")";
             var sql = "SELECT COUNT(*) "
                              + " FROM " + tableName
                              + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)

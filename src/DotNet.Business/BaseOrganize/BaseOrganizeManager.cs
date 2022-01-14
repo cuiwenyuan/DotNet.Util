@@ -96,14 +96,14 @@ namespace DotNet.Business
         /// <summary>
         /// 获取内部组织
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetInnerOrganize(string organizeId = null)
+        public DataTable GetInnerOrganize(string organizationId = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizeId));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizationId));
             }
             parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldIsInnerOrganize, 1));
             parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
@@ -114,14 +114,14 @@ namespace DotNet.Business
         /// <summary>
         /// 获取部门数据表
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetCompanyDt(string organizeId = null)
+        public DataTable GetCompanyDt(string organizationId = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizeId));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizationId));
             }
             parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCategoryCode, "Company"));
             parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));

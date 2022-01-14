@@ -26,14 +26,14 @@ namespace DotNet.Business
     {
         #region 组织机构权限关联关系相关
 
-        #region public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizeId)
+        #region public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取组织机构权限主键数组
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizeId)
+        public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId)
         {
             string[] result = null;
 
@@ -42,7 +42,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Permission";
                 var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
-                result = manager.GetPermissionIds(organizeId);
+                result = manager.GetPermissionIds(organizationId);
             });
             return result;
         }
@@ -76,10 +76,10 @@ namespace DotNet.Business
         /// 授予组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">组织机构主键数组</param>
+        /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="grantPermissionIds">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        public int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizeIds, string[] grantPermissionIds)
+        public int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds)
         {
             var result = 0;
 
@@ -89,9 +89,9 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Permission";
                 var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
-                if (organizeIds != null && grantPermissionIds != null)
+                if (organizationIds != null && grantPermissionIds != null)
                 {
-                    result += manager.Grant(userInfo.SystemCode, organizeIds, grantPermissionIds);
+                    result += manager.Grant(userInfo.SystemCode, organizationIds, grantPermissionIds);
                 }
             });
 
@@ -99,15 +99,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string grantPermissionId)
+        #region public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
         /// <summary>
         /// 授予组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="grantPermissionId">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string grantPermissionId)
+        public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
         {
             var result = string.Empty;
 
@@ -119,7 +119,7 @@ namespace DotNet.Business
                 // 小心异常，检查一下参数的有效性
                 if (grantPermissionId != null)
                 {
-                    result = manager.Grant(userInfo.SystemCode, organizeId, grantPermissionId);
+                    result = manager.Grant(userInfo.SystemCode, organizationId, grantPermissionId);
                 }
             });
 
@@ -132,10 +132,10 @@ namespace DotNet.Business
         /// 撤消组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">授予权限数组</param>
+        /// <param name="organizationIds">授予权限数组</param>
         /// <param name="revokePermissionIds">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        public int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizeIds, string[] revokePermissionIds)
+        public int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds)
         {
             var result = 0;
 
@@ -145,9 +145,9 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Permission";
                 var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
-                if (organizeIds != null && revokePermissionIds != null)
+                if (organizationIds != null && revokePermissionIds != null)
                 {
-                    result += manager.Revoke(userInfo.SystemCode, organizeIds, revokePermissionIds);
+                    result += manager.Revoke(userInfo.SystemCode, organizationIds, revokePermissionIds);
                 }
             });
 
@@ -186,15 +186,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string revokePermissionId)
+        #region public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
         /// <summary>
         /// 撤消组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="revokePermissionId">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string revokePermissionId)
+        public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
         {
             var result = 0;
 
@@ -206,7 +206,7 @@ namespace DotNet.Business
                 // 小心异常，检查一下参数的有效性
                 if (revokePermissionId != null)
                 {
-                    result += manager.Revoke(userInfo.SystemCode, organizeId, revokePermissionId);
+                    result += manager.Revoke(userInfo.SystemCode, organizationId, revokePermissionId);
                 }
             });
             return result;

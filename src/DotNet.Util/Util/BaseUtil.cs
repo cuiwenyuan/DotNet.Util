@@ -20,7 +20,7 @@ namespace DotNet.Util
     ///
     ///     2021-04-15 版本：4.0 Troy.Cui 移到ObjectUtil类中
     ///		2012-05-07 版本：3.7 Serwif 改进ObjectsToList(CurrentDbType DbType ,object ids) 字段值数组转换为字符串列表时，增加末尾去掉逗号功能CutLastDot(string input)
-    ///		2009.09.08 版本：4.4	JiRiGaLa 改进 GetPermissionScope(string[] organizeIds)。
+    ///		2009.09.08 版本：4.4	JiRiGaLa 改进 GetPermissionScope(string[] organizationIds)。
     ///		2008.08.29 版本：4.3	JiRiGaLa 改进 DataTableToString 的 null值处理技术。
     ///		2007.11.08 版本：4.2	JiRiGaLa 改进 DataTableToStringList 为 FieldToList。
     ///		2007.11.05 版本：4.1	JiRiGaLa 改进 GetDS、GetDataTable 功能，整体思路又上一个台阶，基类的又一次飞跃。
@@ -267,18 +267,18 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region  public static PermissionOrganizeScope GetPermissionScope(string[] organizeIds) 获取权限范围的设置
+        #region  public static PermissionOrganizeScope GetPermissionScope(string[] organizationIds) 获取权限范围的设置
         /// <summary>
         /// 获取权限范围的设置
         /// </summary>
-        /// <param name="organizeIds">有权限的组织机构</param>
+        /// <param name="organizationIds">有权限的组织机构</param>
         /// <returns>权限范围</returns>
-        public static PermissionOrganizeScope GetPermissionScope(string[] organizeIds)
+        public static PermissionOrganizeScope GetPermissionScope(string[] organizationIds)
         {
             var result = PermissionOrganizeScope.NotAllowed;
             //foreach (PermissionOrganizeScope permissionScope in (PermissionOrganizeScope[])Enum.GetValues(typeof(PermissionOrganizeScope)))
             //{
-            //    if (StringUtil.Exists(organizeIds, permissionScope.ToString()))
+            //    if (StringUtil.Exists(organizationIds, permissionScope.ToString()))
             //    {
             //        result = permissionScope;
             //        break;
@@ -288,7 +288,7 @@ namespace DotNet.Util
             foreach (var permissionScope in (PermissionOrganizeScope[])Enum.GetValues(typeof(PermissionOrganizeScope)))
             {
                 var scope = Convert.ToInt32(permissionScope);
-                if (StringUtil.Exists(organizeIds, scope.ToString()))
+                if (StringUtil.Exists(organizationIds, scope.ToString()))
                 {
                     result = permissionScope;
                     break;

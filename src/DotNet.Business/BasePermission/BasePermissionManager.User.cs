@@ -68,11 +68,11 @@ namespace DotNet.Business
                 // 3.组织机构有某个操作权限。。
                 sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseOrganize') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
-                var organizeIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 4.获取所有有这个操作权限的用户Id，而且这些用户是有效的。
                 var userManager = new BaseUserManager(DbHelper, UserInfo);
-                result = userManager.GetUserIds(userIds, organizeIds, roleIds);
+                result = userManager.GetUserIds(userIds, organizationIds, roleIds);
             }
             return result;
         }

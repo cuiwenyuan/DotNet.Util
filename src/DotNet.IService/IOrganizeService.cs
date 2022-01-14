@@ -168,25 +168,25 @@ namespace DotNet.IService
         /// 获取内部部门
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizeId);
+        DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获取公司列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetCompanyDT(BaseUserInfo userInfo, string organizeId);
+        DataTable GetCompanyDT(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获得部门的列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizeId);
+        DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 按主键获取列表
@@ -200,10 +200,10 @@ namespace DotNet.IService
         /// 搜索部门
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <param name="searchKey">查询字符</param>
         /// <returns>数据表</returns>
-        DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey);
+        DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey);
 
         /// <summary>
         /// 更新一个

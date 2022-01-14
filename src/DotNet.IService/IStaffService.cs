@@ -30,23 +30,23 @@ namespace DotNet.IService
         /// 获取内部通讯录
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询内容</param>
         /// <returns>数据表</returns>
-        DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizeId, string searchKey);
+        DataTable GetAddressDataTable(BaseUserInfo userInfo, string organizationId, string searchKey);
 
         /// <summary>
         /// 获取内部通讯录
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询内容</param>
         /// <param name="pageSize">分页的条数</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageIndex">当前页数</param>
         /// <param name="sort">排序</param>
         /// <returns>数据表</returns>
-        DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizeId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sort = null);
+        DataTable GetAddressDataTableByPage(BaseUserInfo userInfo, string organizationId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sort = null);
 
         /// <summary>
         /// 更新通讯地址
@@ -147,35 +147,35 @@ namespace DotNet.IService
         /// 获得员工列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="containChildren">含子部门</param>
         /// <returns>数据表</returns>
-        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizeId, bool containChildren);
+        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool containChildren);
 
         /// <summary>
         /// 获取子节点成员
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetChildrenStaffs(BaseUserInfo userInfo, string organizeId);
+        DataTable GetChildrenStaffs(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获取父子节点成员
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetParentChildrenStaffs(BaseUserInfo userInfo, string organizeId);
+        DataTable GetParentChildrenStaffs(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获得员工列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询</param>
         /// <returns>数据表</returns>
-        DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey);
+        DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey);
 
         /// <summary>
         /// 设置员工关联的用户
@@ -215,18 +215,18 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int MoveTo(BaseUserInfo userInfo, string id, string organizeId);
+        int MoveTo(BaseUserInfo userInfo, string id, string organizationId);
 
         /// <summary>
         /// 批量移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="ids">主键数组</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizeId);
+        int BatchMoveTo(BaseUserInfo userInfo, string[] ids, string organizationId);
 
         /// <summary>
         /// 批量保存员工

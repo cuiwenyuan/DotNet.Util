@@ -30,9 +30,9 @@ namespace DotNet.IService
         /// 获取组织机构权限主键数组
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>主键数组</returns>
-        string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizeId);
+        string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获取组织机构主键数组
@@ -46,37 +46,37 @@ namespace DotNet.IService
         /// 授予组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="grantPermissionId">授予权限</param>
         /// <returns>影响的行数</returns>
-        string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string grantPermissionId);
+        string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId);
 
         /// <summary>
         /// 授予组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">组织机构主键数组</param>
+        /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="grantPermissionIds">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizeIds, string[] grantPermissionIds);
+        int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds);
 
         /// <summary>
         /// 撤消组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">组织机构主键数组</param>
+        /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="revokePermissionIds">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizeIds, string[] revokePermissionIds);
+        int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds);
 
         /// <summary>
         /// 撤消组织机构的权限
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="revokePermissionId">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizeId, string revokePermissionId);
+        int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId);
 
         /// <summary>
         /// 清除权限

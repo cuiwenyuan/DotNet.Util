@@ -39,7 +39,6 @@ namespace DotNet.Util
                 sqlBuilder.SetValue(parameter.Key, parameter.Value);
             }
             sqlBuilder.SetWhere(whereParameters);
-            // sqlBuilder.SetDBNow(FieldUpdateTime);
             return sqlBuilder.EndUpdate();
         }
         #endregion

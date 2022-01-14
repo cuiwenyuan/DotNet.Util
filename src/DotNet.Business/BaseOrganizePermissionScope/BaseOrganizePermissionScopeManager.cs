@@ -94,15 +94,15 @@ namespace DotNet.Business
         /// <summary>
         /// 清空组织权限范围
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int ClearOrganizePermissionScope(string organizeId, string permissionCode)
+        public int ClearOrganizePermissionScope(string organizationId, string permissionCode)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizeId),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, GetIdByCode(permissionCode))
             };
 
@@ -113,14 +113,14 @@ namespace DotNet.Business
         /// <summary>
         /// 撤回所有
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public int RevokeAll(string organizeId)
+        public int RevokeAll(string organizationId)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizeId)
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId)
             };
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             return permissionScopeManager.Delete(parameters);
@@ -132,21 +132,21 @@ namespace DotNet.Business
         ////
         ////
 
-        #region public string[] GetModuleIds(string organizeId, string permissionCode) 获取员工的权限主键数组
+        #region public string[] GetModuleIds(string organizationId, string permissionCode) 获取员工的权限主键数组
         /// <summary>
         /// 获取员工的权限主键数组
         /// </summary>
-        /// <param name="organizeId">员工主键</param>
+        /// <param name="organizationId">员工主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        public string[] GetModuleIds(string organizeId, string permissionCode)
+        public string[] GetModuleIds(string organizationId, string permissionCode)
         {
             string[] result = null;
 
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizeId),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseModuleEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, GetIdByCode(permissionCode))
             };
@@ -161,23 +161,23 @@ namespace DotNet.Business
         // 授予授权范围的实现部分
         //
 
-        #region private string GrantModule(BasePermissionScopeManager manager, string id, string organizeId, string grantModuleId) 为了提高授权的运行速度
+        #region private string GrantModule(BasePermissionScopeManager manager, string id, string organizationId, string grantModuleId) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="permissionScopeManager">权限域读写器</param>
-        /// <param name="organizeId">员工主键</param>
+        /// <param name="organizationId">员工主键</param>
         /// <param name="grantModuleId">权限主键</param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns>主键</returns>
-        private string GrantModule(BasePermissionScopeManager permissionScopeManager, string organizeId, string grantModuleId, string permissionCode)
+        private string GrantModule(BasePermissionScopeManager permissionScopeManager, string organizationId, string grantModuleId, string permissionCode)
         {
             var result = string.Empty;
             var resourcePermissionScopeEntity = new BasePermissionScopeEntity
             {
                 PermissionId = GetIdByCode(permissionCode),
                 ResourceCategory = BaseOrganizeEntity.TableName,
-                ResourceId = organizeId,
+                ResourceId = organizationId,
                 TargetCategory = BaseModuleEntity.TableName,
                 TargetId = grantModuleId,
                 Enabled = 1,
@@ -187,35 +187,35 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GrantModule(string organizeId, string result) 员工授予权限
+        #region public string GrantModule(string organizationId, string result) 员工授予权限
         /// <summary>
         /// 员工授予权限
         /// </summary>
-        /// <param name="organizeId">员工主键</param>
+        /// <param name="organizationId">员工主键</param>
         /// <param name="grantModuleId">权限主键</param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns>主键</returns>
-        public string GrantModule(string organizeId, string grantModuleId, string permissionCode)
+        public string GrantModule(string organizationId, string grantModuleId, string permissionCode)
         {
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            return GrantModule(permissionScopeManager, organizeId, grantModuleId, permissionCode);
+            return GrantModule(permissionScopeManager, organizationId, grantModuleId, permissionCode);
         }
         #endregion
 
         /// <summary>
         /// 授权
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="grantModuleIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantModules(string organizeId, string[] grantModuleIds, string permissionCode)
+        public int GrantModules(string organizationId, string[] grantModuleIds, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < grantModuleIds.Length; i++)
             {
-                GrantModule(permissionScopeManager, organizeId, grantModuleIds[i], permissionCode);
+                GrantModule(permissionScopeManager, organizationId, grantModuleIds[i], permissionCode);
                 result++;
             }
             return result;
@@ -224,17 +224,17 @@ namespace DotNet.Business
         /// <summary>
         /// 授权
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="grantModuleId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantModules(string[] organizeIds, string grantModuleId, string permissionCode)
+        public int GrantModules(string[] organizationIds, string grantModuleId, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
-                GrantModule(permissionScopeManager, organizeIds[i], grantModuleId, permissionCode);
+                GrantModule(permissionScopeManager, organizationIds[i], grantModuleId, permissionCode);
                 result++;
             }
             return result;
@@ -243,19 +243,19 @@ namespace DotNet.Business
         /// <summary>
         /// 授权
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="grantModuleIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantModules(string[] organizeIds, string[] grantModuleIds, string permissionCode)
+        public int GrantModules(string[] organizationIds, string[] grantModuleIds, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
                 for (var j = 0; j < grantModuleIds.Length; j++)
                 {
-                    GrantModule(permissionScopeManager, organizeIds[i], grantModuleIds[j], permissionCode);
+                    GrantModule(permissionScopeManager, organizationIds[i], grantModuleIds[j], permissionCode);
                     result++;
                 }
             }
@@ -267,21 +267,21 @@ namespace DotNet.Business
         //  撤销授权范围的实现部分
         //
 
-        #region private int RevokeModule(BasePermissionScopeManager manager, string organizeId, string revokeModuleId, string permissionCode) 为了提高授权的运行速度
+        #region private int RevokeModule(BasePermissionScopeManager manager, string organizationId, string revokeModuleId, string permissionCode) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="permissionScopeManager">权限域读写器</param>
-        /// <param name="organizeId">员工主键</param>
+        /// <param name="organizationId">员工主键</param>
         /// <param name="revokeModuleId">权限主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键</returns>
-        private int RevokeModule(BasePermissionScopeManager permissionScopeManager, string organizeId, string revokeModuleId, string permissionCode)
+        private int RevokeModule(BasePermissionScopeManager permissionScopeManager, string organizationId, string revokeModuleId, string permissionCode)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizeId),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseModuleEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, revokeModuleId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, GetIdByCode(permissionCode))
@@ -290,35 +290,35 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int RevokeModule(string organizeId, string result) 员工撤销授权
+        #region public int RevokeModule(string organizationId, string result) 员工撤销授权
         /// <summary>
         /// 员工撤销授权
         /// </summary>
-        /// <param name="organizeId">员工主键</param>
+        /// <param name="organizationId">员工主键</param>
         /// <param name="revokeModuleId">权限主键</param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns>主键</returns>
-        public int RevokeModule(string organizeId, string revokeModuleId, string permissionCode)
+        public int RevokeModule(string organizationId, string revokeModuleId, string permissionCode)
         {
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            return RevokeModule(permissionScopeManager, organizeId, revokeModuleId, permissionCode);
+            return RevokeModule(permissionScopeManager, organizationId, revokeModuleId, permissionCode);
         }
         #endregion
 
         /// <summary>
         /// 撤回
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="revokeModuleIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeModules(string organizeId, string[] revokeModuleIds, string permissionCode)
+        public int RevokeModules(string organizationId, string[] revokeModuleIds, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < revokeModuleIds.Length; i++)
             {
-                RevokeModule(permissionScopeManager, organizeId, revokeModuleIds[i], permissionCode);
+                RevokeModule(permissionScopeManager, organizationId, revokeModuleIds[i], permissionCode);
                 result++;
             }
             return result;
@@ -327,17 +327,17 @@ namespace DotNet.Business
         /// <summary>
         /// 撤回
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="revokeModuleId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeModules(string[] organizeIds, string revokeModuleId, string permissionCode)
+        public int RevokeModules(string[] organizationIds, string revokeModuleId, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
-                RevokeModule(permissionScopeManager, organizeIds[i], revokeModuleId, permissionCode);
+                RevokeModule(permissionScopeManager, organizationIds[i], revokeModuleId, permissionCode);
                 result++;
             }
             return result;
@@ -346,19 +346,19 @@ namespace DotNet.Business
         /// <summary>
         /// 撤回
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="revokeModuleIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeModules(string[] organizeIds, string[] revokeModuleIds, string permissionCode)
+        public int RevokeModules(string[] organizationIds, string[] revokeModuleIds, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < organizeIds.Length; i++)
+            for (var i = 0; i < organizationIds.Length; i++)
             {
                 for (var j = 0; j < revokeModuleIds.Length; j++)
                 {
-                    RevokeModule(permissionScopeManager, organizeIds[i], revokeModuleIds[j], permissionCode);
+                    RevokeModule(permissionScopeManager, organizationIds[i], revokeModuleIds[j], permissionCode);
                     result++;
                 }
             }

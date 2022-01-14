@@ -161,8 +161,8 @@ namespace DotNet.Business
         {
             var sql = GetOrganizeIdsSql(systemCode, managerUserId, permissionCode);
             var dt = DbHelper.Fill(sql);
-            var organizeIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
-            return BaseUtil.GetPermissionScope(organizeIds);
+            var organizationIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.GetPermissionScope(organizationIds);
         }
 
         // 权限范围的判断
@@ -252,16 +252,16 @@ namespace DotNet.Business
         #endregion
 
 
-        #region public string[] GetOrganizeIds(string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizeIdOnly = true) 按某个权限获取组织机构 主键数组
+        #region public string[] GetOrganizeIds(string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizationIdOnly = true) 按某个权限获取组织机构 主键数组
         /// <summary>
         /// 按某个权限获取组织机构 主键数组
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="managerUserId">管理用户主键</param>
         /// <param name="permissionCode">权限编号</param>
-        /// <param name="organizeIdOnly">只返回组织机构主键</param>
+        /// <param name="organizationIdOnly">只返回组织机构主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizeIds(string systemCode, string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizeIdOnly = true)
+        public string[] GetOrganizeIds(string systemCode, string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizationIdOnly = true)
         {
             // 这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
             var sql = string.Empty;
@@ -280,12 +280,12 @@ namespace DotNet.Business
                     // edit by zgl 不默认获取子部门
                     // string[] ids = this.GetTreeResourceScopeIds(managerUserId, BaseOrganizeEntity.TableName, permissionCode, true);
                     var ids = GetTreeResourceScopeIds(systemCode, managerUserId, BaseOrganizeEntity.TableName, permissionCode, false);
-                    if (ids != null && ids.Length > 0 && organizeIdOnly)
+                    if (ids != null && ids.Length > 0 && organizationIdOnly)
                     {
                         TransformPermissionScope(managerUserId, ref ids);
                     }
                     // 这里是否应该整理，自己的公司、部门、工作组的事情？
-                    if (organizeIdOnly)
+                    if (organizationIdOnly)
                     {
                         // 这里列出只是有效地，没被删除的组织机构主键
                         if (ids != null && ids.Length > 0)
@@ -402,10 +402,10 @@ namespace DotNet.Business
             sql += ")) " + " AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "')";
 
             // 被管理部门的列表
-            var organizeIds = GetOrganizeIds(systemCode, managerUserId, permissionCode);
-            if (organizeIds.Length > 0)
+            var organizationIds = GetOrganizeIds(systemCode, managerUserId, permissionCode);
+            if (organizationIds.Length > 0)
             {
-                var organizes = string.Join(",", organizeIds);
+                var organizes = string.Join(",", organizationIds);
                 if (!string.IsNullOrEmpty(organizes))
                 {
                     // 被管理的组织机构包含的角色
@@ -550,17 +550,17 @@ namespace DotNet.Business
                      + "        AND BasePermissionScope.TargetId IS NOT NULL) ";
 
             // 被管理部门的列表
-            var organizeIds = GetOrganizeIds(systemCode, managerUserId, permissionCode, false);
-            if (organizeIds != null && organizeIds.Length > 0)
+            var organizationIds = GetOrganizeIds(systemCode, managerUserId, permissionCode, false);
+            if (organizationIds != null && organizationIds.Length > 0)
             {
                 // 是否仅仅是自己的还有点儿问题
-                if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
+                if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
                 {
                     sql += " UNION SELECT '" + UserInfo.Id + "' AS Id ";
                 }
                 else
                 {
-                    var organizes = string.Join(",", organizeIds);
+                    var organizes = string.Join(",", organizationIds);
                     if (!string.IsNullOrEmpty(organizes))
                     {
                         // 被管理的组织机构包含的用户，公司、部门、工作组

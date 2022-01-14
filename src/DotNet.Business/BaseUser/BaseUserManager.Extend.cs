@@ -30,7 +30,7 @@ namespace DotNet.Business
         /// 按条件分页高级查询(带记录状态Enabled和删除状态DeletionStateCode)
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">查看公司主键</param>
+        /// <param name="organizationId">查看公司主键</param>
         /// <param name="userId">查看用户主键</param>
         /// <param name="roleId"></param>
         /// <param name="roleIdExcluded"></param>
@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string organizeId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //用户表名
             var tableNameUser = BaseUserEntity.TableName;
@@ -76,19 +76,19 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserEntity.FieldDeleted + "  = 0 ");
             }
 
-            if (ValidateUtil.IsInt(organizeId) && int.Parse(organizeId) > 0)
+            if (ValidateUtil.IsInt(organizationId) && int.Parse(organizationId) > 0)
             {
                 //只选择当前
-                //sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " = " + organizeId + ")";
+                //sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " = " + organizationId + ")";
                 //只选择当前和下一级
                 //sb.Append(" AND " + BaseUserEntity.FieldDepartmentId 
                 //    + " IN ( SELECT " + BaseOrganizeEntity.FieldId 
                 //    + " FROM " + BaseOrganizeEntity.TableName 
-                //    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + organizeId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + organizeId + ")";
+                //    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + organizationId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + organizationId + ")";
 
                 //所有下级的都列出来
                 var organizeManager = new BaseOrganizeManager(UserInfo);
-                var ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizeId, BaseOrganizeEntity.FieldParentId);
+                var ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
