@@ -105,10 +105,10 @@ namespace DotNet.IService
         /// 按组织机构获取角色
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="showUser">显示用户</param>
         /// <returns>数据表</returns>
-        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizeId, bool showUser);
+        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool showUser);
         
         /// <summary>
         /// 获取实体
@@ -148,10 +148,10 @@ namespace DotNet.IService
         /// 查询
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询字符串</param>
         /// <returns>数据表</returns>
-        DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey);
+        DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey);
         
         /// <summary>
         /// 批量保存
@@ -183,9 +183,9 @@ namespace DotNet.IService
         /// 排序顺序
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int ResetSortCode(BaseUserInfo userInfo, string organizeId);
+        int ResetSortCode(BaseUserInfo userInfo, string organizationId);
         
         /// <summary>
         /// 获得角色中的用户主键
@@ -227,9 +227,9 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="organizeIds">组织机构主键</param>
+        /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizeIds);
+        int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds);
 
         /// <summary>
         /// 清楚角色用户关联

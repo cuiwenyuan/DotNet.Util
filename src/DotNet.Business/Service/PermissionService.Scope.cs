@@ -329,9 +329,9 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
                     // 被管理部门的列表
-                    var organizeIds = manager.GetOrganizeIds(userInfo.SystemCode, userId, permissionCode, false);
+                    var organizationIds = manager.GetOrganizeIds(userInfo.SystemCode, userId, permissionCode, false);
                     var staffManager = new BaseStaffManager(dbHelper, userInfo);
-                    dt = staffManager.GetDataTableByOrganizes(organizeIds);
+                    dt = staffManager.GetDataTableByOrganizes(organizationIds);
                     dt.TableName = BaseStaffEntity.TableName;
                 }
             });

@@ -78,11 +78,11 @@ namespace DotNet.Business
         /// 发送群组消息
         /// </summary>
         /// <param name="userInfo"></param>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="roleId"></param>
         /// <param name="contents"></param>
         /// <returns></returns>
-        public int SendGroupMessage(BaseUserInfo userInfo, string organizeId, string roleId, string contents)
+        public int SendGroupMessage(BaseUserInfo userInfo, string organizationId, string roleId, string contents)
         {
             var result = 0;
 
@@ -95,10 +95,10 @@ namespace DotNet.Business
                     //messageEntity.Id = Guid.NewGuid().ToString("N");
                     CategoryCode = MessageCategory.Send.ToString()
                 };
-                if (!string.IsNullOrEmpty(organizeId))
+                if (!string.IsNullOrEmpty(organizationId))
                 {
                     entity.FunctionCode = MessageFunction.OrganizeMessage.ToString();
-                    entity.ObjectId = organizeId;
+                    entity.ObjectId = organizationId;
                 }
                 if (!string.IsNullOrEmpty(roleId))
                 {
@@ -113,7 +113,7 @@ namespace DotNet.Business
                 {
                     Identity = true
                 };
-                result = manager.BatchSend(string.Empty, organizeId, roleId, entity, false);
+                result = manager.BatchSend(string.Empty, organizationId, roleId, entity, false);
             });
 
             return result;
@@ -147,11 +147,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="receiverIds">接受者主键数组</param>
-        /// <param name="organizeIds">组织机构主键数组</param>
+        /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="roleIds">角色主键数组</param>
         /// <param name="messageEntity">消息内容</param>
         /// <returns>影响行数</returns>
-        public int BatchSend(BaseUserInfo userInfo, string[] receiverIds, string[] organizeIds, string[] roleIds, BaseMessageEntity messageEntity)
+        public int BatchSend(BaseUserInfo userInfo, string[] receiverIds, string[] organizationIds, string[] roleIds, BaseMessageEntity messageEntity)
         {
             var result = 0;
 
@@ -160,7 +160,7 @@ namespace DotNet.Business
             {
                 var manager = new BaseMessageManager(dbHelper, userInfo);
                 //manager.Identity = false;
-                result = manager.BatchSend(receiverIds, organizeIds, roleIds, messageEntity, true);
+                result = manager.BatchSend(receiverIds, organizationIds, roleIds, messageEntity, true);
             });
 
             return result;

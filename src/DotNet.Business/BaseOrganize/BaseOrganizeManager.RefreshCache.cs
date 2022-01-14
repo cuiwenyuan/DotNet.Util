@@ -22,20 +22,20 @@ namespace DotNet.Business
         /// <summary>
         /// 刷新缓存
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public static int RefreshCache(string organizeId)
+        public static int RefreshCache(string organizationId)
         {
             var result = 0;
 
             // 2016-02-29 吉日嘎拉 强制刷新缓存
-            var organizeEntity = GetEntityByCache(organizeId, true);
+            var organizeEntity = GetEntityByCache(organizationId, true);
             if (organizeEntity != null)
             {
                 var systemCodes = BaseSystemManager.GetSystemCodes();
                 for (var i = 0; i < systemCodes.Length; i++)
                 {
-                    BaseOrganizePermissionManager.ResetPermissionByCache(systemCodes[i], organizeId);
+                    BaseOrganizePermissionManager.ResetPermissionByCache(systemCodes[i], organizationId);
                 }
             }
 

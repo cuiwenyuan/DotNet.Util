@@ -31,10 +31,10 @@ namespace DotNet.IService
         /// 按组织机构获取用户列表
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">公司主键</param>
+        /// <param name="organizationId">公司主键</param>
         /// <param name="departmentId">部门主键</param>
         /// <returns>数据表</returns>
-        string[] GetUserByOrganize(BaseUserInfo userInfo, string organizeId, string departmentId);
+        string[] GetUserByOrganize(BaseUserInfo userInfo, string organizationId, string departmentId);
 
         /// <summary>
         /// 按角色获取用户列表
@@ -58,11 +58,11 @@ namespace DotNet.IService
         /// 发送即时消息
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="roleId">角色主键</param>
         /// <param name="contents">内容</param>
         /// <returns>发送人数</returns>
-        int SendGroupMessage(BaseUserInfo userInfo, string organizeId, string roleId, string contents);
+        int SendGroupMessage(BaseUserInfo userInfo, string organizationId, string roleId, string contents);
 
         /// <summary>
         /// 发送系统提示消息
@@ -78,11 +78,11 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="receiverIds">接收者主键组</param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="roleIds">角色主键组</param>
         /// <param name="entity">消息实体</param>
         /// <returns>影响行数</returns>
-        int BatchSend(BaseUserInfo userInfo, string[] receiverIds, string[] organizeIds, string[] roleIds, BaseMessageEntity entity);
+        int BatchSend(BaseUserInfo userInfo, string[] receiverIds, string[] organizationIds, string[] roleIds, BaseMessageEntity entity);
 
         /// <summary>
         /// 广播消息

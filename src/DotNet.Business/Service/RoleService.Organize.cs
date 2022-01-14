@@ -76,9 +76,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="organizeIds">组织机构主键</param>
+        /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int AddOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizeIds)
+        public int AddOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
@@ -87,9 +87,9 @@ namespace DotNet.Business
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
                 // 小心异常，检查一下参数的有效性
-                if (organizeIds != null)
+                if (organizationIds != null)
                 {
-                    result += manager.AddToRole(userInfo.SystemCode, organizeIds, roleId);
+                    result += manager.AddToRole(userInfo.SystemCode, organizationIds, roleId);
                 }
             });
 
@@ -101,9 +101,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="organizeIds">组织机构主键</param>
+        /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizeIds)
+        public int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
@@ -111,9 +111,9 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDbWithTransaction(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                if (organizeIds != null)
+                if (organizationIds != null)
                 {
-                    result += manager.RemoveFormRole(userInfo.SystemCode, organizeIds, roleId);
+                    result += manager.RemoveFormRole(userInfo.SystemCode, organizationIds, roleId);
                 }
             });
 
@@ -145,9 +145,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="organizeIds">组织机构主键数组</param>
+        /// <param name="organizationIds">组织机构主键数组</param>
         /// <returns>影响行数</returns>
-        public int SetOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizeIds)
+        public int SetOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
@@ -157,9 +157,9 @@ namespace DotNet.Business
                 var manager = new BaseOrganizeManager(dbHelper, userInfo);
                 result = manager.ClearOrganize(userInfo.SystemCode, roleId);
                 // 小心异常，检查一下参数的有效性
-                if (organizeIds != null)
+                if (organizationIds != null)
                 {
-                    result += manager.AddToRole(userInfo.SystemCode, organizeIds, roleId);
+                    result += manager.AddToRole(userInfo.SystemCode, organizationIds, roleId);
                 }
             });
 

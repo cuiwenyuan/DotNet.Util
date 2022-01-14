@@ -15,7 +15,7 @@ namespace DotNet.Util
     /// 修改记录
     ///
     ///     2015.07.06 版本：Troy.Cui进行扩展。
-    ///		2012.04.05 版本：1.0	JiRiGaLa 改进 GetPermissionScope(string[] organizeIds)。
+    ///		2012.04.05 版本：1.0	JiRiGaLa 改进 GetPermissionScope(string[] organizationIds)。
     ///	
     /// <author>
     ///		<name>Troy.Cui</name>

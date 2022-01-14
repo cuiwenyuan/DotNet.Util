@@ -55,24 +55,24 @@ namespace DotNet.Business
         /// 获得有某个权限的所有用户主键
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="permissionCode">操作权限编号</param>
         /// <param name="permissionName">操作权限名称</param>
         /// <returns>用户主键数组</returns>
-        public string[] GetUserIds(string systemCode, string organizeId, string permissionCode, string permissionName = null)
+        public string[] GetUserIds(string systemCode, string organizationId, string permissionCode, string permissionName = null)
         {
             // 若不存在就需要自动能增加一个操作权限项
             var permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
-            return GetUserIdsByPermissionId(organizeId, permissionId);
+            return GetUserIdsByPermissionId(organizationId, permissionId);
         }
 
         /// <summary>
         /// 获取用户编号数组
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <param name="permissionId"></param>
         /// <returns></returns>
-        public string[] GetUserIdsByPermissionId(string organizeId, string permissionId)
+        public string[] GetUserIdsByPermissionId(string organizationId, string permissionId)
         {
             DataTable dt = null;
             string[] result = null;
@@ -82,12 +82,12 @@ namespace DotNet.Business
                 var sql = string.Empty;
 
                 // 1.本人直接就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizeId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
                 var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseRole') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizeId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseRole') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 

@@ -18,7 +18,7 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    ///     2011.08.01 版本：1.8 张广梁     修改public DataTable GetAddressPageDT(out int recordCount, string organizeId, string searchKey, int pageSize, int pageIndex) 中的错误
+    ///     2011.08.01 版本：1.8 张广梁     修改public DataTable GetAddressPageDT(out int recordCount, string organizationId, string searchKey, int pageSize, int pageIndex) 中的错误
     ///     2009.09.29 版本: 1.7 JiRiGaLa   已删除的进行过滤。
     ///     2008.05.07 版本: 1.6 JiRiGaLa   主键进行整理。
     ///     2007.07.19 版本: 1.5 JiRiGaLa   GetListByDepartment 函数改进。
@@ -288,11 +288,11 @@ namespace DotNet.Business
         /// <summary>
         /// 按工作组、部门、公司获取员工列表
         /// </summary>
-        /// <param name="organizeIds">主键数组</param>
+        /// <param name="organizationIds">主键数组</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganizes(string[] organizeIds)
+        public DataTable GetDataTableByOrganizes(string[] organizationIds)
         {
-            var organizeList = string.Join(",", organizeIds);
+            var organizeList = string.Join(",", organizationIds);
             var sql = "    SELECT " + BaseStaffEntity.TableName + ".* "
                                 + " FROM " + BaseStaffEntity.TableName
                                 + " WHERE " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDeleted + " = 0 "
@@ -305,16 +305,16 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByOrganize(string organizeId)
+        #region public DataTable GetDataTableByOrganize(string organizationId)
         /// <summary>
         /// 获取部门员工
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(string organizeId)
+        public DataTable GetDataTableByOrganize(string organizationId)
         {
-            var organizeIds = new string[] { organizeId };
-            return GetDataTableByOrganizes(organizeIds);
+            var organizationIds = new string[] { organizationId };
+            return GetDataTableByOrganizes(organizationIds);
         }
         #endregion
 
@@ -403,22 +403,22 @@ namespace DotNet.Business
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="userName"></param>
         /// <param name="enabled"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public DataTable SearchByOrganizeIds(string[] organizeIds, string userName, string enabled, string role)
+        public DataTable SearchByOrganizeIds(string[] organizationIds, string userName, string enabled, string role)
         {
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
                                 + " FROM " + BaseStaffEntity.TableName
                                 + " WHERE 1=1 ";
 
             // 这里要注意系统安全隐患
-            if (organizeIds != null)
+            if (organizationIds != null)
             {
                 // 可以管理的部门
-                var organizes = string.Join(",", organizeIds);
+                var organizes = string.Join(",", organizationIds);
                 sql += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN (" + organizes + ") ";
                 sql += "     OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + organizes + ") ";
                 sql += "     OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + organizes + ") ";
@@ -468,14 +468,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetAddressDataTable(string organizeId = null, string searchKey = null) 获取打印列表
+        #region public DataTable GetAddressDataTable(string organizationId = null, string searchKey = null) 获取打印列表
         /// <summary>
         /// 获取列表
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">关键字</param>
         /// <returns>数据表</returns>
-        public DataTable GetAddressDataTable(string organizeId = null, string searchKey = null)
+        public DataTable GetAddressDataTable(string organizationId = null, string searchKey = null)
         {
             // 因为Access中不支持分页，故此操作
             if (BaseSystemInfo.UserCenterDbType == CurrentDbType.Access)
@@ -509,14 +509,14 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "B ON " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + "      ON " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " = OT.Id ";
-            if (string.IsNullOrEmpty(organizeId))
+            if (string.IsNullOrEmpty(organizationId))
             {
                 sql += " WHERE ((" + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1) OR (" + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldIsInnerOrganize + " =1)) ";
             }
             else
             {
-                sql += " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizeId + "'"
-                + " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizeId + "') ";
+                sql += " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
+                + " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ";
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -540,18 +540,18 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetAddressDataTableByPage(string organizeId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null) 获取打印列表
+        #region public DataTable GetAddressDataTableByPage(string organizationId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null) 获取打印列表
         /// <summary>
         /// 获取列表 HJC
         /// </summary>
         /// <param name="recordCount">记录总数</param>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询字符</param>
         /// <param name="pageSize">分页的条数</param>
         /// <param name="sort"></param>
         /// <param name="pageIndex">当前页数</param>
         /// <returns>数据表</returns>
-        public DataTable GetAddressDataTableByPage(string organizeId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
+        public DataTable GetAddressDataTableByPage(string organizationId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 100, string sort = null)
         {
             // 因为Access中不支持分页，故此操作 假设行 1 //xtzwd
             if (BaseSystemInfo.UserCenterDbType == CurrentDbType.Access)
@@ -583,14 +583,14 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "A ON " + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
                             + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "B ON " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
-            if (string.IsNullOrEmpty(organizeId))
+            if (string.IsNullOrEmpty(organizationId))
             {
                 sql += " WHERE ((" + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1) OR (" + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldIsInnerOrganize + " =1)) ";
             }
             else
             {
-                sql += " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizeId + "'"
-                + " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizeId + "') ";
+                sql += " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
+                + " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ";
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -624,15 +624,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable Search(string organizeId, string searchKey, bool deletionStateCode) 查询
+        #region public DataTable Search(string organizationId, string searchKey, bool deletionStateCode) 查询
         /// <summary>
         /// 查询
         /// </summary>
-        /// <param name="organizeId">组织机构主键</param>
+        /// <param name="organizationId">组织机构主键</param>
         /// <param name="searchKey">查询字符串</param>
         /// <param name="deletionStateCode">是否删除</param>
         /// <returns>数据表</returns>
-        public DataTable Search(string organizeId, string searchKey, bool deletionStateCode)
+        public DataTable Search(string organizationId, string searchKey, bool deletionStateCode)
         {
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
@@ -642,9 +642,9 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " ON " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON  ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")";
-            if (!string.IsNullOrEmpty(organizeId))
+            if (!string.IsNullOrEmpty(organizationId))
             {
-                sql += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizeId + "' OR " + BaseStaffEntity.FieldCompanyId + " = '" + organizeId + "')";
+                sql += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "' OR " + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "')";
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -667,37 +667,37 @@ namespace DotNet.Business
         /// <summary>
         /// 获取下属员工
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetChildrenStaffs(string organizeId)
+        public DataTable GetChildrenStaffs(string organizationId)
         {
             var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-            string[] organizeIds = null;
+            string[] organizationIds = null;
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    var organizeCode = GetCodeById(organizeId);
-                    organizeIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    var organizeCode = GetCodeById(organizationId);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizeIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizeId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
                     break;
             }
-            return GetDataTableByOrganizes(organizeIds);
+            return GetDataTableByOrganizes(organizationIds);
         }
 
         /// <summary>
         /// 获取上级下的所有下属
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetParentChildrenStaffs(string organizeId)
+        public DataTable GetParentChildrenStaffs(string organizationId)
         {
             var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-            var organizeCode = organizeManager.GetCodeById(organizeId);
-            var organizeIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
-            return GetDataTableByOrganizes(organizeIds);
+            var organizeCode = organizeManager.GetCodeById(organizationId);
+            var organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+            return GetDataTableByOrganizes(organizationIds);
         }
 
         #region public DataTable GetDataTable()

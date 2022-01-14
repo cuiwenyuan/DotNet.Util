@@ -54,19 +54,19 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
             };
             var organizeManager = new BaseOrganizeManager(UserInfo);
-            var organizeId = organizeManager.GetId(parameters);
-            if (string.IsNullOrEmpty(organizeId))
+            var organizationId = organizeManager.GetId(parameters);
+            if (string.IsNullOrEmpty(organizationId))
             {
                 return result;
             }
             // 用户组织机构关联关系
-            var organizeIds = GetAllOrganizeIds(userId);
-            if (organizeIds == null || organizeIds.Length == 0)
+            var organizationIds = GetAllOrganizeIds(userId);
+            if (organizationIds == null || organizationIds.Length == 0)
             {
                 return result;
             }
             // 用户的部门是否存在这些部门里
-            result = StringUtil.Exists(organizeIds, organizeId);
+            result = StringUtil.Exists(organizationIds, organizationId);
             return result;
         }
 
@@ -355,10 +355,10 @@ namespace DotNet.Business
         }
         #endregion
 
-        private string GetUserSql(string[] organizeIds, bool idOnly = false)
+        private string GetUserSql(string[] organizationIds, bool idOnly = false)
         {
             var field = idOnly ? BaseUserEntity.FieldId : "*";
-            var organizeList = string.Join(",", organizeIds);
+            var organizeList = string.Join(",", organizationIds);
             var sql = "SELECT " + field
                 + " FROM " + BaseUserEntity.TableName
                 // 从用户表里去找
@@ -387,11 +387,11 @@ namespace DotNet.Business
         /// <summary>
         /// 按工作组、部门、公司获用户列表
         /// </summary>
-        /// <param name="organizeIds">主键数组</param>
+        /// <param name="organizationIds">主键数组</param>
         /// <returns>数据表</returns>
-        public List<BaseUserEntity> GetListByOrganizes(string[] organizeIds)
+        public List<BaseUserEntity> GetListByOrganizes(string[] organizationIds)
         {
-            var sql = GetUserSql(organizeIds, false);
+            var sql = GetUserSql(organizationIds, false);
             using (var dr = DbHelper.ExecuteReader(sql))
             {
                 return GetList<BaseUserEntity>(dr);
@@ -402,11 +402,11 @@ namespace DotNet.Business
         /// <summary>
         /// 根据组织获取数据表
         /// </summary>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <returns></returns>
-        public DataTable GetDataTableByOrganizes(string[] organizeIds)
+        public DataTable GetDataTableByOrganizes(string[] organizationIds)
         {
-            var sql = GetUserSql(organizeIds, false);
+            var sql = GetUserSql(organizationIds, false);
             return DbHelper.Fill(sql);
         }
 
@@ -414,10 +414,10 @@ namespace DotNet.Business
         /// 获取用户编号
         /// </summary>
         /// <param name="userIds"></param>
-        /// <param name="organizeIds"></param>
+        /// <param name="organizationIds"></param>
         /// <param name="roleIds"></param>
         /// <returns></returns>
-        public string[] GetUserIds(string[] userIds, string[] organizeIds, string[] roleIds)
+        public string[] GetUserIds(string[] userIds, string[] organizationIds, string[] roleIds)
         {
             /*
             // 要注意不能重复发信息，只能发一次。
@@ -447,9 +447,9 @@ namespace DotNet.Business
 
             string[] companyUsers = null;
 
-            if (organizeIds != null && organizeIds.Length > 0)
+            if (organizationIds != null && organizationIds.Length > 0)
             {
-                var sql = GetUserSql(organizeIds, true);
+                var sql = GetUserSql(organizationIds, true);
                 var dt = DbHelper.Fill(sql);
                 companyUsers = BaseUtil.FieldToArray(dt, BaseUserEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
             }
@@ -487,12 +487,12 @@ namespace DotNet.Business
                     + " WHERE " + BaseOrganizeEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + departmentId + ")";
                 */
                 var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-                var organizeIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
-                if (organizeIds != null && organizeIds.Length > 0)
+                var organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                if (organizationIds != null && organizationIds.Length > 0)
                 {
-                    sql += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizeIds) + ")"
-                     + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizeIds) + ")"
-                     + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizeIds) + "))";
+                    sql += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
+                     + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
+                     + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizationIds) + "))";
                 }
             }
             var dbParameters = new List<IDbDataParameter>();
@@ -520,47 +520,47 @@ namespace DotNet.Business
         /// <summary>
         /// 获取下级的用户清单
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public List<BaseUserEntity> GetChildrenUserList(string organizeId)
+        public List<BaseUserEntity> GetChildrenUserList(string organizationId)
         {
-            string[] organizeIds = null;
+            string[] organizationIds = null;
             var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    var organizeCode = organizeManager.GetCodeById(organizeId);
-                    organizeIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    var organizeCode = organizeManager.GetCodeById(organizationId);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizeIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizeId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
                     break;
             }
-            return GetListByOrganizes(organizeIds);
+            return GetListByOrganizes(organizationIds);
         }
 
         /// <summary>
         /// 获取下级的用户表
         /// </summary>
-        /// <param name="organizeId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetChildrenUserDataTable(string organizeId)
+        public DataTable GetChildrenUserDataTable(string organizationId)
         {
-            string[] organizeIds = null;
+            string[] organizationIds = null;
             var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    var organizeCode = organizeManager.GetCodeById(organizeId);
-                    organizeIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    var organizeCode = organizeManager.GetCodeById(organizationId);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizeIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizeId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
                     break;
             }
-            return GetDataTableByOrganizes(organizeIds);
+            return GetDataTableByOrganizes(organizationIds);
         }
     }
 }

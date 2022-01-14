@@ -88,10 +88,10 @@ namespace DotNet.IService
         /// 搜索部门
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">主键</param>
+        /// <param name="organizationId">主键</param>
         /// <param name="searchKey">查询字符</param>
         /// <returns>数据表</returns>
-        DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey);
+        DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey);
 
         /// <summary>
         /// 更新一个

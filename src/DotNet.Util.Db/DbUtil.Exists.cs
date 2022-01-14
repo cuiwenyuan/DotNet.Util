@@ -92,7 +92,7 @@ namespace DotNet.Util
                 sb.Append(" WHERE " + condition);
             }
             var obj = dbHelper.ExecuteScalar(sb.Put(), dbParameters);
-            if (obj != null)
+            if (obj != null && obj != DBNull.Value)
             {
                 result = Convert.ToInt32(obj.ToString());
             }
@@ -111,6 +111,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Exists(IDbHelper dbHelper, string tableName)
         {
+            var result = false;
             var sb = Pool.StringBuilder.Get();
             if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
             {
@@ -128,8 +129,12 @@ namespace DotNet.Util
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = '{0}'", tableName));
             }
-            var result = dbHelper.ExecuteScalar(sb.Put());
-            return Convert.ToInt32(result?.ToString()) > 0;
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null && obj != DBNull.Value)
+            {
+                result = Convert.ToInt32(obj.ToString()) > 0;
+            }
+            return result;
         }
         #endregion
 

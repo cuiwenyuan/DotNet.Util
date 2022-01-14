@@ -133,47 +133,47 @@ namespace DotNet.Business
                 {
                     // 从小到大的顺序进行显示，防止错误发生
                     var userPermissionScopeManager = new BaseUserScopeManager(DbHelper, UserInfo);
-                    var organizeIds = userPermissionScopeManager.GetOrganizeIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
+                    var organizationIds = userPermissionScopeManager.GetOrganizeIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
 
                     // 没有任何数据权限
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.NotAllowed).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.NotAllowed).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = NULL ) ";
                     }
                     // 按详细设定的数据
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.ByDetails).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.ByDetails).ToString()))
                     {
                         var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);;
                         var userIds = permissionScopeManager.GetUserIds(UserInfo.SystemCode, UserInfo.Id, permissionCode);
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " IN (" + string.Join(",", userIds) + ")) ";
                     }
                     // 自己的数据，仅本人
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = " + UserInfo.Id + ") ";
                     }
                     // 用户所在工作组数据
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.UserWorkgroup).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserWorkgroup).ToString()))
                     {
                         // condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldWorkgroupId + " = " + this.UserInfo.WorkgroupId + ") ";
                     }
                     // 用户所在部门数据
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.UserDepartment).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserDepartment).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId + " = " + UserInfo.DepartmentId + ") ";
                     }
                     // 用户所在分支机构数据
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.UserSubCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserSubCompany).ToString()))
                     {
                         // condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSubCompanyId + " = '" + this.UserInfo.SubCompanyId + "') ";
                     }
                     // 用户所在公司数据
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.UserCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserCompany).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " = '" + UserInfo.CompanyId + "') ";
                     }
                     // 全部数据，这里就不用设置过滤条件了
-                    if (StringUtil.Exists(organizeIds, ((int)PermissionOrganizeScope.AllData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.AllData).ToString()))
                     {
                     }
                 }

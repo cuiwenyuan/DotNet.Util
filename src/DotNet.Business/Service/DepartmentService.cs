@@ -238,15 +238,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        #region public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         /// <summary>
         /// 查询组织机构
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeId">组织机构</param>
+        /// <param name="organizationId">组织机构</param>
         /// <param name="searchKey">查询</param>
         /// <returns>数据表</returns>
-        public DataTable Search(BaseUserInfo userInfo, string organizeId, string searchKey)
+        public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
             var dt = new DataTable(BaseDepartmentEntity.TableName);
 
@@ -415,10 +415,10 @@ namespace DotNet.Business
         /// 批量移动数据
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="organizeIds">主键数组</param>
+        /// <param name="organizationIds">主键数组</param>
         /// <param name="parentId">父节点主键</param>
         /// <returns>影响行数</returns>
-        public int BatchMoveTo(BaseUserInfo userInfo, string[] organizeIds, string parentId)
+        public int BatchMoveTo(BaseUserInfo userInfo, string[] organizationIds, string parentId)
         {
             var result = 0;
 
@@ -426,9 +426,9 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseDepartmentManager(dbHelper, userInfo);
-                for (var i = 0; i < organizeIds.Length; i++)
+                for (var i = 0; i < organizationIds.Length; i++)
                 {
-                    result += manager.MoveTo(organizeIds[i], parentId);
+                    result += manager.MoveTo(organizationIds[i], parentId);
                 }
             });
             return result;
