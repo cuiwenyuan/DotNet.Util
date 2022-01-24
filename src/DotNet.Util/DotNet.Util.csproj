@@ -4,7 +4,7 @@
 		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 utilities(partial but great majority support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.18</Version>
+		<Version>1.0.19</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -21,8 +21,8 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<AssemblyVersion>5.6.2022.0110</AssemblyVersion>
-		<FileVersion>5.6.2022.0110</FileVersion>
+		<AssemblyVersion>5.6.2022.0124</AssemblyVersion>
+		<FileVersion>5.6.2022.0124</FileVersion>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
@@ -57,6 +57,7 @@
 		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 		<PackageReference Include="System.Management" Version="5.0.0" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net40'">
 		<Reference Include="Microsoft.CSharp" />
@@ -66,6 +67,7 @@
 		<Reference Include="System.Web" />
 		<Reference Include="System.Web.Extensions" />
 		<PackageReference Include="System.Net.Http" Version="2.0.20710" />
+		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
 		<Reference Include="Microsoft.CSharp" />
@@ -76,6 +78,7 @@
 		<Reference Include="System.Web" />
 		<Reference Include="System.Web.Extensions" />
 		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 </Project>
