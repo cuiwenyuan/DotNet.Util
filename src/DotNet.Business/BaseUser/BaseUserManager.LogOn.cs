@@ -43,7 +43,7 @@ namespace DotNet.Business
         /// <summary>
         /// 是否根据OpenId登录
         /// </summary>
-        public bool IsLogOnByOpenId = false;
+        public bool IsLogonByOpenId = false;
 
         /// <summary>
         /// 当前子系统是否加密了用户密码
@@ -58,7 +58,7 @@ namespace DotNet.Business
         /// <summary>
         /// 登录验证的表对应的表
         /// </summary>
-        public string UserLogOnTable = "BaseUserLogOn";
+        public string UserLogonTable = "BaseUserLogon";
 
         /// <summary>
         /// 对应的缓存服务区分
@@ -141,9 +141,9 @@ namespace DotNet.Business
         /// <param name="password">密码</param>
         /// <param name="ipAddress">ip地址</param>
         /// <returns>登录情况</returns>
-        public UserLogOnResult CallLimit(string userName, string password, string ipAddress)
+        public UserLogonResult CallLimit(string userName, string password, string ipAddress)
         {
-            UserLogOnResult result = null;
+            UserLogonResult result = null;
 
             // 2016-04-13 吉日嘎拉 IP登录限制，防止暴力破解
             if (!string.IsNullOrEmpty(ipAddress))
@@ -158,7 +158,7 @@ namespace DotNet.Business
                 //    // 2016-04-13 吉日嘎拉 用户名登录限制，防止暴力破解
                 //    if (PooledRedisHelper.CallLimit("u:" + userName, 1, 20))
                 //    {
-                //        result = new UserLogOnResult();
+                //        result = new UserLogonResult();
                 //        result.StatusCode = Status.UserNameLimit.ToString();
                 //        result.StatusMessage = Status.UserNameLimit.ToDescription();
                 //        return result;
@@ -174,7 +174,7 @@ namespace DotNet.Business
                 //    // 2016-04-13 吉日嘎拉 密码登录限制，防止暴力破解
                 //    if (PooledRedisHelper.CallLimit("p:" + password, 1, 20))
                 //    {
-                //        result = new UserLogOnResult();
+                //        result = new UserLogonResult();
                 //        result.StatusCode = Status.PasswordLimit.ToString();
                 //        result.StatusMessage = Status.PasswordLimit.ToDescription();
                 //        return result;
@@ -186,7 +186,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByNickName(string nickName, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
+        #region public UserLogonResult LogonByNickName(string nickName, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
         /// <summary>
         /// 进行登录操作
         /// </summary>
@@ -204,9 +204,9 @@ namespace DotNet.Business
         /// <param name="targetApplication"></param>
         /// <param name="targetIp"></param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByNickName(string nickName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false, bool checkMacAddress = true, string sourceType = null, string targetApplication = null, string targetIp = null)
+        public UserLogonResult LogonByNickName(string nickName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false, bool checkMacAddress = true, string sourceType = null, string targetApplication = null, string targetIp = null)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             //int errorMark = 0;
 
             var ipAddressName = string.Empty;
@@ -244,7 +244,7 @@ namespace DotNet.Business
                 // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
                 if (BaseSystemInfo.CheckPasswordStrength)
                 {
-                    result.StatusCode = Status.ErrorLogOn.ToString();
+                    result.StatusCode = Status.ErrorLogon.ToString();
                 }
                 else
                 {
@@ -275,7 +275,7 @@ namespace DotNet.Business
                     //errorMark = 3;
                     userEntity = BaseEntity.Create<BaseUserEntity>(dt.Rows[0]);
                     //errorMark = 4;
-                    result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, false, checkMacAddress, sourceType, targetApplication, targetIp);
+                    result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, false, checkMacAddress, sourceType, targetApplication, targetIp);
                 }
                 else if (dt != null && dt.Rows.Count > 1)
                 {
@@ -298,7 +298,7 @@ namespace DotNet.Business
                 result.StatusCode = Status.SystemCodeError.ToString();
                 result.StatusMessage = ex.Message;
 
-                //string writeMessage = "BaseUserManager.LogOnByNickName:发生时间:" + DateTime.Now
+                //string writeMessage = "BaseUserManager.LogonByNickName:发生时间:" + DateTime.Now
                 //    + System.Environment.NewLine + "errorMark = " + errorMark.ToString()
                 //    + System.Environment.NewLine + "Message:" + ex.Message
                 //    + System.Environment.NewLine + "Source:" + ex.Source
@@ -313,7 +313,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByNickNameByCache(string nickName, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
+        #region public UserLogonResult LogonByNickNameByCache(string nickName, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
         /// <summary>
         /// 唯一用户名登陆登录操作 缓存
         /// </summary>
@@ -329,9 +329,9 @@ namespace DotNet.Business
         /// <param name="checkMacAddress"></param>
         /// <param name="sourceType"></param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByNickNameByCache(string nickName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false, bool checkMacAddress = true, string sourceType = null)
+        public UserLogonResult LogonByNickNameByCache(string nickName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false, bool checkMacAddress = true, string sourceType = null)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             var errorMark = 0;
 
             var ipAddressName = string.Empty;
@@ -369,7 +369,7 @@ namespace DotNet.Business
                 // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
                 if (BaseSystemInfo.CheckPasswordStrength)
                 {
-                    result.StatusCode = Status.ErrorLogOn.ToString();
+                    result.StatusCode = Status.ErrorLogon.ToString();
                 }
                 else
                 {
@@ -382,7 +382,7 @@ namespace DotNet.Business
                 {
                     // 进行登录校验
                     errorMark = 4;
-                    result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, false, checkMacAddress);
+                    result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, false, checkMacAddress);
                 }
                 else
                 {
@@ -396,7 +396,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogOnByNickNameByCache:发生时间:" + DateTime.Now
+                var writeMessage = "BaseUserManager.LogonByNickNameByCache:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -411,7 +411,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByCompanyByCode
+        #region LogonByCompanyByCode
         /// <summary>
         /// 按公司编号、用户编号进行登录
         /// </summary>
@@ -419,9 +419,9 @@ namespace DotNet.Business
         /// <param name="userCode">用户编号</param>
         /// <param name="userEntity">用户实体</param>
         /// <returns>登录信息</returns>
-        public UserLogOnResult LogOnByCompanyByCode(string companyCode, string userCode, out BaseUserEntity userEntity)
+        public UserLogonResult LogonByCompanyByCode(string companyCode, string userCode, out BaseUserEntity userEntity)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var errorMark = 0;
             userEntity = null;
@@ -448,7 +448,7 @@ namespace DotNet.Business
                 var companyId = string.Empty;
 
                 errorMark = 1;
-                companyId = BaseOrganizeManager.GetIdByCodeByCache(companyCode);
+                companyId = BaseOrganizationManager.GetIdByCodeByCache(companyCode);
                 if (string.IsNullOrEmpty(companyId))
                 {
                     result.StatusCode = Status.CompanyNotFound.ToString();
@@ -489,7 +489,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogOnByCompanyByCode:发生时间:" + DateTime.Now
+                var writeMessage = "BaseUserManager.LogonByCompanyByCode:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -504,7 +504,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByCompany
+        #region LogonByCompany
         ///  <summary>
         /// 公司名称，用户名，密码登录
         /// 2016-09-18 吉日嘎拉 按网点的id进行登录
@@ -521,7 +521,7 @@ namespace DotNet.Business
         ///  <param name="validateUserOnly"></param>
         ///  <param name="checkMacAddress"></param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByCompany(string companyName, string userName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
+        public UserLogonResult LogonByCompany(string companyName, string userName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
             if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
@@ -529,7 +529,7 @@ namespace DotNet.Business
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
 
-            var result = new UserLogOnResult
+            var result = new UserLogonResult
             {
                 StatusCode = "Error",
                 StatusMessage = "请用唯一用户名登录、若不知道唯一用户名、请向公司的管理员索取。"
@@ -563,7 +563,7 @@ namespace DotNet.Business
 
             if (BaseSystemInfo.CheckPasswordStrength)
             {
-                result.StatusCode = Status.ErrorLogOn.ToString();
+                result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
@@ -610,7 +610,7 @@ namespace DotNet.Business
             {
                 userEntity = BaseEntity.Create<BaseUserEntity>(dt);
                 // 用户登录
-                result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             else
             {
@@ -621,7 +621,7 @@ namespace DotNet.Business
                                  + " AND " + BaseUserEntity.FieldEnabled + " = 1 "
                                  //Troy 20160520一句话判断管理员 start
                                  + " AND " + BaseUserEntity.FieldIsAdministrator + " = 1 "
-                                 //+ " AND id IN (SELECT resourceid FROM basepermission WHERE resourcecategory = 'BaseUser' AND permissionid IN (SELECT id FROM basemodule WHERE code = 'LogOnAllCompany' AND enabled = 1 AND deletionstatecode = 0)) "
+                                 //+ " AND id IN (SELECT resourceid FROM basepermission WHERE resourcecategory = 'BaseUser' AND permissionid IN (SELECT id FROM basemodule WHERE code = 'LogonAllCompany' AND enabled = 1 AND deletionstatecode = 0)) "
                                  //Troy 20160520一句话判断管理员 end
                                  + " AND (" + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName)
                                             + " OR " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName) + ")";
@@ -640,22 +640,22 @@ namespace DotNet.Business
                     userEntity = BaseEntity.Create<BaseUserEntity>(dt);
                     //bool logOnAllCompany = true;
                     // var permissionManager = new BasePermissionManager();
-                    // logOnAllCompany = permissionManager.IsAuthorized(userEntity.Id, "LogOnAllCompany", "登录所有网点权限");
+                    // logOnAllCompany = permissionManager.IsAuthorized(userEntity.Id, "LogonAllCompany", "登录所有网点权限");
                     //Troy 20160520没有组织机构无所谓啦 start
                     //if (logOnAllCompany)
                     //{
                     //    // 用户登录
-                    //    BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByNameByCache(companyName);
+                    //    BaseOrganizationEntity organizeEntity = BaseOrganizationManager.GetEntityByNameByCache(companyName);
                     //    if (organizeEntity != null)
                     //    {
                     //        userEntity.CompanyId = organizeEntity.Id.ToString();
                     //        userEntity.CompanyName = organizeEntity.FullName;
-                    //        result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                    //        result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
                     //    }
 
                     //}
 
-                    result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                    result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
                     //Troy 20160520没有组织机构无所谓啦 end
                 }
             }
@@ -664,7 +664,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByCompanyByCode
+        #region LogonByCompanyByCode
         /// <summary>
         /// 公司编号，用户编号，密码登录
         /// </summary>
@@ -683,9 +683,9 @@ namespace DotNet.Business
         /// <param name="targetApplication"></param>
         /// <param name="targetIp"></param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByCompanyByCode(string companyCode, string userCode, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = false, string sourceType = null, string targetApplication = null, string targetIp = null)
+        public UserLogonResult LogonByCompanyByCode(string companyCode, string userCode, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = false, string sourceType = null, string targetApplication = null, string targetIp = null)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
             if (!string.IsNullOrEmpty(ipAddress) && BaseSystemInfo.OnInternet)
@@ -708,14 +708,14 @@ namespace DotNet.Business
             // 2015-11-11 吉日嘎拉 是否获取到了用户信息
             BaseUserEntity userEntity = null;
 
-            result = LogOnByCompanyByCode(companyCode, userCode, out userEntity);
+            result = LogonByCompanyByCode(companyCode, userCode, out userEntity);
 
             if (userEntity != null)
             {
                 // 2016-04-27 吉日嘎拉 用这个登录，登录的是按编号登录的，不是按电脑的用户名登录的
                 userEntity.NickName = userCode;
                 // 用户登录
-                result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress, sourceType, targetApplication, targetIp);
+                result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress, sourceType, targetApplication, targetIp);
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
 
@@ -723,7 +723,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByVerificationCode
+        #region LogonByVerificationCode
         /// <summary>
         /// 公司编号，用户编号，验证码登录
         /// </summary>
@@ -738,9 +738,9 @@ namespace DotNet.Business
         /// <param name="validateUserOnly"></param>
         /// <param name="checkMacAddress"></param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByVerificationCode(string companyCode, string userCode, string verificationCode, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool validateUserOnly = false, bool checkMacAddress = false)
+        public UserLogonResult LogonByVerificationCode(string companyCode, string userCode, string verificationCode, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool validateUserOnly = false, bool checkMacAddress = false)
         {
-            return LogOnByVerificationCode(companyCode, userCode, verificationCode, openId, systemCode, ipAddress, macAddress, computerName, false, validateUserOnly, checkMacAddress);
+            return LogonByVerificationCode(companyCode, userCode, verificationCode, openId, systemCode, ipAddress, macAddress, computerName, false, validateUserOnly, checkMacAddress);
         }
 
         /// <summary>
@@ -758,9 +758,9 @@ namespace DotNet.Business
         /// <param name="validateUserOnly"></param>
         /// <param name="checkMacAddress"></param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByVerificationCode(string companyCode, string userCode, string verificationCode, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = false, bool validateUserOnly = false, bool checkMacAddress = false)
+        public UserLogonResult LogonByVerificationCode(string companyCode, string userCode, string verificationCode, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = false, bool validateUserOnly = false, bool checkMacAddress = false)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
             if (!string.IsNullOrEmpty(ipAddress) && BaseSystemInfo.OnInternet)
@@ -782,7 +782,7 @@ namespace DotNet.Business
 
             // 2015-11-11 吉日嘎拉 是否获取到了用户信息
             BaseUserEntity userEntity = null;
-            result = LogOnByCompanyByCode(companyCode, userCode, out userEntity);
+            result = LogonByCompanyByCode(companyCode, userCode, out userEntity);
             if (userEntity != null)
             {
                 // 2015-11-11 吉日嘎拉 进行手机验证
@@ -802,7 +802,7 @@ namespace DotNet.Business
                 // 用户登录
                 var password = string.Empty;
                 checkUserPassword = false;
-                result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
 
@@ -810,7 +810,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByUserNameOnly
+        #region LogonByUserNameOnly
         /// <summary>
         /// 近用于LDAP集成登录或其它特殊用途
         /// </summary>
@@ -818,11 +818,11 @@ namespace DotNet.Business
         /// <param name="userInfo"></param>
         /// <param name="userName">用户名</param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByUserNameOnly(string systemCode, BaseUserInfo userInfo, string userName)
+        public UserLogonResult LogonByUserNameOnly(string systemCode, BaseUserInfo userInfo, string userName)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             // 先侦测是否在线
-            //userLogOnManager.CheckOnLine();
+            //userLogonManager.CheckOnline();
             // 然后获取用户密码
             var userManager = new BaseUserManager(userInfo)
             {
@@ -835,14 +835,14 @@ namespace DotNet.Business
 
             if (userEntity != null)
             {
-                var baseUserLogOnManager = new BaseUserLogOnManager(userInfo);
+                var baseUserLogonManager = new BaseUserLogonManager(userInfo);
                 //获取密码
-                var userLogOnEntity = baseUserLogOnManager.GetEntity(userEntity.Id);
-                var password = userLogOnEntity.UserPassword;
+                var userLogonEntity = baseUserLogonManager.GetEntity(userEntity.Id);
+                var password = userLogonEntity.UserPassword;
                 //再进行登录，这里密码不能是AD的密码，所以不检验密码
-                result = userManager.LogOnByUserName(userName, password, systemCode, null, null, null, false, false);
+                result = userManager.LogonByUserName(userName, password, systemCode, null, null, null, false, false);
                 //可以登录，但不建议，没有登录日志等
-                //result = userManager.LogOnByOpenId(openId, string.Empty, string.Empty);
+                //result = userManager.LogonByOpenId(openId, string.Empty, string.Empty);
             }
             // 登录时会自动记录进行日志记录，所以不需要进行重复日志记录
             //BaseLogManager.Instance.Add(userInfo, this.serviceName, MethodBase.GetCurrentMethod());
@@ -851,7 +851,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region LogOnByUserName
+        #region LogonByUserName
         /// <summary>
         /// 进行登录操作
         /// </summary>
@@ -864,9 +864,9 @@ namespace DotNet.Business
         /// <param name="checkUserPassword">是否要检查用户密码</param>
         /// <param name="getOpenIdOnly"></param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByUserName(string userName, string password, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false)
+        public UserLogonResult LogonByUserName(string userName, string password, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool getOpenIdOnly = false)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             //Troy.Cui 2018-10-06
             if (!string.IsNullOrWhiteSpace(ipAddress))
             {
@@ -896,13 +896,13 @@ namespace DotNet.Business
 
             /*
             #if (!DEBUG)
-            if (BaseSystemInfo.OnLineLimit > 0)
+            if (BaseSystemInfo.OnlineLimit > 0)
             {
-                if (userLogOnManager.CheckOnLineLimit())
+                if (userLogonManager.CheckOnlineLimit())
                 {
-                    this.StatusCode = Status.ErrorOnLineLimit.ToString();
+                    this.StatusCode = Status.ErrorOnlineLimit.ToString();
                     this.StatusMessage = this.GetStateMessage(this.StatusCode);
-                    // BaseLogManager.Instance.Add(userName, RealName, "LogOn", AppMessage.BaseUserManager, "LogOn", AppMessage.BaseUserManager_LogOn, userName, ipAddress, AppMessage.MSG0089 + BaseSystemInfo.OnLineLimit.ToString());
+                    // BaseLogManager.Instance.Add(userName, RealName, "Logon", AppMessage.BaseUserManager, "Logon", AppMessage.BaseUserManager_Logon, userName, ipAddress, AppMessage.MSG0089 + BaseSystemInfo.OnlineLimit.ToString());
                     return result;
                 }
             }
@@ -913,8 +913,8 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
-                result.StatusCode = Status.ErrorLogOn.ToString();
-                result.StatusMessage = Status.ErrorLogOn.ToDescription();
+                result.StatusCode = Status.ErrorLogon.ToString();
+                result.StatusMessage = Status.ErrorLogon.ToDescription();
             }
             else
             {
@@ -982,7 +982,7 @@ namespace DotNet.Business
                     //增加用户名大小写判断 Troy.Cui 2020.07.20
                     if ((!BaseSystemInfo.UserNameMatchCase && userEntity.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)) || (BaseSystemInfo.UserNameMatchCase && userEntity.UserName.Equals(userName, StringComparison.Ordinal)))
                     {
-                        result = LogOnByEntity(userEntity, password, null, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword);
+                        result = LogonByEntity(userEntity, password, null, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword);
                     }
                 }
             }
@@ -1004,7 +1004,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByEmail(string email, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
+        #region public UserLogonResult LogonByEmail(string email, string password, string openId = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
         /// <summary>
         /// 进行登录操作
         /// </summary>
@@ -1019,7 +1019,7 @@ namespace DotNet.Business
         /// <param name="validateUserOnly"></param>
         /// <param name="checkMacAddress"></param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByEmail(string email, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
+        public UserLogonResult LogonByEmail(string email, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
             if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
@@ -1027,7 +1027,7 @@ namespace DotNet.Business
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
 
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             var realname = string.Empty;
             if (UserInfo != null)
             {
@@ -1047,7 +1047,7 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
-                result.StatusCode = Status.ErrorLogOn.ToString();
+                result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
@@ -1069,13 +1069,13 @@ namespace DotNet.Business
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 var userEntity = GetEntity(id);
-                result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             return result;
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByMobile(string mobile, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
+        #region public UserLogonResult LogonByMobile(string mobile, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true) 进行登录操作
         /// <summary>
         /// 进行登录操作
         /// </summary>
@@ -1090,7 +1090,7 @@ namespace DotNet.Business
         /// <param name="validateUserOnly"></param>
         /// <param name="checkMacAddress"></param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByMobile(string mobile, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
+        public UserLogonResult LogonByMobile(string mobile, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
             if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
@@ -1098,7 +1098,7 @@ namespace DotNet.Business
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
 
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
             var realname = string.Empty;
             if (UserInfo != null)
             {
@@ -1118,7 +1118,7 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
-                result.StatusCode = Status.ErrorLogOn.ToString();
+                result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
@@ -1141,13 +1141,13 @@ namespace DotNet.Business
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 var userEntity = GetEntity(id);
-                result = LogOnByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
+                result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
             }
             return result;
         }
         #endregion
 
-        #region LogOnByOpenId
+        #region LogonByOpenId
         /// <summary>
         /// 根据OpenId登录
         /// </summary>
@@ -1157,9 +1157,9 @@ namespace DotNet.Business
         /// <param name="macAddress"></param>
         /// <param name="computerName"></param>
         /// <returns></returns>
-        public UserLogOnResult LogOnByOpenId(string openId, string systemCode, string ipAddress = null, string macAddress = null, string computerName = null)
+        public UserLogonResult LogonByOpenId(string openId, string systemCode, string ipAddress = null, string macAddress = null, string computerName = null)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
             if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
@@ -1167,7 +1167,7 @@ namespace DotNet.Business
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
 
-            IsLogOnByOpenId = true;
+            IsLogonByOpenId = true;
 
             // 用户没有找到状态
             result.StatusCode = Status.UserNotFound.ToString();
@@ -1180,31 +1180,31 @@ namespace DotNet.Business
                 // parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0));
                 if (!string.IsNullOrEmpty(openId))
                 {
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId));
+                    parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId));
                 }
                 // 若是单点登录，那就不能判断ip地址，因为不是直接登录，是间接登录
                 if (!string.IsNullOrEmpty(ipAddress))
                 {
-                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldIPAddress, ipAddress));
+                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                 }
                 if (!string.IsNullOrEmpty(macAddress))
                 {
-                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldMACAddress, macAddress));
+                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
                 }
-                var dt = new BaseUserLogOnManager(DbHelper, UserInfo).GetDataTable(parameters);
+                var dt = new BaseUserLogonManager(DbHelper, UserInfo).GetDataTable(parameters);
                 if (dt != null && dt.Rows.Count == 1)
                 {
-                    var userLogOnEntity = new BaseUserLogOnEntity();
-                    userLogOnEntity.GetFrom(dt.Rows[0]);
+                    var userLogonEntity = new BaseUserLogonEntity();
+                    userLogonEntity.GetFrom(dt.Rows[0]);
                     //下面的判断了openid的过期时间，sso登录时没有重新更新openid,直接取数据库中的openid,在此做判断时就有可能过期了，
                     //导致子系统通过openid登录时无法获取用户信息，登录不成功
                     //办法：1、sso登录时创建新的openid  2、此处不做openid过期判断 3，sso登录不创建新openid,但改变一下表中的过期时间
                     //此处判断openid过期时间可能有问题
                     //Troy 20160520 取消OpenId过期时间判断start
-                    //if (userLogOnEntity.OpenIdTimeout.HasValue && userLogOnEntity.OpenIdTimeout > DateTime.Now)
+                    //if (userLogonEntity.OpenIdTimeout.HasValue && userLogonEntity.OpenIdTimeout > DateTime.Now)
                     //{
-                    var userEntity = GetEntity(dt.Rows[0][BaseUserLogOnEntity.FieldId].ToString());
-                    result = LogOnByEntity(userEntity, userLogOnEntity.UserPassword, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, false);
+                    var userEntity = GetEntity(dt.Rows[0][BaseUserLogonEntity.FieldId].ToString());
+                    result = LogonByEntity(userEntity, userLogonEntity.UserPassword, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, false);
                     //}
                     //else
                     //{
@@ -1219,7 +1219,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByEntity(BaseUserEntity userEntity, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true, bool validateUserOnly = false) 进行登录操作
+        #region public UserLogonResult LogonByEntity(BaseUserEntity userEntity, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, bool checkUserPassword = true, bool validateUserOnly = false) 进行登录操作
 
         /// <summary>
         /// 进行登录操作
@@ -1240,9 +1240,9 @@ namespace DotNet.Business
         /// <param name="targetApplication">目标应用</param>
         /// <param name="targetIp">目标应用IP</param>
         /// <returns>用户信息</returns>
-        public UserLogOnResult LogOnByEntity(BaseUserEntity userEntity, string password, string openId = null, string systemCode = null, string ipAddress = null, string ipAddressName = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true, string sourceType = null, string targetApplication = null, string targetIp = null)
+        public UserLogonResult LogonByEntity(BaseUserEntity userEntity, string password, string openId = null, string systemCode = null, string ipAddress = null, string ipAddressName = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true, string sourceType = null, string targetApplication = null, string targetIp = null)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             // 2016-01-22 吉日嘎拉 这里是处理，多个mac的问题，处理外部传递过来的参数不正确，不只是自己的系统，还有外部调用的系统的问题
             if (!string.IsNullOrEmpty(ipAddress))
@@ -1266,10 +1266,10 @@ namespace DotNet.Business
                 var orginalPassWord = password;
                 var parameters = new List<KeyValuePair<string, object>>();
 
-                var userLogOnManager = new BaseUserLogOnManager(UserInfo, UserLogOnTable);
-                var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
+                var userLogonManager = new BaseUserLogonManager(UserInfo, UserLogonTable);
+                var userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
                 // 2015-12-24 吉日嘎拉进行代码分离、重复利用这部分代码、需要检查接口安全认证
-                result = CheckUser(userEntity, userLogOnEntity);
+                result = CheckUser(userEntity, userLogonEntity);
                 // 2015-12-26 吉日嘎拉，修改状态判断，成功验证才可以。
                 if (!result.StatusCode.Equals(Status.Ok.ToString()))
                 {
@@ -1284,15 +1284,15 @@ namespace DotNet.Business
                 {
                     if (!string.IsNullOrWhiteSpace(ipAddressName))
                     {
-                        if (!string.IsNullOrWhiteSpace(userLogOnEntity.IpAddressName))
+                        if (!string.IsNullOrWhiteSpace(userLogonEntity.IpAddressName))
                         {
-                            if (!ipAddressName.Equals("局域网") && !userLogOnEntity.IpAddressName.Equals(ipAddressName))
+                            if (!ipAddressName.Equals("局域网") && !userLogonEntity.IpAddressName.Equals(ipAddressName))
                             {
                                 // TODO 开启手机验证功能！, 三天验证一次也可以了
                                 errorMark = 10;
                                 BaseUserContactEntity userContactEntity = null;
                                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
-                                userContactEntity = BaseUserContactManager.GetEntityByCache(userLogOnEntity.Id);
+                                userContactEntity = BaseUserContactManager.GetEntityByCache(userLogonEntity.Id);
 
                                 var needVerification = false;
                                 if (userContactEntity.MobileVerificationDate.HasValue)
@@ -1327,7 +1327,7 @@ namespace DotNet.Business
                         }
                         if (!ipAddressName.Equals("局域网"))
                         {
-                            userLogOnEntity.IpAddressName = ipAddressName;
+                            userLogonEntity.IpAddressName = ipAddressName;
                         }
                     }
                 }
@@ -1336,8 +1336,8 @@ namespace DotNet.Business
                 // 08. 是否检查用户IP地址，是否进行访问限制？管理员不检查IP，不管是否检查，要把最后的登录地址等进行更新才对
                 // && !this.IsAdministrator(userEntity.Id
 
-                if (userLogOnEntity.CheckIpAddress.HasValue
-                    && userLogOnEntity.CheckIpAddress == 1)
+                if (userLogonEntity.CheckIpAddress.HasValue
+                    && userLogonEntity.CheckIpAddress == 1)
                 {
                     // BaseParameterManager parameterManager = new BaseParameterManager(this.DbHelper, this.UserInfo);
                     // 内网不进行限制
@@ -1360,9 +1360,9 @@ namespace DotNet.Business
                             if (!this.CheckIPAddress(ipAddress, userEntity.Id))
                             {
                                 parameters = new List<KeyValuePair<string, object>>();
-                                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldIPAddress, ipAddress));
+                                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                                 errorMark = 13;
-                                userLogOnManager.SetProperty(userEntity.Id, parameters);
+                                userLogonManager.SetProperty(userEntity.Id, parameters);
                                 errorMark = 131;
                                 result.StatusCode = Status.ErrorIPAddress.ToString();
                                 errorMark = 132;
@@ -1379,8 +1379,8 @@ namespace DotNet.Business
                     // 没有设置MAC地址时不检查
                     if (checkMacAddress && !string.IsNullOrEmpty(macAddress))
                     {
-                        // if (!CheckMACAddress(userLogOnEntity.Id, macAddress))
-                        if (!CheckMacAddressByCache(userLogOnEntity.Id, macAddress))
+                        // if (!CheckMACAddress(userLogonEntity.Id, macAddress))
+                        if (!CheckMacAddressByCache(userLogonEntity.Id, macAddress))
                         {
                             result.StatusCode = Status.ErrorMacAddress.ToString();
                             result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -1392,22 +1392,22 @@ namespace DotNet.Business
                 }
 
                 // 10. 只允许登录一次，需要检查是否自己重新登录了，或者自己扮演自己了
-                if (BaseSystemInfo.CheckOnLine)
+                if (BaseSystemInfo.CheckOnline)
                 {
                     if ((UserInfo != null) && (!UserInfo.Id.Equals(userEntity.Id)))
                     {
                         // 若检查在线，那就检查OpenId是否还是哪个人
-                        if (userLogOnEntity.MultiUserLogin == 0)
+                        if (userLogonEntity.MultiUserLogin == 0)
                         {
-                            if (userLogOnEntity.UserOnLine > 0)
+                            if (userLogonEntity.UserOnline > 0)
                             {
                                 // 自己是否登录了2次，在没下线的情况下
                                 var isSelf = false;
                                 if (!string.IsNullOrEmpty(openId))
                                 {
-                                    if (!string.IsNullOrEmpty(userLogOnEntity.OpenId))
+                                    if (!string.IsNullOrEmpty(userLogonEntity.OpenId))
                                     {
-                                        if (userLogOnEntity.OpenId.Equals(openId))
+                                        if (userLogonEntity.OpenId.Equals(openId))
                                         {
                                             isSelf = true;
                                         }
@@ -1415,10 +1415,10 @@ namespace DotNet.Business
                                 }
                                 if (!isSelf)
                                 {
-                                    result.StatusCode = Status.ErrorOnLine.ToString();
+                                    result.StatusCode = Status.ErrorOnline.ToString();
                                     result.StatusMessage = GetStateMessage(result.StatusCode);
                                     errorMark = 19;
-                                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.ErrorOnLine.ToDescription(), 1, 0, sourceType, targetApplication, targetIp);
+                                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.ErrorOnline.ToDescription(), 1, 0, sourceType, targetApplication, targetIp);
                                     //先允许登录，然后用强制已登录用户退出登录2019/08/10 Troy.Cui
                                     //return result;
                                 }
@@ -1428,7 +1428,7 @@ namespace DotNet.Business
                 }
 
                 // 03. 系统是否采用了密码加密策略？
-                if (!IsLogOnByOpenId)
+                if (!IsLogonByOpenId)
                 {
                     // 2015-11-11 吉日嘎拉 是否检查密码，还有其他方式的登录、例如验证码登录，OpenId登录等
                     if (checkUserPassword)
@@ -1436,16 +1436,16 @@ namespace DotNet.Business
                         if (BaseSystemInfo.ServerEncryptPassword && SystemEncryptPassword)
                         {
                             errorMark = 20;
-                            password = EncryptUserPassword(password, userLogOnEntity.Salt);
+                            password = EncryptUserPassword(password, userLogonEntity.Salt);
                         }
 
                         // 11. 密码是否正确(null 与空看成是相等的)
-                        if (!(string.IsNullOrEmpty(userLogOnEntity.UserPassword) && string.IsNullOrEmpty(password)))
+                        if (!(string.IsNullOrEmpty(userLogonEntity.UserPassword) && string.IsNullOrEmpty(password)))
                         {
                             var userPasswordOk = true;
                             errorMark = 201;
                             // 用户密码是空的
-                            if (string.IsNullOrEmpty(userLogOnEntity.UserPassword))
+                            if (string.IsNullOrEmpty(userLogonEntity.UserPassword))
                             {
                                 // 但是输入了不为空的密码
                                 if (!string.IsNullOrEmpty(password))
@@ -1464,7 +1464,7 @@ namespace DotNet.Business
                                 {
                                     errorMark = 202;
                                     // 再判断用户的密码与输入的是否相同
-                                    userPasswordOk = userLogOnEntity.UserPassword.ToUpper().Equals(password.ToUpper());
+                                    userPasswordOk = userLogonEntity.UserPassword.ToUpper().Equals(password.ToUpper());
                                 }
                             }
                             // 用户的密码不相等
@@ -1472,14 +1472,14 @@ namespace DotNet.Business
                             {
                                 // 这里更新用户连续输入错误密码次数
                                 // 2015-12-07 吉日嘎拉 这里防止发生意外，数据库有为空字段。
-                                if (!userLogOnEntity.PasswordErrorCount.HasValue)
+                                if (!userLogonEntity.PasswordErrorCount.HasValue)
                                 {
-                                    userLogOnEntity.PasswordErrorCount = 0;
+                                    userLogonEntity.PasswordErrorCount = 0;
                                 }
                                 errorMark = 203;
-                                userLogOnEntity.PasswordErrorCount = userLogOnEntity.PasswordErrorCount + 1;
+                                userLogonEntity.PasswordErrorCount = userLogonEntity.PasswordErrorCount + 1;
                                 errorMark = 204;
-                                if (BaseSystemInfo.PasswordErrorLockLimit > 0 && userLogOnEntity.PasswordErrorCount >= BaseSystemInfo.PasswordErrorLockLimit)
+                                if (BaseSystemInfo.PasswordErrorLockLimit > 0 && userLogonEntity.PasswordErrorCount >= BaseSystemInfo.PasswordErrorLockLimit)
                                 {
                                     parameters = new List<KeyValuePair<string, object>>();
                                     if (BaseSystemInfo.PasswordErrorLockCycle == 0)
@@ -1494,22 +1494,22 @@ namespace DotNet.Business
                                     else
                                     {
                                         // 这个是进行锁定帐户设置。
-                                        userLogOnEntity.LockStartDate = DateTime.Now;
-                                        userLogOnEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
-                                        parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockStartDate, userLogOnEntity.LockStartDate));
-                                        parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockEndDate, userLogOnEntity.LockEndDate));
+                                        userLogonEntity.LockStartDate = DateTime.Now;
+                                        userLogonEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
+                                        parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartDate, userLogonEntity.LockStartDate));
+                                        parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndDate, userLogonEntity.LockEndDate));
                                         errorMark = 22;
-                                        userLogOnManager.SetProperty(userEntity.Id, parameters);
+                                        userLogonManager.SetProperty(userEntity.Id, parameters);
                                     }
                                 }
                                 else
                                 {
                                     parameters = new List<KeyValuePair<string, object>>
                                     {
-                                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldPasswordErrorCount, userLogOnEntity.PasswordErrorCount)
+                                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, userLogonEntity.PasswordErrorCount)
                                     };
                                     errorMark = 23;
-                                    userLogOnManager.SetProperty(userEntity.Id, parameters);
+                                    userLogonManager.SetProperty(userEntity.Id, parameters);
                                 }
                                 // 密码错误后 1：应该记录日志
                                 errorMark = 24;
@@ -1520,7 +1520,7 @@ namespace DotNet.Business
                                 // 密码强度检查，若是要有安全要求比较高的，返回的提醒消息要进行特殊处理，不能返回非常明确的提示信息。
                                 if (BaseSystemInfo.CheckPasswordStrength)
                                 {
-                                    result.StatusCode = Status.ErrorLogOn.ToString();
+                                    result.StatusCode = Status.ErrorLogon.ToString();
                                 }
                                 else
                                 {
@@ -1533,7 +1533,7 @@ namespace DotNet.Business
 
                         }
 
-                        userLogOnEntity.PasswordErrorCount = 0;
+                        userLogonEntity.PasswordErrorCount = 0;
                     }
                 }
 
@@ -1543,34 +1543,34 @@ namespace DotNet.Business
                 //if (IsWeakPassWord(userEntity, orginPassWord, out message))
                 //{
                 //    //需要修改密码
-                //    userLogOnEntity.NeedModifyPassword = 1;
+                //    userLogonEntity.NeedModifyPassword = 1;
                 //    result.StatusMessage = message;
                 //}
 
                 // 09. 更新IP地址，更新MAC地址，这里是为只执行一次更新优化数据库I/O，若登录成功自然连续输入密码错误就是0了。
                 // parameters = new List<KeyValuePair<string, object>>();
-                // parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldPasswordErrorCount, 0));
+                // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0));
                 if (!string.IsNullOrEmpty(ipAddress))
                 {
-                    userLogOnEntity.IpAddress = ipAddress;
-                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldIPAddress, ipAddress));
+                    userLogonEntity.IpAddress = ipAddress;
+                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                 }
                 if (!string.IsNullOrEmpty(macAddress))
                 {
-                    userLogOnEntity.MacAddress = macAddress;
-                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldMACAddress, macAddress));
+                    userLogonEntity.MacAddress = macAddress;
+                    // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
                 }
-                // userLogOnManager.SetProperty(userEntity.Id, parameters);
+                // userLogonManager.SetProperty(userEntity.Id, parameters);
 
                 // 可以正常登录了
                 result.StatusCode = Status.Ok.ToString();
                 result.StatusMessage = GetStateMessage(result.StatusCode);
 
                 // 13. 登录、重新登录、扮演时的在线状态进行更新
-                //userLogOnManager.ChangeOnLine(userEntity.Id);
+                //userLogonManager.ChangeOnline(userEntity.Id);
 
                 errorMark = 25;
-                result.UserInfo = ConvertToUserInfo(userEntity, userLogOnEntity, validateUserOnly);
+                result.UserInfo = ConvertToUserInfo(userEntity, userLogonEntity, validateUserOnly);
                 result.UserInfo.IpAddress = ipAddress;
                 result.UserInfo.MacAddress = macAddress;
                 // 2015-02-03 宋彪 设置 SystemCode
@@ -1651,24 +1651,24 @@ namespace DotNet.Business
                         }
 
                         errorMark = 30;
-                        LogOnStatistics(result.UserInfo);
+                        LogonStatistics(result.UserInfo);
                     }
 
-                    userLogOnEntity.SystemCode = systemCode;
-                    userLogOnEntity.ComputerName = computerName;
+                    userLogonEntity.SystemCode = systemCode;
+                    userLogonEntity.ComputerName = computerName;
                     // 登录成功的日志文件
                     errorMark = 31;
-                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.UserLogOn.ToDescription(), 1, 1, sourceType, targetApplication, targetIp);
+                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.UserLogon.ToDescription(), 1, 1, sourceType, targetApplication, targetIp);
 
-                    if (IsLogOnByOpenId)
+                    if (IsLogonByOpenId)
                     {
                         errorMark = 33;
-                        userLogOnManager.UpdateVisitDate(userLogOnEntity, false);
+                        userLogonManager.UpdateVisitDate(userLogonEntity, false);
                     }
                     else
                     {
                         errorMark = 32;
-                        result.UserInfo.OpenId = userLogOnManager.UpdateVisitDate(userLogOnEntity, true);
+                        result.UserInfo.OpenId = userLogonManager.UpdateVisitDate(userLogonEntity, true);
                     }
 
                     // 这里统一进行缓存保存就可以了、提高效率、把整个用户的登录信息缓存起来，
@@ -1677,11 +1677,11 @@ namespace DotNet.Business
                 }
 
                 // 宋彪 这里增加登录提醒功能 新线程中处理 确保不影响登录主线程 暂时只在SSO上
-                // SendLogOnRemind(result.UserInfo);
+                // SendLogonRemind(result.UserInfo);
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogOnByEntity:发生时间:" + DateTime.Now
+                var writeMessage = "BaseUserManager.LogonByEntity:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -1742,7 +1742,7 @@ namespace DotNet.Business
                 */
             }
             BaseUserEntity userEntity = null;
-            BaseUserLogOnEntity userLogOnEntity = null;
+            BaseUserLogonEntity userLogonEntity = null;
             var parameters = new List<KeyValuePair<string, object>>();
             if (dt != null && dt.Rows.Count > 1)
             {
@@ -1757,50 +1757,50 @@ namespace DotNet.Business
                 {
                     return false;
                 }
-                var userLogOnManager = new BaseUserLogOnManager(DbHelper, UserInfo);
-                userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
+                var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
+                userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
                 if (!string.IsNullOrEmpty(userEntity.AuditStatus)
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString())
-                    && userLogOnEntity.PasswordErrorCount == 0)
+                    && userLogonEntity.PasswordErrorCount == 0)
                 {
                     return false;
                 }
 
                 // 06. 允许登录时间是否有限制
-                if (userLogOnEntity.AllowEndTime != null)
+                if (userLogonEntity.AllowEndTime != null)
                 {
-                    userLogOnEntity.AllowEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogOnEntity.AllowEndTime.Value.Hour, userLogOnEntity.AllowEndTime.Value.Minute, userLogOnEntity.AllowEndTime.Value.Second);
+                    userLogonEntity.AllowEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogonEntity.AllowEndTime.Value.Hour, userLogonEntity.AllowEndTime.Value.Minute, userLogonEntity.AllowEndTime.Value.Second);
                 }
-                if (userLogOnEntity.AllowStartTime != null)
+                if (userLogonEntity.AllowStartTime != null)
                 {
-                    userLogOnEntity.AllowStartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogOnEntity.AllowStartTime.Value.Hour, userLogOnEntity.AllowStartTime.Value.Minute, userLogOnEntity.AllowStartTime.Value.Second);
-                    if (DateTime.Now < userLogOnEntity.AllowStartTime)
+                    userLogonEntity.AllowStartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogonEntity.AllowStartTime.Value.Hour, userLogonEntity.AllowStartTime.Value.Minute, userLogonEntity.AllowStartTime.Value.Second);
+                    if (DateTime.Now < userLogonEntity.AllowStartTime)
                     {
                         return false;
                     }
                 }
-                if (userLogOnEntity.AllowEndTime != null)
+                if (userLogonEntity.AllowEndTime != null)
                 {
-                    if (DateTime.Now > userLogOnEntity.AllowEndTime)
+                    if (DateTime.Now > userLogonEntity.AllowEndTime)
                     {
                         return false;
                     }
                 }
 
                 // 07. 锁定日期是否有限制
-                if (userLogOnEntity.LockStartDate != null)
+                if (userLogonEntity.LockStartDate != null)
                 {
-                    if (DateTime.Now > userLogOnEntity.LockStartDate)
+                    if (DateTime.Now > userLogonEntity.LockStartDate)
                     {
-                        if (userLogOnEntity.LockEndDate == null || DateTime.Now < userLogOnEntity.LockEndDate)
+                        if (userLogonEntity.LockEndDate == null || DateTime.Now < userLogonEntity.LockEndDate)
                         {
                             return false;
                         }
                     }
                 }
-                if (userLogOnEntity.LockEndDate != null)
+                if (userLogonEntity.LockEndDate != null)
                 {
-                    if (DateTime.Now < userLogOnEntity.LockEndDate)
+                    if (DateTime.Now < userLogonEntity.LockEndDate)
                     {
                         return false;
                     }
@@ -1813,11 +1813,11 @@ namespace DotNet.Business
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)
-                if (!(string.IsNullOrEmpty(userLogOnEntity.UserPassword) && string.IsNullOrEmpty(password)))
+                if (!(string.IsNullOrEmpty(userLogonEntity.UserPassword) && string.IsNullOrEmpty(password)))
                 {
                     var userPasswordOk = true;
                     // 用户密码是空的
-                    if (string.IsNullOrEmpty(userLogOnEntity.UserPassword))
+                    if (string.IsNullOrEmpty(userLogonEntity.UserPassword))
                     {
                         // 但是输入了不为空的密码
                         if (!string.IsNullOrEmpty(password))
@@ -1835,7 +1835,7 @@ namespace DotNet.Business
                         else
                         {
                             // 再判断用户的密码与输入的是否相同
-                            userPasswordOk = userLogOnEntity.UserPassword.Equals(password);
+                            userPasswordOk = userLogonEntity.UserPassword.Equals(password);
                         }
                     }
                     // 用户的密码不相等
@@ -1850,20 +1850,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region UserIsLogOn
+        #region UserIsLogon
         /// <summary>
         /// 判断用户是否已经登录了？
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <returns>是否已经登录了</returns>
-        public bool UserIsLogOn(BaseUserInfo userInfo)
+        public bool UserIsLogon(BaseUserInfo userInfo)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, userInfo.Id),
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, userInfo.OpenId)
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, userInfo.Id),
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, userInfo.OpenId)
             };
-            var manager = new BaseManager(userInfo, BaseUserLogOnEntity.TableName);
+            var manager = new BaseManager(userInfo, BaseUserLogonEntity.TableName);
             return manager.Exists(parameters);
         }
         #endregion

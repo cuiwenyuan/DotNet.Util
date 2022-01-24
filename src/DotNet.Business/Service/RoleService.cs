@@ -280,7 +280,7 @@ namespace DotNet.Business
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="showUser">显示用户</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool showUser = true)
+        public DataTable GetDataTableByOrganization(BaseUserInfo userInfo, string organizationId, bool showUser = true)
         {
             var dt = new DataTable(BaseRoleEntity.TableName);
 
@@ -290,7 +290,7 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Role";
                 // 获得角色列表
                 var manager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                dt = manager.GetDataTableByOrganize(organizationId);
+                dt = manager.GetDataTableByOrganization(organizationId);
                 var userManager = new BaseUserManager(dbHelper, userInfo, tableName);
                 if (showUser)
                 {

@@ -119,9 +119,9 @@ namespace DotNet.Business
             //            if (!result)
             //            {
             //                var parameters = new List<KeyValuePair<string, object>>();
-            //                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldMacAddress, macAddress));
-            //                var userLogOnManager = new BaseUserLogOnManager();
-            //                userLogOnManager.SetProperty(userId, parameters);
+            //                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMacAddress, macAddress));
+            //                var userLogonManager = new BaseUserLogonManager();
+            //                userLogonManager.SetProperty(userId, parameters);
             //            }
             //        }
             //    }
@@ -237,10 +237,10 @@ namespace DotNet.Business
                 else
                 {
                     parameters = new List<KeyValuePair<string, object>>();
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldMACAddress, macAddress));
+                    parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
 
-                    BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(this.DbHelper, this.UserInfo);
-                    userLogOnManager.SetProperty(userId, parameters);
+                    BaseUserLogonManager userLogonManager = new BaseUserLogonManager(this.DbHelper, this.UserInfo);
+                    userLogonManager.SetProperty(userId, parameters);
 
                     return result;
                 }

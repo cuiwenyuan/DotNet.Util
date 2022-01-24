@@ -228,7 +228,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetRoleUserDataTable(BaseUserInfo userInfo, string systemCode, string roleId, string companyId, string userId, string searchKey, out int recordCount, int pageIndex, int pageSize, string orderBy)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var myRecordCount = 0;
 

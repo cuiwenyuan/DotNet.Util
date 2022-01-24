@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class RoleService : IRoleService
     {
-        #region public DataTable GetRoleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string roleId)
+        #region public DataTable GetRoleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string roleId)
         /// <summary>
         /// 获取角色的所有组织机构列表
         /// </summary>
@@ -35,16 +35,16 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>列表</returns>
-        public DataTable GetRoleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string roleId)
+        public DataTable GetRoleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string roleId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var roleManager = new BaseRoleManager(userInfo);
-                result = roleManager.GetOrganizeDataTable(systemCode, roleId);
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = roleManager.GetOrganizationDataTable(systemCode, roleId);
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;
@@ -57,14 +57,14 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>组织机构主键</returns>
-        public string[] GetRoleOrganizeIds(BaseUserInfo userInfo, string roleId)
+        public string[] GetRoleOrganizationIds(BaseUserInfo userInfo, string roleId)
         {
             string[] result = null;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.GetIdsInRole(userInfo.SystemCode, roleId);
             });
 
@@ -78,14 +78,14 @@ namespace DotNet.Business
         /// <param name="roleId">角色主键</param>
         /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int AddOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
+        public int AddOrganizationToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 小心异常，检查一下参数的有效性
                 if (organizationIds != null)
                 {
@@ -103,14 +103,14 @@ namespace DotNet.Business
         /// <param name="roleId">角色主键</param>
         /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        public int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
+        public int RemoveOrganizationFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDbWithTransaction(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 if (organizationIds != null)
                 {
                     result += manager.RemoveFormRole(userInfo.SystemCode, organizationIds, roleId);
@@ -126,15 +126,15 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>影响行数</returns>
-        public int ClearOrganizeUser(BaseUserInfo userInfo, string roleId)
+        public int ClearOrganizationUser(BaseUserInfo userInfo, string roleId)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                result = manager.ClearOrganize(userInfo.SystemCode, roleId);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                result = manager.ClearOrganization(userInfo.SystemCode, roleId);
             });
 
             return result;
@@ -147,15 +147,15 @@ namespace DotNet.Business
         /// <param name="roleId">角色主键</param>
         /// <param name="organizationIds">组织机构主键数组</param>
         /// <returns>影响行数</returns>
-        public int SetOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
+        public int SetOrganizationToRole(BaseUserInfo userInfo, string roleId, string[] organizationIds)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                result = manager.ClearOrganize(userInfo.SystemCode, roleId);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                result = manager.ClearOrganization(userInfo.SystemCode, roleId);
                 // 小心异常，检查一下参数的有效性
                 if (organizationIds != null)
                 {

@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizePermissionScopeManager
+    /// BaseOrganizationPermissionScopeManager
     /// 组织机构权限
     /// 
     /// 修改记录
@@ -23,12 +23,12 @@ namespace DotNet.Business
     ///		<date>2012.03.22</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizePermissionScopeManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationPermissionScopeManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseOrganizePermissionScopeManager()
+        public BaseOrganizationPermissionScopeManager()
         {
             CurrentTableName = BasePermissionScopeEntity.TableName;
         }
@@ -37,7 +37,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper"></param>
-        public BaseOrganizePermissionScopeManager(IDbHelper dbHelper)
+        public BaseOrganizationPermissionScopeManager(IDbHelper dbHelper)
             : this()
         {
             DbHelper = dbHelper;
@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo"></param>
-        public BaseOrganizePermissionScopeManager(BaseUserInfo userInfo)
+        public BaseOrganizationPermissionScopeManager(BaseUserInfo userInfo)
             : this()
         {
             UserInfo = userInfo;
@@ -58,7 +58,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper"></param>
         /// <param name="userInfo"></param>
-        public BaseOrganizePermissionScopeManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+        public BaseOrganizationPermissionScopeManager(IDbHelper dbHelper, BaseUserInfo userInfo)
             : this(dbHelper)
         {
             UserInfo = userInfo;
@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// <param name="dbHelper"></param>
         /// <param name="userInfo"></param>
         /// <param name="tableName"></param>
-        public BaseOrganizePermissionScopeManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+        public BaseOrganizationPermissionScopeManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
             : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
@@ -97,11 +97,11 @@ namespace DotNet.Business
         /// <param name="organizationId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int ClearOrganizePermissionScope(string organizationId, string permissionCode)
+        public int ClearOrganizationPermissionScope(string organizationId, string permissionCode)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, GetIdByCode(permissionCode))
             };
@@ -119,7 +119,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId)
             };
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
@@ -145,7 +145,7 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseModuleEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, GetIdByCode(permissionCode))
@@ -176,7 +176,7 @@ namespace DotNet.Business
             var resourcePermissionScopeEntity = new BasePermissionScopeEntity
             {
                 PermissionId = GetIdByCode(permissionCode),
-                ResourceCategory = BaseOrganizeEntity.TableName,
+                ResourceCategory = BaseOrganizationEntity.TableName,
                 ResourceId = organizationId,
                 TargetCategory = BaseModuleEntity.TableName,
                 TargetId = grantModuleId,
@@ -280,7 +280,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseModuleEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, revokeModuleId),

@@ -192,7 +192,7 @@ namespace DotNet.IService
         /// <param name="systemCode">系统编号</param>
         /// <param name="moduleId">模块主键</param>
         /// <returns>列表</returns>
-        DataTable GetModuleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string moduleId);
+        DataTable GetModuleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string moduleId);
 
         /// <summary>
         /// 刷新缓存列表

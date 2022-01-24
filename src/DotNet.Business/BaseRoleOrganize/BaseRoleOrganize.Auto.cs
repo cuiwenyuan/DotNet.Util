@@ -10,7 +10,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseRoleOrganizeManager
+    /// BaseRoleOrganizationManager
     /// 角色-组织机构 关系
     ///
     /// 修改记录
@@ -22,25 +22,25 @@ namespace DotNet.Business
     ///		<date>2014-04-15</date>
     /// </author>
     /// </summary>
-    public partial class BaseRoleOrganizeManager : BaseManager, IBaseManager
+    public partial class BaseRoleOrganizationManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseRoleOrganizeManager()
+        public BaseRoleOrganizationManager()
         {
             if (dbHelper == null)
             {
                 dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
-            CurrentTableName = BaseRoleOrganizeEntity.TableName;
+            CurrentTableName = BaseRoleOrganizationEntity.TableName;
         }
 
         /// <summary>
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseRoleOrganizeManager(string tableName)
+        public BaseRoleOrganizationManager(string tableName)
         {
             CurrentTableName = tableName;
         }
@@ -49,7 +49,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseRoleOrganizeManager(IDbHelper dbHelper)
+        public BaseRoleOrganizationManager(IDbHelper dbHelper)
             : this()
         {
             DbHelper = dbHelper;
@@ -59,7 +59,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseRoleOrganizeManager(BaseUserInfo userInfo)
+        public BaseRoleOrganizationManager(BaseUserInfo userInfo)
             : this()
         {
             UserInfo = userInfo;
@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseRoleOrganizeManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+        public BaseRoleOrganizationManager(IDbHelper dbHelper, BaseUserInfo userInfo)
             : this(dbHelper)
         {
             UserInfo = userInfo;
@@ -82,7 +82,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseRoleOrganizeManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+        public BaseRoleOrganizationManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
             : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
@@ -93,7 +93,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>主键</returns>
-        public string Add(BaseRoleOrganizeEntity entity)
+        public string Add(BaseRoleOrganizationEntity entity)
         {
             return AddEntity(entity);
         }
@@ -105,7 +105,7 @@ namespace DotNet.Business
         /// <param name="identity">自增量方式</param>
         /// <param name="returnId">返回主鍵</param>
         /// <returns>主键</returns>
-        public string Add(BaseRoleOrganizeEntity entity, bool identity, bool returnId)
+        public string Add(BaseRoleOrganizationEntity entity, bool identity, bool returnId)
         {
             Identity = identity;
             ReturnId = returnId;
@@ -116,7 +116,7 @@ namespace DotNet.Business
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
-        public int Update(BaseRoleOrganizeEntity entity)
+        public int Update(BaseRoleOrganizationEntity entity)
         {
             return UpdateEntity(entity);
         }
@@ -125,28 +125,28 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseRoleOrganizeEntity GetEntity(int id)
+        public BaseRoleOrganizationEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseRoleOrganizeEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldId, id)));
-            // return BaseEntity.Create<BaseRoleOrganizeEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldId, id)));
+            return BaseEntity.Create<BaseRoleOrganizationEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldId, id)));
+            // return BaseEntity.Create<BaseRoleOrganizationEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldId, id)));
         }
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddEntity(BaseRoleOrganizeEntity entity)
+        public string AddEntity(BaseRoleOrganizationEntity entity)
         {
             var result = string.Empty;
 
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseRoleOrganizeEntity.FieldId);
+            sqlBuilder.BeginInsert(CurrentTableName, BaseRoleOrganizationEntity.FieldId);
 
             // 若是非空主键，表明已经指定了主键了
             if (!string.IsNullOrEmpty(entity.Id))
             {
                 // 这里已经是指定了主键了，所以不需要返回主键了
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldId, entity.Id);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldId, entity.Id);
                 result = entity.Id;
             }
             else
@@ -161,23 +161,23 @@ namespace DotNet.Business
                 //{
                 //    entity.Id = Guid.NewGuid().ToString("N");
                 //    result = entity.Id;
-                //    sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldId, entity.Id);
+                //    sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldId, entity.Id);
                 //}
             }
 
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldCreateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldCreateBy, UserInfo.RealName);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldCreateBy, UserInfo.RealName);
             }
-            sqlBuilder.SetDbNow(BaseRoleOrganizeEntity.FieldCreateTime);
+            sqlBuilder.SetDbNow(BaseRoleOrganizationEntity.FieldCreateTime);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldUpdateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldUpdateBy, UserInfo.RealName);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldUpdateBy, UserInfo.RealName);
             }
-            sqlBuilder.SetDbNow(BaseRoleOrganizeEntity.FieldUpdateTime);
+            sqlBuilder.SetDbNow(BaseRoleOrganizationEntity.FieldUpdateTime);
             if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
             {
                 result = sqlBuilder.EndInsert().ToString();
@@ -197,18 +197,18 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseRoleOrganizeEntity entity)
+        public int UpdateEntity(BaseRoleOrganizationEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldUpdateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldUpdateBy, UserInfo.RealName);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldUpdateBy, UserInfo.RealName);
             }
-            sqlBuilder.SetDbNow(BaseRoleOrganizeEntity.FieldUpdateTime);
-            sqlBuilder.SetWhere(BaseRoleOrganizeEntity.FieldId, entity.Id);
+            sqlBuilder.SetDbNow(BaseRoleOrganizationEntity.FieldUpdateTime);
+            sqlBuilder.SetWhere(BaseRoleOrganizationEntity.FieldId, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
@@ -218,20 +218,20 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseRoleOrganizeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseRoleOrganizationEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseRoleOrganizeEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseRoleOrganizationEntity entity)
         {
-            sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldOrganizeId, entity.OrganizeId);
-            sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldRoleId, entity.RoleId);
-            sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldEnabled, entity.Enabled);
-            sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldDescription, entity.Description);
-            sqlBuilder.SetValue(BaseRoleOrganizeEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldOrganizationId, entity.OrganizationId);
+            sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldRoleId, entity.RoleId);
+            sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldEnabled, entity.Enabled);
+            sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldDescription, entity.Description);
+            sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldDeleted, entity.DeletionStateCode);
             SetEntityExtend(sqlBuilder, entity);
         }
 
@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Delete(int id)
         {
-            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldId, id) });
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldId, id) });
             if (result > 0)
             {
                 RemoveCache();

@@ -10,7 +10,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeLogOnManager
+    /// BaseOrganizationLogonManager
     /// 系统网点登录信息
     ///
     /// 修改记录
@@ -22,12 +22,12 @@ namespace DotNet.Business
     ///		<date>2016-03-24</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeLogOnManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationLogonManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseOrganizeLogOnManager()
+        public BaseOrganizationLogonManager()
         {
             if (dbHelper == null)
             {
@@ -35,7 +35,7 @@ namespace DotNet.Business
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseOrganizeLogOnEntity.TableName;
+                CurrentTableName = BaseOrganizationLogonEntity.TableName;
             }
             // 不是自增量添加
             Identity = false;
@@ -45,7 +45,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseOrganizeLogOnManager(string tableName)
+        public BaseOrganizationLogonManager(string tableName)
             : this()
         {
             CurrentTableName = tableName;
@@ -55,7 +55,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseOrganizeLogOnManager(IDbHelper dbHelper)
+        public BaseOrganizationLogonManager(IDbHelper dbHelper)
             : this()
         {
             DbHelper = dbHelper;
@@ -65,7 +65,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizeLogOnManager(BaseUserInfo userInfo)
+        public BaseOrganizationLogonManager(BaseUserInfo userInfo)
             : this()
         {
             UserInfo = userInfo;
@@ -76,7 +76,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizeLogOnManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+        public BaseOrganizationLogonManager(IDbHelper dbHelper, BaseUserInfo userInfo)
             : this(dbHelper)
         {
             UserInfo = userInfo;
@@ -87,7 +87,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseOrganizeLogOnManager(BaseUserInfo userInfo, string tableName)
+        public BaseOrganizationLogonManager(BaseUserInfo userInfo, string tableName)
             : this(userInfo)
         {
             CurrentTableName = tableName;
@@ -99,7 +99,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseOrganizeLogOnManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+        public BaseOrganizationLogonManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
             : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>主键</returns>
-        public string Add(BaseOrganizeLogOnEntity entity)
+        public string Add(BaseOrganizationLogonEntity entity)
         {
             return AddEntity(entity);
         }
@@ -122,7 +122,7 @@ namespace DotNet.Business
         /// <param name="identity">自增量方式</param>
         /// <param name="returnId">返回主鍵</param>
         /// <returns>主键</returns>
-        public string Add(BaseOrganizeLogOnEntity entity, bool identity, bool returnId)
+        public string Add(BaseOrganizationLogonEntity entity, bool identity, bool returnId)
         {
             Identity = identity;
             ReturnId = returnId;
@@ -133,25 +133,25 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeLogOnEntity GetEntity(int? id)
+        public BaseOrganizationLogonEntity GetEntity(int? id)
         {
-            return BaseEntity.Create<BaseOrganizeLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizeLogOnEntity.FieldId, id)));
+            return BaseEntity.Create<BaseOrganizationLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizationLogonEntity.FieldId, id)));
         }
 
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeLogOnEntity GetEntity(string id)
+        public BaseOrganizationLogonEntity GetEntity(string id)
         {
-            return BaseEntity.Create<BaseOrganizeLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizeLogOnEntity.FieldId, id)));
+            return BaseEntity.Create<BaseOrganizationLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizationLogonEntity.FieldId, id)));
         }
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddEntity(BaseOrganizeLogOnEntity entity)
+        public string AddEntity(BaseOrganizationLogonEntity entity)
         {
             var result = string.Empty;
             if (string.IsNullOrEmpty(entity.Id))
@@ -161,10 +161,10 @@ namespace DotNet.Business
                 entity.Id = result;
             }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseOrganizeLogOnEntity.FieldId);
+            sqlBuilder.BeginInsert(CurrentTableName, BaseOrganizationLogonEntity.FieldId);
             if (!Identity)
             {
-                sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldId, entity.Id);
+                sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldId, entity.Id);
             }
             else
             {
@@ -172,11 +172,11 @@ namespace DotNet.Business
                 {
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(BaseOrganizeLogOnEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+                        sqlBuilder.SetFormula(BaseOrganizationLogonEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        sqlBuilder.SetFormula(BaseOrganizeLogOnEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                        sqlBuilder.SetFormula(BaseOrganizationLogonEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
                     }
                 }
                 else
@@ -192,12 +192,12 @@ namespace DotNet.Business
                             }
                             entity.Id = result;
                         }
-                        sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldId, entity.Id);
+                        sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldId, entity.Id);
                     }
                 }
             }
             SetEntity(sqlBuilder, entity);
-            sqlBuilder.SetDbNow(BaseOrganizeLogOnEntity.FieldUpdateTime);
+            sqlBuilder.SetDbNow(BaseOrganizationLogonEntity.FieldUpdateTime);
             if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
             {
                 result = sqlBuilder.EndInsert().ToString();
@@ -214,13 +214,13 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseOrganizeLogOnEntity entity)
+        public int UpdateEntity(BaseOrganizationLogonEntity entity)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            sqlBuilder.SetDbNow(BaseOrganizeLogOnEntity.FieldUpdateTime);
-            sqlBuilder.SetWhere(BaseOrganizeLogOnEntity.FieldId, entity.Id);
+            sqlBuilder.SetDbNow(BaseOrganizationLogonEntity.FieldUpdateTime);
+            sqlBuilder.SetWhere(BaseOrganizationLogonEntity.FieldId, entity.Id);
             return sqlBuilder.EndUpdate();
         }
 
@@ -229,16 +229,16 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizeLogOnEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizationLogonEntity entity)
         {
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldAgree, entity.Agree);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldOppose, entity.Oppose);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldFirstVisit, entity.FirstVisit);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldLastVisit, entity.LastVisit);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldShowCount, entity.ShowCount);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldLogOnCount, entity.LogOnCount);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldUserOnLine, entity.UserOnLine);
-            sqlBuilder.SetValue(BaseOrganizeLogOnEntity.FieldIpAddress, entity.IpAddress);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldAgree, entity.Agree);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldOppose, entity.Oppose);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldFirstVisit, entity.FirstVisit);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldLastVisit, entity.LastVisit);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldShowCount, entity.ShowCount);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldLogonCount, entity.LogonCount);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldUserOnline, entity.UserOnline);
+            sqlBuilder.SetValue(BaseOrganizationLogonEntity.FieldIpAddress, entity.IpAddress);
         }
     }
 }

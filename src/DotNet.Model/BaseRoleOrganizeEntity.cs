@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseRoleOrganizeEntity
+    /// BaseRoleOrganizationEntity
     /// 角色组织机构关系表
     ///
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-    public partial class BaseRoleOrganizeEntity : BaseEntity
+    public partial class BaseRoleOrganizationEntity : BaseEntity
     {
         /// <summary>
         /// 主键
@@ -38,7 +38,7 @@ namespace DotNet.Model
         /// <summary>
         /// 组织机构主键
         /// </summary>
-        public string OrganizeId { get; set; } = null;
+        public string OrganizationId { get; set; } = null;
 
         /// <summary>
         /// 是否有效
@@ -92,7 +92,7 @@ namespace DotNet.Model
 		protected override BaseEntity GetFrom(IDataRow dr)
         {
             Id = BaseUtil.ConvertToString(dr[FieldId]);
-            OrganizeId = BaseUtil.ConvertToString(dr[FieldOrganizeId]);
+            OrganizationId = BaseUtil.ConvertToString(dr[FieldOrganizationId]);
             RoleId = BaseUtil.ConvertToString(dr[FieldRoleId]);
             Enabled = BaseUtil.ConvertToInt(dr[FieldEnabled]);
             Description = BaseUtil.ConvertToString(dr[FieldDescription]);
@@ -112,7 +112,7 @@ namespace DotNet.Model
         /// 用户角色表
         ///</summary>
         [NonSerialized]
-        public const string TableName = "BaseRoleOrganizeEntity";
+        public const string TableName = "BaseRoleOrganizationEntity";
 
         ///<summary>
         /// 主键
@@ -124,7 +124,7 @@ namespace DotNet.Model
         /// 组织机构主键
         ///</summary>
         [NonSerialized]
-        public const string FieldOrganizeId = "OrganizeId";
+        public const string FieldOrganizationId = "OrganizationId";
 
         ///<summary>
         /// 角色主键

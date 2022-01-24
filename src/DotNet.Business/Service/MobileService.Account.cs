@@ -74,11 +74,11 @@ namespace DotNet.Business
                         if (result == 0 && ValidateUtil.IsInt(applicationCode))
                         {
                             // 2: 若没记录，就进行插入操作。
-                            //BaseOrganizeManager organizeManager = new BaseOrganizeManager();
+                            //BaseOrganizationManager organizeManager = new BaseOrganizationManager();
                             //string id = organizeManager.GetPermissionIdByCode(accountCode);
                             //if (!string.IsNullOrEmpty(id))
                             //{
-                            //    BaseOrganizeEntity organizeEntity = organizeManager.GetEntity(id);
+                            //    BaseOrganizationEntity organizeEntity = organizeManager.GetEntity(id);
                             //    if (organizeEntity != null)
                             //    {
                             //        string accountName = organizeEntity.FullName;
@@ -121,7 +121,7 @@ namespace DotNet.Business
             {
                 if (userEntity != null)
                 {
-                    applicationCode = BaseOrganizeManager.GetCodeByCache(userEntity.CompanyId);
+                    applicationCode = BaseOrganizationManager.GetCodeByCache(userEntity.CompanyId);
                 }
             }
             if (string.IsNullOrEmpty(accountCode))

@@ -150,7 +150,7 @@ namespace DotNet.IService
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="containChildren">含子部门</param>
         /// <returns>数据表</returns>
-        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool containChildren);
+        DataTable GetDataTableByOrganization(BaseUserInfo userInfo, string organizationId, bool containChildren);
 
         /// <summary>
         /// 获取子节点成员

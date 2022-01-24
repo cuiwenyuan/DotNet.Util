@@ -112,27 +112,27 @@ namespace DotNet.IService
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        string[] GetUserScopeOrganizeIds(BaseUserInfo userInfo, string userId, string permissionCode);
+        string[] GetUserScopeOrganizationIds(BaseUserInfo userInfo, string userId, string permissionCode);
 
         /// <summary>
         /// 46.设置用户的某个权限域的组织范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="grantOrganizeIds">授予的组织主键数组</param>
+        /// <param name="grantOrganizationIds">授予的组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        int GrantUserOrganizeScopes(BaseUserInfo userInfo, string userId, string[] grantOrganizeIds, string permissionCode);
+        int GrantUserOrganizationScopes(BaseUserInfo userInfo, string userId, string[] grantOrganizationIds, string permissionCode);
 
         /// <summary>
         /// 47.设置用户的某个权限域的组织范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="revokeOrganizeIds">撤消的组织主键数组</param>
+        /// <param name="revokeOrganizationIds">撤消的组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        int RevokeUserOrganizeScopes(BaseUserInfo userInfo, string userId, string[] revokeOrganizeIds, string permissionCode);
+        int RevokeUserOrganizationScopes(BaseUserInfo userInfo, string userId, string[] revokeOrganizationIds, string permissionCode);
 
         /// <summary>
         /// 48.获取用户的某个权限域的用户范围

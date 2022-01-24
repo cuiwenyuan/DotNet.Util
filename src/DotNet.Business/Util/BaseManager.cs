@@ -470,10 +470,10 @@ namespace DotNet.Business
                 case Status.PasswordError:
                     result = AppMessage.Msg9967;
                     break;
-                case Status.LogOnDeny:
+                case Status.LogonDeny:
                     result = AppMessage.Msg9968;
                     break;
-                case Status.ErrorOnLine:
+                case Status.ErrorOnline:
                     result = AppMessage.Msg0048;
                     break;
                 case Status.ErrorMacAddress:
@@ -482,7 +482,7 @@ namespace DotNet.Business
                 case Status.ErrorIpAddress:
                     result = string.Format(AppMessage.Msg0050, UserInfo.IpAddress);
                     break;
-                case Status.ErrorOnLineLimit:
+                case Status.ErrorOnlineLimit:
                     result = AppMessage.Msg0051;
                     break;
                 case Status.PasswordCanNotBeNull:
@@ -566,7 +566,7 @@ namespace DotNet.Business
                     result = AppMessage.Msg9956;
                     break;
 
-                case Status.ErrorLogOn:
+                case Status.ErrorLogon:
                     result = AppMessage.Msg9000;
                     break;
 

@@ -63,8 +63,8 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(departmentId))
             {
                 /*
-                BaseOrganizeManager organizeManager = new BaseOrganizeManager(this.DbHelper, this.UserInfo);
-                string[] ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                BaseOrganizationManager organizeManager = new BaseOrganizationManager(this.DbHelper, this.UserInfo);
+                string[] ids = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     condition += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
@@ -92,47 +92,47 @@ namespace DotNet.Business
                 {
                     // 从小到大的顺序进行显示，防止错误发生
                     var userPermissionScopeManager = new BaseUserScopeManager(DbHelper, UserInfo);
-                    var organizationIds = userPermissionScopeManager.GetOrganizeIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
+                    var organizationIds = userPermissionScopeManager.GetOrganizationIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
 
                     // 没有任何数据权限
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.NotAllowed).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.NotAllowed).ToString()))
                     {
                         sb += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " = NULL ) ";
                     }
                     // 按详细设定的数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.ByDetails).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.ByDetails).ToString()))
                     {
                         var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName); ;
                         var userIds = permissionScopeManager.GetUserIds(UserInfo.SystemCode, UserInfo.Id, permissionCode);
                         sb += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " IN (" + string.Join(",", userIds) + ")) ";
                     }
                     // 自己的数据，仅本人
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.OnlyOwnData).ToString()))
                     {
                         sb += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " = " + UserInfo.Id + ") ";
                     }
                     // 用户所在工作组数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserWorkgroup).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserWorkgroup).ToString()))
                     {
                         // condition += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldWorkgroupId + " = " + this.UserInfo.WorkgroupId + ") ";
                     }
                     // 用户所在部门数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserDepartment).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserDepartment).ToString()))
                     {
                         sb += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + UserInfo.DepartmentId + ") ";
                     }
                     // 用户所在分支机构数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserSubCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserSubCompany).ToString()))
                     {
                         // condition += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSubCompanyId + " = " + this.UserInfo.SubCompanyId + ") ";
                     }
                     // 用户所在公司数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserCompany).ToString()))
                     {
                         sb += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCompanyId + " = " + UserInfo.CompanyId + ") ";
                     }
                     // 全部数据，这里就不用设置过滤条件了
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.AllData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.AllData).ToString()))
                     {
                     }
                 }

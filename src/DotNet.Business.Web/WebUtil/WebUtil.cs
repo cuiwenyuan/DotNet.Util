@@ -61,7 +61,7 @@ namespace DotNet.Business
         /// <summary>
         /// 用户登录页面
         /// </summary>
-        public static string UserLogOnPage = @"/Login.aspx";
+        public static string UserLogonPage = @"/Login.aspx";
         /// <summary>
         /// 用户注销登录页面
         /// </summary>

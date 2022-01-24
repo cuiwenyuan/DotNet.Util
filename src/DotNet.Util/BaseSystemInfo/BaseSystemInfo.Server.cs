@@ -140,7 +140,7 @@ namespace DotNet.Util
         /// 禁止用户重复登录
         /// 只允许登录一次
         /// </summary>
-        public static bool CheckOnLine = true;
+        public static bool CheckOnline = true;
 
         /// <summary>
         /// 软件是否需要注册
@@ -179,12 +179,12 @@ namespace DotNet.Util
         /// <summary>
         /// （单位：秒）检查周期3分钟内不在线的，就认为是已经没在线了，生命周期检查
         /// </summary>
-        public static int OnLineTimeout = 3 * 60;
+        public static int OnlineTimeout = 3 * 60;
 
         /// <summary>
         /// 每过1分钟，检查一次在线状态
         /// </summary>
-        public static int OnLineCheck = 60;
+        public static int OnlineCheck = 60;
 
         /// <summary>
         /// 锁不住记录时的循环次数(数据库相关)

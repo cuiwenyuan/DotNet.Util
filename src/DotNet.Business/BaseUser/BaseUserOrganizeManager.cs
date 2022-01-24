@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseUserOrganizeManager
+    /// BaseUserOrganizationManager
     /// 用户-组织结构关系管理
     /// 
     /// 修改记录
@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2015.11.28</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserOrganizeManager : BaseManager
+    public partial class BaseUserOrganizationManager : BaseManager
     {
         /// <summary>
         /// 添加用户组织机构关系
@@ -32,18 +32,18 @@ namespace DotNet.Business
         /// <param name="entity">用户组织机构实体</param>
         /// <param name="statusCode">状态码</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserOrganizeEntity entity, out string statusCode)
+        public string Add(BaseUserOrganizationEntity entity, out string statusCode)
         {
             var result = string.Empty;
             // 判断数据是否重复了
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldUserId, entity.UserId),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldCompanyId, entity.CompanyId),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldDepartmentId, entity.DepartmentId),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldWorkgroupId, entity.WorkgroupId)
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldUserId, entity.UserId),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldCompanyId, entity.CompanyId),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldDepartmentId, entity.DepartmentId),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldWorkgroupId, entity.WorkgroupId)
             };
             if (Exists(parameters))
             {
@@ -64,13 +64,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userId">用户主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetUserOrganizeDt(string userId)
+        public DataTable GetUserOrganizationDt(string userId)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseUserOrganizeEntity.FieldUserId, userId)
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseUserOrganizationEntity.FieldUserId, userId)
             };
 
             return GetDataTable(parameters);

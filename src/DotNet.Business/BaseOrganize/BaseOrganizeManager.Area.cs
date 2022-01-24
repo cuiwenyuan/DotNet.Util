@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		<date>2015.11.25</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         /// <summary>
         /// 按区域主键获取组织机构主键数组
@@ -38,20 +38,20 @@ namespace DotNet.Business
 
             if (areaIds != null && areaIds.Length > 0)
             {
-                var commandText = " SELECT " + BaseOrganizeEntity.FieldId
-                                    + " FROM " + BaseOrganizeEntity.TableName
-                                    + "  WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                    + "        AND (" + BaseOrganizeEntity.FieldProvinceId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                    + "         OR " + BaseOrganizeEntity.FieldCityId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                    + "         OR " + BaseOrganizeEntity.FieldStreetId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                    + "         OR " + BaseOrganizeEntity.FieldDistrictId + " IN (" + StringUtil.ArrayToList(areaIds) + "))";
+                var commandText = " SELECT " + BaseOrganizationEntity.FieldId
+                                    + " FROM " + BaseOrganizationEntity.TableName
+                                    + "  WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                    + "        AND (" + BaseOrganizationEntity.FieldProvinceId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                    + "         OR " + BaseOrganizationEntity.FieldCityId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                    + "         OR " + BaseOrganizationEntity.FieldStreetId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                    + "         OR " + BaseOrganizationEntity.FieldDistrictId + " IN (" + StringUtil.ArrayToList(areaIds) + "))";
 
                 var ids = new List<string>();
                 using (var dr = DbHelper.ExecuteReader(commandText))
                 {
                     while (dr.Read())
                     {
-                        ids.Add(dr[BaseOrganizeEntity.FieldId].ToString());
+                        ids.Add(dr[BaseOrganizationEntity.FieldId].ToString());
                     }
                 }
                 result = ids.ToArray();
@@ -68,7 +68,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var commandText = "SELECT DISTINCT Area FROM BaseOrganize WHERE Enabled = 1 AND Area IS NOT NULL AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ORDER BY Area";
+            var commandText = "SELECT DISTINCT Area FROM BaseOrganization WHERE Enabled = 1 AND Area IS NOT NULL AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ORDER BY Area";
             // DataTable dt = DbHelper.Fill(commandText);
             // return BaseUtil.FieldToArray(dt, "Area");
 
@@ -94,10 +94,10 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var commandText = "SELECT DISTINCT Province FROM BaseOrganize WHERE Province IS NOT NULL AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ORDER BY Province ";
+            var commandText = "SELECT DISTINCT Province FROM BaseOrganization WHERE Province IS NOT NULL AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ORDER BY Province ";
             if (!string.IsNullOrEmpty(area))
             {
-                commandText = "SELECT DISTINCT Province FROM BaseOrganize WHERE Area = '" + area + "' AND Province IS NOT NULL AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ORDER BY Province ";
+                commandText = "SELECT DISTINCT Province FROM BaseOrganization WHERE Area = '" + area + "' AND Province IS NOT NULL AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ORDER BY Province ";
             }
             // DataTable dt = DbHelper.Fill(commandText);
             // return BaseUtil.FieldToArray(dt, "Province");
@@ -124,7 +124,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var commandText = "SELECT DISTINCT City FROM BaseOrganize WHERE Province = '" + province + "' AND Enabled = 1 AND City IS NOT NULL AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ORDER BY City";
+            var commandText = "SELECT DISTINCT City FROM BaseOrganization WHERE Province = '" + province + "' AND Enabled = 1 AND City IS NOT NULL AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ORDER BY City";
             // DataTable dt = DbHelper.Fill(commandText);
             // return BaseUtil.FieldToArray(dt, "City");
 
@@ -151,7 +151,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var commandText = "SELECT DISTINCT District FROM BaseOrganize WHERE Province = '" + province + "' AND City = '" + city + "' AND District IS NOT NULL AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ORDER BY District";
+            var commandText = "SELECT DISTINCT District FROM BaseOrganization WHERE Province = '" + province + "' AND City = '" + city + "' AND District IS NOT NULL AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ORDER BY District";
             // DataTable dt = DbHelper.Fill(commandText);
             // return BaseUtil.FieldToArray(dt, "District");
 
@@ -173,9 +173,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="province">省</param>
         /// <returns>数据表</returns>
-        public DataTable GetOrganizeByProvince(string province)
+        public DataTable GetOrganizationByProvince(string province)
         {
-            var commandText = "SELECT " + SelectFields + " FROM BaseOrganize WHERE Province = '" + province + "' AND (City IS NULL OR City = '') AND (District IS NULL OR District = '') AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0";
+            var commandText = "SELECT " + SelectFields + " FROM BaseOrganization WHERE Province = '" + province + "' AND (City IS NULL OR City = '') AND (District IS NULL OR District = '') AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0";
             return DbHelper.Fill(commandText);
         }
 
@@ -185,14 +185,14 @@ namespace DotNet.Business
         /// <param name="province">省份</param>
         /// <param name="city">城市</param>
         /// <returns>数据表</returns>
-        public DataTable GetOrganizeByCity(string province, string city)
+        public DataTable GetOrganizationByCity(string province, string city)
         {
-            var commandText = "SELECT " + SelectFields + " FROM BaseOrganize "
+            var commandText = "SELECT " + SelectFields + " FROM BaseOrganization "
                                 + " WHERE City = '" + city + "'"
-                                + "       AND (District IS NULL OR District = '') AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0";
+                                + "       AND (District IS NULL OR District = '') AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0";
             if (!string.IsNullOrEmpty(province))
             {
-                commandText += " AND " + BaseOrganizeEntity.FieldProvince + " ='" + province + "'";
+                commandText += " AND " + BaseOrganizationEntity.FieldProvince + " ='" + province + "'";
             }
             return DbHelper.Fill(commandText);
         }
@@ -205,24 +205,24 @@ namespace DotNet.Business
         /// <param name="city">城市</param>
         /// <param name="district">县区</param>
         /// <returns>数据表</returns>
-        public string[] GetOrganizeByDistrict(string province, string city, string district)
+        public string[] GetOrganizationByDistrict(string province, string city, string district)
         {
             string[] result = null;
 
-            SelectFields = BaseOrganizeEntity.FieldId
-                                + "," + BaseOrganizeEntity.FieldFullName
-                                 + "," + BaseOrganizeEntity.FieldProvinceId
-                                  + "," + BaseOrganizeEntity.FieldCityId
-                                   + "," + BaseOrganizeEntity.FieldDistrictId;
+            SelectFields = BaseOrganizationEntity.FieldId
+                                + "," + BaseOrganizationEntity.FieldFullName
+                                 + "," + BaseOrganizationEntity.FieldProvinceId
+                                  + "," + BaseOrganizationEntity.FieldCityId
+                                   + "," + BaseOrganizationEntity.FieldDistrictId;
 
-            var commandText = "SELECT " + SelectFields + " FROM BaseOrganize WHERE District = '" + district + "' AND Enabled = 1 AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ";
+            var commandText = "SELECT " + SelectFields + " FROM BaseOrganization WHERE District = '" + district + "' AND Enabled = 1 AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ";
             if (!string.IsNullOrEmpty(province))
             {
-                commandText += " AND " + BaseOrganizeEntity.FieldProvince + " ='" + province + "'";
+                commandText += " AND " + BaseOrganizationEntity.FieldProvince + " ='" + province + "'";
             }
             if (!string.IsNullOrEmpty(city))
             {
-                commandText += " AND " + BaseOrganizeEntity.FieldCity + " ='" + city + "'";
+                commandText += " AND " + BaseOrganizationEntity.FieldCity + " ='" + city + "'";
             }
 
             // DataTable dt = DbHelper.Fill(commandText);
@@ -231,16 +231,16 @@ namespace DotNet.Business
             {
                 while (dataReader.Read())
                 {
-                    if (string.IsNullOrEmpty(dataReader[BaseOrganizeEntity.FieldProvinceId].ToString())
-                    || string.IsNullOrEmpty(dataReader[BaseOrganizeEntity.FieldCityId].ToString())
-                    || string.IsNullOrEmpty(dataReader[BaseOrganizeEntity.FieldDistrictId].ToString())
+                    if (string.IsNullOrEmpty(dataReader[BaseOrganizationEntity.FieldProvinceId].ToString())
+                    || string.IsNullOrEmpty(dataReader[BaseOrganizationEntity.FieldCityId].ToString())
+                    || string.IsNullOrEmpty(dataReader[BaseOrganizationEntity.FieldDistrictId].ToString())
                     )
                     {
-                        list.Add(dataReader[BaseOrganizeEntity.FieldId] + "=*" + dataReader[BaseOrganizeEntity.FieldFullName]);
+                        list.Add(dataReader[BaseOrganizationEntity.FieldId] + "=*" + dataReader[BaseOrganizationEntity.FieldFullName]);
                     }
                     else
                     {
-                        list.Add(dataReader[BaseOrganizeEntity.FieldId] + "=" + dataReader[BaseOrganizeEntity.FieldFullName]);
+                        list.Add(dataReader[BaseOrganizationEntity.FieldId] + "=" + dataReader[BaseOrganizationEntity.FieldFullName]);
                     }
                 }
             }

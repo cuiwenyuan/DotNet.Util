@@ -25,7 +25,7 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-    public partial class BaseOrganizeScopeEntity : BaseEntity
+    public partial class BaseOrganizationScopeEntity : BaseEntity
     {
         /// <summary>
         /// 主键
@@ -203,7 +203,7 @@ namespace DotNet.Model
         /// 基于组织机构的权限范围
         ///</summary>
         [NonSerialized]
-        public const string TableName = "BaseOrganizeScope";
+        public const string TableName = "BaseOrganizationScope";
 
         ///<summary>
         /// 主键

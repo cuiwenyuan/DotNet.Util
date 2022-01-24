@@ -69,12 +69,12 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="entity">用户实体</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式</param>
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogOnEntity userLogOnEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
         {
             var result = string.Empty;
 
@@ -84,7 +84,7 @@ namespace DotNet.Business
 #endif
 
             var userManager = new BaseUserManager(dbHelper, userInfo);
-            result = userManager.Add(entity, userLogOnEntity);
+            result = userManager.Add(entity, userLogonEntity);
             statusCode = userManager.StatusCode;
             statusMessage = userManager.GetStateMessage();
 
@@ -139,7 +139,7 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogOnEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
         {
             var result = string.Empty;
 
@@ -175,7 +175,7 @@ namespace DotNet.Business
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 // 判断是否已经登录的用户？
-                if (userManager.UserIsLogOn(userInfo))
+                if (userManager.UserIsLogon(userInfo))
                 {
                     entity = userManager.GetEntity(id);
                 }
@@ -200,7 +200,7 @@ namespace DotNet.Business
             {
                 // var userManager = new BaseUserManager(dbHelper, userInfo);
                 // 判断是否已经登录的用户？
-                // if (userManager.UserIsLogOn(userInfo))
+                // if (userManager.UserIsLogon(userInfo))
                 // {
                 entity = BaseUserManager.GetEntityByCache(id);
                 // }
@@ -311,7 +311,7 @@ namespace DotNet.Business
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 // 判断是否已经登录的用户？
-                if (userManager.UserIsLogOn(userInfo))
+                if (userManager.UserIsLogon(userInfo))
                 {
                     var userContactManager = new BaseUserContactManager(dbHelper, userInfo);
                     entity = userContactManager.GetEntity(id);
@@ -540,7 +540,7 @@ namespace DotNet.Business
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo)
                 {
-                    ShowUserLogOnInfo = false
+                    ShowUserLogonInfo = false
                 };
                 result = userManager.Search(userInfo.SystemCode, string.Empty, searchKey, roleIds, null, auditStates, string.Empty);
                 result.TableName = BaseUserEntity.TableName;
@@ -619,7 +619,7 @@ namespace DotNet.Business
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo)
                 {
-                    ShowUserLogOnInfo = false
+                    ShowUserLogonInfo = false
                 };
                 result = userManager.SearchByPage(userInfo.SystemCode, permissionCode, searchKey, roleIds, enabled, auditStates, null, departmentId, showRole, userAllInformation, false, out myRecordCount, pageIndex, pageSize, sort);
                 result.TableName = BaseUserEntity.TableName;
@@ -685,12 +685,12 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="entity">用户实体</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式实体</param>
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogOnEntity userLogOnEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
         {
             var result = 0;
 
@@ -719,10 +719,10 @@ namespace DotNet.Business
                     }
                 }
                 //用户登录 Troy.Cui 2018-10-06增加
-                if (userLogOnEntity != null)
+                if (userLogonEntity != null)
                 {
-                    var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
-                    userLogOnManager.Update(userLogOnEntity);
+                    var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
+                    userLogonManager.Update(userLogonEntity);
                 }
                 if (userContactEntity != null)
                 {
@@ -798,15 +798,15 @@ namespace DotNet.Business
 
                     // 锁定时间需要去掉
                     // 密码错误次数需要修改掉
-                    var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
+                    var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
                     parameters = new List<KeyValuePair<string, object>>
                     {
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockStartDate, null),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockEndDate, null),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUserOnLine, 0),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldPasswordErrorCount, 0)
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartDate, null),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndDate, null),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0)
                     };
-                    result = userLogOnManager.SetProperty(ids, parameters);
+                    result = userLogonManager.SetProperty(ids, parameters);
 
                     // var staffManager = new BaseStaffManager(dbHelper, result);
                     // string[] staffIds = staffManager.GetIds(BaseStaffEntity.FieldUserId, ids);
@@ -853,15 +853,15 @@ namespace DotNet.Business
 
                     // 锁定时间需要去掉
                     // 密码错误次数需要修改掉
-                    var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
+                    var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
                     parameters = new List<KeyValuePair<string, object>>
                     {
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockStartDate, null),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockEndDate, null),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUserOnLine, 0),
-                        new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldPasswordErrorCount, 0)
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartDate, null),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndDate, null),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0),
+                        new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0)
                     };
-                    result = userLogOnManager.SetProperty(ids, parameters);
+                    result = userLogonManager.SetProperty(ids, parameters);
 
                     // var staffManager = new BaseStaffManager(dbHelper, result);
                     // string[] staffIds = staffManager.GetIds(BaseStaffEntity.FieldUserId, ids);
@@ -1043,7 +1043,7 @@ namespace DotNet.Business
                 {
                     var userManager = new BaseUserManager(dbHelper, userInfo)
                     {
-                        ShowUserLogOnInfo = false
+                        ShowUserLogonInfo = false
                     };
                     result = userManager.GetDataTableByPage(out myRecordCount, pageIndex, pageSize, condition, dbHelper.MakeParameters(dbParameters), order);
                     result.TableName = BaseUserEntity.TableName;

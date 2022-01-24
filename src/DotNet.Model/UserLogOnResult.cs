@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    ///	UserLogOnResult
+    ///	UserLogonResult
     /// 登录返回状态
     /// 
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Model
     /// </author> 
     /// </summary>
     [Serializable]
-    public class UserLogOnResult
+    public class UserLogonResult
     {
         /// <summary>
         /// 用户信息

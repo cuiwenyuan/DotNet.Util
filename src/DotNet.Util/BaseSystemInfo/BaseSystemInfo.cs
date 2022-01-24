@@ -17,7 +17,7 @@ namespace DotNet.Util
     /// 修改记录
     /// 
     ///     2014.07.31 版本：3.9 lhy        增加历史登录用户属性
-    ///     2012.02.02 版本：3.8 zhangyi    修改OrganizeDynamicLoading = true。
+    ///     2012.02.02 版本：3.8 zhangyi    修改OrganizationDynamicLoading = true。
     ///     2011.10.07 版本：2.3 JiRihGaLa  每个数据库都支持多类型数据库。
     ///     2011.07.15 版本：2.2 JiRiGaLa   参数信息整理，获取硬件信息的功能部分进行分离。
     ///     2011.07.07 版本：2.1 zgl        优化获取IP地址和Mac地址的方法
@@ -42,17 +42,17 @@ namespace DotNet.Util
         /// <summary>
         /// 登录信息实时统计
         /// </summary>
-        public static bool LogOnStatistics = true;
+        public static bool LogonStatistics = true;
        
         /// <summary>
         /// 用户是否已经成功登录系统
         /// </summary>
-        public static bool UserIsLogOn = false;
+        public static bool UserIsLogon = false;
 
         /// <summary>
         /// 系统登录时间、当前系统登录时间记录
         /// </summary>
-        public static DateTime UserLogOnTime = DateTime.Now;
+        public static DateTime UserLogonTime = DateTime.Now;
 
         /// <summary>
         /// 最后一次检查升级版本的时间
@@ -62,7 +62,7 @@ namespace DotNet.Util
         /// <summary>
         /// 用户在线状态
         /// </summary>
-        public static int UserOnLineState = 0;
+        public static int UserOnlineState = 0;
 
         /// <summary>
         /// 当前网站的安装地址
@@ -130,7 +130,7 @@ namespace DotNet.Util
         {
             Thread.Sleep(10000);
             var openId = string.Empty;
-            var url = WebHost + @"/UserCenter/LogOnService.ashx";
+            var url = WebHost + @"/UserCenter/LogonService.ashx";
             var webClient = new WebClient();
             var postValues = new NameValueCollection();
             postValues.Add("function", "CreateOpenId");

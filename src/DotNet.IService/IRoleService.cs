@@ -108,7 +108,7 @@ namespace DotNet.IService
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="showUser">显示用户</param>
         /// <returns>数据表</returns>
-        DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool showUser);
+        DataTable GetDataTableByOrganization(BaseUserInfo userInfo, string organizationId, bool showUser);
         
         /// <summary>
         /// 获取实体
@@ -209,9 +209,9 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="addOrganizeIds">组织机构主键</param>
+        /// <param name="addOrganizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int AddOrganizeToRole(BaseUserInfo userInfo, string roleId, string[] addOrganizeIds);
+        int AddOrganizationToRole(BaseUserInfo userInfo, string roleId, string[] addOrganizationIds);
 
         /// <summary>
         /// 将用户从角色中移除
@@ -229,7 +229,7 @@ namespace DotNet.IService
         /// <param name="roleId">角色主键</param>
         /// <param name="organizationIds">组织机构主键</param>
         /// <returns>影响行数</returns>
-        int RemoveOrganizeFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds);
+        int RemoveOrganizationFromRole(BaseUserInfo userInfo, string roleId, string[] organizationIds);
 
         /// <summary>
         /// 清楚角色用户关联
@@ -279,7 +279,7 @@ namespace DotNet.IService
         /// <param name="systemCode">系统编号</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>数据表</returns>
-        DataTable GetRoleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string roleId);
+        DataTable GetRoleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string roleId);
 
 		/// <summary>
 		/// 读取属性

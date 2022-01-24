@@ -109,10 +109,10 @@ namespace DotNet.Business
                 }
 
                 // 04: 按部门(组织机构)获取权限项
-                if (BaseSystemInfo.UseOrganizePermission && !string.IsNullOrEmpty(companyId))
+                if (BaseSystemInfo.UseOrganizationPermission && !string.IsNullOrEmpty(companyId))
                 {
                     // 2016-02-26 吉日嘎拉，公司权限进行优化简化
-                    var organizePermission = BaseOrganizePermissionManager.GetPermissionIdsByCache(systemCode, companyId);
+                    var organizePermission = BaseOrganizationPermissionManager.GetPermissionIdsByCache(systemCode, companyId);
                     result = StringUtil.Concat(result, organizePermission);
                 }
             }

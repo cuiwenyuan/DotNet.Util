@@ -11,7 +11,7 @@ namespace DotNet.Util
     /// 修改记录
     /// 
     ///     2016.04.13 版本：2.3 JiRiGaLa 实现登录限制的、用户名登录限制、密码登录限制。
-    ///     2015.11.19 版本：2.2 JiRiGaLa IPLimit、LogOnLimit 功能增加、限制访问、限制ip的变量定义好。
+    ///     2015.11.19 版本：2.2 JiRiGaLa IPLimit、LogonLimit 功能增加、限制访问、限制ip的变量定义好。
     ///     2015.11.11 版本：2.1 JiRiGaLa 实现公司没找到的功能。
     ///     2013.02.11 版本：2.0 JiRiGaLa 其实这部分代码已经与AppMessage重复。
     ///		2007.12.09 版本：1.1 JiRiGaLa 重新命名为 StatusCode。
@@ -165,12 +165,12 @@ namespace DotNet.Util
         /// 登录被拒绝
         /// </summary>
         [EnumDescription("登录被拒绝")]
-        LogOnDeny = 28,
+        LogonDeny = 28,
         /// <summary>
         /// 只允许登录一次
         /// </summary>
         [EnumDescription("只允许登录一次")]
-        ErrorOnLine = 29,
+        ErrorOnline = 29,
         /// <summary>
         /// Mac地址不正确，登录被阻止
         /// </summary>
@@ -185,7 +185,7 @@ namespace DotNet.Util
         /// 同时在线用户数量限制
         /// </summary>
         [EnumDescription("同时在线用户数量限制")]
-        ErrorOnLineLimit = 32,
+        ErrorOnlineLimit = 32,
         /// <summary>
         /// 密码不允许为空
         /// </summary>
@@ -235,7 +235,7 @@ namespace DotNet.Util
         /// 用户名或密码错误，由于安全原因不能告诉你具体哪个错误了
         /// </summary>
         [EnumDescription("用户名或密码错误，由于安全原因不能告诉你具体哪个错误了")]
-        ErrorLogOn = 42,
+        ErrorLogon = 42,
         /// <summary>
         /// 待审核状态
         /// </summary>
@@ -250,7 +250,7 @@ namespace DotNet.Util
         /// 用户登录
         /// </summary>
         [EnumDescription("用户登录")]
-        UserLogOn = 45,
+        UserLogon = 45,
         /// <summary>
         /// 已经超时，请重新登录
         /// </summary>
@@ -280,7 +280,7 @@ namespace DotNet.Util
         /// 登录被限制，过于频繁操作
         /// </summary>
         [EnumDescription("登录被限制，过于频繁操作")]
-        LogOnLimit = 51,
+        LogonLimit = 51,
         /// <summary>
         /// 登录被限制，用户名过于频繁操作
         /// </summary>

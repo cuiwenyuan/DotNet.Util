@@ -32,7 +32,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="organizationId">组织机构主键</param>
         /// <returns>主键数组</returns>
-        string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId);
+        string[] GetOrganizationPermissionIds(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获取组织机构主键数组
@@ -40,7 +40,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="permissionId">操作权限主键</param>
         /// <returns>主键数组</returns>
-        string[] GetOrganizeIdsByPermission(BaseUserInfo userInfo, string permissionId);
+        string[] GetOrganizationIdsByPermission(BaseUserInfo userInfo, string permissionId);
 
         /// <summary>
         /// 授予组织机构的权限
@@ -49,7 +49,7 @@ namespace DotNet.IService
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="grantPermissionId">授予权限</param>
         /// <returns>影响的行数</returns>
-        string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId);
+        string GrantOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId);
 
         /// <summary>
         /// 授予组织机构的权限
@@ -58,7 +58,7 @@ namespace DotNet.IService
         /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="grantPermissionIds">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds);
+        int GrantOrganizationPermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds);
 
         /// <summary>
         /// 撤消组织机构的权限
@@ -67,7 +67,7 @@ namespace DotNet.IService
         /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="revokePermissionIds">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds);
+        int RevokeOrganizationPermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds);
 
         /// <summary>
         /// 撤消组织机构的权限
@@ -76,7 +76,7 @@ namespace DotNet.IService
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="revokePermissionId">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId);
+        int RevokeOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId);
 
         /// <summary>
         /// 清除权限
@@ -84,7 +84,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>数据表</returns>
-        int ClearOrganizePermission(BaseUserInfo userInfo, string id);
+        int ClearOrganizationPermission(BaseUserInfo userInfo, string id);
 
 
         //用户组织机构范围权限（省市县区域）关联相关
@@ -96,17 +96,17 @@ namespace DotNet.IService
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        PermissionOrganizeScope GetUserOrganizeScope(BaseUserInfo userInfo, string userId, string permissionCode);
+        PermissionOrganizationScope GetUserOrganizationScope(BaseUserInfo userInfo, string userId, string permissionCode);
 
         /// <summary>
         /// 设置用户某个权限的组织机构范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="permissionOrganizeScope">组织机构范围</param>
+        /// <param name="permissionOrganizationScope">组织机构范围</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        string SetUserOrganizeScope(BaseUserInfo userInfo, string userId, PermissionOrganizeScope permissionOrganizeScope, string permissionCode);
+        string SetUserOrganizationScope(BaseUserInfo userInfo, string userId, PermissionOrganizationScope permissionOrganizationScope, string permissionCode);
 
         //用户组织机构范围权限（省市县区域）关联相关
 
@@ -117,16 +117,16 @@ namespace DotNet.IService
         /// <param name="roleId">角色主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        PermissionOrganizeScope GetRoleOrganizeScope(BaseUserInfo userInfo, string roleId, string permissionCode);
+        PermissionOrganizationScope GetRoleOrganizationScope(BaseUserInfo userInfo, string roleId, string permissionCode);
 
         /// <summary>
         /// 设置用户某个权限的组织机构范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="permissionOrganizeScope">组织机构范围</param>
+        /// <param name="permissionOrganizationScope">组织机构范围</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        string SetRoleOrganizeScope(BaseUserInfo userInfo, string roleId, PermissionOrganizeScope permissionOrganizeScope, string permissionCode);
+        string SetRoleOrganizationScope(BaseUserInfo userInfo, string roleId, PermissionOrganizationScope permissionOrganizationScope, string permissionCode);
     }
 }

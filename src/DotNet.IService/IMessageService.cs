@@ -34,7 +34,7 @@ namespace DotNet.IService
         /// <param name="organizationId">公司主键</param>
         /// <param name="departmentId">部门主键</param>
         /// <returns>数据表</returns>
-        string[] GetUserByOrganize(BaseUserInfo userInfo, string organizationId, string departmentId);
+        string[] GetUserByOrganization(BaseUserInfo userInfo, string organizationId, string departmentId);
 
         /// <summary>
         /// 按角色获取用户列表
@@ -132,14 +132,14 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="onLineState">用户在线状态</param>
         /// <returns>离线人数</returns>
-        int CheckOnLine(BaseUserInfo userInfo, int onLineState);
+        int CheckOnline(BaseUserInfo userInfo, int onLineState);
 
         /// <summary>
         /// 获取在线用户列表
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <returns>数据表</returns>
-        DataTable GetOnLineState(BaseUserInfo userInfo);
+        DataTable GetOnlineState(BaseUserInfo userInfo);
 
         /// <summary>
         /// 获取部门用户

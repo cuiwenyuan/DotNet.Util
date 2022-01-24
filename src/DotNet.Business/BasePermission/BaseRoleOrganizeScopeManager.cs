@@ -40,21 +40,21 @@ namespace DotNet.Business
         /// <param name="roleId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public List<BaseOrganizeScopeEntity> GetRoleOrganizeScopes(string systemCode, string roleId, string permissionCode = "Resource.AccessPermission")
+        public List<BaseOrganizationScopeEntity> GetRoleOrganizationScopes(string systemCode, string roleId, string permissionCode = "Resource.AccessPermission")
         {
-            List<BaseOrganizeScopeEntity> result = null;
+            List<BaseOrganizationScopeEntity> result = null;
             var permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
             if (!string.IsNullOrEmpty(permissionId))
             {
-                var organizeScopeManager = new BaseOrganizeScopeManager(DbHelper, UserInfo);
+                var organizeScopeManager = new BaseOrganizationScopeManager(DbHelper, UserInfo);
                 var tableName = UserInfo.SystemCode + "Role";
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceCategory, tableName),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceId, roleId),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldPermissionId, permissionId)
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceCategory, tableName),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceId, roleId),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldPermissionId, permissionId)
                 };
-                result = organizeScopeManager.GetList<BaseOrganizeScopeEntity>(parameters);
+                result = organizeScopeManager.GetList<BaseOrganizationScopeEntity>(parameters);
             }
             return result;
         }
@@ -67,32 +67,32 @@ namespace DotNet.Business
         /// <param name="containChild"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public PermissionOrganizeScope GetRoleOrganizeScope(string systemCode, string roleId, out bool containChild, string permissionCode = "Resource.AccessPermission")
+        public PermissionOrganizationScope GetRoleOrganizationScope(string systemCode, string roleId, out bool containChild, string permissionCode = "Resource.AccessPermission")
         {
             containChild = false;
-            var permissionScope = PermissionOrganizeScope.OnlyOwnData;
+            var permissionScope = PermissionOrganizationScope.OnlyOwnData;
 
-            BaseOrganizeScopeEntity organizeScopeEntity = null;
+            BaseOrganizationScopeEntity organizeScopeEntity = null;
             var permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
             if (!string.IsNullOrEmpty(permissionId))
             {
-                var tableName = BaseOrganizeScopeEntity.TableName;
+                var tableName = BaseOrganizationScopeEntity.TableName;
                 if (!string.IsNullOrEmpty(systemCode))
                 {
-                    tableName = systemCode + "OrganizeScope";
+                    tableName = systemCode + "OrganizationScope";
                 }
-                var organizeScopeManager = new BaseOrganizeScopeManager(DbHelper, UserInfo, tableName);
+                var organizeScopeManager = new BaseOrganizationScopeManager(DbHelper, UserInfo, tableName);
                 var tableRole = systemCode + "Role";
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceCategory, tableRole),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceId, roleId),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldPermissionId, permissionId)
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceCategory, tableRole),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceId, roleId),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldPermissionId, permissionId)
                 };
                 var dt = organizeScopeManager.GetDataTable(parameters);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    organizeScopeEntity = BaseEntity.Create<BaseOrganizeScopeEntity>(dt);
+                    organizeScopeEntity = BaseEntity.Create<BaseOrganizationScopeEntity>(dt);
                 }
             }
 
@@ -105,56 +105,56 @@ namespace DotNet.Business
 
                 if (organizeScopeEntity.AllData == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.AllData;
+                    permissionScope = PermissionOrganizationScope.AllData;
                 }
                 if (organizeScopeEntity.ByDetails == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.ByDetails;
+                    permissionScope = PermissionOrganizationScope.ByDetails;
                 }
                 if (organizeScopeEntity.NotAllowed == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.NotAllowed;
+                    permissionScope = PermissionOrganizationScope.NotAllowed;
                 }
                 if (organizeScopeEntity.OnlyOwnData == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.OnlyOwnData;
+                    permissionScope = PermissionOrganizationScope.OnlyOwnData;
                 }
 
                 if (organizeScopeEntity.Province == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.Province;
+                    permissionScope = PermissionOrganizationScope.Province;
                 }
                 if (organizeScopeEntity.City == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.City;
+                    permissionScope = PermissionOrganizationScope.City;
                 }
                 if (organizeScopeEntity.District == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.District;
+                    permissionScope = PermissionOrganizationScope.District;
                 }
                 if (organizeScopeEntity.Street == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.Street;
+                    permissionScope = PermissionOrganizationScope.Street;
                 }
                 if (organizeScopeEntity.UserCompany == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.UserCompany;
+                    permissionScope = PermissionOrganizationScope.UserCompany;
                 }
                 if (organizeScopeEntity.UserSubCompany == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.UserSubCompany;
+                    permissionScope = PermissionOrganizationScope.UserSubCompany;
                 }
                 if (organizeScopeEntity.UserDepartment == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.UserDepartment;
+                    permissionScope = PermissionOrganizationScope.UserDepartment;
                 }
                 if (organizeScopeEntity.UserSubDepartment == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.UserSubDepartment;
+                    permissionScope = PermissionOrganizationScope.UserSubDepartment;
                 }
                 if (organizeScopeEntity.UserWorkgroup == 1)
                 {
-                    permissionScope = PermissionOrganizeScope.UserWorkgroup;
+                    permissionScope = PermissionOrganizationScope.UserWorkgroup;
                 }
             }
             return permissionScope;
@@ -169,32 +169,32 @@ namespace DotNet.Business
         /// <param name="permissionCode">权限编码</param>
         /// <param name="containChild"></param>
         /// <returns></returns>
-        public string SetRoleOrganizeScope(string systemCode, string roleId, PermissionOrganizeScope permissionScope, string permissionCode = "Resource.AccessPermission", bool containChild = false)
+        public string SetRoleOrganizationScope(string systemCode, string roleId, PermissionOrganizationScope permissionScope, string permissionCode = "Resource.AccessPermission", bool containChild = false)
         {
             var result = string.Empty;
 
             var permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
             if (!string.IsNullOrEmpty(permissionId))
             {
-                var tableName = BaseOrganizeScopeEntity.TableName;
+                var tableName = BaseOrganizationScopeEntity.TableName;
                 if (!string.IsNullOrEmpty(systemCode))
                 {
-                    tableName = systemCode + "OrganizeScope";
+                    tableName = systemCode + "OrganizationScope";
                 }
-                var organizeScopeManager = new BaseOrganizeScopeManager(DbHelper, UserInfo, tableName);
+                var organizeScopeManager = new BaseOrganizationScopeManager(DbHelper, UserInfo, tableName);
                 var tableRole = systemCode + "Role";
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceCategory, tableRole),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldResourceId, roleId),
-                    new KeyValuePair<string, object>(BaseOrganizeScopeEntity.FieldPermissionId, permissionId)
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceCategory, tableRole),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldResourceId, roleId),
+                    new KeyValuePair<string, object>(BaseOrganizationScopeEntity.FieldPermissionId, permissionId)
                 };
                 result = organizeScopeManager.GetId(parameters);
 
-                BaseOrganizeScopeEntity organizeScopeEntity = null;
+                BaseOrganizationScopeEntity organizeScopeEntity = null;
                 if (string.IsNullOrEmpty(result))
                 {
-                    organizeScopeEntity = new BaseOrganizeScopeEntity
+                    organizeScopeEntity = new BaseOrganizationScopeEntity
                     {
                         Id = Guid.NewGuid().ToString("N")
                     };
@@ -204,19 +204,19 @@ namespace DotNet.Business
                     organizeScopeEntity = organizeScopeManager.GetEntity(result);
                 }
 
-                organizeScopeEntity.AllData = (permissionScope == PermissionOrganizeScope.AllData ? 1 : 0);
-                organizeScopeEntity.Province = (permissionScope == PermissionOrganizeScope.Province ? 1 : 0);
-                organizeScopeEntity.City = (permissionScope == PermissionOrganizeScope.City ? 1 : 0);
-                organizeScopeEntity.District = (permissionScope == PermissionOrganizeScope.District ? 1 : 0);
-                organizeScopeEntity.Street = (permissionScope == PermissionOrganizeScope.Street ? 1 : 0);
-                organizeScopeEntity.UserCompany = (permissionScope == PermissionOrganizeScope.UserCompany ? 1 : 0);
-                organizeScopeEntity.UserSubCompany = (permissionScope == PermissionOrganizeScope.UserSubCompany ? 1 : 0);
-                organizeScopeEntity.UserDepartment = (permissionScope == PermissionOrganizeScope.UserDepartment ? 1 : 0);
-                organizeScopeEntity.UserSubDepartment = (permissionScope == PermissionOrganizeScope.UserSubDepartment ? 1 : 0);
-                organizeScopeEntity.UserWorkgroup = (permissionScope == PermissionOrganizeScope.UserWorkgroup ? 1 : 0);
-                organizeScopeEntity.OnlyOwnData = (permissionScope == PermissionOrganizeScope.OnlyOwnData ? 1 : 0);
-                organizeScopeEntity.ByDetails = (permissionScope == PermissionOrganizeScope.ByDetails ? 1 : 0);
-                organizeScopeEntity.NotAllowed = (permissionScope == PermissionOrganizeScope.NotAllowed ? 1 : 0);
+                organizeScopeEntity.AllData = (permissionScope == PermissionOrganizationScope.AllData ? 1 : 0);
+                organizeScopeEntity.Province = (permissionScope == PermissionOrganizationScope.Province ? 1 : 0);
+                organizeScopeEntity.City = (permissionScope == PermissionOrganizationScope.City ? 1 : 0);
+                organizeScopeEntity.District = (permissionScope == PermissionOrganizationScope.District ? 1 : 0);
+                organizeScopeEntity.Street = (permissionScope == PermissionOrganizationScope.Street ? 1 : 0);
+                organizeScopeEntity.UserCompany = (permissionScope == PermissionOrganizationScope.UserCompany ? 1 : 0);
+                organizeScopeEntity.UserSubCompany = (permissionScope == PermissionOrganizationScope.UserSubCompany ? 1 : 0);
+                organizeScopeEntity.UserDepartment = (permissionScope == PermissionOrganizationScope.UserDepartment ? 1 : 0);
+                organizeScopeEntity.UserSubDepartment = (permissionScope == PermissionOrganizationScope.UserSubDepartment ? 1 : 0);
+                organizeScopeEntity.UserWorkgroup = (permissionScope == PermissionOrganizationScope.UserWorkgroup ? 1 : 0);
+                organizeScopeEntity.OnlyOwnData = (permissionScope == PermissionOrganizationScope.OnlyOwnData ? 1 : 0);
+                organizeScopeEntity.ByDetails = (permissionScope == PermissionOrganizationScope.ByDetails ? 1 : 0);
+                organizeScopeEntity.NotAllowed = (permissionScope == PermissionOrganizationScope.NotAllowed ? 1 : 0);
                 organizeScopeEntity.Enabled = 1;
                 organizeScopeEntity.DeletionStateCode = 0;
                 organizeScopeEntity.ContainChild = containChild ? 1 : 0;
@@ -237,7 +237,7 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public string[] GetOrganizeIds(string roleId, string permissionCode) 获取员工的权限主键数组
+        #region public string[] GetOrganizationIds(string roleId, string permissionCode) 获取员工的权限主键数组
 
         /// <summary>
         /// 获取员工的权限主键数组
@@ -246,7 +246,7 @@ namespace DotNet.Business
         /// <param name="roleId">角色主键</param>
         /// <param name="permissionId">权限编号</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizeIds(string systemCode, string roleId, string permissionId)
+        public string[] GetOrganizationIds(string systemCode, string roleId, string permissionId)
         {
             string[] result = null;
             if (!string.IsNullOrEmpty(permissionId))
@@ -256,7 +256,7 @@ namespace DotNet.Business
                 {
                     new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, roleTableName),
                     new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, roleId),
-                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
                     new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, permissionId)
                 };
 
@@ -273,17 +273,17 @@ namespace DotNet.Business
         // 授予授权范围的实现部分
         //
 
-        #region private string GrantOrganize(BasePermissionScopeManager manager, string id, string roleId, string grantOrganizeId) 为了提高授权的运行速度
+        #region private string GrantOrganization(BasePermissionScopeManager manager, string id, string roleId, string grantOrganizationId) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="permissionScopeManager">权限域读写器</param>
         /// <param name="roleId">员工主键</param>
-        /// <param name="grantOrganizeId">权限主键</param>
+        /// <param name="grantOrganizationId">权限主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键</returns>
-        private string GrantOrganize(string systemCode, BasePermissionScopeManager permissionScopeManager, string roleId, string grantOrganizeId, string permissionCode)
+        private string GrantOrganization(string systemCode, BasePermissionScopeManager permissionScopeManager, string roleId, string grantOrganizationId, string permissionCode)
         {
             var result = string.Empty;
 
@@ -293,8 +293,8 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, roleTableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, roleId),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, grantOrganizeId),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, grantOrganizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode))
             };
 
@@ -308,19 +308,19 @@ namespace DotNet.Business
                 resourcePermissionScopeEntity.PermissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
                 resourcePermissionScopeEntity.ResourceCategory = roleTableName;
                 resourcePermissionScopeEntity.ResourceId = roleId;
-                resourcePermissionScopeEntity.TargetCategory = BaseOrganizeEntity.TableName;
-                resourcePermissionScopeEntity.TargetId = grantOrganizeId;
+                resourcePermissionScopeEntity.TargetCategory = BaseOrganizationEntity.TableName;
+                resourcePermissionScopeEntity.TargetId = grantOrganizationId;
                 resourcePermissionScopeEntity.Enabled = 1;
                 resourcePermissionScopeEntity.DeletionStateCode = 0;
                 result = permissionScopeManager.Add(resourcePermissionScopeEntity, true, false);
-                if (grantOrganizeId != ((int)PermissionOrganizeScope.NotAllowed).ToString())
+                if (grantOrganizationId != ((int)PermissionOrganizationScope.NotAllowed).ToString())
                 {
                     parameters = new List<KeyValuePair<string, object>>
                     {
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, roleTableName),
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, roleId),
-                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
-                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, ((int)PermissionOrganizeScope.NotAllowed).ToString()),
+                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
+                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, ((int)PermissionOrganizationScope.NotAllowed).ToString()),
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode))
                     };
 
@@ -339,14 +339,14 @@ namespace DotNet.Business
                     {
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, roleTableName),
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, roleId),
-                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
+                        new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
                         new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode))
                     };
 
                     dt = permissionScopeManager.GetDataTable(parameters);
                     for (var i = 0; i < dt.Rows.Count; i++)
                     {
-                        if (dt.Rows[i]["TargetId"].ToString() != ((int)PermissionOrganizeScope.NotAllowed).ToString())
+                        if (dt.Rows[i]["TargetId"].ToString() != ((int)PermissionOrganizationScope.NotAllowed).ToString())
                             permissionScopeManager.DeleteObject(dt.Rows[0][BasePermissionScopeEntity.FieldId].ToString());
                     }
                 }
@@ -356,19 +356,19 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GrantOrganize(string roleId, string result) 员工授予权限
+        #region public string GrantOrganization(string roleId, string result) 员工授予权限
         /// <summary>
         /// 员工授予权限
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="roleId">员工主键</param>
-        /// <param name="grantOrganizeId">权组织机构限主键</param>
+        /// <param name="grantOrganizationId">权组织机构限主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键</returns>
-        public string GrantOrganize(string systemCode, string roleId, string grantOrganizeId, string permissionCode)
+        public string GrantOrganization(string systemCode, string roleId, string grantOrganizationId, string permissionCode)
         {
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            return GrantOrganize(systemCode, permissionScopeManager, roleId, grantOrganizeId, permissionCode);
+            return GrantOrganization(systemCode, permissionScopeManager, roleId, grantOrganizationId, permissionCode);
         }
         #endregion
 
@@ -377,17 +377,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleId"></param>
-        /// <param name="grantOrganizeIds"></param>
+        /// <param name="grantOrganizationIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantOrganizes(string systemCode, string roleId, string[] grantOrganizeIds, string permissionCode)
+        public int GrantOrganizations(string systemCode, string roleId, string[] grantOrganizationIds, string permissionCode)
         {
             var result = 0;
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < grantOrganizeIds.Length; i++)
+            for (var i = 0; i < grantOrganizationIds.Length; i++)
             {
-                GrantOrganize(systemCode, permissionScopeManager, roleId, grantOrganizeIds[i], permissionCode);
+                GrantOrganization(systemCode, permissionScopeManager, roleId, grantOrganizationIds[i], permissionCode);
                 result++;
             }
 
@@ -399,17 +399,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleIds"></param>
-        /// <param name="grantOrganizeId"></param>
+        /// <param name="grantOrganizationId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantOrganizes(string systemCode, string[] roleIds, string grantOrganizeId, string permissionCode)
+        public int GrantOrganizations(string systemCode, string[] roleIds, string grantOrganizationId, string permissionCode)
         {
             var result = 0;
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < roleIds.Length; i++)
             {
-                GrantOrganize(systemCode, permissionScopeManager, roleIds[i], grantOrganizeId, permissionCode);
+                GrantOrganization(systemCode, permissionScopeManager, roleIds[i], grantOrganizationId, permissionCode);
                 result++;
             }
 
@@ -421,18 +421,18 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleIds"></param>
-        /// <param name="grantOrganizeIds"></param>
+        /// <param name="grantOrganizationIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int GrantOrganizes(string systemCode, string[] roleIds, string[] grantOrganizeIds, string permissionCode)
+        public int GrantOrganizations(string systemCode, string[] roleIds, string[] grantOrganizationIds, string permissionCode)
         {
             var result = 0;
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < roleIds.Length; i++)
             {
-                for (var j = 0; j < grantOrganizeIds.Length; j++)
+                for (var j = 0; j < grantOrganizationIds.Length; j++)
                 {
-                    GrantOrganize(systemCode, permissionScopeManager, roleIds[i], grantOrganizeIds[j], permissionCode);
+                    GrantOrganization(systemCode, permissionScopeManager, roleIds[i], grantOrganizationIds[j], permissionCode);
                     result++;
                 }
             }
@@ -444,25 +444,25 @@ namespace DotNet.Business
         //  撤销授权范围的实现部分
         //
 
-        #region private int RevokeOrganize(BasePermissionScopeManager manager, string roleId, string revokeOrganizeId, string permissionCode) 为了提高授权的运行速度
+        #region private int RevokeOrganization(BasePermissionScopeManager manager, string roleId, string revokeOrganizationId, string permissionCode) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="permissionScopeManager">权限域读写器</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="revokeOrganizeId">权限主键</param>
+        /// <param name="revokeOrganizationId">权限主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键</returns>
-        private int RevokeOrganize(string systemCode, BasePermissionScopeManager permissionScopeManager, string roleId, string revokeOrganizeId, string permissionCode)
+        private int RevokeOrganization(string systemCode, BasePermissionScopeManager permissionScopeManager, string roleId, string revokeOrganizationId, string permissionCode)
         {
             var roleTableName = UserInfo.SystemCode + "Role";
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, roleTableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, roleId),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, revokeOrganizeId),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetId, revokeOrganizationId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode))
             };
 
@@ -470,19 +470,19 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int RevokeOrganize(string roleId, string result) 员工撤销授权
+        #region public int RevokeOrganization(string roleId, string result) 员工撤销授权
         /// <summary>
         /// 员工撤销授权
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="revokeOrganizeId"></param>
+        /// <param name="revokeOrganizationId"></param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键</returns>
-        public int RevokeOrganize(string systemCode, string roleId, string revokeOrganizeId, string permissionCode)
+        public int RevokeOrganization(string systemCode, string roleId, string revokeOrganizationId, string permissionCode)
         {
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            return RevokeOrganize(systemCode, permissionScopeManager, roleId, revokeOrganizeId, permissionCode);
+            return RevokeOrganization(systemCode, permissionScopeManager, roleId, revokeOrganizationId, permissionCode);
         }
         #endregion
 
@@ -491,17 +491,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleId"></param>
-        /// <param name="revokeOrganizeIds"></param>
+        /// <param name="revokeOrganizationIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeOrganizes(string systemCode, string roleId, string[] revokeOrganizeIds, string permissionCode)
+        public int RevokeOrganizations(string systemCode, string roleId, string[] revokeOrganizationIds, string permissionCode)
         {
             var result = 0;
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
-            for (var i = 0; i < revokeOrganizeIds.Length; i++)
+            for (var i = 0; i < revokeOrganizationIds.Length; i++)
             {
-                RevokeOrganize(systemCode, permissionScopeManager, roleId, revokeOrganizeIds[i], permissionCode);
+                RevokeOrganization(systemCode, permissionScopeManager, roleId, revokeOrganizationIds[i], permissionCode);
                 result++;
             }
 
@@ -513,17 +513,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleIds"></param>
-        /// <param name="revokeOrganizeId"></param>
+        /// <param name="revokeOrganizationId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeOrganizes(string systemCode, string[] roleIds, string revokeOrganizeId, string permissionCode)
+        public int RevokeOrganizations(string systemCode, string[] roleIds, string revokeOrganizationId, string permissionCode)
         {
             var result = 0;
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < roleIds.Length; i++)
             {
-                RevokeOrganize(systemCode, permissionScopeManager, roleIds[i], revokeOrganizeId, permissionCode);
+                RevokeOrganization(systemCode, permissionScopeManager, roleIds[i], revokeOrganizationId, permissionCode);
                 result++;
             }
 
@@ -535,19 +535,19 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <param name="roleIds"></param>
-        /// <param name="revokeOrganizeIds"></param>
+        /// <param name="revokeOrganizationIds"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
-        public int RevokeOrganizes(string systemCode, string[] roleIds, string[] revokeOrganizeIds, string permissionCode)
+        public int RevokeOrganizations(string systemCode, string[] roleIds, string[] revokeOrganizationIds, string permissionCode)
         {
             var result = 0;
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);
             for (var i = 0; i < roleIds.Length; i++)
             {
-                for (var j = 0; j < revokeOrganizeIds.Length; j++)
+                for (var j = 0; j < revokeOrganizationIds.Length; j++)
                 {
-                    RevokeOrganize(systemCode, permissionScopeManager, roleIds[i], revokeOrganizeIds[j], permissionCode);
+                    RevokeOrganization(systemCode, permissionScopeManager, roleIds[i], revokeOrganizationIds[j], permissionCode);
                     result++;
                 }
             }

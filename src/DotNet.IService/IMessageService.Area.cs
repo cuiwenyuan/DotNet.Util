@@ -28,7 +28,7 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <returns>数据表</returns>
-        DataTable GetInnerOrganizeDT(BaseUserInfo userInfo);
+        DataTable GetInnerOrganizationDT(BaseUserInfo userInfo);
 
         /// <summary>
         /// 获得内部部门（公司的组织机构）
@@ -75,7 +75,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="province">省</param>
         /// <returns>数据表</returns>
-        string[] GetOrganizeByProvince(BaseUserInfo userInfo, string province);
+        string[] GetOrganizationByProvince(BaseUserInfo userInfo, string province);
 
         /// <summary>
         /// 获得内部部门（公司的组织机构）
@@ -84,7 +84,7 @@ namespace DotNet.IService
         /// <param name="province">省</param>
         /// <param name="city">城市</param>
         /// <returns>数据表</returns>
-        string[] GetOrganizeByCity(BaseUserInfo userInfo, string province, string city);
+        string[] GetOrganizationByCity(BaseUserInfo userInfo, string province, string city);
 
         /// <summary>
         /// 获得内部部门（公司的组织机构）
@@ -94,6 +94,6 @@ namespace DotNet.IService
         /// <param name="city">城市</param>
         /// <param name="district">县区</param>
         /// <returns>数据表</returns>
-        string[] GetOrganizeByDistrict(BaseUserInfo userInfo, string province, string city, string district);
+        string[] GetOrganizationByDistrict(BaseUserInfo userInfo, string province, string city, string district);
     }
 }

@@ -120,7 +120,7 @@ namespace DotNet.IService
         /// <param name="roleId">角色主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        string[] GetRoleScopeOrganizeIds(BaseUserInfo userInfo, string roleId, string permissionCode);
+        string[] GetRoleScopeOrganizationIds(BaseUserInfo userInfo, string roleId, string permissionCode);
 
         /// <summary>
         /// 30.授予角色的某个权限域的组织范围
@@ -167,20 +167,20 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="grantOrganizeIds">授予组织主键数组</param>
+        /// <param name="grantOrganizationIds">授予组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        int GrantRoleOrganizeScopes(BaseUserInfo userInfo, string roleId, string[] grantOrganizeIds, string permissionCode);
+        int GrantRoleOrganizationScopes(BaseUserInfo userInfo, string roleId, string[] grantOrganizationIds, string permissionCode);
 
         /// <summary>
         /// 35.撤消角色的某个权限域的组织范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="revokeOrganizeIds">撤消的组织主键数组</param>
+        /// <param name="revokeOrganizationIds">撤消的组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        int RevokeRoleOrganizeScopes(BaseUserInfo userInfo, string roleId, string[] revokeOrganizeIds, string permissionCode);
+        int RevokeRoleOrganizationScopes(BaseUserInfo userInfo, string roleId, string[] revokeOrganizationIds, string permissionCode);
 
         /// <summary>
         /// 36.获取角色授权权限列表

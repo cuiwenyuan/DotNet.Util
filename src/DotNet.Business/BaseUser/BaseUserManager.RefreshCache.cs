@@ -41,7 +41,7 @@ namespace DotNet.Business
                 ResetIpAddressByCache(userId);
                 ResetMacAddressByCache(userId);
                 // 刷新组织机构缓存
-                BaseOrganizeManager.GetEntityByCache(userEntity.CompanyId, true);
+                BaseOrganizationManager.GetEntityByCache(userEntity.CompanyId, true);
                 // 刷新部门缓存
                 BaseDepartmentManager.GetEntityByCache(userEntity.DepartmentId, true);
                 // 2016-02-18 吉日嘎拉 刷新拒绝权限(把用户的权限放在一起方便直接移除、刷新)

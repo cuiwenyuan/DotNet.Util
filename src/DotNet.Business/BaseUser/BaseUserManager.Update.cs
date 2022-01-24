@@ -164,7 +164,7 @@ namespace DotNet.Business
             if (userEntity.Enabled != 1)
             {
                 // 若用户要生效了，那就需要修改锁定的时间了，否则被锁定的用户有效后也无法登录系统了
-                var manager = new BaseUserLogOnManager(DbHelper, UserInfo);
+                var manager = new BaseUserLogonManager(DbHelper, UserInfo);
                 var entity = manager.GetEntity(id);
                 entity.LockStartDate = null;
                 entity.LockEndDate = null;
@@ -242,30 +242,30 @@ namespace DotNet.Business
             SetPassword(userInfo.Id, userPassword, true, true, false);
 
             /*
-            BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(this.DbHelper, this.UserInfo);
-            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetEntity(userInfo.Id);
-            if (userLogOnEntity == null)
+            BaseUserLogonManager userLogonManager = new BaseUserLogonManager(this.DbHelper, this.UserInfo);
+            BaseUserLogonEntity userLogonEntity = userLogonManager.GetEntity(userInfo.Id);
+            if (userLogonEntity == null)
             {
-                userLogOnEntity = new BaseUserLogOnEntity();
-                userLogOnEntity.Id = userInfo.Id;
+                userLogonEntity = new BaseUserLogonEntity();
+                userLogonEntity.Id = userInfo.Id;
             }
-            userLogOnEntity.OpenId = userInfo.OpenId;
-            userLogOnEntity.IPAddress = userInfo.IPAddress;
-            userLogOnEntity.MACAddress = userInfo.MACAddress;
-            if (!string.IsNullOrEmpty(userLogOnEntity.Id))
+            userLogonEntity.OpenId = userInfo.OpenId;
+            userLogonEntity.IPAddress = userInfo.IPAddress;
+            userLogonEntity.MACAddress = userInfo.MACAddress;
+            if (!string.IsNullOrEmpty(userLogonEntity.Id))
             {
-                result = userLogOnManager.Update(userLogOnEntity) > 0;
+                result = userLogonManager.Update(userLogonEntity) > 0;
                 // 若不存在，就是添加的意思
                 if (!result)
                 {
                     // 更新不成功表示没数据，需要添加数据，这时候要注意主键不能出错
-                    result = !string.IsNullOrEmpty(userLogOnManager.Add(userLogOnEntity));
+                    result = !string.IsNullOrEmpty(userLogonManager.Add(userLogonEntity));
                 }
             }
             else
             {
                 // 若没有主键就是添加数据
-                result = !string.IsNullOrEmpty(userLogOnManager.Add(userLogOnEntity));
+                result = !string.IsNullOrEmpty(userLogonManager.Add(userLogonEntity));
             }
             */
 

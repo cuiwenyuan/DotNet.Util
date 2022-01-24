@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseOrganizeEntity
+    /// BaseOrganizationEntity
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -24,7 +24,7 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-    public partial class BaseOrganizeEntity : BaseEntity
+    public partial class BaseOrganizationEntity : BaseEntity
     {
         /// <summary>
         /// 主键
@@ -186,7 +186,7 @@ namespace DotNet.Model
         /// 内部组织机构
         /// </summary>
         [FieldDescription("内部组织机构")]
-        public int? IsInnerOrganize { get; set; } = 1;
+        public int? IsInnerOrganization { get; set; } = 1;
 
         /// <summary>
         /// 开户行
@@ -361,7 +361,7 @@ namespace DotNet.Model
 
             Address = BaseUtil.ConvertToString(dr[FieldAddress]);
             Web = BaseUtil.ConvertToString(dr[FieldWeb]);
-            IsInnerOrganize = BaseUtil.ConvertToInt(dr[FieldIsInnerOrganize]);
+            IsInnerOrganization = BaseUtil.ConvertToInt(dr[FieldIsInnerOrganization]);
             Bank = BaseUtil.ConvertToString(dr[FieldBank]);
             BankAccount = BaseUtil.ConvertToString(dr[FieldBankAccount]);
 
@@ -410,7 +410,7 @@ namespace DotNet.Model
         ///</summary>
         [NonSerialized]
         [FieldDescription("组织机构、部门表")]
-        public const string TableName = "BaseOrganize";
+        public const string TableName = "BaseOrganization";
 
         ///<summary>
         /// 主键
@@ -599,7 +599,7 @@ namespace DotNet.Model
         ///</summary>
         [NonSerialized]
         [FieldDescription("内部组织机构")]
-        public const string FieldIsInnerOrganize = "IsInnerOrganize";
+        public const string FieldIsInnerOrganization = "IsInnerOrganization";
 
         ///<summary>
         /// 开户行

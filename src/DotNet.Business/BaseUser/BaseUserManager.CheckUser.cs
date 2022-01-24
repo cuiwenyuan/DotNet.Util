@@ -29,27 +29,27 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userId">用户主键</param>
         /// <returns>用户登录信息</returns>
-        public UserLogOnResult CheckUser(string userId)
+        public UserLogonResult CheckUser(string userId)
         {
             // 这个从缓存获取，效率高，一般不会有经常在修改的事情，缓存的时间很短才可以，否则读取脏数据了
             var userEntity = GetEntity(userId);
 
             // 获取登录状态表
-            var userLogOnManager = new BaseUserLogOnManager(UserInfo, UserLogOnTable);
-            var userLogOnEntity = userLogOnManager.GetEntity(userId);
+            var userLogonManager = new BaseUserLogonManager(UserInfo, UserLogonTable);
+            var userLogonEntity = userLogonManager.GetEntity(userId);
 
-            return CheckUser(userEntity, userLogOnEntity);
+            return CheckUser(userEntity, userLogonEntity);
         }
 
         /// <summary>
         /// 检查用户的登录许可信息
         /// </summary>
         /// <param name="userEntity">用户实体</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <returns>用户登录信息</returns>
-        public static UserLogOnResult CheckUser(BaseUserEntity userEntity, BaseUserLogOnEntity userLogOnEntity)
+        public static UserLogonResult CheckUser(BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             //int errorMark = 0;
             // 05. 是否允许登录，是否离职是否正确
@@ -65,8 +65,8 @@ namespace DotNet.Business
             // 用户是否有效的
             if (userEntity.Enabled.HasValue && userEntity.Enabled == 0)
             {
-                result.StatusCode = Status.LogOnDeny.ToString();
-                result.StatusMessage = Status.LogOnDeny.ToDescription();
+                result.StatusCode = Status.LogonDeny.ToString();
+                result.StatusMessage = Status.LogonDeny.ToDescription();
                 //errorMark = 2;
                 return result;
             }
@@ -83,7 +83,7 @@ namespace DotNet.Business
             // 01: 系统是否采用了在线用户的限制, 这里是登录到哪个表里去？
             //errorMark = 6;
             // 2015-12-08 吉日嘎拉  
-            if (userLogOnEntity == null)
+            if (userLogonEntity == null)
             {
                 result.StatusCode = Status.MissingData.ToString();
                 result.StatusMessage = Status.MissingData.ToDescription();
@@ -93,28 +93,28 @@ namespace DotNet.Business
 
             // 2015-05-28 jirigala 子系统的用户是否有效的
             //errorMark = 7;
-            if (userLogOnEntity.Enabled == 0)
+            if (userLogonEntity.Enabled == 0)
             {
                 //errorMark = 8;
-                result.StatusCode = Status.LogOnDeny.ToString();
-                result.StatusMessage = Status.LogOnDeny.ToDescription();
+                result.StatusCode = Status.LogonDeny.ToString();
+                result.StatusMessage = Status.LogonDeny.ToDescription();
                 return result;
             }
 
             //errorMark = 11;
-            if (userLogOnEntity.AllowEndTime != null)
+            if (userLogonEntity.AllowEndTime != null)
             {
                 //errorMark = 12;
-                //userLogOnEntity.AllowEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogOnEntity.AllowEndTime.Value.Hour, userLogOnEntity.AllowEndTime.Value.Minute, userLogOnEntity.AllowEndTime.Value.Second);
+                //userLogonEntity.AllowEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogonEntity.AllowEndTime.Value.Hour, userLogonEntity.AllowEndTime.Value.Minute, userLogonEntity.AllowEndTime.Value.Second);
             }
 
             //errorMark = 13;
-            if (userLogOnEntity.AllowStartTime != null)
+            if (userLogonEntity.AllowStartTime != null)
             {
                 //errorMark = 14;
-                //userLogOnEntity.AllowStartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogOnEntity.AllowStartTime.Value.Hour, userLogOnEntity.AllowStartTime.Value.Minute, userLogOnEntity.AllowStartTime.Value.Second);
+                //userLogonEntity.AllowStartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, userLogonEntity.AllowStartTime.Value.Hour, userLogonEntity.AllowStartTime.Value.Minute, userLogonEntity.AllowStartTime.Value.Second);
                 //errorMark = 15;
-                if (DateTime.Now < userLogOnEntity.AllowStartTime)
+                if (DateTime.Now < userLogonEntity.AllowStartTime)
                 {
                     result.StatusCode = Status.ServiceNotStart.ToString();
                     result.StatusMessage = Status.ServiceNotStart.ToDescription();
@@ -124,10 +124,10 @@ namespace DotNet.Business
             }
 
             //errorMark = 18;
-            if (userLogOnEntity.AllowEndTime != null)
+            if (userLogonEntity.AllowEndTime != null)
             {
                 //errorMark = 19;
-                if (DateTime.Now > userLogOnEntity.AllowEndTime)
+                if (DateTime.Now > userLogonEntity.AllowEndTime)
                 {
                     result.StatusCode = Status.ServiceExpired.ToString();
                     result.StatusMessage = Status.ServiceExpired.ToDescription();
@@ -138,13 +138,13 @@ namespace DotNet.Business
 
             // 07. 锁定日期是否有限制
             //errorMark = 21;
-            if (userLogOnEntity.LockStartDate != null)
+            if (userLogonEntity.LockStartDate != null)
             {
                 //errorMark = 22;
-                if (DateTime.Now > userLogOnEntity.LockStartDate)
+                if (DateTime.Now > userLogonEntity.LockStartDate)
                 {
                     //errorMark = 23;
-                    if (userLogOnEntity.LockEndDate == null || DateTime.Now < userLogOnEntity.LockEndDate)
+                    if (userLogonEntity.LockEndDate == null || DateTime.Now < userLogonEntity.LockEndDate)
                     {
                         result.StatusCode = Status.UserLocked.ToString();
                         result.StatusMessage = Status.UserLocked.ToDescription();
@@ -155,10 +155,10 @@ namespace DotNet.Business
             }
 
             //errorMark = 25;
-            if (userLogOnEntity.LockEndDate != null)
+            if (userLogonEntity.LockEndDate != null)
             {
                 //errorMark = 26;
-                if (DateTime.Now < userLogOnEntity.LockEndDate)
+                if (DateTime.Now < userLogonEntity.LockEndDate)
                 {
                     //errorMark = 27;
                     result.StatusCode = Status.UserLocked.ToString();

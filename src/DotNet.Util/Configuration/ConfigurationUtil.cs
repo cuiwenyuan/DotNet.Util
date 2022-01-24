@@ -15,7 +15,7 @@ namespace DotNet.Util
     /// 
     ///     2021.03.17 版本：4.0 Troy Cui  新增MQTT、FTP、WebApi的相关配置，并分类获取代码
     ///     2017.12.05 版本：3.0 Troy Cui  新增10个外部系统数据库连接的配置
-    ///     2016.03.14 版本：2.1 JiRiGaLa  RecordLogOnLog、RecordLog 开关的读取完善。 
+    ///     2016.03.14 版本：2.1 JiRiGaLa  RecordLogonLog、RecordLog 开关的读取完善。 
     ///     2014.01.16 版本：2.0 JiRiGaLa  读取加密连接串的方法。 
     ///     2011.07.05 版本：1.1 zgl 增加  BaseSystemInfo.CheckIPAddress。
     ///		2008.06.08 版本：1.0 JiRiGaLa 将程序从 BaseConfiguration 进行了分离。
@@ -189,17 +189,17 @@ namespace DotNet.Util
 
             // BaseSystemInfo.Service = ConfigurationManager.AppSettings[BaseConfiguration.SERVICE];
 
-            if (ConfigurationManager.AppSettings["RecordLogOnLog"] != null)
+            if (ConfigurationManager.AppSettings["RecordLogonLog"] != null)
             {
-                BaseSystemInfo.RecordLogOnLog = ConfigurationManager.AppSettings["RecordLogOnLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.RecordLogonLog = ConfigurationManager.AppSettings["RecordLogonLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (ConfigurationManager.AppSettings["RecordLog"] != null)
             {
                 BaseSystemInfo.RecordLog = ConfigurationManager.AppSettings["RecordLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
-            if (ConfigurationManager.AppSettings["LogOnStatistics"] != null)
+            if (ConfigurationManager.AppSettings["LogonStatistics"] != null)
             {
-                BaseSystemInfo.LogOnStatistics = ConfigurationManager.AppSettings["LogOnStatistics"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.LogonStatistics = ConfigurationManager.AppSettings["LogonStatistics"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (ConfigurationManager.AppSettings["ServerEncryptPassword"] != null)
             {
@@ -231,14 +231,14 @@ namespace DotNet.Util
                 BaseSystemInfo.EventLog = ConfigurationManager.AppSettings["EventLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            if (ConfigurationManager.AppSettings["UseOrganizePermission"] != null)
+            if (ConfigurationManager.AppSettings["UseOrganizationPermission"] != null)
             {
-                BaseSystemInfo.UseOrganizePermission = ConfigurationManager.AppSettings["UseOrganizePermission"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.UseOrganizationPermission = ConfigurationManager.AppSettings["UseOrganizationPermission"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            // BaseSystemInfo.AutoLogOn = (ConfigurationManager.AppSettings[BaseConfiguration.AUTO_LOGON].ToUpper(), true.ToString().ToUpper(), true);
-            // BaseSystemInfo.LogOnAssembly = ConfigurationManager.AppSettings[BaseConfiguration.LOGON_ASSEMBLY];
-            // BaseSystemInfo.LogOnForm = ConfigurationManager.AppSettings[BaseConfiguration.LOGON_FORM];
+            // BaseSystemInfo.AutoLogon = (ConfigurationManager.AppSettings[BaseConfiguration.AUTO_LOGON].ToUpper(), true.ToString().ToUpper(), true);
+            // BaseSystemInfo.LogonAssembly = ConfigurationManager.AppSettings[BaseConfiguration.LOGON_ASSEMBLY];
+            // BaseSystemInfo.LogonForm = ConfigurationManager.AppSettings[BaseConfiguration.LOGON_FORM];
             // BaseSystemInfo.MainForm = ConfigurationManager.AppSettings[BaseConfiguration.MAIN_FORM];
 
 
@@ -680,9 +680,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.UserNameMatchCase = ConfigurationManager.AppSettings["UserNameMatchCase"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
-            if (ConfigurationManager.AppSettings["CheckOnLine"] != null)
+            if (ConfigurationManager.AppSettings["CheckOnline"] != null)
             {
-                BaseSystemInfo.CheckOnLine = ConfigurationManager.AppSettings["CheckOnLine"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.CheckOnline = ConfigurationManager.AppSettings["CheckOnline"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             //是否允许用户注册
             if (ConfigurationManager.AppSettings["AllowUserRegister"] != null)
@@ -690,11 +690,11 @@ namespace DotNet.Util
                 BaseSystemInfo.AllowUserRegister = ConfigurationManager.AppSettings["AllowUserRegister"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            if (ConfigurationManager.AppSettings["OnLineTimeout"] != null)
+            if (ConfigurationManager.AppSettings["OnlineTimeout"] != null)
             {
-                if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["OnLineTimeout"]))
+                if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["OnlineTimeout"]))
                 {
-                    BaseSystemInfo.OnLineTimeout = int.Parse(ConfigurationManager.AppSettings["OnLineTimeout"]);
+                    BaseSystemInfo.OnlineTimeout = int.Parse(ConfigurationManager.AppSettings["OnlineTimeout"]);
                 }
             }
 

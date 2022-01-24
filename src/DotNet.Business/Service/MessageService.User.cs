@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class MessageService : IMessageService
     {
-        #region public string[] GetUserByOrganize(BaseUserInfo userInfo, string companyId, string departmentId = null) 按组织机构获取用户列表
+        #region public string[] GetUserByOrganization(BaseUserInfo userInfo, string companyId, string departmentId = null) 按组织机构获取用户列表
         /// <summary>
         /// 按组织机构获取用户列表
         /// </summary>
@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <param name="companyId">组织机构主键</param>
         /// <param name="departmentId">部门主键</param>
         /// <returns>数据表</returns>
-        public string[] GetUserByOrganize(BaseUserInfo userInfo, string companyId, string departmentId = null)
+        public string[] GetUserByOrganization(BaseUserInfo userInfo, string companyId, string departmentId = null)
         {
             string[] result = null;
 
@@ -46,7 +46,7 @@ namespace DotNet.Business
 
             //ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             //{
-            result = BaseMessageManager.GetUserByOrganizeByCache(companyId, departmentId);
+            result = BaseMessageManager.GetUserByOrganizationByCache(companyId, departmentId);
             //});
 
             return result;
@@ -249,7 +249,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo);
-                userManager.ShowUserLogOnInfo = false;
+                userManager.ShowUserLogonInfo = false;
                 userManager.SelectFields = BaseUserEntity.FieldId
                                           + "," + BaseUserEntity.FieldRealName
                                           + "," + BaseUserEntity.FieldCompanyName

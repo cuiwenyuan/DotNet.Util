@@ -13,7 +13,7 @@ namespace DotNet.Business
     using Util;
 
     /// <remarks>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构管理
     /// 
     /// 修改记录
@@ -32,7 +32,7 @@ namespace DotNet.Business
     ///		<date>2016.05.10</date>
     /// </author> 
     /// </remarks>
-    public partial class BaseOrganizeManager
+    public partial class BaseOrganizationManager
     {
         /// <summary>
         /// 删除缓存
@@ -56,13 +56,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetCacheByKey(string key)
+        public static BaseOrganizationEntity GetCacheByKey(string key)
         {
-            BaseOrganizeEntity result = null;
+            BaseOrganizationEntity result = null;
 
             if (!string.IsNullOrWhiteSpace(key))
             {
-                CacheUtil.Get<BaseOrganizeEntity>(key);
+                CacheUtil.Get<BaseOrganizationEntity>(key);
             }
 
             return result;
@@ -72,20 +72,20 @@ namespace DotNet.Business
         /// 设置缓存
         /// </summary>
         /// <param name="entity">实体</param>
-        public static void SetCache(BaseOrganizeEntity entity)
+        public static void SetCache(BaseOrganizationEntity entity)
         {
             if (entity != null && entity.Id != null)
             {
                 var key = string.Empty;
-                // key = "Organize:" + entity.Id;
+                // key = "Organization:" + entity.Id;
                 key = "O:" + entity.Id;
-                CacheUtil.Set<BaseOrganizeEntity>(key, entity);
+                CacheUtil.Set<BaseOrganizationEntity>(key, entity);
 
-                // key = "OrganizeByCode:" + entity.Code;
+                // key = "OrganizationByCode:" + entity.Code;
                 key = "OBC:" + entity.Code;
                 CacheUtil.Set<string>(key, entity.Id);
 
-                //key = "OrganizeByName:" + entity.FullName;
+                //key = "OrganizationByName:" + entity.FullName;
                 key = "OBN:" + entity.FullName;
                 CacheUtil.Set<string>(key, entity.Id);
             }
@@ -96,15 +96,15 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetEntityByCodeByCache(string code)
+        public static BaseOrganizationEntity GetEntityByCodeByCache(string code)
         {
-            BaseOrganizeEntity result = null;
+            BaseOrganizationEntity result = null;
 
             if (!string.IsNullOrEmpty(code))
             {
-                // string key = "OrganizeByCode:" + code;
+                // string key = "OrganizationByCode:" + code;
                 var key = "OBC:" + code;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetEntityByCode(code), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetEntityByCode(code), true);
             }
 
             return result;
@@ -115,14 +115,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="fullName"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetEntityByNameByCache(string fullName)
+        public static BaseOrganizationEntity GetEntityByNameByCache(string fullName)
         {
-            BaseOrganizeEntity result = null;
+            BaseOrganizationEntity result = null;
             if (!string.IsNullOrEmpty(fullName))
             {
-                // string key = "OrganizeByName:" + fullName;
+                // string key = "OrganizationByName:" + fullName;
                 var key = "OBN:" + fullName;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetEntityByName(fullName), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetEntityByName(fullName), true);
             }
 
             return result;
@@ -141,7 +141,7 @@ namespace DotNet.Business
             if (!string.IsNullOrWhiteSpace(area))
             {
                 var key = "OP:" + area;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetProvince(area), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetProvince(area), true);
             }
 
             return result;
@@ -160,7 +160,7 @@ namespace DotNet.Business
             if (!string.IsNullOrWhiteSpace(province))
             {
                 var key = "OC:" + province;
-                result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetCity(province), true);
+                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetCity(province), true);
             }
             return result;
         }
@@ -185,7 +185,7 @@ namespace DotNet.Business
                 city = string.Empty;
             }
             var key = "OD:" + province + ":" + city;
-            result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetDistrict(province, city), true);
+            result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetDistrict(province, city), true);
 
             return result;
         }
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <param name="city">城市</param>
         /// <param name="district">县区</param>
         /// <returns>数据表</returns>
-        public static string[] GetOrganizeByDistrictByCache(string province, string city, string district)
+        public static string[] GetOrganizationByDistrictByCache(string province, string city, string district)
         {
             string[] result = null;
 
@@ -216,7 +216,7 @@ namespace DotNet.Business
                 district = string.Empty;
             }
             var key = "OBD:" + province + ":" + city + ":" + district;
-            result = CacheUtil.Cache(key, () => new BaseOrganizeManager().GetOrganizeByDistrict(province, city, district), true);
+            result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetOrganizationByDistrict(province, city, district), true);
             return result;
         }
 
@@ -252,7 +252,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizeEntity"></param>
         /// <param name="score"></param>
-        public static void CachePreheatingSpelling01(BaseOrganizeEntity organizeEntity, double score = 0)
+        public static void CachePreheatingSpelling01(BaseOrganizationEntity organizeEntity, double score = 0)
         {
             // 读取到的数据直接强制设置到缓存里
             var id = organizeEntity.Id;
@@ -297,7 +297,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizeEntity"></param>
         /// <param name="score"></param>
-        public static void CachePreheatingSpelling02(BaseOrganizeEntity organizeEntity, double score = 0)
+        public static void CachePreheatingSpelling02(BaseOrganizationEntity organizeEntity, double score = 0)
         {
             // 读取到的数据直接强制设置到缓存里
             var id = organizeEntity.Id;
@@ -348,7 +348,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizeEntity"></param>
         /// <param name="score"></param>
-        public static void CachePreheatingSpelling03(BaseOrganizeEntity organizeEntity, double score = 0)
+        public static void CachePreheatingSpelling03(BaseOrganizationEntity organizeEntity, double score = 0)
         {
             // 读取到的数据直接强制设置到缓存里
             var id = organizeEntity.Id;
@@ -400,7 +400,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizeEntity"></param>
         /// <param name="score"></param>
-        public static void CachePreheatingSpelling04(BaseOrganizeEntity organizeEntity, double score = 0)
+        public static void CachePreheatingSpelling04(BaseOrganizationEntity organizeEntity, double score = 0)
         {
             // 读取到的数据直接强制设置到缓存里
             var id = organizeEntity.Id;
@@ -540,23 +540,23 @@ namespace DotNet.Business
             Console.WriteLine(score + " " + organize);
         }
 
-        private static BaseOrganizeEntity GetOrganizeEntity(IDataReader dataReader)
+        private static BaseOrganizationEntity GetOrganizationEntity(IDataReader dataReader)
         {
-            var entity = new BaseOrganizeEntity
+            var entity = new BaseOrganizationEntity
             {
-                Id = dataReader[BaseOrganizeEntity.FieldId].ToString(),
-                Code = dataReader[BaseOrganizeEntity.FieldCode].ToString(),
-                FullName = dataReader[BaseOrganizeEntity.FieldFullName].ToString(),
-                SimpleSpelling = dataReader[BaseOrganizeEntity.FieldSimpleSpelling].ToString().ToLower(),
-                CostCenterId = dataReader[BaseOrganizeEntity.FieldCostCenterId].ToString(),
-                ProvinceId = dataReader[BaseOrganizeEntity.FieldProvinceId].ToString(),
-                CompanyId = dataReader[BaseOrganizeEntity.FieldCompanyId].ToString(),
-                CityId = dataReader[BaseOrganizeEntity.FieldCityId].ToString(),
-                ParentId = dataReader[BaseOrganizeEntity.FieldParentId].ToString(),
-                SendAir = BaseUtil.ConvertToInt(dataReader[BaseOrganizeEntity.FieldSendAir]),
-                Enabled = BaseUtil.ConvertToInt(dataReader[BaseOrganizeEntity.FieldEnabled], 1),
-                DeletionStateCode = BaseUtil.ConvertToInt(dataReader[BaseOrganizeEntity.FieldDeleted], 0),
-                SortCode = BaseUtil.ConvertToInt(dataReader[BaseOrganizeEntity.FieldSortCode])
+                Id = dataReader[BaseOrganizationEntity.FieldId].ToString(),
+                Code = dataReader[BaseOrganizationEntity.FieldCode].ToString(),
+                FullName = dataReader[BaseOrganizationEntity.FieldFullName].ToString(),
+                SimpleSpelling = dataReader[BaseOrganizationEntity.FieldSimpleSpelling].ToString().ToLower(),
+                CostCenterId = dataReader[BaseOrganizationEntity.FieldCostCenterId].ToString(),
+                ProvinceId = dataReader[BaseOrganizationEntity.FieldProvinceId].ToString(),
+                CompanyId = dataReader[BaseOrganizationEntity.FieldCompanyId].ToString(),
+                CityId = dataReader[BaseOrganizationEntity.FieldCityId].ToString(),
+                ParentId = dataReader[BaseOrganizationEntity.FieldParentId].ToString(),
+                SendAir = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldSendAir]),
+                Enabled = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldEnabled], 1),
+                DeletionStateCode = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldDeleted], 0),
+                SortCode = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldSortCode])
             };
 
             return entity;

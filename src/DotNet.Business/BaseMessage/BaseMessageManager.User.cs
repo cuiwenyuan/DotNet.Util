@@ -32,7 +32,7 @@ namespace DotNet.Business
         /// <param name="companyId"></param>
         /// <param name="departmentId"></param>
         /// <returns></returns>
-        public static string[] GetUserByOrganizeByCache(string companyId, string departmentId = null)
+        public static string[] GetUserByOrganizationByCache(string companyId, string departmentId = null)
         {
             string[] result = null;
 
@@ -55,19 +55,19 @@ namespace DotNet.Business
                 key = "OU:" + companyId + ":" + departmentId;
             }
 
-            result = CacheUtil.Cache(key, () => new BaseMessageManager().GetUserByOrganize(companyId, departmentId), true);
+            result = CacheUtil.Cache(key, () => new BaseMessageManager().GetUserByOrganization(companyId, departmentId), true);
 
             return result;
         }
 
-        #region public string[] GetUserByOrganize(string companyId, string departmentId = null) 按组织机构获取用户列表
+        #region public string[] GetUserByOrganization(string companyId, string departmentId = null) 按组织机构获取用户列表
         /// <summary>
         /// 按组织机构获取用户列表
         /// </summary>
         /// <param name="companyId">组织机构主键</param>
         /// <param name="departmentId">部门主键</param>
         /// <returns>数据表</returns>
-        public string[] GetUserByOrganize(string companyId, string departmentId = null)
+        public string[] GetUserByOrganization(string companyId, string departmentId = null)
         {
             string[] result = null;
 

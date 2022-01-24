@@ -12,7 +12,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseUserLogOnManager
+    /// BaseUserLogonManager
     /// 用户管理
     /// 
     /// 修改记录
@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2015.12.08</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserLogOnManager
+    public partial class BaseUserLogonManager
     {
         /// <summary>
         /// 更新访问数据
@@ -32,12 +32,12 @@ namespace DotNet.Business
         /// <param name="param"></param>
         public void UpdateVisitDateTask(object param)
         {
-            if (param is Tuple<BaseUserLogOnEntity, string, bool> tuple)
+            if (param is Tuple<BaseUserLogonEntity, string, bool> tuple)
             {
-                var userLogOnEntity = tuple.Item1;
+                var userLogonEntity = tuple.Item1;
                 var openId = tuple.Item2;
                 var createOpenId = tuple.Item3;
-                UpdateVisitDateTask(userLogOnEntity, openId, createOpenId);
+                UpdateVisitDateTask(userLogonEntity, openId, createOpenId);
             }
         }
 
@@ -45,10 +45,10 @@ namespace DotNet.Business
         /// <summary>
         /// 更新访问数据
         /// </summary>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <param name="openId"></param>
         /// <param name="createOpenId"></param>
-        public void UpdateVisitDateTask(BaseUserLogOnEntity userLogOnEntity, string openId, bool createOpenId = true)
+        public void UpdateVisitDateTask(BaseUserLogonEntity userLogonEntity, string openId, bool createOpenId = true)
         {
             var errorMark = 0;
 
@@ -63,17 +63,17 @@ namespace DotNet.Business
                     List<IDbDataParameter> dbParameters = null;
                     // 若有一周没登录了，需要重新进行手机验证
                     var mobileNeedValiated = false;
-                    if (userLogOnEntity.PreviousVisit.HasValue || userLogOnEntity.FirstVisit.HasValue)
+                    if (userLogonEntity.PreviousVisit.HasValue || userLogonEntity.FirstVisit.HasValue)
                     {
                         var ts = new TimeSpan();
-                        if (userLogOnEntity.LastVisit.HasValue)
+                        if (userLogonEntity.LastVisit.HasValue)
                         {
-                            ts = DateTime.Now.Subtract((DateTime)userLogOnEntity.LastVisit);
+                            ts = DateTime.Now.Subtract((DateTime)userLogonEntity.LastVisit);
                             mobileNeedValiated = (ts.TotalDays > 7);
                         }
-                        else if (userLogOnEntity.FirstVisit.HasValue)
+                        else if (userLogonEntity.FirstVisit.HasValue)
                         {
-                            ts = DateTime.Now.Subtract((DateTime)userLogOnEntity.FirstVisit);
+                            ts = DateTime.Now.Subtract((DateTime)userLogonEntity.FirstVisit);
                             mobileNeedValiated = (ts.TotalDays > 7);
                         }
                         if (mobileNeedValiated)
@@ -85,7 +85,7 @@ namespace DotNet.Business
 
                             dbParameters = new List<IDbDataParameter>
                             {
-                                DbHelper.MakeParameter(BaseUserContactEntity.FieldId, userLogOnEntity.Id),
+                                DbHelper.MakeParameter(BaseUserContactEntity.FieldId, userLogonEntity.Id),
                                 DbHelper.MakeParameter(BaseUserContactEntity.FieldMobileValiated, 1)
                             };
 
@@ -97,39 +97,39 @@ namespace DotNet.Business
                     if (BaseSystemInfo.UpdateVisit)
                     {
                         // 第一次登录时间
-                        if (userLogOnEntity.FirstVisit == null)
+                        if (userLogonEntity.FirstVisit == null)
                         {
                             sql = "UPDATE " + CurrentTableName
-                                        + " SET " + BaseUserLogOnEntity.FieldPasswordErrorCount + " = 0 "
-                                        + ", " + BaseUserLogOnEntity.FieldUserOnLine + " = 1 "
-                                        + ", " + BaseUserLogOnEntity.FieldFirstVisit + " = " + dbHelper.GetDbNow()
-                                        + ", " + BaseUserLogOnEntity.FieldLogOnCount + " = 1 "
-                                        + ", " + BaseUserLogOnEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldSystemCode)
-                                        + ", " + BaseUserLogOnEntity.FieldIpAddress + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldIpAddress)
-                                        + ", " + BaseUserLogOnEntity.FieldIpAddressName + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldIpAddressName)
-                                        + ", " + BaseUserLogOnEntity.FieldMacAddress + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldMacAddress)
-                                        + ", " + BaseUserLogOnEntity.FieldComputerName + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldComputerName);
+                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0 "
+                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1 "
+                                        + ", " + BaseUserLogonEntity.FieldFirstVisit + " = " + dbHelper.GetDbNow()
+                                        + ", " + BaseUserLogonEntity.FieldLogonCount + " = 1 "
+                                        + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode)
+                                        + ", " + BaseUserLogonEntity.FieldIpAddress + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddress)
+                                        + ", " + BaseUserLogonEntity.FieldIpAddressName + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddressName)
+                                        + ", " + BaseUserLogonEntity.FieldMacAddress + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldMacAddress)
+                                        + ", " + BaseUserLogonEntity.FieldComputerName + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldComputerName);
 
                             dbParameters = new List<IDbDataParameter>
                             {
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldSystemCode, userLogOnEntity.SystemCode),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldIpAddress, userLogOnEntity.IpAddress),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldIpAddressName, userLogOnEntity.IpAddressName),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldMacAddress, userLogOnEntity.MacAddress),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldComputerName, userLogOnEntity.ComputerName)
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldSystemCode, userLogonEntity.SystemCode),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldIpAddress, userLogonEntity.IpAddress),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldIpAddressName, userLogonEntity.IpAddressName),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldMacAddress, userLogonEntity.MacAddress),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldComputerName, userLogonEntity.ComputerName)
                             };
 
                             if (createOpenId)
                             {
-                                sql += ", " + BaseUserLogOnEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenId);
-                                sql += ", " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenIdTimeout);
-                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenId, openId));
-                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenIdTimeout, openIdTimeout));
+                                sql += ", " + BaseUserLogonEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenId);
+                                sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeout);
+                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenId, openId));
+                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeout, openIdTimeout));
                             }
 
-                            sql += "  WHERE " + BaseUserLogOnEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldId)
-                                        + "      AND " + BaseUserLogOnEntity.FieldFirstVisit + " IS NULL";
-                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldId, userLogOnEntity.Id));
+                            sql += "  WHERE " + BaseUserLogonEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldId)
+                                        + "      AND " + BaseUserLogonEntity.FieldFirstVisit + " IS NULL";
+                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldId, userLogonEntity.Id));
 
                             errorMark = 20;
                             dbHelper.ExecuteNonQuery(sql, dbParameters.ToArray());
@@ -138,36 +138,36 @@ namespace DotNet.Business
                         {
                             // 最后一次登录时间
                             sql = "UPDATE " + CurrentTableName
-                                        + " SET " + BaseUserLogOnEntity.FieldPasswordErrorCount + " = 0 "
-                                        + ", " + BaseUserLogOnEntity.FieldPreviousVisit + " = " + BaseUserLogOnEntity.FieldLastVisit
-                                        + ", " + BaseUserLogOnEntity.FieldUserOnLine + " = 1 "
-                                        + ", " + BaseUserLogOnEntity.FieldLastVisit + " = " + dbHelper.GetDbNow()
-                                        + ", " + BaseUserLogOnEntity.FieldLogOnCount + " = " + BaseUserLogOnEntity.FieldLogOnCount + " + 1 "
-                                        + ", " + BaseUserLogOnEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldSystemCode)
-                                        + ", " + BaseUserLogOnEntity.FieldIpAddress + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldIpAddress)
-                                        + ", " + BaseUserLogOnEntity.FieldIpAddressName + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldIpAddressName)
-                                        + ", " + BaseUserLogOnEntity.FieldMacAddress + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldMacAddress)
-                                        + ", " + BaseUserLogOnEntity.FieldComputerName + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldComputerName);
+                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0 "
+                                        + ", " + BaseUserLogonEntity.FieldPreviousVisit + " = " + BaseUserLogonEntity.FieldLastVisit
+                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1 "
+                                        + ", " + BaseUserLogonEntity.FieldLastVisit + " = " + dbHelper.GetDbNow()
+                                        + ", " + BaseUserLogonEntity.FieldLogonCount + " = " + BaseUserLogonEntity.FieldLogonCount + " + 1 "
+                                        + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode)
+                                        + ", " + BaseUserLogonEntity.FieldIpAddress + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddress)
+                                        + ", " + BaseUserLogonEntity.FieldIpAddressName + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddressName)
+                                        + ", " + BaseUserLogonEntity.FieldMacAddress + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldMacAddress)
+                                        + ", " + BaseUserLogonEntity.FieldComputerName + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldComputerName);
 
                             dbParameters = new List<IDbDataParameter>
                             {
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldSystemCode, userLogOnEntity.SystemCode),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldIpAddress, userLogOnEntity.IpAddress),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldIpAddressName, userLogOnEntity.IpAddressName),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldMacAddress, userLogOnEntity.MacAddress),
-                                dbHelper.MakeParameter(BaseUserLogOnEntity.FieldComputerName, userLogOnEntity.ComputerName)
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldSystemCode, userLogonEntity.SystemCode),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldIpAddress, userLogonEntity.IpAddress),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldIpAddressName, userLogonEntity.IpAddressName),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldMacAddress, userLogonEntity.MacAddress),
+                                dbHelper.MakeParameter(BaseUserLogonEntity.FieldComputerName, userLogonEntity.ComputerName)
                             };
 
                             if (createOpenId)
                             {
-                                sql += ", " + BaseUserLogOnEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenId);
-                                sql += ", " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenIdTimeout);
-                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenId, openId));
-                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenIdTimeout, openIdTimeout));
+                                sql += ", " + BaseUserLogonEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenId);
+                                sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeout);
+                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenId, openId));
+                                dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeout, openIdTimeout));
                             }
 
-                            sql += "  WHERE " + BaseUserLogOnEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldId);
-                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldId, userLogOnEntity.Id));
+                            sql += "  WHERE " + BaseUserLogonEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldId);
+                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldId, userLogonEntity.Id));
 
                             errorMark = 30;
                             dbHelper.ExecuteNonQuery(sql, dbParameters.ToArray());
@@ -176,25 +176,25 @@ namespace DotNet.Business
                     else
                     {
                         sql = "UPDATE " + CurrentTableName
-                                     + " SET  " + BaseUserLogOnEntity.FieldPasswordErrorCount + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldPasswordErrorCount)
-                                     + ", " + BaseUserLogOnEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldSystemCode);
+                                     + " SET  " + BaseUserLogonEntity.FieldPasswordErrorCount + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldPasswordErrorCount)
+                                     + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode);
                         dbParameters = new List<IDbDataParameter>
                         {
-                            dbHelper.MakeParameter(BaseUserLogOnEntity.FieldPasswordErrorCount, 0),
-                            dbHelper.MakeParameter(BaseUserLogOnEntity.FieldSystemCode, userLogOnEntity.SystemCode)
+                            dbHelper.MakeParameter(BaseUserLogonEntity.FieldPasswordErrorCount, 0),
+                            dbHelper.MakeParameter(BaseUserLogonEntity.FieldSystemCode, userLogonEntity.SystemCode)
                         };
 
                         if (createOpenId)
                         {
-                            sql += ", " + BaseUserLogOnEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenId);
-                            sql += ", " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenIdTimeout);
-                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenId, openId));
-                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenIdTimeout, openIdTimeout));
+                            sql += ", " + BaseUserLogonEntity.FieldOpenId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenId);
+                            sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeout + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeout);
+                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenId, openId));
+                            dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeout, openIdTimeout));
                         }
 
-                        sql += " WHERE " + BaseUserLogOnEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogOnEntity.FieldId);
+                        sql += " WHERE " + BaseUserLogonEntity.FieldId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldId);
                         // sql += " AND " + BaseUserEntity.FieldOpenId + " IS NULL ";
-                        dbParameters.Add(dbHelper.MakeParameter(BaseUserLogOnEntity.FieldId, userLogOnEntity.Id));
+                        dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldId, userLogonEntity.Id));
 
                         errorMark = 40;
                         dbHelper.ExecuteNonQuery(sql, dbParameters.ToArray());
@@ -204,7 +204,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserLogOnManager.UpdateVisitDateTask:发生时间:" + DateTime.Now
+                var writeMessage = "BaseUserLogonManager.UpdateVisitDateTask:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "UserInfo:" + UserInfo.Serialize()
                     + Environment.NewLine + "Message:" + ex.Message
@@ -220,33 +220,33 @@ namespace DotNet.Business
         /// <summary>
         /// 更新访问数据
         /// </summary>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <param name="createOpenId"></param>
         /// <returns></returns>
-        public string UpdateVisitDate(BaseUserLogOnEntity userLogOnEntity, bool createOpenId = true)
+        public string UpdateVisitDate(BaseUserLogonEntity userLogonEntity, bool createOpenId = true)
         {
-            var openId = string.IsNullOrEmpty(userLogOnEntity?.OpenId)? Guid.NewGuid().ToString("N") : userLogOnEntity?.OpenId;
+            var openId = string.IsNullOrEmpty(userLogonEntity?.OpenId)? Guid.NewGuid().ToString("N") : userLogonEntity?.OpenId;
 
             //Troy.Cui 2020-02-29 强制每次都自动生成，但对于可并发用户，OpenId过期了才更新一下OpenId
             //Troy.Cui 并发用户需要检测下OpenId过期时间 2020-06-17
-            if (createOpenId && userLogOnEntity.MultiUserLogin == 1 && userLogOnEntity.OpenIdTimeout.HasValue && !string.IsNullOrEmpty(userLogOnEntity.OpenId))
+            if (createOpenId && userLogonEntity.MultiUserLogin == 1 && userLogonEntity.OpenIdTimeout.HasValue && !string.IsNullOrEmpty(userLogonEntity.OpenId))
             {
-                //var timeSpan = DateTime.Now - userLogOnEntity.OpenIdTimeout.Value;
-                var timeSpan = userLogOnEntity.OpenIdTimeout.Value - DateTime.Now;
+                //var timeSpan = DateTime.Now - userLogonEntity.OpenIdTimeout.Value;
+                var timeSpan = userLogonEntity.OpenIdTimeout.Value - DateTime.Now;
                 if ((timeSpan.TotalSeconds) < 0)
                 {
-                    openId = userLogOnEntity.OpenId;
+                    openId = userLogonEntity.OpenId;
                 }
             }
             // Troy.Cui 非并发用户强制每次生成 2020 - 06 - 17
-            if (createOpenId && userLogOnEntity.MultiUserLogin == 0)
+            if (createOpenId && userLogonEntity.MultiUserLogin == 0)
             {
                 openId = Guid.NewGuid().ToString("N");
             }
 
             // 抛出一个线程
-            UpdateVisitDateTask(userLogOnEntity, openId, createOpenId);
-            // new Thread(UpdateVisitDateTask).Start(new Tuple<BaseUserLogOnEntity, bool, string>(userLogOnEntity, result));
+            UpdateVisitDateTask(userLogonEntity, openId, createOpenId);
+            // new Thread(UpdateVisitDateTask).Start(new Tuple<BaseUserLogonEntity, bool, string>(userLogonEntity, result));
 
             return openId;
         }
@@ -259,8 +259,8 @@ namespace DotNet.Business
         /// <returns>OpenId</returns>
         public string UpdateVisitDate(string userId)
         {
-            var userLogOnEntity = GetEntity(userId);
-            return UpdateVisitDate(userLogOnEntity);
+            var userLogonEntity = GetEntity(userId);
+            return UpdateVisitDate(userLogonEntity);
         }
         #endregion
     }

@@ -15,7 +15,7 @@ namespace DotNet.Business
     {
 #if NET40_OR_GREATER
         //LDAP域用户登录部分：包括Windows AD域用户登录
-        #region public static BaseUserInfo LogOnByLDAP(string domain, string lDAP, string userName, string password, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        #region public static BaseUserInfo LogonByLDAP(string domain, string lDAP, string userName, string password, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
 
         /// <summary>
         /// 验证LDAP用户
@@ -32,7 +32,7 @@ namespace DotNet.Business
         /// <param name="statusCode"></param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
-        public static BaseUserInfo LogOnByLdap(string domain, string lDap, string systemCode, string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        public static BaseUserInfo LogonByLdap(string domain, string lDap, string systemCode, string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
         {
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
@@ -66,9 +66,9 @@ namespace DotNet.Business
                 {
                     // 统一的登录服务
                     var dotNetService = new DotNetService();
-                    var userLogOnResult = dotNetService.LogOnService.LogOnByUserName(taskId, systemCode, GetUserInfo(), userName);
+                    var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), userName);
                     // 检查身份
-                    if (userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+                    if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
@@ -90,26 +90,26 @@ namespace DotNet.Business
                             {
                                 RemoveUserCookie();
                             }
-                            LogOn(userLogOnResult.UserInfo, formsAuthentication);
+                            Logon(userLogonResult.UserInfo, formsAuthentication);
                         }
                         else
                         {
-                            userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                            userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
-                            statusCode = Status.LogOnDeny.ToString();
+                            userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                            userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                            statusCode = Status.LogonDeny.ToString();
                             statusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
-                            return userLogOnResult.UserInfo;
+                            return userLogonResult.UserInfo;
                         }
                     }
-                    userLogOnResult.StatusCode = Status.Ok.ToString();
-                    userLogOnResult.StatusMessage = "登录成功";
+                    userLogonResult.StatusCode = Status.Ok.ToString();
+                    userLogonResult.StatusMessage = "登录成功";
                     statusCode = Status.Ok.ToString();
                     statusMessage = "登录成功";
-                    return userLogOnResult.UserInfo;
+                    return userLogonResult.UserInfo;
                 }
                 else
                 {
-                    statusCode = Status.LogOnDeny.ToString();
+                    statusCode = Status.LogonDeny.ToString();
                     statusMessage = "应用系统用户不存在，请联系管理员。";
                     return null;
                 }
@@ -117,7 +117,7 @@ namespace DotNet.Business
             catch (Exception e)
             {
                 //Logon failure: unknown user name or bad password.
-                statusCode = Status.LogOnDeny.ToString();
+                statusCode = Status.LogonDeny.ToString();
                 statusMessage = "域服务器返回信息" + e.Message.Replace("\r\n", "");
                 return null;
             }
@@ -129,7 +129,7 @@ namespace DotNet.Business
         #region Windows认证下用户登录，需IIS开启Windows身份验证，关闭匿名身份验证，Web.config启用Windows身份验证
 
         /// <summary>
-        /// LogOnWindowsAuthentication
+        /// LogonWindowsAuthentication
         /// </summary>
         /// <param name="systemCode">子系统</param>
         /// <param name="userName">域用户名</param>
@@ -139,7 +139,7 @@ namespace DotNet.Business
         /// <param name="statusCode"></param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
-        public static BaseUserInfo LogOnWindowsAuthentication(string systemCode, string userName, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        public static BaseUserInfo LogonWindowsAuthentication(string systemCode, string userName, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
         {
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
@@ -159,9 +159,9 @@ namespace DotNet.Business
 
             // 统一的登录服务
             var dotNetService = new DotNetService();
-            var userLogOnResult = dotNetService.LogOnService.LogOnByUserName(taskId, systemCode, GetUserInfo(), userName);
+            var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), userName);
             // 检查身份
-            if (userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
@@ -183,30 +183,30 @@ namespace DotNet.Business
                     {
                         RemoveUserCookie();
                     }
-                    LogOn(userLogOnResult.UserInfo, formsAuthentication);
+                    Logon(userLogonResult.UserInfo, formsAuthentication);
 
-                    userLogOnResult.StatusCode = Status.Ok.ToString();
-                    userLogOnResult.StatusMessage = "登录成功";
+                    userLogonResult.StatusCode = Status.Ok.ToString();
+                    userLogonResult.StatusMessage = "登录成功";
                     statusCode = Status.Ok.ToString();
                     statusMessage = "登录成功";
-                    return userLogOnResult.UserInfo;
+                    return userLogonResult.UserInfo;
                 }
                 else
                 {
-                    userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                    userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                    statusCode = Status.LogOnDeny.ToString();
+                    userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                    statusCode = Status.LogonDeny.ToString();
                     statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                    return userLogOnResult.UserInfo;
+                    return userLogonResult.UserInfo;
                 }
             }
             else
             {
-                userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                statusCode = Status.LogOnDeny.ToString();
+                userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                statusCode = Status.LogonDeny.ToString();
                 statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                return userLogOnResult.UserInfo;
+                return userLogonResult.UserInfo;
             }
 
         }

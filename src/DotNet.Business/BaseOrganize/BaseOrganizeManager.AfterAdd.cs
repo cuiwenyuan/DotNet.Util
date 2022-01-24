@@ -8,7 +8,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构
     ///
     /// 修改记录
@@ -20,14 +20,14 @@ namespace DotNet.Business
     ///		<date>2016.02.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         /// <summary>
         /// 添加之后，需要重新刷新缓存，否则其他读取数据的地方会乱了，或者不及时了
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>影响行数</returns>
-        public int AfterAdd(BaseOrganizeEntity entity)
+        public int AfterAdd(BaseOrganizationEntity entity)
         {
             var result = 0;
             CachePreheatingSpelling01(entity);

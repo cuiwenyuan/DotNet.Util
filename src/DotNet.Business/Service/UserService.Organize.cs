@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class UserService : IUserService
     {
-        #region public bool UserIsInOrganize(BaseUserInfo userInfo, string userId, string organizeName)
+        #region public bool UserIsInOrganization(BaseUserInfo userInfo, string userId, string organizeName)
         /// <summary>
         /// 用户是否在某个组织架构里的判断
         /// </summary>
@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="organizeName">部门名称</param>
         /// <returns>存在</returns>
-        public bool UserIsInOrganize(BaseUserInfo userInfo, string userId, string organizeName)
+        public bool UserIsInOrganization(BaseUserInfo userInfo, string userId, string organizeName)
         {
             var result = false;
 
@@ -43,7 +43,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo);
-                result = userManager.IsInOrganize(userId, organizeName);
+                result = userManager.IsInOrganization(userId, organizeName);
             });
             return result;
         }
@@ -124,30 +124,30 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetUserOrganizeDT(BaseUserInfo userInfo, string userId)
+        #region public DataTable GetUserOrganizationDT(BaseUserInfo userInfo, string userId)
         /// <summary>
         /// 获得用户的组织机构兼职情况
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="userId">用户主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetUserOrganizeDT(BaseUserInfo userInfo, string userId)
+        public DataTable GetUserOrganizationDT(BaseUserInfo userInfo, string userId)
         {
-            var dt = new DataTable(BaseUserOrganizeEntity.TableName);
+            var dt = new DataTable(BaseUserOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var userOrganizeManager = new BaseUserOrganizeManager(dbHelper, userInfo);
-                dt = userOrganizeManager.GetUserOrganizeDt(userId);
-                dt.TableName = BaseUserOrganizeEntity.TableName;
+                var userOrganizationManager = new BaseUserOrganizationManager(dbHelper, userInfo);
+                dt = userOrganizationManager.GetUserOrganizationDt(userId);
+                dt.TableName = BaseUserOrganizationEntity.TableName;
             });
 
             return dt;
         }
         #endregion
 
-        #region public string AddUserToOrganize(BaseUserInfo userInfo, BaseUserOrganizeEntity entity, out string statusCode, out string statusMessage)
+        #region public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out string statusCode, out string statusMessage)
         /// <summary>
         /// 把用户添加到组织机构
         /// </summary>
@@ -156,7 +156,7 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string AddUserToOrganize(BaseUserInfo userInfo, BaseUserOrganizeEntity entity, out string statusCode, out string statusMessage)
+        public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out string statusCode, out string statusMessage)
         {
             var returnCode = string.Empty;
             var returnMessage = string.Empty;
@@ -165,9 +165,9 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userOrganizeManager = new BaseUserOrganizeManager(dbHelper, userInfo);
-                result = userOrganizeManager.Add(entity, out returnCode);
-                returnMessage = userOrganizeManager.GetStateMessage(returnCode);
+                var userOrganizationManager = new BaseUserOrganizationManager(dbHelper, userInfo);
+                result = userOrganizationManager.Add(entity, out returnCode);
+                returnMessage = userOrganizationManager.GetStateMessage(returnCode);
             });
             statusCode = returnCode;
             statusMessage = returnMessage;
@@ -175,22 +175,22 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int BatchDeleteUserOrganize(BaseUserInfo userInfo, string[] ids)
+        #region public int BatchDeleteUserOrganization(BaseUserInfo userInfo, string[] ids)
         /// <summary>
         /// 批量删除
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="ids">主键数组</param>
         /// <returns>影响行数</returns>
-        public int BatchDeleteUserOrganize(BaseUserInfo userInfo, string[] ids)
+        public int BatchDeleteUserOrganization(BaseUserInfo userInfo, string[] ids)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userOrganizeManager = new BaseUserOrganizeManager(dbHelper, userInfo);
-                result = userOrganizeManager.Delete(ids);
+                var userOrganizationManager = new BaseUserOrganizationManager(dbHelper, userInfo);
+                result = userOrganizationManager.Delete(ids);
             });
             return result;
         }

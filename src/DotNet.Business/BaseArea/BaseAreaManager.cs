@@ -189,20 +189,20 @@ namespace DotNet.Business
         /// 获取管理网点列表
         /// </summary>
         /// <returns>返回序列化</returns>
-        public List<BaseOrganizeEntity> GetUserManageCompanes(string userId, string permissionId)
+        public List<BaseOrganizationEntity> GetUserManageCompanes(string userId, string permissionId)
         {
-            List<BaseOrganizeEntity> result = null;
+            List<BaseOrganizationEntity> result = null;
             var manageCompanyIds = GetUserManageCompanyIds(userId, permissionId);
             if (manageCompanyIds != null && manageCompanyIds.Length < 1)
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldId, manageCompanyIds),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldId, manageCompanyIds),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
-                var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-                result = organizeManager.GetList<BaseOrganizeEntity>(parameters);
+                var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
+                result = organizeManager.GetList<BaseOrganizationEntity>(parameters);
             }
             return result;
         }
@@ -244,14 +244,14 @@ namespace DotNet.Business
             string[] areaCompanyIds = null;
             if (areaIds != null && areaIds.Length > 0)
             {
-                var commandText = " SELECT " + BaseOrganizeEntity.FieldId
-                                    + " FROM " + BaseOrganizeEntity.TableName
-                                    + " WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                    + "       AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
+                var commandText = " SELECT " + BaseOrganizationEntity.FieldId
+                                    + " FROM " + BaseOrganizationEntity.TableName
+                                    + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                    + "       AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                                     + "       AND (";
                 if (province != null && province.Length > 0)
                 {
-                    commandText += BaseOrganizeEntity.FieldProvinceId + " IN (" + ObjectUtil.ToList(province, "'") + ")";
+                    commandText += BaseOrganizationEntity.FieldProvinceId + " IN (" + ObjectUtil.ToList(province, "'") + ")";
                 }
                 if (city != null && city.Length > 0)
                 {
@@ -259,7 +259,7 @@ namespace DotNet.Business
                     {
                         commandText += "  OR ";
                     }
-                    commandText += BaseOrganizeEntity.FieldCityId + " IN (" + ObjectUtil.ToList(city, "'") + ")";
+                    commandText += BaseOrganizationEntity.FieldCityId + " IN (" + ObjectUtil.ToList(city, "'") + ")";
                 }
                 if (district != null && district.Length > 0)
                 {
@@ -267,7 +267,7 @@ namespace DotNet.Business
                     {
                         commandText += "  OR ";
                     }
-                    commandText += BaseOrganizeEntity.FieldDistrictId + " IN (" + ObjectUtil.ToList(district, "'") + ")";
+                    commandText += BaseOrganizationEntity.FieldDistrictId + " IN (" + ObjectUtil.ToList(district, "'") + ")";
                 }
                 if (street != null && street.Length > 0)
                 {
@@ -275,13 +275,13 @@ namespace DotNet.Business
                     {
                         commandText += "  OR ";
                     }
-                    commandText += BaseOrganizeEntity.FieldStreetId + " IN (" + ObjectUtil.ToList(areaIds, "'") + ")";
+                    commandText += BaseOrganizationEntity.FieldStreetId + " IN (" + ObjectUtil.ToList(areaIds, "'") + ")";
                 }
                 commandText += ")";
 
-                var organizeManager = new BaseOrganizeManager();
+                var organizeManager = new BaseOrganizationManager();
                 var dt = organizeManager.Fill(commandText);
-                areaCompanyIds = BaseUtil.FieldToArray(dt, BaseOrganizeEntity.FieldId);
+                areaCompanyIds = BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId);
             }
 
             // 用户直接有权限的网点
@@ -290,7 +290,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseUserEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, userId),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, permissionId),
-                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)
             };

@@ -5,7 +5,7 @@
 namespace DotNet.Business
 {
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构
     ///
     /// 修改记录
@@ -17,7 +17,7 @@ namespace DotNet.Business
     ///		<date>2016.02.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {   
     }
 }

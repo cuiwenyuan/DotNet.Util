@@ -66,7 +66,7 @@ namespace DotNet.Business
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseOrganize') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseOrganization') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
                 var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 

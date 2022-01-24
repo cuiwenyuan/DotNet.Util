@@ -191,7 +191,7 @@ namespace DotNet.Util
                 {
                     orderBy = " ORDER BY " + orderBy;
                 }
-                //SELECT * FROM(SELECT ROWNUM RN,h.* FROM ((SELECT T.* FROM WULIAO_SUOYOUGONGSI T WHERE DENG_JI_GONG_SI_DAI_MA='02100' ORDER BY CreateOn desc )H)) zWHERE z.RN <=110  and z.RN >104;
+                //SELECT * FROM(SELECT ROWNUM RN,h.* FROM ((SELECT T.* FROM WULIAO_SUOYOUGONGSI T WHERE DENG_JI_GONG_SI_DAI_MA='02100' ORDER BY CreateTime desc )H)) zWHERE z.RN <=110  and z.RN >104;
                 //原始的               
                 //sql = string.Format("SELECT " + selectField + " FROM(SELECT ROWNUM RN, H.* FROM ((SELECT " + currentIndex + " * FROM {0} {1} {2} )H)) Z WHERE Z.RN <={3} AND Z.RN >{4}"
                 //    , tableName, conditions, orderBy, sqlEnd, sqlStart);

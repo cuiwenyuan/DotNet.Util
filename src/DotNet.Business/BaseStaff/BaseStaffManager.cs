@@ -284,13 +284,13 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByOrganizes(string[] ids) 按工作组、部门、公司获取员工列表
+        #region public DataTable GetDataTableByOrganizations(string[] ids) 按工作组、部门、公司获取员工列表
         /// <summary>
         /// 按工作组、部门、公司获取员工列表
         /// </summary>
         /// <param name="organizationIds">主键数组</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganizes(string[] organizationIds)
+        public DataTable GetDataTableByOrganizations(string[] organizationIds)
         {
             var organizeList = string.Join(",", organizationIds);
             var sql = "    SELECT " + BaseStaffEntity.TableName + ".* "
@@ -305,16 +305,16 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByOrganize(string organizationId)
+        #region public DataTable GetDataTableByOrganization(string organizationId)
         /// <summary>
         /// 获取部门员工
         /// </summary>
         /// <param name="organizationId">组织机构主键</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(string organizationId)
+        public DataTable GetDataTableByOrganization(string organizationId)
         {
             var organizationIds = new string[] { organizationId };
-            return GetDataTableByOrganizes(organizationIds);
+            return GetDataTableByOrganizations(organizationIds);
         }
         #endregion
 
@@ -327,10 +327,10 @@ namespace DotNet.Business
         public DataTable GetDataTableByDepartment(string departmentId)
         {
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
-                + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyCode"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyFullname "
-                + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " From " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentCode"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyFullname "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentName "
                 + " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsDuty WHERE Id = " + BaseStaffEntity.TableName + ".DutyId) AS DutyName "
                 + " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsTitle WHERE Id = " + BaseStaffEntity.TableName + ".TitleId) AS TitleName "
                 + " ,(SELECT " + BaseRoleEntity.FieldRealName + " FROM " + BaseRoleEntity.TableName + " WHERE Id = RoleId) AS RoleName "
@@ -356,7 +356,7 @@ namespace DotNet.Business
             var staffCount = string.Empty;
             var names = new string[1];
             var values = new object[1];
-            var sql = @"SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.TableName + " WHERE (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizeEntity.TableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
+            var sql = @"SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.TableName + " WHERE (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.TableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
             names[0] = BaseStaffEntity.FieldCompanyId;
             values[0] = organizeCode;
             var result = DbHelper.ExecuteScalar(sql, DbHelper.MakeParameters(names, values));
@@ -383,9 +383,9 @@ namespace DotNet.Business
             var names = new string[3];
             var values = new object[3];
             var sql = "SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.TableName
-                            + " WHERE (" + categoryField + " = ?) AND (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizeEntity.TableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
+                            + " WHERE (" + categoryField + " = ?) AND (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.TableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
             names[0] = categoryField;
-            names[1] = BaseOrganizeEntity.FieldCode;
+            names[1] = BaseOrganizationEntity.FieldCode;
             names[2] = organizeCode;
             values[0] = categoryId;
             values[1] = organizeCode;
@@ -399,7 +399,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable SearchByOrganizeIds(string[] ids, string userName, string enabled, string role)
+        #region public DataTable SearchByOrganizationIds(string[] ids, string userName, string enabled, string role)
         /// <summary>
         /// 
         /// </summary>
@@ -408,7 +408,7 @@ namespace DotNet.Business
         /// <param name="enabled"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public DataTable SearchByOrganizeIds(string[] organizationIds, string userName, string enabled, string role)
+        public DataTable SearchByOrganizationIds(string[] organizationIds, string userName, string enabled, string role)
         {
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
                                 + " FROM " + BaseStaffEntity.TableName
@@ -464,7 +464,7 @@ namespace DotNet.Business
         /// <returns>数据权限</returns>
         public DataTable Search(string userName, string enabled, string role)
         {
-            return SearchByOrganizeIds(null, userName, enabled, role);
+            return SearchByOrganizationIds(null, userName, enabled, role);
         }
         #endregion
 
@@ -486,8 +486,8 @@ namespace DotNet.Business
                 /*"SELECT A.* ,B.Code AS CompanyCode ,B.FullName AS CompanyName , " +
                         " C.Code AS DepartmentCode ,C.FullName AS DepartmentName ,D.ItemName AS DutyName ," +
                         " F.RealName as RoleName  " +
-                        " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganize B ON B.Id = A.CompanyId)" +
-                        " LEFT OUTER JOIN BaseOrganize C ON C.Id = A.DepartmentId)" +
+                        " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganization B ON B.Id = A.CompanyId)" +
+                        " LEFT OUTER JOIN BaseOrganization C ON C.Id = A.DepartmentId)" +
                         " LEFT OUTER JOIN ItemsDuty D ON D.Id = CInt(iif(IsNull( A.DutyId ), 0, A.DutyId)))" +
                         " LEFT JOIN BaseUser E ON A.Id = E.Id )" +
                         " left join BaseRole F on F.Id = E.RoleId)"; */
@@ -498,20 +498,20 @@ namespace DotNet.Business
 
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
-                            + "," + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldCode + " AS CompanyCode "
-                            + "," + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldFullName + " AS CompanyName "
-                            + "," + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldCode + " AS DepartmentCode "
-                            + "," + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldFullName + " AS DepartmentName "
+                            + "," + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
+                            + "," + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldFullName + " AS CompanyName "
+                            + "," + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
+                            + "," + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldFullName + " AS DepartmentName "
                             + ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + "," + "OT.RoleName "
                             + " FROM " + BaseStaffEntity.TableName
-                            + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "A ON " + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
-                            + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "B ON " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " " + BaseOrganizationEntity.TableName + "A ON " + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " " + BaseOrganizationEntity.TableName + "B ON " + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + "      ON " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " = OT.Id ";
             if (string.IsNullOrEmpty(organizationId))
             {
-                sql += " WHERE ((" + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1) OR (" + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldIsInnerOrganize + " =1)) ";
+                sql += " WHERE ((" + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ";
             }
             else
             {
@@ -522,8 +522,8 @@ namespace DotNet.Business
             {
                 sql += " AND (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
+                sql += " OR " + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
+                sql += " OR " + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + "ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'";
@@ -534,7 +534,7 @@ namespace DotNet.Business
                 sql += " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDescription + " LIKE '%" + searchKey + "%'";
                 sql += " OR OT.RoleName LIKE '%" + searchKey + "%')";
             }
-            sql += " ORDER BY " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldSortCode
+            sql += " ORDER BY " + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldSortCode
                           + " ," + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSortCode;
             return DbHelper.Fill(sql);
         }
@@ -563,8 +563,8 @@ namespace DotNet.Business
                 /*"SELECT A.* ,B.Code AS CompanyCode ,B.FullName AS CompanyName , " +
                         " C.Code AS DepartmentCode ,C.FullName AS DepartmentName ,D.ItemName AS DutyName ," +
                         " F.RealName as RoleName  " +
-                        " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganize B ON B.Id = A.CompanyId)" +
-                        " LEFT OUTER JOIN BaseOrganize C ON C.Id = A.DepartmentId)" +
+                        " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganization B ON B.Id = A.CompanyId)" +
+                        " LEFT OUTER JOIN BaseOrganization C ON C.Id = A.DepartmentId)" +
                         " LEFT OUTER JOIN ItemsDuty D ON D.Id = CInt(iif(IsNull( A.DutyId ), 0, A.DutyId)))" +
                         " LEFT JOIN BaseUser E ON A.Id = E.Id )" + 
                          //此处多级查询溢出，有待优化
@@ -576,16 +576,16 @@ namespace DotNet.Business
 
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
-                            + " ," + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldCode + " AS CompanyCode "
-                            + " ," + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldCode + " AS DepartmentCode "
+                            + " ," + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
+                            + " ," + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
                             + " ,ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + " FROM " + BaseStaffEntity.TableName
-                            + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "A ON " + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
-                            + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " " + BaseOrganizeEntity.TableName + "B ON " + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " " + BaseOrganizationEntity.TableName + "A ON " + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " " + BaseOrganizationEntity.TableName + "B ON " + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
             if (string.IsNullOrEmpty(organizationId))
             {
-                sql += " WHERE ((" + BaseOrganizeEntity.TableName + "A." + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1) OR (" + BaseOrganizeEntity.TableName + "B." + BaseOrganizeEntity.FieldIsInnerOrganize + " =1)) ";
+                sql += " WHERE ((" + BaseOrganizationEntity.TableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.TableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ";
             }
             else
             {
@@ -636,10 +636,10 @@ namespace DotNet.Business
         {
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
-                            + "," + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldFullName + " AS DepartmentName "
+                            + "," + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldFullName + " AS DepartmentName "
                             + ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + " FROM " + BaseStaffEntity.TableName
-                            + "      LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " ON " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " ON " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             + "      LEFT OUTER JOIN ItemsDuty ON  ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + " WHERE (" + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")";
             if (!string.IsNullOrEmpty(organizationId))
@@ -657,7 +657,7 @@ namespace DotNet.Business
                 sql += " OR " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%'";
                 sql += " OR ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " LIKE '%" + searchKey + "%')";
             }
-            sql += " ORDER BY " // + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldSortCode
+            sql += " ORDER BY " // + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldSortCode
                                 // + " ," 
                           + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSortCode;
             return DbHelper.Fill(sql);
@@ -671,20 +671,20 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetChildrenStaffs(string organizationId)
         {
-            var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
+            var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
             string[] organizationIds = null;
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
                     var organizeCode = GetCodeById(organizationId);
-                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizationEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
                     break;
             }
-            return GetDataTableByOrganizes(organizationIds);
+            return GetDataTableByOrganizations(organizationIds);
         }
 
         /// <summary>
@@ -694,10 +694,10 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetParentChildrenStaffs(string organizationId)
         {
-            var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
+            var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
             var organizeCode = organizeManager.GetCodeById(organizationId);
-            var organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
-            return GetDataTableByOrganizes(organizationIds);
+            var organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizationEntity.FieldCode, organizeCode);
+            return GetDataTableByOrganizations(organizationIds);
         }
 
         #region public DataTable GetDataTable()
@@ -708,15 +708,15 @@ namespace DotNet.Business
         public DataTable GetDataTable()
         {
             var sql = "SELECT " + BaseStaffEntity.TableName + ".* "
-                + " , " + BaseUserEntity.TableName + ".UserOnLine"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyCode"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyFullname "
+                + " , " + BaseUserEntity.TableName + ".UserOnline"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".CompanyId) AS CompanyFullname "
 
-                + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " From " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentCode"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".DepartmentId) AS DepartmentName "
 
-                + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " From " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".WorkgroupId) AS WorkgroupCode"
-                + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".WorkgroupId) AS WorkgroupName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".WorkgroupId) AS WorkgroupCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = " + BaseStaffEntity.TableName + ".WorkgroupId) AS WorkgroupName "
 
                 + " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsDuty WHERE Id = " + BaseStaffEntity.TableName + ".DutyId) AS DutyName "
 
@@ -726,9 +726,9 @@ namespace DotNet.Business
                 // + " ,(SELECT COUNT(*) FROM " + BaseUserRoleEntity.TableName + " WHERE " + BaseUserRoleEntity.TableName + ".StaffID = " + BaseStaffEntity.TableName + ".Id) AS RoleCount "
                 + " FROM (" + BaseStaffEntity.TableName + " LEFT OUTER JOIN " + BaseUserEntity.TableName
                 + " ON " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + ") "
-                + "  LEFT OUTER JOIN " + BaseOrganizeEntity.TableName + " "
-                + " ON " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId
-                + " ORDER BY " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldSortCode
+                + "  LEFT OUTER JOIN " + BaseOrganizationEntity.TableName + " "
+                + " ON " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId
+                + " ORDER BY " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldSortCode
                 + " , " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSortCode;
             return DbHelper.Fill(sql);
         }
@@ -745,14 +745,14 @@ namespace DotNet.Business
         {
             var sql = "SELECT A.* "
 
-                            + " ,(SELECT Code FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + ".ID = A.CompanyId) AS CompanyCode"
-                            + " ,(SELECT FullName FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + ".ID = A.CompanyId) AS CompanyName "
+                            + " ,(SELECT Code FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + ".ID = A.CompanyId) AS CompanyCode"
+                            + " ,(SELECT FullName FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + ".ID = A.CompanyId) AS CompanyName "
 
-                            + " ,(SELECT Code FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + ".ID = A.DepartmentId) AS DepartmentCode"
-                            + " ,(SELECT FullName FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + ".ID = A.DepartmentId) AS DepartmentName "
+                            + " ,(SELECT Code FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + ".ID = A.DepartmentId) AS DepartmentCode"
+                            + " ,(SELECT FullName FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + ".ID = A.DepartmentId) AS DepartmentName "
 
-                            + " ,(SELECT " + BaseOrganizeEntity.FieldCode + " From " + BaseOrganizeEntity.TableName + " WHERE Id = A.WorkgroupId) AS WorkgroupCode"
-                            + " ,(SELECT " + BaseOrganizeEntity.FieldFullName + " FROM " + BaseOrganizeEntity.TableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
+                            + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.TableName + " WHERE Id = A.WorkgroupId) AS WorkgroupCode"
+                            + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.TableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
 
                             + " ,(SELECT ItemName FROM ItemsDuty WHERE ItemsDuty.Id = A.DutyId) AS DutyName "
 

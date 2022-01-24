@@ -517,16 +517,16 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.TableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
             }
 
-            if (BaseSystemInfo.UseRoleOrganize && !string.IsNullOrEmpty(companyId))
+            if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
             {
-                string roleOrganizeTableName = systemCode + "RoleOrganize";
-                sql += " UNION SELECT " + BaseRoleOrganizeEntity.FieldRoleId
-                                  + " FROM " + roleOrganizeTableName
-                                + "  WHERE " + BaseRoleOrganizeEntity.FieldOrganizeId + " = " + DbHelper.GetParameter(BaseRoleOrganizeEntity.FieldOrganizeId)
-                                  + "        AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1 "
-                                  + "        AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0 ";
+                string roleOrganizationTableName = systemCode + "RoleOrganization";
+                sql += " UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId
+                                  + " FROM " + roleOrganizationTableName
+                                + "  WHERE " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId)
+                                  + "        AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 "
+                                  + "        AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 ";
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizeEntity.FieldOrganizeId, companyId));
+                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
             }
             */
 
@@ -577,16 +577,16 @@ namespace DotNet.Business
             List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
             dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId));
 
-            if (BaseSystemInfo.UseRoleOrganize && !string.IsNullOrEmpty(companyId))
+            if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
             {
-                string roleOrganizeTableName = systemCode + "RoleOrganize";
-                sql += " UNION SELECT " + BaseRoleOrganizeEntity.FieldRoleId
-                                  + " FROM " + roleOrganizeTableName
-                                + "  WHERE " + BaseRoleOrganizeEntity.FieldOrganizeId + " = " + DbHelper.GetParameter(BaseRoleOrganizeEntity.FieldOrganizeId)
-                                  + "        AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1 "
-                                  + "        AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0 ";
+                string roleOrganizationTableName = systemCode + "RoleOrganization";
+                sql += " UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId
+                                  + " FROM " + roleOrganizationTableName
+                                + "  WHERE " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId)
+                                  + "        AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 "
+                                  + "        AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 ";
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizeEntity.FieldOrganizeId, companyId));
+                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
             }
 
             sql += ")";
@@ -1215,8 +1215,8 @@ namespace DotNet.Business
                 result = userIds[index];
 
                 // 接着再判断是否有人在线，若有在线的，发给在线的用户
-                var userLogOnManager = new BaseUserLogOnManager(DbHelper);
-                userIds = userLogOnManager.GetOnLineUserIds(userIds);
+                var userLogonManager = new BaseUserLogonManager(DbHelper);
+                userIds = userLogonManager.GetOnlineUserIds(userIds);
                 if (userIds != null && userIds.Length > 0)
                 {
                     index = UserIndex % userIds.Length;
