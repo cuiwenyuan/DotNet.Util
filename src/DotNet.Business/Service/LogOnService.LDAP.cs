@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// LogOnService
+    /// LogonService
     /// 
     /// 修改纪录
     /// 
@@ -24,10 +24,10 @@ namespace DotNet.Business
     ///		<date>2009.04.15</date>
     /// </author> 
     /// </summary>
-    public partial class LogOnService : ILogOnService
+    public partial class LogonService : ILogonService
     {
 
-        #region public BaseUserInfo LogOnByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
+        #region public BaseUserInfo LogonByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
 
         /// <summary>
         /// 按用户名登录(LDAP专用)
@@ -37,16 +37,16 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="userName">用户名</param>
         /// <returns>用户实体</returns>
-        public UserLogOnResult LogOnByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
+        public UserLogonResult LogonByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
 
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
              {
                 // 先侦测是否在线
-                //userLogOnManager.CheckOnLine();
+                //userLogonManager.CheckOnline();
                 // 然后获取用户密码
                 var userManager = new BaseUserManager(userInfo);
                 // 是否从角色判断管理员
@@ -57,14 +57,14 @@ namespace DotNet.Business
 
                  if (userEntity != null)
                  {
-                     var baseUserLogOnManager = new BaseUserLogOnManager(userInfo);
+                     var baseUserLogonManager = new BaseUserLogonManager(userInfo);
                     //获取密码
-                    var userLogOnEntity = baseUserLogOnManager.GetEntity(userEntity.Id);
-                     var password = userLogOnEntity.UserPassword;
+                    var userLogonEntity = baseUserLogonManager.GetEntity(userEntity.Id);
+                     var password = userLogonEntity.UserPassword;
                     //再进行登录，这里密码不能是AD的密码，所以不检验密码
-                    result = userManager.LogOnByUserName(userName, password, systemCode, null, null, null, false, false);
+                    result = userManager.LogonByUserName(userName, password, systemCode, null, null, null, false, false);
                     //可以登录，但不建议，没有登录日志等
-                    //result = userManager.LogOnByOpenId(openId, string.Empty, string.Empty);
+                    //result = userManager.LogonByOpenId(openId, string.Empty, string.Empty);
                 }
                 // 登录时会自动记录进行日志记录，所以不需要进行重复日志记录
                 //BaseLogManager.Instance.Add(userInfo, this.serviceName, MethodBase.GetCurrentMethod());

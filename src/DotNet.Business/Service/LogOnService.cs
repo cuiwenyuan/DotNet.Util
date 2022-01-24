@@ -18,7 +18,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// LogOnService
+    /// LogonService
     /// 
     /// 修改记录
     /// 
@@ -34,7 +34,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public partial class LogOnService : ILogOnService
+    public partial class LogonService : ILogonService
     {
         /// <summary>
         /// 获取系统版本号
@@ -102,7 +102,7 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public UserLogOnResult UserLogOn(string taskId, BaseUserInfo userInfo, string userName, string password, string openId)
+        #region public UserLogonResult UserLogon(string taskId, BaseUserInfo userInfo, string userName, string password, string openId)
         /// <summary>
         /// 登录
         /// </summary>
@@ -112,15 +112,15 @@ namespace DotNet.Business
         /// <param name="password">密码</param>
         /// <param name="openId">单点登录标识</param>
         /// <returns>登录实体类</returns>
-        public UserLogOnResult UserLogOn(string taskId, BaseUserInfo userInfo, string userName, string password, string openId)
+        public UserLogonResult UserLogon(string taskId, BaseUserInfo userInfo, string userName, string password, string openId)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var parameter = ServiceInfo.Create(taskId, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var userManager = new BaseUserManager(userInfo) { CheckIsAdministrator = true };
-                result = userManager.LogOnByUserName(userName, password, userInfo.SystemCode, openId);
+                result = userManager.LogonByUserName(userName, password, userInfo.SystemCode, openId);
                 //2016-02-16 吉日嘎拉 记录用户日志用
                 parameter.UserInfo = result.UserInfo;
             });
@@ -139,21 +139,21 @@ namespace DotNet.Business
         /// <param name="password">密码</param>
         /// <param name="openId">单点登录标识</param>
         /// <returns>登录实体类</returns>
-        public UserLogOnResult LogOnByCompany(string taskId, BaseUserInfo userInfo, string companyName, string userName, string password, string openId)
+        public UserLogonResult LogonByCompany(string taskId, BaseUserInfo userInfo, string companyName, string userName, string password, string openId)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 先侦测是否在线
-                // userLogOnManager.CheckOnLine();
+                // userLogonManager.CheckOnline();
                 // 再进行登录
                 var userManager = new BaseUserManager(userInfo)
                 {
                     CheckIsAdministrator = true
                 };
-                result = userManager.LogOnByCompany(companyName, userName, password, openId, userInfo.SystemCode, GetRemoteIp());
+                result = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, GetRemoteIp());
                 // 张祈璟20130619添加
                 //if (returnUserInfo != null)
                 //{
@@ -167,7 +167,7 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public UserLogOnResult LogOnByNickName(string taskId, BaseUserInfo userInfo, string nickName, string password, string openId)
+        #region public UserLogonResult LogonByNickName(string taskId, BaseUserInfo userInfo, string nickName, string password, string openId)
         /// <summary>
         /// 登录
         /// </summary>
@@ -177,28 +177,28 @@ namespace DotNet.Business
         /// <param name="password">密码</param>
         /// <param name="openId">单点登录标识</param>
         /// <returns>登录实体类</returns>
-        public UserLogOnResult LogOnByNickName(string taskId, BaseUserInfo userInfo, string nickName, string password, string openId)
+        public UserLogonResult LogonByNickName(string taskId, BaseUserInfo userInfo, string nickName, string password, string openId)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 先侦测是否在线
-                // userLogOnManager.CheckOnLine();
+                // userLogonManager.CheckOnline();
                 // 再进行登录
                 var userManager = new BaseUserManager(userInfo)
                 {
                     CheckIsAdministrator = true
                 };
-                result = userManager.LogOnByNickName(nickName, password, openId, userInfo.SystemCode);
+                result = userManager.LogonByNickName(nickName, password, openId, userInfo.SystemCode);
             });
 
             return result;
         }
         #endregion
 
-        #region public UserLogOnResult LogOnByOpenId(string taskId, BaseUserInfo userInfo, string openId)
+        #region public UserLogonResult LogonByOpenId(string taskId, BaseUserInfo userInfo, string openId)
         /// <summary>
         /// 按唯一识别码登录
         /// </summary>
@@ -206,19 +206,19 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="openId">唯一识别码</param>
         /// <returns>用户实体</returns>
-        public UserLogOnResult LogOnByOpenId(string taskId, BaseUserInfo userInfo, string openId)
+        public UserLogonResult LogonByOpenId(string taskId, BaseUserInfo userInfo, string openId)
         {
-            var result = new UserLogOnResult();
+            var result = new UserLogonResult();
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 先侦测是否在线
-                var userLogOnManager = new BaseUserLogOnManager();
-                userLogOnManager.CheckOnLine();
+                var userLogonManager = new BaseUserLogonManager();
+                userLogonManager.CheckOnline();
                 // 若是单点登录，那就不能判断ip地址，因为不是直接登录，是间接登录
                 var userManager = new BaseUserManager(userInfo);
-                result = userManager.LogOnByOpenId(openId, userInfo.SystemCode, string.Empty, string.Empty);
+                result = userManager.LogonByOpenId(openId, userInfo.SystemCode, string.Empty, string.Empty);
             });
 
             return result;
@@ -239,20 +239,20 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userLogOnManager = new BaseUserLogOnManager(userInfo);
-                result = userLogOnManager.CreateOpenId();
+                var userLogonManager = new BaseUserLogonManager(userInfo);
+                result = userLogonManager.CreateOpenId();
             });
 
             return result;
         }
 
-        #region public int ServerCheckOnLine(string taskId)
+        #region public int ServerCheckOnline(string taskId)
         /// <summary>
         /// 服务器端检查在线状态
         /// </summary>
         /// <param name="taskId">任务标识</param>
         /// <returns>离线人数</returns>
-        public int ServerCheckOnLine(string taskId)
+        public int ServerCheckOnline(string taskId)
         {
             var result = 0;
 
@@ -261,8 +261,8 @@ namespace DotNet.Business
                 try
                 {
                     dbHelper.Open(BaseSystemInfo.UserCenterWriteDbConnection);
-                    var userLogOnManager = new BaseUserLogOnManager(dbHelper);
-                    result = userLogOnManager.CheckOnLine();
+                    var userLogonManager = new BaseUserLogonManager(dbHelper);
+                    result = userLogonManager.CheckOnline();
                 }
                 catch (Exception ex)
                 {
@@ -279,20 +279,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public void OnLine(string taskId, BaseUserInfo userInfo, int onLineState = 1)
+        #region public void Online(string taskId, BaseUserInfo userInfo, int onLineState = 1)
         /// <summary>
         /// 用户现在
         /// </summary>
         /// <param name="taskId">任务标识</param>
         /// <param name="userInfo">用户</param>
         /// <param name="onLineState">用户在线状态</param>
-        public void OnLine(string taskId, BaseUserInfo userInfo, int onLineState = 1)
+        public void Online(string taskId, BaseUserInfo userInfo, int onLineState = 1)
         {
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userLogOnManager = new BaseUserLogOnManager();
-                userLogOnManager.OnLine(userInfo.Id, onLineState);
+                var userLogonManager = new BaseUserLogonManager();
+                userLogonManager.Online(userInfo.Id, onLineState);
             });
         }
         #endregion
@@ -304,19 +304,19 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseUserLogOnEntity GetEntity(string taskId, BaseUserInfo userInfo, string id)
+        public BaseUserLogonEntity GetEntity(string taskId, BaseUserInfo userInfo, string id)
         {
-            BaseUserLogOnEntity result = null;
+            BaseUserLogonEntity result = null;
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 // 判断是否已经登录的用户？
-                if (userManager.UserIsLogOn(userInfo))
+                if (userManager.UserIsLogon(userInfo))
                 {
-                    var userLogOnManager = new BaseUserLogOnManager();
-                    result = userLogOnManager.GetEntity(id);
+                    var userLogonManager = new BaseUserLogonManager();
+                    result = userLogonManager.GetEntity(id);
                 }
             });
 
@@ -330,7 +330,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
         /// <returns>影响行数</returns>
-        public int Update(string taskId, BaseUserInfo userInfo, BaseUserLogOnEntity entity)
+        public int Update(string taskId, BaseUserInfo userInfo, BaseUserLogonEntity entity)
         {
             var result = 0;
 
@@ -338,8 +338,8 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 调用方法，并且返回运行结果
-                var userLogOnManager = new BaseUserLogOnManager();
-                result = userLogOnManager.Update(entity);
+                var userLogonManager = new BaseUserLogonManager();
+                result = userLogonManager.Update(entity);
             });
 
             return result;
@@ -360,9 +360,9 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
+                var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
                 // 先侦测是否在线
-                userLogOnManager.CheckOnLine();
+                userLogonManager.CheckOnline();
                 // 再进行登录
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 result = userManager.AccountActivation(openId);
@@ -396,7 +396,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public UserLogOnResult ChangePassword(string taskId, BaseUserInfo userInfo, string oldPassword, string newPassword)
+        #region public UserLogonResult ChangePassword(string taskId, BaseUserInfo userInfo, string oldPassword, string newPassword)
         /// <summary>
         /// 用户修改密码
         /// </summary>
@@ -405,9 +405,9 @@ namespace DotNet.Business
         /// <param name="oldPassword">原始密码</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>影响行数</returns>
-        public UserLogOnResult ChangePassword(string taskId, BaseUserInfo userInfo, string oldPassword, string newPassword)
+        public UserLogonResult ChangePassword(string taskId, BaseUserInfo userInfo, string oldPassword, string newPassword)
         {
-            UserLogOnResult result = null;
+            UserLogonResult result = null;
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
@@ -415,12 +415,12 @@ namespace DotNet.Business
                 // 事务开始
                 // dbHelper.BeginTransaction();
                 var userManager = new BaseUserManager(dbHelper, userInfo);
-                result = new UserLogOnResult
+                result = new UserLogonResult
                 {
                     UserInfo = userManager.ChangePassword(userInfo.Id, oldPassword, newPassword),
 
                     // 获取登录后信息
-                    // result.Message = BaseParameterManager.GetParameterByCache("BaseNotice", "System", "LogOn", "Message");
+                    // result.Message = BaseParameterManager.GetParameterByCache("BaseNotice", "System", "Logon", "Message");
                     // 获得状态消息
                     StatusCode = userManager.StatusCode,
                     StatusMessage = userManager.GetStateMessage()
@@ -433,14 +433,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public static bool UserIsLogOn(string taskId, BaseUserInfo userInfo)
+        #region public static bool UserIsLogon(string taskId, BaseUserInfo userInfo)
         /// <summary>
         /// 用户是否已经登录了系统？
         /// </summary>
         /// <param name="taskId">任务标识</param>
         /// <param name="userInfo">用户</param>
         /// <returns>是否登录</returns>
-        public static bool UserIsLogOn(string taskId, BaseUserInfo userInfo)
+        public static bool UserIsLogon(string taskId, BaseUserInfo userInfo)
         {
             // 加强安全验证防止未授权匿名调用
             if (!BaseSystemInfo.IsAuthorized(userInfo))
@@ -456,7 +456,7 @@ namespace DotNet.Business
             /*
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbConnection);
             var userManager = new BaseUserManager(dbHelper, result);
-            if (!userManager.UserIsLogOn(result))
+            if (!userManager.UserIsLogon(result))
             {
                 throw new Exception(AppMessage.MSG0900);            
             }
@@ -480,7 +480,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                // BaseLogManager.Instance.Add(result, this.serviceName, AppMessage.LogOnService_LockUser, MethodBase.GetCurrentMethod());
+                // BaseLogManager.Instance.Add(result, this.serviceName, AppMessage.LogonService_LockUser, MethodBase.GetCurrentMethod());
                 var userManager = new BaseUserManager(userInfo);
                 var parameters = new List<KeyValuePair<string, object>>
                 {
@@ -493,11 +493,11 @@ namespace DotNet.Business
                 if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
                 {
                     // 被锁定15分钟，不允许15分钟内登录，这时间是按服务器的时间来的。
-                    var userLogOnManager = new BaseUserLogOnManager();
-                    var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
-                    userLogOnEntity.LockStartDate = DateTime.Now;
-                    userLogOnEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
-                    result = userLogOnManager.UpdateEntity(userLogOnEntity) > 0;
+                    var userLogonManager = new BaseUserLogonManager();
+                    var userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
+                    userLogonEntity.LockStartDate = DateTime.Now;
+                    userLogonEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
+                    result = userLogonManager.UpdateEntity(userLogonEntity) > 0;
                 }
             });
 
@@ -520,8 +520,8 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 检查用户在线状态(服务器专用)
-                var userLogOnManager = new BaseUserLogOnManager();
-                userLogOnManager.CheckOnLine();
+                var userLogonManager = new BaseUserLogonManager();
+                userLogonManager.CheckOnline();
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 // 获取允许登录列表
                 var parameters = new List<KeyValuePair<string, object>>
@@ -549,8 +549,8 @@ namespace DotNet.Business
         {
             var result = false;
 
-            var userLogOnManager = new BaseUserLogOnManager();
-            var verificationCode = userLogOnManager.GetProperty(userInfo.Id, BaseUserLogOnEntity.FieldVerificationCode);
+            var userLogonManager = new BaseUserLogonManager();
+            var verificationCode = userLogonManager.GetProperty(userInfo.Id, BaseUserLogonEntity.FieldVerificationCode);
             if (!string.IsNullOrEmpty(verificationCode))
             {
                 result = verificationCode.Equals(code);
@@ -708,8 +708,8 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 2015-12-14 吉日嘎拉 用户的登录日志不用重复写日志
-                var userLogOnManager = new BaseUserLogOnManager();
-                userLogOnManager.SignOut(userInfo.OpenId);
+                var userLogonManager = new BaseUserLogonManager();
+                userLogonManager.SignOut(userInfo.OpenId);
             });
         }
         #endregion

@@ -311,7 +311,7 @@ namespace DotNet.Business
         /// <param name="loginStatus"></param>
         public static void AddLog(string systemCode, BaseUserInfo userInfo, string ipAddress, string ipAddressName, string macAddress, string loginStatus)
         {
-            if (BaseSystemInfo.RecordLogOnLog)
+            if (BaseSystemInfo.RecordLogonLog)
             {
                 // 吉日嘎拉 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
                 new Thread(AddLogTaskByBaseUserInfo).Start(new Tuple<string, BaseUserInfo, string, string, string, string>(systemCode, userInfo, ipAddress, ipAddressName, macAddress, loginStatus));
@@ -334,7 +334,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public static string AddLog(string systemCode, BaseUserEntity userEntity, string ipAddress, string ipAddressName, string macAddress, string loginStatus, int operationType = 1, int loginResult = 1, string sourceType = null, string targetApplication = null, string targetIp = null)
         {
-            if (!BaseSystemInfo.RecordLogOnLog)
+            if (!BaseSystemInfo.RecordLogonLog)
             {
                 return string.Empty;
             }
@@ -361,7 +361,7 @@ namespace DotNet.Business
             };
             if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(userEntity.CompanyId))
             {
-                entity.CompanyCode = BaseOrganizeManager.GetCodeByCache(userEntity.CompanyId);
+                entity.CompanyCode = BaseOrganizationManager.GetCodeByCache(userEntity.CompanyId);
             }
 
             entity.Province = userEntity.Province;
@@ -516,7 +516,7 @@ namespace DotNet.Business
         /// <param name="loginStatus"></param>
         public static void AddLog(string systemCode, string userId, string userName, string nickName, string ipAddress, string ipAddressName, string macAddress, string loginStatus)
         {
-            if (BaseSystemInfo.RecordLogOnLog)
+            if (BaseSystemInfo.RecordLogonLog)
             {
                 //抛出一个线程
                 new Thread(AddLogTask).Start(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(systemCode, userId, userName, nickName, ipAddress, ipAddressName, macAddress, new Tuple<string>(loginStatus)));

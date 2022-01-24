@@ -32,10 +32,10 @@ namespace DotNet.Business
         /// 离职处理
         /// </summary>
         /// <param name="userEntity"></param>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <param name="comment"></param>
         /// <returns>影响行数</returns>
-        public int Leave(BaseUserEntity userEntity, BaseUserLogOnEntity userLogOnEntity, string comment)
+        public int Leave(BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity, string comment)
         {
             var result = 0;
 
@@ -46,10 +46,10 @@ namespace DotNet.Business
             }
 
             // 更新登录信息
-            if (userLogOnEntity != null)
+            if (userLogonEntity != null)
             {
-                var userLogOnManager = new BaseUserLogOnManager(UserInfo);
-                userLogOnManager.UpdateEntity(userLogOnEntity);
+                var userLogonManager = new BaseUserLogonManager(UserInfo);
+                userLogonManager.UpdateEntity(userLogonEntity);
             }
 
             // 填写评论

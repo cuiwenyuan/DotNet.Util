@@ -82,69 +82,69 @@ namespace DotNet.Business
                 // 01：可以从k8里读取公司、用户、密码的。
                 IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Empty;
-                BaseUserLogOnManager userLogOnManager = new Business.BaseUserLogOnManager(this.UserInfo);
+                BaseUserLogonManager userLogonManager = new Business.BaseUserLogonManager(this.UserInfo);
                 if (string.IsNullOrEmpty(conditional))
                 {
                     // 不不存在的用户删除掉tab_user是远程试图
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 10000 AND bl_type != 1)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 20000 AND id >= 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id <20000 AND bl_type != 1 AND id >= 10000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 30000 AND id >= 20000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 30000 AND bl_type != 1 AND id >= 20000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 40000 AND id >= 30000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 40000 AND bl_type != 1 AND id >= 30000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 50000 AND id >= 40000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 50000 AND bl_type != 1 AND id >= 40000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 60000 AND id >= 50000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 60000 AND bl_type != 1 AND id >= 50000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 70000 AND id >= 60000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 70000 AND bl_type != 1 AND id >= 60000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 80000 AND id >= 70000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 80000 AND bl_type != 1 AND id >= 70000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 90000 AND id >= 80000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 90000 AND bl_type != 1 AND id >= 80000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 100000 AND id >= 90000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 100000 AND bl_type != 1 AND id >= 90000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 110000 AND id >= 100000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 110000 AND bl_type != 1 AND id >= 100000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 120000 AND id >= 110000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 120000 AND bl_type != 1 AND id >= 110000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 130000 AND id >= 120000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 130000 AND bl_type != 1 AND id >= 120000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 1000000 AND id >= 130000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 1000000 AND bl_type != 1 AND id >= 130000)";
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
                 }
 
                 string commandText = "SELECT Id FROM baseuser WHERE id < 1000000";
-                using (IDataReader dataReader = userLogOnManager.DbHelper.ExecuteReader(commandText))
+                using (IDataReader dataReader = userLogonManager.DbHelper.ExecuteReader(commandText))
                 {
                     while (dataReader.Read())
                     {
@@ -154,7 +154,7 @@ namespace DotNet.Business
                         if (rcount == null || rcount.ToString().Equals("0"))
                         {
                             commandText = "DELETE FROM baseuser WHERE id ='" + id + "'");
-                            userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                            userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                         }
                     }
                 }
@@ -170,7 +170,7 @@ namespace DotNet.Business
                     // commandText += " AND TO_CHAR(SYSDATE,'yy-mm-dd') = TO_CHAR(MODIFIER_DATE,'yy-mm-dd') ";
                 }
                 System.Console.WriteLine(commandText);
-                BaseOrganizeManager organizeManager = new BaseOrganizeManager(this.UserInfo);
+                BaseOrganizationManager organizeManager = new BaseOrganizationManager(this.UserInfo);
                 BaseUserContactManager userContactManager = new BaseUserContactManager(this.UserInfo);
 
                 int deleteFlag = 0;
@@ -178,7 +178,7 @@ namespace DotNet.Business
                 {
                     while (dataReader.Read())
                     {
-                        result += ImportUser(dataReader, organizeManager, userLogOnManager, userContactManager);
+                        result += ImportUser(dataReader, organizeManager, userLogonManager, userContactManager);
                         deleteFlag++;
                     }
                     dataReader.Close();
@@ -187,12 +187,12 @@ namespace DotNet.Business
                 {
                     //删除BASEUSER
                     commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE Id < 1000000 " + conditional;
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
                     
                     //删除BASEUSERCONTACT
                     commandText = "DELETE FROM BASEUSERCONTACT WHERE Id < 1000000 " + conditional;
-                    userLogOnManager.DbHelper.ExecuteNonQuery(commandText);
+                    userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     
                     System.Console.WriteLine(commandText);
                 }
@@ -231,12 +231,12 @@ namespace DotNet.Business
         {
             //获取是否检查MAC地址
             int checkIPAddress = 1;
-            BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(this.UserInfo);
-            BaseUserLogOnEntity userLogOnEntity = new BaseUserLogOnEntity();
-            userLogOnEntity = userLogOnManager.GetEntity(entity.Id);
-            if (userLogOnEntity != null)
+            BaseUserLogonManager userLogonManager = new BaseUserLogonManager(this.UserInfo);
+            BaseUserLogonEntity userLogonEntity = new BaseUserLogonEntity();
+            userLogonEntity = userLogonManager.GetEntity(entity.Id);
+            if (userLogonEntity != null)
             {
-                int.TryParse(userLogOnEntity.CheckIPAddress.ToString(), out checkIPAddress);
+                int.TryParse(userLogonEntity.CheckIPAddress.ToString(), out checkIPAddress);
             }
 
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);

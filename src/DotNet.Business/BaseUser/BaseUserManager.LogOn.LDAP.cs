@@ -37,12 +37,12 @@ namespace DotNet.Business
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(openId))
             {
-                var userLogOnManager = new BaseUserLogOnManager();
+                var userLogonManager = new BaseUserLogonManager();
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId)
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
                 };
-                var id = userLogOnManager.GetId(parameters);
+                var id = userLogonManager.GetId(parameters);
                 if (!string.IsNullOrEmpty(id))
                 {
                     parameters = new List<KeyValuePair<string, object>>

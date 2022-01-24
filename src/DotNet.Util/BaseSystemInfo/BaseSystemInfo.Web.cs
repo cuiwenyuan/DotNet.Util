@@ -62,10 +62,10 @@ namespace DotNet.Util
         /// <summary>
         /// 排除用户角色前缀（用于用户自行管理用户和角色）
         /// </summary>
-        public static string ExcludedUserRolePrefix = "Common";
+        public static string ExcludedUserRolePrefix = "Base";
         /// <summary>
         /// 根菜单编码
         /// </summary>
-        public static string RootMenuCode = "DotNet.Common";
+        public static string RootMenuCode = "DotNet.Base";
     }
 }

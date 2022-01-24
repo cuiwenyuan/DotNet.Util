@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseUserLogOnEntity
+    /// BaseUserLogonEntity
     /// 系统用户登录信息表
     ///
     /// 修改记录
@@ -25,12 +25,12 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-    public partial class BaseUserLogOnEntity : BaseEntity
+    public partial class BaseUserLogonEntity : BaseEntity
     {
         /// <summary>
         /// 用户登录实体
         /// </summary>
-        public BaseUserLogOnEntity()
+        public BaseUserLogonEntity()
         {
             CreateOn = DateTime.Now;
             ModifiedOn = DateTime.Now;
@@ -147,7 +147,7 @@ namespace DotNet.Model
         /// 登录次数
         /// </summary>
         [FieldDescription("登录次数", false)]
-        public int? LogOnCount { get; set; } = 0;
+        public int? LogonCount { get; set; } = 0;
 
         /// <summary>
         /// 展示次数
@@ -165,7 +165,7 @@ namespace DotNet.Model
         /// 在线状态
         /// </summary>
         [FieldDescription("在线状态", false)]
-        public int? UserOnLine { get; set; } = 0;
+        public int? UserOnline { get; set; } = 0;
 
         /// <summary>
         /// IP地址
@@ -277,9 +277,9 @@ namespace DotNet.Model
             OpenIdTimeout = BaseUtil.ConvertToNullableDateTime(dr[FieldOpenIdTimeout]);
             Salt = BaseUtil.ConvertToString(dr[FieldSalt]);
             /*
-			CommunicationPassword = BaseUtil.ConvertToString(dr[BaseUserLogOnEntity.FieldCommunicationPassword]);
-			SignedPassword = BaseUtil.ConvertToString(dr[BaseUserLogOnEntity.FieldSignedPassword]);
-			PublicKey = BaseUtil.ConvertToString(dr[BaseUserLogOnEntity.FieldPublicKey]);
+			CommunicationPassword = BaseUtil.ConvertToString(dr[BaseUserLogonEntity.FieldCommunicationPassword]);
+			SignedPassword = BaseUtil.ConvertToString(dr[BaseUserLogonEntity.FieldSignedPassword]);
+			PublicKey = BaseUtil.ConvertToString(dr[BaseUserLogonEntity.FieldPublicKey]);
 			*/
             AllowStartTime = BaseUtil.ConvertToNullableDateTime(dr[FieldAllowStartTime]);
             AllowEndTime = BaseUtil.ConvertToNullableDateTime(dr[FieldAllowEndTime]);
@@ -291,10 +291,10 @@ namespace DotNet.Model
             LastVisit = BaseUtil.ConvertToNullableDateTime(dr[FieldLastVisit]);
             MultiUserLogin = BaseUtil.ConvertToInt(dr[FieldMultiUserLogin]);
             CheckIpAddress = BaseUtil.ConvertToInt(dr[FieldCheckIpAddress]);
-            LogOnCount = BaseUtil.ConvertToInt(dr[FieldLogOnCount]);
+            LogonCount = BaseUtil.ConvertToInt(dr[FieldLogonCount]);
             ShowCount = BaseUtil.ConvertToInt(dr[FieldShowCount]);
             PasswordErrorCount = BaseUtil.ConvertToInt(dr[FieldPasswordErrorCount]);
-            UserOnLine = BaseUtil.ConvertToInt(dr[FieldUserOnLine]);
+            UserOnline = BaseUtil.ConvertToInt(dr[FieldUserOnline]);
             IpAddress = BaseUtil.ConvertToString(dr[FieldIpAddress]);
             IpAddressName = BaseUtil.ConvertToString(dr[FieldIpAddressName]);
             MacAddress = BaseUtil.ConvertToString(dr[FieldMacAddress]);
@@ -319,7 +319,7 @@ namespace DotNet.Model
         ///</summary>
         [NonSerialized]
         [FieldDescription("用户登录信息表")]
-        public const string TableName = "BaseUserLogOn";
+        public const string TableName = "BaseUserLogon";
 
         ///<summary>
         /// 主键
@@ -415,7 +415,7 @@ namespace DotNet.Model
         /// 登录次数
         ///</summary>
         [NonSerialized]
-        public const string FieldLogOnCount = "LogOnCount";
+        public const string FieldLogonCount = "LogonCount";
 
         ///<summary>
         /// 展示次数
@@ -433,7 +433,7 @@ namespace DotNet.Model
         /// 在线状态
         ///</summary>
         [NonSerialized]
-        public const string FieldUserOnLine = "UserOnLine";
+        public const string FieldUserOnline = "UserOnline";
 
         ///<summary>
         /// 当点登录标示

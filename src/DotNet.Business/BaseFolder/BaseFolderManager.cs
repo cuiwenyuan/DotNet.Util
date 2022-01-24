@@ -272,7 +272,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int MoveTo(string id, string parentId)
         {
-            return SetProperty(id, new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, parentId));
+            return SetProperty(id, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId));
         }
         #endregion
 

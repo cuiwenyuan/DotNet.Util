@@ -119,8 +119,8 @@ namespace DotNet.Business
                 var ipAddress = Utils.GetIp();
                 // 6: 判断对方的ip是否合法的？1个服务程序，可以有多个ip。可以把服务当一个用户看待，一个目标用户可能也配置了多个服务，一般是远程连接。
                 //int? checkIpAddress = 0;
-                var userLogOnEntity = BaseUserLogOnManager.GetEntityByCache(userId);
-                if (!BaseUserManager.CheckIpAddressByCache(userId, userLogOnEntity, ipAddress, true))
+                var userLogonEntity = BaseUserLogonManager.GetEntityByCache(userId);
+                if (!BaseUserManager.CheckIpAddressByCache(userId, userLogonEntity, ipAddress, true))
                 {
                     result.Status = false;
                     result.StatusCode = Status.ErrorIpAddress.ToString();
@@ -129,12 +129,12 @@ namespace DotNet.Business
                 }
 
                 // 7: 判断是否有效？判断时间是否对？
-                var userLogOnResult = BaseUserManager.CheckUser(userEntity, userLogOnEntity);
-                if (userLogOnResult.StatusCode != Status.Ok.ToString())
+                var userLogonResult = BaseUserManager.CheckUser(userEntity, userLogonEntity);
+                if (userLogonResult.StatusCode != Status.Ok.ToString())
                 {
-                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, string.Empty, string.Empty, userLogOnResult.StatusMessage);
-                    result.StatusCode = userLogOnResult.StatusCode;
-                    result.StatusMessage = userLogOnResult.StatusMessage;
+                    BaseLoginLogManager.AddLog(systemCode, userEntity, ipAddress, string.Empty, string.Empty, userLogonResult.StatusMessage);
+                    result.StatusCode = userLogonResult.StatusCode;
+                    result.StatusMessage = userLogonResult.StatusMessage;
                     return result;
                 }
 

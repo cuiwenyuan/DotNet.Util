@@ -36,7 +36,7 @@ namespace DotNet.Business
         {
             var result = 0;
             // 检查是否已被其他人修改            
-            //if (DbUtil.IsModifed(DbHelper, BaseOrganizeEntity.TableName, entity.Id, entity.ModifiedUserId, entity.ModifiedOn))
+            //if (DbUtil.IsModifed(DbHelper, BaseOrganizationEntity.TableName, entity.Id, entity.ModifiedUserId, entity.ModifiedOn))
             //{
             //    // 数据已经被修改
             //    statusCode = StatusCode.ErrorChanged.ToString();

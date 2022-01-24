@@ -14,7 +14,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// OrganizeService
+    /// OrganizationService
     /// 组织机构服务
     /// 
     /// 修改记录
@@ -35,7 +35,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public partial class OrganizeService : IOrganizeService
+    public partial class OrganizationService : IOrganizationService
     {
         #region public bool Exists(BaseUserInfo userInfo, List<KeyValuePair<string, object>> parameters, string id)
         /// <summary>
@@ -52,14 +52,14 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseManager(dbHelper, userInfo, BaseOrganizeEntity.TableName);
+                var manager = new BaseManager(dbHelper, userInfo, BaseOrganizationEntity.TableName);
                 result = manager.Exists(parameters, id);
             });
             return result;
         }
         #endregion
 
-        #region public string Add(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage)
+        #region public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
         /// <summary>
         /// 添加实体
         /// </summary>
@@ -68,7 +68,7 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
         {
             var result = string.Empty;
             var returnCode = string.Empty;
@@ -77,7 +77,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.Add(entity);
                 //增加返回状态和信息Troy.Cui 2018-10-03
                 returnCode = manager.StatusCode;
@@ -123,7 +123,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.AddByDetail(parentId, code, fullName, categoryId, outerPhone, innerPhone, fax, enabled);
                 returnMessage = manager.GetStateMessage(returnCode);
             });
@@ -133,63 +133,63 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id)
+        #region public BaseOrganizationEntity GetEntity(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id)
+        public BaseOrganizationEntity GetEntity(BaseUserInfo userInfo, string id)
         {
-            BaseOrganizeEntity entity = null;
+            BaseOrganizationEntity entity = null;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 entity = manager.GetEntity(id);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code)
+        #region public BaseOrganizationEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         /// <summary>
         /// 按编号获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code)
+        public BaseOrganizationEntity GetEntityByCode(BaseUserInfo userInfo, string code)
         {
-            BaseOrganizeEntity entity = null;
+            BaseOrganizationEntity entity = null;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 entity = manager.GetEntityByCode(code);
             });
             return entity;
         }
         #endregion
 
-        #region public BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
+        #region public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="fullName">名称</param>
         /// <returns>实体</returns>
-        public BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
+        public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
         {
-            BaseOrganizeEntity entity = null;
+            BaseOrganizationEntity entity = null;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 entity = manager.GetEntityByName(fullName);
             });
             return entity;
@@ -204,40 +204,40 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(BaseUserInfo userInfo)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
                 var commandText = string.Empty;
-                if (BaseSystemInfo.OrganizeDynamicLoading)
+                if (BaseSystemInfo.OrganizationDynamicLoading)
                 {
                     commandText = "    SELECT * "
-                                + " FROM " + BaseOrganizeEntity.TableName
-                                + "     WHERE " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                + "           AND " + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1 "
-                                + "           AND " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                + "           AND (" + BaseOrganizeEntity.FieldParentId + " IS NULL "
-                                + "                OR " + BaseOrganizeEntity.FieldParentId + " IN (SELECT " + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.FieldDeleted + " = 0 AND " + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1 AND " + BaseOrganizeEntity.FieldEnabled + " = 1 AND " + BaseOrganizeEntity.FieldParentId + " IS NULL)) "
-                                + "  ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                                + " FROM " + BaseOrganizationEntity.TableName
+                                + "     WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                + "           AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 "
+                                + "           AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                + "           AND (" + BaseOrganizationEntity.FieldParentId + " IS NULL "
+                                + "                OR " + BaseOrganizationEntity.FieldParentId + " IN (SELECT " + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 AND " + BaseOrganizationEntity.FieldEnabled + " = 1 AND " + BaseOrganizationEntity.FieldParentId + " IS NULL)) "
+                                + "  ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                 }
                 else
                 {
                     commandText = "    SELECT * "
-                                + " FROM " + BaseOrganizeEntity.TableName
-                                + "     WHERE " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                + "           AND " + BaseOrganizeEntity.FieldIsInnerOrganize + " = 1 "
-                                + "           AND " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                + "  ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                                + " FROM " + BaseOrganizationEntity.TableName
+                                + "     WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                + "           AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 "
+                                + "           AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                + "  ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                 }
 
 
-                // var manager = new BaseOrganizeManager(dbHelper, result);
-                // result = manager.GetDataTable(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0), BaseOrganizeEntity.FieldSortCode);
+                // var manager = new BaseOrganizationManager(dbHelper, result);
+                // result = manager.GetDataTable(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0), BaseOrganizationEntity.FieldSortCode);
                 dt = dbHelper.Fill(commandText);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -252,14 +252,14 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByIds(BaseUserInfo userInfo, string[] ids)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetDataTable(BaseOrganizeEntity.FieldId, ids, BaseOrganizeEntity.FieldSortCode);
-                dt.TableName = BaseOrganizeEntity.TableName;
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                dt = manager.GetDataTable(BaseOrganizationEntity.FieldId, ids, BaseOrganizationEntity.FieldSortCode);
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -274,16 +274,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(BaseUserInfo userInfo, List<KeyValuePair<string, object>> parameters)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                dt = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -297,16 +297,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetErrorDataTable(BaseUserInfo userInfo, string parentId)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 dt = manager.GetErrorDataTable(parentId);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -320,24 +320,24 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByParent(BaseUserInfo userInfo, string parentId)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 这里是条件字段
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, parentId),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
                 // 获取列表，指定排序字段
-                dt = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -351,24 +351,24 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByProvinceId(BaseUserInfo userInfo, string provinceId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 这里是条件字段
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldProvinceId, provinceId),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldProvinceId, provinceId),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
                 // 获取列表，指定排序字段
-                result = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                result.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                result.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;
@@ -382,24 +382,24 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByCityId(BaseUserInfo userInfo, string cityId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 这里是条件字段
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCityId, cityId),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCityId, cityId),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
                 // 获取列表，指定排序字段
-                result = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                result.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                result.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;
@@ -413,24 +413,24 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByDistrictId(BaseUserInfo userInfo, string districtId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 这里是条件字段
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDistrictId, districtId),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDistrictId, districtId),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
                 // 获取列表，指定排序字段
-                result = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                result.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                result.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;
@@ -444,48 +444,48 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByStreetId(BaseUserInfo userInfo, string streetId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 这里可以缓存起来，提高效率
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // 这里是条件字段
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldStreetId, streetId),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldStreetId, streetId),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
                 // 获取列表，指定排序字段
-                result = manager.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
-                result.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = manager.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
+                result.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;
         }
 
-        #region public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId)
+        #region public DataTable GetInnerOrganizationDT(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取内部组织机构
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="organizationId">组织机构</param>
         /// <returns>数据表</returns>
-        public DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId)
+        public DataTable GetInnerOrganizationDT(BaseUserInfo userInfo, string organizationId)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetInnerOrganize(organizationId);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                dt = manager.GetInnerOrganization(organizationId);
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -500,16 +500,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetCompanyDT(BaseUserInfo userInfo, string organizationId)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 dt = manager.GetCompanyDt(organizationId);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
@@ -524,37 +524,37 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDepartmentDT(BaseUserInfo userInfo, string organizationId)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
-                dt = manager.GetOrganizeDataTable(organizationId);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
+                dt = manager.GetOrganizationDataTable(organizationId);
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
         #endregion
 
-        #region public List<BaseOrganizeEntity> GetListByIds(BaseUserInfo userInfo, string[] ids) 获取用户列表
+        #region public List<BaseOrganizationEntity> GetListByIds(BaseUserInfo userInfo, string[] ids) 获取用户列表
         /// <summary>
         /// 按主键获取列表
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="ids">主键数组</param>
         /// <returns>数据表</returns>
-        public List<BaseOrganizeEntity> GetListByIds(BaseUserInfo userInfo, string[] ids)
+        public List<BaseOrganizationEntity> GetListByIds(BaseUserInfo userInfo, string[] ids)
         {
-            var result = new List<BaseOrganizeEntity>();
+            var result = new List<BaseOrganizationEntity>();
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var userManager = new BaseOrganizeManager(dbHelper, userInfo);
-                result = userManager.GetList<BaseOrganizeEntity>(BaseOrganizeEntity.FieldId, ids, BaseOrganizeEntity.FieldSortCode);
+                var userManager = new BaseOrganizationManager(dbHelper, userInfo);
+                result = userManager.GetList<BaseOrganizationEntity>(BaseOrganizationEntity.FieldId, ids, BaseOrganizationEntity.FieldSortCode);
             });
 
             return result;
@@ -571,22 +571,22 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(BaseUserInfo userInfo, string organizationId, string searchKey)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // 获得组织机构列表
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 dt = manager.Search(searchKey, organizationId);
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
         #endregion
 
-        #region public int Update(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage)
+        #region public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
         /// <summary>
         /// 更新组织机构
         /// </summary>
@@ -595,7 +595,7 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
         {
             var result = 0;
 
@@ -606,7 +606,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 2015-12-19 吉日嘎拉 网络不稳定，数据获取不完整时，异常时，会引起重大隐患
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // result = manager.Update(entity);
                 if (manager.StatusCode.Equals(Status.OkUpdate.ToString()))
                 {
@@ -638,7 +638,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 // result = manager.Synchronous(all);
             });
 
@@ -660,7 +660,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.Delete(id);
                 // 把公司文件夹也删除了
                 var folderManager = new BaseFolderManager(dbHelper, userInfo);
@@ -684,7 +684,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.Delete(ids);
                 // 把公司文件夹也删除了
                 var folderManager = new BaseFolderManager(dbHelper, userInfo);
@@ -708,7 +708,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 for (var i = 0; i < ids.Length; i++)
                 {
                     // 设置部门为删除状态
@@ -767,7 +767,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.BatchSave(dt);
             });
             return result;
@@ -789,7 +789,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.MoveTo(id, parentId);
             });
             return result;
@@ -811,7 +811,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 for (var i = 0; i < organizationIds.Length; i++)
                 {
                     result += manager.MoveTo(organizationIds[i], parentId);
@@ -836,7 +836,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.BatchSetCode(ids, codes);
             });
             return result;
@@ -857,7 +857,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 result = manager.BatchSetSortCode(ids);
             });
             return result;
@@ -879,16 +879,16 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(BaseUserInfo userInfo, out int recordCount, int pageIndex, int pageSize, string condition, List<KeyValuePair<string, object>> dbParameters, string order = null)
         {
             var myRecordCount = 0;
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 if (SecretUtil.IsSqlSafe(condition))
                 {
-                    var organizeManager = new BaseOrganizeManager(dbHelper, userInfo);
+                    var organizeManager = new BaseOrganizationManager(dbHelper, userInfo);
                     dt = organizeManager.GetDataTableByPage(out myRecordCount, pageIndex, pageSize, condition, dbHelper.MakeParameters(dbParameters), order);
-                    dt.TableName = BaseOrganizeEntity.TableName;
+                    dt.TableName = BaseOrganizationEntity.TableName;
                 }
                 else
                 {
@@ -909,7 +909,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public void CachePreheating(BaseUserInfo userInfo)
         {
-            BaseOrganizeManager.CachePreheating();
+            BaseOrganizationManager.CachePreheating();
         }
     }
 }

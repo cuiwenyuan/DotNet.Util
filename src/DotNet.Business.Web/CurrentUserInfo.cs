@@ -46,15 +46,15 @@ namespace DotNet.Business
         ///// <summary>
         ///// 当前的组织结构公司名称
         ///// </summary>
-        //public BaseOrganizeEntity Company
+        //public BaseOrganizationEntity Company
         //{
         //    get
         //    {
-        //        BaseOrganizeEntity company = null;
+        //        BaseOrganizationEntity company = null;
         //        // 读取组织机构的信息
         //        if (!string.IsNullOrEmpty(CompanyId))
         //        {
-        //            company = new BaseOrganizeManager().GetEntity(CompanyId);
+        //            company = new BaseOrganizationManager().GetEntity(CompanyId);
         //        }
         //        return company;
         //    }

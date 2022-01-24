@@ -13,7 +13,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// ILogOnService
+    /// ILogonService
     /// 
     /// 修改记录
     /// 
@@ -23,7 +23,7 @@ namespace DotNet.IService
     ///		<date>2016.07.04</date>
     /// </author> 
     /// </summary>
-    public partial interface ILogOnService
+    public partial interface ILogonService
     {
         /// <summary>
         /// 按用户名登录(LDAP专用)
@@ -33,7 +33,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="userName">用户名</param>
         /// <returns>用户实体</returns>
-        UserLogOnResult LogOnByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName);
+        UserLogonResult LogonByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName);
 
     }
 }

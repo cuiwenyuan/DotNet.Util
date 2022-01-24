@@ -95,7 +95,7 @@ namespace DotNet.Business
                     CacheUtil.Set<string>(key, entity.Id);
                 }
 
-                var companyCode = BaseOrganizeManager.GetCodeByCache(entity.CompanyId);
+                var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId);
                 if (!string.IsNullOrEmpty(companyCode))
                 {
                     key = "User:ByCompanyCode:ByCode" + companyCode + ":" + entity.Code;
@@ -186,7 +186,7 @@ namespace DotNet.Business
         /// <param name="companyCode">公司编号</param>
         /// <param name="userCode">用户编号</param>
         /// <returns></returns>
-        public static bool IsInOrganizeByCode(string companyCode, string userCode)
+        public static bool IsInOrganizationByCode(string companyCode, string userCode)
         {
             // 返回值
             var result = false;
@@ -221,7 +221,7 @@ namespace DotNet.Business
                 result = CacheUtil.Cache(key, () =>
                 {
                     // 到数据库里查一次
-                    userId = new BaseUserLogOnManager().GetIdByOpenId(openId);
+                    userId = new BaseUserLogonManager().GetIdByOpenId(openId);
                     if (!string.IsNullOrWhiteSpace(userId))
                     {
                         return new BaseUserManager().GetEntity(userId);

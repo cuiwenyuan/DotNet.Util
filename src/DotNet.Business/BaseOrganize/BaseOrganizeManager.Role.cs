@@ -10,7 +10,7 @@ namespace DotNet.Business
     using Model;
 
     /// <summary>
-    /// BaseOrganizeManager（程序OK）
+    /// BaseOrganizationManager（程序OK）
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///		<date>2015.12.08</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         #region public string[] GetIdsInRole(string systemCode, string roleId) 按角色主键获得组织机构主键数组
         /// <summary>
@@ -36,17 +36,17 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var tableName = systemCode + "RoleOrganize";
+            var tableName = systemCode + "RoleOrganization";
 
             // 需要显示未被删除的用户
-            var sql = "SELECT OrganizeId FROM " + tableName 
-                            + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizeEntity.FieldRoleId) 
-                                  + " AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                  + " AND OrganizeId IN (SELECT Id FROM BaseOrganize WHERE " + BaseOrganizeEntity.FieldDeleted + " = 0)";
+            var sql = "SELECT OrganizationId FROM " + tableName 
+                            + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId) 
+                                  + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                  + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)";
 
             var dbParameters = new List<IDbDataParameter>
             {
-                DbHelper.MakeParameter(BaseRoleOrganizeEntity.FieldRoleId, roleId)
+                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldRoleId, roleId)
             };
 
             var organizationIds = new List<string>();
@@ -54,14 +54,14 @@ namespace DotNet.Business
             {
                 while (dataReader.Read())
                 {
-                    organizationIds.Add(dataReader[BaseRoleOrganizeEntity.FieldOrganizeId].ToString());
+                    organizationIds.Add(dataReader[BaseRoleOrganizationEntity.FieldOrganizationId].ToString());
                 }
             }
             result = organizationIds.ToArray();
 
             // 2015-12-08 吉日嘎拉 提高效率参数化执行
             // var dt = DbHelper.Fill(sql, dbParameters.ToArray());
-            // BaseUtil.FieldToArray(dt, BaseRoleOrganizeEntity.FieldOrganizeId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            // BaseUtil.FieldToArray(dt, BaseRoleOrganizationEntity.FieldOrganizationId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
             
             return result;
         }
@@ -69,18 +69,18 @@ namespace DotNet.Business
 
         string GetSqlQueryByRole(string systemCode, string[] roleIds)
         {
-            var tableNameRoleOrganize = systemCode + "RoleOrganize";
+            var tableNameRoleOrganization = systemCode + "RoleOrganization";
 
-            var sql = "SELECT * FROM " + BaseOrganizeEntity.TableName
-                            + " WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                            + " AND " + BaseOrganizeEntity.FieldDeleted + "= 0 "
-                            + " AND ( " + BaseOrganizeEntity.FieldId + " IN "
-                            + " (SELECT  " + BaseRoleOrganizeEntity.FieldOrganizeId
-                            + " FROM " + tableNameRoleOrganize
-                            + " WHERE " + BaseRoleOrganizeEntity.FieldRoleId + " IN (" + string.Join(",", roleIds) + ")"
-                            + " AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1"
-                            + " AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0)) "
-                            + " ORDER BY  " + BaseOrganizeEntity.FieldSortCode;
+            var sql = "SELECT * FROM " + BaseOrganizationEntity.TableName
+                            + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                            + " AND " + BaseOrganizationEntity.FieldDeleted + "= 0 "
+                            + " AND ( " + BaseOrganizationEntity.FieldId + " IN "
+                            + " (SELECT  " + BaseRoleOrganizationEntity.FieldOrganizationId
+                            + " FROM " + tableNameRoleOrganization
+                            + " WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " IN (" + string.Join(",", roleIds) + ")"
+                            + " AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) "
+                            + " ORDER BY  " + BaseOrganizationEntity.FieldSortCode;
 
             return sql;
         }
@@ -108,15 +108,15 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var entity = new BaseRoleOrganizeEntity
+            var entity = new BaseRoleOrganizationEntity
             {
-                OrganizeId = organizationId,
+                OrganizationId = organizationId,
                 RoleId = roleId,
                 Enabled = 1,
                 DeletionStateCode = 0
             };
-            var tableName = systemCode + "RoleOrganize";
-            var manager = new BaseRoleOrganizeManager(DbHelper, UserInfo, tableName);
+            var tableName = systemCode + "RoleOrganization";
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
             return manager.Add(entity);
         }
 
@@ -151,11 +151,11 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldRoleId, roleId),
-                new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldOrganizeId, organizationId)
+                new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId),
+                new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldOrganizationId, organizationId)
             };
-            var tableName = systemCode + "RoleOrganize";
-            var manager = new BaseRoleOrganizeManager(DbHelper, UserInfo, tableName);
+            var tableName = systemCode + "RoleOrganization";
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
             return manager.Delete(parameters);
         }
         /// <summary>
@@ -184,13 +184,13 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编码</param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public int ClearOrganize(string systemCode, string roleId)
+        public int ClearOrganization(string systemCode, string roleId)
         {
             var result = 0;
 
-            var tableName = systemCode + "RoleOrganize";
-            var manager = new BaseRoleOrganizeManager(DbHelper, UserInfo, tableName);
-            result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizeEntity.FieldRoleId, roleId) });
+            var tableName = systemCode + "RoleOrganization";
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
+            result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId) });
 
             return result;
         }

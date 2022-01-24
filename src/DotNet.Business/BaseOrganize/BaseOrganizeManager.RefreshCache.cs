@@ -5,7 +5,7 @@
 namespace DotNet.Business
 {
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构管理
     /// 
     /// 修改纪录
@@ -17,7 +17,7 @@ namespace DotNet.Business
     ///		<date>2016.02.29</date>
     /// </author> 
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {
         /// <summary>
         /// 刷新缓存
@@ -35,7 +35,7 @@ namespace DotNet.Business
                 var systemCodes = BaseSystemManager.GetSystemCodes();
                 for (var i = 0; i < systemCodes.Length; i++)
                 {
-                    BaseOrganizePermissionManager.ResetPermissionByCache(systemCodes[i], organizationId);
+                    BaseOrganizationPermissionManager.ResetPermissionByCache(systemCodes[i], organizationId);
                 }
             }
 

@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseOrganizeLogOnEntity
+    /// BaseOrganizationLogonEntity
     /// 登录信息表
     ///
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-    public partial class BaseOrganizeLogOnEntity : BaseEntity
+    public partial class BaseOrganizationLogonEntity : BaseEntity
     {
         /// <summary>
         /// 主键
@@ -59,7 +59,7 @@ namespace DotNet.Model
         /// 登录次数
         /// </summary>
         [FieldDescription("登录次数", false)]
-        public int? LogOnCount { get; set; } = 0;
+        public int? LogonCount { get; set; } = 0;
 
         /// <summary>
         /// 展示次数
@@ -71,7 +71,7 @@ namespace DotNet.Model
         /// 在线状态
         /// </summary>
         [FieldDescription("在线状态", false)]
-        public int? UserOnLine { get; set; } = 0;
+        public int? UserOnline { get; set; } = 0;
 
         /// <summary>
         /// IP地址
@@ -102,11 +102,11 @@ namespace DotNet.Model
             Oppose = BaseUtil.ConvertToInt(dr[FieldOppose]);
             FirstVisit = BaseUtil.ConvertToNullableDateTime(dr[FieldFirstVisit]);
             LastVisit = BaseUtil.ConvertToNullableDateTime(dr[FieldLastVisit]);
-            LogOnCount = BaseUtil.ConvertToInt(dr[FieldLogOnCount]);
+            LogonCount = BaseUtil.ConvertToInt(dr[FieldLogonCount]);
             ShowCount = BaseUtil.ConvertToInt(dr[FieldShowCount]);
-            UserOnLine = BaseUtil.ConvertToInt(dr[FieldUserOnLine]);
+            UserOnline = BaseUtil.ConvertToInt(dr[FieldUserOnline]);
             IpAddress = BaseUtil.ConvertToString(dr[FieldIpAddress]);
-            ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[BaseOrganizeEntity.FieldUpdateTime]);
+            ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[BaseOrganizationEntity.FieldUpdateTime]);
             // 获取扩展属性
             GetFromExtend(dr);
             return this;
@@ -117,7 +117,7 @@ namespace DotNet.Model
         ///</summary>
         [NonSerialized]
         [FieldDescription("网点登录信息表")]
-        public const string TableName = "BaseOrganizeLogOn";
+        public const string TableName = "BaseOrganizationLogon";
 
         ///<summary>
         /// 主键
@@ -153,7 +153,7 @@ namespace DotNet.Model
         /// 登录次数
         ///</summary>
         [NonSerialized]
-        public const string FieldLogOnCount = "LogOnCount";
+        public const string FieldLogonCount = "LogonCount";
 
         ///<summary>
         /// 展示次数
@@ -165,7 +165,7 @@ namespace DotNet.Model
         /// 在线状态
         ///</summary>
         [NonSerialized]
-        public const string FieldUserOnLine = "UserOnLine";
+        public const string FieldUserOnline = "UserOnline";
 
         ///<summary>
         /// 登录IP地址

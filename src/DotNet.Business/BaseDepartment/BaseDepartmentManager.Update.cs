@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2015.07.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseDepartmentManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseDepartmentManager : BaseManager //, IBaseOrganizationManager
     {
         /// <summary>
         /// 更新

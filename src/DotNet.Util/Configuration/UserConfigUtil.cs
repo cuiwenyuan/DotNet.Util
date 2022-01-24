@@ -34,13 +34,13 @@ namespace DotNet.Util
     public partial class UserConfigUtil
     {
         /// <summary>
-        /// LogOnTo
+        /// LogonTo
         /// </summary>
-        public static string LogOnTo = "Config";
+        public static string LogonTo = "Config";
         /// <summary>
         /// 配置文件名
         /// </summary>
-        public static string FileName => LogOnTo + ".xml";
+        public static string FileName => LogonTo + ".xml";
         /// <summary>
         /// 选择路径
         /// </summary>
@@ -62,12 +62,12 @@ namespace DotNet.Util
             }
         }
 
-        #region public static Dictionary<String, String> GetLogOnTo() 获取配置文件选项
+        #region public static Dictionary<String, String> GetLogonTo() 获取配置文件选项
         /// <summary>
         /// 获取配置文件选项
         /// </summary>
         /// <returns>配置文件设置</returns>
-        public static Dictionary<String, String> GetLogOnTo()
+        public static Dictionary<String, String> GetLogonTo()
         {
             var result = new Dictionary<String, String>();
             var xmlDocument = new XmlDocument();
@@ -75,7 +75,7 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(SelectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals("LogOnTo".ToUpper()))
+                if (xmlNode.Attributes["key"].Value.ToUpper().Equals("LogonTo".ToUpper()))
                 {
                     result.Add(xmlNode.Attributes["value"].Value, xmlNode.Attributes["dispaly"].Value);
                 }
@@ -477,9 +477,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.OnInternet = (string.Compare(GetValue(_xmlDocument, "OnInternet"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
-            if (Exists("AutoLogOn"))
+            if (Exists("AutoLogon"))
             {
-                BaseSystemInfo.AutoLogOn = (string.Compare(GetValue(_xmlDocument, "AutoLogOn"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.AutoLogon = (string.Compare(GetValue(_xmlDocument, "AutoLogon"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
             if (Exists("ClientEncryptPassword"))
             {
@@ -516,9 +516,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.EventLog = (string.Compare(GetValue(_xmlDocument, "EventLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
-            if (Exists("CheckOnLine"))
+            if (Exists("CheckOnline"))
             {
-                BaseSystemInfo.CheckOnLine = (string.Compare(GetValue(_xmlDocument, "CheckOnLine"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.CheckOnline = (string.Compare(GetValue(_xmlDocument, "CheckOnline"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
             if (Exists("UseMessage"))
             {
@@ -608,11 +608,11 @@ namespace DotNet.Util
                 BaseSystemInfo.SystemCode = GetValue(_xmlDocument, "SystemCode");
             }
 
-            if (Exists("OnLineTimeout"))
+            if (Exists("OnlineTimeout"))
             {
-                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "OnLineTimeout")))
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "OnlineTimeout")))
                 {
-                    BaseSystemInfo.OnLineTimeout = int.Parse(GetValue(_xmlDocument, "OnLineTimeout"));
+                    BaseSystemInfo.OnlineTimeout = int.Parse(GetValue(_xmlDocument, "OnlineTimeout"));
                 }
 
             }
@@ -621,9 +621,9 @@ namespace DotNet.Util
                 BaseSystemInfo.Version = GetValue(_xmlDocument, "Version");
             }
 
-            if (Exists("UseOrganizePermission"))
+            if (Exists("UseOrganizationPermission"))
             {
-                BaseSystemInfo.UseOrganizePermission = (string.Compare(GetValue(_xmlDocument, "UseOrganizePermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseOrganizationPermission = (string.Compare(GetValue(_xmlDocument, "UseOrganizationPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
             if (Exists("UseUserPermission"))
             {
@@ -659,17 +659,17 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.Service = GetValue(_xmlDocument, "Service");
             }
-            if (Exists("LogOnForm"))
+            if (Exists("LogonForm"))
             {
-                BaseSystemInfo.LogOnForm = GetValue(_xmlDocument, "LogOnForm");
+                BaseSystemInfo.LogonForm = GetValue(_xmlDocument, "LogonForm");
             }
             if (Exists("MainForm"))
             {
                 BaseSystemInfo.MainForm = GetValue(_xmlDocument, "MainForm");
             }
-            if (Exists("OnLineLimit"))
+            if (Exists("OnlineLimit"))
             {
-                int.TryParse(GetValue(_xmlDocument, "OnLineLimit"), out BaseSystemInfo.OnLineLimit);
+                int.TryParse(GetValue(_xmlDocument, "OnlineLimit"), out BaseSystemInfo.OnlineLimit);
             }
             if (Exists("SlowQueryMilliseconds"))
             {
@@ -767,9 +767,9 @@ namespace DotNet.Util
                 // BaseSystemInfo.WorkFlowDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
             }
 
-            if (Exists("OrganizeDynamicLoading"))
+            if (Exists("OrganizationDynamicLoading"))
             {
-                BaseSystemInfo.OrganizeDynamicLoading = (string.Compare(GetValue(_xmlDocument, "OrganizeDynamicLoading"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.OrganizationDynamicLoading = (string.Compare(GetValue(_xmlDocument, "OrganizationDynamicLoading"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
             if (Exists("MessageDbConnection"))
             {
@@ -1324,7 +1324,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "PasswordMiniLength", BaseSystemInfo.PasswordMiniLength.ToString());
             SetValue(xmlDocument, "NumericCharacters", BaseSystemInfo.NumericCharacters.ToString());
             SetValue(xmlDocument, "PasswordChangeCycle", BaseSystemInfo.PasswordChangeCycle.ToString());
-            SetValue(xmlDocument, "CheckOnLine", BaseSystemInfo.CheckOnLine.ToString());
+            SetValue(xmlDocument, "CheckOnline", BaseSystemInfo.CheckOnline.ToString());
             SetValue(xmlDocument, "AccountMinimumLength", BaseSystemInfo.AccountMinimumLength.ToString());
             SetValue(xmlDocument, "PasswordErrorLockLimit", BaseSystemInfo.PasswordErrorLockLimit.ToString());
             SetValue(xmlDocument, "PasswordErrorLockCycle", BaseSystemInfo.PasswordErrorLockCycle.ToString());
@@ -1333,7 +1333,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "UseMessage", BaseSystemInfo.UseMessage.ToString(), true);
             SetValue(xmlDocument, "Synchronous", BaseSystemInfo.Synchronous.ToString(), true);
             SetValue(xmlDocument, "CheckBalance", BaseSystemInfo.CheckBalance.ToString(), true);
-            SetValue(xmlDocument, "AutoLogOn", BaseSystemInfo.AutoLogOn.ToString());
+            SetValue(xmlDocument, "AutoLogon", BaseSystemInfo.AutoLogon.ToString());
             SetValue(xmlDocument, "ForceHttps", BaseSystemInfo.ForceHttps.ToString());
             SetValue(xmlDocument, "AllowUserRegister", BaseSystemInfo.AllowUserRegister.ToString());
             SetValue(xmlDocument, "RecordLog", BaseSystemInfo.RecordLog.ToString());
@@ -1360,17 +1360,17 @@ namespace DotNet.Util
             SetValue(xmlDocument, "UseUserPermission", BaseSystemInfo.UseUserPermission.ToString());
             SetValue(xmlDocument, "UseAuthorizationScope", BaseSystemInfo.UseAuthorizationScope.ToString());
             SetValue(xmlDocument, "UsePermissionScope", BaseSystemInfo.UsePermissionScope.ToString());
-            SetValue(xmlDocument, "UseOrganizePermission", BaseSystemInfo.UseOrganizePermission.ToString());
+            SetValue(xmlDocument, "UseOrganizationPermission", BaseSystemInfo.UseOrganizationPermission.ToString());
             SetValue(xmlDocument, "UseTableColumnPermission", BaseSystemInfo.UseTableColumnPermission.ToString());
             SetValue(xmlDocument, "UseTableScopePermission", BaseSystemInfo.UseTableScopePermission.ToString());
             // SetValue(xmlDocument, "LoadAllUser", BaseSystemInfo.LoadAllUser.ToString());
 
             SetValue(xmlDocument, "Service", BaseSystemInfo.Service);
 
-            SetValue(xmlDocument, "LogOnForm", BaseSystemInfo.LogOnForm);
+            SetValue(xmlDocument, "LogonForm", BaseSystemInfo.LogonForm);
             SetValue(xmlDocument, "MainForm", BaseSystemInfo.MainForm);
 
-            SetValue(xmlDocument, "OnLineLimit", BaseSystemInfo.OnLineLimit.ToString());
+            SetValue(xmlDocument, "OnlineLimit", BaseSystemInfo.OnlineLimit.ToString());
             SetValue(xmlDocument, "DbType", BaseSystemInfo.BusinessDbType.ToString());
 
             // 保存数据库配置

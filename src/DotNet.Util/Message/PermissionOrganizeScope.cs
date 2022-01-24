@@ -5,7 +5,7 @@
 namespace DotNet.Util
 {
     /// <summary>
-    /// PermissionOrganizeScope
+    /// PermissionOrganizationScope
     /// 常用权限范围。
     /// 
     /// 修改记录
@@ -19,7 +19,7 @@ namespace DotNet.Util
     ///		<date>2013.12.24</date>
     /// </author> 
     /// </summary>
-    public enum PermissionOrganizeScope
+    public enum PermissionOrganizationScope
     {
         /// <summary>
         /// 自己的数据，仅本人

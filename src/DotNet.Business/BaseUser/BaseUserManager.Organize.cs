@@ -32,9 +32,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizeName">部门名称</param>
         /// <returns>存在</returns>
-        public bool IsInOrganize(string organizeName)
+        public bool IsInOrganization(string organizeName)
         {
-            return IsInOrganize(UserInfo.Id, organizeName);
+            return IsInOrganization(UserInfo.Id, organizeName);
         }
 
         /// <summary>
@@ -43,24 +43,24 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="organizeName">部门名称</param>
         /// <returns>存在</returns>
-        public bool IsInOrganize(string userId, string organizeName)
+        public bool IsInOrganization(string userId, string organizeName)
         {
             var result = false;
             // 把部门的主键找出来
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, organizeName),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, organizeName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
-            var organizeManager = new BaseOrganizeManager(UserInfo);
+            var organizeManager = new BaseOrganizationManager(UserInfo);
             var organizationId = organizeManager.GetId(parameters);
             if (string.IsNullOrEmpty(organizationId))
             {
                 return result;
             }
             // 用户组织机构关联关系
-            var organizationIds = GetAllOrganizeIds(userId);
+            var organizationIds = GetAllOrganizationIds(userId);
             if (organizationIds == null || organizationIds.Length == 0)
             {
                 return result;
@@ -70,14 +70,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public string[] GetOrganizeIds(string userId) 获取用户的所有所在部门主键数组
+        #region public string[] GetOrganizationIds(string userId) 获取用户的所有所在部门主键数组
         /// <summary>
         /// 获取用户的所有所在部门主键数组
         /// 2015-12-02 吉日嘎拉，优化方法。
         /// </summary>
         /// <param name="userId">用户主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetAllOrganizeIds(string userId)
+        public string[] GetAllOrganizationIds(string userId)
         {
             string[] result = null;
 
@@ -87,44 +87,44 @@ namespace DotNet.Business
             string sql = string.Format(
                              @"SELECT CompanyId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND Enabled =1 AND CompanyId IS NOT NULL  AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND Enabled =1 AND CompanyId IS NOT NULL  AND (Id = {0})
                                  UNION
                                 SELECT SubCompanyId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1 AND CompanyId IS NOT NULL  AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1 AND CompanyId IS NOT NULL  AND (Id = {0})
                                  UNION
                                 SELECT DepartmentId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND DepartmentId IS NOT NULL AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND DepartmentId IS NOT NULL AND (Id = {0})
                                  UNION
                                 SELECT SubDepartmentId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND SubDepartmentId IS NOT NULL AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND SubDepartmentId IS NOT NULL AND (Id = {0})
                                  UNION
                                 SELECT WorkgroupId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND WorkgroupId IS NOT NULL AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND WorkgroupId IS NOT NULL AND (Id = {0})
                                  UNION
 
                                 SELECT CompanyId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND CompanyId IS NOT NULL AND (UserId = {0})
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND CompanyId IS NOT NULL AND (UserId = {0})
                                  UNION
                                 SELECT SubCompanyId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND CompanyId IS NOT NULL AND (UserId = {0})
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND CompanyId IS NOT NULL AND (UserId = {0})
                                  UNION
                                 SELECT DepartmentId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND DepartmentId IS NOT NULL AND (UserId = {0})
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND DepartmentId IS NOT NULL AND (UserId = {0})
                                  UNION
                                 SELECT SubDepartmentId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND SubDepartmentId IS NOT NULL AND (UserId = {0})
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND SubDepartmentId IS NOT NULL AND (UserId = {0})
                                  UNION
                                 SELECT WorkgroupId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " =1  AND WorkgroupId IS NOT NULL AND (UserId = {0}) ", userId);
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " =1  AND WorkgroupId IS NOT NULL AND (UserId = {0}) ", userId);
             */
 
             var commandText = @"SELECT CompanyId AS Id
@@ -132,8 +132,8 @@ namespace DotNet.Business
                                  WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND CompanyId IS NOT NULL AND Id = " + DbHelper.GetParameter(BaseUserEntity.FieldId) + @"
                                  UNION
                                 SELECT CompanyId AS Id
-  FROM BaseUserOrganize
-                                 WHERE " + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizeEntity.FieldEnabled + " = 1  AND CompanyId IS NOT NULL AND UserId = " + DbHelper.GetParameter(BaseUserOrganizeEntity.FieldUserId);
+  FROM BaseUserOrganization
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUserOrganizationEntity.FieldEnabled + " = 1  AND CompanyId IS NOT NULL AND UserId = " + DbHelper.GetParameter(BaseUserOrganizationEntity.FieldUserId);
 
             /*
             var dt = DbHelper.Fill(sql);
@@ -146,7 +146,7 @@ namespace DotNet.Business
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserEntity.FieldId, userId),
-                DbHelper.MakeParameter(BaseUserOrganizeEntity.FieldUserId, userId)
+                DbHelper.MakeParameter(BaseUserOrganizationEntity.FieldUserId, userId)
             };
             var ids = new List<string>();
             try
@@ -156,7 +156,7 @@ namespace DotNet.Business
                 {
                     while (dataReader.Read())
                     {
-                        ids.Add(dataReader[BaseOrganizeEntity.FieldId].ToString());
+                        ids.Add(dataReader[BaseOrganizationEntity.FieldId].ToString());
                     }
                 }
                 result = ids.ToArray();
@@ -198,10 +198,10 @@ namespace DotNet.Business
                 // 从兼职表读取用户 
                 /*
                 sql += " OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizeEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizeEntity.TableName
-                        + "  WHERE (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDepartmentId + " = '" + departmentId + "')) ";
+                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
+                        + " FROM " + BaseUserOrganizationEntity.TableName
+                        + "  WHERE (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + "       AND (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " = '" + departmentId + "')) ";
                  */
 
 
@@ -220,9 +220,9 @@ namespace DotNet.Business
             var result = 0;
 
             var sql = "UPDATE " + BaseUserEntity.TableName
-                              + " SET " + BaseUserEntity.FieldProvince + " = ( SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldProvince
-                             + " FROM " + BaseOrganizeEntity.TableName
-                            + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
+                              + " SET " + BaseUserEntity.FieldProvince + " = ( SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldProvince
+                             + " FROM " + BaseOrganizationEntity.TableName
+                            + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
             if (!all)
             {
                 sql += " AND (" + BaseUserEntity.FieldProvince + " IS NULL)";
@@ -231,18 +231,18 @@ namespace DotNet.Business
             result = DbHelper.ExecuteNonQuery(sql);
 
             sql = "UPDATE " + BaseUserEntity.TableName
-                              + " SET " + BaseUserEntity.FieldCity + " = ( SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldCity
-                             + " FROM " + BaseOrganizeEntity.TableName
-                            + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
+                              + " SET " + BaseUserEntity.FieldCity + " = ( SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldCity
+                             + " FROM " + BaseOrganizationEntity.TableName
+                            + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
             if (!all)
             {
                 sql += " AND (" + BaseUserEntity.FieldCity + " IS NULL)";
             }
 
             sql = "UPDATE " + BaseUserEntity.TableName
-                              + " SET " + BaseUserEntity.FieldDistrict + " = ( SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldDistrict
-                             + " FROM " + BaseOrganizeEntity.TableName
-                            + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
+                              + " SET " + BaseUserEntity.FieldDistrict + " = ( SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldDistrict
+                             + " FROM " + BaseOrganizationEntity.TableName
+                            + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + ")";
             if (!all)
             {
                 sql += " AND (" + BaseUserEntity.FieldProvince + " IS NULL OR " + BaseUserEntity.FieldDistrict + " IS NULL)";
@@ -273,10 +273,10 @@ namespace DotNet.Business
                 // 从兼职表读取用户
                 /*
                 sql += " OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizeEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizeEntity.TableName
-                        + "  WHERE (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldCompanyId + " = '" + companyId + "')) ";
+                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
+                        + " FROM " + BaseUserOrganizationEntity.TableName
+                        + "  WHERE (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + "       AND (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " = '" + companyId + "')) ";
                 */
             }
             sql += " ORDER BY " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSortCode;
@@ -304,10 +304,10 @@ namespace DotNet.Business
                 // 从兼职表读取用户 
                 /*
                 sql += " OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizeEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizeEntity.TableName
-                        + "  WHERE (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDepartmentId + " = '" + departmentId + "')) ";
+                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
+                        + " FROM " + BaseUserOrganizationEntity.TableName
+                        + "  WHERE (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + "       AND (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " = '" + departmentId + "')) ";
                 */
             }
             sql += " ORDER BY " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSortCode;
@@ -340,10 +340,10 @@ namespace DotNet.Business
                 // 从兼职表读取用户 
                 /*
                 sql += " OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizeEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizeEntity.TableName
-                        + "  WHERE (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldCompanyId + " = '" + companyId + "')) ";
+                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
+                        + " FROM " + BaseUserOrganizationEntity.TableName
+                        + "  WHERE (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + "       AND (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " = '" + companyId + "')) ";
                 */
             }
             sql += " ORDER BY " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSortCode;
@@ -371,25 +371,25 @@ namespace DotNet.Business
                 // 从用户兼职表里去取用户
                 /*
                 + " OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizeEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizeEntity.TableName
-                        + "  WHERE (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldWorkgroupId + " IN ( " + organizeList + ") "
-                        + "             OR " + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldDepartmentId + " IN (" + organizeList + ") "
-                        + "             OR " + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldSubCompanyId + " IN (" + organizeList + ") "
-                        + "             OR " + BaseUserOrganizeEntity.TableName + "." + BaseUserOrganizeEntity.FieldCompanyId + " IN (" + organizeList + "))) "
+                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
+                        + " FROM " + BaseUserOrganizationEntity.TableName
+                        + "  WHERE (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + "       AND (" + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldWorkgroupId + " IN ( " + organizeList + ") "
+                        + "             OR " + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " IN (" + organizeList + ") "
+                        + "             OR " + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldSubCompanyId + " IN (" + organizeList + ") "
+                        + "             OR " + BaseUserOrganizationEntity.TableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " IN (" + organizeList + "))) "
                 */
                 + " ORDER BY " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSortCode;
             return sql;
         }
 
-        #region public List<BaseUserEntity> GetDataTableByOrganizes(string[] ids) 按工作组、部门、公司获用户列表
+        #region public List<BaseUserEntity> GetDataTableByOrganizations(string[] ids) 按工作组、部门、公司获用户列表
         /// <summary>
         /// 按工作组、部门、公司获用户列表
         /// </summary>
         /// <param name="organizationIds">主键数组</param>
         /// <returns>数据表</returns>
-        public List<BaseUserEntity> GetListByOrganizes(string[] organizationIds)
+        public List<BaseUserEntity> GetListByOrganizations(string[] organizationIds)
         {
             var sql = GetUserSql(organizationIds, false);
             using (var dr = DbHelper.ExecuteReader(sql))
@@ -404,7 +404,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizationIds"></param>
         /// <returns></returns>
-        public DataTable GetDataTableByOrganizes(string[] organizationIds)
+        public DataTable GetDataTableByOrganizations(string[] organizationIds)
         {
             var sql = GetUserSql(organizationIds, false);
             return DbHelper.Fill(sql);
@@ -482,12 +482,12 @@ namespace DotNet.Business
                 /*
                 用非递归调用的建议方法
                 sql += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId 
-                    + " IN ( SELECT " + BaseOrganizeEntity.FieldId 
-                    + " FROM " + BaseOrganizeEntity.TableName 
-                    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + departmentId + ")";
+                    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
+                    + " FROM " + BaseOrganizationEntity.TableName 
+                    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + departmentId + ")";
                 */
-                var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
-                var organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
+                var organizationIds = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (organizationIds != null && organizationIds.Length > 0)
                 {
                     sql += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
@@ -525,19 +525,19 @@ namespace DotNet.Business
         public List<BaseUserEntity> GetChildrenUserList(string organizationId)
         {
             string[] organizationIds = null;
-            var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
+            var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
                     var organizeCode = organizeManager.GetCodeById(organizationId);
-                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizationEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
                     break;
             }
-            return GetListByOrganizes(organizationIds);
+            return GetListByOrganizations(organizationIds);
         }
 
         /// <summary>
@@ -548,19 +548,19 @@ namespace DotNet.Business
         public DataTable GetChildrenUserDataTable(string organizationId)
         {
             string[] organizationIds = null;
-            var organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
+            var organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
                     var organizeCode = organizeManager.GetCodeById(organizationId);
-                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizeEntity.FieldCode, organizeCode);
+                    organizationIds = organizeManager.GetChildrensIdByCode(BaseOrganizationEntity.FieldCode, organizeCode);
                     break;
                 case CurrentDbType.Oracle:
-                    organizationIds = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
+                    organizationIds = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
                     break;
             }
-            return GetDataTableByOrganizes(organizationIds);
+            return GetDataTableByOrganizations(organizationIds);
         }
     }
 }

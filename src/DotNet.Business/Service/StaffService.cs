@@ -365,7 +365,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByOrganize(BaseUserInfo BaseUserInfo, string organizationId, bool containChildren) 按公司获取员工列表
+        #region public DataTable GetDataTableByOrganization(BaseUserInfo BaseUserInfo, string organizationId, bool containChildren) 按公司获取员工列表
         /// <summary>
         /// 按公司获取员工列表
         /// </summary>
@@ -373,7 +373,7 @@ namespace DotNet.Business
         /// <param name="organizationId">组织主键</param>
         /// <param name="containChildren">含子部门</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByOrganize(BaseUserInfo userInfo, string organizationId, bool containChildren)
+        public DataTable GetDataTableByOrganization(BaseUserInfo userInfo, string organizationId, bool containChildren)
         {
             var dt = new DataTable(BaseStaffEntity.TableName);
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -392,7 +392,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    dt = manager.GetDataTableByOrganize(organizationId);
+                    dt = manager.GetDataTableByOrganization(organizationId);
                 }
                 dt.TableName = BaseStaffEntity.TableName;
             });
@@ -713,7 +713,7 @@ namespace DotNet.Business
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 result = manager.BatchSave(dt);
-                // ReturnDataTable = Staff.GetDataTableByOrganize(organizationId);
+                // ReturnDataTable = Staff.GetDataTableByOrganization(organizationId);
             });
             return result;
         }

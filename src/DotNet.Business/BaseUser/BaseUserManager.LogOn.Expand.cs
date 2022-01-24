@@ -30,7 +30,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
-        #region public void SendLogOnRemind(BaseUserInfo userInfo) 向登录用户发送登录提醒消息
+        #region public void SendLogonRemind(BaseUserInfo userInfo) 向登录用户发送登录提醒消息
         /// <summary>
         /// 宋彪 2015-01-22
         /// 向登录用户发送登录提醒消息
@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// 所有超管及IT信息中心的人员全部强制提醒
         /// </summary>
         /// <param name="userInfo">用户登录信息</param>
-        public void SendLogOnRemind(BaseUserInfo userInfo)
+        public void SendLogonRemind(BaseUserInfo userInfo)
         {
             System.Threading.ThreadPool.QueueUserWorkItem((System.Threading.WaitCallback)delegate
             {

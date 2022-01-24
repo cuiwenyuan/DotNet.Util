@@ -47,17 +47,17 @@ namespace DotNet.Business
             {
                 // 检查名称是否重复
                 var parameters = new List<KeyValuePair<string, object>>();
-                if (!string.IsNullOrEmpty(entity.OrganizeId))
+                if (!string.IsNullOrEmpty(entity.OrganizationId))
                 {
-                    parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizeId, entity.OrganizeId));
+                    parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName));
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0));
                 //检查角色Code是否重复 Troy.Cui 2016-08-17
                 var parametersCode = new List<KeyValuePair<string, object>>();
-                if (!string.IsNullOrEmpty(entity.OrganizeId))
+                if (!string.IsNullOrEmpty(entity.OrganizationId))
                 {
-                    parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizeId, entity.OrganizeId));
+                    parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code));
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0));

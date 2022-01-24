@@ -577,9 +577,9 @@ namespace DotNet.Business
         /// <param name="systemCode"></param>
         /// <param name="moduleId"></param>
         /// <returns></returns>
-        public DataTable GetModuleOrganizeDataTable(string systemCode, string moduleId)
+        public DataTable GetModuleOrganizationDataTable(string systemCode, string moduleId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             if (string.IsNullOrEmpty(systemCode))
             {
@@ -595,30 +595,30 @@ namespace DotNet.Business
 
             var tableName = systemCode + "Permission";
 
-            var commandText = @"SELECT BaseOrganize.Id
-                                    , BaseOrganize.Code
-                                    , BaseOrganize.FullName 
-                                    , BaseOrganize.Description 
+            var commandText = @"SELECT BaseOrganization.Id
+                                    , BaseOrganization.Code
+                                    , BaseOrganization.FullName 
+                                    , BaseOrganization.Description 
                                     , Permission.Enabled
                                     , Permission.CreateOn
                                     , Permission.CreateBy
                                     , Permission.ModifiedOn
                                     , Permission.ModifiedBy
- FROM BaseOrganize RIGHT OUTER JOIN
-                          (SELECT ResourceId AS OrganizeId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+ FROM BaseOrganization RIGHT OUTER JOIN
+                          (SELECT ResourceId AS OrganizationId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
  FROM BasePermission
-                            WHERE " + BaseOrganizeEntity.FieldDeleted + " = 0 "
+                            WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                               + " AND ResourceCategory = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
                               + " AND PermissionId = " + DbHelper.GetParameter(BaseModuleEntity.FieldId) + @") Permission 
-                            ON BaseOrganize.Id = Permission.OrganizeId
-                         WHERE BaseOrganize.Id IS NOT NULL
+                            ON BaseOrganization.Id = Permission.OrganizationId
+                         WHERE BaseOrganization.Id IS NOT NULL
                       ORDER BY Permission.CreateOn DESC";
 
             commandText = commandText.Replace("BasePermission", tableName);
 
             var dbParameters = new List<IDbDataParameter>
             {
-                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, "BaseOrganize"),
+                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, "BaseOrganization"),
                 DbHelper.MakeParameter(BaseModuleEntity.FieldId, moduleId)
             };
 

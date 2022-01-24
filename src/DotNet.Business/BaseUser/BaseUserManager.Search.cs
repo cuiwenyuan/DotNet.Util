@@ -42,7 +42,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        private string GetSearchConditional(string systemCode, string permissionCode, string condition, string[] roleIds, bool? enabled, string auditStates, string companyId = null, string departmentId = null, bool onlyOnLine = false)
+        private string GetSearchConditional(string systemCode, string permissionCode, string condition, string[] roleIds, bool? enabled, string auditStates, string companyId = null, string departmentId = null, bool onlyOnline = false)
         {
             var sb = BaseUserEntity.TableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
                             + " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldIsVisible + " = 1 ";
@@ -58,9 +58,9 @@ namespace DotNet.Business
                     sb += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldEnabled + " = 0 ";
                 }
             }
-            if (onlyOnLine)
+            if (onlyOnline)
             {
-                sb += " AND " + BaseUserEntity.TableName + ".Id IN (SELECT Id FROM " + BaseUserLogOnEntity.TableName + " WHERE UserOnLine = 1) ";
+                sb += " AND " + BaseUserEntity.TableName + ".Id IN (SELECT Id FROM " + BaseUserLogonEntity.TableName + " WHERE UserOnline = 1) ";
             }
             if (!string.IsNullOrEmpty(condition))
             {
@@ -87,8 +87,8 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(departmentId))
             {
                 /*
-                BaseOrganizeManager organizeManager = new BaseOrganizeManager(this.DbHelper, this.UserInfo);
-                string[] ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                BaseOrganizationManager organizeManager = new BaseOrganizationManager(this.DbHelper, this.UserInfo);
+                string[] ids = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
@@ -108,7 +108,7 @@ namespace DotNet.Business
                 // 待审核
                 if (auditStates.Equals(AuditStatus.WaitForAudit.ToString()))
                 {
-                    sb += " OR " + BaseUserEntity.TableName + ".Id IN ( SELECT Id FROM " + BaseUserLogOnEntity.TableName + " WHERE LockEndDate > " + dbHelper.GetDbNow() + ") ";
+                    sb += " OR " + BaseUserEntity.TableName + ".Id IN ( SELECT Id FROM " + BaseUserLogonEntity.TableName + " WHERE LockEndDate > " + dbHelper.GetDbNow() + ") ";
                 }
                 sb += ")";
             }
@@ -133,47 +133,47 @@ namespace DotNet.Business
                 {
                     // 从小到大的顺序进行显示，防止错误发生
                     var userPermissionScopeManager = new BaseUserScopeManager(DbHelper, UserInfo);
-                    var organizationIds = userPermissionScopeManager.GetOrganizeIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
+                    var organizationIds = userPermissionScopeManager.GetOrganizationIds(UserInfo.SystemCode, UserInfo.Id, permissionId);
 
                     // 没有任何数据权限
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.NotAllowed).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.NotAllowed).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = NULL ) ";
                     }
                     // 按详细设定的数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.ByDetails).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.ByDetails).ToString()))
                     {
                         var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName);;
                         var userIds = permissionScopeManager.GetUserIds(UserInfo.SystemCode, UserInfo.Id, permissionCode);
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " IN (" + string.Join(",", userIds) + ")) ";
                     }
                     // 自己的数据，仅本人
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.OnlyOwnData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.OnlyOwnData).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = " + UserInfo.Id + ") ";
                     }
                     // 用户所在工作组数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserWorkgroup).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserWorkgroup).ToString()))
                     {
                         // condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldWorkgroupId + " = " + this.UserInfo.WorkgroupId + ") ";
                     }
                     // 用户所在部门数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserDepartment).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserDepartment).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId + " = " + UserInfo.DepartmentId + ") ";
                     }
                     // 用户所在分支机构数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserSubCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserSubCompany).ToString()))
                     {
                         // condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldSubCompanyId + " = '" + this.UserInfo.SubCompanyId + "') ";
                     }
                     // 用户所在公司数据
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.UserCompany).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.UserCompany).ToString()))
                     {
                         sb += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " = '" + UserInfo.CompanyId + "') ";
                     }
                     // 全部数据，这里就不用设置过滤条件了
-                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizeScope.AllData).ToString()))
+                    if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.AllData).ToString()))
                     {
                     }
                 }
@@ -197,18 +197,18 @@ namespace DotNet.Business
         public DataTable Search(string systemCode, string permissionCode, string search, string[] roleIds, bool? enabled, string auditStates, string departmentId, string companyId = null)
         {
             var sql = "SELECT " + BaseUserEntity.TableName + ".* ";
-            if (ShowUserLogOnInfo)
+            if (ShowUserLogonInfo)
             {
-                sql += "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldFirstVisit
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldPreviousVisit
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLastVisit
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldIpAddress
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMacAddress
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLogOnCount
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldUserOnLine
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldCheckIpAddress
-                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMultiUserLogin
-                + " FROM " + BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id ";
+                sql += "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldFirstVisit
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldPreviousVisit
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLastVisit
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLogonCount
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldUserOnline
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldCheckIpAddress
+                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMultiUserLogin
+                + " FROM " + BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id ";
             }
             else
             {
@@ -237,24 +237,24 @@ namespace DotNet.Business
         /// <param name="departmentId"></param>
         /// <param name="showRole"></param>
         /// <param name="userAllInformation"></param>
-        /// <param name="onlyOnLine"></param>
+        /// <param name="onlyOnline"></param>
         /// <param name="recordCount"></param>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public DataTable SearchByPage(string systemCode, string permissionCode, string condition, string[] roleIds, bool? enabled, string auditStates, string companyId, string departmentId, bool showRole, bool userAllInformation, bool onlyOnLine, out int recordCount, int pageIndex = 0, int pageSize = 20, string order = null)
+        public DataTable SearchByPage(string systemCode, string permissionCode, string condition, string[] roleIds, bool? enabled, string auditStates, string companyId, string departmentId, bool showRole, bool userAllInformation, bool onlyOnline, out int recordCount, int pageIndex = 0, int pageSize = 20, string order = null)
         {
-            condition = GetSearchConditional(systemCode, permissionCode, condition, roleIds, enabled, auditStates, companyId, departmentId, onlyOnLine);
+            condition = GetSearchConditional(systemCode, permissionCode, condition, roleIds, enabled, auditStates, companyId, departmentId, onlyOnline);
 
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
                 case CurrentDbType.Access:
                     CurrentTableName = BaseUserEntity.TableName + " LEFT OUTER JOIN BaseUserContact ON " + BaseUserEntity.TableName + ".Id = BaseUserContact.Id";
-                    if (ShowUserLogOnInfo)
+                    if (ShowUserLogonInfo)
                     {
-                        CurrentTableName += " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id";
+                        CurrentTableName += " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id";
                     }
                     SelectFields = BaseUserEntity.TableName + ".* "
                                                 + "," + BaseUserContactEntity.TableName + "." + BaseUserContactEntity.FieldEmail
@@ -262,25 +262,25 @@ namespace DotNet.Business
                                                 + "," + BaseUserContactEntity.TableName + "." + BaseUserContactEntity.FieldTelephone
                                                 + "," + BaseUserContactEntity.TableName + "." + BaseUserContactEntity.FieldQq;
 
-                    if (ShowUserLogOnInfo)
+                    if (ShowUserLogonInfo)
                     {
-                        SelectFields += "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldFirstVisit
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldPreviousVisit
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLastVisit
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldIpAddress
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMacAddress
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLogOnCount
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldUserOnLine
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldCheckIpAddress
-                                                + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMultiUserLogin;
+                        SelectFields += "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldFirstVisit
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldPreviousVisit
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLastVisit
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLogonCount
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldUserOnline
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldCheckIpAddress
+                                                + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMultiUserLogin;
                     }
                     break;
                 case CurrentDbType.Oracle:
                     SelectFields = "*";
                     CurrentTableName = @"(SELECT " + BaseUserEntity.TableName + ".*";
-                    if (ShowUserLogOnInfo)
+                    if (ShowUserLogonInfo)
                     {
-                        CurrentTableName += " ," + BaseUserLogOnEntity.TableName + ".FirstVisit, " + BaseUserLogOnEntity.TableName + ".PreviousVisit, " + BaseUserLogOnEntity.TableName + ".LastVisit, " + BaseUserLogOnEntity.TableName + ".IPAddress, " + BaseUserLogOnEntity.TableName + ".MACAddress, " + BaseUserLogOnEntity.TableName + ".LogOnCount, " + BaseUserLogOnEntity.TableName + ".UserOnLine, " + BaseUserLogOnEntity.TableName + ".CheckIPAddress, " + BaseUserLogOnEntity.TableName + ".MultiUserLogin ";
+                        CurrentTableName += " ," + BaseUserLogonEntity.TableName + ".FirstVisit, " + BaseUserLogonEntity.TableName + ".PreviousVisit, " + BaseUserLogonEntity.TableName + ".LastVisit, " + BaseUserLogonEntity.TableName + ".IPAddress, " + BaseUserLogonEntity.TableName + ".MACAddress, " + BaseUserLogonEntity.TableName + ".LogonCount, " + BaseUserLogonEntity.TableName + ".UserOnline, " + BaseUserLogonEntity.TableName + ".CheckIPAddress, " + BaseUserLogonEntity.TableName + ".MultiUserLogin ";
                     }
                     CurrentTableName += @"       , BaseUserContact.Email
                                           , BaseUserContact.Mobile
@@ -288,9 +288,9 @@ namespace DotNet.Business
                                           , BaseUserContact.QQ
     FROM " + BaseUserEntity.TableName + " LEFT OUTER JOIN BaseUserContact ON " + BaseUserEntity.TableName + ".Id = BaseUserContact.Id ";
 
-                    if (ShowUserLogOnInfo)
+                    if (ShowUserLogonInfo)
                     {
-                        CurrentTableName += " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id ";
+                        CurrentTableName += " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id ";
                     }
                     if (enabled == null)
                     {
@@ -323,24 +323,24 @@ namespace DotNet.Business
             {
                 case CurrentDbType.SqlServer:
                 case CurrentDbType.Access:
-                    CurrentTableName = BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id";
+                    CurrentTableName = BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id";
                     SelectFields = BaseUserEntity.TableName + ".* ";
 
-                    SelectFields += "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldFirstVisit
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldPreviousVisit
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLastVisit
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldIpAddress
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMacAddress
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLogOnCount
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldUserOnLine
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldCheckIpAddress
-                                            + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMultiUserLogin;
+                    SelectFields += "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldFirstVisit
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldPreviousVisit
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLastVisit
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLogonCount
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldUserOnline
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldCheckIpAddress
+                                            + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMultiUserLogin;
                     break;
                 case CurrentDbType.Oracle:
                     SelectFields = "*";
                     CurrentTableName = @"(SELECT " + BaseUserEntity.TableName + ".*";
-                    CurrentTableName += " ," + BaseUserLogOnEntity.TableName + ".FirstVisit, " + BaseUserLogOnEntity.TableName + ".PreviousVisit, " + BaseUserLogOnEntity.TableName + ".LastVisit, " + BaseUserLogOnEntity.TableName + ".IPAddress, " + BaseUserLogOnEntity.TableName + ".MACAddress, " + BaseUserLogOnEntity.TableName + ".LogOnCount, " + BaseUserLogOnEntity.TableName + ".UserOnLine, " + BaseUserLogOnEntity.TableName + ".CheckIPAddress, " + BaseUserLogOnEntity.TableName + ".MultiUserLogin ";
-                    CurrentTableName += @" FROM " + BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id ";
+                    CurrentTableName += " ," + BaseUserLogonEntity.TableName + ".FirstVisit, " + BaseUserLogonEntity.TableName + ".PreviousVisit, " + BaseUserLogonEntity.TableName + ".LastVisit, " + BaseUserLogonEntity.TableName + ".IPAddress, " + BaseUserLogonEntity.TableName + ".MACAddress, " + BaseUserLogonEntity.TableName + ".LogonCount, " + BaseUserLogonEntity.TableName + ".UserOnline, " + BaseUserLogonEntity.TableName + ".CheckIPAddress, " + BaseUserLogonEntity.TableName + ".MultiUserLogin ";
+                    CurrentTableName += @" FROM " + BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id ";
                     CurrentTableName += " WHERE " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.TableName + ".IsVisible = 1 AND (" + BaseUserEntity.TableName + ".Enabled = 1) ORDER BY " + BaseUserEntity.TableName + ".SortCode) " + BaseUserEntity.TableName;
                     break;
             }
@@ -376,14 +376,14 @@ namespace DotNet.Business
                 /*
                 用非递归调用的建议方法
                 sql += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDepartmentId 
-                    + " IN ( SELECT " + BaseOrganizeEntity.FieldId 
-                    + " FROM " + BaseOrganizeEntity.TableName 
-                    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + departmentId + ")";
+                    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
+                    + " FROM " + BaseOrganizationEntity.TableName 
+                    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + departmentId + ")";
                 */
 
                 /*
-                BaseOrganizeManager organizeManager = new BaseOrganizeManager(this.UserInfo);
-                string[] ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                BaseOrganizationManager organizeManager = new BaseOrganizationManager(this.UserInfo);
+                string[] ids = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     condition += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
@@ -414,24 +414,24 @@ namespace DotNet.Business
             }
             recordCount = DbUtil.GetCount(DbHelper, CurrentTableName, condition);
             CurrentTableName = "BaseUser";
-            if (ShowUserLogOnInfo)
+            if (ShowUserLogonInfo)
             {
-                CurrentTableName = BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogOnEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogOnEntity.TableName + ".Id ";
+                CurrentTableName = BaseUserEntity.TableName + " LEFT OUTER JOIN " + BaseUserLogonEntity.TableName + " ON " + BaseUserEntity.TableName + ".Id = " + BaseUserLogonEntity.TableName + ".Id ";
             }
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
                 case CurrentDbType.Access:
                     SelectFields = BaseUserEntity.TableName + ".* ";
-                    if (ShowUserLogOnInfo)
+                    if (ShowUserLogonInfo)
                     {
-                        SelectFields += "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldFirstVisit
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldPreviousVisit
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLastVisit
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldIpAddress
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMacAddress
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLogOnCount
-                                    + "," + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldUserOnLine;
+                        SelectFields += "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldFirstVisit
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldPreviousVisit
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLastVisit
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLogonCount
+                                    + "," + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldUserOnline;
                     }
                     break;
                 case CurrentDbType.Oracle:

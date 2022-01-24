@@ -50,19 +50,19 @@ namespace DotNet.Business
         /// <summary>
         /// 显示用户登录信息
         /// </summary>
-        public bool ShowUserLogOnInfo = false;
+        public bool ShowUserLogonInfo = false;
 
         /// <summary>
         /// 转换为UserInfo用户信息
         /// </summary>
         /// <param name="userEntity"></param>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <param name="validateUserOnly"></param>
         /// <returns></returns>
-        public BaseUserInfo ConvertToUserInfo(BaseUserEntity userEntity, BaseUserLogOnEntity userLogOnEntity = null, bool validateUserOnly = false)
+        public BaseUserInfo ConvertToUserInfo(BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity = null, bool validateUserOnly = false)
         {
             var userInfo = new BaseUserInfo();
-            return ConvertToUserInfo(userInfo, userEntity, userLogOnEntity, validateUserOnly);
+            return ConvertToUserInfo(userInfo, userEntity, userLogonEntity, validateUserOnly);
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo"></param>
         /// <param name="userEntity"></param>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <param name="validateUserOnly"></param>
         /// <returns></returns>
-        public BaseUserInfo ConvertToUserInfo(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogOnEntity userLogOnEntity = null, bool validateUserOnly = false)
+        public BaseUserInfo ConvertToUserInfo(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity = null, bool validateUserOnly = false)
         {
             if (userEntity == null)
             {
@@ -85,9 +85,9 @@ namespace DotNet.Business
             userInfo.UserName = userEntity.UserName;
             userInfo.RealName = userEntity.RealName;
             userInfo.NickName = userEntity.NickName;
-            if (userLogOnEntity != null)
+            if (userLogonEntity != null)
             {
-                userInfo.OpenId = userLogOnEntity.OpenId;
+                userInfo.OpenId = userLogonEntity.OpenId;
             }
             userInfo.CompanyId = userEntity.CompanyId;
             userInfo.CompanyName = userEntity.CompanyName;
@@ -105,18 +105,18 @@ namespace DotNet.Business
             //2016-11-23 欧腾飞加入 companyCode 和数字签名
             userInfo.Signature = userEntity.Signature;
 
-            BaseOrganizeEntity organizeEntity = null;
+            BaseOrganizationEntity organizeEntity = null;
 
             if (!string.IsNullOrEmpty(userInfo.CompanyId))
             {
 
                 try
                 {
-                    organizeEntity = BaseOrganizeManager.GetEntityByCache(userInfo.CompanyId);
+                    organizeEntity = BaseOrganizationManager.GetEntityByCache(userInfo.CompanyId);
                 }
                 catch (System.Exception ex)
                 {
-                    string writeMessage = "BaseOrganizeManager.GetEntityByCache:发生时间:" + DateTime.Now
+                    string writeMessage = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
                         + System.Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + System.Environment.NewLine + "Message:" + ex.Message
                         + System.Environment.NewLine + "Source:" + ex.Source
@@ -129,12 +129,12 @@ namespace DotNet.Business
 
                 if (organizeEntity == null)
                 {
-                    var organizeManager = new BaseOrganizeManager();
+                    var organizeManager = new BaseOrganizationManager();
                     organizeEntity = organizeManager.GetEntity(userInfo.CompanyId);
                     // 2015-12-06 吉日嘎拉 进行记录日志功能改进
                     if (organizeEntity == null)
                     {
-                        var writeMessage = "BaseOrganizeManager.GetEntity:发生时间:" + DateTime.Now
+                        var writeMessage = "BaseOrganizationManager.GetEntity:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + Environment.NewLine + "BaseUserInfo:" + userInfo.Serialize();
 
@@ -151,13 +151,13 @@ namespace DotNet.Business
              * 
             if (!validateUserOnly && !string.IsNullOrEmpty(userInfo.DepartmentId))
             {
-                organizeEntity = BaseOrganizeManager.GetEntityByCache(userInfo.DepartmentId);
+                organizeEntity = BaseOrganizationManager.GetEntityByCache(userInfo.DepartmentId);
             }
             else
             {
                 if (organizeManager == null)
                 {
-                    organizeManager = new Business.BaseOrganizeManager();
+                    organizeManager = new Business.BaseOrganizationManager();
                 }
                 organizeEntity = organizeManager.GetEntity(userInfo.DepartmentId);
             }
@@ -225,7 +225,7 @@ namespace DotNet.Business
         public BaseUserEntity GetEntityByCompanyCodeByCode(string companyCode, string userCode)
         {
             BaseUserEntity result = null;
-            var organizeEntity = BaseOrganizeManager.GetEntityByCodeByCache(companyCode);
+            var organizeEntity = BaseOrganizationManager.GetEntityByCodeByCache(companyCode);
             if (organizeEntity == null)
             {
                 return result;
@@ -341,12 +341,12 @@ namespace DotNet.Business
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(openId))
             {
-                var userLogOnManager = new BaseUserLogOnManager();
+                var userLogonManager = new BaseUserLogonManager();
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId)
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
                 };
-                var id = userLogOnManager.GetId(parameters);
+                var id = userLogonManager.GetId(parameters);
                 if (!string.IsNullOrEmpty(id))
                 {
                     parameters = new List<KeyValuePair<string, object>>
@@ -723,15 +723,15 @@ namespace DotNet.Business
         {
             BaseUserInfo userInfo = null;
             // 获得登录信息
-            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetEntity(id);
+            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntity(id);
             // 只允许登录一次，需要检查是否自己重新登录了，或者自己扮演自己了
             if (!UserInfo.Id.Equals(id))
             {
-                if (BaseSystemInfo.CheckOnLine)
+                if (BaseSystemInfo.CheckOnline)
                 {
-                    if (entity.UserOnLine > 0)
+                    if (entity.UserOnline > 0)
                     {
-                        statusCode = Status.ErrorOnLine.ToString();
+                        statusCode = Status.ErrorOnline.ToString();
                         return userInfo;
                     }
                 }
@@ -750,8 +750,8 @@ namespace DotNet.Business
             }
             statusCode = Status.Ok.ToString();
             // 登录、重新登录、扮演时的在线状态进行更新
-            var userLogOnManager = new BaseUserLogOnManager(DbHelper, UserInfo);
-            userLogOnManager.ChangeOnLine(id);
+            var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
+            userLogonManager.ChangeOnline(id);
             return userInfo;
         }
         #endregion
@@ -787,7 +787,7 @@ namespace DotNet.Business
         {
             var result = 0;
             result += ResetData();
-            var manager = new BaseUserLogOnManager(DbHelper, UserInfo);
+            var manager = new BaseUserLogonManager(DbHelper, UserInfo);
             result += manager.ResetVisitInfo();
             return result;
         }

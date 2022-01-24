@@ -34,9 +34,9 @@ namespace DotNet.Business
             }
             if (userInfo != null)
             {
-                //Troy.Cui 2018-09-20，更新数据库中的UserOnLine
+                //Troy.Cui 2018-09-20，更新数据库中的UserOnline
                 //Troy.Cui 2019-04-13, 更新OpenId
-                new BaseUserLogOnManager(userInfo).SignOut(userInfo.OpenId, userInfo.SystemCode, Utils.GetIp());
+                new BaseUserLogonManager(userInfo).SignOut(userInfo.OpenId, userInfo.SystemCode, Utils.GetIp());
                 //这里是缓存的Permission
                 var cacheKey = "P" + userInfo.Id;
                 CacheUtil.Remove(cacheKey);
@@ -44,15 +44,15 @@ namespace DotNet.Business
                 cacheKey = "OnlineUserName." + userInfo.UserName;
                 CacheUtil.Remove(cacheKey);
                 //组织机构
-                cacheKey = "DataTable.BaseOrganizeTree";
+                cacheKey = "DataTable.BaseOrganizationTree";
                 CacheUtil.Remove(cacheKey);
                 //菜单
                 cacheKey = "DataTable." + BaseSystemInfo.SystemCode + ".ModuleTree";
                 CacheUtil.Remove(cacheKey);
                 // 这里要考虑读写分离的处理
                 // IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterWriteDbConnection);
-                // BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
-                // userLogOnManager.SignOut(userInfo.Id);
+                // BaseUserLogonManager userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
+                // userLogonManager.SignOut(userInfo.Id);
             }
 
             // 清除Seesion对象
@@ -69,7 +69,7 @@ namespace DotNet.Business
             // HttpContext.Current.Response.Redirect("Default.aspx", true);
             if (useSso)
             {
-                //var url = BaseSystemInfo.WebHost + "/UserCenterV42/LogOnService.ashx?";
+                //var url = BaseSystemInfo.WebHost + "/UserCenterV42/LogonService.ashx?";
                 //var webClient = new WebClient();
                 //var postValues = new NameValueCollection();
                 //postValues.Add("function", "SignOut");

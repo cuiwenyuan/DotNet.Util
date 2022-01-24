@@ -43,7 +43,7 @@ namespace DotNet.Model
         /// 申请人所属网点名称
         /// </summary>
         [FieldDescription("申请人所属网点名称")]
-        public string OrganizeFullname { get; set; } = string.Empty;
+        public string OrganizationFullname { get; set; } = string.Empty;
 
         /// <summary>
         /// 身份证照片上传、申请创建时间
@@ -115,7 +115,7 @@ namespace DotNet.Model
         /// 申请人所属网点ID
         /// </summary>
         [FieldDescription("申请人所属网点ID")]
-        public decimal OrganizeId { get; set; }
+        public decimal OrganizationId { get; set; }
 
         /// <summary>
         /// 审核者唯一用户名
@@ -138,7 +138,7 @@ namespace DotNet.Model
             GetFromExtend(dr);
             ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[FieldUpdateTime]);
             IdcardPhotoHand = BaseUtil.ConvertToString(dr[FieldIdcardPhotoHand]);
-            OrganizeFullname = BaseUtil.ConvertToString(dr[FieldOrganizeFullname]);
+            OrganizationFullname = BaseUtil.ConvertToString(dr[FieldOrganizationFullname]);
             CreateOn = BaseUtil.ConvertToDateTime(dr[FieldCreateTime]);
             AuditDate = BaseUtil.ConvertToNullableDateTime(dr[FieldAuditDate]);
             AuditStatus = BaseUtil.ConvertToString(dr[FieldAuditStatus]);
@@ -150,7 +150,7 @@ namespace DotNet.Model
             Id = BaseUtil.ConvertToDecimal(dr[FieldId]);
             AuditIdea = BaseUtil.ConvertToString(dr[FieldAuditIdea]);
             AuditUserRealName = BaseUtil.ConvertToString(dr[FieldAuditUserRealName]);
-            OrganizeId = BaseUtil.ConvertToDecimal(dr[FieldOrganizeId]);
+            OrganizationId = BaseUtil.ConvertToDecimal(dr[FieldOrganizationId]);
             AuditUserNickName = BaseUtil.ConvertToString(dr[FieldAuditUserNickName]);
             IdcardPhotoFront = BaseUtil.ConvertToString(dr[FieldIdcardPhotoFront]);
             return this;
@@ -179,7 +179,7 @@ namespace DotNet.Model
         /// 申请人所属网点名称
         ///</summary>
         [NonSerialized]
-        public const string FieldOrganizeFullname = "ORGANIZE_FULLNAME";
+        public const string FieldOrganizationFullname = "ORGANIZE_FULLNAME";
 
         ///<summary>
         /// 身份证照片上传、申请创建时间
@@ -251,7 +251,7 @@ namespace DotNet.Model
         /// 申请人所属网点ID
         ///</summary>
         [NonSerialized]
-        public const string FieldOrganizeId = "ORGANIZE_ID";
+        public const string FieldOrganizationId = "ORGANIZE_ID";
 
         ///<summary>
         /// 审核者唯一用户名

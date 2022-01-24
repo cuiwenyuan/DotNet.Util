@@ -17,6 +17,7 @@ namespace DotNet.Model
     /// 
     /// 修改记录
     /// 
+    ///	版本：5.0 2022.01.12  Troy.Cui    参数完善。
     ///	版本：1.0 2015.07.08  JiRiGaLa    IDataReader 进行完善。
     ///	
     /// <author>  
@@ -199,7 +200,7 @@ namespace DotNet.Model
             return entity;
         }
         /// <summary>
-        /// 创建实体
+        /// 创建实体(没有对象时需要返回null)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="dataReader"></param>
@@ -213,12 +214,16 @@ namespace DotNet.Model
             {
                 using (dataReader)
                 {
-                    while (dataReader.Read())
+                    if (dataReader != null)
                     {
-                        entity = Create<T>();
-                        entity.GetFrom(dataReader);
-                        break;
-                    }
+                        while (dataReader.Read())
+                        {
+                            entity = Create<T>();
+                            entity.GetFrom(dataReader);
+                            //只读取第一行
+                            break;
+                        }
+                    }                    
                 }
             }
             else
@@ -240,12 +245,12 @@ namespace DotNet.Model
             {
                 return new List<T>();
             }
-            var entities = new List<T>();
+            var ls = new List<T>();
             foreach (DataRow dr in dt.Rows)
             {
-                entities.Add(Create<T>(dr));
+                ls.Add(Create<T>(dr));
             }
-            return entities;
+            return ls;
         }
         /// <summary>
         /// 获取List
@@ -255,19 +260,19 @@ namespace DotNet.Model
         /// <returns></returns>
         public static List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
         {
-            var entities = new List<T>();
+            var ls = new List<T>();
             if ((dataReader == null))
             {
-                return entities;
+                return ls;
             }
             using (dataReader)
             {
                 while (dataReader.Read())
                 {
-                    entities.Add(Create<T>(dataReader, false));
+                    ls.Add(Create<T>(dataReader, false));
                 }
             }
-            return entities;
+            return ls;
         }
     }
 }

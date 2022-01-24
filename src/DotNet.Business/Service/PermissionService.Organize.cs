@@ -26,14 +26,14 @@ namespace DotNet.Business
     {
         #region 组织机构权限关联关系相关
 
-        #region public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId)
+        #region public string[] GetOrganizationPermissionIds(BaseUserInfo userInfo, string organizationId)
         /// <summary>
         /// 获取组织机构权限主键数组
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="organizationId">组织机构主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizePermissionIds(BaseUserInfo userInfo, string organizationId)
+        public string[] GetOrganizationPermissionIds(BaseUserInfo userInfo, string organizationId)
         {
             string[] result = null;
 
@@ -41,21 +41,21 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 result = manager.GetPermissionIds(organizationId);
             });
             return result;
         }
         #endregion
 
-        #region public string[] GetOrganizeIdsByPermission(BaseUserInfo userInfo, string result)
+        #region public string[] GetOrganizationIdsByPermission(BaseUserInfo userInfo, string result)
         /// <summary>
         /// 获取组织机构主键数组
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="permissionId">操作权限主键</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizeIdsByPermission(BaseUserInfo userInfo, string permissionId)
+        public string[] GetOrganizationIdsByPermission(BaseUserInfo userInfo, string permissionId)
         {
             string[] result = null;
 
@@ -64,14 +64,14 @@ namespace DotNet.Business
             {
                 // BaseLogManager.Instance.Add(result, this.serviceName, MethodBase.GetCurrentMethod());
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
-                result = manager.GetOrganizeIds(permissionId);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
+                result = manager.GetOrganizationIds(permissionId);
             });
             return result;
         }
         #endregion
 
-        #region public int GrantOrganizePermissions(BaseUserInfo userInfo, string[] ids, string[] grantPermissionIds)
+        #region public int GrantOrganizationPermissions(BaseUserInfo userInfo, string[] ids, string[] grantPermissionIds)
         /// <summary>
         /// 授予组织机构的权限
         /// </summary>
@@ -79,7 +79,7 @@ namespace DotNet.Business
         /// <param name="organizationIds">组织机构主键数组</param>
         /// <param name="grantPermissionIds">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        public int GrantOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds)
+        public int GrantOrganizationPermissions(BaseUserInfo userInfo, string[] organizationIds, string[] grantPermissionIds)
         {
             var result = 0;
 
@@ -87,7 +87,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
                 if (organizationIds != null && grantPermissionIds != null)
                 {
@@ -99,7 +99,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
+        #region public string GrantOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
         /// <summary>
         /// 授予组织机构的权限
         /// </summary>
@@ -107,7 +107,7 @@ namespace DotNet.Business
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="grantPermissionId">授予权限数组</param>
         /// <returns>影响的行数</returns>
-        public string GrantOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
+        public string GrantOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string grantPermissionId)
         {
             var result = string.Empty;
 
@@ -115,7 +115,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
                 if (grantPermissionId != null)
                 {
@@ -127,7 +127,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] ids, string[] revokePermissionIds)
+        #region public int RevokeOrganizationPermissions(BaseUserInfo userInfo, string[] ids, string[] revokePermissionIds)
         /// <summary>
         /// 撤消组织机构的权限
         /// </summary>
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// <param name="organizationIds">授予权限数组</param>
         /// <param name="revokePermissionIds">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        public int RevokeOrganizePermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds)
+        public int RevokeOrganizationPermissions(BaseUserInfo userInfo, string[] organizationIds, string[] revokePermissionIds)
         {
             var result = 0;
 
@@ -143,7 +143,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
                 if (organizationIds != null && revokePermissionIds != null)
                 {
@@ -155,7 +155,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int ClearOrganizePermission(BaseUserInfo userInfo, string id)
+        #region public int ClearOrganizationPermission(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 清除组织机构权限
         /// 
@@ -166,7 +166,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>数据表</returns>
-        public int ClearOrganizePermission(BaseUserInfo userInfo, string id)
+        public int ClearOrganizationPermission(BaseUserInfo userInfo, string id)
         {
             var result = 0;
 
@@ -174,11 +174,11 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var organizePermissionManager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var organizePermissionManager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 result += organizePermissionManager.RevokeAll(id);
 
                 tableName = userInfo.SystemCode + "PermissionScope";
-                var organizeScopeManager = new BaseOrganizePermissionScopeManager(dbHelper, userInfo, tableName);
+                var organizeScopeManager = new BaseOrganizationPermissionScopeManager(dbHelper, userInfo, tableName);
                 result += organizeScopeManager.RevokeAll(id);
 
             });
@@ -186,7 +186,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
+        #region public int RevokeOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
         /// <summary>
         /// 撤消组织机构的权限
         /// </summary>
@@ -194,7 +194,7 @@ namespace DotNet.Business
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="revokePermissionId">撤消权限数组</param>
         /// <returns>影响的行数</returns>
-        public int RevokeOrganizePermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
+        public int RevokeOrganizationPermissionById(BaseUserInfo userInfo, string organizationId, string revokePermissionId)
         {
             var result = 0;
 
@@ -202,7 +202,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var tableName = userInfo.SystemCode + "Permission";
-                var manager = new BaseOrganizePermissionManager(dbHelper, userInfo, tableName);
+                var manager = new BaseOrganizationPermissionManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
                 if (revokePermissionId != null)
                 {
@@ -224,16 +224,16 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        public PermissionOrganizeScope GetUserOrganizeScope(BaseUserInfo userInfo, string userId, string permissionCode)
+        public PermissionOrganizationScope GetUserOrganizationScope(BaseUserInfo userInfo, string userId, string permissionCode)
         {
-            var result = PermissionOrganizeScope.OnlyOwnData;
+            var result = PermissionOrganizationScope.OnlyOwnData;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var userScopeManager = new BaseUserScopeManager(dbHelper, userInfo);
                 var containChild = false;
-                result = userScopeManager.GetUserOrganizeScope(userInfo.SystemCode, userId, out containChild, permissionCode);
+                result = userScopeManager.GetUserOrganizationScope(userInfo.SystemCode, userId, out containChild, permissionCode);
             });
 
             return result;
@@ -244,18 +244,18 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="permissionOrganizeScope">组织机构范围</param>
+        /// <param name="permissionOrganizationScope">组织机构范围</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        public string SetUserOrganizeScope(BaseUserInfo userInfo, string userId, PermissionOrganizeScope permissionOrganizeScope, string permissionCode)
+        public string SetUserOrganizationScope(BaseUserInfo userInfo, string userId, PermissionOrganizationScope permissionOrganizationScope, string permissionCode)
         {
             var result = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userOrganizeScopeManager = new BaseUserScopeManager(userInfo);
-                result = userOrganizeScopeManager.SetUserOrganizeScope(userInfo.SystemCode, userId, permissionOrganizeScope, permissionCode, false);
+                var userOrganizationScopeManager = new BaseUserScopeManager(userInfo);
+                result = userOrganizationScopeManager.SetUserOrganizationScope(userInfo.SystemCode, userId, permissionOrganizationScope, permissionCode, false);
             });
 
             return result;
@@ -271,16 +271,16 @@ namespace DotNet.Business
         /// <param name="roleId">角色主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        public PermissionOrganizeScope GetRoleOrganizeScope(BaseUserInfo userInfo, string roleId, string permissionCode)
+        public PermissionOrganizationScope GetRoleOrganizationScope(BaseUserInfo userInfo, string roleId, string permissionCode)
         {
-            var result = PermissionOrganizeScope.OnlyOwnData;
+            var result = PermissionOrganizationScope.OnlyOwnData;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var roleOrganizeScopeManager = new BaseRoleScopeManager(dbHelper, userInfo);
+                var roleOrganizationScopeManager = new BaseRoleScopeManager(dbHelper, userInfo);
                 var containChild = false;
-                result = roleOrganizeScopeManager.GetRoleOrganizeScope(userInfo.SystemCode, roleId, out containChild, permissionCode);
+                result = roleOrganizationScopeManager.GetRoleOrganizationScope(userInfo.SystemCode, roleId, out containChild, permissionCode);
             });
 
             return result;
@@ -291,18 +291,18 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="roleId">角色主键</param>
-        /// <param name="permissionOrganizeScope">组织机构范围</param>
+        /// <param name="permissionOrganizationScope">组织机构范围</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        public string SetRoleOrganizeScope(BaseUserInfo userInfo, string roleId, PermissionOrganizeScope permissionOrganizeScope, string permissionCode)
+        public string SetRoleOrganizationScope(BaseUserInfo userInfo, string roleId, PermissionOrganizationScope permissionOrganizationScope, string permissionCode)
         {
             var result = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var roleOrganizeScopeManager = new BaseRoleScopeManager(dbHelper, userInfo);
-                result = roleOrganizeScopeManager.SetRoleOrganizeScope(userInfo.SystemCode, roleId, permissionOrganizeScope, permissionCode, false);
+                var roleOrganizationScopeManager = new BaseRoleScopeManager(dbHelper, userInfo);
+                result = roleOrganizationScopeManager.SetRoleOrganizationScope(userInfo.SystemCode, roleId, permissionOrganizationScope, permissionCode, false);
             });
             return result;
         }

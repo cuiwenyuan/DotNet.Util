@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Model;
 
     /// <summary>
-    /// BaseUserLogOnManager
+    /// BaseUserLogonManager
     /// 用户管理
     /// 
     /// 修改记录
@@ -23,13 +23,13 @@ namespace DotNet.Business
     ///		<date>2015.07.02</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserLogOnManager
+    public partial class BaseUserLogonManager
     {
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
-        public int Update(BaseUserLogOnEntity entity)
+        public int Update(BaseUserLogonEntity entity)
         {
             var result = 0;
             // 获取原始实体信息
@@ -47,14 +47,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public void UpdateEntityLog(BaseUserLogOnEntity newEntity, BaseUserLogOnEntity oldEntity, string tableName = null)
+        #region public void UpdateEntityLog(BaseUserLogonEntity newEntity, BaseUserLogonEntity oldEntity, string tableName = null)
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseUserLogOnEntity newEntity, BaseUserLogOnEntity oldEntity, string tableName = null)
+        public void UpdateEntityLog(BaseUserLogonEntity newEntity, BaseUserLogonEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -63,7 +63,7 @@ namespace DotNet.Business
                 tableName = BaseModifyRecordEntity.TableName;
             }
             var manager = new BaseModifyRecordManager(UserInfo, tableName);
-            foreach (var property in typeof(BaseUserLogOnEntity).GetProperties())
+            foreach (var property in typeof(BaseUserLogonEntity).GetProperties())
             {
                 var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
                 var newValue = Convert.ToString(property.GetValue(newEntity, null));
@@ -79,7 +79,7 @@ namespace DotNet.Business
                 record.NewValue = newValue;
                 record.OldValue = oldValue;
                 record.TableCode = CurrentTableName.ToUpper();
-                record.TableDescription = FieldExtensions.ToDescription(typeof(BaseUserLogOnEntity), "TableName");
+                record.TableDescription = FieldExtensions.ToDescription(typeof(BaseUserLogonEntity), "TableName");
                 record.RecordKey = oldEntity.Id;
                 record.IpAddress = Utils.GetIp();
                 manager.Add(record, true, false);

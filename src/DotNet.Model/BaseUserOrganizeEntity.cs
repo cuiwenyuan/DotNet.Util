@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseUserOrganizeEntity
+    /// BaseUserOrganizationEntity
     /// 用户组织关系（兼任）表
     /// 
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Model
     /// </author>
     /// </summary>
     [Serializable]
-	public partial class BaseUserOrganizeEntity : BaseEntity
+	public partial class BaseUserOrganizationEntity : BaseEntity
     {
         /// <summary>
         /// 主键
@@ -131,7 +131,7 @@ namespace DotNet.Model
         /// 用户组织关系表
         ///</summary>
         [NonSerialized]
-        public const string TableName = "BaseUserOrganize";
+        public const string TableName = "BaseUserOrganization";
 
         ///<summary>
         /// 主键

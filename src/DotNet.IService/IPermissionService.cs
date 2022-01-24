@@ -21,7 +21,7 @@ namespace DotNet.IService
     ///		2011.04.30 版本：2.0 JiRiGaLa 整理接口注释。
     ///		2010.07.06 版本：1.9 JiRiGaLa 数据权限进行优化处理，统一处理删除功能。
     ///		2010.05.24 版本：1.8 JiRiGaLa 增加 角色的权限判断。
-    ///		2009.09.09 版本：1.7 JiRiGaLa 增加 GetUserPermissionScope、GetOrganizeIdsByPermission、GetRoleIdsByPermission、GetUserIdsByPermission。
+    ///		2009.09.09 版本：1.7 JiRiGaLa 增加 GetUserPermissionScope、GetOrganizationIdsByPermission、GetRoleIdsByPermission、GetUserIdsByPermission。
     ///		2008.11.28 版本：1.6 JiRiGaLa 整理为52个标准接口定义，完善 GetLicensePermissionByUser 接口定义。
     ///		2008.11.27 版本：1.5 JiRiGaLa 整理为50个标准接口定义，有些permissionCode修改为permissionId。
     ///		2008.11.27 版本：1.5 JiRiGaLa 接口改进为B/S系统适合的接口定义 整理为45个标准接口定义。
@@ -129,7 +129,7 @@ namespace DotNet.IService
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限域编号</param>
         /// <returns>数据权限范围</returns>
-        PermissionOrganizeScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode);
+        PermissionOrganizationScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode);
 
 
         //用户权限范围判断相关(需要实现对外调用)
@@ -142,7 +142,7 @@ namespace DotNet.IService
         /// <param name="permissionCode">权限域编号</param>
         /// <param name="childrens">包含子节点</param>
         /// <returns>数据表</returns>
-        DataTable GetOrganizeDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode, bool childrens = true);
+        DataTable GetOrganizationDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode, bool childrens = true);
 
         /// <summary>
         /// 14.按某个数据权限获取组织主键数组
@@ -151,7 +151,7 @@ namespace DotNet.IService
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限域编号</param>
         /// <returns>主键数组</returns>
-        string[] GetOrganizeIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode);
+        string[] GetOrganizationIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode);
 
         /// <summary>
         /// 15.按某个数据权限获取角色列表

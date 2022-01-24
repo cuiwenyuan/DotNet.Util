@@ -82,17 +82,17 @@ namespace DotNet.Business
                 var sql = string.Empty;
 
                 // 1.本人直接就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
                 var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseRole') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganize' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseRole') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) AND (Enabled = 1) ";
                 dt = Fill(sql);
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。
-                // sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseOrganize') AND (PermissionId = " + result + ") AND (" + BaseContactEntity.FieldCreateTime + " = 0) AND (Enabled = 1) ";
+                // sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseOrganization') AND (PermissionId = " + result + ") AND (" + BaseContactEntity.FieldCreateTime + " = 0) AND (Enabled = 1) ";
                 // result = this.Fill(sql);
                 // string[] ids = StringUtil.Concat(result, BaseUtil.FieldToArray(result, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 

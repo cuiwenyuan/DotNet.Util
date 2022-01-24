@@ -12,7 +12,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager（程序OK）
+    /// BaseOrganizationManager（程序OK）
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -40,7 +40,7 @@ namespace DotNet.Business
     ///		<date>2007.12.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         // 当前的锁
         // private static object locker = new Object();
@@ -49,7 +49,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static string GetNames(List<BaseOrganizeEntity> list)
+        public static string GetNames(List<BaseOrganizationEntity> list)
         {
             var result = string.Empty;
 
@@ -69,28 +69,28 @@ namespace DotNet.Business
         /// 按编号获取实体
         /// </summary>
         /// <param name="code">编号</param>
-        public BaseOrganizeEntity GetEntityByCode(string code)
+        public BaseOrganizationEntity GetEntityByCode(string code)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCode, code),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCode, code),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
-            return BaseEntity.Create<BaseOrganizeEntity>(GetDataTable(parameters));
+            return BaseEntity.Create<BaseOrganizationEntity>(GetDataTable(parameters));
         }
 
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="fullName">名称</param>
-        public BaseOrganizeEntity GetEntityByName(string fullName)
+        public BaseOrganizationEntity GetEntityByName(string fullName)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, fullName),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, fullName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
-            return BaseEntity.Create<BaseOrganizeEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -98,17 +98,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="organizationId"></param>
         /// <returns></returns>
-        public DataTable GetInnerOrganize(string organizationId = null)
+        public DataTable GetInnerOrganization(string organizationId = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
             if (!string.IsNullOrEmpty(organizationId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizationId));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, organizationId));
             }
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldIsInnerOrganize, 1));
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0));
-            return GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldIsInnerOrganization, 1));
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
+            return GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
         }
 
         /// <summary>
@@ -121,12 +121,12 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>();
             if (!string.IsNullOrEmpty(organizationId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, organizationId));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, organizationId));
             }
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCategoryCode, "Company"));
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
-            parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0));
-            return GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCategoryCode, "Company"));
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
+            parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
+            return GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
         }
 
         /// <summary>
@@ -138,10 +138,10 @@ namespace DotNet.Business
         {
             foreach (DataRow dr in dt.Rows)
             {
-                var subCompanyNameEntity = GetEntity(dr[BaseOrganizeEntity.FieldParentId].ToString());
-                dr[BaseOrganizeEntity.FieldFullName] = subCompanyNameEntity.FullName + "--" + dr[BaseOrganizeEntity.FieldFullName];
+                var subCompanyNameEntity = GetEntity(dr[BaseOrganizationEntity.FieldParentId].ToString());
+                dr[BaseOrganizationEntity.FieldFullName] = subCompanyNameEntity.FullName + "--" + dr[BaseOrganizationEntity.FieldFullName];
                 var companyEntity = GetEntity(subCompanyNameEntity.ParentId);
-                dr[BaseOrganizeEntity.FieldFullName] = companyEntity.FullName + "--" + dr[BaseOrganizeEntity.FieldFullName];
+                dr[BaseOrganizationEntity.FieldFullName] = companyEntity.FullName + "--" + dr[BaseOrganizationEntity.FieldFullName];
             }
             return dt;
         }
@@ -154,13 +154,13 @@ namespace DotNet.Business
         public override int BatchSave(DataTable dt)
         {
             var result = 0;
-            var entity = new BaseOrganizeEntity();
+            var entity = new BaseOrganizationEntity();
             foreach (DataRow dr in dt.Rows)
             {
                 // 删除状态
                 if (dr.RowState == DataRowState.Deleted)
                 {
-                    var id = dr[BaseOrganizeEntity.FieldId, DataRowVersion.Original].ToString();
+                    var id = dr[BaseOrganizationEntity.FieldId, DataRowVersion.Original].ToString();
                     if (id.Length > 0)
                     {
                         result += DeleteObject(id);
@@ -169,7 +169,7 @@ namespace DotNet.Business
                 // 被修改过
                 if (dr.RowState == DataRowState.Modified)
                 {
-                    var id = dr[BaseOrganizeEntity.FieldId, DataRowVersion.Original].ToString();
+                    var id = dr[BaseOrganizationEntity.FieldId, DataRowVersion.Original].ToString();
                     if (id.Length > 0)
                     {
                         entity.GetFrom(dr);
@@ -202,7 +202,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int MoveTo(string id, string parentId)
         {
-            return SetProperty(id, new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, parentId));
+            return SetProperty(id, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId));
         }
 
         /// <summary>
@@ -214,19 +214,19 @@ namespace DotNet.Business
         {
             DataTable result = null;
             var sql = "  SELECT * "
-                        + " FROM " + BaseOrganizeEntity.TableName
-                        + "       WHERE  (" + BaseOrganizeEntity.FieldProvinceId + " IS NULL OR "
-                        + BaseOrganizeEntity.FieldCityId + " IS NULL OR "
-                        + BaseOrganizeEntity.FieldDistrictId + " IS NULL ) AND " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                        + "             AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ";
+                        + " FROM " + BaseOrganizationEntity.TableName
+                        + "       WHERE  (" + BaseOrganizationEntity.FieldProvinceId + " IS NULL OR "
+                        + BaseOrganizationEntity.FieldCityId + " IS NULL OR "
+                        + BaseOrganizationEntity.FieldDistrictId + " IS NULL ) AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                        + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ";
             if (!string.IsNullOrWhiteSpace(parentId))
             {
                 sql += "  START WITH Id = " + parentId + " "
-                   + "  CONNECT BY PRIOR " + BaseOrganizeEntity.FieldId + " = " + BaseOrganizeEntity.FieldParentId;
+                   + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId;
             }
-            sql += "    ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+            sql += "    ORDER BY " + BaseOrganizationEntity.FieldSortCode;
             result = DbHelper.Fill(sql);
-            result.TableName = BaseOrganizeEntity.TableName;
+            result.TableName = BaseOrganizationEntity.TableName;
             return result;
         }
 
@@ -234,7 +234,7 @@ namespace DotNet.Business
         /// <summary>
         /// 部门缓存表
         /// </summary>
-        private DataTable _dtOrganize = null;
+        private DataTable _dtOrganization = null;
 
         /// <summary>
         ///  部门名称前缀
@@ -244,87 +244,87 @@ namespace DotNet.Business
         /// <summary>
         /// 部门绑定表
         /// </summary>
-        private DataTable _organizeTable = new DataTable(BaseOrganizeEntity.TableName);
+        private DataTable _organizeTable = new DataTable(BaseOrganizationEntity.TableName);
 
-        #region public DataTable GetOrganizeTree(DataTable dtOrganize = null) 绑定下拉筐数据,组织机构树表
+        #region public DataTable GetOrganizationTree(DataTable dtOrganization = null) 绑定下拉筐数据,组织机构树表
         /// <summary>
         /// 绑定下拉筐数据,组织机构树表
         /// </summary>
-        /// <param name="dtOrganize">组织机构</param>
+        /// <param name="dtOrganization">组织机构</param>
         /// <returns>组织机构树表</returns>
-        public DataTable GetOrganizeTree(DataTable dtOrganize = null)
+        public DataTable GetOrganizationTree(DataTable dtOrganization = null)
         {
-            if (dtOrganize != null)
+            if (dtOrganization != null)
             {
-                _dtOrganize = dtOrganize;
+                _dtOrganization = dtOrganization;
             }
             else
             {
                 //2017.12.20增加默认的HttpRuntime.Cache缓存
-                var cacheKey = "DataTable.BaseOrganize";
+                var cacheKey = "DataTable.BaseOrganization";
                 //var cacheTime = default(TimeSpan);
                 var cacheTime = TimeSpan.FromMilliseconds(86400000);
-                _dtOrganize = CacheUtil.Cache<DataTable>(cacheKey, () =>
+                _dtOrganization = CacheUtil.Cache<DataTable>(cacheKey, () =>
                 {
                     //获取所有数据
                     var parameters = new List<KeyValuePair<string, object>>
                     {
                         //内部组织
-                        new KeyValuePair<string, object>(BaseOrganizeEntity.FieldIsInnerOrganize, 1),
-                        new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                        new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                        new KeyValuePair<string, object>(BaseOrganizationEntity.FieldIsInnerOrganization, 1),
+                        new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                        new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                     };
-                    return GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
+                    return GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
                 }, true, false, cacheTime);
 
                 // 直接读取数据库
                 //List<KeyValuePair<string, object>> parameters = new List<KeyValuePair<string, object>>();
-                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldIsInnerOrganize, 1));
-                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
-                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0));
-                //_dtOrganize = this.GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
+                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldIsInnerOrganization, 1));
+                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
+                //parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
+                //_dtOrganization = this.GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
             }
             // 初始化部门表
             if (_organizeTable.Columns.Count == 0)
             {
                 // 建立表的列，不能重复建立
-                _organizeTable.Columns.Add(new DataColumn(BaseOrganizeEntity.FieldId, Type.GetType("System.Int32")));
-                _organizeTable.Columns.Add(new DataColumn(BaseOrganizeEntity.FieldFullName, Type.GetType("System.String")));
+                _organizeTable.Columns.Add(new DataColumn(BaseOrganizationEntity.FieldId, Type.GetType("System.Int32")));
+                _organizeTable.Columns.Add(new DataColumn(BaseOrganizationEntity.FieldFullName, Type.GetType("System.String")));
             }
             
             // 查找子部门
-            for (var i = 0; i < _dtOrganize.Rows.Count; i++)
+            for (var i = 0; i < _dtOrganization.Rows.Count; i++)
             {
-                if (string.IsNullOrEmpty(_dtOrganize.Rows[i][BaseOrganizeEntity.FieldParentId].ToString()))
+                if (string.IsNullOrEmpty(_dtOrganization.Rows[i][BaseOrganizationEntity.FieldParentId].ToString()))
                 {
                     var dr = _organizeTable.NewRow();
-                    dr[BaseOrganizeEntity.FieldId] = _dtOrganize.Rows[i][BaseOrganizeEntity.FieldId];
-                    dr[BaseOrganizeEntity.FieldFullName] = _dtOrganize.Rows[i][BaseOrganizeEntity.FieldFullName];
+                    dr[BaseOrganizationEntity.FieldId] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldId];
+                    dr[BaseOrganizationEntity.FieldFullName] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldFullName];
                     _organizeTable.Rows.Add(dr);
-                    GetSubOrganize(_dtOrganize.Rows[i][BaseOrganizeEntity.FieldId]);
+                    GetSubOrganization(_dtOrganization.Rows[i][BaseOrganizationEntity.FieldId]);
                 }
             }
             return _organizeTable;
         }
         #endregion
 
-        #region public void GetSubOrganize(object parentId)
+        #region public void GetSubOrganization(object parentId)
         /// <summary>
         /// 获取子部门
         /// </summary>
         /// <param name="parentId">父节点主键</param>
-        public void GetSubOrganize(object parentId)
+        public void GetSubOrganization(object parentId)
         {
             _head += "--";
-            for (var i = 0; i < _dtOrganize.Rows.Count; i++)
+            for (var i = 0; i < _dtOrganization.Rows.Count; i++)
             {
-                if (_dtOrganize.Rows[i][BaseOrganizeEntity.FieldParentId].Equals(parentId))
+                if (_dtOrganization.Rows[i][BaseOrganizationEntity.FieldParentId].Equals(parentId))
                 {
                     var dr = _organizeTable.NewRow();
-                    dr[BaseOrganizeEntity.FieldId] = _dtOrganize.Rows[i][BaseOrganizeEntity.FieldId];
-                    dr[BaseOrganizeEntity.FieldFullName] = _head + _dtOrganize.Rows[i][BaseOrganizeEntity.FieldFullName];
+                    dr[BaseOrganizationEntity.FieldId] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldId];
+                    dr[BaseOrganizationEntity.FieldFullName] = _head + _dtOrganization.Rows[i][BaseOrganizationEntity.FieldFullName];
                     _organizeTable.Rows.Add(dr);
-                    GetSubOrganize(_dtOrganize.Rows[i][BaseOrganizeEntity.FieldId]);
+                    GetSubOrganization(_dtOrganization.Rows[i][BaseOrganizationEntity.FieldId]);
                 }
             }
             // 子级遍历完成后，退到父级
@@ -344,12 +344,12 @@ namespace DotNet.Business
         {
             string[] result = null;
             var sql = "  SELECT " + field
-                        + " FROM " + BaseOrganizeEntity.TableName
-                        + "       WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                        + "             AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
+                        + " FROM " + BaseOrganizationEntity.TableName
+                        + "       WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                        + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                         + "  START WITH Id = " + parentId + " "
-                        + "  CONNECT BY PRIOR " + BaseOrganizeEntity.FieldId + " = " + BaseOrganizeEntity.FieldParentId
-                        + "    ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                        + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
+                        + "    ORDER BY " + BaseOrganizationEntity.FieldSortCode;
             var dt = DbHelper.Fill(sql);
             result = BaseUtil.FieldToArray(dt, field);
             return result;
@@ -362,7 +362,7 @@ namespace DotNet.Business
         /// <param name="childrens">包含树形子节点</param>
         /// <param name="categoryCode">组织分类（Company,SubCompany,Department,SubDepartment,Workgroup）</param>
         /// <returns>数据表</returns>
-        public DataTable GetOrganizeDataTable(string parentId = null, bool childrens = false, string categoryCode = "Company")
+        public DataTable GetOrganizationDataTable(string parentId = null, bool childrens = false, string categoryCode = "Company")
         {
             DataTable result = null;
             if (!string.IsNullOrEmpty(parentId) && childrens)
@@ -371,13 +371,13 @@ namespace DotNet.Business
                 if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
                     sql = "     SELECT * "
-                               + " FROM " + BaseOrganizeEntity.TableName
-                               + "       WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                               + "             AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                               + "             AND (" + BaseOrganizeEntity.FieldCategoryCode + "= '"+ categoryCode + "' OR " + BaseOrganizeEntity.FieldCategoryCode + "= 'Sub"+ categoryCode + "')"
+                               + " FROM " + BaseOrganizationEntity.TableName
+                               + "       WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                               + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                               + "             AND (" + BaseOrganizationEntity.FieldCategoryCode + "= '"+ categoryCode + "' OR " + BaseOrganizationEntity.FieldCategoryCode + "= 'Sub"+ categoryCode + "')"
                                + "  START WITH Id = " + parentId + " "
-                               + "  CONNECT BY PRIOR " + BaseOrganizeEntity.FieldId + " = " + BaseOrganizeEntity.FieldParentId
-                               + "    ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                               + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
+                               + "    ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                     result = DbHelper.Fill(sql);
                 }
                 //此处递归查询需要完善 Troy.Cui 2018.07.21
@@ -391,17 +391,17 @@ namespace DotNet.Business
                 var parameters = new List<KeyValuePair<string, object>>();
                 if (!string.IsNullOrEmpty(parentId))
                 {
-                    parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, parentId));
+                    parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId));
                 }
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCategoryCode, categoryCode));
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0));
-                result = GetDataTable(parameters, BaseOrganizeEntity.FieldSortCode);
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCategoryCode, categoryCode));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
+                result = GetDataTable(parameters, BaseOrganizationEntity.FieldSortCode);
             }
 
             if (result != null)
             {
-                result.TableName = BaseOrganizeEntity.TableName;
+                result.TableName = BaseOrganizationEntity.TableName;
             }
             return result;
         }
@@ -412,9 +412,9 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">操作权限</param>
         /// <returns>组织机构列表</returns>
-        public List<BaseOrganizeEntity> GetListByPermission(string userId, string permissionCode = "Resource.ManagePermission")
+        public List<BaseOrganizationEntity> GetListByPermission(string userId, string permissionCode = "Resource.ManagePermission")
         {
-            List<BaseOrganizeEntity> result = null;
+            List<BaseOrganizationEntity> result = null;
 
             // 先获取有权限的主键
             // string tableName = UserInfo.SystemCode + "PermissionScope";
@@ -424,7 +424,7 @@ namespace DotNet.Business
             // 然后再获取地区表，获得所有的列表
             if (ids != null && ids.Length > 0)
             {
-                result = GetList<BaseOrganizeEntity>(ids);
+                result = GetList<BaseOrganizationEntity>(ids);
             }
 
             return result;
@@ -437,7 +437,7 @@ namespace DotNet.Business
         public int GetPinYin()
         {
             var result = 0;
-            var list = GetList<BaseOrganizeEntity>();
+            var list = GetList<BaseOrganizationEntity>();
             foreach (var entity in list)
             {
                 if (string.IsNullOrEmpty(entity.QuickQuery))
@@ -455,16 +455,16 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public DataTable Search(string searchKey, string parentId = null, bool isInnerOrganize = true, bool childrens = false) 搜索组织机构
+        #region public DataTable Search(string searchKey, string parentId = null, bool isInnerOrganization = true, bool childrens = false) 搜索组织机构
         /// <summary>
         /// 搜索组织机构
         /// </summary>
         /// <param name="searchKey">查询内容</param>
         /// <param name="parentId">上级组织机构</param>
-        /// <param name="isInnerOrganize">内部组织机构</param>
+        /// <param name="isInnerOrganization">内部组织机构</param>
         /// <param name="childrens">包含子结点</param>
         /// <returns>数据表</returns>
-        public DataTable Search(string searchKey, string parentId = null, bool? isInnerOrganize = null, bool? childrens = null)
+        public DataTable Search(string searchKey, string parentId = null, bool? isInnerOrganization = null, bool? childrens = null)
         {
             var sql = string.Empty;
             List<IDbDataParameter> dbParameters;
@@ -472,73 +472,73 @@ namespace DotNet.Business
             {
                 sql = "SELECT * "
                         + " FROM " + CurrentTableName
-                        + " WHERE " + BaseOrganizeEntity.FieldDeleted + " =  0 ";
-                if (isInnerOrganize.HasValue)
+                        + " WHERE " + BaseOrganizationEntity.FieldDeleted + " =  0 ";
+                if (isInnerOrganization.HasValue)
                 {
-                    var innerOrganize = isInnerOrganize.Value == true ? "1" : "0";
-                    sql += string.Format(" AND {0} = {1}", BaseOrganizeEntity.FieldIsInnerOrganize, innerOrganize);
+                    var innerOrganization = isInnerOrganization.Value == true ? "1" : "0";
+                    sql += string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldIsInnerOrganization, innerOrganization);
                 }
                 if (!string.IsNullOrEmpty(parentId))
                 {
-                    sql += string.Format(" AND {0} = {1}", BaseOrganizeEntity.FieldParentId, parentId);
+                    sql += string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldParentId, parentId);
                 }
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim().ToLower();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizeEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizeEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizeEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
+                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
                     }
-                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizeEntity.FieldFullName, searchKey));
+                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldFullName, searchKey));
                 }
-                sql += " ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                 return DbHelper.Fill(sql, dbParameters.ToArray());
             }
             else
             {
                 sql = "     SELECT * "
-                         + " FROM " + BaseOrganizeEntity.TableName
-                         + "       WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                         + "             AND " + BaseOrganizeEntity.FieldDeleted + " = 0 ";
+                         + " FROM " + BaseOrganizationEntity.TableName
+                         + "       WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                         + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ";
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizeEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizeEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizeEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizeEntity.FieldFullName));
+                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
                     }
-                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizeEntity.FieldFullName, searchKey));
+                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldFullName, searchKey));
                 }
 
                 if (!string.IsNullOrEmpty(parentId))
                 {
                     sql += "  START WITH Id = " + parentId + " "
-                             + "  CONNECT BY PRIOR " + BaseOrganizeEntity.FieldId + " = " + BaseOrganizeEntity.FieldParentId;
+                             + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId;
                 }
 
-                sql += " ORDER BY " + BaseOrganizeEntity.FieldSortCode;
+                sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                 return DbHelper.Fill(sql, dbParameters.ToArray());
             }
         }
         #endregion
 
-        #region 根据城市Id获取外网展示网点 public DataTable GetWebOrganizeByDistrictId(string districtId)
+        #region 根据城市Id获取外网展示网点 public DataTable GetWebOrganizationByDistrictId(string districtId)
         /// <summary>
         /// 根据城市Id获取外网展示网点
         /// </summary>
         /// <param name="cityId">城市Id</param>
         /// <returns></returns>
-        public DataTable GetWebOrganizeList(string cityId)
+        public DataTable GetWebOrganizationList(string cityId)
         {
             var commandText = @"SELECT o.Id
                                          ,o.Code
@@ -553,7 +553,7 @@ namespace DotNet.Business
                               LEFT JOIN BaseArea a ON o.ProvinceId = a.id 
                               LEFT JOIN BASEORGANIZEGIS c ON o.id = c.id
                                   WHERE c.WebShowEnable = 1 
-                                        AND o." + BaseOrganizeEntity.FieldDeleted + @" = 0 
+                                        AND o." + BaseOrganizationEntity.FieldDeleted + @" = 0 
                                         AND o.CityId=" + dbHelper.GetParameter("CityId");
             var dbParameters = new List<KeyValuePair<string, object>>
             {
@@ -563,7 +563,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 根据网点Id获取外网展示网点 public DataTable GetWebOrganizeById(string Id)
+        #region 根据网点Id获取外网展示网点 public DataTable GetWebOrganizationById(string Id)
 
         /// <summary>
         /// 根据网点Id获取外网展示网点
@@ -571,7 +571,7 @@ namespace DotNet.Business
         /// <param name="id">网点Id</param>
         /// <param name="code">网点编号</param>
         /// <returns></returns>
-        public DataTable GetWebOrganize(string id, string code)
+        public DataTable GetWebOrganization(string id, string code)
         {
             // id可以是多个网点Id
             var ids = DbUtil.SqlSafe(id).Split(',');
@@ -665,7 +665,7 @@ namespace DotNet.Business
                               LEFT JOIN BaseArea a ON o.ProvinceId = a.id 
                               LEFT JOIN BASEORGANIZEGIS c ON o.id = c.id
                                   WHERE c.WebShowEnable = 1 
-                                        AND o." + BaseUserOrganizeEntity.FieldDeleted + " = 0 AND "
+                                        AND o." + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND "
                                         + conditions;
             return dbHelper.Fill(commandText, dbHelper.MakeParameters(dbParameters));
         }
@@ -798,11 +798,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>用户信息</returns>
-        public static BaseOrganizeEntity SetCache(string id)
+        public static BaseOrganizationEntity SetCache(string id)
         {
-            BaseOrganizeEntity result = null;
+            BaseOrganizationEntity result = null;
 
-            var manager = new BaseOrganizeManager();
+            var manager = new BaseOrganizationManager();
             result = manager.GetEntity(id);
 
             if (result != null)
@@ -822,12 +822,12 @@ namespace DotNet.Business
             var result = 0;
 
             // 把所有的组织机构都缓存起来的代码
-            var manager = new BaseOrganizeManager();
+            var manager = new BaseOrganizationManager();
             using (var dataReader = manager.ExecuteReader())
             {
                 while (dataReader.Read())
                 {
-                    var entity = BaseEntity.Create<BaseOrganizeEntity>(dataReader, false);
+                    var entity = BaseEntity.Create<BaseOrganizationEntity>(dataReader, false);
                     if (entity != null)
                     {
                         SetCache(entity);
@@ -835,7 +835,7 @@ namespace DotNet.Business
                         for (var i = 0; i < systemCodes.Length; i++)
                         {
                             // 重置权限缓存数据
-                            BaseOrganizePermissionManager.ResetPermissionByCache(systemCodes[i], entity.Id);
+                            BaseOrganizationPermissionManager.ResetPermissionByCache(systemCodes[i], entity.Id);
                         }
                         result++;
                         Console.WriteLine(result + " : " + entity.FullName);
@@ -852,15 +852,15 @@ namespace DotNet.Business
         /// <param name="id"></param>
         /// <param name="refreshCache"></param>
         /// <returns></returns>
-        public static BaseOrganizeEntity GetEntityByCache(string id, bool refreshCache = false)
+        public static BaseOrganizationEntity GetEntityByCache(string id, bool refreshCache = false)
         {
-            BaseOrganizeEntity result = null;
+            BaseOrganizationEntity result = null;
 
             if (!string.IsNullOrEmpty(id))
             {
                 var cacheKey = "O:";
                 cacheKey += id;
-                result = CacheUtil.Cache(cacheKey, () => new BaseOrganizeManager().GetEntity(id),true, refreshCache);
+                result = CacheUtil.Cache(cacheKey, () => new BaseOrganizationManager().GetEntity(id),true, refreshCache);
             }
             
             return result;
@@ -880,8 +880,8 @@ namespace DotNet.Business
             //{
             //    cacheKey += "DataTable." + UserInfo.SystemCode + ".ModuleTree";
             //}
-            var cacheKey = "DataTable.BaseOrganize";
-            var cacheKeyTree = "DataTable.BaseOrganizeTree";
+            var cacheKey = "DataTable.BaseOrganization";
+            var cacheKeyTree = "DataTable.BaseOrganizationTree";
             CacheUtil.Remove(cacheKeyTree);
             result = CacheUtil.Remove(cacheKey);
             return result;

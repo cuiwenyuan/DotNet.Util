@@ -10,7 +10,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// BaseOrganizeEntity
+    /// BaseOrganizationEntity
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -24,7 +24,7 @@ namespace DotNet.Model
     ///		<date>2012-05-07</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeEntity
+    public partial class BaseOrganizationEntity
     {
         /// <summary>
         /// 统计名称

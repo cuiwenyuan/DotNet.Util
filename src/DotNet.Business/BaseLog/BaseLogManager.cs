@@ -260,7 +260,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        //public DataTable Search(string[] userIds, string search, bool? enabled, bool OnlyOnLine)
+        //public DataTable Search(string[] userIds, string search, bool? enabled, bool OnlyOnline)
         //{
         //    search = StringUtil.GetSearchString(search);
         //    string sql = "SELECT " + BaseLogEntity.TableName + ".*," + BaseUserEntity.TableName+ ".* " 
@@ -294,9 +294,9 @@ namespace DotNet.Business
         /// <param name="userIds"></param>
         /// <param name="search"></param>
         /// <param name="enabled"></param>
-        /// <param name="onlyOnLine"></param>
+        /// <param name="onlyOnline"></param>
         /// <returns></returns>
-        public DataTable Search(string[] userIds, string search, bool? enabled, bool onlyOnLine)
+        public DataTable Search(string[] userIds, string search, bool? enabled, bool onlyOnline)
         {
             //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
@@ -307,8 +307,8 @@ namespace DotNet.Business
 
             sql += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"
                         + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldRealName + " LIKE '%" + search + "%'"
-                        + " OR " + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldIpAddress + " LIKE '%" + search + "%'"
-                        + " OR " + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldMacAddress + " LIKE '%" + search + "%'"
+                        + " OR " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress + " LIKE '%" + search + "%'"
+                        + " OR " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress + " LIKE '%" + search + "%'"
                         + ")";
 
             sql += " ORDER BY " + BaseUserEntity.FieldSortCode;

@@ -55,7 +55,7 @@ namespace DotNet.Business
                 {
                     // 数据权限部分，部门的权限部分。
                     var permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-                    var ids = permissionScopeManager.GetOrganizeIds(userInfo.Id, "File.Admin");
+                    var ids = permissionScopeManager.GetOrganizationIds(userInfo.Id, "File.Admin");
                     // 获取安全等级，比自己小的。
                     var commandText = string.Format(@"SELECT * 
                                FROM BaseFolder 
@@ -106,7 +106,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByParent(BaseUserInfo userInfo, string id)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -245,7 +245,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(BaseUserInfo userInfo, string searchKey)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>

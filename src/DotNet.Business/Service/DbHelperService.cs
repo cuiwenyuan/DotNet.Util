@@ -65,7 +65,7 @@ namespace DotNet.Business
 
             // 加强安全验证防止未授权匿名调用
 #if (!DEBUG)
-            LogOnService.UserIsLogOn(null, userInfo);
+            LogonService.UserIsLogon(null, userInfo);
 #endif
         }
 
@@ -100,7 +100,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = ExecuteNonQuery(userInfo, commandText, null, commandType);
             }
@@ -125,7 +125,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = DbHelper.ExecuteNonQuery(commandText, DbHelper.MakeParameters(dbParameters), Util.DbHelper.GetCommandType(commandType));
             }
@@ -147,7 +147,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = ExecuteScalar(userInfo, commandText, null, commandType);
             }
@@ -172,7 +172,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = DbHelper.ExecuteScalar(commandText, DbHelper.MakeParameters(dbParameters), DotNet.Util.DbHelper.GetCommandType(commandType));
             }
@@ -194,7 +194,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = Fill(userInfo, commandText, null, commandType);
             }
@@ -219,7 +219,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 result = DbHelper.Fill(commandText, DbHelper.MakeParameters(dbParameters), DotNet.Util.DbHelper.GetCommandType(commandType));
             }
@@ -257,7 +257,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 var dbHelper = DbHelper;
                 var dbparams = sqlExecute.GetParameters(dbHelper);
@@ -280,7 +280,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 var dbHelper = DbHelper;
                 var dbparams = sqlExecute.GetParameters(dbHelper);
@@ -303,7 +303,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             var userManager = new BaseUserManager(userInfo);
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 var dbHelper = DbHelper;
                 var dbparams = sqlExecute.GetParameters(dbHelper);
@@ -334,7 +334,7 @@ namespace DotNet.Business
             var userManager = new BaseUserManager(userInfo);
             recordCount = 0;
             // 判断是否已经登录的用户？
-            if (userManager.UserIsLogOn(userInfo))
+            if (userManager.UserIsLogon(userInfo))
             {
                 if (SecretUtil.IsSqlSafe(conditions))
                 {

@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		<date>2014.12.08</date>
     /// </author>
     /// </summary>
-    public partial class BaseDepartmentManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseDepartmentManager : BaseManager //, IBaseOrganizationManager
     {
         // 当前的锁
         // private static object locker = new Object();
@@ -59,8 +59,8 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCode, code),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCode, code),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
             return BaseEntity.Create<BaseDepartmentEntity>(GetDataTable(parameters));
         }
@@ -74,10 +74,10 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, fullName),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCompanyId, companyId),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, fullName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCompanyId, companyId),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1)
             };
             return BaseEntity.Create<BaseDepartmentEntity>(ExecuteReader(parameters));
         }

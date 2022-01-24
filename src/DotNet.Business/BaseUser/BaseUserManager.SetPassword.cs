@@ -87,35 +87,35 @@ namespace DotNet.Business
             // 设置密码字段
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUserPassword, encryptPassword),
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserPassword, encryptPassword),
 
                 // 2016-05-20 吉日嘎拉 把修改的痕迹保留起来
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUpdateTime, DateTime.Now)
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateTime, DateTime.Now)
             };
             if (UserInfo != null)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUpdateUserId, UserInfo.Id));
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUpdateBy, UserInfo.RealName));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName));
             }
 
             //需要重新登录才可以，防止正在被人黑中，阻止已经在线上的人
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
             if (BaseSystemInfo.ServerEncryptPassword)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldSalt, salt));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldSalt, salt));
             }
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldChangePasswordDate, DateTime.Now));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordDate, DateTime.Now));
             if (unlock.HasValue && unlock.Value == true)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldEnabled, 1));
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockStartDate, null));
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldLockEndDate, null));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldEnabled, 1));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartDate, null));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndDate, null));
             }
-            var userLogOnManager = new BaseUserLogOnManager(DbHelper, UserInfo);
-            result = userLogOnManager.SetProperty(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, userId), parameters);
+            var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
+            result = userLogonManager.SetProperty(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, userId), parameters);
             if (result == 0 && autoAdd.HasValue && autoAdd.Value == true)
             {
-                var userLogOnEntity = new BaseUserLogOnEntity
+                var userLogonEntity = new BaseUserLogonEntity
                 {
                     Id = userId,
                     ChangePasswordDate = DateTime.Now,
@@ -127,10 +127,10 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    userLogOnEntity.CreateUserId = UserInfo.Id;
-                    userLogOnEntity.CreateBy = UserInfo.RealName;
+                    userLogonEntity.CreateUserId = UserInfo.Id;
+                    userLogonEntity.CreateBy = UserInfo.RealName;
                 }
-                userLogOnManager.AddEntity(userLogOnEntity);
+                userLogonManager.AddEntity(userLogonEntity);
                 result = 1;
             }
 
@@ -139,9 +139,9 @@ namespace DotNet.Business
             {
                 var record = new BaseModifyRecordEntity
                 {
-                    TableCode = BaseUserLogOnEntity.TableName.ToUpper(),
+                    TableCode = BaseUserLogonEntity.TableName.ToUpper(),
                     TableDescription = "用户登录信息表",
-                    ColumnCode = BaseUserLogOnEntity.FieldUserPassword,
+                    ColumnCode = BaseUserLogonEntity.FieldUserPassword,
                     ColumnDescription = "用户密码",
                     RecordKey = userId,
                     NewValue = "设置密码"
@@ -221,12 +221,12 @@ namespace DotNet.Business
             }
 
             List<KeyValuePair<string, object>> parameters = new List<KeyValuePair<string, object>>();
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldUserPassword, encryptPassword));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserPassword, encryptPassword));
             // 需要重新登录才可以，防止正在被人黑中，阻止已经在线上的人
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldChangePasswordDate, DateTime.Now));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordDate, DateTime.Now));
             // 设置密码字段
-            result += new BaseUserLogOnManager(this.DbHelper, this.UserInfo).SetProperty(userIds, parameters);
+            result += new BaseUserLogonManager(this.DbHelper, this.UserInfo).SetProperty(userIds, parameters);
 
             if (result > 0)
             {

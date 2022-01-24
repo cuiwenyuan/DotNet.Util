@@ -63,9 +63,9 @@ namespace DotNet.Business
         /// 创建登录服务
         /// </summary>
         /// <returns></returns>
-        public virtual ILogOnService CreateLogOnService()
+        public virtual ILogonService CreateLogonService()
         {
-            return new LogOnService();
+            return new LogonService();
         }
 
         /// <summary>
@@ -126,9 +126,9 @@ namespace DotNet.Business
         /// 创建组织机构服务
         /// </summary>
         /// <returns></returns>
-        public virtual IOrganizeService CreateOrganizeService()
+        public virtual IOrganizationService CreateOrganizationService()
         {
-            return new OrganizeService();
+            return new OrganizationService();
         }
 
         /// <summary>

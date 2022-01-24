@@ -54,7 +54,7 @@ namespace DotNet.Business
                 }
             }
             // 判断输入原始密码是否正确
-            var entity = new BaseUserLogOnManager(DbHelper, UserInfo).GetEntity(UserInfo.Id);
+            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntity(UserInfo.Id);
             if (entity.UserPassword == null)
             {
                 entity.UserPassword = string.Empty;
@@ -107,24 +107,24 @@ namespace DotNet.Business
                 encryptNewPassword = EncryptUserPassword(newPassword, salt);
             }
             var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(BaseUserLogOnEntity.TableName);
+            sqlBuilder.BeginUpdate(BaseUserLogonEntity.TableName);
             if (BaseSystemInfo.ServerEncryptPassword)
             {
-                sqlBuilder.SetValue(BaseUserLogOnEntity.FieldSalt, salt);
+                sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, salt);
             }
             // 宋彪：此处增加更新密码强度级别
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldPasswordStrength, SecretUtil.GetUserPassWordRate(newPassword));
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUserPassword, encryptNewPassword);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordStrength, SecretUtil.GetUserPassWordRate(newPassword));
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserPassword, encryptNewPassword);
             // 2015-08-04 吉日嘎拉 修改了密码后,把需要修改密码字段设置为 0
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldNeedModifyPassword, 0);
-            sqlBuilder.SetDbNow(BaseUserLogOnEntity.FieldChangePasswordDate);
-            sqlBuilder.SetDbNow(BaseUserLogOnEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldNeedModifyPassword, 0);
+            sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldChangePasswordDate);
+            sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldUpdateTime);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateBy, UserInfo.RealName);
+                sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName);
             }
-            sqlBuilder.SetWhere(BaseUserLogOnEntity.FieldId, userId);
+            sqlBuilder.SetWhere(BaseUserLogonEntity.FieldId, userId);
             var result = sqlBuilder.EndUpdate();
 
             if (result == 1)
@@ -134,9 +134,9 @@ namespace DotNet.Business
 
                 // 2015-12-09 吉日嘎拉 增加日志功能、谁什么时候设置了谁的密码？
                 var record = new BaseModifyRecordEntity();
-                record.TableCode = BaseUserLogOnEntity.TableName.ToUpper();
+                record.TableCode = BaseUserLogonEntity.TableName.ToUpper();
                 record.TableDescription = "用户登录信息表";
-                record.ColumnCode = BaseUserLogOnEntity.FieldUserPassword;
+                record.ColumnCode = BaseUserLogonEntity.FieldUserPassword;
                 record.ColumnDescription = "用户密码";
                 record.RecordKey = userId;
                 record.NewValue = "修改密码";
@@ -167,7 +167,7 @@ namespace DotNet.Business
                 }
                 */
                 
-                userInfo = LogOnByOpenId(UserInfo.OpenId, UserInfo.SystemCode).UserInfo;
+                userInfo = LogonByOpenId(UserInfo.OpenId, UserInfo.SystemCode).UserInfo;
                 // 同步处理其他系统的密码修改动作
                 if (BaseSystemInfo.ServerEncryptPassword)
                 {

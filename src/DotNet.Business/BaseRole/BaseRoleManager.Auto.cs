@@ -264,7 +264,7 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseRoleEntity entity)
         {
-            sqlBuilder.SetValue(BaseRoleEntity.FieldOrganizeId, entity.OrganizeId);
+            sqlBuilder.SetValue(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId);
             sqlBuilder.SetValue(BaseRoleEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseRoleEntity.FieldRealName, entity.RealName);
             sqlBuilder.SetValue(BaseRoleEntity.FieldCategoryCode, entity.CategoryCode);

@@ -16,7 +16,7 @@ namespace DotNet.Business
         #region OAuth登录
 
         /// <summary>
-        /// LogOnWindowsAuthentication
+        /// LogonWindowsAuthentication
         /// </summary>
         /// <param name="systemCode">子系统</param>
         /// <param name="oAuthName">OAuth 类型</param>
@@ -57,9 +57,9 @@ namespace DotNet.Business
 
                     // 统一的登录服务
                     var dotNetService = new DotNetService();
-                    var userLogOnResult = dotNetService.LogOnService.LogOnByUserName(taskId, systemCode, GetUserInfo(), entityUser.UserName);
+                    var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), entityUser.UserName);
                     // 检查身份
-                    if (userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+                    if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
@@ -81,30 +81,30 @@ namespace DotNet.Business
                             {
                                 RemoveUserCookie();
                             }
-                            LogOn(userLogOnResult.UserInfo, formsAuthentication);
+                            Logon(userLogonResult.UserInfo, formsAuthentication);
 
-                            userLogOnResult.StatusCode = Status.Ok.ToString();
-                            userLogOnResult.StatusMessage = "登录成功";
+                            userLogonResult.StatusCode = Status.Ok.ToString();
+                            userLogonResult.StatusMessage = "登录成功";
                             statusCode = Status.Ok.ToString();
                             statusMessage = "登录成功";
-                            result = userLogOnResult.UserInfo;
+                            result = userLogonResult.UserInfo;
                         }
                         else
                         {
-                            userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                            userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                            statusCode = Status.LogOnDeny.ToString();
+                            userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                            userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                            statusCode = Status.LogonDeny.ToString();
                             statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                            result = userLogOnResult.UserInfo;
+                            result = userLogonResult.UserInfo;
                         }
                     }
                     else
                     {
-                        userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                        userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                        statusCode = Status.LogOnDeny.ToString();
+                        userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                        userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                        statusCode = Status.LogonDeny.ToString();
                         statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                        result = userLogOnResult.UserInfo;
+                        result = userLogonResult.UserInfo;
                     }
                 }
             }

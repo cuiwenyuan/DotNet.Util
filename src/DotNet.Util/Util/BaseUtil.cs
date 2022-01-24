@@ -267,16 +267,16 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region  public static PermissionOrganizeScope GetPermissionScope(string[] organizationIds) 获取权限范围的设置
+        #region  public static PermissionOrganizationScope GetPermissionScope(string[] organizationIds) 获取权限范围的设置
         /// <summary>
         /// 获取权限范围的设置
         /// </summary>
         /// <param name="organizationIds">有权限的组织机构</param>
         /// <returns>权限范围</returns>
-        public static PermissionOrganizeScope GetPermissionScope(string[] organizationIds)
+        public static PermissionOrganizationScope GetPermissionScope(string[] organizationIds)
         {
-            var result = PermissionOrganizeScope.NotAllowed;
-            //foreach (PermissionOrganizeScope permissionScope in (PermissionOrganizeScope[])Enum.GetValues(typeof(PermissionOrganizeScope)))
+            var result = PermissionOrganizationScope.NotAllowed;
+            //foreach (PermissionOrganizationScope permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
             //{
             //    if (StringUtil.Exists(organizationIds, permissionScope.ToString()))
             //    {
@@ -285,7 +285,7 @@ namespace DotNet.Util
             //    }
             //}
             #region BUG修复
-            foreach (var permissionScope in (PermissionOrganizeScope[])Enum.GetValues(typeof(PermissionOrganizeScope)))
+            foreach (var permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
             {
                 var scope = Convert.ToInt32(permissionScope);
                 if (StringUtil.Exists(organizationIds, scope.ToString()))

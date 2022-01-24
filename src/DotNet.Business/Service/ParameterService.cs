@@ -43,7 +43,7 @@ namespace DotNet.Business
             return UserConfigUtil.GetValue(key);
         }
 
-        #region public BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string tableName, string id)
+        #region public BaseOrganizationEntity GetEntity(BaseUserInfo userInfo, string tableName, string id)
         /// <summary>
         /// 获取实体
         /// </summary>

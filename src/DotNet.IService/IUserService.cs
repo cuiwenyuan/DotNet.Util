@@ -43,12 +43,12 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="entity">实体</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">联系方式</param>
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        string CreateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogOnEntity userLogOnEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage);
+        string CreateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage);
 
         /// <summary>
         /// 获取实体
@@ -215,12 +215,12 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="entity">用户实体</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式实体</param>
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogOnEntity userLogOnEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage);
+        int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage);
 
         /// <summary>
         /// 设置用户状态
@@ -328,7 +328,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
         /// <returns>数据表</returns>
-        DataTable GetUserOrganizeDT(BaseUserInfo userInfo, string userId);
+        DataTable GetUserOrganizationDT(BaseUserInfo userInfo, string userId);
 
         /// <summary>
         /// 用户是否在组织中
@@ -337,7 +337,7 @@ namespace DotNet.IService
         /// <param name="userId"></param>
         /// <param name="organizeName"></param>
         /// <returns></returns>
-        bool UserIsInOrganize(BaseUserInfo userInfo, string userId, string organizeName);
+        bool UserIsInOrganization(BaseUserInfo userInfo, string userId, string organizeName);
 
         /// <summary>
         /// 用户帐户添加到组织机构
@@ -347,7 +347,7 @@ namespace DotNet.IService
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        string AddUserToOrganize(BaseUserInfo userInfo, BaseUserOrganizeEntity entity, out string statusCode, out string statusMessage);
+        string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out string statusCode, out string statusMessage);
 
         /// <summary>
         /// 批量删除
@@ -355,7 +355,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="ids">主键数组</param>
         /// <returns>影响行数</returns>
-        int BatchDeleteUserOrganize(BaseUserInfo userInfo, string[] ids);
+        int BatchDeleteUserOrganization(BaseUserInfo userInfo, string[] ids);
 
         /// <summary>
         /// 按角色获取用户

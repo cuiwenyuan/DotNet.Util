@@ -52,7 +52,7 @@ namespace DotNet.Business
             //用户表名
             var tableNameUser = BaseUserEntity.TableName;
             //用户登录表名
-            var tableNameUserLogOn = BaseUserLogOnEntity.TableName;
+            var tableNameUserLogon = BaseUserLogonEntity.TableName;
             pageIndex++;
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //只显示已锁定用户
@@ -82,13 +82,13 @@ namespace DotNet.Business
                 //sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " = " + organizationId + ")";
                 //只选择当前和下一级
                 //sb.Append(" AND " + BaseUserEntity.FieldDepartmentId 
-                //    + " IN ( SELECT " + BaseOrganizeEntity.FieldId 
-                //    + " FROM " + BaseOrganizeEntity.TableName 
-                //    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + organizationId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + organizationId + ")";
+                //    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
+                //    + " FROM " + BaseOrganizationEntity.TableName 
+                //    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + organizationId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + organizationId + ")";
 
                 //所有下级的都列出来
-                var organizeManager = new BaseOrganizeManager(UserInfo);
-                var ids = organizeManager.GetChildrensId(BaseOrganizeEntity.FieldId, organizationId, BaseOrganizeEntity.FieldParentId);
+                var organizeManager = new BaseOrganizationManager(UserInfo);
+                var ids = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
@@ -240,27 +240,27 @@ namespace DotNet.Business
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldUpdateBy;
 
             //用户登录表
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowStartTime;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowEndTime;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockStartDate;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockEndDate;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldFirstVisit;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldPreviousVisit;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLastVisit;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldChangePasswordDate;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLogOnCount;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldMultiUserLogin;
-            viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUserOnLine;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
             //不从用户登录表读取这些字段，从用户表读取即可
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldCreateTime;
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldCreateUserId;
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldCreateBy;
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUpdateTime;
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUpdateUserId;
-            //viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUpdateBy;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateTime;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateUserId;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateBy;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateTime;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateUserId;
+            //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateBy;
 
-            viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNameUserLogOn;
-            viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldId;
+            viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNameUserLogon;
+            viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
 
             //指定角色，就读取相应的UserRole授权日期
             if (ValidateUtil.IsInt(roleId))
@@ -312,17 +312,17 @@ namespace DotNet.Business
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditStatus;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditDate;
                 //用户登录表
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowStartTime;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowEndTime;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockStartDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockEndDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldFirstVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldPreviousVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLastVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldChangePasswordDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLogOnCount;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldMultiUserLogin;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUserOnLine;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
                 //授权日期
                 viewName += "," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateTime;
                 viewName += "," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateUserId;
@@ -332,8 +332,8 @@ namespace DotNet.Business
                 viewName += "," + tableNameUserRole + "." + BaseUserRoleEntity.FieldUpdateBy;
                 viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNameUserRole;
                 viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId;
-                viewName += " INNER JOIN " + tableNameUserLogOn;
-                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldId;
+                viewName += " INNER JOIN " + tableNameUserLogon;
+                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
                 viewName += " WHERE (" + tableNameUserRole + "." + BaseUserRoleEntity.FieldRoleId + " = " + roleId + ")";
             }
             //指定菜单模块，就读取相应的Permission授权日期
@@ -386,17 +386,17 @@ namespace DotNet.Business
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditStatus;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditDate;
                 //用户登录表
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowStartTime;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldAllowEndTime;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockStartDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLockEndDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldFirstVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldPreviousVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLastVisit;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldChangePasswordDate;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldLogOnCount;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldMultiUserLogin;
-                viewName += "," + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldUserOnLine;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
                 //授权日期
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime;
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId;
@@ -406,8 +406,8 @@ namespace DotNet.Business
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy;
                 viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNamePermission;
                 viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId;
-                viewName += " INNER JOIN " + tableNameUserLogOn;
-                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogOn + "." + BaseUserLogOnEntity.FieldId;
+                viewName += " INNER JOIN " + tableNameUserLogon;
+                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
                 viewName += " WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameUser + "')";
                 viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + ")";
             }

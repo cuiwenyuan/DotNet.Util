@@ -12,7 +12,7 @@ namespace DotNet.IService
     using Util;
     
     /// <summary>
-    /// IOrganizeService
+    /// IOrganizationService
     /// 
     /// 修改记录
     /// 
@@ -23,7 +23,7 @@ namespace DotNet.IService
     ///		<date>2008.03.23</date>
     /// </author> 
     /// </summary>
-    public partial interface IOrganizeService
+    public partial interface IOrganizationService
     {
         /// <summary>
         /// 获取实体
@@ -31,7 +31,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="id">主键</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetEntity(BaseUserInfo userInfo, string id);
+        BaseOrganizationEntity GetEntity(BaseUserInfo userInfo, string id);
 
         /// <summary>
         /// 获取实体按编号
@@ -39,7 +39,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetEntityByCode(BaseUserInfo userInfo, string code);
+        BaseOrganizationEntity GetEntityByCode(BaseUserInfo userInfo, string code);
 
         /// <summary>
         /// 获取实体按名称
@@ -47,7 +47,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="fullName">名称</param>
         /// <returns>实体</returns>
-        BaseOrganizeEntity GetEntityByName(BaseUserInfo userInfo, string fullName);
+        BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName);
 
         /// <summary>
         /// 判断字段是否重复
@@ -66,7 +66,7 @@ namespace DotNet.IService
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>主键</returns>
-        string Add(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage);
+        string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage);
 
         /// <summary>
         /// 添加
@@ -170,7 +170,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="organizationId">主键</param>
         /// <returns>数据表</returns>
-        DataTable GetInnerOrganizeDT(BaseUserInfo userInfo, string organizationId);
+        DataTable GetInnerOrganizationDT(BaseUserInfo userInfo, string organizationId);
 
         /// <summary>
         /// 获取公司列表
@@ -194,7 +194,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="ids">主键数组</param>
         /// <returns>数据表</returns>
-        List<BaseOrganizeEntity> GetListByIds(BaseUserInfo userInfo, string[] ids);
+        List<BaseOrganizationEntity> GetListByIds(BaseUserInfo userInfo, string[] ids);
 
         /// <summary>
         /// 搜索部门
@@ -213,7 +213,7 @@ namespace DotNet.IService
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>影响行数</returns>
-        int Update(BaseUserInfo userInfo, BaseOrganizeEntity entity, out string statusCode, out string statusMessage);
+        int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage);
 
         /// <summary>
         /// 同步数据

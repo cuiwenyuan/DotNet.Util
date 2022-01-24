@@ -547,7 +547,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetModuleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string moduleId)
+        #region public DataTable GetModuleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string moduleId)
         /// <summary>
         /// 获取菜单的所有组织机构列表
         /// </summary>
@@ -555,16 +555,16 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="moduleId">模块主键</param>
         /// <returns>列表</returns>
-        public DataTable GetModuleOrganizeDataTable(BaseUserInfo userInfo, string systemCode, string moduleId)
+        public DataTable GetModuleOrganizationDataTable(BaseUserInfo userInfo, string systemCode, string moduleId)
         {
-            var result = new DataTable(BaseOrganizeEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var moduleManager = new BaseModuleManager(userInfo);
-                result = moduleManager.GetModuleOrganizeDataTable(systemCode, moduleId);
-                result.TableName = BaseOrganizeEntity.TableName;
+                result = moduleManager.GetModuleOrganizationDataTable(systemCode, moduleId);
+                result.TableName = BaseOrganizationEntity.TableName;
             });
 
             return result;

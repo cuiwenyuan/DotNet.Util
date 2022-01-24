@@ -1257,7 +1257,7 @@ namespace DotNet.Util
         /// <summary>
         /// 重新登入时，登入窗口名称改变为重新登入
         /// </summary>
-        public static string MsgReLogOn = "重新登入";
+        public static string MsgReLogon = "重新登入";
 
         /// <summary>
         /// 登入服务
@@ -1267,12 +1267,12 @@ namespace DotNet.Util
         /// <summary>
         /// 登入操作
         /// </summary>
-        public static string BaseUserManagerLogOn = "登入操作";
+        public static string BaseUserManagerLogon = "登入操作";
 
         /// <summary>
-        /// BaseUserManagerLogOnSuccess
+        /// BaseUserManagerLogonSuccess
         /// </summary>
-        public static string BaseUserManagerLogOnSuccess = "登入成功";
+        public static string BaseUserManagerLogonSuccess = "登入成功";
 
         /// <summary>
         /// DataGridView右键选单
