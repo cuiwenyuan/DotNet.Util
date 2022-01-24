@@ -223,6 +223,11 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldCancelledUserName = "CancelledUserName";
 
+        /// <summary>
+        /// 允许删除
+        /// </summary>
+        public const string FieldAllowDelete = "AllowDelete";
+
         #endregion
     }
 }
