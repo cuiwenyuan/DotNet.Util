@@ -167,7 +167,7 @@ namespace DotNet.Business
             if (ValidateUtil.IsInt(userId))
             {
                 viewName = "SELECT DISTINCT " + tableNameRole + "." + BaseRoleEntity.FieldId;
-                viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldOrganizeId;
+                viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldCode;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldRealName;
@@ -193,7 +193,7 @@ namespace DotNet.Business
             else if (!string.IsNullOrEmpty(moduleId) && ValidateUtil.IsNumeric(moduleId))
             {
                 viewName = "SELECT DISTINCT " + tableNameRole + "." + BaseRoleEntity.FieldId;
-                viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldOrganizeId;
+                viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldCode;
                 viewName += "," + tableNameRole + "." + BaseRoleEntity.FieldRealName;

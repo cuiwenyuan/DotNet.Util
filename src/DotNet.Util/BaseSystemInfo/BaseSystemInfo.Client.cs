@@ -48,7 +48,7 @@ namespace DotNet.Util
         /// <summary>
         /// 登录系统的主窗体 
         /// </summary>
-        public static string LogOnForm = "FrmLogOnByCompany";
+        public static string LogonForm = "FrmLogonByCompany";
         /// <summary>
         /// ConfigFile
         /// </summary>
@@ -102,7 +102,7 @@ namespace DotNet.Util
         /// <summary>
         /// 是否自動登入，預設不自動登入
         /// </summary>
-        public static bool AutoLogOn = false;
+        public static bool AutoLogon = false;
 
         /// <summary>
         /// 客戶端加密儲存密碼
@@ -117,7 +117,7 @@ namespace DotNet.Util
         /// <summary>
         /// 動態加載組織機構樹，當資料量非常龐大時可設置為開啟
         /// </summary>
-        public static bool OrganizeDynamicLoading = true;
+        public static bool OrganizationDynamicLoading = true;
 
         /// <summary>
         /// 是否使用多語言

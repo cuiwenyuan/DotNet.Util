@@ -58,7 +58,7 @@ namespace DotNet.Util
         /// <summary>
         /// 9 组织消息
         /// </summary>
-        OrganizeMessage = 9,
+        OrganizationMessage = 9,
 
         /// <summary>
         /// 外部微信信息

@@ -12,7 +12,7 @@ namespace DotNet.Business
     using System;
 
     /// <summary>
-    /// BaseUserLogOnManager
+    /// BaseUserLogonManager
     /// 退出系统管理
     /// 
     /// 修改记录
@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///		<date>2016.02.17</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserLogOnManager : BaseManager
+    public partial class BaseUserLogonManager : BaseManager
     {
         #region public bool SignOut(string openId, string systemCode = "Base", string ipAddress = null, string macAddress = null) 用户退出
 
@@ -63,15 +63,15 @@ namespace DotNet.Business
                         return result > 0;
                     }
                     // 最后一次登录时间
-                    var sql = "UPDATE " + BaseUserLogOnEntity.TableName + " SET " + BaseUserLogOnEntity.FieldPreviousVisit + " = " + BaseUserLogOnEntity.FieldLastVisit;
+                    var sql = "UPDATE " + BaseUserLogonEntity.TableName + " SET " + BaseUserLogonEntity.FieldPreviousVisit + " = " + BaseUserLogonEntity.FieldLastVisit;
                     //Troy.Cui 2020-02-29用户退出时也强制OpenId重新生成，和登录时一样强制生成OpenId
-                    sql += " , " + BaseUserLogOnEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'";
-                    sql += ", " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = " + DbHelper.GetDbNow();
+                    sql += " , " + BaseUserLogonEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'";
+                    sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeout + " = " + DbHelper.GetDbNow();
 
-                    sql += " , " + BaseUserLogOnEntity.FieldUserOnLine + " = 0 "
-                              + " , " + BaseUserLogOnEntity.FieldLastVisit + " = " + DbHelper.GetDbNow();
+                    sql += " , " + BaseUserLogonEntity.FieldUserOnline + " = 0 "
+                              + " , " + BaseUserLogonEntity.FieldLastVisit + " = " + DbHelper.GetDbNow();
 
-                    sql += "  WHERE " + BaseUserLogOnEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
+                    sql += "  WHERE " + BaseUserLogonEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
 
                     var dbParameters = new List<IDbDataParameter>
                     {

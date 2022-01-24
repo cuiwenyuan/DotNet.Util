@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 用户管理
     /// 
     /// 修改记录
@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///		<date>2016.09.20</date>
     /// </author> 
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {
         #region 高级查询
         /// <summary>
@@ -54,72 +54,72 @@ namespace DotNet.Business
             //是否显示无效记录
             if (!showDisabled)
             {
-                sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1");
             }
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldDeleted + " = 0");
+                sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0");
             }
             //分类
             if (!string.IsNullOrEmpty(categoryCode))
             {
-                sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
+                sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
             if (ValidateUtil.IsInt(companyId))
             {
                 //只选择下一级
-                //sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldDepartmentId 
-                //    + " IN ( SELECT " + BaseOrganizeEntity.FieldId 
-                //    + " FROM " + BaseOrganizeEntity.TableName 
-                //    + " WHERE " + BaseOrganizeEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizeEntity.FieldParentId + " = " + departmentId + ")";
+                //sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldDepartmentId 
+                //    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
+                //    + " FROM " + BaseOrganizationEntity.TableName 
+                //    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + departmentId + ")";
 
                 //所有下级的都列出来
-                var ids = GetChildrensId(BaseOrganizeEntity.FieldId, departmentId, BaseOrganizeEntity.FieldParentId);
+                var ids = GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
-                    sb.Append(" AND (" + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
-                     + " OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + ")"
-                     + " OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + ")"
-                     + " OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + "))");
+                    sb.Append(" AND (" + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " IN (" + StringUtil.ArrayToList(ids) + "))");
                 }
-                sb.Append(" AND (" + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldCompanyId + " = " + companyId + ")");
+                sb.Append(" AND (" + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldCompanyId + " = " + companyId + ")");
             }
             if (ValidateUtil.IsInt(departmentId))
             {
-                sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " = " + departmentId);
+                sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " = " + departmentId);
             }
 
             //是否显示已隐藏记录
             //if (!showInvisible)
             //{
-            //    sb.Append(" AND " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldIsVisible + "  = 1 ";
+            //    sb.Append(" AND " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldIsVisible + "  = 1 ";
             //}
             //角色
-            var tableNameRoleOrganize = UserInfo.SystemCode + "RoleOrganize";
+            var tableNameRoleOrganization = UserInfo.SystemCode + "RoleOrganization";
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNameRoleOrganize = systemCode + "RoleOrganize";
+                tableNameRoleOrganization = systemCode + "RoleOrganization";
             }
             //指定角色
             if (!string.IsNullOrEmpty(roleId) && ValidateUtil.IsNumeric(roleId))
             {
-                sb.Append(" AND ( " + BaseOrganizeEntity.FieldId + " IN ");
-                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizeEntity.FieldOrganizeId);
-                sb.Append(" FROM " + tableNameRoleOrganize);
-                sb.Append(" WHERE " + BaseRoleOrganizeEntity.FieldRoleId + " = '" + roleId + "'");
-                sb.Append(" AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " IN ");
+                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
+                sb.Append(" FROM " + tableNameRoleOrganization);
+                sb.Append(" WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " = '" + roleId + "'");
+                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
             }
             //排除指定角色
             if (!string.IsNullOrEmpty(roleIdExcluded) && ValidateUtil.IsNumeric(roleIdExcluded))
             {
-                sb.Append(" AND ( " + BaseOrganizeEntity.FieldId + " NOT IN ");
-                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizeEntity.FieldOrganizeId);
-                sb.Append(" FROM " + tableNameRoleOrganize);
-                sb.Append(" WHERE " + BaseRoleOrganizeEntity.FieldRoleId + " = '" + roleIdExcluded + "'");
-                sb.Append(" AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " NOT IN ");
+                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
+                sb.Append(" FROM " + tableNameRoleOrganization);
+                sb.Append(" WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " = '" + roleIdExcluded + "'");
+                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
             }
             //用户菜单模块表
             var tableNamePermission = UserInfo.SystemCode + "Permission";
@@ -130,22 +130,22 @@ namespace DotNet.Business
             //指定的菜单模块
             if (!string.IsNullOrEmpty(moduleId) && ValidateUtil.IsNumeric(moduleId))
             {
-                sb.Append(" AND ( " + BaseOrganizeEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " IN ");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseOrganizeEntity.TableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseOrganizationEntity.TableName + "' ");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
             //排除指定菜单模块
             if (!string.IsNullOrEmpty(moduleIdExcluded) && ValidateUtil.IsNumeric(moduleIdExcluded))
             {
-                sb.Append(" AND ( " + BaseOrganizeEntity.FieldId + " NOT IN ");
+                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " NOT IN ");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleIdExcluded + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseOrganizeEntity.TableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseOrganizationEntity.TableName + "' ");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
@@ -154,22 +154,22 @@ namespace DotNet.Business
             {
                 sb.Append(" AND ( ");
                 //本级
-                sb.Append(BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + "  = " + parentId);
+                sb.Append(BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + "  = " + parentId);
                 //下级
-                sb.Append(" OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldParentId + "  = " + parentId);
+                sb.Append(" OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldParentId + "  = " + parentId);
                 //下下级
-                sb.Append(" OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
+                sb.Append(" OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
                 //下下下级
-                sb.Append(" OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
+                sb.Append(" OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
                 sb.Append(" ) ");
                 //下下下下级，做个组织机构实际应用应该足够了
-                sb.Append(" OR " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizeEntity.TableName + "." + BaseOrganizeEntity.FieldId + " FROM " + BaseOrganizeEntity.TableName + " WHERE " + BaseOrganizeEntity.TableName + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
+                sb.Append(" OR " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.TableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.TableName + " WHERE " + BaseOrganizationEntity.TableName + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
                 sb.Append(" ) ");
                 sb.Append(" ) ");
                 //闭合
@@ -179,13 +179,13 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseOrganizeEntity.FieldFullName + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldShortName + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldStandardName + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldDescription + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
-                sb.Append(" OR " + BaseOrganizeEntity.FieldSimpleSpelling + " LIKE N'%" + searchKey + "%')");
+                sb.Append(" AND (" + BaseOrganizationEntity.FieldFullName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldShortName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldStandardName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.FieldSimpleSpelling + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
             return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
@@ -207,7 +207,7 @@ namespace DotNet.Business
                 return null;
             }
             //创建一个新的DataTable增加一个深度字段LayerId
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
             dt.Columns.Add("Id", typeof(int));
             dt.Columns.Add("ParentId", typeof(int));
             dt.Columns.Add("Code", typeof(string));
@@ -246,11 +246,11 @@ namespace DotNet.Business
             DataRow[] dr = null;
             if (parentId == null)
             {
-                dr = dtOld.Select("ParentId IS NULL", BaseOrganizeEntity.FieldSortCode);
+                dr = dtOld.Select("ParentId IS NULL", BaseOrganizationEntity.FieldSortCode);
             }
             else
             {
-                dr = dtOld.Select("ParentId=" + parentId + "", BaseOrganizeEntity.FieldSortCode);
+                dr = dtOld.Select("ParentId=" + parentId + "", BaseOrganizationEntity.FieldSortCode);
             }
             for (var i = 0; i < dr.Length; i++)
             {

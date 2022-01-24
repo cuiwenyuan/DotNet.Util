@@ -35,7 +35,7 @@ namespace DotNet.Model
         /// 组织机构主键
         /// </summary>
         [FieldDescription("组织机构主键")]
-        public string OrganizeId { get; set; } = null;
+        public string OrganizationId { get; set; } = null;
 
         /// <summary>
         /// 角色编号
@@ -141,7 +141,7 @@ namespace DotNet.Model
 		protected override BaseEntity GetFrom(IDataRow dr)
         {
             Id = BaseUtil.ConvertToString(dr[FieldId]);
-            OrganizeId = BaseUtil.ConvertToString(dr[FieldOrganizeId]);
+            OrganizationId = BaseUtil.ConvertToString(dr[FieldOrganizationId]);
             Code = BaseUtil.ConvertToString(dr[FieldCode]);
             RealName = BaseUtil.ConvertToString(dr[FieldRealName]);
             CategoryCode = BaseUtil.ConvertToString(dr[FieldCategoryCode]);
@@ -179,7 +179,7 @@ namespace DotNet.Model
         /// 组织机构主键
         ///</summary>
         [NonSerialized]
-        public const string FieldOrganizeId = "OrganizeId";
+        public const string FieldOrganizationId = "OrganizationId";
 
         ///<summary>
         /// 角色编号

@@ -27,6 +27,7 @@ namespace DotNet.Util
 
     public static partial class StringUtil
     {
+        #region 获取子查询条件，这需要处理多个模糊匹配的字符
         /// <summary>
         /// 获取子查询条件，这需要处理多个模糊匹配的字符
         /// </summary>
@@ -49,6 +50,9 @@ namespace DotNet.Util
             result = "(" + result + ")";
             return result;
         }
+        #endregion
+
+        #region 获取查询字符串
 
         /// <summary>
         /// 获取查询字符串
@@ -95,6 +99,10 @@ namespace DotNet.Util
             return searchKey;
         }
 
+        #endregion
+
+        #region 获取查询字符串
+
         /// <summary>
         /// 获取查询字符串
         /// </summary>
@@ -114,6 +122,10 @@ namespace DotNet.Util
 
             return searchKey;
         }
+
+        #endregion
+
+        #region 判断是否包含的方法
 
         /// <summary>
         /// 判断是否包含的方法
@@ -139,6 +151,8 @@ namespace DotNet.Util
 
             return result;
         }
+
+        #endregion
 
         /// <summary>
         /// 将字符串加入到字符串数组
@@ -229,6 +243,8 @@ namespace DotNet.Util
             return ids;
         }
 
+        #region 字符串转IN查询字符串
+
         /// <summary>
         /// 字符串转IN查询字符串
         /// </summary>
@@ -243,6 +259,8 @@ namespace DotNet.Util
             return id.TrimEnd(separativeSign.ToCharArray()).Replace(separativeSign, newSeparativeSign);
 
         }
+
+        #endregion
 
         /// <summary>
         /// 数组转字符串
@@ -392,6 +410,8 @@ namespace DotNet.Util
             return sb.Put();
         }
 
+        #region 截取固定长度字符
+
         /// <summary>
         /// 截取固定长度字符
         /// </summary>
@@ -434,6 +454,8 @@ namespace DotNet.Util
                 tempString += "..";
             return tempString;
         }
+
+        #endregion
 
         /// <summary>
         /// 二进制转字符串
@@ -491,6 +513,39 @@ namespace DotNet.Util
                 str = new System.Text.RegularExpressions.Regex("[\\s]+").Replace(str, " ");
             }
             return str;
+        }
+        #endregion
+
+        #region
+        /// <summary>
+        /// 从字符串中截取指定两个字符之间的字符
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="start">开始字符(串)</param>
+        /// <param name="end">结束字符(串)</param>
+        /// <returns></returns>
+        public static string CutString(string source, string start, string end)
+        {
+            var result = string.Empty;
+            if (!string.IsNullOrEmpty(source) && source.Contains(start) && source.Contains(end))
+            {
+                int startIndex, endIndex;
+                try
+                {
+                    startIndex = source.IndexOf(start);
+                    if (startIndex == -1) return result;
+                    var tmpstr = source.Substring(startIndex + start.Length);
+                    endIndex = tmpstr.IndexOf(end);
+                    if (endIndex == -1) return result;
+                    result = tmpstr.Remove(endIndex);
+                }
+                catch (Exception ex)
+                {
+                    LogUtil.WriteException(ex);
+                }
+            }
+
+            return result;
         }
         #endregion
     }

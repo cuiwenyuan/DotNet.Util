@@ -97,7 +97,7 @@ namespace DotNet.IService
         /// 创建登录服务
         /// </summary>
         /// <returns>服务接口</returns>
-        ILogOnService CreateLogOnService();
+        ILogonService CreateLogonService();
 
         /// <summary>
         /// 创建用户服务
@@ -145,7 +145,7 @@ namespace DotNet.IService
         /// 创建组织机构服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IOrganizeService CreateOrganizeService();
+        IOrganizationService CreateOrganizationService();
 
         /// <summary>
         /// 创建部门管理服务

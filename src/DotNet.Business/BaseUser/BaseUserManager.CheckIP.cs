@@ -37,9 +37,9 @@ namespace DotNet.Business
         public static bool CheckIpAddressByCache(string userId, string ipAddress, bool autoAdd = false)
         {
             // 判断用户是否限制ip访问，有的是不限制访问的
-            var userLogOnManager = new BaseUserLogOnManager();
-            var userLogOnEntity = userLogOnManager.GetEntity(userId);
-            return CheckIpAddressByCache(userId, userLogOnEntity, ipAddress, autoAdd);
+            var userLogonManager = new BaseUserLogonManager();
+            var userLogonEntity = userLogonManager.GetEntity(userId);
+            return CheckIpAddressByCache(userId, userLogonEntity, ipAddress, autoAdd);
         }
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace DotNet.Business
         /// IP 限制缓存预热？
         /// </summary>
         /// <param name="userId">用户主键</param>
-        /// <param name="userLogOnEntity">用户登录实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="ipAddress">ip地址</param>
         /// <param name="autoAdd">没有在列表的IP是否自动增加</param>
         /// <returns>正确</returns>
-        public static bool CheckIpAddressByCache(string userId, BaseUserLogOnEntity userLogOnEntity, string ipAddress, bool autoAdd = false)
+        public static bool CheckIpAddressByCache(string userId, BaseUserLogonEntity userLogonEntity, string ipAddress, bool autoAdd = false)
         {
             // 默认是不成功的，防止出错误
             var result = false;
@@ -74,9 +74,9 @@ namespace DotNet.Business
             }
 
             int? checkIpAddress = null;
-            if (userLogOnEntity != null)
+            if (userLogonEntity != null)
             {
-                checkIpAddress = userLogOnEntity.CheckIpAddress;
+                checkIpAddress = userLogonEntity.CheckIpAddress;
             }
 
             // 若用户是不限制登录的、那就可以返回真的

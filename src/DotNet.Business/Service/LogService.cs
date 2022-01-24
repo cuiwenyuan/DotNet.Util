@@ -88,7 +88,7 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDbWithTransaction(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseUserLogOnManager(dbHelper, userInfo);
+                var manager = new BaseUserLogonManager(dbHelper, userInfo);
                 // 重置访问情况
                 result = manager.ResetVisitInfo(ids);
             });
@@ -222,7 +222,7 @@ namespace DotNet.Business
                 {
                     var userManager = new BaseUserManager(dbHelper, userInfo)
                     {
-                        ShowUserLogOnInfo = true
+                        ShowUserLogonInfo = true
                     };
                     dt = userManager.SearchLogByPage(out myrecordCount, pageIndex, pageSize, permissionCode, conditions, sort);
                     dt.TableName = BaseUserEntity.TableName;

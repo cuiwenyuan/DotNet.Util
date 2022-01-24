@@ -113,31 +113,31 @@ namespace DotNet.Business
             {
                 // 这个需要进行叠加处理
                 commandText += " AND " + BaseUserEntity.FieldCompanyId + " IN ( "
-                            + " SELECT " + BaseOrganizeEntity.FieldId
-                            + " FROM " + BaseOrganizeEntity.TableName
-                            + "  WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                + "        AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                + "        AND (" + BaseOrganizeEntity.FieldProvinceId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                + "         OR " + BaseOrganizeEntity.FieldCityId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                + "         OR " + BaseOrganizeEntity.FieldStreetId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
-                                + "         OR " + BaseOrganizeEntity.FieldDistrictId + " IN (" + StringUtil.ArrayToList(areaIds) + ")) )";
+                            + " SELECT " + BaseOrganizationEntity.FieldId
+                            + " FROM " + BaseOrganizationEntity.TableName
+                            + "  WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                + "        AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                + "        AND (" + BaseOrganizationEntity.FieldProvinceId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                + "         OR " + BaseOrganizationEntity.FieldCityId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                + "         OR " + BaseOrganizationEntity.FieldStreetId + " IN (" + StringUtil.ArrayToList(areaIds) + ")"
+                                + "         OR " + BaseOrganizationEntity.FieldDistrictId + " IN (" + StringUtil.ArrayToList(areaIds) + ")) )";
             }
             if (subCompany)
             {
                 commandText += " AND " + BaseUserEntity.FieldCompanyId + " IN ( "
 
-                            + "  SELECT " + BaseOrganizeEntity.FieldId
-                            + " FROM " + BaseOrganizeEntity.TableName
-                            + "   WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                 + "AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                                 + "AND " + BaseOrganizeEntity.FieldId + " IN (" + StringUtil.ArrayToList(companyIds) + ")  UNION "
+                            + "  SELECT " + BaseOrganizationEntity.FieldId
+                            + " FROM " + BaseOrganizationEntity.TableName
+                            + "   WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                 + "AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                 + "AND " + BaseOrganizationEntity.FieldId + " IN (" + StringUtil.ArrayToList(companyIds) + ")  UNION "
 
-                            + "  SELECT " + BaseOrganizeEntity.FieldId
-                            + " FROM " + BaseOrganizeEntity.TableName
-                            + "   WHERE " + BaseOrganizeEntity.FieldEnabled + " = 1 "
-                                 + "AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
-                              + " START WITH " + BaseOrganizeEntity.FieldParentId + " IN (" + StringUtil.ArrayToList(companyIds) + ") "
-                            + " CONNECT BY PRIOR " + BaseOrganizeEntity.FieldId + " = " + BaseOrganizeEntity.FieldParentId + ")";
+                            + "  SELECT " + BaseOrganizationEntity.FieldId
+                            + " FROM " + BaseOrganizationEntity.TableName
+                            + "   WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                                 + "AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                              + " START WITH " + BaseOrganizationEntity.FieldParentId + " IN (" + StringUtil.ArrayToList(companyIds) + ") "
+                            + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId + ")";
             }
             if (companyIds != null && companyIds.Length > 0)
             {
@@ -150,14 +150,14 @@ namespace DotNet.Business
                             + " FROM " + BaseDepartmentEntity.TableName
                             + "   WHERE " + BaseDepartmentEntity.FieldEnabled + " = 1 "
                                 + " AND " + BaseDepartmentEntity.FieldDeleted + " = 0 "
-                                + " AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
+                                + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                                  + "AND " + BaseDepartmentEntity.FieldId + " IN (" + StringUtil.ArrayToList(departmentIds) + ") UNION "
 
                             + "  SELECT " + BaseDepartmentEntity.FieldId
                             + " FROM " + BaseDepartmentEntity.TableName
                             + "   WHERE " + BaseDepartmentEntity.FieldEnabled + " = 1 "
                                 + " AND " + BaseDepartmentEntity.FieldDeleted + " = 0 "
-                                + " AND " + BaseOrganizeEntity.FieldDeleted + " = 0 "
+                                + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                                 + " START WITH " + BaseDepartmentEntity.FieldParentId + " IN (" + StringUtil.ArrayToList(departmentIds) + ") "
                             + " CONNECT BY PRIOR " + BaseDepartmentEntity.FieldId + " = " + BaseDepartmentEntity.FieldParentId + ") ";
             }

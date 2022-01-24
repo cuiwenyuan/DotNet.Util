@@ -13,7 +13,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseUserLogOnManager
+    /// BaseUserLogonManager
     /// 用户管理
     /// 
     /// 修改记录
@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		<date>2015.12.08</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserLogOnManager
+    public partial class BaseUserLogonManager
     {
         /// <summary>
         /// 是否合法的用户
@@ -49,18 +49,18 @@ namespace DotNet.Business
             // 这个是独立业务系统
             //if (systemCode.Equals("PDA"))
             //{
-            //    CurrentTableName = "PDAUserLogOn";
+            //    CurrentTableName = "PDAUserLogon";
             //}
 
             var parameters = new List<KeyValuePair<string, object>>();
             if (!string.IsNullOrWhiteSpace(userId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, userId));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, userId));
             }
 
             if (!string.IsNullOrWhiteSpace(openId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId));
             }
 
             result = DbUtil.Exists(DbHelper, CurrentTableName, parameters);
@@ -81,9 +81,9 @@ namespace DotNet.Business
             userId = string.Empty;
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId)
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
             };
-            userId = DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogOnEntity.FieldId);
+            userId = DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogonEntity.FieldId);
             result = !string.IsNullOrEmpty(userId);
 
             return result;
@@ -102,17 +102,17 @@ namespace DotNet.Business
             using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection))
             {
                 // 需要能支持多个业务子系统的登录方法、多密码、多终端登录
-                var userLogOnEntityTableName = "BaseUserLogOn";
+                var userLogonEntityTableName = "BaseUserLogon";
                 if (!string.IsNullOrEmpty(cachingSystemCode))
                 {
-                    userLogOnEntityTableName = cachingSystemCode + "UserLogOn";
+                    userLogonEntityTableName = cachingSystemCode + "UserLogon";
                 }
 
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, userInfo.Id)
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, userInfo.Id)
                 };
-                result = DbUtil.GetProperty(dbHelper, userLogOnEntityTableName, parameters, BaseUserLogOnEntity.FieldOpenId);
+                result = DbUtil.GetProperty(dbHelper, userLogonEntityTableName, parameters, BaseUserLogonEntity.FieldOpenId);
                 dbHelper.Close();
             }
 
@@ -129,9 +129,9 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldOpenId, openId)
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogOnEntity.FieldId);
+            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogonEntity.FieldId);
         }
         #endregion
 
@@ -140,17 +140,17 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userIds"></param>
         /// <returns></returns>
-        public string[] GetOnLineUserIds(string[] userIds)
+        public string[] GetOnlineUserIds(string[] userIds)
         {
             string[] result = null;
 
-            var sql = "SELECT " + BaseUserLogOnEntity.FieldId + " FROM " + CurrentTableName + " WHERE " + BaseUserLogOnEntity.FieldUserOnLine + " = 1 ";
+            var sql = "SELECT " + BaseUserLogonEntity.FieldId + " FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " = 1 ";
             if (userIds != null && userIds.Length > 0)
             {
-                sql += " AND " + BaseUserLogOnEntity.FieldId + " IN (" + ObjectUtil.ToList(userIds) + ") ";
+                sql += " AND " + BaseUserLogonEntity.FieldId + " IN (" + ObjectUtil.ToList(userIds) + ") ";
             }
             var dt = DbHelper.Fill(sql);
-            result = BaseUtil.FieldToArray(dt, BaseUserLogOnEntity.FieldId);
+            result = BaseUtil.FieldToArray(dt, BaseUserLogonEntity.FieldId);
 
             return result;
         }
@@ -168,10 +168,10 @@ namespace DotNet.Business
                 DateTime? openIdTimeout = DateTime.Now.AddHours(8);
                 var dbParameters = new List<IDbDataParameter>
                 {
-                    DbHelper.MakeParameter(BaseUserLogOnEntity.FieldOpenIdTimeout, openIdTimeout)
+                    DbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeout, openIdTimeout)
                 };
                 result = Guid.NewGuid().ToString("N");
-                var sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldOpenId + " = '" + result + "', " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = " + DbHelper.GetParameter(BaseUserLogOnEntity.FieldOpenIdTimeout) + " WHERE " + BaseUserLogOnEntity.FieldOpenId + " = '" + UserInfo.OpenId + "' ";
+                var sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldOpenId + " = '" + result + "', " + BaseUserLogonEntity.FieldOpenIdTimeout + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeout) + " WHERE " + BaseUserLogonEntity.FieldOpenId + " = '" + UserInfo.OpenId + "' ";
 
                 if (!(DbHelper.ExecuteNonQuery(sql, dbParameters.ToArray()) > 0))
                 {
@@ -185,9 +185,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取在线人数
         /// </summary>
-        public string GetOnLineCount()
+        public string GetOnlineCount()
         {
-            var sql = "SELECT COUNT(*) AS UserCount " + " FROM " + CurrentTableName + "  WHERE UserOnLine = 1";
+            var sql = "SELECT COUNT(*) AS UserCount " + " FROM " + CurrentTableName + "  WHERE UserOnline = 1";
             return DbHelper.ExecuteScalar(sql).ToString();
         }
 
@@ -196,9 +196,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="days"></param>
         /// <returns></returns>
-        public string GetLogOnCount(int days)
+        public string GetLogonCount(int days)
         {
-            var sql = "SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE Enabled = 1 AND (DATEADD(d, " + days + ", " + BaseUserLogOnEntity.FieldLastVisit + ") > " + DbHelper.GetDbNow() + ")";
+            var sql = "SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE Enabled = 1 AND (DATEADD(d, " + days + ", " + BaseUserLogonEntity.FieldLastVisit + ") > " + DbHelper.GetDbNow() + ")";
             return DbHelper.ExecuteScalar(sql).ToString();
         }
 
@@ -212,11 +212,11 @@ namespace DotNet.Business
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldFirstVisit);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldPreviousVisit);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldLastVisit);
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLogOnCount, 0);
-            sqlBuilder.SetWhere(BaseUserLogOnEntity.FieldId, id);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldFirstVisit);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldPreviousVisit);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldLastVisit);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLogonCount, 0);
+            sqlBuilder.SetWhere(BaseUserLogonEntity.FieldId, id);
             return sqlBuilder.EndUpdate();
         }
         #endregion
@@ -251,16 +251,16 @@ namespace DotNet.Business
             var result = 0;
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldFirstVisit);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldPreviousVisit);
-            sqlBuilder.SetNull(BaseUserLogOnEntity.FieldLastVisit);
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLogOnCount, 0);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldFirstVisit);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldPreviousVisit);
+            sqlBuilder.SetNull(BaseUserLogonEntity.FieldLastVisit);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLogonCount, 0);
             result = sqlBuilder.EndUpdate();
             return result;
         }
         #endregion
 
-        #region public int OnLine(string userId, int onLineState = 1) 用户在线
+        #region public int Online(string userId, int onLineState = 1) 用户在线
 
         /// <summary>
         /// 用户在线
@@ -269,7 +269,7 @@ namespace DotNet.Business
         /// <param name="onLineState">用户在线状态</param>
         /// <param name="onlineOnly">仅已在线用户</param>
         /// <returns>影响行数</returns>
-        public int OnLine(string userId, int onLineState = 1, bool onlineOnly = false)
+        public int Online(string userId, int onLineState = 1, bool onlineOnly = false)
         {
             var result = 0;
             // 是否更新访问日期信息
@@ -283,32 +283,32 @@ namespace DotNet.Business
 #endif
 
             // 更新在线状态和最后一次访问时间
-            var sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldUserOnLine + " = " + onLineState + ", " + BaseUserLogOnEntity.FieldLastVisit + " = " + DbHelper.GetDbNow();
+            var sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = " + onLineState + ", " + BaseUserLogonEntity.FieldLastVisit + " = " + DbHelper.GetDbNow();
 
             //默认给OpenId 8个小时有效期，每次更新在线状态的时候，再刷新一下OpenId的有效期，Troy.Cui 2020-02-29
             DateTime? openIdTimeout = DateTime.Now.AddHours(8);
-            sql += ", " + BaseUserLogOnEntity.FieldOpenIdTimeout + " = '" + openIdTimeout + "'";
+            sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeout + " = '" + openIdTimeout + "'";
 
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
-                    sql += " WHERE " + BaseUserLogOnEntity.FieldId + " = " + userId + "";
+                    sql += " WHERE " + BaseUserLogonEntity.FieldId + " = " + userId + "";
                     break;
                 default:
-                    sql += " WHERE " + BaseUserLogOnEntity.FieldId + " = " + userId + "";
+                    sql += " WHERE " + BaseUserLogonEntity.FieldId + " = " + userId + "";
                     break;
             }
             //只能修改已登录状态的
             if (onlineOnly)
             {
-                sql += " AND " + BaseUserLogOnEntity.FieldUserOnLine + " = 1";
+                sql += " AND " + BaseUserLogonEntity.FieldUserOnline + " = 1";
             }
             result += DbHelper.ExecuteNonQuery(sql);
 
             // 写入调试信息
 #if (DEBUG)
             int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.OnLine(" + userId + ")");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
 #endif
 
             return result;
@@ -318,12 +318,12 @@ namespace DotNet.Business
 
         // 3分钟不在线，表示用户离开
 
-        #region public int CheckOnLine() 检查用户在线状态(服务器专用)
+        #region public int CheckOnline() 检查用户在线状态(服务器专用)
         /// <summary>
         /// 检查用户在线状态(服务器专用)
         /// </summary>
         /// <returns>影响行数</returns>
-        public int CheckOnLine()
+        public int CheckOnline()
         {
             var result = 0;
             // 是否更新访问日期信息
@@ -342,19 +342,19 @@ namespace DotNet.Business
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
-                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldUserOnLine + " = 0 WHERE  " + BaseUserLogOnEntity.FieldUserOnLine + " > 0 AND (" + BaseUserLogOnEntity.FieldLastVisit + " IS NULL OR (DATEADD(s, " + BaseSystemInfo.OnLineTimeout + ", " + BaseUserLogOnEntity.FieldLastVisit + ") < " + DbHelper.GetDbNow() + "))";
+                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisit + " IS NULL OR (DATEADD(s, " + BaseSystemInfo.OnlineTimeout + ", " + BaseUserLogonEntity.FieldLastVisit + ") < " + DbHelper.GetDbNow() + "))";
                     result += DbHelper.ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Oracle:
-                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldUserOnLine + " = 0 WHERE  " + BaseUserLogOnEntity.FieldUserOnLine + " > 0 AND (" + BaseUserLogOnEntity.FieldLastVisit + " IS NULL OR " + BaseUserLogOnEntity.FieldLastVisit + " < (SYSDATE - " + BaseSystemInfo.OnLineTimeout + " / 24 * 60 * 60 ))";
+                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisit + " IS NULL OR " + BaseUserLogonEntity.FieldLastVisit + " < (SYSDATE - " + BaseSystemInfo.OnlineTimeout + " / 24 * 60 * 60 ))";
                     result += DbHelper.ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.MySql:
-                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldUserOnLine + " = 0 WHERE (" + BaseUserLogOnEntity.FieldLastVisit + " IS NULL) OR ((" + BaseUserLogOnEntity.FieldUserOnLine + " > 0) AND (" + BaseUserLogOnEntity.FieldLastVisit + " IS NOT NULL) AND (DATE_ADD(" + BaseUserLogOnEntity.FieldLastVisit + ", Interval " + BaseSystemInfo.OnLineTimeout + " SECOND) < " + DbHelper.GetDbNow() + "))";
+                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisit + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisit + " IS NOT NULL) AND (DATE_ADD(" + BaseUserLogonEntity.FieldLastVisit + ", Interval " + BaseSystemInfo.OnlineTimeout + " SECOND) < " + DbHelper.GetDbNow() + "))";
                     result += DbHelper.ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Db2:
-                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogOnEntity.FieldUserOnLine + " = 0 WHERE (" + BaseUserLogOnEntity.FieldLastVisit + " IS NULL) OR ((" + BaseUserLogOnEntity.FieldUserOnLine + " > 0) AND (" + BaseUserLogOnEntity.FieldLastVisit + " IS NOT NULL) AND (" + BaseUserLogOnEntity.FieldLastVisit + " + " + BaseSystemInfo.OnLineTimeout + " SECONDS < " + DbHelper.GetDbNow() + "))";
+                    sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisit + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisit + " IS NOT NULL) AND (" + BaseUserLogonEntity.FieldLastVisit + " + " + BaseSystemInfo.OnlineTimeout + " SECONDS < " + DbHelper.GetDbNow() + "))";
                     result += DbHelper.ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Access:
@@ -364,19 +364,19 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnLine()");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
 #endif
 
             return result;
         }
         #endregion
 
-        #region public bool CheckOnLineLimit()
+        #region public bool CheckOnlineLimit()
         /// <summary>
         /// 同时在线用户数量限制
         /// </summary>
         /// <returns>是否符合限制</returns>
-        public bool CheckOnLineLimit()
+        public bool CheckOnlineLimit()
         {
             var result = false;
 
@@ -384,15 +384,15 @@ namespace DotNet.Business
             int milliStart = Environment.TickCount;
 #endif
 
-            CheckOnLine();
+            CheckOnline();
 
             var sql = string.Empty;
             // 最后一次登录时间
-            sql = "SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserLogOnEntity.FieldUserOnLine + " > 0 ";
-            var userOnLine = DbHelper.ExecuteScalar(sql);
-            if (userOnLine != null)
+            sql = "SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " > 0 ";
+            var userOnline = DbHelper.ExecuteScalar(sql);
+            if (userOnline != null)
             {
-                if (BaseSystemInfo.OnLineLimit <= int.Parse(userOnLine.ToString()))
+                if (BaseSystemInfo.OnlineLimit <= int.Parse(userOnline.ToString()))
                 {
                     result = true;
                 }
@@ -401,29 +401,29 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnLineLimit()");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
 #endif
 
             return result;
         }
         #endregion
 
-        #region public DataTable GetOnLineStateDT() 获取列表
+        #region public DataTable GetOnlineStateDT() 获取列表
         /// <summary>
         /// 获取在线状态列表
         /// </summary>	
         /// <returns>数据表</returns>
-        public DataTable GetOnLineStateDt()
+        public DataTable GetOnlineStateDt()
         {
-            var sql = "SELECT " + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldId
-                              + ", " + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldUserOnLine
+            var sql = "SELECT " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldId
+                              + ", " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldUserOnline
                               + " FROM " + CurrentTableName
-                              + " WHERE " + BaseUserLogOnEntity.TableName + "." + BaseUserLogOnEntity.FieldLastVisit + " IS NOT NULL ";
+                              + " WHERE " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldLastVisit + " IS NOT NULL ";
 
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
-                    sql += " AND (DATEADD (s, " + (BaseSystemInfo.OnLineTimeout + 5) + ", " + BaseUserLogOnEntity.FieldLastVisit + ") > " + DbHelper.GetDbNow() + ")";
+                    sql += " AND (DATEADD (s, " + (BaseSystemInfo.OnlineTimeout + 5) + ", " + BaseUserLogonEntity.FieldLastVisit + ") > " + DbHelper.GetDbNow() + ")";
                     break;
             }
             return DbHelper.Fill(sql);
@@ -431,13 +431,13 @@ namespace DotNet.Business
         #endregion
 
 
-        #region public int ChangeOnLine(string id) 登录、重新登录、扮演时的在线状态进行更新
+        #region public int ChangeOnline(string id) 登录、重新登录、扮演时的在线状态进行更新
         /// <summary>
         /// 登录、重新登录、扮演时的在线状态进行更新
         /// </summary>
         /// <param name="id">当前用户</param>
         /// <returns>是否在线</returns>
-        public int ChangeOnLine(string id)
+        public int ChangeOnline(string id)
         {
             var result = 0;
             // 是自己在线，然后重新登录为别人时，需要把自己注销掉
@@ -453,7 +453,7 @@ namespace DotNet.Business
                 }
             }
             // 用户在线
-            result += OnLine(id);
+            result += Online(id);
 
             return result;
         }

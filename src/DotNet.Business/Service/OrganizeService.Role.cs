@@ -12,7 +12,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// OrganizeService
+    /// OrganizationService
     /// 用户管理服务
     /// 
     /// 修改记录
@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2014.04.15</date>
     /// </author> 
     /// </summary>
-    public partial class OrganizeService : IOrganizeService
+    public partial class OrganizationService : IOrganizationService
     {
         #region public DataTable GetDataTableByRole(BaseUserInfo userInfo, string[] roleIds)
         /// <summary>
@@ -40,10 +40,10 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseOrganizeManager(dbHelper, userInfo);
+                var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 dt = manager.GetDataTableByRole(userInfo.SystemCode, roleIds);
-                dt.TableName = BaseOrganizeEntity.TableName;
-                dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
+                dt.TableName = BaseOrganizationEntity.TableName;
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
             });
 
             return dt;

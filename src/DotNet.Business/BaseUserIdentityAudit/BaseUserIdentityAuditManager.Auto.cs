@@ -235,7 +235,7 @@ namespace DotNet.Business
             SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldUpdateTime, entity.ModifiedOn);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldIdcardPhotoHand, entity.IdcardPhotoHand);
-            sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldOrganizeFullname, entity.OrganizeFullname);
+            sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldOrganizationFullname, entity.OrganizationFullname);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldCreateTime, entity.CreateOn);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditDate, entity.AuditDate);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditStatus, entity.AuditStatus);
@@ -246,7 +246,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditUserId, entity.AuditUserId);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditIdea, entity.AuditIdea);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditUserRealName, entity.AuditUserRealName);
-            sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldOrganizeId, entity.OrganizeId);
+            sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldOrganizationId, entity.OrganizationId);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldAuditUserNickName, entity.AuditUserNickName);
             sqlBuilder.SetValue(BaseUserIdentityAuditEntity.FieldIdcardPhotoFront, entity.IdcardPhotoFront);
         }

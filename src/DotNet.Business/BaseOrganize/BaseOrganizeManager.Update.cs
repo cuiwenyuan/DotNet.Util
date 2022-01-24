@@ -12,7 +12,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager（程序OK）
+    /// BaseOrganizationManager（程序OK）
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -24,19 +24,19 @@ namespace DotNet.Business
     ///		<date>2015.07.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public int Update(BaseOrganizeEntity entity)
+        public int Update(BaseOrganizationEntity entity)
         {
             var result = 0;
 
             // 检查是否已被其他人修改            
-            //if (DbUtil.IsModifed(DbHelper, BaseOrganizeEntity.TableName, entity.Id, entity.ModifiedUserId, entity.ModifiedOn))
+            //if (DbUtil.IsModifed(DbHelper, BaseOrganizationEntity.TableName, entity.Id, entity.ModifiedUserId, entity.ModifiedOn))
             //{
             //    // 数据已经被修改
             //    statusCode = StatusCode.ErrorChanged.ToString();
@@ -44,9 +44,9 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, entity.ParentId),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, entity.FullName),
-                new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, entity.ParentId),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
 
             if (Exists(parameters, entity.Id))
@@ -60,8 +60,8 @@ namespace DotNet.Business
                 // 检查编号是否重复
                 parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCode, entity.Code),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCode, entity.Code),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
 
                 if (entity.Code.Length > 0 && Exists(parameters, entity.Id))
@@ -117,14 +117,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public void UpdateEntityLog(BaseOrganizeEntity newEntity, BaseOrganizeEntity oldEntity)
+        #region public void UpdateEntityLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity)
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseOrganizeEntity newEntity, BaseOrganizeEntity oldEntity, string tableName = null)
+        public void UpdateEntityLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -132,7 +132,7 @@ namespace DotNet.Business
                 tableName = BaseModifyRecordEntity.TableName;
             }
             var manager = new BaseModifyRecordManager(UserInfo, tableName);
-            foreach (var property in typeof(BaseOrganizeEntity).GetProperties())
+            foreach (var property in typeof(BaseOrganizationEntity).GetProperties())
             {
                 var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
                 var newValue = Convert.ToString(property.GetValue(newEntity, null));
@@ -145,7 +145,7 @@ namespace DotNet.Business
                 var record = new BaseModifyRecordEntity
                 {
                     TableCode = CurrentTableName.ToUpper(),
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseOrganizeEntity), "TableName"),
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseOrganizationEntity), "TableName"),
                     ColumnCode = property.Name.ToUpper(),
                     ColumnDescription = fieldDescription.Text,
                     RecordKey = oldEntity.Id,

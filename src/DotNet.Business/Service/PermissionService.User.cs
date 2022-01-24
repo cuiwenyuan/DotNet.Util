@@ -179,7 +179,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string[] GetUserScopeOrganizeIds(BaseUserInfo userInfo, string userId, string permissionCode)
+        #region public string[] GetUserScopeOrganizationIds(BaseUserInfo userInfo, string userId, string permissionCode)
         /// <summary>
         /// 获取用户的某个权限域的组织范围
         /// </summary>
@@ -187,7 +187,7 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>主键数组</returns>
-        public string[] GetUserScopeOrganizeIds(BaseUserInfo userInfo, string userId, string permissionCode)
+        public string[] GetUserScopeOrganizationIds(BaseUserInfo userInfo, string userId, string permissionCode)
         {
             string[] result = null;
 
@@ -196,23 +196,23 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "PermissionScope";
                 var manager = new BaseUserScopeManager(dbHelper, userInfo, tableName);
-                result = manager.GetOrganizeIds(userInfo.SystemCode, userId, permissionCode);
+                result = manager.GetOrganizationIds(userInfo.SystemCode, userId, permissionCode);
             });
 
             return result;
         }
         #endregion
 
-        #region public int GrantUserOrganizeScope(BaseUserInfo userInfo, string userId, string[] grantOrganizeIds, string permissionCode)
+        #region public int GrantUserOrganizationScope(BaseUserInfo userInfo, string userId, string[] grantOrganizationIds, string permissionCode)
         /// <summary>
         /// 设置用户的某个权限域的组织范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="grantOrganizeIds">授予的组织主键数组</param>
+        /// <param name="grantOrganizationIds">授予的组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        public int GrantUserOrganizeScopes(BaseUserInfo userInfo, string userId, string[] grantOrganizeIds, string permissionCode)
+        public int GrantUserOrganizationScopes(BaseUserInfo userInfo, string userId, string[] grantOrganizationIds, string permissionCode)
         {
             var result = 0;
 
@@ -222,29 +222,29 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "PermissionScope";
                 var manager = new BaseUserScopeManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
-                if (grantOrganizeIds == null)
+                if (grantOrganizationIds == null)
                 {
-                    result += manager.RevokeOrganize(userInfo.SystemCode, userId, permissionCode);
+                    result += manager.RevokeOrganization(userInfo.SystemCode, userId, permissionCode);
                 }
                 else
                 {
-                    result += manager.GrantOrganizes(userInfo.SystemCode, userId, grantOrganizeIds, permissionCode);
+                    result += manager.GrantOrganizations(userInfo.SystemCode, userId, grantOrganizationIds, permissionCode);
                 }
             });
             return result;
         }
         #endregion
 
-        #region public int RevokeUserOrganizeScope(BaseUserInfo userInfo, string userId, string[] revokeOrganizeIds, string permissionCode)
+        #region public int RevokeUserOrganizationScope(BaseUserInfo userInfo, string userId, string[] revokeOrganizationIds, string permissionCode)
         /// <summary>
         /// 设置用户的某个权限域的组织范围
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="revokeOrganizeIds">撤消的组织主键数组</param>
+        /// <param name="revokeOrganizationIds">撤消的组织主键数组</param>
         /// <param name="permissionCode">权限编号</param>
         /// <returns>影响的行数</returns>
-        public int RevokeUserOrganizeScopes(BaseUserInfo userInfo, string userId, string[] revokeOrganizeIds, string permissionCode)
+        public int RevokeUserOrganizationScopes(BaseUserInfo userInfo, string userId, string[] revokeOrganizationIds, string permissionCode)
         {
             var result = 0;
 
@@ -254,9 +254,9 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "PermissionScope";
                 var manager = new BaseUserScopeManager(dbHelper, userInfo, tableName);
                 // 小心异常，检查一下参数的有效性
-                if (revokeOrganizeIds != null)
+                if (revokeOrganizationIds != null)
                 {
-                    result += manager.RevokeOrganizes(userInfo.SystemCode, userId, revokeOrganizeIds, permissionCode);
+                    result += manager.RevokeOrganizations(userInfo.SystemCode, userId, revokeOrganizationIds, permissionCode);
                 }
             });
             return result;

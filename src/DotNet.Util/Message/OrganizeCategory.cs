@@ -5,7 +5,7 @@
 namespace DotNet.Util
 {
     /// <summary>
-    /// OrganizeCategory
+    /// OrganizationCategory
     /// 组织机构类别。
     /// 
     /// 修改记录
@@ -17,7 +17,7 @@ namespace DotNet.Util
     ///		<date>2008.03.16</date>
     /// </author> 
     /// </summary>
-    public enum OrganizeCategory
+    public enum OrganizationCategory
     {
         /// <summary>
         /// 集团

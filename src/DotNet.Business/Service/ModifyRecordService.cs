@@ -56,7 +56,7 @@ namespace DotNet.Business
                 // 判断是否已经登录的用户？
                 var userManager = new BaseUserManager(userInfo);
                 // 判断是否已经登录的用户？
-                if (userManager.UserIsLogOn(userInfo))
+                if (userManager.UserIsLogon(userInfo))
                 {
                     if (SecretUtil.IsSqlSafe(conditions))
                     {

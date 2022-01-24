@@ -402,7 +402,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public PermissionOrganizeScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
+        #region public PermissionOrganizationScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
         /// <summary>
         /// 获得用户的数据权限范围
         /// </summary>
@@ -410,9 +410,9 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">数据权限编号</param>
         /// <returns>数据权限范围</returns>
-        public PermissionOrganizeScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
+        public PermissionOrganizationScope GetUserPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
         {
-            var result = PermissionOrganizeScope.NotAllowed;
+            var result = PermissionOrganizationScope.NotAllowed;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -515,10 +515,10 @@ namespace DotNet.Business
                             dr["ResourceCategoryName"] = "用户";
                         }
                     }
-                    else if (dr["ResourceCategory"].ToString().Equals(BaseOrganizeEntity.TableName))
+                    else if (dr["ResourceCategory"].ToString().Equals(BaseOrganizationEntity.TableName))
                     {
                         id = dr["ResourceId"].ToString();
-                        var organizeEntity = BaseOrganizeManager.GetEntityByCache(id);
+                        var organizeEntity = BaseOrganizationManager.GetEntityByCache(id);
                         if (organizeEntity != null)
                         {
                             dr["ResourceName"] = organizeEntity.FullName;

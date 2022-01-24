@@ -12,7 +12,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizePermissionManager
+    /// BaseOrganizationPermissionManager
     /// 组织机构权限
     /// 
     /// 修改记录
@@ -24,12 +24,12 @@ namespace DotNet.Business
     ///		<date>2012.03.22</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizePermissionManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationPermissionManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseOrganizePermissionManager()
+        public BaseOrganizationPermissionManager()
         {
             CurrentTableName = BasePermissionEntity.TableName;
         }
@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseOrganizePermissionManager(string tableName)
+        public BaseOrganizationPermissionManager(string tableName)
         {
             CurrentTableName = tableName;
         }
@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseOrganizePermissionManager(IDbHelper dbHelper)
+        public BaseOrganizationPermissionManager(IDbHelper dbHelper)
             : this()
         {
             DbHelper = dbHelper;
@@ -57,7 +57,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizePermissionManager(BaseUserInfo userInfo)
+        public BaseOrganizationPermissionManager(BaseUserInfo userInfo)
             : this()
         {
             UserInfo = userInfo;
@@ -68,7 +68,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizePermissionManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+        public BaseOrganizationPermissionManager(IDbHelper dbHelper, BaseUserInfo userInfo)
             : this(dbHelper)
         {
             UserInfo = userInfo;
@@ -80,7 +80,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseOrganizePermissionManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+        public BaseOrganizationPermissionManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
             : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
@@ -94,7 +94,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public static string[] ResetPermissionByCache(string systemCode, string organizationId)
         {
-            var key = "Permission:" + systemCode + ":Organize:" + organizationId;
+            var key = "Permission:" + systemCode + ":Organization:" + organizationId;
             CacheUtil.Remove(key);
             return GetPermissionIdsByCache(systemCode, organizationId);
         }
@@ -110,8 +110,8 @@ namespace DotNet.Business
             string[] result = null;
 
             var key = string.Empty;
-            key = "Permission:" + systemCode + ":Organize:" + organizationId;
-            result = CacheUtil.Cache(key, () => new BaseOrganizePermissionManager().GetPermissionIds(organizationId), true);
+            key = "Permission:" + systemCode + ":Organization:" + organizationId;
+            result = CacheUtil.Cache(key, () => new BaseOrganizationPermissionManager().GetPermissionIds(organizationId), true);
             return result;
         }
 
@@ -127,7 +127,7 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)
@@ -138,19 +138,19 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string[] GetOrganizeIds(string result) 获取组织机构主键数组
+        #region public string[] GetOrganizationIds(string result) 获取组织机构主键数组
         /// <summary>
         /// 获取组织机构主键数组
         /// </summary>
         /// <param name="permissionId">操作权限</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizeIds(string permissionId)
+        public string[] GetOrganizationIds(string permissionId)
         {
             string[] result = null;
 
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)
@@ -185,7 +185,7 @@ namespace DotNet.Business
             {
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
@@ -211,7 +211,7 @@ namespace DotNet.Business
             {
                 var resourcePermission = new BasePermissionEntity
                 {
-                    ResourceCategory = BaseOrganizeEntity.TableName,
+                    ResourceCategory = BaseOrganizationEntity.TableName,
                     ResourceId = organizationId,
                     PermissionId = permissionId,
                     // 防止不允许为NULL的错误发生
@@ -234,7 +234,7 @@ namespace DotNet.Business
             }
 
             // 2015-09-21 吉日嘎拉 这里增加变更日志
-            var tableName = systemCode + ".Permission.Organize";
+            var tableName = systemCode + ".Permission.Organization";
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginInsert(BaseModifyRecordEntity.TableName);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldTableCode, tableName);
@@ -355,14 +355,14 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
             };
             result = permissionManager.Delete(parameters);
 
             // 2015-09-21 吉日嘎拉 这里增加变更日志
-            var tableName = systemCode + ".Permission.Organize";
+            var tableName = systemCode + ".Permission.Organization";
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginInsert(BaseModifyRecordEntity.TableName);
             sqlBuilder.SetValue(BaseModifyRecordEntity.FieldTableCode, tableName);
@@ -467,7 +467,7 @@ namespace DotNet.Business
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, organizationId)
             };
             return permissionManager.Delete(parameters);

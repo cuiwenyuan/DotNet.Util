@@ -11,7 +11,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构、部门表
     ///
     /// 修改记录
@@ -23,12 +23,12 @@ namespace DotNet.Business
     ///		<date>2010-07-15</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseOrganizeManager()
+        public BaseOrganizationManager()
         {
             if (dbHelper == null)
             {
@@ -36,7 +36,7 @@ namespace DotNet.Business
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseOrganizeEntity.TableName;
+                CurrentTableName = BaseOrganizationEntity.TableName;
             }
         }
 
@@ -44,7 +44,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseOrganizeManager(string tableName)
+        public BaseOrganizationManager(string tableName)
             : this()
         {
             CurrentTableName = tableName;
@@ -54,7 +54,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseOrganizeManager(IDbHelper dbHelper)
+        public BaseOrganizationManager(IDbHelper dbHelper)
             : this()
         {
             DbHelper = dbHelper;
@@ -64,7 +64,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizeManager(BaseUserInfo userInfo)
+        public BaseOrganizationManager(BaseUserInfo userInfo)
             : this()
         {
             UserInfo = userInfo;
@@ -75,7 +75,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseOrganizeManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+        public BaseOrganizationManager(IDbHelper dbHelper, BaseUserInfo userInfo)
             : this(dbHelper)
         {
             UserInfo = userInfo;
@@ -87,7 +87,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseOrganizeManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+        public BaseOrganizationManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
             : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
@@ -100,7 +100,7 @@ namespace DotNet.Business
         /// <param name="identity">自增量方式</param>
         /// <param name="returnId">返回主鍵</param>
         /// <returns>主键</returns>
-        public string Add(BaseOrganizeEntity entity, bool identity, bool returnId)
+        public string Add(BaseOrganizationEntity entity, bool identity, bool returnId)
         {
             Identity = identity;
             ReturnId = returnId;
@@ -111,7 +111,7 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeEntity GetEntity(int? id)
+        public BaseOrganizationEntity GetEntity(int? id)
         {
             return GetEntity(id.ToString());
         }
@@ -120,17 +120,17 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public BaseOrganizeEntity GetEntity(string id)
+        public BaseOrganizationEntity GetEntity(string id)
         {
-            return BaseEntity.Create<BaseOrganizeEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldId, id)));
-            // return BaseEntity.Create<BaseOrganizeEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldId, id)));
+            return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldId, id)));
+            // return BaseEntity.Create<BaseOrganizationEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldId, id)));
         }
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public string AddEntity(BaseOrganizeEntity entity)
+        public string AddEntity(BaseOrganizationEntity entity)
         {
             var result = string.Empty;
             if (entity.SortCode == 0)
@@ -140,7 +140,7 @@ namespace DotNet.Business
                 entity.SortCode = int.Parse(result);
             }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseOrganizeEntity.FieldId);
+            sqlBuilder.BeginInsert(CurrentTableName, BaseOrganizationEntity.FieldId);
 
             if (string.IsNullOrEmpty(entity.Id) && DbHelper.CurrentDbType == CurrentDbType.MySql)
             {
@@ -148,17 +148,17 @@ namespace DotNet.Business
             }
             if (!string.IsNullOrEmpty(entity.Id) || !Identity)
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldId, entity.Id);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldId, entity.Id);
             }
             else
             {
                 if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
-                    sqlBuilder.SetFormula(BaseOrganizeEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+                    sqlBuilder.SetFormula(BaseOrganizationEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
                 }
                 if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                 {
-                    sqlBuilder.SetFormula(BaseOrganizeEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                    sqlBuilder.SetFormula(BaseOrganizationEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
                 }
             }
             SetEntity(sqlBuilder, entity);
@@ -166,65 +166,65 @@ namespace DotNet.Business
             // 创建人信息
             if (!string.IsNullOrEmpty(entity.CreateUserId))
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldCreateUserId, entity.CreateUserId);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldCreateUserId, entity.CreateUserId);
             }
             else
             {
                 if (UserInfo != null)
                 {
-                    sqlBuilder.SetValue(BaseOrganizeEntity.FieldCreateUserId, UserInfo.Id);
+                    sqlBuilder.SetValue(BaseOrganizationEntity.FieldCreateUserId, UserInfo.Id);
                 }
             }
             if (!string.IsNullOrEmpty(entity.CreateBy))
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldCreateBy, entity.CreateBy);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldCreateBy, entity.CreateBy);
             }
             else
             {
                 if (UserInfo != null)
                 {
-                    sqlBuilder.SetValue(BaseOrganizeEntity.FieldCreateBy, UserInfo.RealName);
+                    sqlBuilder.SetValue(BaseOrganizationEntity.FieldCreateBy, UserInfo.RealName);
                 }
             }
             if (entity.CreateOn.HasValue)
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldCreateTime, entity.CreateOn);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldCreateTime, entity.CreateOn);
             }
             else
             {
-                sqlBuilder.SetDbNow(BaseOrganizeEntity.FieldCreateTime);
+                sqlBuilder.SetDbNow(BaseOrganizationEntity.FieldCreateTime);
             }
 
             // 修改人信息
             if (!string.IsNullOrEmpty(entity.ModifiedUserId))
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateUserId, entity.ModifiedUserId);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateUserId, entity.ModifiedUserId);
             }
             else
             {
                 if (UserInfo != null)
                 {
-                    sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateUserId, UserInfo.Id);
+                    sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateUserId, UserInfo.Id);
                 }
             }
             if (!string.IsNullOrEmpty(entity.ModifiedBy))
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateBy, entity.ModifiedBy);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateBy, entity.ModifiedBy);
             }
             else
             {
                 if (UserInfo != null)
                 {
-                    sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateBy, UserInfo.RealName);
+                    sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateBy, UserInfo.RealName);
                 }
             }
             if (entity.ModifiedOn.HasValue)
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateTime, entity.ModifiedOn);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateTime, entity.ModifiedOn);
             }
             else
             {
-                sqlBuilder.SetDbNow(BaseOrganizeEntity.FieldUpdateTime);
+                sqlBuilder.SetDbNow(BaseOrganizationEntity.FieldUpdateTime);
             }
 
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.MySql))
@@ -246,7 +246,7 @@ namespace DotNet.Business
         /// 更新实体
         /// </summary>
         /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseOrganizeEntity entity)
+        public int UpdateEntity(BaseOrganizationEntity entity)
         {
             var result = 0;
 
@@ -255,19 +255,19 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateBy, UserInfo.RealName);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateBy, UserInfo.RealName);
             }
             // 若有修改时间标示，那就按修改时间来，不是按最新的时间来
             if (entity.ModifiedOn.HasValue)
             {
-                sqlBuilder.SetValue(BaseOrganizeEntity.FieldUpdateTime, entity.ModifiedOn.Value);
+                sqlBuilder.SetValue(BaseOrganizationEntity.FieldUpdateTime, entity.ModifiedOn.Value);
             }
             else
             {
-                sqlBuilder.SetDbNow(BaseOrganizeEntity.FieldUpdateTime);
+                sqlBuilder.SetDbNow(BaseOrganizationEntity.FieldUpdateTime);
             }
-            sqlBuilder.SetWhere(BaseOrganizeEntity.FieldId, entity.Id);
+            sqlBuilder.SetWhere(BaseOrganizationEntity.FieldId, entity.Id);
             result = sqlBuilder.EndUpdate();
             if (result > 0)
             {
@@ -276,63 +276,63 @@ namespace DotNet.Business
             return result;
         }
 
-        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOrganizeEntity entity);
+        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseOrganizationEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">SQL语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizeEntity entity)
+        private void SetEntity(SqlBuilder sqlBuilder, BaseOrganizationEntity entity)
         {
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldParentId, entity.ParentId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldParentName, entity.ParentName);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldLayer, entity.Layer);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCode, entity.Code);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldShortName, entity.ShortName);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldFullName, entity.FullName);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldStandardCode, entity.StandardCode);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldStandardName, entity.StandardName);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldQuickQuery, entity.QuickQuery);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldSimpleSpelling, entity.SimpleSpelling);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCategoryCode, entity.CategoryCode);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldOuterPhone, entity.OuterPhone);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldInnerPhone, entity.InnerPhone);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldFax, entity.Fax);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldPostalcode, entity.Postalcode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldParentId, entity.ParentId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldParentName, entity.ParentName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldLayer, entity.Layer);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCode, entity.Code);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldShortName, entity.ShortName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldFullName, entity.FullName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldStandardCode, entity.StandardCode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldStandardName, entity.StandardName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldQuickQuery, entity.QuickQuery);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldSimpleSpelling, entity.SimpleSpelling);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCategoryCode, entity.CategoryCode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldOuterPhone, entity.OuterPhone);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldInnerPhone, entity.InnerPhone);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldFax, entity.Fax);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldPostalcode, entity.Postalcode);
 
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldProvinceId, entity.ProvinceId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldProvince, entity.Province);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCityId, entity.CityId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCity, entity.City);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldDistrictId, entity.DistrictId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldDistrict, entity.District);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldStreetId, entity.StreetId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldStreet, entity.Street);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldProvinceId, entity.ProvinceId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldProvince, entity.Province);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCityId, entity.CityId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCity, entity.City);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldDistrictId, entity.DistrictId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldDistrict, entity.District);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldStreetId, entity.StreetId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldStreet, entity.Street);
 
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldAddress, entity.Address);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldWeb, entity.Web);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldIsInnerOrganize, entity.IsInnerOrganize);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldBank, entity.Bank);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldBankAccount, entity.BankAccount);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldAddress, entity.Address);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldWeb, entity.Web);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldIsInnerOrganization, entity.IsInnerOrganization);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldBank, entity.Bank);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldBankAccount, entity.BankAccount);
 
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCompanyId, entity.CompanyId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCompanyCode, entity.CompanyCode);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCompanyName, entity.CompanyName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCompanyId, entity.CompanyId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCompanyCode, entity.CompanyCode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCompanyName, entity.CompanyName);
 
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCostCenter, entity.CostCenter);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldCostCenterId, entity.CostCenterId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldFinancialCenter, entity.FinancialCenter);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldFinancialCenterId, entity.FinancialCenterId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldManageId, entity.ManageId);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldManageName, entity.ManageName);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldArea, entity.Area);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldJoiningMethods, entity.JoiningMethods);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldIsCheckBalance, entity.IsCheckBalance);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldDeleted, entity.DeletionStateCode);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldEnabled, entity.Enabled);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseOrganizeEntity.FieldDescription, entity.Description);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCostCenter, entity.CostCenter);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldCostCenterId, entity.CostCenterId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldFinancialCenter, entity.FinancialCenter);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldFinancialCenterId, entity.FinancialCenterId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldManageId, entity.ManageId);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldManageName, entity.ManageName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldArea, entity.Area);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldJoiningMethods, entity.JoiningMethods);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldIsCheckBalance, entity.IsCheckBalance);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldEnabled, entity.Enabled);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldSortCode, entity.SortCode);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldDescription, entity.Description);
 
             SetEntityExtend(sqlBuilder, entity);
         }
@@ -344,7 +344,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Delete(int id)
         {
-            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseOrganizeEntity.FieldId, id) });
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseOrganizationEntity.FieldId, id) });
             if (result > 0)
             {
                 RemoveCache();

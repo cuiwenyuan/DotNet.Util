@@ -88,7 +88,7 @@ namespace DotNet.Business
         /// <summary>
         /// 登录服务
         /// </summary>
-        public virtual ILogOnService LogOnService => _serviceFactory.CreateLogOnService();
+        public virtual ILogonService LogonService => _serviceFactory.CreateLogonService();
         /// <summary>
         /// 序号服务
         /// </summary>
@@ -126,7 +126,7 @@ namespace DotNet.Business
         /// <summary>
         /// 组织机构服务
         /// </summary>
-        public virtual IOrganizeService OrganizeService => _serviceFactory.CreateOrganizeService();
+        public virtual IOrganizationService OrganizationService => _serviceFactory.CreateOrganizationService();
 
         /// <summary>
         /// 部门服务

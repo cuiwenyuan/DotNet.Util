@@ -49,7 +49,7 @@ namespace DotNet.Util
         /// <summary>
         /// 排序表达式（ORDER BY后的字段或多个字段）
         /// </summary>
-        public string SortExpression { get; set; } = BaseSystemInfo.DatabaseTableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime;
+        public string SortExpression { get; set; } = BaseUtil.FieldCreateTime;
 
         /// <summary>
         /// 排序方向（DESC或ASC）

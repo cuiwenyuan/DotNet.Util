@@ -84,9 +84,9 @@ namespace DotNet.Business
         /// 添加用户
         /// </summary>
         /// <param name="entity">用户实体</param>
-        /// <param name="userLogOnEntity"></param>
+        /// <param name="userLogonEntity"></param>
         /// <returns>主键</returns>
-        public string Add(BaseUserEntity entity, BaseUserLogOnEntity userLogOnEntity = null)
+        public string Add(BaseUserEntity entity, BaseUserLogonEntity userLogonEntity = null)
         {
             var result = string.Empty;
 
@@ -97,35 +97,35 @@ namespace DotNet.Business
                 result = AddEntity(entity);
 
                 // 用户登录表里，插入一条记录
-                if (userLogOnEntity == null)
+                if (userLogonEntity == null)
                 {
-                    userLogOnEntity = new BaseUserLogOnEntity();
+                    userLogonEntity = new BaseUserLogonEntity();
                 }
-                userLogOnEntity.Id = entity.Id;
-                userLogOnEntity.CompanyId = entity.CompanyId;
+                userLogonEntity.Id = entity.Id;
+                userLogonEntity.CompanyId = entity.CompanyId;
                 //把一些默认值读取到，系统的默认值，这样增加用户时可以把系统的默认值带入
-                userLogOnEntity.MultiUserLogin = BaseSystemInfo.CheckOnLine ? 0 : 1;
-                userLogOnEntity.CheckIpAddress = BaseSystemInfo.CheckIpAddress ? 1 : 0;
+                userLogonEntity.MultiUserLogin = BaseSystemInfo.CheckOnline ? 0 : 1;
+                userLogonEntity.CheckIpAddress = BaseSystemInfo.CheckIpAddress ? 1 : 0;
                 //此处设置密码强度级别
-                userLogOnEntity.PasswordStrength = SecretUtil.GetUserPassWordRate(userLogOnEntity.UserPassword);
+                userLogonEntity.PasswordStrength = SecretUtil.GetUserPassWordRate(userLogonEntity.UserPassword);
                 //密码盐
-                userLogOnEntity.Salt = RandomUtil.GetString(20);
+                userLogonEntity.Salt = RandomUtil.GetString(20);
                 // 若是系统需要用加密的密码，这里需要加密密码。
                 if (BaseSystemInfo.ServerEncryptPassword)
                 {
-                    userLogOnEntity.UserPassword = EncryptUserPassword(entity.UserPassword, userLogOnEntity.Salt);
+                    userLogonEntity.UserPassword = EncryptUserPassword(entity.UserPassword, userLogonEntity.Salt);
                     // 安全通讯密码、交易密码也生成好
-                    // userLogOnEntity.UserPassword = this.EncryptUserPassword(entity.CommunicationPassword);
+                    // userLogonEntity.UserPassword = this.EncryptUserPassword(entity.CommunicationPassword);
                 }
                 // 2016.05.21 吉日嘎拉 完善创建信息
-                userLogOnEntity.CreateOn = DateTime.Now;
-                userLogOnEntity.ModifiedOn = DateTime.Now;
+                userLogonEntity.CreateOn = DateTime.Now;
+                userLogonEntity.ModifiedOn = DateTime.Now;
                 if (UserInfo != null)
                 {
-                    userLogOnEntity.CreateUserId = UserInfo.Id;
-                    userLogOnEntity.CreateBy = UserInfo.RealName;
+                    userLogonEntity.CreateUserId = UserInfo.Id;
+                    userLogonEntity.CreateBy = UserInfo.RealName;
                 }
-                new BaseUserLogOnManager(DbHelper, UserInfo).Add(userLogOnEntity);
+                new BaseUserLogonManager(DbHelper, UserInfo).Add(userLogonEntity);
 
                 AfterAdd(entity);
             }

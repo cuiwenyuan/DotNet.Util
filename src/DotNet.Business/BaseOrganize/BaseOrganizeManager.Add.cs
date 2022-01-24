@@ -10,7 +10,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构
     ///
     /// 修改记录
@@ -23,14 +23,14 @@ namespace DotNet.Business
     ///		<date>2016.02.29</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager //, IBaseOrganizeManager
+    public partial class BaseOrganizationManager : BaseManager //, IBaseOrganizationManager
     {
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string Add(BaseOrganizeEntity entity)
+        public string Add(BaseOrganizationEntity entity)
         {
             var result = string.Empty;
 
@@ -38,11 +38,11 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>();
             if (!string.IsNullOrEmpty(entity.ParentId))
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldParentId, entity.ParentId));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, entity.ParentId));
                 //父项不等于空的时候，才检查名称重复
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, entity.FullName));
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1));
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, entity.FullName));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
             }
             
 
@@ -56,9 +56,9 @@ namespace DotNet.Business
             {
                 parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldCode, entity.Code),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseOrganizeEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldCode, entity.Code),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
+                    new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
                 };
 
                 if (entity.Code.Length > 0 && Exists(parameters))
@@ -94,7 +94,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public string AddByDetail(string parentId, string code, string fullName, string categoryCode, string outerPhone, string innerPhone, string fax, bool enabled)
         {
-            var entity = new BaseOrganizeEntity
+            var entity = new BaseOrganizationEntity
             {
                 ParentId = parentId,
                 Code = code,

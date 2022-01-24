@@ -196,9 +196,9 @@ namespace DotNet.Business
         /// ProcessFunWithLock
         /// </summary>
         /// <param name="dbHelper"></param>
-        /// <param name="getOnLine"></param>
+        /// <param name="getOnline"></param>
         /// <returns></returns>
-        public delegate bool ProcessFunWithLock(IDbHelper dbHelper, bool getOnLine);
+        public delegate bool ProcessFunWithLock(IDbHelper dbHelper, bool getOnline);
         /// <summary>
         /// ProcessUserCenterReadDb
         /// </summary>
@@ -251,7 +251,7 @@ namespace DotNet.Business
             {
                 var milliStart = Begin(parameter.UserInfo, parameter.CurrentMethod);
 
-                var getOnLine = false;
+                var getOnline = false;
 
                 lock (locker)
                 {
@@ -260,7 +260,7 @@ namespace DotNet.Business
                         try
                         {
                             dbHelper.Open(GetDbConnection(DbType.UserCenterWrite));
-                            getOnLine = fun(dbHelper, getOnLine);
+                            getOnline = fun(dbHelper, getOnline);
                             AddLog(parameter);
                         }
                         catch (Exception ex)
@@ -274,7 +274,7 @@ namespace DotNet.Business
                         }
                     }
                 }
-                End(parameter.UserInfo, milliStart, parameter.CurrentMethod, getOnLine);
+                End(parameter.UserInfo, milliStart, parameter.CurrentMethod, getOnline);
             }
 		}
         /// <summary>
@@ -555,12 +555,12 @@ namespace DotNet.Business
         /// <param name="userInfo"></param>
         /// <param name="milliStart"></param>
         /// <param name="currentMethod"></param>
-        /// <param name="getOnLine"></param>
-        private static void End(BaseUserInfo userInfo, int milliStart, MethodBase currentMethod, bool getOnLine)
+        /// <param name="getOnline"></param>
+        private static void End(BaseUserInfo userInfo, int milliStart, MethodBase currentMethod, bool getOnline)
 		{
 			// 写入调试信息
 			#if (DEBUG)
-			if(getOnLine)
+			if(getOnline)
 			{
 				BaseUtil.EndDebug(userInfo, currentMethod, milliStart);
 			}

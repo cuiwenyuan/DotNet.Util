@@ -46,7 +46,7 @@ namespace DotNet.Business
 
             if (!result)
             {
-                var url = BaseSystemInfo.UserCenterHost + "UserCenterV42/LogOnService.ashx";
+                var url = BaseSystemInfo.UserCenterHost + "UserCenterV42/LogonService.ashx";
                 var webClient = new WebClient();
                 var postValues = new NameValueCollection();
                 postValues.Add("function", "ValidateOpenId");

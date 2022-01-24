@@ -166,12 +166,12 @@ namespace DotNet.Business
 
                 var sTaffExpressManager = new BaseUserExpressManager(UserInfo);
                 var userManager = new BaseUserManager(UserInfo);
-                var userLogOnManager = new BaseUserLogOnManager(UserInfo);
+                var userLogonManager = new BaseUserLogonManager(UserInfo);
                 using (var dataReader = DbHelper.ExecuteReader(commandText))
                 {
                     while (dataReader.Read())
                     {
-                        result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager, userLogOnManager);
+                        result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager, userLogonManager);
                     }
                     dataReader.Close();
                 }
@@ -186,7 +186,7 @@ namespace DotNet.Business
             return result;
         }
 
-        BaseOrganizeManager _organizeManager = new BaseOrganizeManager();
+        BaseOrganizationManager _organizeManager = new BaseOrganizationManager();
 
         /// <summary>
         /// 导入员工
@@ -195,9 +195,9 @@ namespace DotNet.Business
         /// <param name="staffManager"></param>
         /// <param name="sTaffExpressManager"></param>
         /// <param name="userManager"></param>
-        /// <param name="userLogOnManager"></param>
+        /// <param name="userLogonManager"></param>
         /// <returns></returns>
-        public int ImportStaff(IDataReader dataReader, BaseStaffManager staffManager, BaseUserExpressManager sTaffExpressManager, BaseUserManager userManager, BaseUserLogOnManager userLogOnManager)
+        public int ImportStaff(IDataReader dataReader, BaseStaffManager staffManager, BaseUserExpressManager sTaffExpressManager, BaseUserManager userManager, BaseUserLogonManager userLogonManager)
         {
             var result = 0;
 
@@ -272,7 +272,7 @@ namespace DotNet.Business
             };
             if (string.IsNullOrEmpty(userEntity.CompanyId))
             {
-                userEntity.CompanyId = BaseOrganizeManager.GetEntityByNameByCache(userEntity.CompanyName).Id;
+                userEntity.CompanyId = BaseOrganizationManager.GetEntityByNameByCache(userEntity.CompanyName).Id;
                 if (string.IsNullOrEmpty(userEntity.CompanyId))
                 {
                     Console.WriteLine("无CompanyId " + userEntity.Id + ":" + userEntity.UserName + ":" + userEntity.RealName);
@@ -313,12 +313,12 @@ namespace DotNet.Business
                 };
                 new BaseUserContactManager().AddEntity(userContactEntity);
 
-                var userLogOnEntity = new BaseUserLogOnEntity
+                var userLogonEntity = new BaseUserLogonEntity
                 {
                     Id = dataReader["ID"].ToString(),
                     UserPassword = dataReader["BAR_PASSWORD"].ToString()
                 };
-                userLogOnManager.AddEntity(userLogOnEntity);
+                userLogonManager.AddEntity(userLogonEntity);
             }
             
             // 处理角色
@@ -328,29 +328,29 @@ namespace DotNet.Business
             userManager.AddToRole("PDA", userEntity.Id, roleName);
 
             // 添加用户密码表
-            BaseUserLogOnEntity userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
-            if (userLogOnEntity == null)
+            BaseUserLogonEntity userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
+            if (userLogonEntity == null)
             {
-                userLogOnEntity = new BaseUserLogOnEntity();
-                userLogOnEntity.Id = userEntity.Id;
-                userLogOnEntity.UserPassword = dataReader["BAR_PASSWORD"].ToString();
-                //userLogOnEntity.Salt = dataReader["SALT"].ToString();
+                userLogonEntity = new BaseUserLogonEntity();
+                userLogonEntity.Id = userEntity.Id;
+                userLogonEntity.UserPassword = dataReader["BAR_PASSWORD"].ToString();
+                //userLogonEntity.Salt = dataReader["SALT"].ToString();
                 //if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 //{
-                //    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                //    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 //}
-                userLogOnManager.AddEntity(userLogOnEntity);
+                userLogonManager.AddEntity(userLogonEntity);
             }
             else
             {
-                userLogOnEntity.Id = userEntity.Id;
-                userLogOnEntity.UserPassword = dataReader["BAR_PASSWORD"].ToString();
-                //userLogOnEntity.Salt = dataReader["SALT"].ToString();
+                userLogonEntity.Id = userEntity.Id;
+                userLogonEntity.UserPassword = dataReader["BAR_PASSWORD"].ToString();
+                //userLogonEntity.Salt = dataReader["SALT"].ToString();
                 //if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 //{
-                //    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                //    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 //}
-                result = userLogOnManager.UpdateEntity(userLogOnEntity);
+                result = userLogonManager.UpdateEntity(userLogonEntity);
             }
              */
 

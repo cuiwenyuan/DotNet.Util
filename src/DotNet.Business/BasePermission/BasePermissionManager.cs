@@ -175,13 +175,13 @@ namespace DotNet.Business
 
             // 判断用户组织机构权限，这里有开关是为了提高性能用的，
             // 下面的函数接着还可以提高性能，可以进行一次判断就可以了，其实不用执行4次判断，浪费I/O，浪费性能。
-            if (BaseSystemInfo.UseOrganizePermission)
+            if (BaseSystemInfo.UseOrganizationPermission)
             {
                 // 2016-02-26 吉日嘎拉 进行简化权限判断，登录时应该选系统，选公司比较好，登录到哪个公司应该先确定？
                 var companyId = BaseUserManager.GetCompanyIdByCache(userId);
                 if (!string.IsNullOrEmpty(companyId))
                 {
-                    if (CheckResourcePermission(systemCode, BaseOrganizeEntity.TableName, companyId, permissionEntity.Id))
+                    if (CheckResourcePermission(systemCode, BaseOrganizationEntity.TableName, companyId, permissionEntity.Id))
                     {
                         return true;
                     }
@@ -190,10 +190,10 @@ namespace DotNet.Business
                 // 这里获取用户的所有所在的部门，包括兼职的部门
                 /*
                 BaseUserManager userManager = new BaseUserManager(this.DbHelper, this.UserInfo);
-                string[] organizationIds = userManager.GetAllOrganizeIds(userId);
+                string[] organizationIds = userManager.GetAllOrganizationIds(userId);
                 if (organizationIds != null
                     && organizationIds.Length > 0
-                    && this.CheckUserOrganizePermission(systemCode, userId, permissionEntity.Id, organizationIds))
+                    && this.CheckUserOrganizationPermission(systemCode, userId, permissionEntity.Id, organizationIds))
                 {
                     return true;
                 }
@@ -204,7 +204,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        private bool CheckUserOrganizePermission(string systemCode, string userId, string permissionId, string[] organizationIds)
+        private bool CheckUserOrganizationPermission(string systemCode, string userId, string permissionId, string[] organizationIds)
         {
             var result = false;
 
@@ -242,7 +242,7 @@ namespace DotNet.Business
             var rowCount = 0;
             var dbParameters = new List<IDbDataParameter>
             {
-                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldDeleted, 0)
@@ -261,7 +261,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BasePermissionManager.CheckUserOrganizePermission:发生时间:" + DateTime.Now
+                var writeMessage = "BasePermissionManager.CheckUserOrganizationPermission:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -636,15 +636,15 @@ namespace DotNet.Business
                 /*
                 // 角色与部门是否进行关联？
                 // 2015-12-02 吉日嘎拉 这里基本上没在用的，心里有个数。
-                if (BaseSystemInfo.UseRoleOrganize && !string.IsNullOrEmpty(companyId))
+                if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
                 {
-                    string roleOrganizeTableName = systemCode + "RoleOrganize";
-                    sql.Append(" UNION SELECT " + BaseRoleOrganizeEntity.FieldRoleId);
-                    sql.Append(" FROM " + roleOrganizeTableName);
-                    sql.Append(" WHERE ( " + BaseRoleOrganizeEntity.FieldOrganizeId + " = " + DbHelper.GetParameter(BaseRoleOrganizeEntity.FieldOrganizeId));
-                    sql.Append(" AND " + BaseRoleOrganizeEntity.FieldEnabled + " = 1 ");
-                    sql.Append(" AND " + BaseRoleOrganizeEntity.FieldDeleted + " = 0 )");
-                    dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizeEntity.FieldOrganizeId, companyId));
+                    string roleOrganizationTableName = systemCode + "RoleOrganization";
+                    sql.Append(" UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId);
+                    sql.Append(" FROM " + roleOrganizationTableName);
+                    sql.Append(" WHERE ( " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId));
+                    sql.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 ");
+                    sql.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 )");
+                    dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
                 }
                 */
 
@@ -670,7 +670,7 @@ namespace DotNet.Business
                 result = StringUtil.Concat(result, ids.ToArray());
 
                 // 按部门(组织机构)获取权限项
-                if (BaseSystemInfo.UseOrganizePermission)
+                if (BaseSystemInfo.UseOrganizationPermission)
                 {
                     if (!string.IsNullOrEmpty(companyId))
                     {
@@ -686,7 +686,7 @@ namespace DotNet.Business
                         // 2015-12-02 吉日嘎拉 优化参数，用ExecuteReader，提高效率节约内存。
                         dbParameters = new List<IDbDataParameter>
                         {
-                            DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizeEntity.TableName),
+                            DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, companyId),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldDeleted, 0)

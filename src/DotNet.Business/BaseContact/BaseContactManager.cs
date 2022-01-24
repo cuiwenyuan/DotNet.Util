@@ -226,7 +226,7 @@ namespace DotNet.Business
 
                                                     SELECT ContactId
                       FROM BaseContactDetails
-                                                     WHERE Category = 'Organize'
+                                                     WHERE Category = 'Organization'
                                                        AND ReceiverId IN (
                                                                             SELECT CompanyId
                                               FROM BaseStaff
@@ -244,8 +244,8 @@ namespace DotNet.Business
                                                                                    AND (WorkgroupId IS NOT NULL) AND Enabled =1
                                                                              
                                                                        --    UNION
-                                                                       --   SELECT OrganizeId
-                                                                       -- FROM BaseUserOrganize 
+                                                                       --   SELECT OrganizationId
+                                                                       -- FROM BaseUserOrganization 
                                                                        --    WHERE (UserId = '" + userId + @"') AND Enabled = 1
                                                                           )
                                                     UNION
@@ -322,7 +322,7 @@ namespace DotNet.Business
             // 组织机构数组
             if (organizationIds != null)
             {
-                BaseOrganizeManager organizeManager = new BaseOrganizeManager(DbHelper, UserInfo);
+                BaseOrganizationManager organizeManager = new BaseOrganizationManager(DbHelper, UserInfo);
                 for (int i = 0; i < organizationIds.Length; i++)
                 {
                     contactDetailsEntity = new BaseContactDetailsEntity
@@ -330,9 +330,9 @@ namespace DotNet.Business
                         // 这里一定要给个不可猜测的主键，为了提高安全性
                         Id = Guid.NewGuid().ToString("N"),
                         ContactId = contactId,
-                        Category = "Organize",
+                        Category = "Organization",
                         ReceiverId = organizationIds[i],
-                        ReceiverRealName = organizeManager.GetProperty(organizationIds[i], BaseOrganizeEntity.FieldFullName),
+                        ReceiverRealName = organizeManager.GetProperty(organizationIds[i], BaseOrganizationEntity.FieldFullName),
                         IsNew = 1,
                         Enabled = 1,
                         NewComment = 0
@@ -489,7 +489,7 @@ namespace DotNet.Business
                 return true;
             }
             // 组织能否阅读
-            if (OrganizeCanRead(contactId))
+            if (OrganizationCanRead(contactId))
             {
                 return true;
             }
@@ -549,12 +549,12 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="contactId">联络单主键</param>
         /// <returns>能阅读</returns>
-        private bool OrganizeCanRead(string contactId)
+        private bool OrganizationCanRead(string contactId)
         {
             bool returnValue = false;
             string sqlQuery = "   SELECT COUNT(ContactId) AS ContactCount "
                          + " FROM BaseContactDetails "
-                            + " WHERE Category = 'Organize' "
+                            + " WHERE Category = 'Organization' "
                                  + "  AND Enabled = 1 "
                                  + "  AND " + BaseContactDetailsEntity.FieldDeleted + " = 0 "
                                  + "  AND ContactId = '" + contactId + "'"
@@ -581,8 +581,8 @@ namespace DotNet.Business
 
                                                    + "     UNION "
 
-                                                   + "    SELECT OrganizeId "
-                                                   + " FROM BaseUserOrganize "
+                                                   + "    SELECT OrganizationId "
+                                                   + " FROM BaseUserOrganization "
                                                    + "     WHERE (UserId = '" + UserInfo.Id + "') AND Enabled = 1 "
 
                                                    + " ) ";
@@ -681,7 +681,7 @@ namespace DotNet.Business
                     commandText = " (ParentId = '" + parentId + "' AND Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND AuditStatus=2 AND IsOpen = 1) OR (ParentId = '" + parentId + "' AND Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND Id IN (";
                 }
                 // 获取用户所在的单位的信息
-                BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByCache(userEntity.CompanyId);
+                BaseOrganizationEntity organizeEntity = BaseOrganizationManager.GetEntityByCache(userEntity.CompanyId);
                 if (organizeEntity != null)
                 {
                     // 所在省
@@ -745,7 +745,7 @@ namespace DotNet.Business
             string commandText = string.Empty;
 
             // 获取用户所在的单位的信息
-            BaseOrganizeEntity organizeEntity = BaseOrganizeManager.GetEntityByCache(companyId);
+            BaseOrganizationEntity organizeEntity = BaseOrganizationManager.GetEntityByCache(companyId);
 
             if (organizeEntity != null)
             {

@@ -85,23 +85,23 @@ namespace DotNet.Business
 
 #if NET40_OR_GREATER
 
-        #region public static bool CheckIsLogOn(string accessDenyUrl = null) 检查是否已登录
+        #region public static bool CheckIsLogon(string accessDenyUrl = null) 检查是否已登录
         /// <summary>
         /// 检查是否已登录
         /// </summary>
         /// <param name="accessDenyUrl"></param>
         /// <param name="returnUrl">返回Url</param>
         /// <returns></returns>
-        public static bool CheckIsLogOn(string returnUrl = null, string accessDenyUrl = null)
+        public static bool CheckIsLogon(string returnUrl = null, string accessDenyUrl = null)
         {
-            if (!UserIsLogOn())
+            if (!UserIsLogon())
             {
                 if (string.IsNullOrEmpty(accessDenyUrl))
                 {
                     //获取设置的当点登录页面
                     if (ConfigurationManager.AppSettings["SSO"] != null)
                     {
-                        UserLogOnPage = ConfigurationManager.AppSettings["SSO"];
+                        UserLogonPage = ConfigurationManager.AppSettings["SSO"];
                     }
 
                     if (string.IsNullOrWhiteSpace(returnUrl))
@@ -111,7 +111,7 @@ namespace DotNet.Business
                         //returnUrl = Server.UrlEncode(HttpContext.Current.Request.Url.ToString()); 
                     }
                     var js = @"<script language='JavaScript'>top.window.location.replace('{0}');</script>";
-                    js = string.Format(js, UserLogOnPage + "?ReturnUrl=" + returnUrl);
+                    js = string.Format(js, UserLogonPage + "?ReturnUrl=" + returnUrl);
                     HttpContext.Current.Response.Write(js);
                     //这里需要结束输出了，防止意外发生。
                     HttpContext.Current.Response.End();
@@ -128,12 +128,12 @@ namespace DotNet.Business
 
         #region 判断用户是否已登录部分
 
-        #region public static bool UserIsLogOn() 判断用户是否已登录
+        #region public static bool UserIsLogon() 判断用户是否已登录
         /// <summary>
         /// 判断用户是否已登录
         /// </summary>
         /// <returns>已登录</returns>
-        public static bool UserIsLogOn()
+        public static bool UserIsLogon()
         {
             // 先判断 Session 里是否有用户，若没有检查Cookie是没错
             if (HttpContext.Current.Session == null || HttpContext.Current.Session[SessionName] == null)
@@ -242,8 +242,8 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(userInfo.OpenId))
             {
                 var userManager = new BaseUserManager(userInfo);
-                //userInfo = userManager.LogOnByOpenId(userInfo.OpenId, userInfo.IPAddress).UserInfo;
-                userInfo = userManager.LogOnByOpenId(userInfo.OpenId, UserInfo.SystemCode, userInfo.IpAddress).UserInfo;
+                //userInfo = userManager.LogonByOpenId(userInfo.OpenId, userInfo.IPAddress).UserInfo;
+                userInfo = userManager.LogonByOpenId(userInfo.OpenId, UserInfo.SystemCode, userInfo.IpAddress).UserInfo;
                 SetSession(userInfo);
             }
             return userInfo;
@@ -306,7 +306,7 @@ namespace DotNet.Business
 
                             // 2013-02-20 吉日嘎拉
                             // 进行登录，这里是靠重新登录获取 Cookie，这里其实是判断密码是不是过期了，其实这里openId登录也可以
-                            userInfo = LogOn(username, password, false);
+                            userInfo = Logon(username, password, false);
                         }
                     }
                 }
@@ -535,22 +535,22 @@ namespace DotNet.Business
         /// <param name="useDataBase"></param>
         /// <param name="useUserCenterHost"></param>
         /// <returns></returns>
-        public static UserLogOnResult LogOnByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        public static UserLogonResult LogonByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
         {
             // 统一的登录服务
-            UserLogOnResult result = null;
+            UserLogonResult result = null;
             var openId = string.Empty;
 
             if (BaseUserManager.VerifyAuthorizationCode(null, authorizationCode, out openId))
             {
-                result = LogOnByOpenId(openId, transparent, useCaching, useDataBase, useUserCenterHost);
+                result = LogonByOpenId(openId, transparent, useCaching, useDataBase, useUserCenterHost);
             }
 
             return result;
         }
 
 
-        #region public static UserLogOnResult LogOnByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        #region public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
         /// <summary>
         /// 验证用户
         /// </summary>
@@ -560,10 +560,10 @@ namespace DotNet.Business
         /// <param name="useDataBase">使用数据库</param>
         /// <param name="useUserCenterHost">使用接口</param>
         /// <returns>用户登录信息</returns>
-        public static UserLogOnResult LogOnByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
         {
             // 统一的登录服务
-            UserLogOnResult userLogOnResult = null;
+            UserLogonResult userLogonResult = null;
 
             if (useCaching)
             {
@@ -571,12 +571,12 @@ namespace DotNet.Business
                 var result = GetUserInfoCaching(openId);
                 if (result != null)
                 {
-                    userLogOnResult = new UserLogOnResult
+                    userLogonResult = new UserLogonResult
                     {
                         UserInfo = result,
                         StatusCode = Status.Ok.ToString()
                     };
-                    return userLogOnResult;
+                    return userLogonResult;
                 }
             }
 
@@ -588,11 +588,11 @@ namespace DotNet.Business
             if (useUserCenterHost)
             {
                 // DotNetService dotNetService = new DotNetService();
-                // result = dotNetService.LogOnService.LogOnByOpenId(GetUserInfo(), openId);
-                var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogOnService.ashx";
+                // result = dotNetService.LogonService.LogonByOpenId(GetUserInfo(), openId);
+                var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
                 var webClient = new WebClient();
                 var postValues = new NameValueCollection();
-                postValues.Add("function", "LogOnByOpenId");
+                postValues.Add("function", "LogonByOpenId");
                 postValues.Add("userInfo", BaseSystemInfo.UserInfo.Serialize());
                 postValues.Add("systemCode", BaseSystemInfo.SystemCode);
                 // 若ip地址没有传递过来，就获取BS客户端ip地址
@@ -606,16 +606,16 @@ namespace DotNet.Business
                 var response = Encoding.UTF8.GetString(responseArray);
                 if (!string.IsNullOrEmpty(response))
                 {
-                    userLogOnResult = JsonUtil.JsonToObject<UserLogOnResult>(response);
+                    userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
                 }
                 // 检查身份
-                if (userLogOnResult != null && userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+                if (userLogonResult != null && userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
                 {
-                    LogOn(userLogOnResult.UserInfo, false);
+                    Logon(userLogonResult.UserInfo, false);
                 }
             }
 
-            return userLogOnResult;
+            return userLogonResult;
         }
         #endregion
 
@@ -623,21 +623,21 @@ namespace DotNet.Business
 
         #region 用用户名密码登录部分
 
-        #region public static BaseUserInfo LogOn(string userName, string password, bool checkUserPassword = true)
+        #region public static BaseUserInfo Logon(string userName, string password, bool checkUserPassword = true)
         /// <summary>
         /// 验证用户
         /// </summary>
         /// <param name="userName">用户名</param>
         /// <param name="password">密码</param>
         /// <param name="checkUserPassword">是否要检查用户密码</param>
-        public static BaseUserInfo LogOn(string userName, string password, bool checkUserPassword = true)
+        public static BaseUserInfo Logon(string userName, string password, bool checkUserPassword = true)
         {
             var userManager = new BaseUserManager(GetUserInfo());
-            return userManager.LogOnByUserName(userName, password, BaseSystemInfo.SystemCode, HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"], string.Empty, null, checkUserPassword).UserInfo;
+            return userManager.LogonByUserName(userName, password, BaseSystemInfo.SystemCode, HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"], string.Empty, null, checkUserPassword).UserInfo;
         }
         #endregion
 
-        #region public static BaseUserInfo LogOn(string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        #region public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
 
         /// <summary>
         /// 验证用户
@@ -654,7 +654,7 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状态消息</param>
         /// <returns></returns>
-        public static BaseUserInfo LogOn(string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication, bool webApiLogin, out string statusCode, out string statusMessage)
+        public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication, bool webApiLogin, out string statusCode, out string statusMessage)
         {
             BaseUserInfo result = null;
             statusCode = Status.UserNotFound.ToString();
@@ -682,22 +682,22 @@ namespace DotNet.Business
                 userInfo = new BaseUserInfo();
             }
             //2020年2月29日，每次登录都强制重新生成OpenId，Troy.Cui
-            var userLogOnResult = dotNetService.LogOnService.UserLogOn(taskId, userInfo, userName, password, openId);
-            if (userLogOnResult != null)
+            var userLogonResult = dotNetService.LogonService.UserLogon(taskId, userInfo, userName, password, openId);
+            if (userLogonResult != null)
             {
-                statusCode = userLogOnResult.StatusCode;
-                statusMessage = userLogOnResult.StatusMessage;
+                statusCode = userLogonResult.StatusCode;
+                statusMessage = userLogonResult.StatusMessage;
             }
             // 检查身份
-            if (userLogOnResult != null && userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult != null && userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
             {
-                LogUtil.WriteLog("LogOn Ok");
+                LogUtil.WriteLog("Logon Ok");
 
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
-                    isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogOnResult.UserInfo, permissionCode, null);
+                    isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogonResult.UserInfo, permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -707,27 +707,27 @@ namespace DotNet.Business
                         // 相对安全的方式保存登录状态
                         //SaveCookie(userName, password);
                         // 内部单点登录方式 Troy.Cui 2016.12.26
-                        SaveCookie(userLogOnResult.UserInfo);
+                        SaveCookie(userLogonResult.UserInfo);
                     }
                     else
                     {
                         RemoveUserCookie();
                     }
-                    LogOn(userLogOnResult.UserInfo, formsAuthentication);
+                    Logon(userLogonResult.UserInfo, formsAuthentication);
                 }
                 else
                 {
-                    userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                    userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                 }
-                result = userLogOnResult.UserInfo;
+                result = userLogonResult.UserInfo;
             }
 
             return result;
         }
         #endregion
 
-        #region public static BaseUserInfo LogOnByCompany(string companyName, string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication)
+        #region public static BaseUserInfo LogonByCompany(string companyName, string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication)
         /// <summary>
         /// 验证用户
         /// </summary>
@@ -741,7 +741,7 @@ namespace DotNet.Business
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
         /// <returns></returns>
-        public static BaseUserInfo LogOnByCompany(string companyName, string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication)
+        public static BaseUserInfo LogonByCompany(string companyName, string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication)
         {
             var taskId = Guid.NewGuid().ToString("N");
             // 统一的登录服务
@@ -759,9 +759,9 @@ namespace DotNet.Business
                 userInfo.IpAddress = Utils.GetIp();
             }
             var dotNetService = new DotNetService();
-            var userLogOnResult = dotNetService.LogOnService.LogOnByCompany(taskId, userInfo, companyName, userName, password, openId);
+            var userLogonResult = dotNetService.LogonService.LogonByCompany(taskId, userInfo, companyName, userName, password, openId);
             // 检查身份
-            if (userLogOnResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
@@ -777,31 +777,31 @@ namespace DotNet.Business
                         // 相对安全的方式保存登录状态
                         SaveCookie(userName, password);
                         // 内部单点登录方式
-                        //SaveCookie(userLogOnResult.UserInfo);
+                        //SaveCookie(userLogonResult.UserInfo);
                     }
                     else
                     {
                         RemoveUserCookie();
                     }
-                    LogOn(userLogOnResult.UserInfo, formsAuthentication);
+                    Logon(userLogonResult.UserInfo, formsAuthentication);
                 }
                 else
                 {
-                    userLogOnResult.StatusCode = Status.LogOnDeny.ToString();
-                    userLogOnResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusCode = Status.LogonDeny.ToString();
+                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                 }
             }
-            return userLogOnResult.UserInfo;
+            return userLogonResult.UserInfo;
         }
         #endregion
 
-        #region public static void LogOn(BaseUserInfo userInfo, bool formsAuthentication = false)
+        #region public static void Logon(BaseUserInfo userInfo, bool formsAuthentication = false)
         /// <summary>
         /// 验证用户
         /// </summary>
         /// <param name="userInfo">登录</param>
         /// <param name="formsAuthentication">Forms认证</param>
-        public static void LogOn(BaseUserInfo userInfo, bool formsAuthentication = false)
+        public static void Logon(BaseUserInfo userInfo, bool formsAuthentication = false)
         {
             // 检查身份
             if ((userInfo != null) && (!string.IsNullOrEmpty(userInfo.Id)))
@@ -880,8 +880,8 @@ namespace DotNet.Business
 
                 // 这里要考虑读写分离的处理
                 // IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterWriteDbConnection);
-                // BaseUserLogOnManager userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
-                // userLogOnManager.SignOut(userInfo.Id);
+                // BaseUserLogonManager userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
+                // userLogonManager.SignOut(userInfo.Id);
             }
 
             // 清除Seesion对象
@@ -897,7 +897,7 @@ namespace DotNet.Business
             // 重新定位到登录页面
             // HttpContext.Current.Response.Redirect("Default.aspx", true);
 
-            //var url = BaseSystemInfo.WebHost + "/UserCenterV42/LogOnService.ashx?";
+            //var url = BaseSystemInfo.WebHost + "/UserCenterV42/LogonService.ashx?";
             //var webClient = new WebClient();
             //var postValues = new NameValueCollection();
             //postValues.Add("function", "SignOut");

@@ -29,7 +29,7 @@ namespace DotNet.Business
     {
         #region 用户权限范围判断相关(需要实现对外调用)
 
-        #region public DataTable GetOrganizeDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode, bool childrens = true)
+        #region public DataTable GetOrganizationDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode, bool childrens = true)
         /// <summary>
         /// 按某个权限域获取组织列表
         /// </summary>
@@ -38,9 +38,9 @@ namespace DotNet.Business
         /// <param name="permissionCode">数据权限编号</param>
         /// <param name="childrens">获取子节点</param>
         /// <returns>数据表</returns>
-        public DataTable GetOrganizeDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode = "Resource.ManagePermission", bool childrens = true)
+        public DataTable GetOrganizationDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode = "Resource.ManagePermission", bool childrens = true)
         {
-            var dt = new DataTable(BaseOrganizeEntity.TableName);
+            var dt = new DataTable(BaseOrganizationEntity.TableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -48,24 +48,24 @@ namespace DotNet.Business
                 // 若权限是空的，直接返回所有数据
                 if (string.IsNullOrEmpty(permissionCode))
                 {
-                    var organizeManager = new BaseOrganizeManager(dbHelper, userInfo);
+                    var organizeManager = new BaseOrganizationManager(dbHelper, userInfo);
                     dt = organizeManager.GetDataTable();
-                    dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
+                    dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
                 }
                 else
                 {
                     // 获得组织机构列表
                     var permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-                    dt = permissionScopeManager.GetOrganizeDt(userInfo.SystemCode, userInfo.Id, permissionCode, childrens);
-                    dt.DefaultView.Sort = BaseOrganizeEntity.FieldSortCode;
+                    dt = permissionScopeManager.GetOrganizationDt(userInfo.SystemCode, userInfo.Id, permissionCode, childrens);
+                    dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
                 }
-                dt.TableName = BaseOrganizeEntity.TableName;
+                dt.TableName = BaseOrganizationEntity.TableName;
             });
             return dt;
         }
         #endregion
 
-        #region public string[] GetOrganizeIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
+        #region public string[] GetOrganizationIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
         /// <summary>
         /// 按某个数据权限获取组织主键数组
         /// </summary>
@@ -73,7 +73,7 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="permissionCode">数据权限编号</param>
         /// <returns>主键数组</returns>
-        public string[] GetOrganizeIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
+        public string[] GetOrganizationIdsByPermissionScope(BaseUserInfo userInfo, string userId, string permissionCode)
         {
             string[] result = null;
 
@@ -85,7 +85,7 @@ namespace DotNet.Business
                 {
                     // 获得组织机构列表
                     var permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-                    result = permissionScopeManager.GetOrganizeIds(userId, permissionCode);
+                    result = permissionScopeManager.GetOrganizationIds(userId, permissionCode);
                 }
             });
             return result;
@@ -329,9 +329,9 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
                     // 被管理部门的列表
-                    var organizationIds = manager.GetOrganizeIds(userInfo.SystemCode, userId, permissionCode, false);
+                    var organizationIds = manager.GetOrganizationIds(userInfo.SystemCode, userId, permissionCode, false);
                     var staffManager = new BaseStaffManager(dbHelper, userInfo);
-                    dt = staffManager.GetDataTableByOrganizes(organizationIds);
+                    dt = staffManager.GetDataTableByOrganizations(organizationIds);
                     dt.TableName = BaseStaffEntity.TableName;
                 }
             });

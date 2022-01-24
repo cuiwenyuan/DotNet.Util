@@ -33,11 +33,11 @@ namespace DotNet.Util
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
         /// <returns>数据表</returns>
-        public static int Aggregate(IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        public static int AggregateInt(IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT " + function + "(" + fieldName + ") FROM " + tableName);
+            sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
@@ -45,7 +45,35 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put());
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString());
+                result = obj.ToInt();
+            }
+            return result;
+        }
+        #endregion
+
+        #region Aggregate
+        /// <summary>
+        /// 获取聚合函数值
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">数据来源表名</param>
+        /// <param name="fieldName">字段名</param>
+        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
+        /// <returns>数据表</returns>
+        public static decimal AggregateDecimal(IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        {
+            var result = 0M;
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+            if (!string.IsNullOrEmpty(condition))
+            {
+                sb.Append(" WHERE " + condition);
+            }
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null && obj != DBNull.Value)
+            {
+                result = obj.ToDecimal();
             }
             return result;
         }

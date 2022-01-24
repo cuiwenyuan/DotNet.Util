@@ -10,12 +10,12 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseOrganizeLogOnManager
+    /// BaseOrganizationLogonManager
     /// 系统网点登录信息
     ///
     /// 修改记录
     ///
-    ///		2016-04-01 版本：1.1 JiRiGaLa LogOnStatistics 方法进行细化改进。
+    ///		2016-04-01 版本：1.1 JiRiGaLa LogonStatistics 方法进行细化改进。
     ///		2016-03-29 版本：1.0 JiRiGaLa 创建主键。
     ///
     /// <author>
@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///		<date>2016-03-29</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizeLogOnManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationLogonManager : BaseManager, IBaseManager
     {
         /// <summary>
         /// 从数据库加载上来？缓存预热的机制
@@ -33,12 +33,12 @@ namespace DotNet.Business
         {
             var result = 0;
             // 把所有的数据都缓存起来的代码
-            var manager = new BaseOrganizeLogOnManager();
-            using (var dataReader = manager.ExecuteReader(0, BaseOrganizeLogOnEntity.FieldId))
+            var manager = new BaseOrganizationLogonManager();
+            using (var dataReader = manager.ExecuteReader(0, BaseOrganizationLogonEntity.FieldId))
             {
                 while (dataReader.Read())
                 {
-                    var entity = BaseEntity.Create<BaseOrganizeLogOnEntity>(dataReader, false);
+                    var entity = BaseEntity.Create<BaseOrganizationLogonEntity>(dataReader, false);
                     SetCache(entity);
                     result++;
                 }
@@ -52,13 +52,13 @@ namespace DotNet.Business
         /// 设置缓存
         /// </summary>
         /// <param name="entity">登录信息</param>
-        public static void SetCache(BaseOrganizeLogOnEntity entity)
+        public static void SetCache(BaseOrganizationLogonEntity entity)
         {
             var key = string.Empty;
 
             if (entity != null && !string.IsNullOrWhiteSpace(entity.Id))
             {
-                key = "OrganizeLogOn:" + entity.Id;
+                key = "OrganizationLogon:" + entity.Id;
                 CacheUtil.Set(key, entity);
             }
         }
@@ -67,12 +67,12 @@ namespace DotNet.Business
         /// 获取缓存的网点登录信息
         /// </summary>
         /// <param name="companyId">网点Id</param>
-        public static BaseOrganizeLogOnEntity GetCache(string companyId)
+        public static BaseOrganizationLogonEntity GetCache(string companyId)
         {
-            BaseOrganizeLogOnEntity result = null;
+            BaseOrganizationLogonEntity result = null;
             if (!string.IsNullOrEmpty(companyId))
             {
-                result = CacheUtil.Get<BaseOrganizeLogOnEntity>("OrganizeLogOn:" + companyId);
+                result = CacheUtil.Get<BaseOrganizationLogonEntity>("OrganizationLogon:" + companyId);
             }
             return result;
         }

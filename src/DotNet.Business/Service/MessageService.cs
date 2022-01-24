@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// <summary>
         /// 最后检查在线状态时间
         /// </summary>
-        public static DateTime LaseOnLineStateCheck = DateTime.MinValue;
+        public static DateTime LaseOnlineStateCheck = DateTime.MinValue;
 
         #region public string Send(BaseUserInfo userInfo, string receiverId, string contents, string functionCode) 发送消息
         /// <summary>
@@ -97,7 +97,7 @@ namespace DotNet.Business
                 };
                 if (!string.IsNullOrEmpty(organizationId))
                 {
-                    entity.FunctionCode = MessageFunction.OrganizeMessage.ToString();
+                    entity.FunctionCode = MessageFunction.OrganizationMessage.ToString();
                     entity.ObjectId = organizationId;
                 }
                 if (!string.IsNullOrEmpty(roleId))
@@ -213,8 +213,8 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 设置为在线状态
-                var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
-                userLogOnManager.OnLine(userInfo.Id, onLineState);
+                var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
+                userLogonManager.Online(userInfo.Id, onLineState);
                 // 读取信息状态
                 var messageManager = new BaseMessageManager(userInfo);
                 result = messageManager.MessageChek();
@@ -271,24 +271,24 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int CheckOnLine(BaseUserInfo userInfo, int onLineState) 检查在线状态
+        #region public int CheckOnline(BaseUserInfo userInfo, int onLineState) 检查在线状态
         /// <summary>
         /// 检查在线状态
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="onLineState">用户在线状态</param>
         /// <returns>离线人数</returns>
-        public int CheckOnLine(BaseUserInfo userInfo, int onLineState)
+        public int CheckOnline(BaseUserInfo userInfo, int onLineState)
         {
             var result = 0;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userLogOnManager = new BaseUserLogOnManager(dbHelper);
+                var userLogonManager = new BaseUserLogonManager(dbHelper);
                 // 设置为在线状态
-                userLogOnManager.OnLine(userInfo.Id, onLineState);
-                result = userLogOnManager.CheckOnLine();
+                userLogonManager.Online(userInfo.Id, onLineState);
+                result = userLogonManager.CheckOnline();
             });
             return result;
         }
@@ -297,46 +297,46 @@ namespace DotNet.Business
         /// <summary>
         /// 在线状态表
         /// </summary>
-        public static DataTable OnLineStateDt = null;
+        public static DataTable OnlineStateDt = null;
 
-        #region public DataTable GetOnLineState(BaseUserInfo userInfo) 获取在线用户列表
+        #region public DataTable GetOnlineState(BaseUserInfo userInfo) 获取在线用户列表
         /// <summary>
         /// 获取在线用户列表
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <returns>数据表</returns>
-        public DataTable GetOnLineState(BaseUserInfo userInfo)
+        public DataTable GetOnlineState(BaseUserInfo userInfo)
         {
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var userLogOnManager = new BaseUserLogOnManager(dbHelper, userInfo);
+                var userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
                 // 设置为在线状态
-                userLogOnManager.OnLine(userInfo.Id);
-                if (LaseOnLineStateCheck == DateTime.MinValue)
+                userLogonManager.Online(userInfo.Id);
+                if (LaseOnlineStateCheck == DateTime.MinValue)
                 {
                 }
                 else
                 {
                     // 2008.01.23 JiRiGaLa 修正错误
-                    var timeSpan = DateTime.Now - LaseOnLineStateCheck;
-                    if ((timeSpan.Minutes * 60 + timeSpan.Seconds) >= BaseSystemInfo.OnLineCheck)
+                    var timeSpan = DateTime.Now - LaseOnlineStateCheck;
+                    if ((timeSpan.Minutes * 60 + timeSpan.Seconds) >= BaseSystemInfo.OnlineCheck)
                     {
 
                     }
                 }
-                if (OnLineStateDt == null)
+                if (OnlineStateDt == null)
                 {
                     // 检查用户在线状态(服务器专用)
-                    userLogOnManager.CheckOnLine();
+                    userLogonManager.CheckOnline();
                     // 获取在线状态列表
-                    OnLineStateDt = userLogOnManager.GetOnLineStateDt();
-                    OnLineStateDt.TableName = BaseUserEntity.TableName;
-                    LaseOnLineStateCheck = DateTime.Now;
+                    OnlineStateDt = userLogonManager.GetOnlineStateDt();
+                    OnlineStateDt.TableName = BaseUserEntity.TableName;
+                    LaseOnlineStateCheck = DateTime.Now;
                 }
             });
 
-            return InnerOrganizeDt;
+            return InnerOrganizationDt;
         }
         #endregion
 

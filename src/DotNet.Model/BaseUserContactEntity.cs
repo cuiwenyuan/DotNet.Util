@@ -195,9 +195,9 @@ namespace DotNet.Model
         {
             Id = BaseUtil.ConvertToString(dr[BaseUserEntity.FieldId]);
             // 2016-03-02 吉日嘎拉 防止程序出错，没有这个字段也可以正常运行
-            if (dr.ContainsColumn(BaseUserLogOnEntity.FieldCompanyId))
+            if (dr.ContainsColumn(BaseUserLogonEntity.FieldCompanyId))
             {
-                CompanyId = BaseUtil.ConvertToString(dr[BaseUserLogOnEntity.FieldCompanyId]);
+                CompanyId = BaseUtil.ConvertToString(dr[BaseUserLogonEntity.FieldCompanyId]);
             }
             Mobile = BaseUtil.ConvertToString(dr[FieldMobile]);
             MobileValiated = BaseUtil.ConvertToInt(dr[FieldMobileValiated]);

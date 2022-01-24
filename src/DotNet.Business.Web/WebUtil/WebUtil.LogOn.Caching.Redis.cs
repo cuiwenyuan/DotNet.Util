@@ -217,8 +217,8 @@ namespace DotNet.Business
                 // 用数据库的方式进行验证
                 if (!result && useDataBase)
                 {
-                    var userLogOnManager = new BaseUserLogOnManager();
-                    result = userLogOnManager.ValidateOpenId(userId, openId, cachingSystemCode);
+                    var userLogonManager = new BaseUserLogonManager();
+                    result = userLogonManager.ValidateOpenId(userId, openId, cachingSystemCode);
                     if (result)
                     {
                         // 提高缓存效率、若读取到了，写入到缓存里去
@@ -233,7 +233,7 @@ namespace DotNet.Business
                 // 不能访问数据库时、通过远程用户中心服务进行验证OpenId、通过服务方式进行验证
                 if (!result && useUserCenterHost)
                 {
-                    var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogOnService.ashx";
+                    var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
                     var webClient = new WebClient();
                     var postValues = new NameValueCollection();
                     if (!string.IsNullOrEmpty(cachingSystemCode))
@@ -300,14 +300,14 @@ namespace DotNet.Business
 
                 if (useDataBase)
                 {
-                    var userLogOnManager = new BaseUserLogOnManager(userInfo);
-                    result = userLogOnManager.GetUserOpenId(userInfo, cachingSystemCode);
+                    var userLogonManager = new BaseUserLogonManager(userInfo);
+                    result = userLogonManager.GetUserOpenId(userInfo, cachingSystemCode);
                 }
 
                 if (string.IsNullOrEmpty(result) && useUserCenterHost)
                 {
                     //停用远程获取 Troy.Cui 2018.07.23
-                    //result = LogOnHttpUtil.GetUserOpenId(userInfo, cachingSystemCode);
+                    //result = LogonHttpUtil.GetUserOpenId(userInfo, cachingSystemCode);
                 }
 
                 // 从数据库获取,这里要考虑读写分离的做法

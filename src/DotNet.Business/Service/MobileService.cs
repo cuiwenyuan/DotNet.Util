@@ -156,8 +156,8 @@ namespace DotNet.Business
                 result = SendMobile(userInfo, "Base", "VerificationCode", mobile, message, code.ToString(), true, false, channel, out returnMsg) > 0;
                 if (result && userInfo != null)
                 {
-                    var userLogOnManager = new BaseUserLogOnManager(userInfo);
-                    userLogOnManager.SetProperty(userInfo.Id, new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldVerificationCode, code));
+                    var userLogonManager = new BaseUserLogonManager(userInfo);
+                    userLogonManager.SetProperty(userInfo.Id, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldVerificationCode, code));
                 }
             }
             return result;

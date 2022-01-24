@@ -21,7 +21,7 @@ namespace DotNet.Util
         /// <summary>
         /// 采用角色组织关联关系
         /// </summary>
-        public static bool UseRoleOrganize = false;
+        public static bool UseRoleOrganization = false;
 
         /// <summary>
         /// 是否启用表格数据权限
@@ -42,7 +42,7 @@ namespace DotNet.Util
         /// <summary>
         /// 启用按组织机构权限
         /// </summary>
-        public static bool UseOrganizePermission = false;
+        public static bool UseOrganizationPermission = false;
 
         /// <summary>
         /// 启用数据表的约束条件限制
@@ -62,7 +62,7 @@ namespace DotNet.Util
         /// <summary>
         /// 记录登录日志
         /// </summary>
-        public static bool RecordLogOnLog = true;
+        public static bool RecordLogonLog = true;
 
         /// <summary>
         /// 记录服务调用日志
@@ -77,7 +77,7 @@ namespace DotNet.Util
         /// <summary>
         /// 同时在线用户数量限制
         /// </summary>
-        public static int OnLineLimit = 0;
+        public static int OnlineLimit = 0;
 
         /// <summary>
         /// 是否检查用户IP地址

@@ -14,7 +14,7 @@ namespace DotNet.Business
     using DotNet.Util;
 
     /// <summary>
-    /// BaseOrganizeManager
+    /// BaseOrganizationManager
     /// 组织机构管理
     /// 
     /// 修改纪录
@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		<date>2011.10.17</date>
     /// </author> 
     /// </summary>
-    public partial class BaseOrganizeManager : BaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {
         /// <summary>
         /// 同步数据
@@ -42,7 +42,7 @@ namespace DotNet.Business
             if (!all)
             {
                 int id = 0;
-                string commandText = "SELECT MAX(id) FROM BaseOrganize WHERE id < 1000000";
+                string commandText = "SELECT MAX(id) FROM BaseOrganization WHERE id < 1000000";
                 Object maxObject = DbHelper.ExecuteScalar(commandText);
                 if (maxObject != null)
                 {
@@ -50,7 +50,7 @@ namespace DotNet.Business
                 }
                 conditional = " AND ID > " + id.ToString();
             }
-            result = ImportK8Organize(connectionString, conditional);
+            result = ImportK8Organization(connectionString, conditional);
             return result;
         }
 
@@ -60,7 +60,7 @@ namespace DotNet.Business
         /// <param name="connectionString">数据库连接</param>
         /// <param name="conditional">条件，不需要同步所有的数据</param>
         /// <returns>影响行数</returns>
-        public int ImportK8Organize(string connectionString = null, string conditional = null)
+        public int ImportK8Organization(string connectionString = null, string conditional = null)
         {
             // delete from baseorganize where id < 1000000
             int result = 0;
@@ -72,7 +72,7 @@ namespace DotNet.Business
             {
                 // 01：可以从k8里读取公司、用户、密码的。
                 IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
-                BaseOrganizeManager organizeManager = new Business.BaseOrganizeManager(this.DbHelper, this.UserInfo);
+                BaseOrganizationManager organizeManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
                 // 不不存在的组织机构删除掉TAB_SITE是远程试图
                 string commandText = "DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)";
                 organizeManager.DbHelper.ExecuteNonQuery(commandText);
@@ -88,10 +88,10 @@ namespace DotNet.Business
                     while (dr.Read())
                     {
                         // 这里需要从数据库读取、否则容易造成丢失数据
-                        BaseOrganizeEntity entity = organizeManager.GetEntity(dr["ID"].ToString());
+                        BaseOrganizationEntity entity = organizeManager.GetEntity(dr["ID"].ToString());
                         if (entity == null)
                         {
-                            entity = new BaseOrganizeEntity();
+                            entity = new BaseOrganizationEntity();
                             entity.Id = dr["ID"].ToString();
                         }
                         entity.Code = dr["SITE_CODE"].ToString();

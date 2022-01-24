@@ -30,10 +30,10 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dataReader"></param>
         /// <param name="organizeManager"></param>
-        /// <param name="userLogOnManager"></param>
+        /// <param name="userLogonManager"></param>
         /// <param name="userContactManager"></param>
         /// <returns></returns>
-        public int ImportUser(System.Data.IDataReader dataReader, BaseOrganizeManager organizeManager, BaseUserLogOnManager userLogOnManager, BaseUserContactManager userContactManager)
+        public int ImportUser(System.Data.IDataReader dataReader, BaseOrganizationManager organizeManager, BaseUserLogonManager userLogonManager, BaseUserContactManager userContactManager)
         {
             var result = 0;
             var userEntity = GetEntity(dataReader["ID"].ToString());
@@ -61,7 +61,7 @@ namespace DotNet.Business
             userEntity.DeletionStateCode = 0;
             if (string.IsNullOrEmpty(userEntity.CompanyId))
             {
-                userEntity.CompanyId = organizeManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizeEntity.FieldFullName, userEntity.CompanyName), BaseOrganizeEntity.FieldId);
+                userEntity.CompanyId = organizeManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, userEntity.CompanyName), BaseOrganizationEntity.FieldId);
                 if (string.IsNullOrEmpty(userEntity.CompanyId))
                 {
                     Console.WriteLine("无CompanyId " + userEntity.Id + ":" + userEntity.UserName + ":" + userEntity.RealName);
@@ -87,10 +87,10 @@ namespace DotNet.Business
                 AddEntity(userEntity);
             }
             // 添加用户密码表
-            var userLogOnEntity = userLogOnManager.GetEntity(userEntity.Id);
-            if (userLogOnEntity == null)
+            var userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
+            if (userLogonEntity == null)
             {
-                userLogOnEntity = new BaseUserLogOnEntity
+                userLogonEntity = new BaseUserLogonEntity
                 {
                     Id = userEntity.Id,
                     // 邦定mac地址
@@ -101,23 +101,23 @@ namespace DotNet.Business
                 // 是否检查机器码 MAC地址
                 var checkIpAddress = 1;
                 int.TryParse(dataReader["BL_CHECK_COMPUTER"].ToString(), out checkIpAddress);
-                userLogOnEntity.CheckIpAddress = checkIpAddress;
+                userLogonEntity.CheckIpAddress = checkIpAddress;
                 if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 {
-                    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
-                userLogOnManager.AddEntity(userLogOnEntity);
+                userLogonManager.AddEntity(userLogonEntity);
             }
             else
             {
-                userLogOnEntity.Id = userEntity.Id;
-                userLogOnEntity.UserPassword = dataReader["USER_PASSWD"].ToString();
-                userLogOnEntity.Salt = dataReader["SALT"].ToString();
+                userLogonEntity.Id = userEntity.Id;
+                userLogonEntity.UserPassword = dataReader["USER_PASSWD"].ToString();
+                userLogonEntity.Salt = dataReader["SALT"].ToString();
                 if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 {
-                    userLogOnEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
-                result = userLogOnManager.UpdateEntity(userLogOnEntity);
+                result = userLogonManager.UpdateEntity(userLogonEntity);
             }
             // 用户的联系方式
             var userContactEntity = userContactManager.GetEntity(userEntity.Id);

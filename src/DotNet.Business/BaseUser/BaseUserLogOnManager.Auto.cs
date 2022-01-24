@@ -10,7 +10,7 @@ namespace DotNet.Business
     using Util;
 
 	/// <summary>
-	/// BaseUserLogOnManager
+	/// BaseUserLogonManager
 	/// 系统用户表登录信息
 	///
 	/// 修改记录
@@ -22,12 +22,12 @@ namespace DotNet.Business
 	///		<date>2013-04-21</date>
 	/// </author>
 	/// </summary>
-	public partial class BaseUserLogOnManager : BaseManager, IBaseManager
+	public partial class BaseUserLogonManager : BaseManager, IBaseManager
 	{
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		public BaseUserLogOnManager()
+		public BaseUserLogonManager()
 		{
 			if (dbHelper == null)
 			{
@@ -35,7 +35,7 @@ namespace DotNet.Business
 			}
 			if (string.IsNullOrEmpty(CurrentTableName))
 			{
-				CurrentTableName = BaseUserLogOnEntity.TableName;
+				CurrentTableName = BaseUserLogonEntity.TableName;
 			}
 			// 不是自增量添加
 			Identity = false;
@@ -45,7 +45,7 @@ namespace DotNet.Business
 		/// 构造函数
 		/// <param name="tableName">指定表名</param>
 		/// </summary>
-		public BaseUserLogOnManager(string tableName): this()
+		public BaseUserLogonManager(string tableName): this()
 		{
 			CurrentTableName = tableName;
 		}
@@ -54,7 +54,7 @@ namespace DotNet.Business
 		/// 构造函数
 		/// </summary>
 		/// <param name="dbHelper">数据库连接</param>
-		public BaseUserLogOnManager(IDbHelper dbHelper)
+		public BaseUserLogonManager(IDbHelper dbHelper)
 			: this()
 		{
 			DbHelper = dbHelper;
@@ -64,7 +64,7 @@ namespace DotNet.Business
 		/// 构造函数
 		/// </summary>
 		/// <param name="userInfo">用户信息</param>
-		public BaseUserLogOnManager(BaseUserInfo userInfo)
+		public BaseUserLogonManager(BaseUserInfo userInfo)
 			: this()
 		{
 			UserInfo = userInfo;
@@ -75,7 +75,7 @@ namespace DotNet.Business
 		/// </summary>
 		/// <param name="dbHelper">数据库连接</param>
 		/// <param name="userInfo">用户信息</param>
-		public BaseUserLogOnManager(IDbHelper dbHelper, BaseUserInfo userInfo)
+		public BaseUserLogonManager(IDbHelper dbHelper, BaseUserInfo userInfo)
 			: this(dbHelper)
 		{
 			UserInfo = userInfo;
@@ -86,7 +86,7 @@ namespace DotNet.Business
 		/// </summary>
 		/// <param name="userInfo">用户信息</param>
 		/// <param name="tableName">指定表名</param>
-		public BaseUserLogOnManager(BaseUserInfo userInfo, string tableName)
+		public BaseUserLogonManager(BaseUserInfo userInfo, string tableName)
 			: this(userInfo)
 		{
 			CurrentTableName = tableName;
@@ -98,7 +98,7 @@ namespace DotNet.Business
 		/// <param name="dbHelper">数据库连接</param>
 		/// <param name="userInfo">用户信息</param>
 		/// <param name="tableName">指定表名</param>
-		public BaseUserLogOnManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
+		public BaseUserLogonManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
 			: this(dbHelper, userInfo)
 		{
 			CurrentTableName = tableName;
@@ -109,7 +109,7 @@ namespace DotNet.Business
 		/// </summary>
 		/// <param name="entity">实体</param>
 		/// <returns>主键</returns>
-		public string Add(BaseUserLogOnEntity entity)
+		public string Add(BaseUserLogonEntity entity)
 		{
 			return AddEntity(entity);
 		}
@@ -121,7 +121,7 @@ namespace DotNet.Business
 		/// <param name="identity">自增量方式</param>
 		/// <param name="returnId">返回主鍵</param>
 		/// <returns>主键</returns>
-		public string Add(BaseUserLogOnEntity entity, bool identity, bool returnId)
+		public string Add(BaseUserLogonEntity entity, bool identity, bool returnId)
 		{
 			Identity = identity;
 			ReturnId = returnId;
@@ -132,27 +132,27 @@ namespace DotNet.Business
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserLogOnEntity GetEntity(int? id)
+		public BaseUserLogonEntity GetEntity(int? id)
 		{
-            return BaseEntity.Create<BaseUserLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
-            // return BaseEntity.Create<BaseUserLogOnEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
+            return BaseEntity.Create<BaseUserLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, id)));
+            // return BaseEntity.Create<BaseUserLogonEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, id)));
 		}
 
 		/// <summary>
 		/// 获取实体
 		/// </summary>
 		/// <param name="id">主键</param>
-		public BaseUserLogOnEntity GetEntity(string id)
+		public BaseUserLogonEntity GetEntity(string id)
 		{
-            return BaseEntity.Create<BaseUserLogOnEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
-            // return BaseEntity.Create<BaseUserLogOnEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogOnEntity.FieldId, id)));
+            return BaseEntity.Create<BaseUserLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, id)));
+            // return BaseEntity.Create<BaseUserLogonEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, id)));
 		}
 
 		/// <summary>
 		/// 添加实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public string AddEntity(BaseUserLogOnEntity entity)
+		public string AddEntity(BaseUserLogonEntity entity)
 		{
 			var result = string.Empty;
 			if (string.IsNullOrEmpty(entity.Id))
@@ -162,10 +162,10 @@ namespace DotNet.Business
 				entity.Id = result;
 			}
 			var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-			sqlBuilder.BeginInsert(CurrentTableName, BaseUserLogOnEntity.FieldId);
+			sqlBuilder.BeginInsert(CurrentTableName, BaseUserLogonEntity.FieldId);
 			if (!Identity)
 			{
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldId, entity.Id);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldId, entity.Id);
 			}
 			else
 			{
@@ -173,11 +173,11 @@ namespace DotNet.Business
 				{
 					if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
 					{
-						sqlBuilder.SetFormula(BaseUserLogOnEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+						sqlBuilder.SetFormula(BaseUserLogonEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
 					}
 					if (DbHelper.CurrentDbType == CurrentDbType.Db2)
 					{
-						sqlBuilder.SetFormula(BaseUserLogOnEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+						sqlBuilder.SetFormula(BaseUserLogonEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
 					}
 				}
 				else
@@ -193,23 +193,23 @@ namespace DotNet.Business
 							}
 							entity.Id = result;
 						}
-						sqlBuilder.SetValue(BaseUserLogOnEntity.FieldId, entity.Id);
+						sqlBuilder.SetValue(BaseUserLogonEntity.FieldId, entity.Id);
 					}
 				}
 			}
 			SetEntity(sqlBuilder, entity);
 			if (UserInfo != null)
 			{
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldCreateUserId, UserInfo.Id);
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldCreateBy, UserInfo.RealName);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldCreateUserId, UserInfo.Id);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldCreateBy, UserInfo.RealName);
 			}
-			sqlBuilder.SetDbNow(BaseUserLogOnEntity.FieldCreateTime);
+			sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldCreateTime);
 			if (UserInfo != null)
 			{
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateUserId, UserInfo.Id);
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateBy, UserInfo.RealName);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName);
 			}
-			sqlBuilder.SetDbNow(BaseUserLogOnEntity.FieldUpdateTime);
+			sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldUpdateTime);
 			if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
 			{
 				result = sqlBuilder.EndInsert().ToString();
@@ -226,18 +226,18 @@ namespace DotNet.Business
 		/// 更新实体
 		/// </summary>
 		/// <param name="entity">实体</param>
-		public int UpdateEntity(BaseUserLogOnEntity entity)
+		public int UpdateEntity(BaseUserLogonEntity entity)
 		{
 			var sqlBuilder = new SqlBuilder(DbHelper);
 			sqlBuilder.BeginUpdate(CurrentTableName);
 			SetEntity(sqlBuilder, entity);
 			if (UserInfo != null)
 			{
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateUserId, UserInfo.Id);
-				sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUpdateBy, UserInfo.RealName);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id);
+				sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName);
 			}
-			sqlBuilder.SetDbNow(BaseUserLogOnEntity.FieldUpdateTime);
-			sqlBuilder.SetWhere(BaseUserLogOnEntity.FieldId, entity.Id);
+			sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldUpdateTime);
+			sqlBuilder.SetWhere(BaseUserLogonEntity.FieldId, entity.Id);
 			return sqlBuilder.EndUpdate();
 		}
 
@@ -246,40 +246,40 @@ namespace DotNet.Business
 	    /// </summary>
 	    /// <param name="sqlBuilder">SQL语句生成器</param>
 	    /// <param name="entity">实体</param>
-	    private void SetEntity(SqlBuilder sqlBuilder, BaseUserLogOnEntity entity)
+	    private void SetEntity(SqlBuilder sqlBuilder, BaseUserLogonEntity entity)
 		{
             // 2016-03-02 吉日嘎拉 增加按公司可以区别数据的功能。
             if (DbHelper.CurrentDbType == CurrentDbType.MySql)
             {
                 sqlBuilder.SetValue(BaseUserContactEntity.FieldCompanyId, entity.CompanyId);
             }
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUserPassword, entity.UserPassword);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldPasswordErrorCount, entity.PasswordErrorCount);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldMultiUserLogin, entity.MultiUserLogin);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldOpenId, entity.OpenId);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldQuestion, entity.Question);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldAnswerQuestion, entity.AnswerQuestion);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldChangePasswordDate, entity.ChangePasswordDate);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldSystemCode, entity.SystemCode);
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldEnabled, entity.Enabled);
-			//sqlBuilder.SetValue(BaseUserLogOnEntity.FieldCommunicationPassword, entity.CommunicationPassword);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldAllowStartTime, entity.AllowStartTime);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldAllowEndTime, entity.AllowEndTime);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLockStartDate, entity.LockStartDate);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLockEndDate, entity.LockEndDate);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldFirstVisit, entity.FirstVisit);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldPreviousVisit, entity.PreviousVisit);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLastVisit, entity.LastVisit);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldCheckIpAddress, entity.CheckIpAddress);
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldShowCount, entity.ShowCount);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldLogOnCount, entity.LogOnCount);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldUserOnLine, entity.UserOnLine);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldIpAddress, entity.IpAddress);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldIpAddressName, entity.IpAddressName);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldMacAddress, entity.MacAddress);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldSalt, entity.Salt);
-			sqlBuilder.SetValue(BaseUserLogOnEntity.FieldPasswordStrength, entity.PasswordStrength);
-            sqlBuilder.SetValue(BaseUserLogOnEntity.FieldNeedModifyPassword, entity.NeedModifyPassword);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserPassword, entity.UserPassword);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordErrorCount, entity.PasswordErrorCount);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldMultiUserLogin, entity.MultiUserLogin);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldOpenId, entity.OpenId);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldQuestion, entity.Question);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldAnswerQuestion, entity.AnswerQuestion);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldChangePasswordDate, entity.ChangePasswordDate);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldSystemCode, entity.SystemCode);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldEnabled, entity.Enabled);
+			//sqlBuilder.SetValue(BaseUserLogonEntity.FieldCommunicationPassword, entity.CommunicationPassword);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldAllowStartTime, entity.AllowStartTime);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldAllowEndTime, entity.AllowEndTime);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldLockStartDate, entity.LockStartDate);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldLockEndDate, entity.LockEndDate);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldFirstVisit, entity.FirstVisit);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldPreviousVisit, entity.PreviousVisit);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldLastVisit, entity.LastVisit);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldCheckIpAddress, entity.CheckIpAddress);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldShowCount, entity.ShowCount);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldLogonCount, entity.LogonCount);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserOnline, entity.UserOnline);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldIpAddress, entity.IpAddress);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldIpAddressName, entity.IpAddressName);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldMacAddress, entity.MacAddress);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, entity.Salt);
+			sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordStrength, entity.PasswordStrength);
+            sqlBuilder.SetValue(BaseUserLogonEntity.FieldNeedModifyPassword, entity.NeedModifyPassword);
 		}
 	}
 }
