@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0_OR_GREATER
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ namespace DotNet.Util
     /// </summary>
     public static class CommonExtensions
     {
+#if NETSTANDARD2_0_OR_GREATER
         #region ==数据转换扩展==
 
         /// <summary>
@@ -56,101 +57,7 @@ namespace DotNet.Util
             return result;
         }
 
-        /// <summary>
-        /// 转换成Int/Int32
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="round">是否四舍五入，默认false</param>
-        /// <returns></returns>
-        public static int ToInt(this object s, bool round = false)
-        {
-            if (s == null || s == DBNull.Value)
-                return 0;
-
-            if (s.GetType().IsEnum)
-            {
-                return (int)s;
-            }
-
-            if (s is bool b)
-                return b ? 1 : 0;
-
-            if (int.TryParse(s.ToString(), out int result))
-                return result;
-
-            var f = s.ToFloat();
-            return round ? Convert.ToInt32(f) : (int)f;
-        }
-
-        /// <summary>
-        /// 转换成Long/Int64
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public static long ToLong(this object s)
-        {
-            if (s == null || s == DBNull.Value)
-                return 0L;
-
-            long.TryParse(s.ToString(), out long result);
-            return result;
-        }
-
-        /// <summary>
-        /// 转换成Float/Single
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="decimals">小数位数</param>
-        /// <returns></returns>
-        public static float ToFloat(this object s, int? decimals = null)
-        {
-            if (s == null || s == DBNull.Value)
-                return 0f;
-
-            float.TryParse(s.ToString(), out float result);
-
-            if (decimals == null)
-                return result;
-
-            return (float)Math.Round(result, decimals.Value);
-        }
-
-        /// <summary>
-        /// 转换成Double/Single
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="digits">小数位数</param>
-        /// <returns></returns>
-        public static double ToDouble(this object s, int? digits = null)
-        {
-            if (s == null || s == DBNull.Value)
-                return 0d;
-
-            double.TryParse(s.ToString(), out double result);
-
-            if (digits == null)
-                return result;
-
-            return Math.Round(result, digits.Value);
-        }
-
-        /// <summary>
-        /// 转换成Decimal
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="decimals">小数位数</param>
-        /// <returns></returns>
-        public static decimal ToDecimal(this object s, int? decimals = null)
-        {
-            if (s == null || s == DBNull.Value) return 0m;
-
-            decimal.TryParse(s.ToString(), out decimal result);
-
-            if (decimals == null)
-                return result;
-
-            return Math.Round(result, decimals.Value);
-        }
+        
 
         /// <summary>
         /// 转换成DateTime
@@ -266,7 +173,7 @@ namespace DotNet.Util
         }
 
         #endregion
+#endif
 
     }
 }
-#endif

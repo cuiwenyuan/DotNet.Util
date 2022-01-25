@@ -59,9 +59,22 @@ namespace DotNet.Business
         /// <param name="newPassword">新密码(原始，未加密)</param>
         /// <param name="unlock">解除锁定</param>
         /// <param name="autoAdd">数据缺少自动补充登录信息</param>
-        /// <param name="modifyRecord">记录更改</param>
+        /// <param name="changeLog">记录更改</param>
         /// <returns>影响行数</returns>
-        public virtual int SetPassword(string userId, string newPassword, bool? unlock = null, bool? autoAdd = null, bool modifyRecord = true)
+        public virtual int SetPassword(string userId, string newPassword, bool? unlock = null, bool? autoAdd = null, bool changeLog = true)
+        {
+            return SetPassword(userId.ToInt(), newPassword, unlock, autoAdd, changeLog);
+        }
+        /// <summary>
+        /// 设置密码
+        /// </summary>
+        /// <param name="userId">被设置的用户主键</param>
+        /// <param name="newPassword">新密码(原始，未加密)</param>
+        /// <param name="unlock">解除锁定</param>
+        /// <param name="autoAdd">数据缺少自动补充登录信息</param>
+        /// <param name="changeLog">记录更改</param>
+        /// <returns>影响行数</returns>
+        public virtual int SetPassword(int userId, string newPassword, bool? unlock = null, bool? autoAdd = null, bool changeLog = true)
         {
             var result = 0;
 
@@ -104,30 +117,30 @@ namespace DotNet.Business
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldSalt, salt));
             }
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordDate, DateTime.Now));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordTime, DateTime.Now));
             if (unlock.HasValue && unlock.Value == true)
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldEnabled, 1));
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartDate, null));
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndDate, null));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartTime, null));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, null));
             }
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
-            result = userLogonManager.SetProperty(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldId, userId), parameters);
+            result = userLogonManager.SetProperty(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId), parameters);
             if (result == 0 && autoAdd.HasValue && autoAdd.Value == true)
             {
                 var userLogonEntity = new BaseUserLogonEntity
                 {
-                    Id = userId,
-                    ChangePasswordDate = DateTime.Now,
+                    UserId = userId,
+                    ChangePasswordTime = DateTime.Now,
                     UserPassword = encryptPassword,
                     Salt = salt,
                     Enabled = 1,
-                    CreateOn = DateTime.Now,
-                    ModifiedOn = DateTime.Now
+                    CreateTime = DateTime.Now,
+                    UpdateTime = DateTime.Now
                 };
                 if (UserInfo != null)
                 {
-                    userLogonEntity.CreateUserId = UserInfo.Id;
+                    userLogonEntity.CreateUserId = UserInfo.UserId;
                     userLogonEntity.CreateBy = UserInfo.RealName;
                 }
                 userLogonManager.AddEntity(userLogonEntity);
@@ -135,26 +148,20 @@ namespace DotNet.Business
             }
 
             // 2015-12-09 吉日嘎拉 增加日志功能、谁什么时候设置了谁的密码？
-            if (modifyRecord)
+            if (changeLog)
             {
-                var record = new BaseModifyRecordEntity
+                var record = new BaseChangeLogEntity
                 {
-                    TableCode = BaseUserLogonEntity.TableName.ToUpper(),
-                    TableDescription = "用户登录信息表",
-                    ColumnCode = BaseUserLogonEntity.FieldUserPassword,
+                    TableName = BaseUserLogonEntity.CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserLogonEntity), "CurrentTableName"),
+                    ColumnName = BaseUserLogonEntity.FieldUserPassword,
                     ColumnDescription = "用户密码",
-                    RecordKey = userId,
+                    RecordKey = userId.ToString(),
                     NewValue = "设置密码"
                 };
-                // record.OldValue = "";
-                if (UserInfo != null)
-                {
-                    record.IpAddress = UserInfo.IpAddress;
-                    record.CreateUserId = UserInfo.Id;
-                    record.CreateOn = DateTime.Now;
-                }
-                var modifyRecordManager = new BaseModifyRecordManager(UserInfo);
-                modifyRecordManager.Add(record, true, false);
+
+                var changeLogManager = new BaseChangeLogManager(UserInfo);
+                changeLogManager.Add(record, true, false);
             }
 
             if (result == 1)
@@ -191,7 +198,7 @@ namespace DotNet.Business
             {
                 foreach (var t in userIds)
                 {
-                    result += SetPassword(t, password, unlock, autoAdd);
+                    result += SetPassword(Convert.ToInt32(t), password, unlock, autoAdd);
                 }
             }
 
@@ -224,7 +231,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserPassword, encryptPassword));
             // 需要重新登录才可以，防止正在被人黑中，阻止已经在线上的人
             parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
-            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordDate, DateTime.Now));
+            parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordTime, DateTime.Now));
             // 设置密码字段
             result += new BaseUserLogonManager(this.DbHelper, this.UserInfo).SetProperty(userIds, parameters);
 

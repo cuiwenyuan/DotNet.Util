@@ -48,7 +48,7 @@ namespace DotNet.Business
             {
                 ////删除后把已经删除的数据搬迁到被删除表里去。
                 //string where = BaseUserEntity.FieldId + " IN (" + StringUtil.ArrayToList((string[])ids, "") + ") ";
-                //string commandText = @"INSERT INTO BASEUSER_DELETED SELECT * FROM " + BaseUserEntity.TableName + " WHERE " + where;
+                //string commandText = @"INSERT INTO BASEUSER_DELETED SELECT * FROM " + BaseUserEntity.CurrentTableName + " WHERE " + where;
                 //IDbHelper dbHelper1 = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
                 //dbHelper1.ExecuteNonQuery(commandText);
 

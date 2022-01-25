@@ -1,262 +1,124 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="BaseExceptionManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2016, All rights reserved.
+// <copyright file="BaseExceptionManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Data;
+using System.Data.Common;
 using System.Collections.Generic;
 
 namespace DotNet.Business
 {
     using Model;
+    using Business;
     using Util;
 
     /// <summary>
     /// BaseExceptionManager
-    /// 系统异常表
+    /// 系统异常表管理层
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
-    /// 2016-12-21 版本：1.0 Troy.Cui 创建文件。
-    /// 
+    ///	2021-10-04 版本：1.0 Troy.Cui 创建文件。
+    ///		
     /// <author>
-    ///     <name>Troy.Cui</name>
-    ///     <date>2016-12-21</date>
-    /// </author>
+    ///	<name>Troy.Cui</name>
+    ///	<date>2021-10-04</date>
+    /// </author> 
     /// </summary>
     public partial class BaseExceptionManager : BaseManager, IBaseManager
     {
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseExceptionEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
-        /// 构造函数
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
-        public BaseExceptionManager()
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseExceptionEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            if (dbHelper == null)
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
             {
-                dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.BusinessDbType, BaseSystemInfo.BusinessDbConnection);
+                sb.Append(" AND " + BaseExceptionEntity.FieldEnabled + " = 1");
             }
-            if (string.IsNullOrEmpty(CurrentTableName))
+            //是否显示已删除记录
+            if (!showDeleted)
             {
-                CurrentTableName = BaseExceptionEntity.TableName;
+                sb.Append(" AND " + BaseExceptionEntity.FieldDeleted + " = 0");
             }
-            PrimaryKey = "Id";
-        }
 
-        /// <summary>
-        /// 构造函数
-        /// <param name="tableName">指定表名</param>
-        /// </summary>
-        public BaseExceptionManager(string tableName)
-        {
-            CurrentTableName = tableName;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
-        public BaseExceptionManager(IDbHelper dbHelper): this()
-        {
-            DbHelper = dbHelper;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="userInfo">用户信息</param>
-        public BaseExceptionManager(BaseUserInfo userInfo) : this()
-        {
-            UserInfo = userInfo;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="userInfo">用户信息</param>
-        /// <param name="tableName">指定表名</param>
-        public BaseExceptionManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
-        {
-            CurrentTableName = tableName;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
-        /// <param name="userInfo">用户信息</param>
-        public BaseExceptionManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
-        {
-            UserInfo = userInfo;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
-        /// <param name="userInfo">用户信息</param>
-        /// <param name="tableName">指定表名</param>
-        public BaseExceptionManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this(dbHelper, userInfo)
-        {
-            CurrentTableName = tableName;
-        }
-
-        /// <summary>
-        /// 添加, 这里可以人工干预，提高程序的性能
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string Add(BaseExceptionEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            entity.Id = int.Parse(AddEntity(entity));
-            return entity.Id.ToString();
-        }
-
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int Update(BaseExceptionEntity entity)
-        {
-            return UpdateEntity(entity);
-        }
-
-        /// <summary>
-        /// 获取实体
-        /// </summary>
-        /// <param name="id">主键</param>
-        public BaseExceptionEntity GetEntity(string id)
-        {
-            return GetEntity(int.Parse(id));
-        }
-
-        /// <summary>
-        /// 获取实体
-        /// </summary>
-        /// <param name="id">主键</param>
-        public BaseExceptionEntity GetEntity(int id)
-        {
-            //return BaseEntity.Create<BaseExceptionEntity>(this.GetDataTable(new KeyValuePair<string, object>(this.PrimaryKey, id)));
-            return BaseEntity.Create<BaseExceptionEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseExceptionEntity.FieldId, id)));
-        }
-
-        /// <summary>
-        /// 添加实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public string AddEntity(BaseExceptionEntity entity)
-        {
-            var key = string.Empty;
-            var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            if (!Identity) 
+            if (ValidateUtil.IsInt(companyId))
             {
-                // 这里已经是指定了主键了，所以不需要返回主键了
-                sqlBuilder.ReturnId = false;
-                sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                //sb.Append(" AND " + BaseExceptionEntity.FieldCompanyId + " = " + companyId);
             }
-            else
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+                //sb.Append(" AND (" + BaseExceptionEntity.FieldUserCompanyId + " = 0 OR " + BaseExceptionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
             {
-                if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
-                {
-                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
-                    {
-                        sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
-                    }
-                    if (DbHelper.CurrentDbType == CurrentDbType.Db2)
-                    {
-                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
-                    }
-                }
-                else
-                {
-                    if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
-                    {
-                        var managerSequence = new BaseSequenceManager(DbHelper);
-                        entity.Id = int.Parse(managerSequence.Increment(CurrentTableName));
-                        sqlBuilder.SetValue(PrimaryKey, entity.Id);
-                    }
-                }
+                //sb.Append(" AND " + BaseExceptionEntity.FieldDepartmentId + " = " + departmentId);
             }
-            SetEntity(sqlBuilder, entity);
-            if (UserInfo != null) 
-            { 
-                sqlBuilder.SetValue(BaseExceptionEntity.FieldCreateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseExceptionEntity.FieldCreateBy, UserInfo.RealName);
-            } 
-            else 
-            { 
-                sqlBuilder.SetValue(BaseExceptionEntity.FieldCreateBy, entity.CreateBy); 
-            } 
-            sqlBuilder.SetDbNow(BaseExceptionEntity.FieldCreateTime);
-            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
+            if (ValidateUtil.IsInt(userId))
             {
-                key = sqlBuilder.EndInsert().ToString();
+                //sb.Append(" AND " + BaseExceptionEntity.FieldUserId + " = " + userId);
             }
-            else
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
             {
-                sqlBuilder.EndInsert();
+                sb.Append(" AND " + BaseExceptionEntity.FieldCreateTime + " >= '" + startTime + "'");
             }
-            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+            if (ValidateUtil.IsDateTime(endTime))
             {
-                return entity.Id.ToString();
+                sb.Append(" AND " + BaseExceptionEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
-            return key;
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldFormattedMessage + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
+        #endregion
+
+        #region 下拉菜单
 
         /// <summary>
-        /// 更新实体
+        /// 下拉菜单
         /// </summary>
-        /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseExceptionEntity entity)
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(CurrentTableName);
-            SetEntity(sqlBuilder, entity);
-            sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            return sqlBuilder.EndUpdate();
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BaseExceptionEntity.FieldUserCompanyId + " = 0 OR " + BaseExceptionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseExceptionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseExceptionEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseExceptionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseExceptionEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
-        // 这个是声明扩展方法
-        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseExceptionEntity entity);
-
-        /// <summary>
-        /// 设置实体
-        /// </summary>
-        /// <param name="sqlBuilder">SQL语句生成器</param>
-        /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseExceptionEntity entity)
-        {
-            SetEntityExtend(sqlBuilder, entity);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldSystemCode, entity.SystemCode);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldEventId, entity.EventId);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldCategory, entity.Category);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldPriority, entity.Priority);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldSeverity, entity.Severity);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldTitle, entity.Title);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldTimestamp, entity.Timestamp);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldMachineName, entity.MachineName);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldIpAddress, entity.IpAddress);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldAppDomainName, entity.AppDomainName);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldProcessId, entity.ProcessId);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldProcessName, entity.ProcessName);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldThreadName, entity.ThreadName);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldWin32ThreadId, entity.Win32ThreadId);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldMessage, entity.Message);
-            sqlBuilder.SetValue(BaseExceptionEntity.FieldFormattedMessage, entity.FormattedMessage);
-        }
-
-        /// <summary>
-        /// 删除实体
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns>影响行数</returns>
-        public int Delete(int id)
-        {
-            return Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
-        }
+        #endregion
     }
 }

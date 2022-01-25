@@ -261,11 +261,11 @@ namespace DotNet.Util
 
         #endregion
 
-        #region LoginLog
+        #region LogonLog
         /// <summary>
         /// 登录日志数据库类别
         /// </summary>
-        public static CurrentDbType LoginLogDbType = CurrentDbType.SqlServer;
+        public static CurrentDbType LogonLogDbType = CurrentDbType.SqlServer;
         /// <summary>
         /// 登录日志数据库
         /// </summary>
@@ -274,15 +274,15 @@ namespace DotNet.Util
         /// <summary>
         /// 登录日志数据库
         /// </summary>
-        public static string LoginLogDbConnection
+        public static string LogonLogDbConnection
         {
             get
             {
                 if (string.IsNullOrEmpty(_loginLogDbConnection))
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LoginLogDbConnection"]))
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LogonLogDbConnection"]))
                     {
-                        _loginLogDbConnection = ConfigurationManager.AppSettings["LoginLogDbConnection"];
+                        _loginLogDbConnection = ConfigurationManager.AppSettings["LogonLogDbConnection"];
                     }
                     if (string.IsNullOrEmpty(_loginLogDbConnection))
                     {
@@ -299,7 +299,7 @@ namespace DotNet.Util
         /// <summary>
         /// 登录日志据库（连接串，可能是加密的）
         /// </summary>
-        public static string LoginLogDbConnectionString = string.Empty;
+        public static string LogonLogDbConnectionString = string.Empty;
 
         #endregion
 

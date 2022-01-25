@@ -65,7 +65,7 @@ namespace DotNet.Business
         /// <summary>
         /// 用户注销登录页面
         /// </summary>
-        public static string UserLogOutPage = @"/Logouting.aspx";
+        public static string UserLogoutPage = @"/Logouting.aspx";
 
         /// <summary>
         /// 访问没有权限被拒绝页面
@@ -124,11 +124,10 @@ namespace DotNet.Business
 
             if (userInfo == null)
             {
-                userInfo = new BaseUserInfo();
-                //    result.Id = userIP;
-                //    result.RealName = userIP;
-                //    result.UserName = userIP;
-                //    result.IPAddress = userIP;
+                userInfo = new BaseUserInfo
+                {
+                    IpAddress = Utils.GetIp()
+                };
             }
             else
             {
@@ -345,7 +344,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 表格选择记录功能部分 repeater
+        #region 表格选择记录功能部分 Repeater
 
         #region public static string[] GetSelecteIds(Repeater repeater) 获得已选的表格行代码数组
         /// <summary>

@@ -1,6 +1,8 @@
-﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//--------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseModuleManager.Auto.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System.Collections.Generic;
 
@@ -15,12 +17,11 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    /// 2018-09-03 版本：2.0 Troy.Cui 增加RemoveCache删除缓存
-    /// 2012-05-22 版本：1.0 JiRiGaLa 创建主键。
+    /// 2021-09-26 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2012-05-22</date>
+    ///     <date>2021-09-26</date>
     /// </author>
     /// </summary>
     public partial class BaseModuleManager : BaseManager, IBaseManager
@@ -36,8 +37,11 @@ namespace DotNet.Business
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseModuleEntity.TableName;
+                CurrentTableName = BaseModuleEntity.CurrentTableName;
+                //按用户公司分表
+                //CurrentTableName = BaseModuleEntity.CurrentTableName + GetTableSuffix();
             }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseModuleEntity), "CurrentTableName");
             PrimaryKey = "Id";
         }
 
@@ -45,8 +49,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseModuleManager(string tableName)
-            : this()
+        public BaseModuleManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -55,7 +58,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseModuleManager(IDbHelper dbHelper): this()
+        public BaseModuleManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -67,6 +70,18 @@ namespace DotNet.Business
         public BaseModuleManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
+            //按用户公司分表
+            //CurrentTableName = BaseModuleEntity.CurrentTableName + GetTableSuffix();
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="userInfo">用户信息</param>
+        /// <param name="tableName">指定表名</param>
+        public BaseModuleManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
+        {
+            CurrentTableName = tableName;
         }
 
         /// <summary>
@@ -77,28 +92,8 @@ namespace DotNet.Business
         public BaseModuleManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
         {
             UserInfo = userInfo;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="userInfo">用户信息</param>
-        /// <param name="tableName">指定表名</param>
-        public BaseModuleManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
-        {
-            CurrentTableName = tableName;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">指定表名</param>
-        public BaseModuleManager(IDbHelper dbHelper, string tableName)
-            : this(dbHelper)
-        {
-            CurrentTableName = tableName;
+            //按用户公司分表
+            //CurrentTableName = BaseModuleEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -113,27 +108,40 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 添加
+        /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
         /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
         /// <returns>主键</returns>
-        public string Add(BaseModuleEntity entity)
-        {
-            return AddEntity(entity);
-        }
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式</param>
-        /// <param name="returnId">返回主键</param>
-        /// <returns>主键</returns>
-        public string Add(BaseModuleEntity entity, bool identity, bool returnId)
+        public string Add(BaseModuleEntity entity, bool identity = true, bool returnId = true)
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddEntity(entity);
+            entity.Id = int.Parse(AddEntity(entity));
+            return entity.Id.ToString();
+        }
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseModuleEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
         }
 
         /// <summary>
@@ -151,7 +159,7 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseModuleEntity GetEntity(string id)
         {
-            return BaseEntity.Create<BaseModuleEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseModuleEntity.FieldId, id)));
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
         }
 
         /// <summary>
@@ -160,7 +168,19 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseModuleEntity GetEntity(int id)
         {
-            return GetEntity(id.ToString());
+            return BaseEntity.Create<BaseModuleEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //var cacheKey = CurrentTableName + ".Entity." + id;
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseModuleEntity>(cacheKey, () => BaseEntity.Create<BaseModuleEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseModuleEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseModuleEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -169,67 +189,84 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public string AddEntity(BaseModuleEntity entity)
         {
-            var result = string.Empty;
-
+            var key = string.Empty;
             if (entity.SortCode == 0)
             {
                 var managerSequence = new BaseSequenceManager(DbHelper, Identity);
-                result = managerSequence.Increment(CurrentTableName);
-                entity.SortCode = int.Parse(result);
+                key = managerSequence.Increment(CurrentTableName);
+                entity.SortCode = int.Parse(key);
             }
-
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseModuleEntity.FieldId);
-
-            // 若是非空主键，表明已经指定了主键了
-            if (!string.IsNullOrEmpty(entity.Id))
+            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
+            if (!Identity)
             {
                 // 这里已经是指定了主键了，所以不需要返回主键了
-                sqlBuilder.SetValue(BaseModuleEntity.FieldId, entity.Id);
-                result = entity.Id;
+                sqlBuilder.ReturnId = false;
+                sqlBuilder.SetValue(PrimaryKey, entity.Id);
             }
             else
             {
-                if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+                if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
                 {
-                    // 2015-12-23 吉日嘎拉 这里需要兼容一下以前的老的数据结构
-                    sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + BaseModuleEntity.TableName.ToUpper() + ".NEXTVAL ");
+                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+                    {
+                        sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+                    }
+                    if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+                    {
+                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                    }
                 }
-                //MSSQL数据库是自增字段 Troy.Cui 2016-08-17
-                //else
-                //{
-                //    entity.Id = Guid.NewGuid().ToString("N");
-                //    result = entity.Id;
-                //    sqlBuilder.SetValue(BaseModuleEntity.FieldId, entity.Id);
-                //}
+                else
+                {
+                    if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                    {
+                        var managerSequence = new BaseSequenceManager(DbHelper);
+                        entity.Id = int.Parse(managerSequence.Increment(CurrentTableName));
+                        sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                    }
+                }
             }
-
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null) 
-            { 
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseModuleEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseModuleEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseModuleEntity.FieldCreateBy, UserInfo.RealName);
-            } 
+            }
+            else
+            {
+                sqlBuilder.SetValue(BaseModuleEntity.FieldCreateBy, entity.CreateBy);
+                sqlBuilder.SetValue(BaseModuleEntity.FieldCreateUserName, entity.CreateUserName);
+            }
             sqlBuilder.SetDbNow(BaseModuleEntity.FieldCreateTime);
-            if (UserInfo != null) 
-            { 
+            sqlBuilder.SetValue(BaseModuleEntity.FieldCreateIp, Utils.GetIp());
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateBy, UserInfo.RealName);
-            } 
+            }
             sqlBuilder.SetDbNow(BaseModuleEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateIp, Utils.GetIp());
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
-                result = sqlBuilder.EndInsert().ToString();
+                key = sqlBuilder.EndInsert().ToString();
             }
             else
             {
                 sqlBuilder.EndInsert();
             }
-            if (!string.IsNullOrWhiteSpace(result))
+            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+            {
+                //return entity.Id.ToString();
+                key = entity.Id.ToString();
+            }
+            if (!string.IsNullOrWhiteSpace(key))
             {
                 RemoveCache();
             }
-            return result;
+            return key;
         }
 
         /// <summary>
@@ -241,18 +278,20 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null) 
-            { 
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateBy, UserInfo.RealName);
-            } 
+            }
             sqlBuilder.SetDbNow(BaseModuleEntity.FieldUpdateTime);
-            sqlBuilder.SetWhere(BaseModuleEntity.FieldId, entity.Id);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldUpdateIp, Utils.GetIp());
+            sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {
-                RemoveCache();
+                RemoveCache(entity.Id);
             }
             return result;
         }
@@ -263,7 +302,7 @@ namespace DotNet.Business
         /// <summary>
         /// 设置实体
         /// </summary>
-        /// <param name="sqlBuilder">SQL语句生成器</param>
+        /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseModuleEntity entity)
         {
@@ -272,25 +311,28 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseModuleEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseModuleEntity.FieldFullName, entity.FullName);
             sqlBuilder.SetValue(BaseModuleEntity.FieldCategoryCode, entity.CategoryCode);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldImageUrl, entity.ImageUrl);
             sqlBuilder.SetValue(BaseModuleEntity.FieldImageIndex, entity.ImageIndex);
             sqlBuilder.SetValue(BaseModuleEntity.FieldSelectedImageIndex, entity.SelectedImageIndex);
             sqlBuilder.SetValue(BaseModuleEntity.FieldNavigateUrl, entity.NavigateUrl);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldImageUrl, entity.ImageUrl);
             sqlBuilder.SetValue(BaseModuleEntity.FieldTarget, entity.Target);
             sqlBuilder.SetValue(BaseModuleEntity.FieldFormName, entity.FormName);
             sqlBuilder.SetValue(BaseModuleEntity.FieldAssemblyName, entity.AssemblyName);
-            // sqlBuilder.SetValue(BaseModuleEntity.FieldPermissionScopeTables, entity.PermissionScopeTables);            
+            sqlBuilder.SetValue(BaseModuleEntity.FieldPermissionScopeTables, entity.PermissionScopeTables);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsMenu, entity.IsMenu);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsPublic, entity.IsPublic);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldExpand, entity.Expand);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsScope, entity.IsScope);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsVisible, entity.IsVisible);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldExpand, entity.Expand);
             sqlBuilder.SetValue(BaseModuleEntity.FieldAllowEdit, entity.AllowEdit);
             sqlBuilder.SetValue(BaseModuleEntity.FieldAllowDelete, entity.AllowDelete);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldEnabled, entity.Enabled);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldLastCall, entity.LastCall);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldWebBrowser, entity.WebBrowser);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldAuthorizedDays, entity.AuthorizedDays);
             sqlBuilder.SetValue(BaseModuleEntity.FieldDescription, entity.Description);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldSortCode, entity.SortCode);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldDeleted, entity.Deleted);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldEnabled, entity.Enabled);
         }
 
         /// <summary>
@@ -300,24 +342,12 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Delete(int id)
         {
-            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseModuleEntity.FieldId, id) });
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
             if (result > 0)
             {
-                RemoveCache();
+                RemoveCache(id);
             }
             return result;
         }
-
-        /// <summary>
-        /// 添加删除的附加条件
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
-		{
-			var result = base.GetDeleteExtParam(parameters);
-			result.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldAllowDelete, 1));
-			return result;
-		}
     }
 }

@@ -681,7 +681,7 @@ namespace DotNet.Util
                 BaseSystemInfo.MessageDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.BusinessDbType = BaseSystemInfo.UserCenterDbType;
                 BaseSystemInfo.WorkFlowDbType = BaseSystemInfo.UserCenterDbType;
-                BaseSystemInfo.LoginLogDbType = BaseSystemInfo.UserCenterDbType;
+                BaseSystemInfo.LogonLogDbType = BaseSystemInfo.UserCenterDbType;
             }
             // 打开数据库连接
             if (Exists("MessageDbType"))
@@ -696,9 +696,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.BusinessDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "BusinessDbType"));
             }
-            if (Exists("LoginLogDbType"))
+            if (Exists("LogonLogDbType"))
             {
-                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "LoginLogDbType"));
+                BaseSystemInfo.LogonLogDbType = DbTypeUtil.GetDbType(GetValue(_xmlDocument, "LogonLogDbType"));
             }
             if (Exists("WebAppDbType"))
             {
@@ -762,7 +762,7 @@ namespace DotNet.Util
                 BaseSystemInfo.UserCenterReadDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
                 BaseSystemInfo.UserCenterWriteDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
                 BaseSystemInfo.MessageDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
-                BaseSystemInfo.LoginLogDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
+                BaseSystemInfo.LogonLogDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
                 BaseSystemInfo.BusinessDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
                 // BaseSystemInfo.WorkFlowDbConnectionString = BaseSystemInfo.UserCenterDbConnectionString;
             }
@@ -775,9 +775,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.MessageDbConnectionString = GetValue(_xmlDocument, "MessageDbConnection");
             }
-            if (Exists("LoginLogDbConnection"))
+            if (Exists("LogonLogDbConnection"))
             {
-                BaseSystemInfo.LoginLogDbConnectionString = GetValue(_xmlDocument, "LoginLogDbConnection");
+                BaseSystemInfo.LogonLogDbConnectionString = GetValue(_xmlDocument, "LogonLogDbConnection");
             }
             if (Exists("WorkFlowDbConnection"))
             {
@@ -872,7 +872,7 @@ namespace DotNet.Util
                 BaseSystemInfo.MemberDbConnectionString = GetValue(_xmlDocument, "MemberDbConnection");
             }
             BaseSystemInfo.UserCenterDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
-            BaseSystemInfo.LoginLogDbConnection = BaseSystemInfo.LoginLogDbConnectionString;
+            BaseSystemInfo.LogonLogDbConnection = BaseSystemInfo.LogonLogDbConnectionString;
             BaseSystemInfo.MessageDbConnection = BaseSystemInfo.MessageDbConnectionString;
             BaseSystemInfo.BusinessDbConnection = BaseSystemInfo.BusinessDbConnectionString;
             BaseSystemInfo.WorkFlowDbConnection = BaseSystemInfo.WorkFlowDbConnectionString;
@@ -905,7 +905,7 @@ namespace DotNet.Util
                 if (BaseSystemInfo.EncryptDbConnection)
                 {
                     BaseSystemInfo.UserCenterDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.UserCenterDbConnectionString);
-                    BaseSystemInfo.LoginLogDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LoginLogDbConnectionString);
+                    BaseSystemInfo.LogonLogDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LogonLogDbConnectionString);
                     BaseSystemInfo.MessageDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MessageDbConnectionString);
                     BaseSystemInfo.BusinessDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BusinessDbConnectionString);
                     BaseSystemInfo.WorkFlowDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WorkFlowDbConnectionString);
@@ -935,9 +935,9 @@ namespace DotNet.Util
                 {
                     BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.LoginLogDbConnection))
+                if (string.IsNullOrEmpty(BaseSystemInfo.LogonLogDbConnection))
                 {
-                    BaseSystemInfo.LoginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
+                    BaseSystemInfo.LogonLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
                 if (string.IsNullOrEmpty(BaseSystemInfo.MessageDbConnection))
                 {

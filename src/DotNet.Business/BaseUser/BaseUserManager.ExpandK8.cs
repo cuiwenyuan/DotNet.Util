@@ -8,12 +8,13 @@ using System.Collections.Generic;
 namespace DotNet.Business
 {
     using Model;
+    using System.Data;
 
     /// <summary>
     /// BaseUserManager
     /// 用户管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2013.10.20 版本：2.0 JiRiGaLa	集成K8物流系统的登录功能。
     ///		2011.10.17 版本：1.0 JiRiGaLa	主键整理。
@@ -29,11 +30,11 @@ namespace DotNet.Business
         /// 导入用户
         /// </summary>
         /// <param name="dataReader"></param>
-        /// <param name="organizeManager"></param>
+        /// <param name="organizationManager"></param>
         /// <param name="userLogonManager"></param>
         /// <param name="userContactManager"></param>
         /// <returns></returns>
-        public int ImportUser(System.Data.IDataReader dataReader, BaseOrganizationManager organizeManager, BaseUserLogonManager userLogonManager, BaseUserContactManager userContactManager)
+        public int ImportUser(IDataReader dataReader, BaseOrganizationManager organizationManager, BaseUserLogonManager userLogonManager, BaseUserContactManager userContactManager)
         {
             var result = 0;
             var userEntity = GetEntity(dataReader["ID"].ToString());
@@ -41,10 +42,10 @@ namespace DotNet.Business
             {
                 userEntity = new BaseUserEntity
                 {
-                    Id = dataReader["ID"].ToString()
+                    Id = dataReader["ID"].ToString().ToInt()
                 };
             }
-            userEntity.Id = dataReader["ID"].ToString();
+            userEntity.Id = dataReader["ID"].ToString().ToInt();
             userEntity.UserFrom = "K8";
             userEntity.UserName = dataReader["USER_NAME"].ToString();
             userEntity.IdCard = dataReader["ID_Card"].ToString();
@@ -58,18 +59,17 @@ namespace DotNet.Business
             userEntity.CompanyName = dataReader["OWNER_SITE"].ToString();
             userEntity.Description = dataReader["REMARK"].ToString();
             // 把被删除的数据恢复过来
-            userEntity.DeletionStateCode = 0;
-            if (string.IsNullOrEmpty(userEntity.CompanyId))
+            userEntity.Deleted = 0;
+            if (userEntity.CompanyId > 0)
             {
-                userEntity.CompanyId = organizeManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, userEntity.CompanyName), BaseOrganizationEntity.FieldId);
-                if (string.IsNullOrEmpty(userEntity.CompanyId))
+                if (string.IsNullOrEmpty(organizationManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, userEntity.CompanyName), BaseOrganizationEntity.FieldId)))
                 {
                     Console.WriteLine("无CompanyId " + userEntity.Id + ":" + userEntity.UserName + ":" + userEntity.RealName);
                     return 0;
                 }
             }
             // 不是内部组织机构的才进行调整
-            if (string.IsNullOrEmpty(userEntity.DepartmentId))
+            if (userEntity.DepartmentId > 0)
             {
                 userEntity.DepartmentName = dataReader["DEPT_NAME"].ToString();
             }
@@ -87,12 +87,12 @@ namespace DotNet.Business
                 AddEntity(userEntity);
             }
             // 添加用户密码表
-            var userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
+            var userLogonEntity = userLogonManager.GetEntityByUserId(userEntity.Id);
             if (userLogonEntity == null)
             {
                 userLogonEntity = new BaseUserLogonEntity
                 {
-                    Id = userEntity.Id,
+                    UserId = userEntity.Id,
                     // 邦定mac地址
                     CheckIpAddress = 1,
                     UserPassword = dataReader["USER_PASSWD"].ToString(),
@@ -104,28 +104,28 @@ namespace DotNet.Business
                 userLogonEntity.CheckIpAddress = checkIpAddress;
                 if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 {
-                    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                    userLogonEntity.ChangePasswordTime = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
                 userLogonManager.AddEntity(userLogonEntity);
             }
             else
             {
-                userLogonEntity.Id = userEntity.Id;
+                userLogonEntity.UserId = userEntity.Id;
                 userLogonEntity.UserPassword = dataReader["USER_PASSWD"].ToString();
                 userLogonEntity.Salt = dataReader["SALT"].ToString();
                 if (!string.IsNullOrEmpty(dataReader["CHANGEPASSWORDDATE"].ToString()))
                 {
-                    userLogonEntity.ChangePasswordDate = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
+                    userLogonEntity.ChangePasswordTime = DateTime.Parse(dataReader["CHANGEPASSWORDDATE"].ToString());
                 }
                 result = userLogonManager.UpdateEntity(userLogonEntity);
             }
             // 用户的联系方式
-            var userContactEntity = userContactManager.GetEntity(userEntity.Id);
+            var userContactEntity = userContactManager.GetEntityByUserId(userEntity.Id.ToString());
             if (userContactEntity == null)
             {
                 userContactEntity = new BaseUserContactEntity
                 {
-                    Id = userEntity.Id,
+                    UserId = userEntity.Id,
                     Qq = dataReader["QQ"].ToString(),
                     Mobile = dataReader["Mobile"].ToString(),
                     Email = dataReader["Email"].ToString()
@@ -146,7 +146,7 @@ namespace DotNet.Business
                 {
                     userContactEntity.Email = dataReader["Email"].ToString();
                 }
-                userContactManager.UpdateEntity(userContactEntity);
+                userContactManager.AddOrUpdate(userContactEntity);
             }
             return result;
         }

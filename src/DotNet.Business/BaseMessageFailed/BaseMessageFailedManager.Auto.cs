@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// BaseMessageFailedManager
     /// 失败消息
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     /// 2020-03-22 版本：1.0 Troy.Cui 创建文件。
     /// 
@@ -37,10 +37,11 @@ namespace DotNet.Business
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseMessageFailedEntity.TableName;
+                CurrentTableName = BaseMessageFailedEntity.CurrentTableName;
                 //按用户公司分表
-                //CurrentTableName = BaseMessageFailedEntity.TableName + GetTableSuffix();
+                //CurrentTableName = BaseMessageFailedEntity.CurrentTableName + GetTableSuffix();
             }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseMessageFailedEntity), "CurrentTableName");
             PrimaryKey = "Id";
         }
 
@@ -48,7 +49,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseMessageFailedManager(string tableName)
+        public BaseMessageFailedManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -57,8 +58,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseMessageFailedManager(IDbHelper dbHelper)
-            : this()
+        public BaseMessageFailedManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -67,12 +67,11 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseMessageFailedManager(BaseUserInfo userInfo)
-            : this()
+        public BaseMessageFailedManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseMessageFailedEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseMessageFailedEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -80,8 +79,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseMessageFailedManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
+        public BaseMessageFailedManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -91,12 +89,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseMessageFailedManager(IDbHelper dbHelper, BaseUserInfo userInfo)
-            : this(dbHelper)
+        public BaseMessageFailedManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseMessageFailedEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseMessageFailedEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -105,8 +102,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseMessageFailedManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
-            : this(dbHelper, userInfo)
+        public BaseMessageFailedManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -127,6 +123,28 @@ namespace DotNet.Business
         }
 
         /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseMessageFailedEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
+        }
+
+        /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
@@ -141,7 +159,7 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseMessageFailedEntity GetEntity(string id)
         {
-            return GetEntity(int.Parse(id));
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
         }
 
         /// <summary>
@@ -150,10 +168,19 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseMessageFailedEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseMessageFailedEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
-            //var cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond * 1000 * 60 * 12);
-            //return CacheUtil.Cache<BaseMessageFailedEntity>(cacheKey, () => BaseEntity.Create<BaseMessageFailedEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseMessageFailedEntity>(cacheKey, () => BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseMessageFailedEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -203,35 +230,27 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                if (ValidateUtil.IsInt(UserInfo.CompanyId))
-                {
-                    sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserCompanyId, UserInfo.CompanyId);
-                }
-                if (ValidateUtil.IsInt(UserInfo.SubCompanyId))
-                {
-                    sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                }
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserCompanyId, UserInfo.CompanyId);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateIp, UserInfo.IpAddress);
             }
             else
             {
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateIp, Utils.GetIp());
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserName, entity.CreateUserName);
             }
             sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldCreateTime);
+            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -264,14 +283,11 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
@@ -301,7 +317,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseMessageFailedEntity.FieldFailCount, entity.FailCount);
             sqlBuilder.SetValue(BaseMessageFailedEntity.FieldError, entity.Error);
             sqlBuilder.SetValue(BaseMessageFailedEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldDeleted, entity.Deleted);
             sqlBuilder.SetValue(BaseMessageFailedEntity.FieldEnabled, entity.Enabled);
         }
 

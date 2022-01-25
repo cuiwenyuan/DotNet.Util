@@ -33,6 +33,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region GetRoleIdsByCache(string systemCode, string userId, string companyId = null)
         /// <summary>
         /// 从缓存中获取角色编号
         /// </summary>
@@ -53,8 +54,8 @@ namespace DotNet.Business
                 var cacheTime = TimeSpan.FromMilliseconds(86400000);
                 result = CacheUtil.Cache<string[]>(cacheKey, () =>
                 {
-                        //进行数据库查询
-                        var userManager = new BaseUserManager();
+                    //进行数据库查询
+                    var userManager = new BaseUserManager();
                     return userManager.GetRoleIds(systemCode, userId, companyId);
                 }, true, false, cacheTime);
 
@@ -65,7 +66,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region IsInRoleByCache(string systemCode, string userId, string roleCode, string companyId = null) 用户是否在角色里
         /// <summary>
         /// 用户是否在角色里
         /// 2015-12-24 吉日嘎拉 提供高速缓存使用的方法
@@ -96,7 +99,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region IsInRole(BaseUserInfo userInfo, string roleName) 用户是否在某个角色里
         /// <summary>
         /// 用户是否在某个角色里
         /// 包括所在公司的角色也进行判断
@@ -106,8 +111,11 @@ namespace DotNet.Business
         /// <returns>是否在角色中</returns>
         public bool IsInRole(BaseUserInfo userInfo, string roleName)
         {
-            return IsInRole(userInfo.SystemCode, userInfo.Id, roleName);
+            return IsInRole(userInfo.SystemCode, userInfo.Id.ToString(), roleName);
         }
+        #endregion
+
+        #region IsInRole(string userId, string roleName) 用户是否在某个角色中
 
         /// <summary>
         /// 用户是否在某个角色中
@@ -118,14 +126,21 @@ namespace DotNet.Business
         public bool IsInRole(string userId, string roleName)
         {
             var systemCode = "Base";
-            if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+            if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
             {
                 systemCode = UserInfo.SystemCode;
+                if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                {
+                    systemCode = BaseSystemInfo.SystemCode;
+                }
             }
 
             return IsInRole(systemCode, userId, roleName);
         }
 
+        #endregion
+
+        #region IsInRole(string systemCode, string userId, string roleName)
         /// <summary>
         /// 2015-11-17 吉日嘎拉 改进判断函数，方便别人调用，弱化当前操作者、可以灵活控制哪个子系统的数据
         /// </summary>
@@ -168,6 +183,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region IsInRoleByCode(BaseUserInfo userInfo, string code)
         /// <summary>
         /// 用户是否在某个角色里
         /// 包括所在公司的角色也进行判断
@@ -177,9 +195,11 @@ namespace DotNet.Business
         /// <returns>是否在角色里</returns>
         public bool IsInRoleByCode(BaseUserInfo userInfo, string code)
         {
-            return IsInRoleByCode(userInfo.SystemCode, userInfo.Id, code);
+            return IsInRoleByCode(userInfo.SystemCode, userInfo.Id.ToString(), code);
         }
+        #endregion
 
+        #region IsInRoleByCode(string userId, string code)
         /// <summary>
         /// 用户是否在某个角色中
         /// </summary>
@@ -189,14 +209,20 @@ namespace DotNet.Business
         public bool IsInRoleByCode(string userId, string code)
         {
             var systemCode = "Base";
-            if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+            if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
             {
                 systemCode = UserInfo.SystemCode;
+                if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                {
+                    systemCode = BaseSystemInfo.SystemCode;
+                }
             }
 
             return IsInRoleByCode(systemCode, userId, code);
         }
+        #endregion
 
+        #region IsInRoleByCode(string systemCode, string userId, string roleCode, bool useBaseRole = true)
         /// <summary>
         /// 用户是否在某个角色中
         /// </summary>
@@ -214,18 +240,9 @@ namespace DotNet.Business
                 return false;
             }
 
-            if (string.IsNullOrEmpty(userId))
+            if (!ValidateUtil.IsInt(userId))
             {
                 return false;
-            }
-
-            // 2016-05-24 吉日嘎拉，若是Oracle数据库，用户的Id目前都是数值类型，若不是数字就出错了，不用进行运算了。
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqlServer)
-            {
-                if (!ValidateUtil.IsInt(userId))
-                {
-                    return false;
-                }
             }
 
             if (string.IsNullOrEmpty(roleCode))
@@ -238,7 +255,7 @@ namespace DotNet.Business
             if (string.IsNullOrEmpty(roleId))
             {
                 // 2016-01-08 吉日嘎拉 看基础共用的角色里，是否在
-                if (useBaseRole && !systemCode.Equals("Base"))
+                if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
                 {
                     roleId = BaseRoleManager.GetIdByCodeByCache("Base", roleCode);
                 }
@@ -249,11 +266,14 @@ namespace DotNet.Business
                 }
             }
 
-            var listUserRole = GetUserRoleEntityList(systemCode);
-            result = listUserRole.Exists((t => t.UserId == userId && t.RoleId == roleId));
+            var ls = GetUserRoleEntityList(systemCode);
+            result = ls.Exists((t => t.UserId == userId.ToInt() && t.RoleId == roleId.ToInt()));
 
             return result;
         }
+        #endregion
+
+        #region GetUserRoleEntityList(string systemCode) 获取用户角色实体列表（有缓存）
         /// <summary>
         /// 获取用户角色实体列表
         /// </summary>
@@ -278,6 +298,7 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
         #region IsHasRoleByCodeContains
         /// <summary>
@@ -289,9 +310,13 @@ namespace DotNet.Business
         public bool IsHasRoleCodeContains(string userId, string searchKey)
         {
             var systemCode = "Base";
-            if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+            if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
             {
                 systemCode = UserInfo.SystemCode;
+                if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                {
+                    systemCode = BaseSystemInfo.SystemCode;
+                }
             }
 
             return IsHasRoleCodeContains(systemCode, userId, searchKey);
@@ -312,18 +337,9 @@ namespace DotNet.Business
                 return false;
             }
 
-            if (string.IsNullOrEmpty(userId))
+            if (!ValidateUtil.IsInt(userId))
             {
                 return false;
-            }
-
-            //用户的Id对Oracle和MSSQL目前都是数值类型，若不是数字就出错了，不用浪费时间了。
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqlServer)
-            {
-                if (!ValidateUtil.IsInt(userId))
-                {
-                    return false;
-                }
             }
 
             if (string.IsNullOrWhiteSpace(searchKey))
@@ -365,9 +381,13 @@ namespace DotNet.Business
         public bool IsHasRoleCodeStartWith(string userId, string searchKey)
         {
             var systemCode = "Base";
-            if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+            if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
             {
                 systemCode = UserInfo.SystemCode;
+                if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                {
+                    systemCode = BaseSystemInfo.SystemCode;
+                }
             }
 
             return IsHasRoleCodeStartWith(systemCode, userId, searchKey);
@@ -388,18 +408,9 @@ namespace DotNet.Business
                 return false;
             }
 
-            if (string.IsNullOrEmpty(userId))
+            if (!ValidateUtil.IsInt(userId))
             {
                 return false;
-            }
-
-            //用户的Id对Oracle和MSSQL目前都是数值类型，若不是数字就出错了，不用浪费时间了。
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqlServer)
-            {
-                if (!ValidateUtil.IsInt(userId))
-                {
-                    return false;
-                }
             }
 
             if (string.IsNullOrWhiteSpace(searchKey))
@@ -438,26 +449,26 @@ namespace DotNet.Business
         /// <returns>角色数据表</returns>
         public DataTable GetUserRole(string systemCode)
         {
-            var result = new DataTable(BaseRoleEntity.TableName);
+            var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var tableUserRoleName = BaseUserRoleEntity.TableName;
+            var userRoleTableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                tableUserRoleName = systemCode + "UserRole";
+                userRoleTableName = systemCode + "UserRole";
             }
-            var tableRoleName = BaseRoleEntity.TableName;
+            var roleTableName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                tableRoleName = systemCode + "Role";
+                roleTableName = systemCode + "Role";
             }
 
             var sb = Pool.StringBuilder.Get();
-            sb.AppendLine("SELECT BaseRole.Code, BaseRole.RealName, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.DeletionStateCode, UserRole.CreateOn, UserRole.CreateBy, UserRole.ModifiedOn, UserRole.ModifiedBy");
-            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, DeletionStateCode, CreateOn, CreateBy, ModifiedOn, ModifiedBy FROM BaseUserRole WHERE Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
-            sb.AppendLine(" WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateOn DESC");
+            sb.AppendLine("SELECT BaseRole.Code, BaseRole.RealName, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
+            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
+            sb.AppendLine(" WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
             //替换表名
-            sb = sb.Replace("BaseUserRole", tableUserRoleName);
-            sb = sb.Replace("BaseRole", tableRoleName);
+            sb = sb.Replace("BaseUserRole", userRoleTableName);
+            sb = sb.Replace("BaseRole", roleTableName);
 
             var cacheKey = "DataTable." + systemCode + ".UserRole";
             //var cacheTime = default(TimeSpan);
@@ -504,32 +515,6 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldDeleted, 0)
             };
 
-            /*
-            if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
-            {
-                // 是否使用基础角色的权限 
-                sql.Append(" UNION SELECT " + BaseUserRoleEntity.FieldRoleId);
-                sql.Append(" FROM " + BaseUserRoleEntity.TableName);
-                sql.Append(" WHERE ( " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.TableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId));
-                sql.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
-                sql.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ) ");
-
-                dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.TableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
-            }
-
-            if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
-            {
-                string roleOrganizationTableName = systemCode + "RoleOrganization";
-                sql += " UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId
-                                  + " FROM " + roleOrganizationTableName
-                                + "  WHERE " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId)
-                                  + "        AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 "
-                                  + "        AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 ";
-
-                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
-            }
-            */
-
             using (var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
             {
                 while (dataReader.Read())
@@ -561,7 +546,7 @@ namespace DotNet.Business
             if (roleIds != null && roleIds.Length > 0)
             {
                 var entities = BaseRoleManager.GetEntitiesByCache(systemCode);
-                result = (entities as List<BaseRoleEntity>).Where(t => roleIds.Contains(t.Id) && t.Enabled == 1 && t.DeletionStateCode == 0).ToList();
+                result = (entities as List<BaseRoleEntity>).Where(t => roleIds.Contains(t.Id.ToString()) && t.Enabled == 1 && t.Deleted == 0).ToList();
             }
 
             return result;
@@ -637,22 +622,22 @@ namespace DotNet.Business
             var result = new List<BaseUserEntity>();
             var dbParameters = new List<IDbDataParameter>();
 
-            var tableNameUserRole = systemCode + "UserRole";
+            var userRoleTableName = systemCode + "UserRole";
 
             var sql = "SELECT " + SelectFields
-                     + " FROM " + BaseUserEntity.TableName
-                     + "          , (SELECT " + BaseUserRoleEntity.FieldUserId
-                          + " FROM " + tableNameUserRole
-                          + "        WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + string.Join(",", roleIds) + ")"
-                          + "               AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                          + "               AND " + BaseUserRoleEntity.FieldDeleted + " = 0) B "
-                          + " WHERE " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = B." + BaseUserRoleEntity.FieldUserId
-                          + "       AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
-                          + "       AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldDeleted + "= 0";
+                     + " FROM " + BaseUserEntity.CurrentTableName
+                     + " , (SELECT " + BaseUserRoleEntity.FieldUserId
+                          + " FROM " + userRoleTableName
+                          + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
+                          + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
+                          + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0) B "
+                          + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = B." + BaseUserRoleEntity.FieldUserId
+                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
+                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + "= 0";
 
             if (!string.IsNullOrWhiteSpace(companyId))
             {
-                sql += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                sql += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
 
@@ -676,21 +661,23 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
-            var tableNameUserRole = systemCode + "UserRole";
+            var userRoleTableName = systemCode + "UserRole";
 
-            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.TableName
+            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
-                            + "       AND " + BaseUserEntity.FieldDeleted + "= 0 "
-                            + "       AND ( " + BaseUserEntity.FieldId + " IN "
-                            + "           (SELECT  " + BaseUserRoleEntity.FieldUserId
-                            + " FROM " + tableNameUserRole
-                            + "             WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + string.Join(",", roleIds) + ")"
-                            + "               AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
-                            + "                AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
+                            + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + " AND ( " + BaseUserEntity.FieldId + " IN "
+                            + " (SELECT  " + BaseUserRoleEntity.FieldUserId
+                            + " FROM " + userRoleTableName
+                            + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
+                            + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseUserEntity.FieldSortCode;
 
             return DbHelper.Fill(sql);
         }
+
+        #region 清空
         /// <summary>
         /// 清空用户
         /// </summary>
@@ -707,7 +694,12 @@ namespace DotNet.Business
             }
             var tableName = systemCode + "UserRole";
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
-            result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleId) });
+            var parameters = new List<KeyValuePair<string, object>> {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleId),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)
+            };
+            result += manager.Delete(parameters);
 
             return result;
         }
@@ -727,10 +719,16 @@ namespace DotNet.Business
             }
             var tableName = systemCode + "UserRole";
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
-            result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, userId) });
+            var parameters = new List<KeyValuePair<string, object>> {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, userId),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)
+            };
+            result += manager.Delete(parameters);
 
             return result;
         }
+        #endregion
 
         /// <summary>
         /// 获取用户的角色列表
@@ -740,14 +738,14 @@ namespace DotNet.Business
         /// <returns>角色数据表</returns>
         public DataTable GetUserRoleDataTable(string systemCode, string userId)
         {
-            var result = new DataTable(BaseRoleEntity.TableName);
+            var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var tableUserRoleName = BaseUserRoleEntity.TableName;
+            var userRoleTableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                tableUserRoleName = systemCode + "UserRole";
+                userRoleTableName = systemCode + "UserRole";
             }
-            var tableRoleName = BaseRoleEntity.TableName;
+            var tableRoleName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 tableRoleName = systemCode + "Role";
@@ -759,21 +757,19 @@ namespace DotNet.Business
                                     , BaseRole.Description
                                     , UserRole.UserId
                                     , UserRole.Enabled
-                                    , UserRole.DeletionStateCode
-                                    , UserRole.CreateOn
+                                    , UserRole.Deleted
+                                    , UserRole.CreateTime
                                     , UserRole.CreateBy
-                                    , UserRole.ModifiedOn
-                                    , UserRole.ModifiedBy
+                                    , UserRole.UpdateTime
+                                    , UserRole.UpdateBy
  FROM BaseRole RIGHT OUTER JOIN
-                          (SELECT UserId, RoleId, Enabled, DeletionStateCode, CreateOn, CreateBy, ModifiedOn, ModifiedBy
- FROM BaseUserRole
+                          (SELECT UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole
                             WHERE UserId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId)
                                   + " AND Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0 " + @") UserRole 
-                            ON BaseRole.Id = UserRole.RoleId
-                         WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + @" = 0 
-                      ORDER BY UserRole.CreateOn DESC ";
+                            ON BaseRole.Id = UserRole.RoleId WHERE BaseRole." + BaseRoleEntity.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + @" = 0 
+                      ORDER BY UserRole." + BaseRoleEntity.FieldCreateTime + " DESC ";
             //替换表名
-            commandText = commandText.Replace("BaseUserRole", tableUserRoleName);
+            commandText = commandText.Replace("BaseUserRole", userRoleTableName);
             commandText = commandText.Replace("BaseRole", tableRoleName);
 
             var dbParameters =
@@ -797,29 +793,9 @@ namespace DotNet.Business
         /// <returns>用户数据表</returns>
         public DataTable GetDataTableByCompanyByRole(string systemCode, string companyId, string roleId)
         {
-            var result = new DataTable(BaseRoleEntity.TableName);
+            var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var commandText = @"SELECT BaseUser.Id
-                                    , BaseUser.UserName
-                                    , BaseUser.Code
-                                    , BaseUser.Companyname
-                                    , BaseUser.DepartmentName
-                                    , BaseUser.RealName 
-                                    , BaseUser.Description 
-                                    , UserRole.Enabled
-                                    , UserRole.CreateOn
-                                    , UserRole.CreateBy
-                                    , UserRole.ModifiedOn
-                                    , UserRole.ModifiedBy
- FROM BaseUser RIGHT OUTER JOIN
-                          (SELECT UserId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
- FROM BaseUserRole
-                            WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId)
-                             + " AND DeletionStateCode = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole 
-                            ON BaseUser.Id = UserRole.UserId
-                         WHERE BaseUser.CompanyId = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + @"
-                      ORDER BY UserRole.CreateOn";
-
+            var commandText = @"SELECT A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldCode + ", A." + BaseUserEntity.FieldCompanyName + ", A." + BaseUserEntity.FieldDepartmentName + ", A. " + BaseUserEntity.FieldRealName + ", A. " + BaseUserEntity.FieldDescription + ", A." + BaseUserEntity.FieldEnabled + ", A." + BaseUserEntity.FieldCreateTime + ", A." + BaseUserEntity.FieldCreateBy + ", A." + BaseUserEntity.FieldUpdateTime + ", A." + BaseUserEntity.FieldUpdateBy + " FROM " + BaseUserEntity.CurrentTableName + @" A RIGHT OUTER JOIN (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND Deleted = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole ON A.Id = UserRole.UserId  WHERE A." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + " ORDER BY UserRole." + BaseUserRoleEntity.FieldUpdateTime;
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldRoleId, roleId),
@@ -830,10 +806,21 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #region IsAdministrator
         /// <summary>
         /// 是否为管理员
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="userId">用户编号</param>
+        /// <returns></returns>
+        public static bool IsAdministrator(int userId)
+        {
+            return IsAdministrator(userId.ToString());
+        }
+        /// <summary>
+        /// 是否为管理员
+        /// </summary>
+        /// <param name="userId">用户编号</param>
         /// <returns></returns>
         public static bool IsAdministrator(string userId)
         {
@@ -841,8 +828,7 @@ namespace DotNet.Business
 
             using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
             {
-                var commandText = @"SELECT COUNT(*) "
-                                     + " FROM " + BaseUserEntity.TableName
+                var commandText = @"SELECT COUNT(*) FROM " + BaseUserEntity.CurrentTableName
                                     + " WHERE Id = " + dbHelper.GetParameter(BaseUserEntity.FieldId)
                                               + " AND " + BaseUserEntity.FieldEnabled + " = " + dbHelper.GetParameter(BaseUserEntity.FieldEnabled)
                                               + " AND " + BaseUserEntity.FieldDeleted + " = " + dbHelper.GetParameter(BaseUserEntity.FieldDeleted)
@@ -853,21 +839,17 @@ namespace DotNet.Business
                     dbHelper.MakeParameter(BaseUserEntity.FieldEnabled, 1),
                     dbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0)
                 };
-                var isAdministrator = dbHelper.ExecuteScalar(commandText, dbParameters.ToArray());
-                result = int.Parse(isAdministrator.ToString()) > 0;
+                var obj = dbHelper.ExecuteScalar(commandText, dbParameters.ToArray());
+
+                if (obj != null && Convert.ToInt32(obj) > 0)
+                {
+                    result = true;
+                }
             }
 
             return result;
         }
-        /// <summary>
-        /// 从角色中删除
-        /// </summary>
-        /// <param name="roleId"></param>
-        /// <returns></returns>
-        public string[] GetUserIdsInRoleId(string roleId)
-        {
-            return GetUserIdsInRoleId(UserInfo.SystemCode, roleId);
-        }
+        #endregion
 
         /// <summary>
         /// 获取用户主键数组
@@ -921,7 +903,7 @@ namespace DotNet.Business
             // 需要显示未被删除的用户
             var sql = "SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0 "
                               + " AND ( UserId IN (  SELECT " + BaseUserEntity.FieldId
-                                                 + " FROM " + BaseUserEntity.TableName
+                                                 + " FROM " + BaseUserEntity.CurrentTableName
                                                  + "  WHERE " + BaseUserEntity.FieldEnabled + " = 1 " + BaseUserEntity.FieldDeleted + " = 0 ";
 
             var dbParameters = new List<IDbDataParameter>
@@ -953,6 +935,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region GetUserIds(string systemCode, string[] roleIds) 获取用户主键数组
+
         /// <summary>
         /// 获取用户主键数组
         /// 2015-11-03 吉日嘎拉 优化程序、用ExecuteReader提高性能
@@ -966,10 +950,9 @@ namespace DotNet.Business
 
             if (roleIds != null && roleIds.Length > 0)
             {
-                // 需要显示未被删除的用户
                 var tableName = systemCode + "UserRole";
-                var commandText = "SELECT UserId FROM " + tableName + " WHERE RoleId IN (" + StringUtil.ArrayToList(roleIds) + ") "
-                                + "  AND (UserId IN (SELECT Id FROM " + BaseUserEntity.TableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0)) AND (" + BaseUserEntity.FieldDeleted + " = 0)";
+                var commandText = "SELECT DISTINCT " + BaseUserRoleEntity.FieldUserId + " FROM " + tableName + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ") "
+                                + "  AND (" + BaseUserRoleEntity.FieldUserId + " IN (SELECT " + BaseUserEntity.FieldId + " FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0)) AND (" + BaseUserRoleEntity.FieldDeleted + " = 0)";
 
                 var ids = new List<string>();
                 using (var dr = DbHelper.ExecuteReader(commandText))
@@ -979,58 +962,17 @@ namespace DotNet.Business
                         ids.Add(dr["UserId"].ToString());
                     }
                 }
-                // 这里不需要有重复数据、用程序的方式把重复的数据去掉
-                // result = BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                 result = ids.ToArray();
             }
 
             return result;
         }
 
-        //
-        // 加入到角色
-        //
+        #endregion
 
-        /*
-        public string AddToRole(string systemCode, string userId, string roleName, bool enabled = true)
-        {
-            string result = string.Empty;
+        #region 添加角色
 
-            string roleId = BaseRoleManager.GetIdByNameByCache(systemCode, roleName);
-            if (!string.IsNullOrEmpty(roleId))
-            {
-                result = AddToRoleById(systemCode, userId, roleId, enabled);
-            }
-            
-            return result;
-        }
-
-        public int AddToRole(string systemCode, string userId, string[] roleIds, bool enabled = true)
-        {
-            int result = 0;
-
-            for (int i = 0; i < roleIds.Length; i++)
-            {
-                this.AddToRoleById(systemCode, userId, roleIds[i], enabled);
-                result++;
-            }
-
-            return result;
-        }
-
-        public int AddToRole(string systemCode, string[] userIds, string roleId)
-        {
-            int result = 0;
-
-            for (int i = 0; i < userIds.Length; i++)
-            {
-                this.AddToRoleById(systemCode, userIds[i], roleId);
-                result++;
-            }
-
-            return result;
-        }
-        */
+        #region AddToRole(string systemCode, string[] userIds, string[] roleIds, bool enabled = true) 加入到角色
         /// <summary>
         /// 加入到角色
         /// </summary>
@@ -1052,8 +994,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
-        #region public string AddToRole(string systemCode, string userId, string roleId, bool enabled = true) 为了提高授权的运行速度
+        #region AddToRole(string systemCode, string userId, string roleId, bool enabled = true) 为了提高授权的运行速度
         /// <summary>
         /// 为了提高授权的运行速度
         /// </summary>
@@ -1070,45 +1013,28 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
-            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(roleId))
+            if (ValidateUtil.IsInt(userId) && ValidateUtil.IsInt(roleId))
             {
                 var entity = new BaseUserRoleEntity
                 {
-                    UserId = userId,
-                    RoleId = roleId,
-                    Enabled = enabled ? 1 : 0,
-                    DeletionStateCode = 0
+                    UserId = userId.ToInt(),
+                    RoleId = roleId.ToInt(),
+                    Enabled = enabled ? 1 : 0
                 };
-                // 2016-03-02 吉日嘎拉 增加按公司可以区别数据的功能。
-                //if (this.DbHelper.CurrentDbType == CurrentDbType.MySql)
-                //{
-                //    entity.CompanyId = BaseUserManager.GetCompanyIdByCache(userId);
-                //}
-                // 2015-12-05 吉日嘎拉 把修改人记录起来，若是新增加的
-                if (UserInfo != null)
-                {
-                    entity.CreateUserId = UserInfo.Id;
-                    entity.CreateBy = UserInfo.RealName;
-                    entity.CreateOn = DateTime.Now;
-                    entity.ModifiedUserId = UserInfo.Id;
-                    entity.ModifiedBy = UserInfo.RealName;
-                    entity.ModifiedOn = DateTime.Now;
-                }
                 var tableName = systemCode + "UserRole";
-                var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
-                result = manager.Add(entity);
+                //新增或激活
+                result = new BaseUserRoleManager(DbHelper, UserInfo, tableName).AddOrActive(entity);
             }
 
             return result;
         }
         #endregion
 
+        #endregion
 
-        //
-        //  从角色中移除用户
-        //
+        #region 移除角色
 
-        #region public int RemoveFormRole(string systemCode, string userId, string roleId) 将用户从角色移除
+        #region RemoveFormRole(string systemCode, string userId, string roleId) 将用户从角色移除
         /// <summary>
         /// 将用户从角色移除
         /// </summary>
@@ -1118,21 +1044,27 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int RemoveFormRole(string systemCode, string userId, string roleId)
         {
-            var tableName = BaseUserRoleEntity.TableName;
+            var tableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 tableName = systemCode + "UserRole";
             }
-
-            var parameters = new List<KeyValuePair<string, object>>
+            var whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, userId),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleId)
             };
-            var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
-            return manager.Delete(parameters);
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 0),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 1)
+            };
+            // 更新删除状态
+            return new BaseUserRoleManager(DbHelper, UserInfo, tableName).UpdateProperty(whereParameters, parameters);
         }
         #endregion
+
+        #region RemoveFormRole(string systemCode, string userId, string[] roleIds) 将用户从角色移除
 
         /// <summary>
         /// 从角色中删除
@@ -1146,11 +1078,14 @@ namespace DotNet.Business
             var result = 0;
             for (var i = 0; i < roleIds.Length; i++)
             {
-                //移除用户角色
                 result += RemoveFormRole(systemCode, userId, roleIds[i]);
             }
             return result;
         }
+
+        #endregion
+
+        #region RemoveFormRole(string systemCode, string[] userIds, string roleId) 将用户从角色移除
 
         /// <summary>
         /// 从角色中删除
@@ -1164,12 +1099,13 @@ namespace DotNet.Business
             var result = 0;
             for (var i = 0; i < userIds.Length; i++)
             {
-                //移除用户角色
                 result += RemoveFormRole(systemCode, userIds[i], roleId);
             }
             return result;
         }
+        #endregion
 
+        #region RemoveFormRole(string systemCode, string[] userIds, string[] roleIds) 将用户从角色移除
         /// <summary>
         /// 从角色中删除
         /// </summary>
@@ -1192,40 +1128,8 @@ namespace DotNet.Business
             return result;
         }
 
-        /// <summary>
-        /// 轮循计数器
-        /// </summary>
-        public static int UserIndex = 0;
+        #endregion
 
-        /// <summary>
-        /// 从某个角色列表中轮循获取一个用户，在线的用户优先。
-        /// </summary>
-        /// <param name="systemCode">子系统编码</param>
-        /// <param name="roleCode">角色编号</param>
-        /// <returns>用户主键</returns>
-        public string GetRandomUserId(string systemCode, string roleCode)
-        {
-            var result = string.Empty;
-
-            // 先不管是否在线，总需要能发一个人再说
-            var userIds = GetUserIdsByRole(systemCode, roleCode);
-            if (userIds != null && userIds.Length > 0)
-            {
-                var index = UserIndex % userIds.Length;
-                result = userIds[index];
-
-                // 接着再判断是否有人在线，若有在线的，发给在线的用户
-                var userLogonManager = new BaseUserLogonManager(DbHelper);
-                userIds = userLogonManager.GetOnlineUserIds(userIds);
-                if (userIds != null && userIds.Length > 0)
-                {
-                    index = UserIndex % userIds.Length;
-                    result = userIds[index];
-                }
-            }
-            UserIndex++;
-
-            return result;
-        }
+        #endregion
     }
 }

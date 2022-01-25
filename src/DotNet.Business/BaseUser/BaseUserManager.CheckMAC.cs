@@ -47,7 +47,7 @@ namespace DotNet.Business
             var result = false;
 
             // 检查参数的有效性
-            if (string.IsNullOrEmpty(userId))
+            if (!ValidateUtil.IsInt(userId))
             {
                 return result;
             }
@@ -176,7 +176,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (!string.IsNullOrEmpty(userId))
+            if (ValidateUtil.IsInt(userId))
             {
                 var key = "MAC:" + userId;
                 result = CacheUtil.Remove(key);
@@ -199,7 +199,7 @@ namespace DotNet.Business
             ResetMacAddressByCache(userId);
 
             //TODO 吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
-            var commandText = "UPDATE " + BaseParameterEntity.TableName
+            var commandText = "UPDATE " + BaseParameterEntity.CurrentTableName
                         + "   SET " + BaseParameterEntity.FieldDeleted + " = 1 "
                         + "     , " + BaseParameterEntity.FieldEnabled + " = 0 "
                         + " WHERE " + BaseParameterEntity.FieldCategoryCode + " =  " + DbHelper.GetParameter(BaseParameterEntity.FieldCategoryCode)

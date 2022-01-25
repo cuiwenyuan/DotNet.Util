@@ -7,6 +7,7 @@ using System.Data;
 
 namespace DotNet.Business
 {
+    using DotNet.Util;
     using Model;
 
     /// <summary>
@@ -35,18 +36,18 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            if (string.IsNullOrEmpty(userId) && UserInfo != null)
+            if (!ValidateUtil.IsInt(userId) && UserInfo != null)
             {
-                userId = UserInfo.Id;
+                userId = UserInfo.Id.ToString();
             }
 
-            var commandText = "UPDATE " + BaseUserLogonEntity.TableName
+            var commandText = "UPDATE " + BaseUserLogonEntity.CurrentTableName
                         + "    SET " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode)
-                        + "  WHERE " + BaseUserLogonEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldId);
+                        + "  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId);
 
             var dbParameters = new List<IDbDataParameter>();
             dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode));
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldId, userId));
+            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId));
             result = DbHelper.ExecuteNonQuery(commandText, dbParameters.ToArray());
 
             return result;
@@ -64,12 +65,12 @@ namespace DotNet.Business
 
             // 最后一次登录时间
             var commandText = " SELECT COUNT(*)"
-                     + " FROM " + BaseUserLogonEntity.TableName
-                     + "  WHERE " + BaseUserLogonEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldId)
+                     + " FROM " + BaseUserLogonEntity.CurrentTableName
+                     + "  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId)
                      + "        AND " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode);
 
             var dbParameters = new List<IDbDataParameter>();
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldId, userId));
+            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId));
             dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode));
             var exist = DbHelper.ExecuteScalar(commandText, dbParameters.ToArray());
             if (exist != null)

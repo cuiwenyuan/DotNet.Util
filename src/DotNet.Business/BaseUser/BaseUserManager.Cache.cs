@@ -75,7 +75,7 @@ namespace DotNet.Business
         {
             var key = string.Empty;
 
-            if (entity != null && !string.IsNullOrWhiteSpace(entity.Id))
+            if (entity != null && entity.Id > 0)
             {
                 key = "User:" + entity.Id;
                 CacheUtil.Set<BaseUserEntity>(key, entity);
@@ -83,23 +83,23 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(entity.NickName))
                 {
                     key = "User:ByNickName:" + entity.NickName.ToLower();
-                    CacheUtil.Set<string>(key, entity.Id);
+                    CacheUtil.Set<string>(key, entity.Id.ToString());
                 }
 
                 if (!string.IsNullOrEmpty(entity.Code))
                 {
                     key = "User:ByCode:" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id);
+                    CacheUtil.Set<string>(key, entity.Id.ToString());
 
                     key = "User:ByCompanyId:ByCode" + entity.CompanyId + ":" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id);
+                    CacheUtil.Set<string>(key, entity.Id.ToString());
                 }
 
-                var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId);
+                var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId.ToString());
                 if (!string.IsNullOrEmpty(companyCode))
                 {
                     key = "User:ByCompanyCode:ByCode" + companyCode + ":" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id);
+                    CacheUtil.Set<string>(key, entity.Id.ToString());
                 }
 
                 Console.WriteLine(entity.Id + " : " + entity.RealName);
@@ -117,7 +117,7 @@ namespace DotNet.Business
         {
             BaseUserEntity result = null;
 
-            if (string.IsNullOrEmpty(id))
+            if (!ValidateUtil.IsInt(id))
             {
                 return result;
             }
@@ -154,12 +154,12 @@ namespace DotNet.Business
             var userEntity = GetEntityByCodeByCache(userCode);
             if (userEntity != null)
             {
-                result = userEntity.Id;
+                result = userEntity.Id.ToString();
             }
 
             return result;
         }
-       
+
         /// <summary>
         /// 根据公司编号和用户编码获取用户实体
         /// </summary>
@@ -244,7 +244,7 @@ namespace DotNet.Business
         /// <param name="entity">用户实体</param>
         public static void CachePreheatingSpelling(BaseUserEntity entity)
         {
-            double score = entity.SortCode.Value;
+            double score = entity.SortCode;
             CachePreheatingSpelling(entity, score);
         }
         /// <summary>
@@ -268,14 +268,11 @@ namespace DotNet.Business
 
             var user = id + ";" + code + ";" + realName;
 
-            if (userEntity.Enabled.HasValue && userEntity.Enabled.Value == 0)
+            if (userEntity.Enabled == 0)
             {
                 // user += " 失效";
             }
-            if (userEntity.DeletionStateCode.HasValue && userEntity.DeletionStateCode.Value == 1)
-            {
-                // user += " 已删除";
-            }
+
 
             var key = string.Empty;
 
@@ -283,7 +280,7 @@ namespace DotNet.Business
 
             // 01：按网点进行缓存
             var companyId = userEntity.CompanyId;
-            if (!string.IsNullOrEmpty(companyId))
+            if (companyId > 0)
             {
                 for (var i = 1; i <= code.Length; i++)
                 {

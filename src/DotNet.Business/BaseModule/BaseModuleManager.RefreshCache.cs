@@ -11,7 +11,7 @@ namespace DotNet.Business
     /// BaseModuleManager
     /// 模块菜单权限管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2016.03.01 版本：1.0 JiRiGaLa	分离代码。
     /// 
@@ -26,15 +26,15 @@ namespace DotNet.Business
         /// 缓存预热,强制重新缓存
         /// </summary>
         /// <returns></returns>
-        public static int CachePreheating()
+        public int CachePreheating()
         {
             var result = 0;
 
             var systemCodes = BaseSystemManager.GetSystemCodes();
-            for (var i = 0; i < systemCodes.Length; i++)
+            foreach (var entity in systemCodes)
             {
-                GetEntitiesByCache(systemCodes[i], true);
-                result += CachePreheating(systemCodes[i]);
+                GetEntitiesByCache(entity.ItemKey, true);
+                result += CachePreheating(entity.ItemKey);
             }
 
             return result;
@@ -77,7 +77,7 @@ namespace DotNet.Business
         /// <param name="systemCode"></param>
         /// <param name="moduleId"></param>
         /// <returns></returns>
-        public static int RefreshCache(string systemCode, string moduleId)
+        public int RefreshCache(string systemCode, string moduleId)
         {
             var result = 0;
 
@@ -91,15 +91,15 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="systemCode"></param>
         /// <returns></returns>
-        public static int RefreshCache(string systemCode)
+        public int RefreshCache(string systemCode)
         {
             var result = 0;
 
-            var list = GetEntitiesByCache(systemCode, true);
+            var list = new BaseModuleManager().GetEntitiesByCache(systemCode, true);
             foreach (var entity in list)
             {
                 // 2016-02-29 吉日嘎拉 强制刷新缓存
-                GetEntityByCache(systemCode, entity.Id, true);
+                GetEntityByCache(systemCode, entity.Id.ToString(), true);
             }
 
             return result;

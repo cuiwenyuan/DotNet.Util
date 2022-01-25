@@ -26,37 +26,24 @@ namespace DotNet.Business
     /// </author>
     public partial class BaseModuleManager : BaseManager
     {
-        #region public int Update(BaseModuleEntity entity, out string statusCode) 更新
+        #region public int UniqueUpdate(BaseModuleEntity entity, out string statusCode) 更新
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
         /// <param name="statusCode">返回状态码</param>
         /// <returns>返回</returns>
-        public int Update(BaseModuleEntity entity, out string statusCode)
+        public int UniqueUpdate(BaseModuleEntity entity, out string statusCode)
         {
             var result = 0;
-            // 检查是否已被其他人修改            
-            //if (DbUtil.IsModifed(DbHelper, BaseModuleEntity.TableName, moduleEntity.Id, moduleEntity.ModifiedUserId, moduleEntity.ModifiedOn))
-            //{
-            //    // 数据已经被修改
-            //    statusCode = StatusCode.ErrorChanged.ToString();
-            //}
-            //else
-            //{
 
-            var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(entity.ParentId))
+            var parameters = new List<KeyValuePair<string, object>>
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId));
-            }
-            else
-            {
-                parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, null));
-            }
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code));
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName));
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
+            };
 
             // 检查编号是否重复
             if ((entity.Code.Length > 0) && (Exists(parameters, entity.Id)))
@@ -71,7 +58,7 @@ namespace DotNet.Business
                 // 保存修改记录
                 UpdateEntityLog(entity, entityOld);
                 // 2015-07-14 吉日嘎拉 只有允许修改的，才可以修改，不允许修改的，不让修改，但是把修改记录会保存起来的。
-                if (entityOld.AllowEdit.HasValue && entityOld.AllowEdit.Value == 1)
+                if (entityOld.AllowEdit == 1)
                 {
                     result = UpdateEntity(entity);
                     statusCode = Status.AccessDeny.ToString();
@@ -85,7 +72,6 @@ namespace DotNet.Business
                     statusCode = Status.ErrorDeleted.ToString();
                 }
             }
-            //}
             return result;
         }
         #endregion
@@ -102,9 +88,9 @@ namespace DotNet.Business
             if (string.IsNullOrEmpty(tableName))
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
-                tableName = BaseModifyRecordEntity.TableName;
+                tableName = BaseChangeLogEntity.CurrentTableName;
             }
-            var manager = new BaseModifyRecordManager(UserInfo, tableName);
+            var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseModuleEntity).GetProperties())
             {
                 var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
@@ -115,16 +101,15 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var record = new BaseModifyRecordEntity
+                var record = new BaseChangeLogEntity
                 {
-                    ColumnCode = property.Name.ToUpper(),
+                    TableName = CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseModuleEntity), "CurrentTableName"),
+                    ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    TableCode = CurrentTableName.ToUpper(),
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseModuleEntity), "TableName"),
-                    RecordKey = oldEntity.Id,
-                    IpAddress = Utils.GetIp()
+                    RecordKey = oldEntity.Id.ToString()
                 };
                 manager.Add(record, true, false);
             }

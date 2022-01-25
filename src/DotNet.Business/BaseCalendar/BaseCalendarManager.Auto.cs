@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseCalendarManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2020, All rights reserved.
+//     Copyright (c) 2021, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -15,9 +15,9 @@ namespace DotNet.Business
     /// BaseCalendarManager
     /// 日历
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
-    /// 2020-03-22 版本：1.0 Troy.Cui 创建文件。
+    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
@@ -33,14 +33,15 @@ namespace DotNet.Business
         {
             if (dbHelper == null)
             {
-                dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.BusinessDbType, BaseSystemInfo.BusinessDbConnection);
+                dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseCalendarEntity.TableName;
+                CurrentTableName = BaseCalendarEntity.CurrentTableName;
                 //按用户公司分表
-                //CurrentTableName = BaseCalendarEntity.TableName + GetTableSuffix();
+                //CurrentTableName = BaseCalendarEntity.CurrentTableName + GetTableSuffix();
             }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseCalendarEntity), "CurrentTableName");
             PrimaryKey = "Id";
         }
 
@@ -48,7 +49,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseCalendarManager(string tableName)
+        public BaseCalendarManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -57,8 +58,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseCalendarManager(IDbHelper dbHelper)
-            : this()
+        public BaseCalendarManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -67,12 +67,11 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseCalendarManager(BaseUserInfo userInfo)
-            : this()
+        public BaseCalendarManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseCalendarEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseCalendarEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -80,8 +79,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseCalendarManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
+        public BaseCalendarManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -91,12 +89,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseCalendarManager(IDbHelper dbHelper, BaseUserInfo userInfo)
-            : this(dbHelper)
+        public BaseCalendarManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseCalendarEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseCalendarEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -105,8 +102,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseCalendarManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
-            : this(dbHelper, userInfo)
+        public BaseCalendarManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -127,6 +123,28 @@ namespace DotNet.Business
         }
 
         /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseCalendarEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
+        }
+
+        /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
@@ -141,7 +159,7 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseCalendarEntity GetEntity(string id)
         {
-            return GetEntity(int.Parse(id));
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
         }
 
         /// <summary>
@@ -150,10 +168,19 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseCalendarEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseCalendarEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseCalendarEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
-            //var cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond * 1000 * 60 * 12);
-            //return CacheUtil.Cache<BaseCalendarEntity>(cacheKey, () => BaseEntity.Create<BaseCalendarEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseCalendarEntity>(cacheKey, () => BaseEntity.Create<BaseCalendarEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseCalendarEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseCalendarEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -206,26 +233,24 @@ namespace DotNet.Business
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateIp, UserInfo.IpAddress);
             }
             else
             {
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateIp, Utils.GetIp());
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserName, entity.CreateUserName);
             }
             sqlBuilder.SetDbNow(BaseCalendarEntity.FieldCreateTime);
+            sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseCalendarEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -258,14 +283,11 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseCalendarEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
@@ -292,7 +314,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseCalendarEntity.FieldFiscalDay, entity.FiscalDay);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldTransactionDate, entity.TransactionDate);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseCalendarEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseCalendarEntity.FieldDeleted, entity.Deleted);
             sqlBuilder.SetValue(BaseCalendarEntity.FieldEnabled, entity.Enabled);
         }
 

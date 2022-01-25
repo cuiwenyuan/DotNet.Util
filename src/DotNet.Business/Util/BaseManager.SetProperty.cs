@@ -30,14 +30,14 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual int SetProperty(KeyValuePair<string, object> parameter)
         {
-            var parameters = new List<KeyValuePair<string, object>> {parameter};
+            var parameters = new List<KeyValuePair<string, object>> { parameter };
             return DbUtil.SetProperty(DbHelper, CurrentTableName, null, parameters);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="parameter"></param>
+        /// <param name="id">条件参数</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(string id, KeyValuePair<string, object> parameter)
         {
@@ -46,8 +46,8 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="parameter"></param>
+        /// <param name="id">条件参数</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(object id, KeyValuePair<string, object> parameter)
         {
@@ -56,8 +56,8 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="parameters"></param>
+        /// <param name="id">条件参数</param>
+        /// <param name="parameters">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(object id, List<KeyValuePair<string, object>> parameters)
         {
@@ -66,8 +66,8 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="ids"></param>
-        /// <param name="parameter"></param>
+        /// <param name="ids">数组条件参数</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(object[] ids, KeyValuePair<string, object> parameter)
         {
@@ -76,8 +76,8 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="ids"></param>
-        /// <param name="parameters"></param>
+        /// <param name="ids">数组条件参数</param>
+        /// <param name="parameters">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters)
         {
@@ -86,9 +86,9 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameter"></param>
+        /// <param name="name">条件参数名</param>
+        /// <param name="values">条件参数值</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter)
         {
@@ -109,9 +109,9 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameters"></param>
+        /// <param name="name">条件参数名</param>
+        /// <param name="values">条件参数值</param>
+        /// <param name="parameters">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters)
         {
@@ -132,57 +132,57 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="whereParameter1"></param>
-        /// <param name="whereParameter2"></param>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameter1">条件参数1</param>
+        /// <param name="whereParameter2">条件参数2</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter)
         {
-            var whereParameters = new List<KeyValuePair<string, object>> {whereParameter1, whereParameter2};
-            var parameters = new List<KeyValuePair<string, object>> {parameter};
+            var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
+            var parameters = new List<KeyValuePair<string, object>> { parameter };
 
             return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="whereParameter"></param>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameter">条件参数</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter)
         {
-            var whereParameters = new List<KeyValuePair<string, object>> {whereParameter};
-            var parameters = new List<KeyValuePair<string, object>> {parameter};
+            var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
+            var parameters = new List<KeyValuePair<string, object>> { parameter };
             return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="whereParameters"></param>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameters">条件参数</param>
+        /// <param name="parameter">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter)
         {
-            var parameters = new List<KeyValuePair<string, object>> {parameter};
+            var parameters = new List<KeyValuePair<string, object>> { parameter };
 
             return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="whereParameter"></param>
-        /// <param name="parameters"></param>
+        /// <param name="whereParameter">条件参数</param>
+        /// <param name="parameters">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters)
         {
-            var whereParameters = new List<KeyValuePair<string, object>> {whereParameter};
+            var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="whereParameters"></param>
-        /// <param name="parameters"></param>
+        /// <param name="whereParameters">条件参数</param>
+        /// <param name="parameters">更新参数</param>
         /// <returns></returns>
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
         {

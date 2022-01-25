@@ -13,7 +13,7 @@ namespace DotNet.Business
     /// <summary>
     /// LogonService
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     /// 	2014.02.13 崔文远增加(LDAP专用)
     ///		2013.06.06 张祈璟重构
@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2009.04.15</date>
     /// </author> 
     /// </summary>
-    public partial class LogonService : ILogonService
+    public partial class LogonService : IBaseUserLogonService
     {
 
         #region public BaseUserInfo LogonByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
@@ -59,7 +59,7 @@ namespace DotNet.Business
                  {
                      var baseUserLogonManager = new BaseUserLogonManager(userInfo);
                     //获取密码
-                    var userLogonEntity = baseUserLogonManager.GetEntity(userEntity.Id);
+                    var userLogonEntity = baseUserLogonManager.GetEntityByUserId(userEntity.Id);
                      var password = userLogonEntity.UserPassword;
                     //再进行登录，这里密码不能是AD的密码，所以不检验密码
                     result = userManager.LogonByUserName(userName, password, systemCode, null, null, null, false, false);

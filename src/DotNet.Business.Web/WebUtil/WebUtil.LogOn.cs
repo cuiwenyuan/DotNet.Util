@@ -65,21 +65,7 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null)
         {
-            if (string.IsNullOrEmpty(userId))
-            {
-                userId = userInfo.Id;
-            }
-            var cacheKey = "P" + userId;
-            List<BaseModuleEntity> entityList = null;
-            // 这里是控制用户并发的，减少框架等重复读取数据库的效率问题
-            lock (BaseSystemInfo.UserLock)
-            {
-                //var cacheTime = default(TimeSpan);
-                var cacheTime = TimeSpan.FromMilliseconds(3600000);
-                entityList = CacheUtil.Cache(cacheKey, () => new BasePermissionManager(userInfo).GetPermissionListByUser(BaseSystemInfo.SystemCode, userInfo.Id, userInfo.CompanyId, true), true);
-            }
-
-            return entityList;
+            return new BasePermissionManager(userInfo).GetUserPermissionList(userInfo, userId, BaseSystemInfo.SystemCode);
         }
         #endregion
 
@@ -171,7 +157,7 @@ namespace DotNet.Business
             // 检查是否有效用户
             if (userInfo != null)
             {
-                if (!string.IsNullOrEmpty(userInfo.Id))
+                if (userInfo.UserId > 0)
                 {
                     // if (result.RoleId.Length == 0)
                     // {
@@ -328,7 +314,12 @@ namespace DotNet.Business
             if (httpCookie != null)
             {
                 userInfo = new BaseUserInfo();
+
                 userInfo.Id = httpCookie.Values["Id"];
+                if (ValidateUtil.IsInt(httpCookie.Values["Id"]))
+                {
+                    userInfo.UserId = Convert.ToInt32(httpCookie.Values["Id"]);
+                }
                 userInfo.OpenId = httpCookie.Values["OpenId"];
 
                 /*
@@ -393,7 +384,7 @@ namespace DotNet.Business
                 //result.Themes = httpCookie.Values["Themes"];
 
                 // 只要出错，应该删除Cookie，重新跳转到登录页面才正确
-                if (string.IsNullOrEmpty(userInfo.Id))
+                if (userInfo.UserId <= 0)
                 {
                     RemoveUserCookie();
                     userInfo = null;
@@ -456,7 +447,8 @@ namespace DotNet.Business
             {
                 httpCookie.Values[CookiePassword] = password;
             }
-            httpCookie.Values["Id"] = userInfo.Id;
+            httpCookie.Values["Id"] = userInfo.Id.ToString();
+            httpCookie.Values["UserId"] = userInfo.Id.ToString();
             httpCookie.Values["OpenId"] = userInfo.OpenId;
             httpCookie.Values["Code"] = userInfo.Code;
             httpCookie.Values["UserName"] = HttpUtility.UrlEncode(userInfo.UserName);
@@ -679,7 +671,10 @@ namespace DotNet.Business
             //2020-06-12 WebApi中登录方法中无法先删除Cookie，因为没有返回给客户端。Troy.Cui
             if (webApiLogin)
             {
-                userInfo = new BaseUserInfo();
+                userInfo = new BaseUserInfo
+                {
+                    IpAddress = Utils.GetIp()
+                };
             }
             //2020年2月29日，每次登录都强制重新生成OpenId，Troy.Cui
             var userLogonResult = dotNetService.LogonService.UserLogon(taskId, userInfo, userName, password, openId);
@@ -691,7 +686,7 @@ namespace DotNet.Business
             // 检查身份
             if (userLogonResult != null && userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
             {
-                LogUtil.WriteLog("Logon Ok");
+                //LogUtil.WriteLog("Logon Ok");
 
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
@@ -804,7 +799,7 @@ namespace DotNet.Business
         public static void Logon(BaseUserInfo userInfo, bool formsAuthentication = false)
         {
             // 检查身份
-            if ((userInfo != null) && (!string.IsNullOrEmpty(userInfo.Id)))
+            if (userInfo != null && userInfo.UserId > 0)
             {
                 SetSession(userInfo);
                 if (formsAuthentication)
@@ -945,18 +940,18 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserContactEntity.FieldEmail, email)
                 };
             var userContactEntity = BaseEntity.Create<BaseUserContactEntity>(userContactManager.GetDataTable(parameters));
-            if (userContactEntity != null && !string.IsNullOrEmpty(userContactEntity.Id))
+            if (userContactEntity != null && userContactEntity.UserId > 0)
             {
                 var userManager = new BaseUserManager();
                 // 2.用户是否已被删除？
                 parameters = new List<KeyValuePair<string, object>>
-                    {
-                        new KeyValuePair<string, object>(BaseUserEntity.FieldId, userContactEntity.Id),
-                        new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
-                    };
+                {
+                    new KeyValuePair<string, object>(BaseUserEntity.FieldId, userContactEntity.UserId),
+                    new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
+                };
                 var userEntity = BaseEntity.Create<BaseUserEntity>(userManager.GetDataTable(parameters));
                 // 是否已找到了此用户
-                if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
+                if (userEntity != null && userEntity.Id > 0)
                 {
                     // 3.用户是否有效的？
                     if (userEntity.Enabled == 1)
@@ -1012,7 +1007,7 @@ namespace DotNet.Business
             var userEntity = BaseEntity.Create<BaseUserEntity>(userManager.GetDataTable(parameters));
 
             // 是否已找到了此用户
-            if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
+            if (userEntity != null && userEntity.Id > 0)
             {
                 // 3.用户是否有效的？
                 if (userEntity.Enabled == 1)
@@ -1055,7 +1050,7 @@ namespace DotNet.Business
         #endregion
 
         #endregion
-        
+
         #region 字符串加密解密部分
 
         #region public static string Encrypt(string targetValue) DES数据加密

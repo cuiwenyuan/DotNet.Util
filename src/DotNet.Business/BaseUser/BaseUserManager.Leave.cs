@@ -52,30 +52,6 @@ namespace DotNet.Business
                 userLogonManager.UpdateEntity(userLogonEntity);
             }
 
-            // 填写评论
-            if (!string.IsNullOrWhiteSpace(comment))
-            {
-                var sqlBuilder = new SqlBuilder(BaseSystemInfo.UserCenterDbType);
-                sqlBuilder.BeginInsert(BaseCommentEntity.TableName);
-                sqlBuilder.SetValue(BaseCommentEntity.FieldId, Guid.NewGuid().ToString("N"));
-                sqlBuilder.SetValue(BaseCommentEntity.FieldCategoryCode, BaseUserEntity.TableName);
-                if (userEntity != null)
-                {
-                    sqlBuilder.SetValue(BaseCommentEntity.FieldObjectId, userEntity.Id);
-                    sqlBuilder.SetValue(BaseCommentEntity.FieldContents, comment);
-                    sqlBuilder.SetValue(BaseCommentEntity.FieldWorked, 1);
-                    sqlBuilder.SetValue(BaseCommentEntity.FieldDepartmentId, userEntity.DepartmentId);
-                    sqlBuilder.SetValue(BaseCommentEntity.FieldDepartmentName, userEntity.DepartmentName);
-                }
-                sqlBuilder.SetValue(BaseCommentEntity.FieldCreateUserId, UserInfo.Id);
-                sqlBuilder.SetValue(BaseCommentEntity.FieldCreateBy, UserInfo.RealName);
-                sqlBuilder.SetDbNow(BaseCommentEntity.FieldCreateTime);
-                sqlBuilder.SetValue(BaseCommentEntity.FieldIpAddress, UserInfo.IpAddress);
-                sqlBuilder.SetValue(BaseCommentEntity.FieldEnabled, 1);
-                sqlBuilder.SetValue(BaseCommentEntity.FieldDeleted, 0);
-                sqlBuilder.EndInsert();
-            }
-
             // 2016-03-17 吉日嘎拉 停止吉信的号码
             if (userEntity != null && !string.IsNullOrEmpty(userEntity.NickName))
             {
@@ -83,15 +59,15 @@ namespace DotNet.Business
             }
 
             // 2016-03-17 吉日嘎拉 停止吉信的号码
-            if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
+            if (userEntity != null && userEntity.Id > 0)
             {
                 BaseUserContactEntity userContactEntity = null;
                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
                 userContactEntity = BaseUserContactManager.GetEntityByCache(userEntity.Id);
 
-                if (userContactEntity != null && !string.IsNullOrEmpty(userContactEntity.CompanyMail))
+                if (userContactEntity != null && !string.IsNullOrEmpty(userContactEntity.CompanyEmail))
                 {
-                    ChangeUserMailStatus(userContactEntity.CompanyMail, true);
+                    ChangeUserMailStatus(userContactEntity.CompanyEmail, true);
                 }
             }
 

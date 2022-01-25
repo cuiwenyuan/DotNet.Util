@@ -36,7 +36,7 @@ namespace DotNet.Business
 
             // 获取登录状态表
             var userLogonManager = new BaseUserLogonManager(UserInfo, UserLogonTable);
-            var userLogonEntity = userLogonManager.GetEntity(userId);
+            var userLogonEntity = userLogonManager.GetEntityByUserId(userId);
 
             return CheckUser(userEntity, userLogonEntity);
         }
@@ -63,7 +63,7 @@ namespace DotNet.Business
             }
 
             // 用户是否有效的
-            if (userEntity.Enabled.HasValue && userEntity.Enabled == 0)
+            if (userEntity.Enabled == 0)
             {
                 result.StatusCode = Status.LogonDeny.ToString();
                 result.StatusMessage = Status.LogonDeny.ToDescription();
@@ -72,7 +72,7 @@ namespace DotNet.Business
             }
 
             // 用户是否有效的
-            if (userEntity.Enabled.HasValue && userEntity.Enabled == -1)
+            if (userEntity.Enabled == -1)
             {
                 result.StatusCode = Status.UserNotActive.ToString();
                 result.StatusMessage = Status.UserNotActive.ToDescription();
@@ -138,13 +138,13 @@ namespace DotNet.Business
 
             // 07. 锁定日期是否有限制
             //errorMark = 21;
-            if (userLogonEntity.LockStartDate != null)
+            if (userLogonEntity.LockStartTime != null)
             {
                 //errorMark = 22;
-                if (DateTime.Now > userLogonEntity.LockStartDate)
+                if (DateTime.Now > userLogonEntity.LockStartTime)
                 {
                     //errorMark = 23;
-                    if (userLogonEntity.LockEndDate == null || DateTime.Now < userLogonEntity.LockEndDate)
+                    if (userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime)
                     {
                         result.StatusCode = Status.UserLocked.ToString();
                         result.StatusMessage = Status.UserLocked.ToDescription();
@@ -155,10 +155,10 @@ namespace DotNet.Business
             }
 
             //errorMark = 25;
-            if (userLogonEntity.LockEndDate != null)
+            if (userLogonEntity.LockEndTime != null)
             {
                 //errorMark = 26;
-                if (DateTime.Now < userLogonEntity.LockEndDate)
+                if (DateTime.Now < userLogonEntity.LockEndTime)
                 {
                     //errorMark = 27;
                     result.StatusCode = Status.UserLocked.ToString();

@@ -31,20 +31,10 @@ namespace DotNet.Business
         /// 获取系统编号清单
         /// </summary>
         /// <returns>系统编号清单</returns>
-        public static string[] GetSystemCodes()
+        public static List<BaseDictionaryItemEntity> GetSystemCodes()
         {
-            string[] result = null;
-
-            var parameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldIsPublic, 1),
-                new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseItemDetailsEntity.FieldDeleted, 0)
-            };
-
-            var manager = new BaseItemDetailsManager("ItemsSystem");
-            result = manager.GetProperties(parameters, BaseItemDetailsEntity.FieldItemCode);
-
+            var result = new List<BaseDictionaryItemEntity>();
+            result = new BaseDictionaryItemManager().GetDataTableByDictionaryCode("BaseSystem").ToList<BaseDictionaryItemEntity>();
             return result;
         }
 
@@ -52,11 +42,11 @@ namespace DotNet.Business
         /// 通过缓存获取系统编号清单
         /// </summary>
         /// <returns>系统编号清单</returns>
-        public static string[] GetSystemCodesByCache()
+        public static List<BaseDictionaryItemEntity> GetSystemCodesByCache()
         {
             var cacheKey = "Base.SystemCodes";
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<string[]>(cacheKey, () => GetSystemCodes(), true, false, cacheTime);
+            return CacheUtil.Cache<List<BaseDictionaryItemEntity>>(cacheKey, () => GetSystemCodes(), true, false, cacheTime);
         }
 
         /// <summary>
@@ -72,9 +62,9 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(systemCode))
             {
                 var systemCodes = GetSystemCodesByCache();
-                if (systemCodes != null && systemCodes.Length > 0)
+                if (systemCodes != null && systemCodes.Count > 0)
                 {
-                    result = StringUtil.Exists(systemCodes, systemCode);
+                    result = systemCodes.Exists(e => e.ItemKey.Equals(systemCode, StringComparison.OrdinalIgnoreCase));
                 }
             }
 

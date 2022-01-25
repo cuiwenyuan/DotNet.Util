@@ -278,7 +278,7 @@ namespace DotNet.Util
             if (ConfigurationManager.AppSettings["UserCenterDbType"] != null)
             {
                 BaseSystemInfo.UserCenterDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
-                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
+                BaseSystemInfo.LogonLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
                 BaseSystemInfo.MessageDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["UserCenterDbType"]);
             }
             if (ConfigurationManager.AppSettings["BusinessDbType"] != null)
@@ -289,9 +289,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.WorkFlowDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["WorkFlowDbType"]);
             }
-            if (ConfigurationManager.AppSettings["LoginLogDbType"] != null)
+            if (ConfigurationManager.AppSettings["LogonLogDbType"] != null)
             {
-                BaseSystemInfo.LoginLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["LoginLogDbType"]);
+                BaseSystemInfo.LogonLogDbType = DbTypeUtil.GetDbType(ConfigurationManager.AppSettings["LogonLogDbType"]);
             }
             if (ConfigurationManager.AppSettings["MessageDbType"] != null)
             {
@@ -362,7 +362,7 @@ namespace DotNet.Util
             if (ConfigurationManager.AppSettings["UserCenterDbConnection"] != null)
             {
                 BaseSystemInfo.UserCenterDbConnectionString = ConfigurationManager.AppSettings["UserCenterDbConnection"];
-                BaseSystemInfo.LoginLogDbConnectionString = ConfigurationManager.AppSettings["UserCenterDbConnection"];
+                BaseSystemInfo.LogonLogDbConnectionString = ConfigurationManager.AppSettings["UserCenterDbConnection"];
                 BaseSystemInfo.MessageDbConnectionString = ConfigurationManager.AppSettings["UserCenterDbConnection"];
             }
 
@@ -379,9 +379,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.WorkFlowDbConnectionString = ConfigurationManager.AppSettings["WorkFlowDbConnection"];
             }
-            if (ConfigurationManager.AppSettings["LoginLogDbConnection"] != null)
+            if (ConfigurationManager.AppSettings["LogonLogDbConnection"] != null)
             {
-                BaseSystemInfo.LoginLogDbConnectionString = ConfigurationManager.AppSettings["LoginLogDbConnection"];
+                BaseSystemInfo.LogonLogDbConnectionString = ConfigurationManager.AppSettings["LogonLogDbConnection"];
             }
 
             if (ConfigurationManager.AppSettings["WebAppDbConnection"] != null)
@@ -475,7 +475,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BusinessDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BusinessDbConnectionString);
                 BaseSystemInfo.MessageDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MessageDbConnectionString);
                 BaseSystemInfo.WorkFlowDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WorkFlowDbConnectionString);
-                BaseSystemInfo.LoginLogDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LoginLogDbConnectionString);
+                BaseSystemInfo.LogonLogDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.LogonLogDbConnectionString);
 
                 BaseSystemInfo.WebAppDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WebAppDbConnectionString);
                 BaseSystemInfo.BpmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BpmDbConnectionString);
@@ -505,7 +505,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BusinessDbConnection = BaseSystemInfo.BusinessDbConnectionString;
                 BaseSystemInfo.MessageDbConnection = BaseSystemInfo.MessageDbConnectionString;
                 BaseSystemInfo.WorkFlowDbConnection = BaseSystemInfo.WorkFlowDbConnectionString;
-                BaseSystemInfo.LoginLogDbConnection = BaseSystemInfo.LoginLogDbConnectionString;
+                BaseSystemInfo.LogonLogDbConnection = BaseSystemInfo.LogonLogDbConnectionString;
 
                 BaseSystemInfo.WebAppDbConnection = BaseSystemInfo.WebAppDbConnectionString;
                 BaseSystemInfo.BpmDbConnection = BaseSystemInfo.BpmDbConnectionString;
@@ -666,7 +666,7 @@ namespace DotNet.Util
 
         #region User用户配置信息
         /// <summary>
-        /// User用户配置信息
+        /// BaseUser用户配置信息
         /// </summary>
         public static void GetUserConfig()
         {
