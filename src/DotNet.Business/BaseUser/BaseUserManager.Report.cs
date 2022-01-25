@@ -37,10 +37,10 @@ namespace DotNet.Business
         {
             var sql = string.Empty;
             sql += "SELECT CONVERT(NVARCHAR(4),B.FiscalYear) + '-' + CONVERT(NVARCHAR(2),B.FiscalMonth) + '-' + CONVERT(NVARCHAR(2),B.FiscalDay) AS TransactionDate";
-            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateOn,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount";
-            sql += " ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLoginLogEntity.TableName + " A WHERE DATEDIFF(d,A.CreateOn,B.TransactionDate) = 0) AS TotalUserLoginCount";
-            sql += " ,(SELECT COUNT(*) FROM " + BaseOrganizationEntity.TableName + " A WHERE DATEDIFF(d,A.CreateOn,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseOrganizationEntity.FieldDeleted + " = 0 AND ParentId IS NULL) AS TotalCompanyCount";
-            sql += " FROM " + BaseCalendarEntity.TableName + " B WHERE 1 = 1";
+            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount";
+            sql += " ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLogonLogEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0) AS TotalUserLoginCount";
+            sql += " ,(SELECT COUNT(*) FROM " + BaseOrganizationEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseOrganizationEntity.FieldDeleted + " = 0 AND ParentId = 0) AS TotalCompanyCount";
+            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B WHERE 1 = 1";
             sql += " AND B.TransactionDate <= GETDATE() AND DATEDIFF(d,B.TransactionDate,GETDATE()) < " + days + "";
             if (ValidateUtil.IsDateTime(startDate))
             {

@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2015.07.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseRoleManager : BaseManager //, IBaseRoleManager
+    public partial class BaseRoleManager : BaseManager , IBaseManager
     {
         #region public int Update(BaseRoleEntity entity, out string statusCode) 更新
         /// <summary>
@@ -33,12 +33,12 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         /// <param name="statusCode">返回状态码</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseRoleEntity entity, out string statusCode)
+        public int UniqueUpdate(BaseRoleEntity entity, out string statusCode)
         {
             var result = 0;
             // 检查是否已被其他人修改
 
-            if (DbUtil.IsModified(DbHelper, CurrentTableName, entity.Id, entity.ModifiedUserId, entity.ModifiedOn))
+            if (DbUtil.IsUpdate(DbHelper, CurrentTableName, entity.Id, entity.UpdateUserId.ToString(), entity.UpdateTime))
             {
                 // 数据已经被修改
                 statusCode = Status.ErrorChanged.ToString();
@@ -47,7 +47,7 @@ namespace DotNet.Business
             {
                 // 检查名称是否重复
                 var parameters = new List<KeyValuePair<string, object>>();
-                if (!string.IsNullOrEmpty(entity.OrganizationId))
+                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -55,7 +55,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0));
                 //检查角色Code是否重复 Troy.Cui 2016-08-17
                 var parametersCode = new List<KeyValuePair<string, object>>();
-                if (!string.IsNullOrEmpty(entity.OrganizationId))
+                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
                 {
                     parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -74,7 +74,7 @@ namespace DotNet.Business
                 else
                 {
                     // 获取原始实体信息
-                    var entityOld = GetEntity(entity.Id);
+                    var entityOld = GetEntity(entity.Id.ToString());
                     // 保存修改记录
                     UpdateEntityLog(entity, entityOld);
 
@@ -106,9 +106,9 @@ namespace DotNet.Business
             if (string.IsNullOrEmpty(tableName))
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
-                tableName = BaseModifyRecordEntity.TableName;
+                tableName = BaseChangeLogEntity.CurrentTableName;
             }
-            var manager = new BaseModifyRecordManager(UserInfo, tableName);
+            var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseRoleEntity).GetProperties())
             {
                 var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
@@ -119,16 +119,15 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var record = new BaseModifyRecordEntity
+                var record = new BaseChangeLogEntity
                 {
-                    ColumnCode = property.Name.ToUpper(),
+                    TableName = CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseRoleEntity), "CurrentTableName"),
+                    ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
-                    OldValue = oldValue,
-                    TableCode = CurrentTableName.ToUpper(),
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseRoleEntity), "TableName"),
-                    RecordKey = oldEntity.Id,
-                    IpAddress = Utils.GetIp()
+                    OldValue = oldValue,                    
+                    RecordKey = oldEntity.Id.ToString()
                 };
                 manager.Add(record, true, false);
             }

@@ -10,7 +10,7 @@ namespace DotNet.Business
     /// BaseUserManager
     /// 用户管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     ///
     ///     2020.12.08 版本：1.5 Troy.Cui    使用CacheUtil缓存
     ///		2016.02.29 版本：1.0 JiRiGaLa	主键整理。
@@ -41,9 +41,7 @@ namespace DotNet.Business
                 ResetIpAddressByCache(userId);
                 ResetMacAddressByCache(userId);
                 // 刷新组织机构缓存
-                BaseOrganizationManager.GetEntityByCache(userEntity.CompanyId, true);
-                // 刷新部门缓存
-                BaseDepartmentManager.GetEntityByCache(userEntity.DepartmentId, true);
+                BaseOrganizationManager.GetEntityByCache(userEntity.CompanyId.ToString(), true);
                 // 2016-02-18 吉日嘎拉 刷新拒绝权限(把用户的权限放在一起方便直接移除、刷新)
                 var key = "User:IsAuthorized:" + userId;
                 CacheUtil.Remove(key);
@@ -62,9 +60,9 @@ namespace DotNet.Business
 
                 // 每个子系统都可以循环一次
                 var systemCodes = BaseSystemManager.GetSystemCodes();
-                for (var i = 0; i < systemCodes.Length; i++)
+                foreach (var entity in systemCodes)
                 {
-                    BaseUserPermissionManager.ResetPermissionByCache(systemCodes[i], userId);
+                    BasePermissionManager.ResetPermissionByCache(entity.ItemKey, userId, null);
                 }
             }
 

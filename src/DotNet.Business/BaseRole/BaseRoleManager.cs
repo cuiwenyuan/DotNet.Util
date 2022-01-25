@@ -1,10 +1,13 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseRoleManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
 
 namespace DotNet.Business
 {
@@ -27,6 +30,109 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseRoleManager : BaseManager //, IBaseRoleManager
     {
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseRoleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseRoleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + BaseRoleEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+                //sb.Append(" AND (" + BaseRoleEntity.FieldUserCompanyId + " = 0 OR " + BaseRoleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BaseRoleEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BaseRoleEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseRoleEntity.FieldRealName + " LIKE N'%" + searchKey + "%' OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+        }
+        #endregion
+
+        #region 下拉菜单
+
+        /// <summary>
+        /// 下拉菜单
+        /// </summary>
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BaseRoleEntity.FieldUserCompanyId + " = 0 OR " + BaseRoleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)), true, false, cacheTime);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 添加删除的附加条件
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
+        {
+            var result = base.GetDeleteExtParam(parameters);
+            result.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldAllowDelete, 1));
+            return result;
+        }
+
         #region public string Add(BaseRoleEntity entity, out string statusCode) 添加
         /// <summary>
         /// 添加
@@ -43,7 +149,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            if (!string.IsNullOrEmpty(entity.OrganizationId))
+            if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
             }
@@ -53,7 +159,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            if (!string.IsNullOrEmpty(entity.OrganizationId))
+            if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
             {
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
             }
@@ -131,7 +237,7 @@ namespace DotNet.Business
             var entity = GetEntityByCacheByCode(systemCode, code);
             if (entity != null)
             {
-                result = entity.Id;
+                result = entity.Id.ToString();
             }
 
             return result;
@@ -225,9 +331,9 @@ namespace DotNet.Business
             };
             return GetDataTable(parametersList, BaseRoleEntity.FieldSortCode);
             /*
-            string sql = "SELECT " + BaseRoleEntity.TableName + ".*,"
-                            + " (SELECT COUNT(*) FROM " + BaseUserRoleEntity.TableName + " WHERE (Enabled = 1) AND (RoleId = " + BaseRoleEntity.TableName + ".Id)) AS UserCount "
-                            + " FROM " + BaseRoleEntity.TableName
+            string sql = "SELECT " + BaseRoleEntity.CurrentTableName + ".*,"
+                            + " (SELECT COUNT(*) FROM " + BaseUserRoleEntity.CurrentTableName + " WHERE (Enabled = 1) AND (RoleId = " + BaseRoleEntity.CurrentTableName + ".Id)) AS UserCount "
+                            + " FROM " + BaseRoleEntity.CurrentTableName
                             + " WHERE " + BaseRoleEntity.FieldSystemId + " = " + "'" + systemId + "'"
                             + " ORDER BY " + BaseRoleEntity.FieldSortCode;
             return DbHelper.Fill(sql);
@@ -336,7 +442,7 @@ namespace DotNet.Business
                     }
                 }
                 // 被修改过
-                if (dr.RowState == DataRowState.Modified)
+                if (dr.RowState == DataRowState.Update)
                 {
                     string id = dr[BaseRoleEntity.FieldId, DataRowVersion.Original].ToString();
                     if (!string.IsNullOrEmpty(id))
@@ -382,7 +488,7 @@ namespace DotNet.Business
             var dt = GetDataTable();
             var id = string.Empty;
             var managerSequence = new BaseSequenceManager(DbHelper);
-            var sortCode = managerSequence.GetBatchSequence(BaseRoleEntity.TableName, dt.Rows.Count);
+            var sortCode = managerSequence.GetBatchSequence(BaseRoleEntity.CurrentTableName, dt.Rows.Count);
             var i = 0;
             foreach (DataRow dr in dt.Rows)
             {
@@ -394,7 +500,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByPage(string userId, string categoryCode, string serviceState, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null)
+        #region public DataTable GetDataTableByPage(string userId, string categoryCode, string serviceState, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null)
         /// <summary>
         /// 分页查询
         /// </summary>
@@ -402,12 +508,12 @@ namespace DotNet.Business
         /// <param name="categoryCode">分类编码</param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序方向</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(BaseUserInfo userInfo, string categoryCode, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null)
+        public DataTable GetDataTableByPage(BaseUserInfo userInfo, string categoryCode, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null)
         {
             var condition = BaseRoleEntity.FieldDeleted + " = 0 ";
 
@@ -423,7 +529,7 @@ namespace DotNet.Business
                 condition += string.Format(" OR {0} LIKE {1}", BaseRoleEntity.FieldCategoryCode, searchKey);
                 condition += string.Format(" OR {0} LIKE {1})", BaseRoleEntity.FieldCode, searchKey);
             }
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, condition, null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, condition, null, "*");
         }
         #endregion
 
@@ -436,15 +542,15 @@ namespace DotNet.Business
         /// <param name="userId"></param>
         /// <param name="searchKey"></param>
         /// <param name="recordCount"></param>
-        /// <param name="pageIndex"></param>
+        /// <param name="pageNo"></param>
         /// <param name="pageSize"></param>
         /// <param name="orderBy"></param>
         /// <returns></returns>
-        public DataTable GetUserDataTable(string systemCode, string roleId, string companyId, string userId, string searchKey, out int recordCount, int pageIndex, int pageSize, string orderBy)
+        public DataTable GetUserDataTable(string systemCode, string roleId, string companyId, string userId, string searchKey, out int recordCount, int pageNo, int pageSize, string orderBy)
         {
-            var result = new DataTable(BaseUserEntity.TableName);
+            var result = new DataTable(BaseUserEntity.CurrentTableName);
 
-            var tableName = BaseUserRoleEntity.TableName;
+            var tableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 tableName = systemCode + "UserRole";
@@ -458,12 +564,12 @@ namespace DotNet.Business
                                     , BaseUser.RealName 
                                     , BaseUser.Description 
                                     , UserRole.Enabled
-                                    , UserRole.CreateOn
+                                    , UserRole.CreateTime
                                     , UserRole.CreateBy
-                                    , UserRole.ModifiedOn
-                                    , UserRole.ModifiedBy
+                                    , UserRole.UpdateTime
+                                    , UserRole.UpdateBy
  FROM BaseUser,
-                          (SELECT UserId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+                          (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BaseUserRole
                             WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + @" AND " + BaseUserEntity.FieldDeleted + @" = 0) UserRole 
                          WHERE BaseUser.Id = UserRole.UserId 
@@ -480,7 +586,7 @@ namespace DotNet.Business
                          + " OR " + BaseUserEntity.FieldDepartmentName + " LIKE '%" + searchKey + "%'"
                          + " OR " + BaseUserEntity.FieldRealName + " LIKE '%" + searchKey + "%')";
             }
-            // ORDER BY UserRole.CreateOn DESC ";
+            // ORDER BY UserRole.CreateTime DESC ";
             commandText = commandText.Replace("BaseUserRole", tableName);
             var dbParameters = new List<IDbDataParameter>
             {
@@ -489,17 +595,17 @@ namespace DotNet.Business
 
             if (!string.IsNullOrEmpty(companyId))
             {
-                commandText += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
             if (!string.IsNullOrEmpty(userId))
             {
-                commandText += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
+                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldId, userId));
             }
             commandText = "(" + commandText + ") T ";
             // 2015-12-05 吉日嘎拉 增加参数化功能
-            result = DbUtil.GetDataTableByPage(DbHelper, out recordCount, commandText, "*", pageIndex, pageSize, null, dbParameters.ToArray(), orderBy);
+            result = DbUtil.GetDataTableByPage(DbHelper, out recordCount, commandText, "*", pageNo, pageSize, null, dbParameters.ToArray(), orderBy);
 
             return result;
         }
@@ -513,9 +619,9 @@ namespace DotNet.Business
         /// <returns>组织机构表</returns>
         public DataTable GetOrganizationDataTable(string systemCode, string roleId)
         {
-            var result = new DataTable(BaseOrganizationEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.CurrentTableName);
 
-            var tableName = BaseRoleOrganizationEntity.TableName;
+            var tableName = BaseRoleOrganizationEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
             {
                 tableName = UserInfo.SystemCode + "RoleOrganization";
@@ -526,18 +632,18 @@ namespace DotNet.Business
                                     , BaseOrganization.FullName 
                                     , BaseOrganization.Description 
                                     , RoleOrganization.Enabled
-                                    , RoleOrganization.CreateOn
+                                    , RoleOrganization.CreateTime
                                     , RoleOrganization.CreateBy
-                                    , RoleOrganization.ModifiedOn
-                                    , RoleOrganization.ModifiedBy
+                                    , RoleOrganization.UpdateTime
+                                    , RoleOrganization.UpdateBy
  FROM BaseOrganization RIGHT OUTER JOIN
-                          (SELECT OrganizationId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+                          (SELECT OrganizationId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BaseRoleOrganization
                             WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId) +
-                                " AND DeletionStateCode = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + @") RoleOrganization 
+                                " AND Deleted = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + @") RoleOrganization 
                             ON BaseOrganization.Id = RoleOrganization.OrganizationId
                          WHERE BaseOrganization.Enabled = 1 AND BaseOrganization." + BaseOrganizationEntity.FieldDeleted + @" = 0
-                      ORDER BY RoleOrganization.CreateOn DESC ";
+                      ORDER BY RoleOrganization.CreateTime DESC ";
 
             commandText = commandText.Replace("BaseRoleOrganization", tableName);
 
@@ -563,7 +669,7 @@ namespace DotNet.Business
         {
             var result = new List<BaseOrganizationEntity>();
 
-            var tableName = BaseRoleOrganizationEntity.TableName;
+            var tableName = BaseRoleOrganizationEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
             {
                 tableName = UserInfo.SystemCode + "RoleOrganization";
@@ -577,7 +683,7 @@ namespace DotNet.Business
                  FROM BaseRoleOrganization
                                                 WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
                                                   + " AND Enabled = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldEnabled)
-                                                  + " AND DeletionStateCode = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + ")";
+                                                  + " AND Deleted = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + ")";
 
             commandText = commandText.Replace("BaseRoleOrganization", tableName);
 
@@ -611,7 +717,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, id)
             };
-            result += DbUtil.Delete(DbHelper, BaseUserRoleEntity.TableName, parameters);
+            result += DbUtil.Delete(DbHelper, BaseUserRoleEntity.CurrentTableName, parameters);
 
             // 删除角色的表结构定义部分
             parameters = new List<KeyValuePair<string, object>>
@@ -693,7 +799,7 @@ namespace DotNet.Business
                 };
                 return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, refreshCache, cacheTime);
-            result = listRole.Find(t => t.Id == id);
+            result = listRole.Find(t => t.Id.Equals(id));
             //直接读取数据库
             //BaseRoleManager manager = new BaseRoleManager(tableName);
             //result = manager.GetEntity(id);

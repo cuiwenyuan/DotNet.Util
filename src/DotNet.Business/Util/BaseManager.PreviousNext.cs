@@ -40,15 +40,14 @@ namespace DotNet.Business
         /// <param name="deletionStateCode">是否删除</param>
         /// <param name="id">主键</param>
         /// <param name="order">排序</param>
-        /// <param name="tableVersion">表版本</param>
         /// <returns>数据表</returns>
-        public DataTable GetPreviousNextId(bool deletionStateCode, string id, string order, int tableVersion = 4)
+        public DataTable GetPreviousNextId(bool deletionStateCode, string id, string order)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT Id "
                             + " FROM " + CurrentTableName
                             + " WHERE (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId)
-                            + " AND " + (tableVersion == 4 ? BaseUtil.FieldDeletionStateCode : BaseUtil.FieldDeleted) + " = " + (deletionStateCode ? 1 : 0) + ")"
+                            + " AND " + (BaseUtil.FieldDeleted) + " = " + (deletionStateCode ? 1 : 0) + ")"
                             + " ORDER BY " + order);
             var names = new string[1];
             var values = new Object[1];
@@ -81,20 +80,19 @@ namespace DotNet.Business
         /// 获取上一条记录主键
         /// </summary>
         /// <param name="id">当前记录主键</param>
-        /// <param name="tableVersion">表版本</param>
         /// <returns>上一条记录主键</returns>
-        private string GetPreviousId(string id, int tableVersion = 4)
+        private string GetPreviousId(string id)
         {
             var result = string.Empty;
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                       + " FROM " + CurrentTableName
-                                      + " WHERE " + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + " = (SELECT MAX(" + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + ")"
+                                      + " WHERE " + BaseUtil.FieldCreateTime + " = (SELECT MAX(" + BaseUtil.FieldCreateTime + ")"
                                       + " FROM " + CurrentTableName
-                                      + " WHERE (" + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + "< (SELECT " + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime)
+                                      + " WHERE (" + BaseUtil.FieldCreateTime + "< (SELECT " + BaseUtil.FieldCreateTime
                                       + " FROM " + CurrentTableName
                                       + " WHERE " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + "))");
-            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + " ) AND ( " + (tableVersion == 4 ? BaseUtil.FieldDeletionStateCode : BaseUtil.FieldDeleted) + " = 0 )) ");
+            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + " ) AND ( " + BaseUtil.FieldDeleted + " = 0 )) ");
             var names = new string[2];
             var values = new Object[2];
             names[0] = BaseUtil.FieldId;
@@ -139,20 +137,19 @@ namespace DotNet.Business
         /// 获取下一条记录主键
         /// </summary>
         /// <param name="id">当前记录主键</param>
-        /// <param name="tableVersion">表版本</param>
         /// <returns>下一条记录主键</returns>
-        private string GetNextId(string id, int tableVersion = 4)
+        private string GetNextId(string id)
         {
             var result = string.Empty;
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                       + " FROM " + CurrentTableName
-                                      + " WHERE " + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + " = (SELECT MIN(" + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + ")"
+                                      + " WHERE " + BaseUtil.FieldCreateTime + " = (SELECT MIN(" + BaseUtil.FieldCreateTime + ")"
                                       + " FROM " + CurrentTableName
-                                      + " WHERE (" + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime) + "> (SELECT " + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime)
+                                      + " WHERE (" + BaseUtil.FieldCreateTime + "> (SELECT " + BaseUtil.FieldCreateTime
                                       + " FROM " + CurrentTableName
                                       + " WHERE " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + "))");
-            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + ") AND ( " + (tableVersion == 4 ? BaseUtil.FieldDeletionStateCode : BaseUtil.FieldDeleted) + " = 0 )) ");
+            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + ") AND ( " + (BaseUtil.FieldDeleted) + " = 0 )) ");
             var names = new string[2];
             var values = new Object[2];
             names[0] = BaseUtil.FieldId;

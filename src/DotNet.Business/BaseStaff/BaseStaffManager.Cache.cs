@@ -37,7 +37,7 @@ namespace DotNet.Business
         {
             lock (BaseSystemInfo.UserLock)
             {
-                CacheUtil.Remove(BaseStaffEntity.TableName);
+                CacheUtil.Remove(BaseStaffEntity.CurrentTableName);
             }
         }
         #endregion
@@ -48,7 +48,7 @@ namespace DotNet.Business
         /// </summary>
         public static List<BaseStaffEntity> GetEntities()
         {
-            return CacheUtil.Cache(BaseStaffEntity.TableName, () => new BaseStaffManager(BaseStaffEntity.TableName).GetList<BaseStaffEntity>(), true);
+            return CacheUtil.Cache(BaseStaffEntity.CurrentTableName, () => new BaseStaffManager(BaseStaffEntity.CurrentTableName).GetList<BaseStaffEntity>(), true);
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(id))
             {
                 var entityList = GetEntities();
-                var staffEntity = entityList.FirstOrDefault(entity => entity.Id.HasValue && entity.Id.ToString().Equals(id));
+                var staffEntity = entityList.FirstOrDefault(entity => entity.Id.ToString() == id);
                 if (staffEntity != null)
                 {
                     result = staffEntity.RealName;
@@ -77,20 +77,22 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region 根据工号从缓存获取实体
         /// <summary>
-        /// 从缓存获取实体
+        /// 根据工号从缓存获取实体
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="employeeNumber">工号</param>
         /// <returns></returns>
-        public static BaseStaffEntity GetEntityByCodeByCache(string code)
+        public static BaseStaffEntity GetEntityByEmployeeNumberByCache(string employeeNumber)
         {
             BaseStaffEntity result = null;
-            if (!string.IsNullOrEmpty(code))
+            if (!string.IsNullOrEmpty(employeeNumber))
             {
-                var cacheKey = "StaffByCode" + code;
-                result = CacheUtil.Cache(cacheKey, () => new BaseStaffManager().GetEntityByCode(code), true);
+                var cacheKey = "StaffByEmployeeNumber" + employeeNumber;
+                result = CacheUtil.Cache(cacheKey, () => new BaseStaffManager().GetEntityByEmployeeNumber(employeeNumber), true);
             }
             return result;
         }
+        #endregion
     }
 }

@@ -89,7 +89,7 @@ namespace DotNet.Business
                     // 02：用户修改时，用户文件夹同步更新
                     // BaseFolderManager manager = new BaseFolderManager(this.DbHelper, this.UserInfo);
                     // manager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
-                    
+
                     if (result == 0)
                     {
                         StatusCode = Status.ErrorDeleted.ToString();
@@ -121,9 +121,9 @@ namespace DotNet.Business
             if (string.IsNullOrEmpty(tableName))
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
-                tableName = BaseModifyRecordEntity.TableName;
+                tableName = BaseChangeLogEntity.CurrentTableName;
             }
-            var manager = new BaseModifyRecordManager(UserInfo, tableName);
+            var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseUserEntity).GetProperties())
             {
                 var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
@@ -134,53 +134,23 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var record = new BaseModifyRecordEntity
+                var record = new BaseChangeLogEntity
                 {
-                    TableCode = CurrentTableName.ToUpper(),
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserEntity), "TableName"),
-                    ColumnCode = property.Name.ToUpper(),
+                    TableName = CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserEntity), "CurrentTableName"),
+                    ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
-                    RecordKey = oldEntity.Id,
+                    RecordKey = oldEntity.Id.ToString(),
                     NewValue = newValue,
-                    OldValue = oldValue,
-                    IpAddress = Utils.GetIp()
+                    OldValue = oldValue
                 };
                 manager.Add(record, true, false);
-                result ++;
+                result++;
             }
 
             return result;
         }
         #endregion
-
-        /// <summary>
-        /// 修改Enabled
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public int ChangeEnabled(string id)
-        {
-            var userEntity = GetEntity(id);
-            if (userEntity.Enabled != 1)
-            {
-                // 若用户要生效了，那就需要修改锁定的时间了，否则被锁定的用户有效后也无法登录系统了
-                var manager = new BaseUserLogonManager(DbHelper, UserInfo);
-                var entity = manager.GetEntity(id);
-                entity.LockStartDate = null;
-                entity.LockEndDate = null;
-                manager.Update(entity);
-                userEntity.AuditStatus = string.Empty;
-                userEntity.DeletionStateCode = 0;
-                userEntity.Enabled = 1;
-            }
-            else
-            {
-                // 若是有效的用户直接修改为无效的用户
-                userEntity.Enabled = 0;
-            }
-
-            return UpdateEntity(userEntity);
-        }
 
         /// <summary>
         /// 设置对象，若不存在就增加，有存在就更新
@@ -197,23 +167,23 @@ namespace DotNet.Business
             {
                 userEntity = new BaseUserEntity
                 {
-                    Id = userInfo.Id,
+                    Id = userInfo.UserId,
                     Enabled = 1,
-                    SortCode = int.Parse(userInfo.Id)
+                    SortCode = userInfo.UserId
                 };
             }
             // 2015-07-14 吉日嘎拉 用户若没有排序码就会引起序列等问题，为了避免这样的问题，直接给他赋予排序码。
-            if (!userEntity.SortCode.HasValue)
+            if (userEntity.SortCode == 0)
             {
-                userEntity.SortCode = int.Parse(userEntity.Id);
+                userEntity.SortCode = userEntity.Id;
             }
             userEntity.NickName = userInfo.NickName;
             userEntity.UserName = userInfo.UserName;
             userEntity.Code = userInfo.Code;
             userEntity.RealName = userInfo.RealName;
-            userEntity.CompanyId = userInfo.CompanyId;
+            userEntity.CompanyId = userInfo.CompanyId.ToInt();
             userEntity.CompanyName = userInfo.CompanyName;
-            userEntity.DepartmentId = userInfo.DepartmentId;
+            userEntity.DepartmentId = userInfo.DepartmentId.ToInt();
             userEntity.DepartmentName = userInfo.DepartmentName;
             userEntity.Enabled = 1;
             // userEntity.ManagerAuditDate = DateTime.Now;
@@ -224,7 +194,7 @@ namespace DotNet.Business
             // userEntity.WorkgroupId = result.WorkgroupId;
             // userEntity.WorkgroupName = result.WorkgroupName;
             // 若有主键就是先更新，没主键就是添加
-            if (!string.IsNullOrEmpty(userEntity.Id))
+            if (!string.IsNullOrEmpty(userEntity.Id.ToString()))
             {
                 result = UpdateEntity(userEntity) > 0;
                 // 若不存在，就是添加的意思
@@ -239,7 +209,7 @@ namespace DotNet.Business
                 // 若没有主键就是添加数据
                 result = !string.IsNullOrEmpty(AddEntity(userEntity));
             }
-            SetPassword(userInfo.Id, userPassword, true, true, false);
+            SetPassword(userInfo.UserId, userPassword, true, true, false);
 
             /*
             BaseUserLogonManager userLogonManager = new BaseUserLogonManager(this.DbHelper, this.UserInfo);

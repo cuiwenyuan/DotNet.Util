@@ -72,7 +72,7 @@ namespace DotNet.Util
         /// <summary>
         /// 当前版本
         /// </summary>
-        public static string Version = "4.1";
+        public static string Version = "5.0";
 
         /// <summary>
         /// 每个操作是否进行信息提示。

@@ -1,6 +1,8 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseLogManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Data;
@@ -9,13 +11,12 @@ namespace DotNet.Business
 {
     using Util;
     using Model;
+    using System.Collections.Generic;
 
     /// <summary>
     /// BaseLogManager
-    /// 日志的基类（程序OK）
+    /// 系统日志管理层
     /// 
-    /// 想在这里实现访问记录、继承以前的比较好的思路。
-    ///
     /// 修改记录
     /// 
     ///		2016.02.14 版本：3.0 JiRiGaLa   代码进行分离、方法进行优化。
@@ -31,12 +32,103 @@ namespace DotNet.Business
     ///		2005.09.30 版本：1.0 JiRiGaLa   又进行一次飞跃，把一些思想进行了统一。
     /// 
     /// <author>
-    ///		<name>Troy.Cui</name>
-    ///		<date>2016.02.14</date>
+    ///	<name>Troy.Cui</name>
+    ///	<date>2021-10-04</date>
     /// </author> 
     /// </summary>
-    public partial class BaseLogManager : BaseManager
+    public partial class BaseLogManager : BaseManager, IBaseManager
     {
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseLogEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseLogEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseLogEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseLogEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + BaseLogEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+                //sb.Append(" AND (" + BaseLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BaseLogEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BaseLogEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+        }
+        #endregion
+
+        #region 下拉菜单
+
+        /// <summary>
+        /// 下拉菜单
+        /// </summary>
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BaseLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0)), true, false, cacheTime);
+        }
+
+        #endregion
+	
         /// <summary>
         /// 2016-02-14 吉日嘎拉 增加服务器调用耗时统计功能。
         /// </summary>
@@ -55,8 +147,8 @@ namespace DotNet.Business
                 ClientIp = serviceInfo.UserInfo.IpAddress,
                 ElapsedTicks = serviceInfo.ElapsedTicks,
 
-                UserId = int.Parse(serviceInfo.UserInfo.Id),
-                CompanyId = int.Parse(serviceInfo.UserInfo.CompanyId),
+                UserId = serviceInfo.UserInfo.UserId,
+                CompanyId = serviceInfo.UserInfo.CompanyId.ToInt(),
                 UserName = serviceInfo.UserInfo.RealName,
                 WebUrl = serviceInfo.CurrentMethod.Module.Name.Replace(".dll", "") + "." + serviceInfo.CurrentMethod.Name
             };
@@ -68,19 +160,6 @@ namespace DotNet.Business
             var logManager = new BaseLogManager(serviceInfo.UserInfo);
             logManager.Add(entity);
         }
-
-        #region public void Add(BaseLogEntity entity)
-        /// <summary>
-        /// 添加日志
-        /// </summary>
-        /// <param name="entity">日志对象</param>
-        /// <returns>主键</returns>
-        public void Add(BaseLogEntity entity)
-        {
-            //本地添加模式
-            AddEntity(entity);
-        }
-        #endregion
 
         /// <summary>
         /// 增加日志
@@ -160,7 +239,7 @@ namespace DotNet.Business
         /// <returns></returns>
         private string GetDataTableSql(string[] userIds, string name, string value, string beginDate, string endDate, string processId = null)
         {
-            var sql = "SELECT * FROM " + BaseLogEntity.TableName + " WHERE 1=1 ";
+            var sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1=1 ";
             if (!string.IsNullOrEmpty(value))
             {
                 sql += string.Format(" AND {0} = '{1}' ", name, value);
@@ -177,7 +256,7 @@ namespace DotNet.Business
             // 注意安全问题
             if (userIds != null)
             {
-                sql += string.Format(" AND {0} IN ({1}) ", BaseLogEntity.FieldUserId, string.Join(",", userIds));
+                sql += string.Format(" AND {0} IN ({1}) ", BaseLogEntity.FieldUserId, StringUtil.ArrayToList(userIds));
             }
             switch (DbHelper.CurrentDbType)
             {
@@ -185,35 +264,35 @@ namespace DotNet.Business
                     // Access 中的时间分隔符 是 “#”
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn >= #{0}#", beginDate);
+                        sql += string.Format(" AND CreateTime >= #{0}#", beginDate);
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn <= #{0}#", endDate);
+                        sql += string.Format(" AND CreateTime <= #{0}#", endDate);
                     }
                     break;
                 case CurrentDbType.SqlServer:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn >= '{0}'", beginDate);
+                        sql += string.Format(" AND CreateTime >= '{0}'", beginDate);
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn <= '{0}'", endDate);
+                        sql += string.Format(" AND CreateTime <= '{0}'", endDate);
                     }
                     break;
                 case CurrentDbType.Oracle:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate);
+                        sql += string.Format(" AND CreateTime >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate);
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateOn <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate);
+                        sql += string.Format(" AND CreateTime <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate);
                     }
                     break;
             }
-            sql += " ORDER BY CreateOn DESC ";
+            sql += " ORDER BY CreateTime DESC ";
             return sql;
         }
 
@@ -244,7 +323,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByDate(string createOn, string processName, string createUserId)
         {
-            var sql = "SELECT * FROM " + BaseLogEntity.TableName
+            var sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName
                     + " WHERE CONVERT(NVARCHAR, " + BaseLogEntity.FieldStartTime + ", 111) = " + dbHelper.GetParameter(BaseLogEntity.FieldStartTime)
                     + " AND " + BaseLogEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseLogEntity.FieldUserId);
             sql += " ORDER BY " + BaseLogEntity.FieldStartTime;
@@ -254,7 +333,7 @@ namespace DotNet.Business
             var values = new Object[2];
             values[0] = createOn;
             values[1] = createUserId;
-            var dt = new DataTable(BaseLogEntity.TableName);
+            var dt = new DataTable(BaseLogEntity.CurrentTableName);
             dbHelper.Fill(dt, sql, DbHelper.MakeParameters(names, values));
             return dt;
         }
@@ -263,12 +342,12 @@ namespace DotNet.Business
         //public DataTable Search(string[] userIds, string search, bool? enabled, bool OnlyOnline)
         //{
         //    search = StringUtil.GetSearchString(search);
-        //    string sql = "SELECT " + BaseLogEntity.TableName + ".*," + BaseUserEntity.TableName+ ".* " 
-        //        + " FROM  " + BaseLogEntity.TableName + " LEFT OUTER JOIN "+
-        //        BaseUserEntity.TableName + " ON RTRIM(LTRIM(" + BaseUserEntity.FieldId +"))="+
+        //    string sql = "SELECT " + BaseLogEntity.CurrentTableName + ".*," + BaseUserEntity.CurrentTableName+ ".* " 
+        //        + " FROM  " + BaseLogEntity.CurrentTableName + " LEFT OUTER JOIN "+
+        //        BaseUserEntity.CurrentTableName + " ON RTRIM(LTRIM(" + BaseUserEntity.FieldId +"))="+
         //        BaseLogEntity.FieldUserId +
         //        " WHERE 1=1 ";
-        //    //string sql = "SELECT * FROM " + BaseLogEntity.TableName + " WHERE 1=1 ";
+        //    //string sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1=1 ";
 
         //    // 注意安全问题
         //    if (userIds.Length >0) 
@@ -277,14 +356,14 @@ namespace DotNet.Business
         //    }
 
 
-        //     sql += " AND ("  + BaseLogEntity.TableName +"." + BaseLogEntity.FieldWebUrl + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldUserId + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldUserRealName + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldUrlReferrer + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldIPAddress + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldDescription + " LIKE '%" + search + "%')";
+        //     sql += " AND ("  + BaseLogEntity.CurrentTableName +"." + BaseLogEntity.FieldWebUrl + " LIKE '%" + search + "%'"
+        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserId + " LIKE '%" + search + "%'"
+        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserRealName + " LIKE '%" + search + "%'"
+        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUrlReferrer + " LIKE '%" + search + "%'"
+        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldIPAddress + " LIKE '%" + search + "%'"
+        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldDescription + " LIKE '%" + search + "%')";
 
-        //    //sql += " ORDER BY " + BaseLogEntity.TableName + "." + BaseUserEntity.FieldSortCode;
+        //    //sql += " ORDER BY " + BaseLogEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode;
         //    return DbHelper.Fill(sql);
         //}
 
@@ -300,89 +379,20 @@ namespace DotNet.Business
         {
             //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
-            var sql = "SELECT " + BaseUserEntity.TableName + ".* "
-                            + " FROM " + BaseUserEntity.TableName
+            var sql = "SELECT " + BaseUserEntity.CurrentTableName + ".* "
+                            + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldDeleted + "= 0 "
                             + " AND " + BaseUserEntity.FieldIsVisible + "= 1 ";
 
-            sql += " AND (" + BaseUserEntity.TableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"
-                        + " OR " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldRealName + " LIKE '%" + search + "%'"
-                        + " OR " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldIpAddress + " LIKE '%" + search + "%'"
-                        + " OR " + BaseUserLogonEntity.TableName + "." + BaseUserLogonEntity.FieldMacAddress + " LIKE '%" + search + "%'"
+            sql += " AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"
+                        + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldRealName + " LIKE '%" + search + "%'"
+                        + " OR " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldIpAddress + " LIKE '%" + search + "%'"
+                        + " OR " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldMacAddress + " LIKE '%" + search + "%'"
                         + ")";
 
             sql += " ORDER BY " + BaseUserEntity.FieldSortCode;
 
             return DbHelper.Fill(sql);
         }
-
-        #region 高级查询
-        /// <summary>
-        /// 按条件分页查询(带记录状态Enabled和删除状态DeletionStateCode)
-        /// </summary>
-        /// <param name="companyId">查看公司主键</param>
-        /// <param name="departmentId">查看部门主键</param>
-        /// <param name="userId">查看用户主键</param>
-        /// <param name="startTime">创建开始时间</param>
-        /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
-        /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
-        /// <param name="pageSize">每页显示</param>
-        /// <param name="sortExpression">排序字段</param>
-        /// <param name="sortDirection">排序方向</param>
-        /// <param name="showDisabled">是否显示无效记录</param>
-        /// <param name="showDeleted">是否显示已删除记录</param>
-        /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
-        {
-            pageIndex++;
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
-            //是否显示无效记录
-            if (!showDisabled)
-            {
-                sb.Append(" AND " + BaseLogEntity.FieldEnabled + " = 1");
-            }
-            //是否显示已删除记录
-            if (!showDeleted)
-            {
-                //sb.Append(" AND " + BaseLogEntity.FieldDeleted + " = 0";
-            }
-
-            if (ValidateUtil.IsInt(companyId))
-            {
-                //sb.Append(" AND " + BaseLogEntity.FieldCompanyId + " = " + companyId;
-            }
-            // 只有管理员才能看到所有的
-            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
-            //{
-                //sb.Append(" AND (" + BaseLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")";
-            //}
-            if (ValidateUtil.IsInt(departmentId))
-            {
-                //sb.Append(" AND " + BaseLogEntity.FieldDepartmentId + " = " + departmentId;
-            }
-            if (ValidateUtil.IsInt(userId))
-            {
-                //sb.Append(" AND " + BaseLogEntity.FieldUserId + " = " + userId;
-            }
-            //创建时间
-            if (ValidateUtil.IsDateTime(startTime))
-            {
-                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " >= '" + startTime + "'");
-            }
-            if (ValidateUtil.IsDateTime(endTime))
-            {
-                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
-            }
-            if (!string.IsNullOrEmpty(searchKey))
-            {
-                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (UserName LIKE N'%" + searchKey + "%' OR RealName LIKE N'%" + searchKey + "%' OR Service LIKE N'%" + searchKey + "%' OR Parameters LIKE N'%" + searchKey + "%' OR WebUrl LIKE N'%" + searchKey + "%' OR Description LIKE N'%" + searchKey + "%')");
-            }
-            sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
-        }
-        #endregion
     }
 }

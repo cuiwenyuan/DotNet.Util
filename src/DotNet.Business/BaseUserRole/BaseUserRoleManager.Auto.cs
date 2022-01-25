@@ -1,6 +1,8 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseUserRoleManager.Auto.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -12,17 +14,15 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserRoleManager
-    /// 用户-角色 关系
-    ///
+    /// 用户角色表
+    /// 
     /// 修改记录
     ///
-    ///     2018-09-07 版本：4.1 Troy.Cui   增加删除缓存功能。
-    ///		2016-03-02 版本：2.0 JiRiGaLa 角色用户关联关系、方便下拉属于自己公司的数据。
-    ///		2010-07-15 版本：1.0 JiRiGaLa 创建主键。
+    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
     ///
     /// <author>
-    ///		<name>Troy.Cui</name>
-    ///		<date>2016-03-02</date>
+    ///     <name>Troy.Cui</name>
+    ///     <date>2021-09-28</date>
     /// </author>
     /// </summary>
     public partial class BaseUserRoleManager : BaseManager, IBaseManager
@@ -36,14 +36,21 @@ namespace DotNet.Business
             {
                 dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
-            CurrentTableName = BaseUserRoleEntity.TableName;
+            if (string.IsNullOrEmpty(CurrentTableName))
+            {
+                CurrentTableName = BaseUserRoleEntity.CurrentTableName;
+                //按用户公司分表
+                //CurrentTableName = BaseUserRoleEntity.CurrentTableName + GetTableSuffix();
+            }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseUserRoleEntity), "CurrentTableName");
+            PrimaryKey = "Id";
         }
 
         /// <summary>
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseUserRoleManager(string tableName)
+        public BaseUserRoleManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -52,8 +59,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseUserRoleManager(IDbHelper dbHelper)
-            : this()
+        public BaseUserRoleManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -62,21 +68,11 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseUserRoleManager(BaseUserInfo userInfo)
-            : this()
+        public BaseUserRoleManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
-        /// <param name="userInfo">用户信息</param>
-        public BaseUserRoleManager(IDbHelper dbHelper, BaseUserInfo userInfo)
-            : this(dbHelper)
-        {
-            UserInfo = userInfo;
+            //按用户公司分表
+            //CurrentTableName = BaseUserRoleEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -84,8 +80,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseUserRoleManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
+        public BaseUserRoleManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -95,69 +90,59 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
+        public BaseUserRoleManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
+        {
+            UserInfo = userInfo;
+            //按用户公司分表
+            //CurrentTableName = BaseUserRoleEntity.CurrentTableName + GetTableSuffix();
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseUserRoleManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
-            : this(dbHelper, userInfo)
+        public BaseUserRoleManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
         }
 
         /// <summary>
-        /// 添加(判断数据是否重复，防止垃圾数据产生)
+        /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
         /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserRoleEntity entity)
-        {
-            var result = string.Empty;
-
-            // 判断是否数据重复
-            var whereParameters = new List<KeyValuePair<string, object>>
-            {
-                // parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1));
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, entity.RoleId),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, entity.UserId)
-            };
-            if (!Exists(whereParameters))
-            {
-                result = AddEntity(entity);
-            }
-            else
-            {
-                // 2015-12-04 吉日嘎拉 这里有严重错误，重复申请就会变成自己审核了
-                var parameters = new List<KeyValuePair<string, object>>();
-                if (UserInfo != null)
-                {
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateUserId, UserInfo.Id));
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateBy, UserInfo.RealName));
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateTime, DateTime.Now));
-                }
-                else
-                {
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateUserId, entity.ModifiedUserId));
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateBy, entity.ModifiedBy));
-                    parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUpdateTime, DateTime.Now));
-                }
-                parameters.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, entity.Enabled));
-                SetProperty(whereParameters, parameters);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式</param>
-        /// <param name="returnId">返回主鍵</param>
-        /// <returns>主键</returns>
-        public string Add(BaseUserRoleEntity entity, bool identity, bool returnId)
+        public string Add(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddEntity(entity);
+            entity.Id = int.Parse(AddEntity(entity));
+            return entity.Id.ToString();
+        }
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
         }
 
         /// <summary>
@@ -173,9 +158,30 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
+        public BaseUserRoleEntity GetEntity(string id)
+        {
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
         public BaseUserRoleEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseUserRoleEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldId, id)));
+            return BaseEntity.Create<BaseUserRoleEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //var cacheKey = CurrentTableName + ".Entity." + id;
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseUserRoleEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseUserRoleEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -184,67 +190,84 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public string AddEntity(BaseUserRoleEntity entity)
         {
-            var result = string.Empty;
-
+            var key = string.Empty;
+            if (entity.SortCode == 0)
+            {
+                var managerSequence = new BaseSequenceManager(DbHelper, Identity);
+                key = managerSequence.Increment(CurrentTableName);
+                entity.SortCode = int.Parse(key);
+            }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseUserRoleEntity.FieldId);
-
-            // 若是非空主键，表明已经指定了主键了
-            if (!string.IsNullOrEmpty(entity.Id))
+            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
+            if (!Identity)
             {
                 // 这里已经是指定了主键了，所以不需要返回主键了
-                sqlBuilder.SetValue(BaseUserRoleEntity.FieldId, entity.Id);
-                result = entity.Id;
+                sqlBuilder.ReturnId = false;
+                sqlBuilder.SetValue(PrimaryKey, entity.Id);
             }
             else
             {
-                if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+                if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
                 {
-                    // 2015-12-23 吉日嘎拉 这里需要兼容一下以前的老的数据结构
-                    sqlBuilder.SetFormula(BaseUserRoleEntity.FieldId, "SEQ_" + BaseRoleEntity.TableName.ToUpper() + ".NEXTVAL ");
-
-                    /*
-                    if (DbHelper.CurrentDbType == CurrentDbType.DB2)
+                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(BaseUserRoleEntity.FieldId, "NEXT VALUE FOR SEQ_" + BaseRoleEntity.TableName.ToUpper());
+                        sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
                     }
-                    */
+                    if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+                    {
+                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                    }
                 }
-                //MSSQL数据库是自增字段 Troy.Cui 2016-08-17
-                //else
-                //{
-                //    entity.Id = Guid.NewGuid().ToString("N");
-                //    result = entity.Id;
-                //    sqlBuilder.SetValue(BaseRoleEntity.FieldId, entity.Id);
-                //}
+                else
+                {
+                    if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                    {
+                        var managerSequence = new BaseSequenceManager(DbHelper);
+                        entity.Id = int.Parse(managerSequence.Increment(CurrentTableName));
+                        sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                    }
+                }
             }
-
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateBy, UserInfo.RealName);
             }
+            else
+            {
+                sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateBy, entity.CreateBy);
+                sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateUserName, entity.CreateUserName);
+            }
             sqlBuilder.SetDbNow(BaseUserRoleEntity.FieldCreateTime);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateBy, UserInfo.RealName);
             }
             sqlBuilder.SetDbNow(BaseUserRoleEntity.FieldUpdateTime);
-            if (DbHelper.CurrentDbType == CurrentDbType.SqlServer && Identity)
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateIp, Utils.GetIp());
+            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
-                result = sqlBuilder.EndInsert().ToString();
+                key = sqlBuilder.EndInsert().ToString();
             }
             else
             {
                 sqlBuilder.EndInsert();
             }
-            if (!string.IsNullOrWhiteSpace(result))
+            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+            {
+                //return entity.Id.ToString();
+                key = entity.Id.ToString();
+            }
+            if (!string.IsNullOrWhiteSpace(key))
             {
                 RemoveCache();
             }
-            return result;
+            return key;
         }
 
         /// <summary>
@@ -259,39 +282,38 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateBy, UserInfo.RealName);
             }
             sqlBuilder.SetDbNow(BaseUserRoleEntity.FieldUpdateTime);
-            sqlBuilder.SetWhere(BaseUserRoleEntity.FieldId, entity.Id);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldUpdateIp, Utils.GetIp());
+            sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {
-                RemoveCache();
+                RemoveCache(entity.Id);
             }
             return result;
         }
 
+        // 这个是声明扩展方法
         partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserRoleEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
-        /// <param name="sqlBuilder">SQL语句生成器</param>
+        /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
         {
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldRoleId, entity.RoleId);
-            //去掉按公司分配用户和角色 2017.12.19 Troy Cui,懒得改数据库表结构了
-            //if (!string.IsNullOrEmpty(entity.CompanyId))
-            //{
-            //    sqlBuilder.SetValue(BaseUserRoleEntity.FieldCompanyId, entity.CompanyId);
-            //}
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldEnabled, entity.Enabled);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDescription, entity.Description);
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldDeleted, entity.DeletionStateCode);
-            SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldSortCode, entity.SortCode);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldDeleted, entity.Deleted);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldEnabled, entity.Enabled);
         }
 
         /// <summary>
@@ -301,10 +323,10 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Delete(int id)
         {
-            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseUserRoleEntity.FieldId, id) });
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
             if (result > 0)
             {
-                RemoveCache();
+                RemoveCache(id);
             }
             return result;
         }

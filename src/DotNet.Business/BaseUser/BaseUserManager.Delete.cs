@@ -42,27 +42,24 @@ namespace DotNet.Business
         /// 删除
         /// </summary>
         /// <param name="ids"></param>
-        /// <param name="enabled"></param>
-        /// <param name="recordUser"></param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
+        /// <param name="changeEnabled">修改有效状态</param>
+        /// <param name="recordUser">记录修改用户param>
+        /// <param name="baseOperationLog">集中记录操作日志</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="checkAllowDelete">检查允许删除</param>
         /// <returns></returns>
-        public override int SetDeleted(object[] ids, bool enabled = true, bool recordUser = true, int tableVersion = 4)
+        public override int SetDeleted(object[] ids, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {
-            //LogUtil.WriteLog("SetDeleted", "Log");
-
-
             var result = 0;
-            result = base.SetDeleted(ids, enabled, recordUser, tableVersion);
+            result = base.SetDeleted(ids, changeEnabled: changeEnabled, recordUser: recordUser, checkAllowDelete: checkAllowDelete);
 
-            //LogUtil.WriteLog("AfterSetDeleted", "Log");
             for (var i = 0; i < ids.Length; i++)
             {
                 var id = ids[i].ToString();
                 var entity = GetEntityByCache(id);
                 AfterUpdate(entity);
             }
-           
-            // result = AfterDeleted(ids, enabled, modifiedUser);
+
             return result;
         }
     }

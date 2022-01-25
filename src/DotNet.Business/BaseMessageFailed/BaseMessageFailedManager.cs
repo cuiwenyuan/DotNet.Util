@@ -18,7 +18,7 @@ namespace DotNet.Business
     /// BaseMessageFailedManager
     /// 失败消息管理层
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///	2020-03-22 版本：1.0 Troy.Cui 创建文件。
     ///		
@@ -29,25 +29,24 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseMessageFailedManager : BaseManager, IBaseManager
     {
-        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
-        /// 按条件分页查询(带记录状态Enabled和删除状态DeletionStateCode)
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
         /// <param name="companyId">查看公司主键</param>
         /// <param name="departmentId">查看部门主键</param>
         /// <param name="userId">查看用户主键</param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序方向</param>
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            pageIndex++;
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
@@ -57,7 +56,7 @@ namespace DotNet.Business
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND DeletionStateCode = 0");
+                sb.Append(" AND Deleted = 0");
             }
 
             if (ValidateUtil.IsInt(companyId))
@@ -79,13 +78,13 @@ namespace DotNet.Business
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
         #endregion
 
-        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
-        /// 按条件分页查询(带记录状态Enabled和删除状态DeletionStateCode)
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
         /// <param name="companyId">查看公司主键</param>
         /// <param name="departmentId">查看部门主键</param>
@@ -94,16 +93,15 @@ namespace DotNet.Business
         /// <param name="endTime">创建结束时间</param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序方向</param>
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            pageIndex++;
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
@@ -113,7 +111,7 @@ namespace DotNet.Business
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND DeletionStateCode = 0");
+                sb.Append(" AND Deleted = 0");
             }
 
             if (ValidateUtil.IsInt(companyId))
@@ -132,11 +130,11 @@ namespace DotNet.Business
             //创建日期
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND CreateOn >= '" + startTime + "'");
+                sb.Append(" AND CreateTime >= '" + startTime + "'");
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND CreateOn <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND CreateTime <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -144,7 +142,7 @@ namespace DotNet.Business
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
         #endregion
 
@@ -163,7 +161,7 @@ namespace DotNet.Business
             var entity = GetEntity(id);
             if (entity != null)
             {
-                if (entity.Enabled == 0 || entity.DeletionStateCode == 1)
+                if (entity.Enabled == 0 || entity.Deleted == 1)
                 {
                     errorMessage = @"数据已被删除，无法再次删除";
                 }
@@ -199,7 +197,7 @@ namespace DotNet.Business
                 var entity = GetEntity(id);
                 if (entity != null)
                 {
-                    if (entity.Enabled == 0 || entity.DeletionStateCode == 1)
+                    if (entity.Enabled == 0 || entity.Deleted == 1)
                     {
                         errorMessage = @"数据已被删除，无法再次删除";
                     }
@@ -238,7 +236,7 @@ namespace DotNet.Business
             var entity = GetEntity(id);
             if (entity != null)
             {
-                if (entity.Enabled == 1 || entity.DeletionStateCode == 0)
+                if (entity.Enabled == 1 || entity.Deleted == 0)
                 {
                     errorMessage = @"数据未被删除，无法撤销";
                 }
@@ -274,7 +272,7 @@ namespace DotNet.Business
                 var entity = GetEntity(id);
                 if (entity != null)
                 {
-                    if (entity.Enabled == 1 || entity.DeletionStateCode == 0)
+                    if (entity.Enabled == 1 || entity.Deleted == 0)
                     {
                         errorMessage = @"数据未被删除，无法撤销";
                     }
@@ -311,7 +309,7 @@ namespace DotNet.Business
                 sb.Append("(" + BaseMessageFailedEntity.FieldUserCompanyId + " = 0 OR " + BaseMessageFailedEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(where, null, new KeyValuePair<string, object>(BaseMessageFailedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageFailedEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId.ToString() : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "DataTable." + CurrentTableName + "." + companyId;
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseMessageFailedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageFailedEntity.FieldDeleted, 0)), true, false, cacheTime);

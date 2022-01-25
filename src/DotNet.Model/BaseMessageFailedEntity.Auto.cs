@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageFailedEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2020, All rights reserved.
+//     Copyright (c) 2021, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,13 +14,14 @@ namespace DotNet.Model
     /// BaseMessageFailedEntity
     /// 失败消息
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
+    /// 2021-09-27 版本：2.0 Troy.Cui 创建文件。
     /// 2020-03-22 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2020-03-22</date>
+    ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
     public partial class BaseMessageFailedEntity : BaseEntity
@@ -89,31 +90,37 @@ namespace DotNet.Model
         /// 排序编号
         /// </summary>
         [FieldDescription("排序编号")]
-        public int? SortCode { get; set; } = 0;
+        public int SortCode { get; set; } = 0;
 
         /// <summary>
-        /// 删除状态代码
+        /// 是否删除
         /// </summary>
-        [FieldDescription("删除状态代码")]
-        public int? DeletionStateCode { get; set; } = 0;
+        [FieldDescription("是否删除")]
+        public int Deleted { get; set; } = 0;
 
         /// <summary>
         /// 是否有效
         /// </summary>
         [FieldDescription("是否有效")]
-        public int? Enabled { get; set; } = 1;
+        public int Enabled { get; set; } = 1;
 
         /// <summary>
         /// 创建时间
         /// </summary>
         [FieldDescription("创建时间")]
-        public DateTime? CreateOn { get; set; } = DateTime.Now;
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 创建人编号
         /// </summary>
         [FieldDescription("创建人编号")]
-        public int? CreateUserId { get; set; } = null;
+        public int CreateUserId { get; set; } = 0;
+
+        /// <summary>
+        /// 创建人用户名
+        /// </summary>
+        [FieldDescription("创建人用户名")]
+        public string CreateUserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 创建人姓名
@@ -128,28 +135,34 @@ namespace DotNet.Model
         public string CreateIp { get; set; } = string.Empty;
 
         /// <summary>
-        /// 最近修改时间
+        /// 修改时间
         /// </summary>
-        [FieldDescription("最近修改时间")]
-        public DateTime? ModifiedOn { get; set; } = DateTime.Now;
+        [FieldDescription("修改时间")]
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
 
         /// <summary>
-        /// 最近修改人编号
+        /// 修改人编号
         /// </summary>
-        [FieldDescription("最近修改人编号")]
-        public int? ModifiedUserId { get; set; } = null;
+        [FieldDescription("修改人编号")]
+        public int UpdateUserId { get; set; } = 0;
 
         /// <summary>
-        /// 最近修改人姓名
+        /// 修改人用户名
         /// </summary>
-        [FieldDescription("最近修改人姓名")]
-        public string ModifiedBy { get; set; } = string.Empty;
+        [FieldDescription("修改人用户名")]
+        public string UpdateUserName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 最近修改IP
+        /// 修改人姓名
         /// </summary>
-        [FieldDescription("最近修改IP")]
-        public string ModifiedIp { get; set; } = string.Empty;
+        [FieldDescription("修改人姓名")]
+        public string UpdateBy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 修改IP
+        /// </summary>
+        [FieldDescription("修改IP")]
+        public string UpdateIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 从数据行读取
@@ -200,23 +213,27 @@ namespace DotNet.Model
             }
             if (dr.ContainsColumn(FieldSortCode))
             {
-                SortCode = BaseUtil.ConvertToNullableInt(dr[FieldSortCode]);
+                SortCode = BaseUtil.ConvertToInt(dr[FieldSortCode]);
             }
             if (dr.ContainsColumn(FieldDeleted))
             {
-                DeletionStateCode = BaseUtil.ConvertToNullableInt(dr[FieldDeleted]);
+                Deleted = BaseUtil.ConvertToInt(dr[FieldDeleted]);
             }
             if (dr.ContainsColumn(FieldEnabled))
             {
-                Enabled = BaseUtil.ConvertToNullableInt(dr[FieldEnabled]);
+                Enabled = BaseUtil.ConvertToInt(dr[FieldEnabled]);
             }
             if (dr.ContainsColumn(FieldCreateTime))
             {
-                CreateOn = BaseUtil.ConvertToNullableDateTime(dr[FieldCreateTime]);
+                CreateTime = BaseUtil.ConvertToDateTime(dr[FieldCreateTime]);
             }
             if (dr.ContainsColumn(FieldCreateUserId))
             {
-                CreateUserId = BaseUtil.ConvertToNullableInt(dr[FieldCreateUserId]);
+                CreateUserId = BaseUtil.ConvertToInt(dr[FieldCreateUserId]);
+            }
+            if (dr.ContainsColumn(FieldCreateUserName))
+            {
+                CreateUserName = BaseUtil.ConvertToString(dr[FieldCreateUserName]);
             }
             if (dr.ContainsColumn(FieldCreateBy))
             {
@@ -228,19 +245,23 @@ namespace DotNet.Model
             }
             if (dr.ContainsColumn(FieldUpdateTime))
             {
-                ModifiedOn = BaseUtil.ConvertToNullableDateTime(dr[FieldUpdateTime]);
+                UpdateTime = BaseUtil.ConvertToDateTime(dr[FieldUpdateTime]);
             }
             if (dr.ContainsColumn(FieldUpdateUserId))
             {
-                ModifiedUserId = BaseUtil.ConvertToNullableInt(dr[FieldUpdateUserId]);
+                UpdateUserId = BaseUtil.ConvertToInt(dr[FieldUpdateUserId]);
+            }
+            if (dr.ContainsColumn(FieldUpdateUserName))
+            {
+                UpdateUserName = BaseUtil.ConvertToString(dr[FieldUpdateUserName]);
             }
             if (dr.ContainsColumn(FieldUpdateBy))
             {
-                ModifiedBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
+                UpdateBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
             }
             if (dr.ContainsColumn(FieldUpdateIp))
             {
-                ModifiedIp = BaseUtil.ConvertToString(dr[FieldUpdateIp]);
+                UpdateIp = BaseUtil.ConvertToString(dr[FieldUpdateIp]);
             }
             return this;
         }
@@ -249,7 +270,7 @@ namespace DotNet.Model
         /// 失败消息
         ///</summary>
         [FieldDescription("失败消息")]
-        public const string TableName = "BaseMessageFailed";
+        public const string CurrentTableName = "BaseMessageFailed";
 
         ///<summary>
         /// 编号
@@ -307,9 +328,9 @@ namespace DotNet.Model
         public const string FieldSortCode = "SortCode";
 
         ///<summary>
-        /// 删除状态代码
+        /// 是否删除
         ///</summary>
-        public const string FieldDeleted = "DeletionStateCode";
+        public const string FieldDeleted = "Deleted";
 
         ///<summary>
         /// 是否有效
@@ -319,12 +340,17 @@ namespace DotNet.Model
         ///<summary>
         /// 创建时间
         ///</summary>
-        public const string FieldCreateTime = "CreateOn";
+        public const string FieldCreateTime = "CreateTime";
 
         ///<summary>
         /// 创建人编号
         ///</summary>
         public const string FieldCreateUserId = "CreateUserId";
+
+        ///<summary>
+        /// 创建人用户名
+        ///</summary>
+        public const string FieldCreateUserName = "CreateUserName";
 
         ///<summary>
         /// 创建人姓名
@@ -337,23 +363,28 @@ namespace DotNet.Model
         public const string FieldCreateIp = "CreateIp";
 
         ///<summary>
-        /// 最近修改时间
+        /// 修改时间
         ///</summary>
-        public const string FieldUpdateTime = "ModifiedOn";
+        public const string FieldUpdateTime = "UpdateTime";
 
         ///<summary>
-        /// 最近修改人编号
+        /// 修改人编号
         ///</summary>
-        public const string FieldUpdateUserId = "ModifiedUserId";
+        public const string FieldUpdateUserId = "UpdateUserId";
 
         ///<summary>
-        /// 最近修改人姓名
+        /// 修改人用户名
         ///</summary>
-        public const string FieldUpdateBy = "ModifiedBy";
+        public const string FieldUpdateUserName = "UpdateUserName";
 
         ///<summary>
-        /// 最近修改IP
+        /// 修改人姓名
         ///</summary>
-        public const string FieldUpdateIp = "ModifiedIp";
+        public const string FieldUpdateBy = "UpdateBy";
+
+        ///<summary>
+        /// 修改IP
+        ///</summary>
+        public const string FieldUpdateIp = "UpdateIp";
     }
 }

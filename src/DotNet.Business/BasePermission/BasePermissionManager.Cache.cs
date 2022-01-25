@@ -60,13 +60,13 @@ namespace DotNet.Business
             string[] result = null;
 
             var errorMark = 0;
-            var tableName = BaseModuleEntity.TableName;
+            var tableName = BaseModuleEntity.CurrentTableName;
             if (string.IsNullOrWhiteSpace(systemCode))
             {
                 systemCode = "Base";
             }
             // 就不需要参合基础的角色了
-            if (systemCode.Equals("Base"))
+            if (systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
                 useBaseRole = false;
             }
@@ -79,15 +79,15 @@ namespace DotNet.Business
                 // 01: 把公开的部分获取出来（把公开的主键数组从缓存里获取出来，减少数据库的读取次数）
                 if (containPublic)
                 {
-                    var moduleEntities = BaseModuleManager.GetEntitiesByCache(systemCode);
+                    var moduleEntities = new BaseModuleManager().GetEntitiesByCache(systemCode);
                     if (moduleEntities != null)
                     {
-                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.DeletionStateCode == 0)).Select(t => t.Id.ToString()).ToArray();
+                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0)).Select(t => t.Id.ToString()).ToArray();
                     }
                 }
 
                 // 02: 获取用户本身拥有的权限 
-                var userPermissionIds = BaseUserPermissionManager.GetPermissionIdsByCache(systemCode, userId);
+                var userPermissionIds = BasePermissionManager.GetPermissionIdsByCache(systemCode, userId);
                 result = StringUtil.Concat(result, userPermissionIds);
 
                 // 03: 用户角色的操作权限
@@ -104,16 +104,8 @@ namespace DotNet.Business
                 }
                 if (roleIds != null && roleIds.Length > 0)
                 {
-                    var userRolePermissionIds = BaseRolePermissionManager.GetPermissionIdsByCache(systemCode, roleIds);
+                    var userRolePermissionIds = BasePermissionManager.GetPermissionIdsByCache(systemCode, roleIds);
                     result = StringUtil.Concat(result, userRolePermissionIds);
-                }
-
-                // 04: 按部门(组织机构)获取权限项
-                if (BaseSystemInfo.UseOrganizationPermission && !string.IsNullOrEmpty(companyId))
-                {
-                    // 2016-02-26 吉日嘎拉，公司权限进行优化简化
-                    var organizePermission = BaseOrganizationPermissionManager.GetPermissionIdsByCache(systemCode, companyId);
-                    result = StringUtil.Concat(result, organizePermission);
                 }
             }
             catch (Exception ex)
@@ -141,14 +133,14 @@ namespace DotNet.Business
         public static bool CheckPermissionByRoleByCache(string systemCode, string roleId, string permissionCode)
         {
             var permissionId = string.Empty;
-            permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
+            permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
             if (string.IsNullOrEmpty(permissionId))
             {
                 return false;
             }
 
-            var permissionIds = BaseRolePermissionManager.GetPermissionIdsByCache(systemCode, new string[] { roleId });
+            var permissionIds = BasePermissionManager.GetPermissionIdsByCache(systemCode, new string[] { roleId });
             return Array.IndexOf(permissionIds, permissionId) >= 0;
         }
     }

@@ -40,7 +40,7 @@ namespace DotNet.Business
             var tableNameUserRole = systemCode + "UserRole";
             var tableNameRole = systemCode + "Role";
 
-            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.TableName
+            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
                             + "       AND " + BaseUserEntity.FieldDeleted + "= 0 "
                             + "       AND ( " + BaseUserEntity.FieldId + " IN "

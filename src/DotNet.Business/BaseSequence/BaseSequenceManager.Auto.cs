@@ -1,6 +1,8 @@
-﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//--------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseSequenceManager.Auto.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,11 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    /// 2012-04-23 版本：1.0 JiRiGaLa 创建主键。
+    /// 2021-09-26 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2012-04-23</date>
+    ///     <date>2021-09-26</date>
     /// </author>
     /// </summary>
     public partial class BaseSequenceManager : BaseManager, IBaseManager
@@ -32,11 +34,15 @@ namespace DotNet.Business
         {
             if (dbHelper == null)
             {
-                //base.dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.BusinessDbType, BaseSystemInfo.BusinessDbConnection);
-                // 原先连到业务库了 改为用户中心库 songbiao
                 dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
-            CurrentTableName = BaseSequenceEntity.TableName;
+            if (string.IsNullOrEmpty(CurrentTableName))
+            {
+                CurrentTableName = BaseSequenceEntity.CurrentTableName;
+                //按用户公司分表
+                //CurrentTableName = BaseSequenceEntity.CurrentTableName + GetTableSuffix();
+            }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseSequenceEntity), "CurrentTableName");
             PrimaryKey = "Id";
         }
 
@@ -44,7 +50,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseSequenceManager(string tableName)
+        public BaseSequenceManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -53,7 +59,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseSequenceManager(IDbHelper dbHelper): this()
+        public BaseSequenceManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -65,6 +71,18 @@ namespace DotNet.Business
         public BaseSequenceManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
+            //按用户公司分表
+            //CurrentTableName = BaseSequenceEntity.CurrentTableName + GetTableSuffix();
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="userInfo">用户信息</param>
+        /// <param name="tableName">指定表名</param>
+        public BaseSequenceManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
+        {
+            CurrentTableName = tableName;
         }
 
         /// <summary>
@@ -75,6 +93,8 @@ namespace DotNet.Business
         public BaseSequenceManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
         {
             UserInfo = userInfo;
+            //按用户公司分表
+            //CurrentTableName = BaseSequenceEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -89,27 +109,40 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 添加
+        /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
         /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
         /// <returns>主键</returns>
-        public string Add(BaseSequenceEntity entity)
-        {
-            return AddEntity(entity);
-        }
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式</param>
-        /// <param name="returnId">返回主键</param>
-        /// <returns>主键</returns>
-        public string Add(BaseSequenceEntity entity, bool identity, bool returnId)
+        public string Add(BaseSequenceEntity entity, bool identity = true, bool returnId = true)
         {
             Identity = identity;
             ReturnId = returnId;
-            return AddEntity(entity);
+            entity.Id = int.Parse(AddEntity(entity));
+            return entity.Id.ToString();
+        }
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseSequenceEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
         }
 
         /// <summary>
@@ -127,8 +160,28 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseSequenceEntity GetEntity(string id)
         {
-            return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseSequenceEntity.FieldId, id)));
-            // return BaseEntity.Create<BaseSequenceEntity>(this.GetDataTable(new KeyValuePair<string, object>(BaseSequenceEntity.FieldId, id)));
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        public BaseSequenceEntity GetEntity(int id)
+        {
+            return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //var cacheKey = CurrentTableName + ".Entity." + id;
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseSequenceEntity>(cacheKey, () => BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseSequenceEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -137,22 +190,20 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         public string AddEntity(BaseSequenceEntity entity)
         {
-            var sequence = string.Empty;
-            Identity = false; 
-            if (entity.Id != null)
+            var key = string.Empty;
+            if (entity.SortCode == 0)
             {
-                sequence = entity.Id;
+                //var managerSequence = new BaseSequenceManager(DbHelper, Identity);
+                //key = managerSequence.Increment(CurrentTableName);
+                //entity.SortCode = int.Parse(key);
             }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, BaseSequenceEntity.FieldId);
-            if (!Identity) 
+            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
+            if (!Identity)
             {
-                if (string.IsNullOrEmpty(entity.Id)) 
-                {
-                    sequence = Guid.NewGuid().ToString("N"); 
-                    entity.Id = sequence ;
-                }
-                sqlBuilder.SetValue(BaseSequenceEntity.FieldId, entity.Id);
+                // 这里已经是指定了主键了，所以不需要返回主键了
+                sqlBuilder.ReturnId = false;
+                sqlBuilder.SetValue(PrimaryKey, entity.Id);
             }
             else
             {
@@ -160,52 +211,63 @@ namespace DotNet.Business
                 {
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(BaseSequenceEntity.FieldId, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+                        sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        sqlBuilder.SetFormula(BaseSequenceEntity.FieldId, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
                     }
                 }
                 else
                 {
                     if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
                     {
-                        if (string.IsNullOrEmpty(entity.Id))
-                        {
-                            if (string.IsNullOrEmpty(sequence))
-                            {
-                                var managerSequence = new BaseSequenceManager(DbHelper, Identity);
-                                sequence = managerSequence.Increment(CurrentTableName);
-                            }
-                            entity.Id = sequence;
-                        }
-                        sqlBuilder.SetValue(BaseSequenceEntity.FieldId, entity.Id);
+                        var managerSequence = new BaseSequenceManager(DbHelper);
+                        entity.Id = int.Parse(managerSequence.Increment(CurrentTableName));
+                        sqlBuilder.SetValue(PrimaryKey, entity.Id);
                     }
                 }
             }
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null) 
-            { 
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateBy, UserInfo.RealName);
-            } 
+            }
+            else
+            {
+                sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateBy, entity.CreateBy);
+                sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateUserName, entity.CreateUserName);
+            }
             sqlBuilder.SetDbNow(BaseSequenceEntity.FieldCreateTime);
-            if (UserInfo != null) 
-            { 
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldCreateIp, Utils.GetIp());
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateBy, UserInfo.RealName);
-            } 
+            }
             sqlBuilder.SetDbNow(BaseSequenceEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateIp, Utils.GetIp());
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
-                sequence = sqlBuilder.EndInsert().ToString();
+                key = sqlBuilder.EndInsert().ToString();
             }
             else
             {
                 sqlBuilder.EndInsert();
             }
-            return sequence;
+            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+            {
+                //return entity.Id.ToString();
+                key = entity.Id.ToString();
+            }
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                RemoveCache();
+            }
+            return key;
         }
 
         /// <summary>
@@ -217,25 +279,35 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null) 
-            { 
+            if (UserInfo != null)
+            {
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateBy, UserInfo.RealName);
-            } 
+            }
             sqlBuilder.SetDbNow(BaseSequenceEntity.FieldUpdateTime);
-            sqlBuilder.SetWhere(BaseSequenceEntity.FieldId, entity.Id);
-            return sqlBuilder.EndUpdate();
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldUpdateIp, Utils.GetIp());
+            sqlBuilder.SetWhere(PrimaryKey, entity.Id);
+            //return sqlBuilder.EndUpdate();
+            var result = sqlBuilder.EndUpdate();
+            if (result > 0)
+            {
+                RemoveCache(entity.Id);
+            }
+            return result;
         }
 
+        // 这个是声明扩展方法
         partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseSequenceEntity entity);
 
         /// <summary>
         /// 设置实体
         /// </summary>
-        /// <param name="sqlBuilder">SQL语句生成器</param>
+        /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseSequenceEntity entity)
         {
+            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldFullName, entity.FullName);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldPrefix, entity.Prefix);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldDelimiter, entity.Delimiter);
@@ -244,7 +316,9 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseSequenceEntity.FieldStep, entity.Step);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldDescription, entity.Description);
-            SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldSortCode, entity.SortCode);
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldDeleted, entity.Deleted);
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldEnabled, entity.Enabled);
         }
 
         /// <summary>
@@ -252,9 +326,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>影响行数</returns>
-        public int Delete(string id)
+        public int Delete(int id)
         {
-            return Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
+            if (result > 0)
+            {
+                RemoveCache(id);
+            }
+            return result;
         }
     }
 }

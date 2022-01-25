@@ -54,7 +54,7 @@ namespace DotNet.Business
                 }
             }
             // 判断输入原始密码是否正确
-            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntity(UserInfo.Id);
+            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntityByUserId(UserInfo.UserId);
             if (entity.UserPassword == null)
             {
                 entity.UserPassword = string.Empty;
@@ -107,7 +107,7 @@ namespace DotNet.Business
                 encryptNewPassword = EncryptUserPassword(newPassword, salt);
             }
             var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(BaseUserLogonEntity.TableName);
+            sqlBuilder.BeginUpdate(BaseUserLogonEntity.CurrentTableName);
             if (BaseSystemInfo.ServerEncryptPassword)
             {
                 sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, salt);
@@ -117,38 +117,33 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserPassword, encryptNewPassword);
             // 2015-08-04 吉日嘎拉 修改了密码后,把需要修改密码字段设置为 0
             sqlBuilder.SetValue(BaseUserLogonEntity.FieldNeedModifyPassword, 0);
-            sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldChangePasswordDate);
+            sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldChangePasswordTime);
             sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldUpdateTime);
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id);
                 sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName);
             }
-            sqlBuilder.SetWhere(BaseUserLogonEntity.FieldId, userId);
+            sqlBuilder.SetWhere(BaseUserLogonEntity.FieldUserId, userId);
             var result = sqlBuilder.EndUpdate();
 
             if (result == 1)
             {
                 // 2015-12-09 吉日嘎拉 确认已经记录了修改密码日志
-                // BaseLoginLogManager.AddLog(this.UserInfo, Status.ChangePassword.ToDescription()); 
+                // BaseLogonLogManager.AddLog(this.UserInfo, Status.ChangePassword.ToDescription()); 
 
                 // 2015-12-09 吉日嘎拉 增加日志功能、谁什么时候设置了谁的密码？
-                var record = new BaseModifyRecordEntity();
-                record.TableCode = BaseUserLogonEntity.TableName.ToUpper();
-                record.TableDescription = "用户登录信息表";
-                record.ColumnCode = BaseUserLogonEntity.FieldUserPassword;
-                record.ColumnDescription = "用户密码";
-                record.RecordKey = userId;
-                record.NewValue = "修改密码";
-                // record.OldValue = "";
-                if (UserInfo != null)
+                var record = new BaseChangeLogEntity
                 {
-                    record.IpAddress = UserInfo.IpAddress;
-                    record.CreateUserId = UserInfo.Id;
-                    record.CreateOn = DateTime.Now;
-                }
-                var modifyRecordManager = new BaseModifyRecordManager(UserInfo);
-                modifyRecordManager.Add(record, true, false);
+                    TableName = BaseUserLogonEntity.CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserLogonEntity), "CurrentTableName"),
+                    ColumnName = BaseUserLogonEntity.FieldUserPassword,
+                    ColumnDescription = "用户密码",
+                    RecordKey = userId.ToString(),
+                    NewValue = "修改密码"
+                };
+                var changeLogManager = new BaseChangeLogManager(UserInfo);
+                changeLogManager.Add(record, true, false);
 
                 /*
                 // 若是强类型密码检查，那就保存密码修改历史，防止最近2-3次的密码相同的功能实现。
@@ -160,7 +155,7 @@ namespace DotNet.Business
                     parameterEntity.ParameterId = this.UserInfo.Id;
                     parameterEntity.ParameterCode = "Password";
                     parameterEntity.ParameterContent = newPassword;
-                    parameterEntity.DeletionStateCode = 0;
+                    parameterEntity.Deleted = 0;
                     parameterEntity.Enabled = true;
                     parameterEntity.Worked = true;
                     parameterManager.AddEntity(parameterEntity);

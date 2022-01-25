@@ -30,38 +30,38 @@ namespace DotNet.Business
         /// 获取分页DataTable
         /// </summary>
         /// <param name="recordCount">记录总数</param>
-        /// <param name="pageIndex">当前页数</param>
+        /// <param name="pageNo">当前页数</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
         /// <param name="order">排序字段</param>
         /// <returns>数据表</returns>
-        public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageIndex, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
+        public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
             recordCount = DbUtil.GetCount(DbHelper, CurrentTableName, condition, dbParameters, CurrentIndex);
-            return DbUtil.ExecuteReaderByPage(DbHelper, CurrentTableName, SelectFields, pageIndex, pageSize, condition, dbParameters, order, CurrentIndex);
+            return DbUtil.ExecuteReaderByPage(DbHelper, CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
         }
 
         /// <summary>
         /// 获取分页DataTable
         /// </summary>
         /// <param name="recordCount">记录总数</param>
-        /// <param name="pageIndex">当前页数</param>
+        /// <param name="pageNo">当前页数</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">数据库参数</param>
         /// <param name="order">排序字段</param>
         /// <returns>数据表</returns>
-        public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageIndex, int pageSize, string condition, IDbDataParameter[] dbParameters, string order) where TModel : new()
+        public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order) where TModel : new()
         {
-            return ExecuteReaderByPage(out recordCount, pageIndex, pageSize, condition, dbParameters, order).ToList<TModel>();
+            return ExecuteReaderByPage(out recordCount, pageNo, pageSize, condition, dbParameters, order).ToList<TModel>();
         }
 
         /// <summary>
         /// 分页读取数据
         /// </summary>
         /// <param name="recordCount">条数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序顺序</param>
@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// <param name="dbParameters">数据参数</param>
         /// <param name="selectField">选择哪些字段</param>
         /// <returns>数据表</returns>
-        public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
+        public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -104,17 +104,17 @@ namespace DotNet.Business
                 {
                     recordCount = 0;
                 }
-                return DbUtil.ExecuteReaderByPage(DbHelper, recordCount, pageIndex, pageSize, tableName, dbParameters, sortExpression, sortDirection);
+                return DbUtil.ExecuteReaderByPage(DbHelper, recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
             }
             // 这个是调用存储过程的方法
-            return DbUtil.ExecuteReaderByPage(DbHelper, out recordCount, pageIndex, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+            return DbUtil.ExecuteReaderByPage(DbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
 
         /// <summary>
         /// 分页读取数据
         /// </summary>
         /// <param name="recordCount">条数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序顺序</param>
@@ -123,9 +123,9 @@ namespace DotNet.Business
         /// <param name="dbParameters">数据参数</param>
         /// <param name="selectField">选择哪些字段</param>
         /// <returns>数据表</returns>
-        public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null) where TModel : new()
+        public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null) where TModel : new()
         {
-            return ExecuteReaderByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, tableName, condition, dbParameters, selectField).ToList<TModel>();
+            return ExecuteReaderByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, dbParameters, selectField).ToList<TModel>();
         }
     }
 }

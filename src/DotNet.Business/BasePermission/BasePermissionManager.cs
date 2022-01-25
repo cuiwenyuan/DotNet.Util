@@ -1,6 +1,8 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BasePermissionManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,96 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager, IBaseManager
     {
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BasePermissionEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BasePermissionEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + BasePermissionEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+            //sb.Append(" AND (" + BasePermissionEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BasePermissionEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BasePermissionEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BasePermissionEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BasePermissionEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BasePermissionEntity.FieldPermissionId + " LIKE N'%" + searchKey + "%' OR " + BasePermissionEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+        }
+        #endregion
+
+        #region 下拉菜单
+
+        /// <summary>
+        /// 下拉菜单
+        /// </summary>
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BasePermissionEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)), true, false, cacheTime);
+        }
+        #endregion
+
         #region public bool PermissionExists(string permissionId, string resourceCategory, string resourceId) 检查是否存在
         /// <summary>
         /// 检查是否存在
@@ -94,20 +186,16 @@ namespace DotNet.Business
         {
             var result = false;
 
-            // 2016-05-24 吉日嘎拉，若是Oracle数据库，用户的Id目前都是数值类型，若不是数字就出错了，不用进行运算了。
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+            if (!ValidateUtil.IsInt(userId))
             {
-                if (!ValidateUtil.IsInt(userId))
-                {
-                    return result;
-                }
+                return result;
             }
 
             // 忽略超级管理员，这里判断拒绝权限用的，因为超级管理员也被拒绝了，若所有的权限都有了
             if (!ignoreAdministrator)
             {
                 // 先判断用户类别
-                if (UserInfo != null && BaseUserManager.IsAdministrator(UserInfo.Id))
+                if (UserInfo != null && BaseUserManager.IsAdministrator(UserInfo.Id.ToString()))
                 {
                     return true;
                 }
@@ -120,7 +208,7 @@ namespace DotNet.Business
             //    return false;
             //}
 
-            var permissionEntity = BaseModuleManager.GetEntityByCacheByCode(systemCode, permissionCode);
+            var permissionEntity = new BaseModuleManager().GetEntityByCacheByCode(systemCode, permissionCode);
             // 没有找到这个权限
             if (permissionEntity == null)
             {
@@ -162,13 +250,13 @@ namespace DotNet.Business
             }
 
             // 判断用户权限
-            if (CheckResourcePermission(systemCode, BaseUserEntity.TableName, userId, permissionEntity.Id))
+            if (CheckResourcePermission(systemCode, BaseUserEntity.CurrentTableName, userId, permissionEntity.Id.ToString()))
             {
                 return true;
             }
 
             // 判断用户角色权限
-            if (CheckUserRolePermission(systemCode, userId, permissionEntity.Id, useBaseRole))
+            if (CheckUserRolePermission(systemCode, userId, permissionEntity.Id.ToString(), useBaseRole))
             {
                 return true;
             }
@@ -181,7 +269,7 @@ namespace DotNet.Business
                 var companyId = BaseUserManager.GetCompanyIdByCache(userId);
                 if (!string.IsNullOrEmpty(companyId))
                 {
-                    if (CheckResourcePermission(systemCode, BaseOrganizationEntity.TableName, companyId, permissionEntity.Id))
+                    if (CheckResourcePermission(systemCode, BaseOrganizationEntity.CurrentTableName, companyId, permissionEntity.Id.ToString()))
                     {
                         return true;
                     }
@@ -209,7 +297,7 @@ namespace DotNet.Business
             var result = false;
 
             var errorMark = 0;
-            if (string.IsNullOrEmpty(userId))
+            if (!ValidateUtil.IsInt(userId))
             {
                 return false;
             }
@@ -223,18 +311,21 @@ namespace DotNet.Business
             }
             if (string.IsNullOrWhiteSpace(systemCode))
             {
-                if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+                if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
                 {
                     systemCode = UserInfo.SystemCode;
+                    if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                    {
+                        systemCode = BaseSystemInfo.SystemCode;
+                    }
                 }
             }
 
             var tableName = systemCode + "Permission";
-            var ids = "(" + string.Join(",", organizationIds) + ")";
             var sql = "SELECT COUNT(*) "
                              + " FROM " + tableName
                              + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
-                             + "        AND (" + BasePermissionEntity.FieldResourceId + " IN " + ids + ") "
+                             + "        AND " + BasePermissionEntity.FieldResourceId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                              + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
                              + "        AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled)
                              + "        AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted);
@@ -242,7 +333,7 @@ namespace DotNet.Business
             var rowCount = 0;
             var dbParameters = new List<IDbDataParameter>
             {
-                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
+                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.CurrentTableName),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldDeleted, 0)
@@ -285,13 +376,13 @@ namespace DotNet.Business
         /// <returns>是否有权限</returns>
         public bool CheckPermissionByUser(string systemCode, string userId, string permissionCode)
         {
-            var permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
+            var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
             if (string.IsNullOrEmpty(permissionId))
             {
                 return false;
             }
-            return CheckResourcePermission(systemCode, BaseUserEntity.TableName, userId, permissionId);
+            return CheckResourcePermission(systemCode, BaseUserEntity.CurrentTableName, userId.ToString(), permissionId);
         }
         #endregion
 
@@ -384,9 +475,13 @@ namespace DotNet.Business
 
             if (string.IsNullOrWhiteSpace(systemCode))
             {
-                if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+                if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
                 {
                     systemCode = UserInfo.SystemCode;
+                    if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                    {
+                        systemCode = BaseSystemInfo.SystemCode;
+                    }
                 }
             }
 
@@ -410,12 +505,12 @@ namespace DotNet.Business
             if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
                 sql += " UNION SELECT " + BaseUserRoleEntity.FieldRoleId
-                                + " FROM " + BaseUserRoleEntity.TableName
-                                + "  WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.TableName + "_" + BaseUserRoleEntity.FieldUserId)
+                                + " FROM " + BaseUserRoleEntity.CurrentTableName
+                                + "  WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId)
                                 + "        AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
                                 + "        AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ";
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.TableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
+                dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
             }
             sql += " ) "
                 + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
@@ -468,13 +563,9 @@ namespace DotNet.Business
         {
             var result = new List<BaseModuleEntity>();
 
-            // 2016-05-24 吉日嘎拉，若是Oracle数据库，用户的Id目前都是数值类型，若不是数字就出错了，不用进行运算了。
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+            if (!ValidateUtil.IsInt(userId))
             {
-                if (!ValidateUtil.IsInt(userId))
-                {
-                    return result;
-                }
+                return result;
             }
 
             var useBaseRole = false;
@@ -487,13 +578,14 @@ namespace DotNet.Business
                 tableName = systemCode + "Module";
 
                 // 2015-11-19 所有的系统都继承基础角色的权限
-                useBaseRole = true;
+                // 2022-01-04 Troy.Cui 停用集成基础角色
+                useBaseRole = false;
                 // 2015-01-21 吉日嘎拉，实现判断别人的权限，是否超级管理员
                 var isAdministrator = false;
 
-                if (UserInfo != null && BaseUserManager.IsAdministrator(UserInfo.Id))
+                if (UserInfo != null && BaseUserManager.IsAdministrator(UserInfo.Id.ToString()))
                 {
-                    if (UserInfo.Id.Equals(userId, StringComparison.CurrentCulture))
+                    if (UserInfo.Id.Equals(userId))
                     {
                         isAdministrator = true;
                     }
@@ -504,32 +596,23 @@ namespace DotNet.Business
                 }
                 if (isAdministrator)
                 {
-                    result = BaseModuleManager.GetEntitiesByCache(systemCode);
+                    result = new BaseModuleManager().GetEntitiesByCache(systemCode);
                 }
                 else
                 {
                     string[] permissionIds = null;
-                    // 2016-02-26 吉日嘎拉进行优化，用缓存与不用缓存感觉区别不是很大。
-                    if (fromCache)
-                    {
-                        // permissionIds = GetPermissionIdsByUserByCache(systemCode, userId, companyId, useBaseRole);
-                        permissionIds = GetPermissionIdsByUser(systemCode, userId, companyId, false, useBaseRole);
-                    }
-                    else
-                    {
-                        permissionIds = GetPermissionIdsByUser(systemCode, userId, companyId, false, useBaseRole);
-                    }
+                    permissionIds = GetPermissionIdsByUser(systemCode, userId, companyId: companyId, containPublic: false, useBaseRole: useBaseRole);
 
                     // 2016-03-02 吉日嘎拉，少读一次缓存服务器，减少缓存服务器读写压力
-                    var entities = BaseModuleManager.GetEntitiesByCache(systemCode);
+                    var entities = new BaseModuleManager().GetEntitiesByCache(systemCode);
                     // 若是以前赋予的权限，后来有些权限设置为无效了，那就不应该再获取哪些无效的权限才对。
                     if (permissionIds != null && permissionIds.Length > 0)
-                    {   
-                        result = (entities as List<BaseModuleEntity>).Where(t => (t.IsPublic == 1 && t.Enabled == 1 && t.DeletionStateCode == 0) || permissionIds.Contains(t.Id)).ToList();
+                    {
+                        result = (entities as List<BaseModuleEntity>).Where(t => (t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0) || permissionIds.Contains(t.Id.ToString())).ToList();
                     }
                     else
                     {
-                        result = (entities as List<BaseModuleEntity>).Where(t => t.IsPublic == 1 && t.Enabled == 1 && t.DeletionStateCode == 0).ToList();
+                        result = (entities as List<BaseModuleEntity>).Where(t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0).ToList();
                     }
                 }
             }
@@ -545,7 +628,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public string[] GetPermissionIds(BaseUserInfo userInfo)
         {
-            return GetPermissionIdsByUser(userInfo.Id, userInfo.CompanyId);
+            return GetPermissionIdsByUser(BaseSystemInfo.SystemCode, userInfo.Id.ToString(), companyId: userInfo.CompanyId);
         }
         #endregion
 
@@ -564,13 +647,13 @@ namespace DotNet.Business
             string[] result = null;
 
             var errorMark = 0;
-            var tableName = BaseModuleEntity.TableName;
+            var tableName = BaseModuleEntity.CurrentTableName;
             if (string.IsNullOrWhiteSpace(systemCode))
             {
                 systemCode = "Base";
             }
             // 就不需要参合基础的角色了
-            if (systemCode.Equals("Base"))
+            if (systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
                 useBaseRole = false;
             }
@@ -583,10 +666,10 @@ namespace DotNet.Business
                 if (containPublic)
                 {
                     // 把公开的部分获取出来（把公开的主键数组从缓存里获取出来，减少数据库的读取次数）
-                    var moduleEntities = BaseModuleManager.GetEntitiesByCache(systemCode);
+                    var moduleEntities = new BaseModuleManager().GetEntitiesByCache(systemCode);
                     if (moduleEntities != null)
                     {
-                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.DeletionStateCode == 0)).Select(t => t.Id.ToString()).ToArray();
+                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0)).Select(t => t.Id.ToString()).ToArray();
                     }
                 }
 
@@ -599,13 +682,13 @@ namespace DotNet.Business
                 // 用户的操作权限
                 sb.Append("SELECT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + CurrentTableName);
-                sb.Append(" WHERE (" + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseUserEntity.TableName + "_" + BasePermissionEntity.FieldResourceCategory));
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceId + " = " + DbHelper.GetParameter(BaseUserEntity.TableName + "_" + BaseUserEntity.FieldId));
+                sb.Append(" WHERE (" + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseUserEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory));
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceId + " = " + DbHelper.GetParameter(BaseUserEntity.CurrentTableName + "_" + BaseUserEntity.FieldId));
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.TableName + "_" + BasePermissionEntity.FieldResourceCategory, BaseUserEntity.TableName));
-                dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.TableName + "_" + BaseUserEntity.FieldId, userId));
+                dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName));
+                dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.CurrentTableName + "_" + BaseUserEntity.FieldId, userId));
 
                 // 角色的操作权限                            
                 sb.Append(" UNION ");
@@ -614,23 +697,23 @@ namespace DotNet.Business
                 sb.Append(" FROM " + CurrentTableName);
                 sb.Append(" , ( SELECT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableName);
-                sb.Append(" WHERE (" + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.TableName + "_" + BaseUserRoleEntity.FieldUserId));
+                sb.Append(" WHERE (" + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId));
                 sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ) ");
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.TableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
+                dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
 
                 // 2015-12-02 吉日嘎拉 简化SQL语句，提高效率
                 if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
                 {
                     // 是否使用基础角色的权限 
                     sb.Append(" UNION SELECT " + BaseUserRoleEntity.FieldRoleId);
-                    sb.Append(" FROM " + BaseUserRoleEntity.TableName);
-                    sb.Append(" WHERE ( " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.TableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId));
+                    sb.Append(" FROM " + BaseUserRoleEntity.CurrentTableName);
+                    sb.Append(" WHERE ( " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId));
                     sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
                     sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ) ");
 
-                    dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.TableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
+                    dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
                 }
 
                 /*
@@ -649,12 +732,12 @@ namespace DotNet.Business
                 */
 
                 sb.Append(") B ");
-                sb.Append("   WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseRoleEntity.TableName + "_" + BasePermissionEntity.FieldResourceCategory));
-                sb.Append("        AND " + CurrentTableName + "." + BasePermissionEntity.FieldResourceId + " = B." + BaseUserRoleEntity.FieldRoleId);
-                sb.Append("        AND " + CurrentTableName + "." + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append("        AND " + CurrentTableName + "." + BasePermissionEntity.FieldDeleted + " = 0 ");
+                sb.Append(" WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseRoleEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory));
+                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldResourceId + " = B." + BaseUserRoleEntity.FieldRoleId);
+                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldEnabled + " = 1 ");
+                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldDeleted + " = 0 ");
 
-                dbParameters.Add(DbHelper.MakeParameter(BaseRoleEntity.TableName + "_" + BasePermissionEntity.FieldResourceCategory, roleTableName));
+                dbParameters.Add(DbHelper.MakeParameter(BaseRoleEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory, roleTableName));
 
                 var ids = new List<string>();
                 errorMark = 3;
@@ -682,11 +765,11 @@ namespace DotNet.Business
                         sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled));
                         sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted));
                         // dt = DbHelper.Fill(sql);
-                        // string[] organizePermission = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldPermissionId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                        // string[] organizationPermission = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldPermissionId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                         // 2015-12-02 吉日嘎拉 优化参数，用ExecuteReader，提高效率节约内存。
                         dbParameters = new List<IDbDataParameter>
                         {
-                            DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.TableName),
+                            DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.CurrentTableName),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, companyId),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldDeleted, 0)
@@ -700,7 +783,7 @@ namespace DotNet.Business
                                 ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
                             }
                         }
-                        // string[] organizePermission = ids.ToArray();
+                        // string[] organizationPermission = ids.ToArray();
                         result = StringUtil.Concat(result, ids.ToArray());
                     }
                 }
@@ -736,36 +819,36 @@ namespace DotNet.Business
             // 需要自动的能把前台判断过的权限，都记录到后台来
             var permissionId = string.Empty;
 #if (DEBUG)
-                if (string.IsNullOrEmpty(permissionId))
-                {
-                    BaseModuleEntity permissionEntity = new BaseModuleEntity();
-                    permissionEntity.Code = permissionCode;
-                    permissionEntity.FullName = permissionCode;
-                    permissionEntity.IsScope = 0;
-                    permissionEntity.IsPublic = 0;
-                    permissionEntity.IsMenu = 0;
-                    permissionEntity.IsVisible = 1;
-                    permissionEntity.AllowDelete = 1;
-                    permissionEntity.AllowEdit = 1;
-                    permissionEntity.DeletionStateCode = 0;
-                    permissionEntity.Enabled = 1;
-                    // 这里是防止主键重复？
-                    // permissionEntity.ID = BaseUtil.NewGuid();
-                    BaseModuleManager moduleManager = new BaseModuleManager();
-                    moduleManager.AddEntity(permissionEntity);
-                }
-                else
-                {
-                    // 更新最后一次访问日期，设置为当前服务器日期
-                    SqlBuilder sqlBuilder = new SqlBuilder(DbHelper);
-                    sqlBuilder.BeginUpdate(CurrentTableName);
-                    sqlBuilder.SetDbNow(BaseModuleEntity.FieldLastCall);
-                    sqlBuilder.SetWhere(BaseModuleEntity.FieldId, permissionId);
-                    sqlBuilder.EndUpdate();
-                }
+            if (string.IsNullOrEmpty(permissionId))
+            {
+                BaseModuleEntity permissionEntity = new BaseModuleEntity();
+                permissionEntity.Code = permissionCode;
+                permissionEntity.FullName = permissionCode;
+                permissionEntity.IsScope = 0;
+                permissionEntity.IsPublic = 0;
+                permissionEntity.IsMenu = 0;
+                permissionEntity.IsVisible = 1;
+                permissionEntity.AllowDelete = 1;
+                permissionEntity.AllowEdit = 1;
+                permissionEntity.Deleted = 0;
+                permissionEntity.Enabled = 1;
+                // 这里是防止主键重复？
+                // permissionEntity.ID = BaseUtil.NewGuid();
+                BaseModuleManager moduleManager = new BaseModuleManager();
+                moduleManager.AddEntity(permissionEntity);
+            }
+            else
+            {
+                // 更新最后一次访问日期，设置为当前服务器日期
+                SqlBuilder sqlBuilder = new SqlBuilder(DbHelper);
+                sqlBuilder.BeginUpdate(CurrentTableName);
+                sqlBuilder.SetDbNow(BaseModuleEntity.FieldLastCall);
+                sqlBuilder.SetWhere(BaseModuleEntity.FieldId, permissionId);
+                sqlBuilder.EndUpdate();
+            }
 #endif
 
-            permissionId = BaseModuleManager.GetIdByCodeByCache(systemCode, permissionCode);
+            permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
             if (string.IsNullOrEmpty(permissionId))
             {

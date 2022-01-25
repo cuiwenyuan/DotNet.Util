@@ -34,11 +34,31 @@ namespace DotNet.Business
         {
             var result = string.Empty;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT Max(" + field + ")" + " FROM " + CurrentTableName);
-            var returnObject = dbHelper.ExecuteScalar(sb.Put());
-            if (returnObject != null)
+            sb.Append("SELECT MAX(" + field + ")" + " FROM " + CurrentTableName);
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null)
             {
-                result = returnObject.ToString();
+                result = obj.ToString();
+            }
+            return result;
+        }
+        #endregion
+
+        #region public string GetMin(string field = "Id") 获取最大值
+        /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <param name="field">字段</param>
+        /// <returns>最大值</returns>
+        public string GetMin(string field = "Id")
+        {
+            var result = string.Empty;
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT MIN(" + field + ")" + " FROM " + CurrentTableName);
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null)
+            {
+                result = obj.ToString();
             }
             return result;
         }
@@ -50,14 +70,13 @@ namespace DotNet.Business
         /// 获取编码
         /// </summary>
         /// <param name="id">主键</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>编号</returns>
-        public virtual string GetCodeById(string id, int tableVersion = 4)
+        public virtual string GetCodeById(string id)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldId, id),
-                new KeyValuePair<string, object>(tableVersion == 4 ? BaseUtil.FieldDeletionStateCode : BaseUtil.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0)
             };
             return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldCode);
         }
@@ -129,14 +148,13 @@ namespace DotNet.Business
         /// 获取主键
         /// </summary>
         /// <param name="code">编号</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>主键</returns>
-        public virtual string GetIdByCode(string code, int tableVersion = 4)
+        public virtual string GetIdByCode(string code)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldCode, code),
-                new KeyValuePair<string, object>(tableVersion == 4 ? BaseUtil.FieldDeletionStateCode : BaseUtil.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0)
             };
             return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
         }
@@ -188,14 +206,14 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameter"></param>
         /// <param name="targetField"></param>
         /// <returns></returns>
-        public virtual string GetProperty(KeyValuePair<string, object> parameter, string targetField)
+        public virtual string GetProperty(KeyValuePair<string, object> whereParameter, string targetField)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                parameter
+                whereParameter
             };
             return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, targetField);
         }
@@ -218,13 +236,13 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="whereParameters"></param>
         /// <param name="targetField"></param>
         /// <param name="orderBy"></param>
         /// <returns></returns>
-        public virtual string GetProperty(List<KeyValuePair<string, object>> parameters, string targetField, string orderBy = null)
+        public virtual string GetProperty(List<KeyValuePair<string, object>> whereParameters, string targetField, string orderBy = null)
         {
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, targetField, 1, orderBy);
+            return DbUtil.GetProperty(DbHelper, CurrentTableName, whereParameters, targetField, 1, orderBy);
         }
         /// <summary>
         /// 获取编号

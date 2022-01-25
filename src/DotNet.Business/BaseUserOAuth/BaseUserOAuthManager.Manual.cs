@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// BaseUserOpenAuthManager
     /// 用户OAuth表管理层
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///	2020-02-12 版本：1.0 Troy.Cui 创建文件。
     ///		
@@ -69,7 +69,7 @@ namespace DotNet.Business
         /// <param name="name">OAuth Name</param>
         /// <param name="userId">用户编号</param>
         /// <returns>是否</returns>
-        public bool IsUnique(string name, int userId)
+        public bool IsUnique(string name, string userId)
         {
             var result = false;
             //安全过滤一下

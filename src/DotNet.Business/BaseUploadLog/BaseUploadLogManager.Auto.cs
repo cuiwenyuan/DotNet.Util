@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUploadLogManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2020, All rights reserved.
+//     Copyright (c) 2021, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -15,13 +15,13 @@ namespace DotNet.Business
     /// BaseUploadLogManager
     /// 文件上传日志
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
-    /// 2020-03-22 版本：1.0 Troy.Cui 创建文件。
+    /// 2021-09-30 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2020-03-22</date>
+    ///     <date>2021-09-30</date>
     /// </author>
     /// </summary>
     public partial class BaseUploadLogManager : BaseManager, IBaseManager
@@ -37,10 +37,11 @@ namespace DotNet.Business
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {
-                CurrentTableName = BaseUploadLogEntity.TableName;
+                CurrentTableName = BaseUploadLogEntity.CurrentTableName;
                 //按用户公司分表
-                //CurrentTableName = BaseUploadLogEntity.TableName + GetTableSuffix();
+                //CurrentTableName = BaseUploadLogEntity.CurrentTableName + GetTableSuffix();
             }
+            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseUploadLogEntity), "CurrentTableName");
             PrimaryKey = "Id";
         }
 
@@ -48,7 +49,7 @@ namespace DotNet.Business
         /// 构造函数
         /// <param name="tableName">指定表名</param>
         /// </summary>
-        public BaseUploadLogManager(string tableName)
+        public BaseUploadLogManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -57,8 +58,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        public BaseUploadLogManager(IDbHelper dbHelper)
-            : this()
+        public BaseUploadLogManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -67,12 +67,11 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseUploadLogManager(BaseUserInfo userInfo)
-            : this()
+        public BaseUploadLogManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseUploadLogEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseUploadLogEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -80,8 +79,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseUploadLogManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
+        public BaseUploadLogManager(BaseUserInfo userInfo, string tableName) : this(userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -91,12 +89,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseUploadLogManager(IDbHelper dbHelper, BaseUserInfo userInfo)
-            : this(dbHelper)
+        public BaseUploadLogManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this(dbHelper)
         {
             UserInfo = userInfo;
             //按用户公司分表
-            //CurrentTableName = BaseUploadLogEntity.TableName + GetTableSuffix();
+            //CurrentTableName = BaseUploadLogEntity.CurrentTableName + GetTableSuffix();
         }
 
         /// <summary>
@@ -105,8 +102,7 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">指定表名</param>
-        public BaseUploadLogManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
-            : this(dbHelper, userInfo)
+        public BaseUploadLogManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this(dbHelper, userInfo)
         {
             CurrentTableName = tableName;
         }
@@ -127,6 +123,28 @@ namespace DotNet.Business
         }
 
         /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public string AddOrUpdate(BaseUploadLogEntity entity, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (entity.Id == 0)
+            {
+                entity.Id = int.Parse(AddEntity(entity));
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
+            }
+        }
+
+        /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
@@ -141,19 +159,28 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseUploadLogEntity GetEntity(string id)
         {
-            return GetEntity(int.Parse(id));
+            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
         }
+
         /// <summary>
         /// 获取实体
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">主键</param>
         public BaseUploadLogEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseUploadLogEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseUploadLogEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
-            //var cacheTime = TimeSpan.FromMilliseconds(BaseSystemInfo.MemoryCacheMillisecond * 1000 * 60 * 12);
-            //return CacheUtil.Cache<BaseUploadLogEntity>(cacheKey, () => BaseEntity.Create<BaseUploadLogEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseUploadLogEntity>(cacheKey, () => BaseEntity.Create<BaseUploadLogEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
+
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public BaseUploadLogEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        {
+            return BaseEntity.Create<BaseUploadLogEntity>(ExecuteReader(parameters));
         }
 
         /// <summary>
@@ -203,35 +230,27 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                if (ValidateUtil.IsInt(UserInfo.CompanyId))
-                {
-                    sqlBuilder.SetValue(BaseUploadLogEntity.FieldUserCompanyId, UserInfo.CompanyId);
-                }
-                if (ValidateUtil.IsInt(UserInfo.SubCompanyId))
-                {
-                    sqlBuilder.SetValue(BaseUploadLogEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                }                
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUserCompanyId, UserInfo.CompanyId);
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateIp, UserInfo.IpAddress);
             }
             else
             {
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateIp, Utils.GetIp());
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateUserName, entity.CreateUserName);
             }
             sqlBuilder.SetDbNow(BaseUploadLogEntity.FieldCreateTime);
+            sqlBuilder.SetValue(BaseUploadLogEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseUploadLogEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, Utils.GetIp());
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -264,14 +283,11 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateBy, UserInfo.RealName);
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, UserInfo.IpAddress);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, Utils.GetIp());
             }
             sqlBuilder.SetDbNow(BaseUploadLogEntity.FieldUpdateTime);
+            sqlBuilder.SetValue(BaseUploadLogEntity.FieldUpdateIp, Utils.GetIp());
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
             //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
@@ -299,7 +315,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFileSize, entity.FileSize);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldRemark, entity.Remark);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseUploadLogEntity.FieldDeleted, entity.DeletionStateCode);
+            sqlBuilder.SetValue(BaseUploadLogEntity.FieldDeleted, entity.Deleted);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldEnabled, entity.Enabled);
         }
 
