@@ -51,19 +51,10 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 创建区域服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IAreaService CreateAreaService()
-        {
-            return new AreaService();
-        }
-
-        /// <summary>
         /// 创建登录服务
         /// </summary>
         /// <returns></returns>
-        public virtual ILogonService CreateLogonService()
+        public virtual IBaseUserLogonService CreateLogonService()
         {
             return new LogonService();
         }
@@ -72,216 +63,117 @@ namespace DotNet.Business
         /// 创建序列服务
         /// </summary>
         /// <returns></returns>
-        public virtual ISequenceService CreateSequenceService()
+        public virtual IBaseSequenceService CreateSequenceService()
         {
-            return new SequenceService();
+            return new BaseSequenceService();
         }
 
         /// <summary>
         /// 创建用户服务
         /// </summary>
         /// <returns></returns>
-        public virtual IUserService CreateUserService()
+        public virtual IBaseUserService CreateUserService()
         {
-            return new UserService();
+            return new BaseUserService();
         }
 
         /// <summary>
         /// 创建日志服务
         /// </summary>
         /// <returns></returns>
-        public virtual ILogService CreateLogService()
+        public virtual IBaseLogService CreateLogService()
         {
             return new LogService();
-        }
-
-        /// <summary>
-        /// 创建站点服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IStationService CreateStationService()
-        {
-            return new StationService();
         }
 
         /// <summary>
         /// 创建异常服务
         /// </summary>
         /// <returns></returns>
-        public virtual IExceptionService CreateExceptionService()
+        public virtual IBaseExceptionService CreateExceptionService()
         {
-            return new ExceptionService();
+            return new BaseExceptionService();
         }
 
         /// <summary>
         /// 创建权限服务
         /// </summary>
         /// <returns></returns>
-        public virtual IPermissionService CreatePermissionService()
+        public virtual IBasePermissionService CreatePermissionService()
         {
-            return new PermissionService();
+            return new BasePermissionService();
         }
 
         /// <summary>
         /// 创建组织机构服务
         /// </summary>
         /// <returns></returns>
-        public virtual IOrganizationService CreateOrganizationService()
+        public virtual IBaseOrganizationService CreateOrganizationService()
         {
-            return new OrganizationService();
-        }
-
-        /// <summary>
-        /// 创建部门服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IDepartmentService CreateDepartmentService()
-        {
-            return new DepartmentService();
+            return new BaseOrganizationService();
         }
 
         /// <summary>
         /// 创建字典服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseItemsService CreateBaseItemsService()
+        public virtual IBaseDictionaryService CreateBaseDictionaryService()
         {
-            return new BaseItemsService();
+            return new BaseDictionaryService();
         }
 
         /// <summary>
         /// 创建字典明细服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseItemDetailsService CreateBaseItemDetailsService()
+        public virtual IBaseDictionaryItemService CreateBaseDictionaryItemService()
         {
-            return new BaseItemDetailsService();
-        }
-
-        /// <summary>
-        /// 创建字典服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IBaseItemsService CreateItemsService()
-        {
-            return new ItemsService();
-        }
-
-        /// <summary>
-        /// 创建字典明细服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IBaseItemDetailsService CreateItemDetailsService()
-        {
-            return new ItemDetailsService();
+            return new BaseDictionaryItemService();
         }
 
         /// <summary>
         /// 创建模块菜单服务
         /// </summary>
         /// <returns></returns>
-        public virtual IModuleService CreateModuleService()
+        public virtual IBaseModuleService CreateModuleService()
         {
-            return new ModuleService();
-        }
-
-        /// <summary>
-        /// 创建手机服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IMobileService CreateMobileService()
-        {
-            return new MobileService();
+            return new BaseModuleService();
         }
 
         /// <summary>
         /// 创建修改记录服务
         /// </summary>
         /// <returns></returns>
-        public virtual IModifyRecordService CreateModifyRecordService()
+        public virtual IBaseChangeLogService CreateChangeLogService()
         {
-            return new ModifyRecordService();
+            return new BaseChangeLogService();
         }
 
         /// <summary>
         /// 创建员工服务
         /// </summary>
         /// <returns></returns>
-        public virtual IStaffService CreateStaffService()
+        public virtual IBaseStaffService CreateStaffService()
         {
-            return new StaffService();
+            return new BaseStaffService();
         }
 
         /// <summary>
         /// 创建角色服务
         /// </summary>
         /// <returns></returns>
-        public virtual IRoleService CreateRoleService()
+        public virtual IBaseRoleService CreateRoleService()
         {
-            return new RoleService();
-        }
-
-        /// <summary>
-        /// 创建语言服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual ILanguageService CreateLanguageService()
-        {
-            return new LanguageService();
-        }
-
-        /// <summary>
-        /// 创建消息服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IMessageService CreateMessageService()
-        {
-            return new MessageService();
-        }
-
-        /// <summary>
-        /// 创建文件服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IFileService CreateFileService()
-        {
-            return new FileService();
-        }
-
-        /// <summary>
-        /// 创建文件夹服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IFolderService CreateFolderService()
-        {
-            return new FolderService();
+            return new BaseRoleService();
         }
 
         /// <summary>
         /// 创建参数服务
         /// </summary>
         /// <returns></returns>
-        public virtual IParameterService CreateParameterService()
+        public virtual IBaseParameterService CreateParameterService()
         {
-            return new ParameterService();
-        }
-
-        /// <summary>
-        /// 创建服务授权服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual IServicesLicenseService CreateServicesLicenseService()
-        {
-            return new ServicesLicenseService();
-        }
-
-        /// <summary>
-        /// 创建表字段服务
-        /// </summary>
-        /// <returns></returns>
-        public virtual ITableColumnsService CreateTableColumnsService()
-        {
-            return new TableColumnsService();
+            return new BaseParameterService();
         }
     }
 }

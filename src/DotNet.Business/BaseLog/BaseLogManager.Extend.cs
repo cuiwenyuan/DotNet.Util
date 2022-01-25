@@ -36,30 +36,29 @@ namespace DotNet.Business
         /// <param name="userRealName"></param>
         /// <param name="searchKey">搜索关键词</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">页码</param>
+        /// <param name="pageNo">页码</param>
         /// <param name="pageSize">每页记录数</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序规则</param>
         /// <returns></returns>
-        public DataTable GetDataTableByPage(string processId, string processName, string methodId, string methodName, string userRealName, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC")
+        public DataTable GetDataTableByPage(string processId, string processName, string methodId, string methodName, string userRealName, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
-            pageIndex++;
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             
             ////子系统
             //if (!string.IsNullOrEmpty(processId))
             //{
-            //    sb.Append(" AND " + BaseLogEntity.TableName + "." + BaseLogEntity.field + " = N'" + systemCode + "'");
+            //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.field + " = N'" + systemCode + "'");
             //}
             ////用户主键
             //if (!string.IsNullOrEmpty(userId))
             //{
-            //    sb.Append(" AND " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldUserId + " = N'" + userId + "'");
+            //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserId + " = N'" + userId + "'");
             //}
             ////用户名
             //if (!string.IsNullOrEmpty(userName))
             //{
-            //    sb.Append(" AND " + BaseLogEntity.TableName + "." + BaseLogEntity.FieldUserName + " = N'" + userName + "'");
+            //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserName + " = N'" + userName + "'");
             //}
 
             //关键词
@@ -69,7 +68,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldService + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
         #endregion
     }

@@ -6,7 +6,6 @@ using System.Web;
 
 namespace DotNet.Business
 {
-    using Model;
     using Util;
 
     /// <summary>
@@ -154,26 +153,29 @@ namespace DotNet.Business
                 }
 
                 // 检查服务的有效性，是否调用限制到了？是否有相应的权限
-                result = BaseServicesLicenseManager.CheckService(appKey, appSecret, false, 0, 0, systemCode, permissionCode);
-                if (!result.Status)
-                {
-                    return result;
-                }
+                //result = BaseServicesLicenseManager.CheckService(appKey, appSecret, false, 0, 0, systemCode, permissionCode);
+                //if (!result.Status)
+                //{
+                //    return result;
+                //}
 
                 // 从接口确定当前调用者
                 var userEntity = BaseUserManager.GetEntityByCodeByCache(appKey);
                 if (userEntity != null)
                 {
-                    userInfo = new BaseUserInfo();
-                    userInfo.Id = userEntity.Id;
-                    userInfo.Code = userEntity.Code;
-                    userInfo.UserName = userEntity.UserName;
-                    userInfo.NickName = userEntity.NickName;
-                    userInfo.RealName = userEntity.RealName;
-                    userInfo.CompanyId = userEntity.CompanyId;
-                    userInfo.CompanyCode = userEntity.CompanyCode;
-                    userInfo.CompanyName = userEntity.CompanyName;
-                    userInfo.IpAddress = ipAddress;
+                    userInfo = new BaseUserInfo
+                    {
+                        Id = userEntity.Id.ToString(),
+                        UserId = userEntity.Id,
+                        Code = userEntity.Code,
+                        UserName = userEntity.UserName,
+                        NickName = userEntity.NickName,
+                        RealName = userEntity.RealName,
+                        CompanyId = userEntity.CompanyId.ToString(),
+                        CompanyCode = userEntity.CompanyCode,
+                        CompanyName = userEntity.CompanyName,
+                        IpAddress = ipAddress
+                    };
                 }
             }
 

@@ -11,7 +11,7 @@ namespace DotNet.Business
     /// BaseRoleManager
     /// 角色管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2016.02.29 版本：1.0 JiRiGaLa	分离方法。
     /// 
@@ -31,10 +31,10 @@ namespace DotNet.Business
             var result = 0;
 
             var systemCodes = BaseSystemManager.GetSystemCodes();
-            for (var i = 0; i < systemCodes.Length; i++)
+            foreach (var entity in systemCodes)
             {
-                GetEntitiesByCache(systemCodes[i], true);
-                result += CachePreheating(systemCodes[i]);
+                GetEntitiesByCache(entity.ItemKey, true);
+                result += CachePreheating(entity.ItemKey);
             }
 
             return result;
@@ -65,7 +65,7 @@ namespace DotNet.Business
                         // 设置角色本身的缓存
                         SetCache(systemCode, entity);
                         // 重置权限缓存数据
-                        BaseRolePermissionManager.ResetPermissionByCache(systemCode, entity.Id);
+                        BasePermissionManager.ResetPermissionByCache(systemCode, null, entity.Id.ToString());
                         result++;
                         System.Console.WriteLine(result + " : " + entity.RealName);
                     }
@@ -90,9 +90,10 @@ namespace DotNet.Business
             if (roleEntity != null)
             {
                 var systemCodes = BaseSystemManager.GetSystemCodes();
-                for (var i = 0; i < systemCodes.Length; i++)
+                foreach (var entity in systemCodes)
                 {
-                    BaseRolePermissionManager.ResetPermissionByCache(systemCodes[i], roleId);
+                    GetEntitiesByCache(entity.ItemKey, true);
+                    result += CachePreheating(entity.ItemKey);
                 }
             }
 
@@ -111,10 +112,10 @@ namespace DotNet.Business
             foreach (var entity in list)
             {
                 // 2016-02-29 吉日嘎拉 强制刷新缓存
-                var roleEntity = GetEntityByCache(systemCode, entity.Id, true);
+                var roleEntity = GetEntityByCache(systemCode, entity.Id.ToString(), true);
                 if (roleEntity != null)
                 {
-                    BaseRolePermissionManager.ResetPermissionByCache(systemCode, entity.Id);
+                    BasePermissionManager.ResetPermissionByCache(systemCode, null, entity.Id.ToString());
                 }
             }
 

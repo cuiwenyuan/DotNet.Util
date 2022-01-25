@@ -70,9 +70,14 @@ namespace DotNet.Business
         public string SelectFields { get; set; } = "*";
 
         /// <summary>
-        /// 当前控制的表名
+        /// 当前表名
         /// </summary>
         public string CurrentTableName { get; set; }
+
+        /// <summary>
+        /// 当前表备注
+        /// </summary>
+        public string CurrentTableDescription { get; set; }
 
         /// <summary>
         /// 当前索引
@@ -127,8 +132,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="dbHelper">数据库帮助接口</param>
-        public BaseManager(IDbHelper dbHelper)
-            : this()
+        public BaseManager(IDbHelper dbHelper) : this()
         {
             DbHelper = dbHelper;
         }
@@ -138,9 +142,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库帮助接口</param>
         /// <param name="userInfo">用户信息</param>
-        public BaseManager(IDbHelper dbHelper, BaseUserInfo userInfo)
-            : this(dbHelper)
+        public BaseManager(IDbHelper dbHelper, BaseUserInfo userInfo) : this()
         {
+            DbHelper = dbHelper;
             UserInfo = userInfo;
         }
 
@@ -149,9 +153,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dbHelper">数据库帮助接口</param>
         /// <param name="tableName">表名</param>
-        public BaseManager(IDbHelper dbHelper, string tableName)
-            : this(dbHelper)
+        public BaseManager(IDbHelper dbHelper, string tableName) : this()
         {
+            DbHelper = dbHelper;
             CurrentTableName = tableName;
         }
 
@@ -159,8 +163,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="tableName">表名</param>
-        public BaseManager(string tableName)
-            : this()
+        public BaseManager(string tableName) : this()
         {
             CurrentTableName = tableName;
         }
@@ -169,8 +172,7 @@ namespace DotNet.Business
         /// 构造函数
         /// </summary>
         /// <param name="userInfo">用户信息</param>
-        public BaseManager(BaseUserInfo userInfo)
-            : this()
+        public BaseManager(BaseUserInfo userInfo) : this()
         {
             UserInfo = userInfo;
         }
@@ -179,9 +181,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">表名</param>
-        public BaseManager(BaseUserInfo userInfo, string tableName)
-            : this(userInfo)
+        public BaseManager(BaseUserInfo userInfo, string tableName) : this()
         {
+            UserInfo = userInfo;
             CurrentTableName = tableName;
         }
 
@@ -191,9 +193,10 @@ namespace DotNet.Business
         /// <param name="dbHelper">数据库帮助接口</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="tableName">表名</param>
-        public BaseManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName)
-            : this(dbHelper, userInfo)
+        public BaseManager(IDbHelper dbHelper, BaseUserInfo userInfo, string tableName) : this()
         {
+            DbHelper = dbHelper;
+            UserInfo = userInfo;
             CurrentTableName = tableName;
         }
 
@@ -281,9 +284,9 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id">编号</param>
         /// <returns></returns>
-        public virtual int DeleteObject(object id)
+        public virtual int DeleteEntity(object id)
         {
-            return DeleteObject(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
+            return DeleteEntity(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
         }
 
         /// <summary>
@@ -291,7 +294,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <returns></returns>
-        public virtual int DeleteObject(params KeyValuePair<string, object>[] parameters)
+        public virtual int DeleteEntity(params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
             for (var i = 0; i < parameters.Length; i++)
@@ -656,9 +659,7 @@ namespace DotNet.Business
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("UPDATE " + CurrentTableName
-                            + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) "
-                            + " WHERE (" + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
+            sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
             var names = new string[1];
             var values = new Object[1];
             names[0] = BaseUtil.FieldId;

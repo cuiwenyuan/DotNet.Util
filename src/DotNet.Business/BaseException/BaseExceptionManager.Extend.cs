@@ -56,7 +56,7 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 entity.IpAddress = UserInfo.IpAddress;
-                entity.CreateUserId = UserInfo.Id;
+                entity.CreateUserId = UserInfo.UserId;
                 entity.CreateBy = UserInfo.RealName;
             }
             else
@@ -125,7 +125,7 @@ namespace DotNet.Business
         public DataTable Search(string searchKey)
         {
             var sql = "SELECT * "
-                    + " FROM " + BaseExceptionEntity.TableName
+                    + " FROM " + BaseExceptionEntity.CurrentTableName
                     + " WHERE 1 = 1 ";
 
             var dbParameters = new List<IDbDataParameter>();
@@ -147,7 +147,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMachineName, searchKey));
                 dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMessage, searchKey));
             }
-            var dt = new DataTable(BaseExceptionEntity.TableName);
+            var dt = new DataTable(BaseExceptionEntity.CurrentTableName);
             DbHelper.Fill(dt, sql, dbParameters.ToArray());
             return dt;
         }
@@ -161,39 +161,38 @@ namespace DotNet.Business
         /// <param name="endTime">创建结束时间</param>
         /// <param name="searchKey">搜索关键词</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">页码</param>
+        /// <param name="pageNo">页码</param>
         /// <param name="pageSize">每页记录数</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序规则</param>
         /// <returns></returns>
-        public DataTable GetDataTableByPage(string startTime, string endTime, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC")
+        public DataTable GetDataTableByPage(string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
-            pageIndex++;
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             
             ////子系统
             //if (!string.IsNullOrEmpty(processId))
             //{
-            //    sb.Append(" AND " + BaseExceptionEntity.TableName + "." + BaseExceptionEntity.field + " = N'" + systemCode + "'");
+            //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.field + " = N'" + systemCode + "'");
             //}
             ////用户主键
             //if (!string.IsNullOrEmpty(userId))
             //{
-            //    sb.Append(" AND " + BaseExceptionEntity.TableName + "." + BaseExceptionEntity.FieldUserId + " = N'" + userId + "'");
+            //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserId + " = N'" + userId + "'");
             //}
             ////用户名
             //if (!string.IsNullOrEmpty(userName))
             //{
-            //    sb.Append(" AND " + BaseExceptionEntity.TableName + "." + BaseExceptionEntity.FieldUserName + " = N'" + userName + "'");
+            //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserName + " = N'" + userName + "'");
             //}
             //创建日期
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseExceptionEntity.TableName + "." + BaseExceptionEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " >= '" + startTime + "'");
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseExceptionEntity.TableName + "." + BaseExceptionEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))
@@ -202,7 +201,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldId + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
         #endregion
 

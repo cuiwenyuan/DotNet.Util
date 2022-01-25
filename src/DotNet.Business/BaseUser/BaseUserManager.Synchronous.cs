@@ -8,7 +8,7 @@ namespace DotNet.Business
     /// BaseUserManager
     /// 用户管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2013.11.11 版本：1.0 JiRiGaLa	主键整理。
     /// 
@@ -47,7 +47,7 @@ namespace DotNet.Business
             if (!all)
             {
                 int id = 0;
-                commandText = "SELECT MAX(id) FROM " + BaseUserEntity.TableName + " WHERE id < 1000000";
+                commandText = "SELECT MAX(id) FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 1000000";
                 Object maxObject = DbHelper.ExecuteScalar(commandText);
                 if (maxObject != null)
                 {
@@ -86,59 +86,59 @@ namespace DotNet.Business
                 if (string.IsNullOrEmpty(conditional))
                 {
                     // 不不存在的用户删除掉tab_user是远程试图
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 10000 AND bl_type != 1)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 10000 AND bl_type != 1)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 20000 AND id >= 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id <20000 AND bl_type != 1 AND id >= 10000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 20000 AND id >= 10000 AND id NOT IN (SELECT id FROM tab_user WHERE id <20000 AND bl_type != 1 AND id >= 10000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 30000 AND id >= 20000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 30000 AND bl_type != 1 AND id >= 20000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 30000 AND id >= 20000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 30000 AND bl_type != 1 AND id >= 20000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 40000 AND id >= 30000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 40000 AND bl_type != 1 AND id >= 30000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 40000 AND id >= 30000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 40000 AND bl_type != 1 AND id >= 30000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 50000 AND id >= 40000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 50000 AND bl_type != 1 AND id >= 40000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 50000 AND id >= 40000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 50000 AND bl_type != 1 AND id >= 40000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 60000 AND id >= 50000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 60000 AND bl_type != 1 AND id >= 50000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 60000 AND id >= 50000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 60000 AND bl_type != 1 AND id >= 50000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 70000 AND id >= 60000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 70000 AND bl_type != 1 AND id >= 60000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 70000 AND id >= 60000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 70000 AND bl_type != 1 AND id >= 60000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 80000 AND id >= 70000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 80000 AND bl_type != 1 AND id >= 70000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 80000 AND id >= 70000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 80000 AND bl_type != 1 AND id >= 70000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 90000 AND id >= 80000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 90000 AND bl_type != 1 AND id >= 80000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 90000 AND id >= 80000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 90000 AND bl_type != 1 AND id >= 80000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 100000 AND id >= 90000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 100000 AND bl_type != 1 AND id >= 90000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 100000 AND id >= 90000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 100000 AND bl_type != 1 AND id >= 90000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 110000 AND id >= 100000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 110000 AND bl_type != 1 AND id >= 100000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 110000 AND id >= 100000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 110000 AND bl_type != 1 AND id >= 100000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 120000 AND id >= 110000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 120000 AND bl_type != 1 AND id >= 110000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 120000 AND id >= 110000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 120000 AND bl_type != 1 AND id >= 110000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 130000 AND id >= 120000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 130000 AND bl_type != 1 AND id >= 120000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 130000 AND id >= 120000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 130000 AND bl_type != 1 AND id >= 120000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE id < 1000000 AND id >= 130000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 1000000 AND bl_type != 1 AND id >= 130000)";
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE id < 1000000 AND id >= 130000 AND id NOT IN (SELECT id FROM tab_user WHERE id < 1000000 AND bl_type != 1 AND id >= 130000)";
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
                 }
@@ -170,7 +170,7 @@ namespace DotNet.Business
                     // commandText += " AND TO_CHAR(SYSDATE,'yy-mm-dd') = TO_CHAR(MODIFIER_DATE,'yy-mm-dd') ";
                 }
                 System.Console.WriteLine(commandText);
-                BaseOrganizationManager organizeManager = new BaseOrganizationManager(this.UserInfo);
+                BaseOrganizationManager organizationManager = new BaseOrganizationManager(this.UserInfo);
                 BaseUserContactManager userContactManager = new BaseUserContactManager(this.UserInfo);
 
                 int deleteFlag = 0;
@@ -178,7 +178,7 @@ namespace DotNet.Business
                 {
                     while (dataReader.Read())
                     {
-                        result += ImportUser(dataReader, organizeManager, userLogonManager, userContactManager);
+                        result += ImportUser(dataReader, organizationManager, userLogonManager, userContactManager);
                         deleteFlag++;
                     }
                     dataReader.Close();
@@ -186,7 +186,7 @@ namespace DotNet.Business
                 if (deleteFlag == 0 && !string.IsNullOrWhiteSpace(conditional) && conditional.IndexOf("ONLY_USER_NAME") < 0)
                 {
                     //删除BASEUSER
-                    commandText = "DELETE FROM " + BaseUserEntity.TableName + " WHERE Id < 1000000 " + conditional;
+                    commandText = "DELETE FROM " + BaseUserEntity.CurrentTableName + " WHERE Id < 1000000 " + conditional;
                     userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
                     
@@ -201,7 +201,7 @@ namespace DotNet.Business
                 {
                     // 设置用户的公司主键，有时候不需要同步所有的账户，只同步增量账户
                     // 设置用户的公司主键
-                    commandText = @"UPDATE " + BaseUserEntity.TableName + " SET companyid = (SELECT MAX(Id) FROM baseorganize WHERE baseorganize.fullname = " + BaseUserEntity.TableName + ".companyname AND baseorganize.ID < 1000000) WHERE companyId IS NULL OR companyId = ''";
+                    commandText = @"UPDATE " + BaseUserEntity.CurrentTableName + " SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = " + BaseUserEntity.CurrentTableName + ".companyname AND baseorganization.ID < 1000000) WHERE companyId IS NULL OR companyId = ''";
                     // 公司名称重复的数据需要找出来
                     this.DbHelper.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);

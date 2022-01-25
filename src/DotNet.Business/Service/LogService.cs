@@ -28,7 +28,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public class LogService : ILogService
+    public class LogService : IBaseLogService
     {
         /// <summary>
         /// 业务中心数据库连接
@@ -66,8 +66,8 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var sqlBuilder = new SqlBuilder(dbHelper);
-                sqlBuilder.BeginUpdate(BaseLogEntity.TableName);
-                // sqlBuilder.SetDBNow(BaseLogEntity.FieldModifiedOn);
+                sqlBuilder.BeginUpdate(BaseLogEntity.CurrentTableName);
+                // sqlBuilder.SetDBNow(BaseLogEntity.FieldUpdateTime);
                 sqlBuilder.SetWhere(BaseLogEntity.FieldId, logId);
                 sqlBuilder.EndUpdate();
             });
@@ -79,7 +79,7 @@ namespace DotNet.Business
         /// 重置用户访问情况
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="ids">日志主键</param>
+        /// <param name="ids">用户主键</param>
         /// <returns>影响行数</returns>
         public int ResetVisitInfo(BaseUserInfo userInfo, string[] ids)
         {
@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByDate(BaseUserInfo userInfo, string beginDate, string endDate, string userId, string moduleId, string processId = null)
         {
-            var dt = new DataTable(BaseLogEntity.TableName);
+            var dt = new DataTable(BaseLogEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -122,18 +122,18 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    if (BaseUserManager.IsAdministrator(userInfo.Id))
+                    if (BaseUserManager.IsAdministrator(userInfo.Id.ToString()))
                     {
                         // dt = logManager.GetDataTableByDate(BaseLogEntity.FieldProcessId, moduleId, beginDate, endDate, processId);
                     }
                     else
                     {
                         var basePermissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-                        var userIds = basePermissionScopeManager.GetUserIds(userInfo.SystemCode, userInfo.Id, "Resource.ManagePermission");
+                        var userIds = basePermissionScopeManager.GetUserIds(userInfo.SystemCode, userInfo.Id.ToString(), "Resource.ManagePermission");
                         // dt = logManager.GetDataTableByDateByUserIds(userIds, BaseLogEntity.FieldProcessId, moduleId, beginDate, endDate, processId);
                     }
                 }
-                dt.TableName = BaseLogEntity.TableName;
+                dt.TableName = BaseLogEntity.CurrentTableName;
             });
             return dt;
         }
@@ -150,7 +150,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByModule(BaseUserInfo userInfo, string processId, string beginDate, string endDate)
         {
-            var result = new DataTable(BaseLogEntity.TableName);
+            var result = new DataTable(BaseLogEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -163,10 +163,10 @@ namespace DotNet.Business
                 // else
                 // {
                 var permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-                var userIds = permissionScopeManager.GetUserIds(userInfo.SystemCode, userInfo.Id, "Resource.ManagePermission");
+                var userIds = permissionScopeManager.GetUserIds(userInfo.SystemCode, userInfo.Id.ToString(), "Resource.ManagePermission");
                 // dt = logManager.GetDataTableByDateByUserIds(userIds, BaseLogEntity.FieldProcessId, processId, beginDate, endDate);
                 // }
-                result.TableName = BaseLogEntity.TableName;
+                result.TableName = BaseLogEntity.CurrentTableName;
             });
 
             return result;
@@ -184,36 +184,36 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByUser(BaseUserInfo userInfo, string userId, string beginDate, string endDate)
         {
-            var dt = new DataTable(BaseLogEntity.TableName);
+            var dt = new DataTable(BaseLogEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 // var logManager = new BaseLogManager(dbHelper, result);
                 // dt = logManager.GetDataTableByDate(BaseLogEntity.FieldUserId, userId, beginDate, endDate);
-                dt.TableName = BaseLogEntity.TableName;
+                dt.TableName = BaseLogEntity.CurrentTableName;
             });
             return dt;
         }
         #endregion
 
-        #region public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageIndex, int pageSize, string permissionCode, string condition, string sort = null);
+        #region public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string permissionCode, string condition, string sort = null);
         /// <summary>
         /// 查询用户列表
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="recordCount">记录条数</param>
-        /// <param name="pageIndex">第几页</param>
+        /// <param name="pageNo">第几页</param>
         /// <param name="pageSize">每页显示条数</param>
         /// <param name="permissionCode">操作权限</param>
         /// <param name="conditions">条件</param>
         /// <param name="sort">排序</param>
         /// <returns>数据表</returns>
-        public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageIndex, int pageSize, string permissionCode, string conditions, string sort = null)
+        public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string permissionCode, string conditions, string sort = null)
         {
             var departmentId = string.Empty;
             var myrecordCount = 0;
-            var dt = new DataTable(BaseUserEntity.TableName);
+            var dt = new DataTable(BaseUserEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -224,8 +224,8 @@ namespace DotNet.Business
                     {
                         ShowUserLogonInfo = true
                     };
-                    dt = userManager.SearchLogByPage(out myrecordCount, pageIndex, pageSize, permissionCode, conditions, sort);
-                    dt.TableName = BaseUserEntity.TableName;
+                    dt = userManager.SearchLogByPage(out myrecordCount, pageNo, pageSize, permissionCode, conditions, sort);
+                    dt.TableName = BaseUserEntity.CurrentTableName;
                 }
                 else
                 {
@@ -307,14 +307,14 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableApplicationByDate(BaseUserInfo userInfo, string beginDate, string endDate)
         {
-            var dt = new DataTable(BaseLogEntity.TableName);
+            var dt = new DataTable(BaseLogEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessBusinessDb(userInfo, parameter, (dbHelper) =>
             {
                 // var manager = new BaseLogManager(dbHelper, result);
                 // dt = manager.GetDataTableByDate(string.Empty, string.Empty, beginDate, endDate);
-                dt.TableName = BaseLogEntity.TableName;
+                dt.TableName = BaseLogEntity.CurrentTableName;
             });
             return dt;
         }

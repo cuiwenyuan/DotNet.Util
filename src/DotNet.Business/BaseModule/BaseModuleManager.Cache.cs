@@ -74,7 +74,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
 
-            if (entity != null && !string.IsNullOrEmpty(entity.Id))
+            if (entity != null && !string.IsNullOrEmpty(entity.Id.ToString()))
             {
                 var key = systemCode + ".Module." + entity.Id;
                 CacheUtil.Set<BaseModuleEntity>(key, entity);

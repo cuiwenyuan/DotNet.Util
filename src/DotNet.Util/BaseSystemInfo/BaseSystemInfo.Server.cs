@@ -86,21 +86,53 @@ namespace DotNet.Util
             set => _mobileHost = value;
         }
         /// <summary>
-        /// WebHost
+        /// 当前应用部署的完整URL，用户前端js的Ajax调用，最后带/符号
+        /// </summary>
+        public static string BaseUrl
+        {
+            get
+            {
+                var baseUrl = string.Empty;
+                if (baseUrl.IsNullOrEmpty() && ConfigurationManager.AppSettings["BaseUrl"] != null)
+                {
+                    baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+                }
+                if (baseUrl.IsNullOrEmpty() && ConfigurationManager.AppSettings["WebHost"] != null)
+                {
+                    baseUrl = ConfigurationManager.AppSettings["WebHost"];
+                }
+                if (baseUrl.IsNullOrEmpty() && !Host.IsNullOrWhiteSpace())
+                {
+                    if (Host.IndexOf("http", StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        baseUrl = "http://" + Host + "/";
+                    }
+                    else
+                    {
+                        baseUrl = Host + "/";
+                    }
+                }
+                //最后的/符号
+                if (!baseUrl.EndsWith("/"))
+                {
+                    baseUrl += "/";
+                }
+                return baseUrl;
+            }
+        }
+        /// <summary>
+        /// WebHost应用主机
         /// </summary>
         public static string WebHost
         {
             get
             {
-                // 这个是测试用的
-                // return "http://mas.wangcaisoft.com/";
-
                 var webHost = "http://userCenter.wangcaisoft.com/";
                 if (ConfigurationManager.AppSettings["WebHost"] != null)
                 {
                     webHost = ConfigurationManager.AppSettings["WebHost"];
                 }
-                if (!string.IsNullOrWhiteSpace(Host))
+                if (webHost.IsNullOrEmpty() && !Host.IsNullOrWhiteSpace())
                 {
                     if (Host.IndexOf("http", StringComparison.OrdinalIgnoreCase) < 0)
                     {

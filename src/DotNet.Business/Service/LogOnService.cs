@@ -34,7 +34,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public partial class LogonService : ILogonService
+    public partial class LogonService : IBaseUserLogonService
     {
         /// <summary>
         /// 获取系统版本号
@@ -292,7 +292,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var userLogonManager = new BaseUserLogonManager();
-                userLogonManager.Online(userInfo.Id, onLineState);
+                userLogonManager.Online(userInfo.UserId, onLineState);
             });
         }
         #endregion
@@ -339,7 +339,7 @@ namespace DotNet.Business
             {
                 // 调用方法，并且返回运行结果
                 var userLogonManager = new BaseUserLogonManager();
-                result = userLogonManager.Update(entity);
+                result = userLogonManager.Update(entity, true);
             });
 
             return result;
@@ -417,7 +417,7 @@ namespace DotNet.Business
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 result = new UserLogonResult
                 {
-                    UserInfo = userManager.ChangePassword(userInfo.Id, oldPassword, newPassword),
+                    UserInfo = userManager.ChangePassword(userInfo.Id.ToString(), oldPassword, newPassword),
 
                     // 获取登录后信息
                     // result.Message = BaseParameterManager.GetParameterByCache("BaseNotice", "System", "Logon", "Message");
@@ -490,13 +490,13 @@ namespace DotNet.Business
                 };
                 var userEntity = BaseEntity.Create<BaseUserEntity>(userManager.GetDataTable(parameters));
                 // 判断是否为空的
-                if (userEntity != null && !string.IsNullOrEmpty(userEntity.Id))
+                if (userEntity != null && userEntity.Id > 0)
                 {
                     // 被锁定15分钟，不允许15分钟内登录，这时间是按服务器的时间来的。
                     var userLogonManager = new BaseUserLogonManager();
-                    var userLogonEntity = userLogonManager.GetEntity(userEntity.Id);
-                    userLogonEntity.LockStartDate = DateTime.Now;
-                    userLogonEntity.LockEndDate = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
+                    var userLogonEntity = userLogonManager.GetEntityByUserId(userEntity.Id);
+                    userLogonEntity.LockStartTime = DateTime.Now;
+                    userLogonEntity.LockEndTime = DateTime.Now.AddMinutes(BaseSystemInfo.PasswordErrorLockCycle);
                     result = userLogonManager.UpdateEntity(userLogonEntity) > 0;
                 }
             });
@@ -514,7 +514,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetUserDT(string taskId, BaseUserInfo userInfo)
         {
-            var result = new DataTable(BaseUserEntity.TableName);
+            var result = new DataTable(BaseUserEntity.CurrentTableName);
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
@@ -530,7 +530,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
                 };
                 result = userManager.GetDataTable(parameters, BaseUserEntity.FieldSortCode);
-                result.TableName = BaseUserEntity.TableName;
+                result.TableName = BaseUserEntity.CurrentTableName;
             });
 
             return result;
@@ -641,7 +641,7 @@ namespace DotNet.Business
                 smtpClient.Send(mailMessage);
 
                 var userManager = new BaseUserManager(userInfo);
-                userManager.SetPassword(userInfo.Id, userPassword);
+                userManager.SetPassword(userInfo.UserId, userPassword);
                 userManager.GetStateMessage();
                 if (userManager.StatusCode == Status.SetPasswordOk.ToString())
                 {
@@ -656,33 +656,33 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public DataTable GetDataTableByPage(string taskId, BaseUserInfo userInfo, out int recordCount, int pageIndex, int pageSize, string condition, List<KeyValuePair<string, object>> dbParameters, string order = null)
+        #region public DataTable GetDataTableByPage(string taskId, BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string condition, List<KeyValuePair<string, object>> dbParameters, string order = null)
         /// <summary>
         /// 分页查询
         /// </summary>
         /// <param name="taskId">任务标识</param>
         /// <param name="userInfo">用户</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
         /// <param name="order">排序</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string taskId, BaseUserInfo userInfo, out int recordCount, int pageIndex, int pageSize, string condition, List<KeyValuePair<string, object>> dbParameters, string order = null)
+        public DataTable GetDataTableByPage(string taskId, BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string condition, List<KeyValuePair<string, object>> dbParameters, string order = null)
         {
-            var result = new DataTable(BaseLoginLogEntity.TableName);
+            var result = new DataTable(BaseLogonLogEntity.CurrentTableName);
             var myRecordCount = 0;
 
             var parameter = ServiceInfo.Create(taskId, userInfo, MethodBase.GetCurrentMethod());
             // 这里需要连接到登录日志数据库服务器
-            ServiceUtil.ProcessLoginLogDb(userInfo, parameter, (dbHelper) =>
+            ServiceUtil.ProcessLogonLogDb(userInfo, parameter, (dbHelper) =>
             {
                 if (SecretUtil.IsSqlSafe(condition))
                 {
-                    var loginLogManager = new BaseLoginLogManager(dbHelper, userInfo);
-                    result = loginLogManager.GetDataTableByPage(out myRecordCount, pageIndex, pageSize, condition, dbHelper.MakeParameters(dbParameters), order);
-                    result.TableName = BaseLoginLogEntity.TableName;
+                    var loginLogManager = new BaseLogonLogManager(dbHelper, userInfo);
+                    result = loginLogManager.GetDataTableByPage(out myRecordCount, pageNo, pageSize, condition, dbHelper.MakeParameters(dbParameters), order);
+                    result.TableName = BaseLogonLogEntity.CurrentTableName;
                 }
                 else
                 {

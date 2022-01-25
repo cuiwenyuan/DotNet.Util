@@ -54,7 +54,7 @@ namespace DotNet.Business
                         return jsonResult;
                     }
                     // 这里需要是已经登录的用户，不是已经被踢掉的用户
-                    if (!DotNet.Business.WebUtil.ValidateOpenId(userInfo.Id, userInfo.OpenId))
+                    if (!WebUtil.ValidateOpenId(userInfo.Id.ToString(), userInfo.OpenId))
                     {
                         jsonResult.Status = false;
                         jsonResult.StatusCode = Status.ParameterError.ToString();
@@ -130,7 +130,7 @@ namespace DotNet.Business
                 return false;
             }
             // 用户的主键不是数字类型的?
-            if (!ValidateUtil.IsInt(userInfo.Id))
+            if (userInfo.UserId <= 0)
             {
                 return false;
             }
@@ -177,24 +177,39 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userId">用户主键</param>
         /// <param name="openId">用户的令牌</param>
-        /// <param name="cachingSystemCode"></param>
+        /// <param name="systemCode">子系统</param>
         /// <param name="useCaching">采用缓存</param>
         /// <param name="useDataBase">采用数据库</param>
         /// <param name="useUserCenterHost">采用用户中心接口</param>
         /// <returns>验证通过</returns>
-        public static bool ValidateOpenId(string userId, string openId, string cachingSystemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
+        public static bool ValidateOpenId(int userId, string openId, string systemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
+        {
+            return ValidateOpenId(userId.ToString(), openId, systemCode, useCaching, useDataBase, useUserCenterHost);
+        }
+
+        /// <summary>
+        /// 验证用户的令牌openId
+        /// </summary>
+        /// <param name="userId">用户主键</param>
+        /// <param name="openId">用户的令牌</param>
+        /// <param name="systemCode">子系统</param>
+        /// <param name="useCaching">采用缓存</param>
+        /// <param name="useDataBase">采用数据库</param>
+        /// <param name="useUserCenterHost">采用用户中心接口</param>
+        /// <returns>验证通过</returns>
+        public static bool ValidateOpenId(string userId, string openId, string systemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
         {
             var result = false;
 
-            if (string.IsNullOrEmpty(cachingSystemCode))
+            if (string.IsNullOrEmpty(systemCode))
             {
-                cachingSystemCode = string.Empty;
+                systemCode = string.Empty;
             }
 
             // 2016-03-14 吉日嘎拉、PDA系统的单独处理、其他的都认为是一样的。
-            if (!cachingSystemCode.Equals("PDA"))
+            if (!systemCode.Equals("PDA"))
             {
-                cachingSystemCode = string.Empty;
+                systemCode = string.Empty;
             }
 
             if (!string.IsNullOrWhiteSpace(openId))
@@ -203,13 +218,13 @@ namespace DotNet.Business
                 if (useCaching)
                 {
                     var key = string.Empty;
-                    if (string.IsNullOrEmpty(cachingSystemCode))
+                    if (string.IsNullOrEmpty(systemCode))
                     {
                         key = "openId:" + openId;
                     }
                     else
                     {
-                        key = "openId:" + cachingSystemCode + ":" + openId;
+                        key = "openId:" + systemCode + ":" + openId;
                     }
                     result = string.IsNullOrEmpty(CacheUtil.Get<string>(key));
                 }
@@ -218,13 +233,13 @@ namespace DotNet.Business
                 if (!result && useDataBase)
                 {
                     var userLogonManager = new BaseUserLogonManager();
-                    result = userLogonManager.ValidateOpenId(userId, openId, cachingSystemCode);
+                    result = userLogonManager.ValidateOpenId(userId, openId, systemCode);
                     if (result)
                     {
                         // 提高缓存效率、若读取到了，写入到缓存里去
                         if (!string.IsNullOrWhiteSpace(userId) && useCaching)
                         {
-                            SetUserOpenId(userId, openId, cachingSystemCode);
+                            SetUserOpenId(userId, openId, systemCode);
                         }
                         result = true;
                     }
@@ -236,9 +251,9 @@ namespace DotNet.Business
                     var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
                     var webClient = new WebClient();
                     var postValues = new NameValueCollection();
-                    if (!string.IsNullOrEmpty(cachingSystemCode))
+                    if (!string.IsNullOrEmpty(systemCode))
                     {
-                        postValues.Add("systemCode", cachingSystemCode);
+                        postValues.Add("systemCode", systemCode);
                     }
                     postValues.Add("ipAddress", Utils.GetIp());
                     postValues.Add("securityKey", BaseSystemInfo.SecurityKey);
@@ -274,7 +289,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (useCaching && userInfo != null && !string.IsNullOrWhiteSpace(userInfo.Id))
+            if (useCaching && userInfo != null && userInfo.UserId > 0)
             {
 
                 var key = string.Empty;
@@ -317,7 +332,7 @@ namespace DotNet.Business
                     HttpContext.Current.Session[SessionName] = userInfo;
                     HttpContext.Current.Session["openId"] = userInfo.OpenId;
                     // 这里这样处理一下，提高下次处理的效率
-                    SetUserOpenId(userInfo.Id, userInfo.OpenId, cachingSystemCode);
+                    SetUserOpenId(userInfo.Id.ToString(), userInfo.OpenId, cachingSystemCode);
                 }
             }
 
@@ -369,9 +384,9 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (userInfo != null && !string.IsNullOrEmpty(userInfo.Id))
+            if (userInfo != null && userInfo.UserId > 0)
             {
-                SetUserOpenId(userInfo.Id, userInfo.OpenId, cachingSystemCode);
+                SetUserOpenId(userInfo.Id.ToString(), userInfo.OpenId, cachingSystemCode);
                 // 2016-03-24 吉日嘎拉、默认保存8个小时，时间太长了
                 if (string.IsNullOrEmpty(cachingSystemCode))
                 {

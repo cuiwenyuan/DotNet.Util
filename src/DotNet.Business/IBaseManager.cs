@@ -60,7 +60,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        int DeleteObject(object id);
+        int DeleteEntity(object id);
 
         #endregion
 
@@ -708,13 +708,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序方向</param>
         /// <returns>数据表</returns>
         /// <returns></returns>
-        DataTable GetTableSpaceByPage(string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = BaseUtil.FieldId, string sortDirection = "DESC");
+        DataTable GetTableSpaceByPage(string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldId, string sortDirection = "DESC");
 
         /// <summary>
         /// 获取所有记录总数
@@ -724,12 +724,26 @@ namespace DotNet.Business
         int GetTotalCount(string condition = null);
 
         /// <summary>
+        /// 获取所有记录（唯一值）总数
+        /// </summary>
+        /// <param name="fieldName">字段名</param>
+        /// <param name="condition">查询条件(不需要以AND开头)</param>
+        /// <returns>总数</returns>
+        int GetTotalDistinctCount(string fieldName, string condition = null);
+
+        /// <summary>
         /// 获取有效记录总数
         /// </summary>
         /// <param name="condition">查询条件(不包含WHERE)</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>总数</returns>
-        int GetActiveTotalCount(string condition = null, int tableVersion = 4);
+        int GetActiveTotalCount(string condition = null);
+
+        /// <summary>
+        /// 获取有效记录（唯一值）总数
+        /// </summary>
+        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <returns>总数</returns>
+        int GetActiveTotalDistinctCount(string fieldName, string condition = null);
 
         /// <summary>
         /// 是否唯一的
@@ -738,9 +752,8 @@ namespace DotNet.Business
         /// <param name="excludeId">排除行id</param>
         /// <param name="fieldName">数据字段</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>是否</returns>
-        bool IsUnique(string fieldValue, string excludeId, string fieldName, bool checkUserCompany = false, int tableVersion = 4);
+        bool IsUnique(string fieldValue, string excludeId, string fieldName, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否唯一的(两个字段)
@@ -751,9 +764,8 @@ namespace DotNet.Business
         /// <param name="field1Name">数据字段1</param>
         /// <param name="field2Name">数据字段2</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>是否</returns>
-        bool IsUnique(string field1Value, string field2Value, string excludeId, string field1Name, string field2Name, bool checkUserCompany = false, int tableVersion = 4);
+        bool IsUnique(string field1Value, string field2Value, string excludeId, string field1Name, string field2Name, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否唯一的(三个字段)
@@ -766,9 +778,8 @@ namespace DotNet.Business
         /// <param name="field2Name">数据字段2</param>
         /// <param name="field3Name">数据字段3</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>是否</returns>
-        bool IsUnique(string field1Value, string field2Value, string field3Value, string excludeId, string field1Name, string field2Name, string field3Name, bool checkUserCompany = false, int tableVersion = 4);
+        bool IsUnique(string field1Value, string field2Value, string field3Value, string excludeId, string field1Name, string field2Name, string field3Name, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否被用过
@@ -777,9 +788,8 @@ namespace DotNet.Business
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>是否</returns>
-        bool IsUsed(string id, string tableName, string tableFieldName, bool checkUserCompany = false, int tableVersion = 4);
+        bool IsUsed(string id, string tableName, string tableFieldName, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否被用过（批量）
@@ -788,9 +798,8 @@ namespace DotNet.Business
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
-        /// <param name="tableVersion">版本默认4为老版本</param>
         /// <returns>是否</returns>
-        bool IsUsed(string[] ids, string tableName, string tableFieldName, bool checkUserCompany = false, int tableVersion = 4);
+        bool IsUsed(string[] ids, string tableName, string tableFieldName, bool checkUserCompany = false);
 
         /// <summary>
         /// 删除缓存

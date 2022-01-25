@@ -1,10 +1,13 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseModuleManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
 
 namespace DotNet.Business
 {
@@ -35,6 +38,110 @@ namespace DotNet.Business
     /// </author>
     public partial class BaseModuleManager : BaseManager
     {
+
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseModuleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseModuleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + BaseModuleEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+            //sb.Append(" AND (" + BaseModuleEntity.FieldUserCompanyId + " = 0 OR " + BaseModuleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BaseModuleEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BaseModuleEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseModuleEntity.FieldFullName + " LIKE N'%" + searchKey + "%' OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+        }
+        #endregion
+
+        #region 下拉菜单
+
+        /// <summary>
+        /// 下拉菜单
+        /// </summary>
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BaseModuleEntity.FieldUserCompanyId + " = 0 OR " + BaseModuleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)), true, false, cacheTime);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 添加删除的附加条件
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
+        {
+            var result = base.GetDeleteExtParam(parameters);
+            result.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldAllowDelete, 1));
+            return result;
+        }
+
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -76,7 +183,7 @@ namespace DotNet.Business
             var result = string.Empty;
             if (entity != null)
             {
-                result = entity.Id;
+                result = entity.Id.ToString();
             }
             else
             {
@@ -107,7 +214,7 @@ namespace DotNet.Business
                     // permissionEntity.CategoryCode = "Application";
                     entity.IsMenu = 0;
                     entity.IsVisible = 1;
-                    entity.DeletionStateCode = 0;
+                    entity.Deleted = 0;
                     entity.Enabled = 1;
                     entity.AllowDelete = 1;
                     entity.AllowEdit = 1;
@@ -192,7 +299,7 @@ namespace DotNet.Business
             }
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName); ;
-            var permissionIds = permissionScopeManager.GetTreeResourceScopeIds(systemCode, userId, BaseModuleEntity.TableName, permissionCode, true);
+            var permissionIds = permissionScopeManager.GetTreeResourceScopeIds(systemCode, userId, BaseModuleEntity.CurrentTableName, permissionCode, true);
             // 有效的，未被删除的
             parameters = new List<KeyValuePair<string, object>>
             {
@@ -283,7 +390,7 @@ namespace DotNet.Business
             }
 
             var permissionScopeManager = new BasePermissionScopeManager(DbHelper, UserInfo, CurrentTableName); ;
-            var moduleIds = permissionScopeManager.GetTreeResourceScopeIds(systemCode, userId, BaseModuleEntity.TableName, permissionCode, true);
+            var moduleIds = permissionScopeManager.GetTreeResourceScopeIds(systemCode, userId, BaseModuleEntity.CurrentTableName, permissionCode, true);
             // 有效的，未被删除的
             parameters = new List<KeyValuePair<string, object>>
             {
@@ -325,14 +432,18 @@ namespace DotNet.Business
         {
             var result = string.Empty;
             // 检查名称是否重复
-            var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(entity.ParentId))
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
+            };
+
+            if (!string.IsNullOrEmpty(entity.ParentId.ToString()))
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId));
-            }
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code));
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName));
-            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
+            }            
 
             if (Exists(parameters))
             {
@@ -369,7 +480,7 @@ namespace DotNet.Business
                     {
                         if (dr[BaseModuleEntity.FieldAllowDelete, DataRowVersion.Original].ToString().Equals("1"))
                         {
-                            result += DeleteObject(id);
+                            result += DeleteEntity(id);
                         }
                     }
                 }
@@ -381,7 +492,7 @@ namespace DotNet.Business
                     {
                         entity.GetFrom(dr);
                         // 判断是否允许编辑
-                        if (BaseUserManager.IsAdministrator(UserInfo.Id) || entity.AllowEdit == 1)
+                        if (BaseUserManager.IsAdministrator(UserInfo.Id.ToString()) || entity.AllowEdit == 1)
                         {
                             result += UpdateEntity(entity);
                         }
@@ -418,7 +529,7 @@ namespace DotNet.Business
             var dt = GetDataTableByParent(parentId);
             var id = string.Empty;
             var managerSequence = new BaseSequenceManager(DbHelper);
-            var sortCode = managerSequence.GetBatchSequence(BaseModuleEntity.TableName, dt.Rows.Count);
+            var sortCode = managerSequence.GetBatchSequence(BaseModuleEntity.CurrentTableName, dt.Rows.Count);
             var i = 0;
             foreach (DataRow dr in dt.Rows)
             {
@@ -440,15 +551,19 @@ namespace DotNet.Business
         /// <returns>用户列表</returns>
         public DataTable GetModuleUserDataTable(string systemCode, string moduleId, string companyId, string userId)
         {
-            var result = new DataTable(BaseUserEntity.TableName);
+            var result = new DataTable(BaseUserEntity.CurrentTableName);
 
-            var tableName = BasePermissionEntity.TableName;
+            var tableName = BasePermissionEntity.CurrentTableName;
 
             if (string.IsNullOrEmpty(systemCode))
             {
-                if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+                if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
                 {
                     systemCode = UserInfo.SystemCode;
+                    if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                    {
+                        systemCode = BaseSystemInfo.SystemCode;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(systemCode))
@@ -464,12 +579,12 @@ namespace DotNet.Business
                                     , BaseUser.RealName 
                                     , BaseUser.Description 
                                     , Permission.Enabled
-                                    , Permission.CreateOn
+                                    , Permission.CreateTime
                                     , Permission.CreateBy
-                                    , Permission.ModifiedOn
-                                    , Permission.ModifiedBy
+                                    , Permission.UpdateTime
+                                    , Permission.UpdateBy
  FROM BaseUser RIGHT OUTER JOIN
-                          (SELECT ResourceId AS UserId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+                          (SELECT ResourceId AS UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM " + tableName + @"
                             WHERE " + BasePermissionEntity.FieldDeleted + " = 0 "
                               + " AND ResourceCategory = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
@@ -479,21 +594,21 @@ namespace DotNet.Business
 
             var dbParameters = new List<IDbDataParameter>
             {
-                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.TableName),
+                DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                 DbHelper.MakeParameter(BaseModuleEntity.FieldId, moduleId)
             };
 
             if (!string.IsNullOrEmpty(companyId))
             {
-                commandText += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
 
-            if (!string.IsNullOrEmpty(userId))
+            if (ValidateUtil.IsInt(userId))
             {
-                commandText += " AND " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = " + userId;
+                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + userId;
             }
-            commandText += " ORDER BY Permission.CreateOn DESC ";
+            commandText += " ORDER BY Permission.CreateTime DESC ";
 
             result = Fill(commandText, dbParameters.ToArray());
 
@@ -508,15 +623,19 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetModuleRoleDataTable(string systemCode, string moduleId)
         {
-            var result = new DataTable(BaseRoleEntity.TableName);
+            var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var tableName = BasePermissionEntity.TableName;
+            var tableName = BasePermissionEntity.CurrentTableName;
 
             if (string.IsNullOrEmpty(systemCode))
             {
-                if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+                if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
                 {
                     systemCode = UserInfo.SystemCode;
+                    if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                    {
+                        systemCode = BaseSystemInfo.SystemCode;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(systemCode))
@@ -526,7 +645,7 @@ namespace DotNet.Business
 
             tableName = systemCode + "Permission";
 
-            var roleTableName = BaseRoleEntity.TableName;
+            var roleTableName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 roleTableName = systemCode + "Role";
@@ -536,26 +655,26 @@ namespace DotNet.Business
                                     , Role.RealName 
                                     , Role.Description 
                                     , Permission.Enabled
-                                    , Permission.CreateOn
+                                    , Permission.CreateTime
                                     , Permission.CreateBy
-                                    , Permission.ModifiedOn
-                                    , Permission.ModifiedBy
+                                    , Permission.UpdateTime
+                                    , Permission.UpdateBy
  FROM (SELECT Id, Code, RealName, Description FROM BaseRole ";
 
-            if (!systemCode.Equals("Base"))
+            if (!systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
                 commandText += " UNION SELECT Id, Code, RealName, Description FROM roleTableName ";
             }
 
             commandText += @") Role RIGHT OUTER JOIN
-                          (SELECT ResourceId AS RoleId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+                          (SELECT ResourceId AS RoleId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BasePermission Permission
                             WHERE " + BasePermissionEntity.FieldDeleted + " = 0 "
                               + " AND ResourceCategory = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
                               + " AND PermissionId = " + DbHelper.GetParameter(BaseModuleEntity.FieldId) + @") Permission 
                             ON Role.Id = Permission.RoleId
                          WHERE Role.Id IS NOT NULL
-                      ORDER BY Permission.CreateOn DESC";
+                      ORDER BY Permission.CreateTime DESC";
 
             var dbParameters = new List<IDbDataParameter>
             {
@@ -579,13 +698,17 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetModuleOrganizationDataTable(string systemCode, string moduleId)
         {
-            var result = new DataTable(BaseOrganizationEntity.TableName);
+            var result = new DataTable(BaseOrganizationEntity.CurrentTableName);
 
             if (string.IsNullOrEmpty(systemCode))
             {
-                if (UserInfo != null && !string.IsNullOrWhiteSpace(UserInfo.SystemCode))
+                if (UserInfo != null && !UserInfo.SystemCode.IsNullOrEmpty() && !UserInfo.SystemCode.IsNullOrWhiteSpace())
                 {
                     systemCode = UserInfo.SystemCode;
+                    if (!BaseSystemInfo.SystemCode.IsNullOrEmpty() && !BaseSystemInfo.SystemCode.Equals(systemCode))
+                    {
+                        systemCode = BaseSystemInfo.SystemCode;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(systemCode))
@@ -600,19 +723,19 @@ namespace DotNet.Business
                                     , BaseOrganization.FullName 
                                     , BaseOrganization.Description 
                                     , Permission.Enabled
-                                    , Permission.CreateOn
+                                    , Permission.CreateTime
                                     , Permission.CreateBy
-                                    , Permission.ModifiedOn
-                                    , Permission.ModifiedBy
+                                    , Permission.UpdateTime
+                                    , Permission.UpdateBy
  FROM BaseOrganization RIGHT OUTER JOIN
-                          (SELECT ResourceId AS OrganizationId, Enabled, CreateOn, CreateBy, ModifiedOn, ModifiedBy
+                          (SELECT ResourceId AS OrganizationId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BasePermission
                             WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                               + " AND ResourceCategory = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
                               + " AND PermissionId = " + DbHelper.GetParameter(BaseModuleEntity.FieldId) + @") Permission 
                             ON BaseOrganization.Id = Permission.OrganizationId
                          WHERE BaseOrganization.Id IS NOT NULL
-                      ORDER BY Permission.CreateOn DESC";
+                      ORDER BY Permission.CreateTime DESC";
 
             commandText = commandText.Replace("BasePermission", tableName);
 
@@ -631,7 +754,7 @@ namespace DotNet.Business
         /// 从缓存获取获取实体
         /// </summary>
         /// <param name="id">主键</param>
-        public static BaseModuleEntity GetEntityByCache(string id)
+        public BaseModuleEntity GetEntityByCache(string id)
         {
             return GetEntityByCache("Base", id);
         }
@@ -641,7 +764,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <param name="id">主键</param>
-        public static BaseModuleEntity GetEntityByCache(BaseUserInfo userInfo, string id)
+        public BaseModuleEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         {
             return GetEntityByCache(userInfo.SystemCode, id);
         }
@@ -652,23 +775,9 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编码</param>
         /// <param name="id">主键</param>
         /// <param name="refreshCache">刷新缓存</param>
-        public static BaseModuleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
+        public BaseModuleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
         {
             BaseModuleEntity result = null;
-
-            //var cacheKey = systemCode + ".Module";
-            //if (!string.IsNullOrEmpty(id))
-            //{
-            //    cacheKey = systemCode + ".Module." + id;
-            //}
-
-            //result = CacheUtil.Cache(cacheKey, () =>
-            //{
-            //    // 动态读取表中的数据
-            //    var tableName = systemCode + "Module";
-            //    var manager = new BaseModuleManager(tableName);
-            //    return manager.GetEntity(id);
-            //}, true, refreshCache);
 
             var tableName = systemCode + "Module";
             //2017.12.20增加默认的HttpRuntime.Cache缓存
@@ -682,9 +791,10 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
                 };
-                return new BaseModuleManager(tableName).GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+                CurrentTableName = tableName;
+                return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
             }, true, false, cacheTime);
-            result = listModule.Find(t => t.Id == id);
+            result = listModule.Find(t => t.Id.Equals(id));
 
             return result;
         }
@@ -695,22 +805,9 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="code">编号</param>
         /// <returns>权限实体</returns>
-        public static BaseModuleEntity GetEntityByCacheByCode(string systemCode, string code)
+        public BaseModuleEntity GetEntityByCacheByCode(string systemCode, string code)
         {
             BaseModuleEntity result = null;
-
-            //var cacheKey = systemCode + ".Module";
-            //if (!string.IsNullOrEmpty(code))
-            //{
-            //    cacheKey = systemCode + ".Module." + code;
-            //}
-            //result = CacheUtil.Cache(cacheKey, () =>
-            //{
-            //    // 动态读取表中的数据
-            //    var tableName = systemCode + "Module";
-            //    var manager = new BaseModuleManager(tableName);
-            //    return manager.GetEntityByCode(code);
-            //}, true);
 
             var tableName = systemCode + "Module";
             //2017.12.20增加默认的HttpRuntime.Cache缓存
@@ -724,7 +821,8 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
                 };
-                return new BaseModuleManager(tableName).GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+                CurrentTableName = tableName;
+                return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
             }, true, false, cacheTime);
             result = listModule.Find(t => t.Code == code);
             return result;
@@ -737,7 +835,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="code">编号</param>
         /// <returns>主键</returns>
-        public static string GetIdByCodeByCache(string systemCode, string code)
+        public string GetIdByCodeByCache(string systemCode, string code)
         {
             var result = string.Empty;
 
@@ -746,7 +844,7 @@ namespace DotNet.Business
                 var moduleEntity = GetEntityByCacheByCode(systemCode, code);
                 if (moduleEntity != null)
                 {
-                    result = moduleEntity.Id;
+                    result = moduleEntity.Id.ToString();
                 }
             }
 
@@ -763,7 +861,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编码</param>
         /// <param name="id">主键</param>
         /// <returns>显示值</returns>
-        public static string GetNameByCache(string systemCode, string id)
+        public string GetNameByCache(string systemCode, string id)
         {
             var result = string.Empty;
 
@@ -788,7 +886,7 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="refreshCache">是否刷新缓存</param>
         /// <returns>菜单</returns>
-        public static List<BaseModuleEntity> GetEntitiesByCache(string systemCode = "Base", bool refreshCache = false)
+        public List<BaseModuleEntity> GetEntitiesByCache(string systemCode = "Base", bool refreshCache = false)
         {
             List<BaseModuleEntity> result = null;
 
@@ -798,7 +896,7 @@ namespace DotNet.Business
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
             {
-                var moduleManager = new BaseModuleManager(tableName);
+                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
                 // 读取目标表中的数据
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
@@ -809,6 +907,7 @@ namespace DotNet.Business
                 };
 
                 // parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldIsVisible, 1));
+                CurrentTableName = tableName;
                 return moduleManager.GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
             }, true, refreshCache, cacheTime);
 

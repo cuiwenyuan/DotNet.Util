@@ -75,9 +75,9 @@ namespace DotNet.Business
         public virtual DataTable GetDataTable(string condition, string order, params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
-            foreach (var t in parameters)
+            foreach (var p in parameters)
             {
-                parametersList.Add(t);
+                parametersList.Add(p);
             }
 
             return GetDataTable(condition, parametersList, order);
@@ -185,12 +185,12 @@ namespace DotNet.Business
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameters"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter, string order)
+        public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, string order)
         {
-            var parameters = new List<KeyValuePair<string, object>> { parameter };
+            var parameters = new List<KeyValuePair<string, object>> { whereParameters };
             return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, 0, order);
         }
         /// <summary>
@@ -208,49 +208,49 @@ namespace DotNet.Business
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="whereParameters">查询条件</param>
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter, int topLimit = 0, string order = null)
+        public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, int topLimit = 0, string order = null)
         {
-            var parameters = new List<KeyValuePair<string, object>> { parameter };
+            var parameters = new List<KeyValuePair<string, object>> { whereParameters };
             return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, topLimit, order);
         }
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="whereParameters">查询条件</param>
         /// <returns></returns>
-        public virtual DataTable GetDataTable(params KeyValuePair<string, object>[] parameters)
+        public virtual DataTable GetDataTable(params KeyValuePair<string, object>[] whereParameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
-            foreach (var t in parameters)
+            foreach (var p in whereParameters)
             {
-                parametersList.Add(t);
+                parametersList.Add(p);
             }
             return DbUtil.GetDataTable(DbHelper, CurrentTableName, parametersList);
         }
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="whereParameters"></param>
         /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
-        public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
+        public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, int topLimit = 0, string order = null)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, topLimit, order);
+            return DbUtil.GetDataTable(DbHelper, CurrentTableName, whereParameters, topLimit, order);
         }
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
+        /// <param name="whereParameters">查询条件</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
-        public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, string order)
+        public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, string order)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, 0, order);
+            return DbUtil.GetDataTable(DbHelper, CurrentTableName, whereParameters, 0, order);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace DotNet.Business
         #region 高级查询
 
         /// <summary>
-        /// 按条件分页高级查询(带记录状态Enabled和删除状态DeletionStateCode)
+        /// 按条件分页高级查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="organizationId">查看公司主键</param>
@@ -40,20 +40,20 @@ namespace DotNet.Business
         /// <param name="disabledUserOnly"></param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序方向</param>
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string searchKey, out int recordCount, int pageIndex = 0, int pageSize = 20, string sortExpression = "CreateOn", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //用户表名
-            var tableNameUser = BaseUserEntity.TableName;
+            var tableNameUser = BaseUserEntity.CurrentTableName;
             //用户登录表名
-            var tableNameUserLogon = BaseUserLogonEntity.TableName;
-            pageIndex++;
+            var tableNameUserLogon = BaseUserLogonEntity.CurrentTableName;
+
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //只显示已锁定用户
             if (disabledUserOnly)
@@ -83,12 +83,12 @@ namespace DotNet.Business
                 //只选择当前和下一级
                 //sb.Append(" AND " + BaseUserEntity.FieldDepartmentId 
                 //    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
-                //    + " FROM " + BaseOrganizationEntity.TableName 
+                //    + " FROM " + BaseOrganizationEntity.CurrentTableName 
                 //    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + organizationId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + organizationId + ")";
 
                 //所有下级的都列出来
-                var organizeManager = new BaseOrganizationManager(UserInfo);
-                var ids = organizeManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
+                var organizationManager = new BaseOrganizationManager(UserInfo);
+                var ids = organizationManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
                 if (ids != null && ids.Length > 0)
                 {
                     sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
@@ -151,7 +151,7 @@ namespace DotNet.Business
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.TableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
@@ -162,7 +162,7 @@ namespace DotNet.Business
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleIdExcluded + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.TableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
@@ -175,6 +175,9 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseUserEntity.FieldNickName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldSubCompanyName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldDepartmentName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldSubDepartmentName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldWorkgroupName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
@@ -226,11 +229,8 @@ namespace DotNet.Business
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDeleted;
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldSortCode;
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDescription;
-            viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerId;
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator;
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance;
-            viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditStatus;
-            viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditDate;
             //用户表
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldCreateTime;
             viewName += "," + tableNameUser + "." + BaseUserEntity.FieldCreateUserId;
@@ -242,14 +242,14 @@ namespace DotNet.Business
             //用户登录表
             viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
             viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime;
             viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
-            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+            viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser;
             viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
             //不从用户登录表读取这些字段，从用户表读取即可
             //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateTime;
@@ -260,7 +260,7 @@ namespace DotNet.Business
             //viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateBy;
 
             viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNameUserLogon;
-            viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
+            viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId;
 
             //指定角色，就读取相应的UserRole授权日期
             if (ValidateUtil.IsInt(roleId))
@@ -306,22 +306,19 @@ namespace DotNet.Business
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDeleted;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldSortCode;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDescription;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerId;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditStatus;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditDate;
                 //用户登录表
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
                 //授权日期
                 viewName += "," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateTime;
@@ -333,7 +330,7 @@ namespace DotNet.Business
                 viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNameUserRole;
                 viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId;
                 viewName += " INNER JOIN " + tableNameUserLogon;
-                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
+                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId;
                 viewName += " WHERE (" + tableNameUserRole + "." + BaseUserRoleEntity.FieldRoleId + " = " + roleId + ")";
             }
             //指定菜单模块，就读取相应的Permission授权日期
@@ -380,22 +377,19 @@ namespace DotNet.Business
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDeleted;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldSortCode;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldDescription;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerId;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator;
                 viewName += "," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditStatus;
-                viewName += "," + tableNameUser + "." + BaseUserEntity.FieldManagerAuditDate;
                 //用户登录表
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartDate;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndDate;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisit;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordDate;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount;
-                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldMultiUserLogin;
+                viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser;
                 viewName += "," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline;
                 //授权日期
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime;
@@ -407,7 +401,7 @@ namespace DotNet.Business
                 viewName += " FROM " + tableNameUser + " INNER JOIN " + tableNamePermission;
                 viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId;
                 viewName += " INNER JOIN " + tableNameUserLogon;
-                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldId;
+                viewName += " ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId;
                 viewName += " WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameUser + "')";
                 viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + ")";
             }
@@ -417,7 +411,7 @@ namespace DotNet.Business
                 tableNameUser = viewName;
             }
 
-            return GetDataTableByPage(out recordCount, pageIndex, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put(), null, "*");
         }
         #endregion
     }

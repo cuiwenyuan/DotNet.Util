@@ -54,7 +54,7 @@ namespace DotNet.Business
         {
             get
             {
-                return _serviceFactory.CreateLoginLogDbHelperService();
+                return _serviceFactory.CreateLogonLogDbHelperService();
             }
         }
     }

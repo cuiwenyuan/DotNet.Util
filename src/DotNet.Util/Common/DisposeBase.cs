@@ -82,11 +82,6 @@ namespace DotNet.Util
             OnDisposed?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>释放资源，参数表示是否由Dispose调用。该方法保证OnDispose只被调用一次！</summary>
-        /// <param name="disposing"></param>
-        [Obsolete("=>Dispose")]
-        protected virtual void OnDispose(Boolean disposing) { }
-
         /// <summary>析构函数</summary>
         /// <remarks>
         /// 如果忘记调用Dispose，这里会释放非托管资源

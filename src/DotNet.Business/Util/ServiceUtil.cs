@@ -24,7 +24,7 @@ namespace DotNet.Business
     /// </author> 
     /// </summary>
     public class ServiceUtil
-	{
+    {
         /// <summary>
         /// 对登录的用户进行数字签名
         /// </summary>
@@ -61,10 +61,6 @@ namespace DotNet.Business
                 if (string.IsNullOrEmpty(userInfo.DepartmentName))
                 {
                     userInfo.DepartmentName = string.Empty;
-                }
-                if (string.IsNullOrEmpty(userInfo.Id))
-                {
-                    userInfo.Id = string.Empty;
                 }
                 if (string.IsNullOrEmpty(userInfo.NickName))
                 {
@@ -144,10 +140,6 @@ namespace DotNet.Business
                 {
                     userInfo.DepartmentName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.Id))
-                {
-                    userInfo.Id = string.Empty;
-                }
                 if (string.IsNullOrEmpty(userInfo.NickName))
                 {
                     userInfo.NickName = string.Empty;
@@ -206,12 +198,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterReadDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.UserCenterRead);
             }
-		}
+        }
         /// <summary>
         /// ProcessUserCenterWriteDb
         /// </summary>
@@ -219,12 +211,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.UserCenterWrite);
             }
-		}
+        }
         /// <summary>
         /// ProcessUserCenterDb
         /// </summary>
@@ -232,12 +224,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.UserCenter);
             }
-		}
+        }
         /// <summary>
         /// ProcessUserCenterWriteDbWithLock
         /// </summary>
@@ -246,7 +238,7 @@ namespace DotNet.Business
         /// <param name="locker"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDbWithLock(BaseUserInfo userInfo, ServiceInfo parameter, object locker, ProcessFunWithLock fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 var milliStart = Begin(parameter.UserInfo, parameter.CurrentMethod);
@@ -276,7 +268,7 @@ namespace DotNet.Business
                 }
                 End(parameter.UserInfo, milliStart, parameter.CurrentMethod, getOnline);
             }
-		}
+        }
         /// <summary>
         /// ProcessUserCenterWriteDbWithLock
         /// </summary>
@@ -285,7 +277,7 @@ namespace DotNet.Business
         /// <param name="locker"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDbWithLock(BaseUserInfo userInfo, ServiceInfo parameter, object locker, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 var milliStart = Begin(parameter.UserInfo, parameter.CurrentMethod);
@@ -295,7 +287,7 @@ namespace DotNet.Business
                 }
                 End(parameter.UserInfo, milliStart, parameter.CurrentMethod);
             }
-		}
+        }
         /// <summary>
         /// ProcessUserCenterWriteDbWithTransaction
         /// </summary>
@@ -303,12 +295,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDbWithTransaction(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.UserCenterWrite, true);
             }
-		}
+        }
         /// <summary>
         /// ProcessBusinessDb
         /// </summary>
@@ -316,25 +308,25 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessBusinessDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.Business);
             }
-		}
+        }
         /// <summary>
-        /// ProcessLoginLogDb
+        /// ProcessLogonLogDb
         /// </summary>
         /// <param name="userInfo"></param>
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
-        public static void ProcessLoginLogDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        public static void ProcessLogonLogDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
-                ProcessDb(parameter, fun, DbType.LoginLog);
+                ProcessDb(parameter, fun, DbType.LogonLog);
             }
-		}
+        }
         /// <summary>
         /// ProcessMessageDb
         /// </summary>
@@ -342,12 +334,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessMessageDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.Message);
             }
-		}
+        }
 
         /// <summary>
         /// ProcessWorkFlowDb
@@ -356,12 +348,12 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessWorkFlowDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.WorkFlow);
             }
-		}
+        }
 
         /// <summary>
         /// ProcessWorkFlowDbWithTransaction
@@ -370,50 +362,50 @@ namespace DotNet.Business
         /// <param name="parameter"></param>
         /// <param name="fun"></param>
         public static void ProcessWorkFlowDbWithTransaction(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
-		{
+        {
             if (BaseSystemInfo.IsAuthorized(userInfo))
             {
                 ProcessDb(parameter, fun, DbType.WorkFlow, true);
             }
-		}
+        }
 
-		/// <summary>
-		/// 使用简单的工厂方法，可以做成多态的类
-		/// </summary>
-		private enum DbType
-		{
-			UserCenterRead = 1,
-			UserCenterWrite = 2,
-			Business = 3,
-			Message = 4,
-			WorkFlow = 5,
-			UserCenter = 6,
-            LoginLog = 7
-		}
+        /// <summary>
+        /// 使用简单的工厂方法，可以做成多态的类
+        /// </summary>
+        private enum DbType
+        {
+            UserCenterRead = 1,
+            UserCenterWrite = 2,
+            Business = 3,
+            Message = 4,
+            WorkFlow = 5,
+            UserCenter = 6,
+            LogonLog = 7
+        }
         /// <summary>
         /// 获取数据库类型
         /// </summary>
         /// <param name="dbType"></param>
         /// <returns></returns>
 		private static CurrentDbType GetDbType(DbType dbType)
-		{
-			switch(dbType)
-			{
-				default:
-				case DbType.UserCenterRead:
-				case DbType.UserCenterWrite:
-				case DbType.UserCenter:
-					return BaseSystemInfo.UserCenterDbType;
-				case DbType.Business:
-					return BaseSystemInfo.BusinessDbType;
-				case DbType.Message:
-					return BaseSystemInfo.MessageDbType;
-				case DbType.WorkFlow:
-					return BaseSystemInfo.WorkFlowDbType;
-                case DbType.LoginLog:
-                    return BaseSystemInfo.LoginLogDbType;
-			}
-		}
+        {
+            switch (dbType)
+            {
+                default:
+                case DbType.UserCenterRead:
+                case DbType.UserCenterWrite:
+                case DbType.UserCenter:
+                    return BaseSystemInfo.UserCenterDbType;
+                case DbType.Business:
+                    return BaseSystemInfo.BusinessDbType;
+                case DbType.Message:
+                    return BaseSystemInfo.MessageDbType;
+                case DbType.WorkFlow:
+                    return BaseSystemInfo.WorkFlowDbType;
+                case DbType.LogonLog:
+                    return BaseSystemInfo.LogonLogDbType;
+            }
+        }
 
         /// <summary>
         /// 获取数据库连接
@@ -421,26 +413,26 @@ namespace DotNet.Business
         /// <param name="dbType"></param>
         /// <returns></returns>
 		private static string GetDbConnection(DbType dbType)
-		{
-			switch(dbType)
-			{
-				default:
-				case DbType.UserCenterRead:
-					return BaseSystemInfo.UserCenterReadDbConnection;
-				case DbType.UserCenterWrite:
-					return BaseSystemInfo.UserCenterWriteDbConnection;
-				case DbType.UserCenter:
-					return BaseSystemInfo.UserCenterDbConnection;
-				case DbType.Business:
-					return BaseSystemInfo.BusinessDbConnection;
-				case DbType.Message:
-					return BaseSystemInfo.MessageDbConnection;
-				case DbType.WorkFlow:
-					return BaseSystemInfo.WorkFlowDbConnection;
-                case DbType.LoginLog:
-                    return BaseSystemInfo.LoginLogDbConnection;
-			}
-		}
+        {
+            switch (dbType)
+            {
+                default:
+                case DbType.UserCenterRead:
+                    return BaseSystemInfo.UserCenterReadDbConnection;
+                case DbType.UserCenterWrite:
+                    return BaseSystemInfo.UserCenterWriteDbConnection;
+                case DbType.UserCenter:
+                    return BaseSystemInfo.UserCenterDbConnection;
+                case DbType.Business:
+                    return BaseSystemInfo.BusinessDbConnection;
+                case DbType.Message:
+                    return BaseSystemInfo.MessageDbConnection;
+                case DbType.WorkFlow:
+                    return BaseSystemInfo.WorkFlowDbConnection;
+                case DbType.LogonLog:
+                    return BaseSystemInfo.LogonLogDbConnection;
+            }
+        }
         /// <summary>
         /// ProcessDb
         /// </summary>
@@ -449,13 +441,13 @@ namespace DotNet.Business
         /// <param name="dbType"></param>
         /// <param name="inTransaction"></param>
         private static void ProcessDb(ServiceInfo parameter, ProcessFun fun, DbType dbType, bool inTransaction = false)
-		{
+        {
             var milliStart = Begin(parameter.UserInfo, parameter.CurrentMethod);
 
-			ProcessDbHelp(parameter, fun, dbType, inTransaction);
+            ProcessDbHelp(parameter, fun, dbType, inTransaction);
 
             End(parameter.UserInfo, milliStart, parameter.CurrentMethod);
-		}
+        }
         /// <summary>
         /// ProcessDb
         /// </summary>
@@ -464,14 +456,14 @@ namespace DotNet.Business
         /// <param name="dbType"></param>
         /// <param name="inTransaction"></param>
         private static void ProcessDbHelp(ServiceInfo serviceInfo, ProcessFun processFun, DbType dbType, bool inTransaction)
-		{
+        {
             // 2016-02-14 吉日嘎拉 增加耗时记录功能
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            using(var dbHelper = DbHelperFactory.GetHelper(GetDbType(dbType), GetDbConnection(dbType)))
-			{
-				try
+            using (var dbHelper = DbHelperFactory.GetHelper(GetDbType(dbType), GetDbConnection(dbType)))
+            {
+                try
                 {
                     // dbHelper.Open(GetDbConnection(dbType));
                     if (inTransaction)
@@ -487,26 +479,26 @@ namespace DotNet.Business
                         // dbHelper.CommitTransaction();
                     }
                 }
-				catch(Exception ex)
-				{
+                catch (Exception ex)
+                {
                     if (inTransaction)
                     {
                         // dbHelper.RollbackTransaction();
                     }
                     BaseExceptionManager.LogException(dbHelper, serviceInfo.UserInfo, ex);
-					throw;
-				}
-			}
-		}
+                    throw;
+                }
+            }
+        }
 
         /// <summary>
         /// 2016-02-14 吉日嘎拉 增加服务器调用耗时统计功能。
         /// </summary>
         /// <param name="serviceInfo"></param>
         private static void AddLog(ServiceInfo serviceInfo)
-		{
+        {
             if (serviceInfo.RecordLog)
-			{
+            {
                 // 若用户信息没有，就获取现在的用户信息
                 if (serviceInfo.UserInfo == null)
                 {
@@ -515,8 +507,8 @@ namespace DotNet.Business
 
                 // 本地直接写入数据库
                 BaseLogManager.AddLog(serviceInfo);
-			}
-		}
+            }
+        }
         /// <summary>
         /// 开始
         /// </summary>
@@ -524,18 +516,18 @@ namespace DotNet.Business
         /// <param name="currentMethod"></param>
         /// <returns></returns>
 		private static int Begin(BaseUserInfo userInfo, MethodBase currentMethod)
-		{
-			var milliStart = 0;
+        {
+            var milliStart = 0;
 
-			// 写入调试信息
-			#if (DEBUG)
+            // 写入调试信息
+#if (DEBUG)
                 milliStart = BaseUtil.StartDebug(userInfo, currentMethod);
-			#endif
+#endif
 
             milliStart = BaseUtil.StartDebug(userInfo, currentMethod);
 
-			return milliStart;
-		}
+            return milliStart;
+        }
         /// <summary>
         /// 结束
         /// </summary>
@@ -543,12 +535,12 @@ namespace DotNet.Business
         /// <param name="milliStart"></param>
         /// <param name="currentMethod"></param>
         private static void End(BaseUserInfo userInfo, int milliStart, MethodBase currentMethod)
-		{
-			// 写入调试信息
-			#if (DEBUG)
+        {
+            // 写入调试信息
+#if (DEBUG)
 				BaseUtil.EndDebug(userInfo, currentMethod, milliStart);
-			#endif
-		}
+#endif
+        }
         /// <summary>
         /// 结束
         /// </summary>
@@ -557,14 +549,14 @@ namespace DotNet.Business
         /// <param name="currentMethod"></param>
         /// <param name="getOnline"></param>
         private static void End(BaseUserInfo userInfo, int milliStart, MethodBase currentMethod, bool getOnline)
-		{
-			// 写入调试信息
-			#if (DEBUG)
+        {
+            // 写入调试信息
+#if (DEBUG)
 			if(getOnline)
 			{
 				BaseUtil.EndDebug(userInfo, currentMethod, milliStart);
 			}
-			#endif
-		}
-	}
+#endif
+        }
+    }
 }

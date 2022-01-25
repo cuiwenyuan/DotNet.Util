@@ -1,15 +1,18 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseUserManager.cs" company="DotNet">
+//     Copyright (c) 2021, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Data.Common;
+using System.Collections.Generic;
 
 namespace DotNet.Business
 {
     using Model;
+    using System.Linq;
     using Util;
 
     /// <summary>
@@ -47,6 +50,97 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUserEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询字段</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUserEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //{
+            //sb.Append(" AND (" + BaseUserEntity.FieldUserCompanyId + " = 0 OR " + BaseUserEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BaseUserEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseUserEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+        }
+        #endregion
+
+        #region 下拉菜单
+
+        /// <summary>
+        /// 下拉菜单
+        /// </summary>
+        /// <param name="myCompanyOnly">仅本公司</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTable(bool myCompanyOnly = true)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (myCompanyOnly)
+            {
+                //sb.Append("(" + BaseUserEntity.FieldUserCompanyId + " = 0 OR " + BaseUserEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            }
+            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0));
+            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)), true, false, cacheTime);
+        }
+
+        #endregion
+
         /// <summary>
         /// 显示用户登录信息
         /// </summary>
@@ -79,8 +173,9 @@ namespace DotNet.Business
             {
                 return null;
             }
-            userInfo.Id = userEntity.Id;
-            userInfo.IsAdministrator = userEntity.IsAdministrator;
+            userInfo.Id = userEntity.Id.ToString();
+            userInfo.UserId = userEntity.Id;
+            userInfo.IsAdministrator = userEntity.IsAdministrator == 1;
             userInfo.Code = userEntity.Code;
             userInfo.UserName = userEntity.UserName;
             userInfo.RealName = userEntity.RealName;
@@ -89,50 +184,52 @@ namespace DotNet.Business
             {
                 userInfo.OpenId = userLogonEntity.OpenId;
             }
-            userInfo.CompanyId = userEntity.CompanyId;
+            userInfo.CompanyId = userEntity.CompanyId.ToString();
             userInfo.CompanyName = userEntity.CompanyName;
-            userInfo.CompanyCode = userEntity.CompanyCode;
+            userInfo.CompanyCode = BaseOrganizationManager.GetEntityByCache(userEntity.CompanyId.ToString())?.Code;
             //Troy.Cui 2018.08.04 增加Sub的转换
-            userInfo.SubCompanyId = userEntity.SubCompanyId;
+            userInfo.SubCompanyId = userEntity.SubCompanyId.ToString();
             userInfo.SubCompanyName = userEntity.SubCompanyName;
-            userInfo.DepartmentId = userEntity.DepartmentId;
+            userInfo.SubCompanyCode = BaseOrganizationManager.GetEntityByCache(userEntity.SubCompanyId.ToString())?.Code;
+            userInfo.DepartmentId = userEntity.DepartmentId.ToString();
             userInfo.DepartmentName = userEntity.DepartmentName;
-            userInfo.SubDepartmentId = userEntity.SubDepartmentId;
+            userInfo.DepartmentCode = BaseOrganizationManager.GetEntityByCache(userEntity.DepartmentId.ToString())?.Code;
+            userInfo.SubDepartmentId = userEntity.SubDepartmentId.ToString();
             userInfo.SubDepartmentName = userEntity.SubDepartmentName;
-            userInfo.WorkgroupId = userEntity.WorkgroupId;
+            userInfo.SubDepartmentCode = BaseOrganizationManager.GetEntityByCache(userEntity.SubDepartmentId.ToString())?.Code;
+            userInfo.WorkgroupId = userEntity.WorkgroupId.ToString();
             userInfo.WorkgroupName = userEntity.WorkgroupName;
 
             //2016-11-23 欧腾飞加入 companyCode 和数字签名
             userInfo.Signature = userEntity.Signature;
 
-            BaseOrganizationEntity organizeEntity = null;
+            BaseOrganizationEntity organizationEntity = null;
 
             if (!string.IsNullOrEmpty(userInfo.CompanyId))
             {
-
                 try
                 {
-                    organizeEntity = BaseOrganizationManager.GetEntityByCache(userInfo.CompanyId);
+                    organizationEntity = BaseOrganizationManager.GetEntityByCache(userInfo.CompanyId.ToString());
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     string writeMessage = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
-                        + System.Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
-                        + System.Environment.NewLine + "Message:" + ex.Message
-                        + System.Environment.NewLine + "Source:" + ex.Source
-                        + System.Environment.NewLine + "StackTrace:" + ex.StackTrace
-                        + System.Environment.NewLine + "TargetSite:" + ex.TargetSite
-                        + System.Environment.NewLine;
+                        + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
+                        + Environment.NewLine + "Message:" + ex.Message
+                        + Environment.NewLine + "Source:" + ex.Source
+                        + Environment.NewLine + "StackTrace:" + ex.StackTrace
+                        + Environment.NewLine + "TargetSite:" + ex.TargetSite
+                        + Environment.NewLine;
 
                     LogUtil.WriteLog(writeMessage, "Exception");
                 }
 
-                if (organizeEntity == null)
+                if (organizationEntity == null)
                 {
-                    var organizeManager = new BaseOrganizationManager();
-                    organizeEntity = organizeManager.GetEntity(userInfo.CompanyId);
+                    var organizationManager = new BaseOrganizationManager();
+                    organizationEntity = organizationManager.GetEntity(userInfo.CompanyId);
                     // 2015-12-06 吉日嘎拉 进行记录日志功能改进
-                    if (organizeEntity == null)
+                    if (organizationEntity == null)
                     {
                         var writeMessage = "BaseOrganizationManager.GetEntity:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
@@ -141,31 +238,30 @@ namespace DotNet.Business
                         LogUtil.WriteLog(writeMessage, "Log");
                     }
                 }
-                if (organizeEntity != null)
+                if (organizationEntity != null)
                 {
-                    userInfo.CompanyCode = organizeEntity.Code;
+                    userInfo.CompanyCode = organizationEntity.Code;
                 }
             }
-            /*
-             * 部门数据需要从部门表里读取
-             * 
-            if (!validateUserOnly && !string.IsNullOrEmpty(userInfo.DepartmentId))
-            {
-                organizeEntity = BaseOrganizationManager.GetEntityByCache(userInfo.DepartmentId);
-            }
-            else
-            {
-                if (organizeManager == null)
-                {
-                    organizeManager = new Business.BaseOrganizationManager();
-                }
-                organizeEntity = organizeManager.GetEntity(userInfo.DepartmentId);
-            }
-            if (organizeEntity != null)
-            {
-                userInfo.DepartmentCode = organizeEntity.Code;
-            }
-            */
+            ////部门数据需要从部门表里读取
+
+            //if (!validateUserOnly && !string.IsNullOrEmpty(userInfo.DepartmentId))
+            //{
+            //    organizationEntity = BaseOrganizationManager.GetEntityByCache(userInfo.DepartmentId);
+            //}
+            //else
+            //{
+            //    if (organizationManager == null)
+            //    {
+            //        organizationManager = new Business.BaseOrganizationManager();
+            //    }
+            //    organizationEntity = organizationManager.GetEntity(userInfo.DepartmentId);
+            //}
+            //if (organizationEntity != null)
+            //{
+            //    userInfo.DepartmentCode = organizationEntity.Code;
+            //}
+
 
             return userInfo;
         }
@@ -225,8 +321,8 @@ namespace DotNet.Business
         public BaseUserEntity GetEntityByCompanyCodeByCode(string companyCode, string userCode)
         {
             BaseUserEntity result = null;
-            var organizeEntity = BaseOrganizationManager.GetEntityByCodeByCache(companyCode);
-            if (organizeEntity == null)
+            var organizationEntity = BaseOrganizationManager.GetEntityByCodeByCache(companyCode);
+            if (organizationEntity == null)
             {
                 return result;
             }
@@ -234,7 +330,7 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserEntity.FieldCode, userCode),
-                new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, organizeEntity.Id),
+                new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, organizationEntity.Id),
                 new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
             };
@@ -410,9 +506,8 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="userCode">用户编号</param>
-        /// <param name="tableVersion">表版本</param>
         /// <returns>主键</returns>
-        public override string GetIdByCode(string userCode, int tableVersion = 4)
+        public override string GetIdByCode(string userCode)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -518,7 +613,7 @@ namespace DotNet.Business
             var entity = GetEntityByCache(id);
             if (entity != null)
             {
-                result = entity.CompanyId;
+                result = entity.CompanyId.ToString();
             }
 
             return result;
@@ -578,7 +673,7 @@ namespace DotNet.Business
             if (entity != null)
             {
                 // 用效率更高的方式进行判断，减少数据的输入输出
-                if (IsAdministrator(entity.Id))
+                if (IsAdministrator(entity.Id.ToString()))
                 {
                     return true;
                 }
@@ -643,22 +738,22 @@ namespace DotNet.Business
         /// <summary>
         /// 按上级主管获取下属用户列表
         /// </summary>
-        /// <param name="managerId">主管主键</param>
+        /// <param name="managerUserId">主管主键</param>
         /// <returns>用户列表</returns>
-        public List<BaseUserEntity> GetListByManager(string managerId)
+        public List<BaseUserEntity> GetListByManager(string managerUserId)
         {
-            var dt = GetChildrens(BaseUserEntity.FieldId, managerId, BaseUserEntity.FieldManagerId, BaseUserEntity.FieldSortCode);
+            var dt = GetChildrens(BaseUserEntity.FieldId, managerUserId, BaseUserEntity.FieldManagerUserId, BaseUserEntity.FieldSortCode);
             return BaseEntity.GetList<BaseUserEntity>(dt);
         }
 
         /// <summary>
         /// 按上级主管获取下属用户主键数组
         /// </summary>
-        /// <param name="managerId">主管主键</param>
+        /// <param name="managerUserId">主管主键</param>
         /// <returns>用户主键数组</returns>
-        public string[] GetIdsByManager(string managerId)
+        public string[] GetIdsByManager(string managerUserId)
         {
-            return GetChildrensId(BaseUserEntity.FieldId, managerId, BaseUserEntity.FieldManagerId);
+            return GetChildrensId(BaseUserEntity.FieldId, managerUserId, BaseUserEntity.FieldManagerUserId);
         }
 
         #region public BaseUserInfo AccountActivation(string openId)
@@ -719,11 +814,11 @@ namespace DotNet.Business
         /// <param name="id">用户主键</param>
         /// <param name="statusCode"></param>
         /// <returns>用户类</returns>
-        public BaseUserInfo Impersonation(string id, out string statusCode)
+        public BaseUserInfo Impersonation(int id, out string statusCode)
         {
             BaseUserInfo userInfo = null;
             // 获得登录信息
-            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntity(id);
+            var entity = new BaseUserLogonManager(DbHelper, UserInfo).GetEntityByUserId(id.ToString());
             // 只允许登录一次，需要检查是否自己重新登录了，或者自己扮演自己了
             if (!UserInfo.Id.Equals(id))
             {
@@ -744,7 +839,7 @@ namespace DotNet.Business
                 // 获得员工的信息
                 var staffEntity = new BaseStaffEntity();
                 var staffManager = new BaseStaffManager(DbHelper, UserInfo);
-                var dataTableStaff = staffManager.GetDataTableById(id);
+                var dataTableStaff = staffManager.GetDataTableById(id.ToString());
                 staffEntity.GetSingle(dataTableStaff);
                 userInfo = staffManager.ConvertToUserInfo(userInfo, staffEntity);
             }
@@ -765,14 +860,14 @@ namespace DotNet.Business
         {
             // 删除不存在的数据，进行数据同步
             var result = 0;
-            var sql = "DELETE FROM " + BaseUserEntity.TableName
-                            + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.TableName + ") ";
+            var sql = "DELETE FROM " + BaseUserEntity.CurrentTableName
+                            + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.CurrentTableName + ") ";
             result += DbHelper.ExecuteNonQuery(sql);
             // 更新排序顺序情况
-            sql = "UPDATE " + BaseUserEntity.TableName
-                     + " SET SortCode = " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldSortCode
-                     + " FROM " + BaseStaffEntity.TableName
-                     + " WHERE " + BaseUserEntity.TableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldId;
+            sql = "UPDATE " + BaseUserEntity.CurrentTableName
+                     + " SET SortCode = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode
+                     + " FROM " + BaseStaffEntity.CurrentTableName
+                     + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId;
             result += DbHelper.ExecuteNonQuery(sql);
             return result;
         }
@@ -800,7 +895,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int CheckUserStaff()
         {
-            var sql = "UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.TableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ";
+            var sql = "UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ";
             return DbHelper.ExecuteNonQuery(sql);
         }
         #endregion
@@ -888,13 +983,13 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public int GetSortNum(int userId)
+        public int GetSortNum(string userId)
         {
             var entity = GetEntity(userId);
             var sql = "SELECT COUNT(*) AS UserCount "
                             + " FROM " + CurrentTableName
-                            + " inner JOIN " + BaseStaffEntity.TableName + " ON " + BaseStaffEntity.TableName + ".Id = " + CurrentTableName + ".Id"
-                            + "  WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + ".Enabled = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " is not null and " + BaseStaffEntity.TableName + "." + BaseStaffEntity.FieldCurrentProvince + " is not null AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
+                            + " INNER JOIN " + BaseStaffEntity.CurrentTableName + " ON " + BaseStaffEntity.CurrentTableName + ".Id = " + CurrentTableName + ".Id"
+                            + "  WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + ".Enabled = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " > " + entity.Score + " OR (" + CurrentTableName + "."
                             + BaseUserEntity.FieldSortCode + " < " + entity.SortCode + " AND " + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " = " + entity.Score + "))";

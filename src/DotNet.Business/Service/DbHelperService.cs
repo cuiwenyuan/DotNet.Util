@@ -16,7 +16,7 @@ namespace DotNet.Business
     /// DbHelperService
     /// 执行传入的SQL语句
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2015.04.30 版本：3.0 JiRiGaLa 加强QL语句安全漏洞。
     ///		2011.05.07 版本：2.3 JiRiGaLa 改进为虚类。
@@ -321,13 +321,13 @@ namespace DotNet.Business
         /// <param name="recordCount">记录条数</param>
         /// <param name="tableName">数据来源表名</param>
         /// <param name="selectField">选择字段</param>
-        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(BaseUserInfo userInfo, out int recordCount, string tableName, string selectField, int pageIndex, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
+        public DataTable GetDataTableByPage(BaseUserInfo userInfo, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
         {
             DataTable result = null;
             // 判断是否已经登录的用户？
@@ -339,7 +339,7 @@ namespace DotNet.Business
                 if (SecretUtil.IsSqlSafe(conditions))
                 {
                     recordCount = DbUtil.GetCount(DbHelper, tableName, conditions, DbHelper.MakeParameters(dbParameters));
-                    result = DbUtil.GetDataTableByPage(DbHelper, tableName, selectField, pageIndex, pageSize, conditions, DbHelper.MakeParameters(dbParameters), orderBy);
+                    result = DbUtil.GetDataTableByPage(DbHelper, tableName, selectField, pageNo, pageSize, conditions, DbHelper.MakeParameters(dbParameters), orderBy);
                 }
                 else
                 {

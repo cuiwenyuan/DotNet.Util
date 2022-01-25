@@ -54,7 +54,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
 
-            if (entity != null && !string.IsNullOrEmpty(entity.Id))
+            if (entity != null && !string.IsNullOrEmpty(entity.Id.ToString()))
             {
                 var key = string.Empty;
                 key = systemCode + ".Role." + entity.Id;

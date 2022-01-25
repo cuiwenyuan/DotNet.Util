@@ -10,7 +10,7 @@ namespace DotNet.Business
     /// ServiceFactory
     /// 本地服务的具体实现接口
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2015.04.30 版本：3.0 JiRiGaLa 分离方法，提高安全性。
     ///		2011.08.21 版本：2.0 JiRiGaLa 方便在系统组件化用,命名进行了修改。
@@ -45,9 +45,9 @@ namespace DotNet.Business
         /// 登录日志数据库服务
         /// </summary>
         /// <returns>数据库服务</returns>
-        public virtual IDbHelperService CreateLoginLogDbHelperService()
+        public virtual IDbHelperService CreateLogonLogDbHelperService()
         {
-            return new LoginLogDbHelperService();
+            return new LogonLogDbHelperService();
         }
     }
 }
