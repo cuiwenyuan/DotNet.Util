@@ -107,7 +107,7 @@ namespace DotNet.Util
         /// <summary>
         /// 软件的名称
         /// </summary>
-        public static string SoftFullName = "";
+        public static string SoftFullName = string.Empty;
 
         /// <summary>
         /// 系统图标文件
