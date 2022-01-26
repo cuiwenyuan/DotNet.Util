@@ -46,8 +46,8 @@ namespace DotNet.Business
         /// <returns>约束表达式</returns>
         public static string PrepareParameter(BaseUserInfo userInfo, string constraint)
         {
-            constraint = constraint.Replace("用户主键", userInfo.Id);
-            constraint = constraint.Replace("CurrentUserId", userInfo.Id);
+            constraint = constraint.Replace("用户主键", userInfo.Id.ToString());
+            constraint = constraint.Replace("CurrentUserId", userInfo.Id.ToString());
             constraint = constraint.Replace("用户编号", userInfo.Code);
             constraint = constraint.Replace("CurrentUserCode", userInfo.Code);
             constraint = constraint.Replace("用户名", userInfo.UserName);
@@ -55,11 +55,11 @@ namespace DotNet.Business
             constraint = constraint.Replace("用户姓名", userInfo.RealName);
             constraint = constraint.Replace("CurrentRealName", userInfo.RealName);
 
-            constraint = constraint.Replace("公司主键", userInfo.CompanyId);
-            constraint = constraint.Replace("CurrentCompanyId", userInfo.CompanyId);
+            constraint = constraint.Replace("公司主键", userInfo.CompanyId.ToString());
+            constraint = constraint.Replace("CurrentCompanyId", userInfo.CompanyId.ToString());
 
-            constraint = constraint.Replace("部门主键", userInfo.DepartmentId);
-            constraint = constraint.Replace("CurrentDepartmentId", userInfo.DepartmentId);
+            constraint = constraint.Replace("部门主键", userInfo.DepartmentId.ToString());
+            constraint = constraint.Replace("CurrentDepartmentId", userInfo.DepartmentId.ToString());
 
             // constraint = constraint.Replace("工作组主键", result.WorkgroupId);
             // constraint = constraint.Replace("CurrentWorkgroupId", result.WorkgroupId);

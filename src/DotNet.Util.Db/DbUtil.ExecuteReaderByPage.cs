@@ -58,10 +58,10 @@ namespace DotNet.Util
             var dbParameters = new List<IDbDataParameter>();
             var dbDataParameter = dbHelper.MakeParameter("RecordCount", recordCount, DbType.Int64, 0, ParameterDirection.Output);
             dbParameters.Add(dbDataParameter);
-            dbParameters.Add(dbHelper.MakeParameter("PageIndex", pageNo));
+            dbParameters.Add(dbHelper.MakeParameter("PageNo", pageNo));
             dbParameters.Add(dbHelper.MakeParameter("PageSize", pageSize));
             dbParameters.Add(dbHelper.MakeParameter("SortExpression", sortExpression));
-            dbParameters.Add(dbHelper.MakeParameter("SortDire", sortDirection));
+            dbParameters.Add(dbHelper.MakeParameter("SortDirection", sortDirection));
             dbParameters.Add(dbHelper.MakeParameter("TableName", tableName));
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
@@ -84,8 +84,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, out int recordCount, int pageNo = 1,
-            int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
+        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
             string condition = null, string selectField = null) where TModel : new()
         {
             return
@@ -108,13 +107,12 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
-        /// <param name="tableVersion">表版本</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int tableVersion = 4)
+        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             if (string.IsNullOrEmpty(sortExpression))
             {
-                sortExpression = (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime);
+                sortExpression = BaseUtil.FieldCreateTime;
             }
             if (string.IsNullOrEmpty(sortDirection))
             {
@@ -134,7 +132,7 @@ namespace DotNet.Util
                 case CurrentDbType.Db2:
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
                     sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER(ORDER BY " + sortExpression + ") AS ROWNUM, " + sql.Substring(7) + "  ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
+                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + ") AS ROWNUM, " + sql.Substring(7) + "  ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
                     break;
                 case CurrentDbType.Access:
                     if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
