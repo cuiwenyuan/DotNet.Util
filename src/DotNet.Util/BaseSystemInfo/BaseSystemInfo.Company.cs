@@ -27,46 +27,46 @@ namespace DotNet.Util
         /// <summary>
         /// 当前客户公司名称
         /// </summary>
-        public static string CustomerCompanyName = "旺财";
+        public static string CustomerCompanyName = "";
 
         /// <summary>
         /// 客户公司电话
         /// </summary>
-        public static string CustomerPhone = "13818699609";
+        public static string CustomerPhone = "";
 
         /// <summary>
         /// 客户公司网站
         /// </summary>
-        public static string CustomerCompanyWebsite = "http://www.WangCaiSoft.com";
+        public static string CustomerCompanyWebsite = "";
 
         /// <summary>
         /// 公司名称
         /// </summary>
-        public static string CompanyName = "旺财软件";
+        public static string CompanyName = "";
 
         /// <summary>
         /// 公司电话
         /// </summary>
-        public static string CompanyPhone = "13818699609";
+        public static string CompanyPhone = "";
 
         /// <summary>
         /// 公司网站
         /// </summary>
-        public static string CompanyWebsite = "http://www.WangCaiSoft.com";
+        public static string CompanyWebsite = "";
 
         /// <summary>
         /// 发送给谁，用,;符号隔开
         /// </summary>
-        public static string ErrorReportTo = "17185490@qq.com";
+        public static string ErrorReportTo = "";
 
         /// <summary>
         /// 错误反馈地址
         /// </summary>
-        public static string FeedbackUrl = "http://www.wangcaisoft.com/feedback/";
+        public static string FeedbackUrl = "";
 
         /// <summary>
         /// 要求客户注册的信息
         /// </summary>
-        public static string RegisterException = "请您联系：旺财软件 崔文远 手机：13818699609 电子邮件：17185490@qq.com 购买本软件的授权注册。";
+        public static string RegisterException = "请您购买本软件的授权注册。";
     }
 }

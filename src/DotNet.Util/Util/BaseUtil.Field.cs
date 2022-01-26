@@ -73,12 +73,6 @@ namespace DotNet.Util
         /// <summary>
         /// 是否删除
         /// </summary>
-        [Obsolete("V5版本请使用FieldDeleted")]
-        public const string FieldDeletionStateCode = "DeletionStateCode";
-
-        /// <summary>
-        /// 是否删除
-        /// </summary>
         public const string FieldDeleted = "Deleted";
 
         /// <summary>
@@ -105,36 +99,6 @@ namespace DotNet.Util
         /// 创建时间
         /// </summary>
         public const string FieldCreateTime = "CreateTime";
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        [Obsolete("V5版本请使用FieldCreateTime")]
-        public const string FieldCreateOn = "CreateOn";
-
-        /// <summary>
-        /// 最后修改者主键
-        /// </summary>
-        [Obsolete("V5版本请使用FieldUpdateUserId")]
-        public const string FieldModifiedUserId = "ModifiedUserId";
-
-        /// <summary>
-        /// 最后修改者用户名
-        /// </summary>
-        [Obsolete("V5版本请使用FieldUpdateUserName")]
-        public const string FieldModifiedUserName = "ModifiedUserName";
-
-        /// <summary>
-        /// 最后修改者
-        /// </summary>
-        [Obsolete("V5版本请使用FieldUpdateBy")]
-        public const string FieldModifiedBy = "ModifiedBy";
-
-        /// <summary>
-        /// 修改时间
-        /// </summary>
-        [Obsolete("V5版本请使用FieldUpdateTime")]
-        public const string FieldModifiedOn = "ModifiedOn";
 
         /// <summary>
         /// 最后修改者主键
@@ -165,9 +129,6 @@ namespace DotNet.Util
         /// 选择列 Selected 
         /// </summary>
         public static string SelectedColumn = "Selected";
-        #endregion
-
-        #region Field 静态字段扩展
 
         /// <summary>
         /// 创建Ip
@@ -178,11 +139,6 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldUpdateIp = "UpdateIp";
 
-        /// <summary>
-        /// 修改Ip
-        /// </summary>
-        [Obsolete("V5版本请使用FieldUpdateIp")]
-        public const string FieldModifiedIp = "ModifiedIp";
         /// <summary>
         /// 是否已审核 
         /// </summary>
