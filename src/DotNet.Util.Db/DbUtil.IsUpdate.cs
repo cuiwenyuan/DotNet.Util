@@ -33,11 +33,10 @@ namespace DotNet.Util
         /// <param name="id">主键</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
-        /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime, int tableVersion = 5)
+        public static bool IsUpdate(IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
-            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime, tableVersion);
+            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime);
         }
         #endregion
 
@@ -52,19 +51,18 @@ namespace DotNet.Util
         /// <param name="fieldValue">值</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
-        /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime, int tableVersion = 5)
+        public static bool IsUpdate(IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             var result = false;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT " + BaseUtil.FieldId + "," + BaseUtil.FieldCreateUserId + "," + (tableVersion == 4 ? BaseUtil.FieldCreateOn : BaseUtil.FieldCreateTime)
-                         + "," + (tableVersion == 4 ? BaseUtil.FieldModifiedUserId : BaseUtil.FieldUpdateUserId)
-                         + "," + (tableVersion == 4 ? BaseUtil.FieldModifiedOn : BaseUtil.FieldUpdateTime)
+            sb.Append("SELECT " + BaseUtil.FieldId + "," + BaseUtil.FieldCreateUserId + "," + BaseUtil.FieldCreateTime
+                         + "," + BaseUtil.FieldUpdateUserId
+                         + "," + BaseUtil.FieldUpdateTime
                          + " FROM " + tableName
                          + " WHERE " + fieldName + " = " + dbHelper.GetParameter(fieldName));
             var dt = dbHelper.Fill(sb.Put(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) });
-            result = IsUpdate(dt, oldUpdateUserId, oldUpdateTime, tableVersion);
+            result = IsUpdate(dt, oldUpdateUserId, oldUpdateTime);
             return result;
         }
         #endregion
@@ -77,14 +75,13 @@ namespace DotNet.Util
         /// <param name="dt">数据表</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
-        /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns>已被修改</returns>
-        private static bool IsUpdate(DataTable dt, string oldUpdateUserId, DateTime? oldUpdateTime, int tableVersion = 5)
+        private static bool IsUpdate(DataTable dt, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             var result = false;
             foreach (DataRow dr in dt.Rows)
             {
-                result = IsUpdate(dr, oldUpdateUserId, oldUpdateTime, tableVersion);
+                result = IsUpdate(dr, oldUpdateUserId, oldUpdateTime);
             }
             return result;
         }
@@ -98,17 +95,16 @@ namespace DotNet.Util
         /// <param name="dr">数据行</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
-        /// <param name="tableVersion">版本默认5为新版本</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(DataRow dr, string oldUpdateUserId, DateTime? oldUpdateTime, int tableVersion = 5)
+        public static bool IsUpdate(DataRow dr, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             var result = false;
-            if ((dr[tableVersion == 4 ? BaseUtil.FieldModifiedUserId : BaseUtil.FieldUpdateUserId] != DBNull.Value) &&
-                ((dr[tableVersion == 4 ? BaseUtil.FieldModifiedOn : BaseUtil.FieldUpdateTime] != DBNull.Value)))
+            if ((dr[BaseUtil.FieldUpdateUserId] != DBNull.Value) &&
+                ((dr[BaseUtil.FieldUpdateTime] != DBNull.Value)))
             {
                 var newUpdateTime =
-                    DateTime.Parse(dr[tableVersion == 4 ? BaseUtil.FieldModifiedOn : BaseUtil.FieldUpdateTime].ToString());
-                if (!dr[tableVersion == 4 ? BaseUtil.FieldModifiedUserId : BaseUtil.FieldUpdateUserId].ToString()
+                    DateTime.Parse(dr[BaseUtil.FieldUpdateTime].ToString());
+                if (!dr[BaseUtil.FieldUpdateUserId].ToString()
                     .Equals(oldUpdateUserId) || newUpdateTime != oldUpdateTime)
                 {
                     result = true;
