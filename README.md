@@ -11,7 +11,7 @@ DotNet.Util是一系列.NET Standard 2.0组件工具，绝大部分支持.NET Fr
 在征得[吉日嘎啦](https://www.cnblogs.com/jirigala/)书面同意后，我将最新的代码开源出来，使用最宽松的MIT协议。正如他所说：就当为社会，做一点贡献了！
 
 ## 联系方式
-我是崔文远，2013年开始弄旺财珠宝库存管理系统软件。因为NuGet上DotNet.前缀被占用，目前NuGet的包以Wangcaisoft.开头。  
+我是崔文远，2013年开始弄旺财珠宝库存管理系统软件。因为[NuGet](https://www.nuget.org/packages?q=wangcaisoft)上DotNet.前缀被占用，目前[NuGet](https://www.nuget.org/packages?q=wangcaisoft)的包以Wangcaisoft.开头。  
 个人网站：https://www.cuiwenyuan.com  
 微信：cuiwenyuan1981
 
