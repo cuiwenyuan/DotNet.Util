@@ -1,6 +1,6 @@
 # DotNet.Util
 DotNet.Util is a set of .NET Standard 2.0 utilities(partial but great majority support .net framework 4.0/4.5/4.6).  
-DotNet.Util是一系列.NET Standard 2.0组件工具，绝大部分支持.NET Framework 4.0/4.5/4.6平台，各项目默认支持netstandard2.0/net4.5/net4.0。
+DotNet.Util是一系列.NET Standard 2.0组件工具，绝大部分支持.NET Framework 4.0/4.5/4.6平台，各项目默认支持netstandard2.0/net4.6/net4.5/net4.0。
 
 ## 背景
 组件历史悠久，大概2006年前后[吉日嘎啦](https://www.cnblogs.com/jirigala/)就开始积累这些类库，后来[崔文远](https://www.cuiwenyuan.com)基于其2014年发布DotNet.Common V4组件继续升级、实战，2020年之后吸收[大石头](http://www.cnblogs.com/nnhy/)主导的[新生命](https://www.newlifex.com)之[NewLife.Core](https://github.com/NewLifeX/X)很多精华，最后呈现了这个开源的代码！
