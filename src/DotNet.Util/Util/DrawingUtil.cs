@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 
-namespace DotNet.Util.Util
+namespace DotNet.Util
 {
     /// <summary>
     /// DrawingUtil
