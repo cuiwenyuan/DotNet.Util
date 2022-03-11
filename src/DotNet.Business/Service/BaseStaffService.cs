@@ -608,7 +608,7 @@ namespace DotNet.Business
                 {
                     // 删除相应的用户
                     staffEntity = staffManager.GetEntity(ids[i]);
-                    if (staffEntity.UserId != null)
+                    if (staffEntity != null && staffEntity.UserId > 0)
                     {
                         userManager.SetDeleted(staffEntity.UserId);
                     }

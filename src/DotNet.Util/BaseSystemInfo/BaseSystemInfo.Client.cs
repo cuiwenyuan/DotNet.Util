@@ -95,27 +95,23 @@ namespace DotNet.Util
         public static string CurrentPassword = string.Empty;
 
         /// <summary>
-        /// 是否儲存登入密碼，預設記住密碼
+        /// 是否存储登录密码，默认记住密码
         /// </summary>
         public static bool RememberPassword = true;
 
         /// <summary>
-        /// 是否自動登入，預設不自動登入
+        /// 是否自动登录，默认不自动登录
         /// </summary>
         public static bool AutoLogon = false;
 
         /// <summary>
-        /// 客戶端加密儲存密碼
+        /// 客户端加密存储密码
         /// </summary>
         public static bool ClientEncryptPassword = true;
 
-        /// <summary>
-        /// 預設加載所有使用者，使用者量特別大時可設置為關閉
-        /// </summary>
-        /// public static bool LoadAllUser = true;
 
         /// <summary>
-        /// 動態加載組織機構樹，當資料量非常龐大時可設置為開啟
+        /// 组织机构动态加载，当数据量大时可以设置为启用
         /// </summary>
         public static bool OrganizationDynamicLoading = true;
 

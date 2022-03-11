@@ -107,7 +107,7 @@ namespace DotNet.Business
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>总数</returns>
-        public virtual int GetMax(string fieldName, string condition = null)
+        public virtual int GetMaxInt(string fieldName, string condition = null)
         {
             return DbUtil.AggregateInt(DbHelper, CurrentTableName, fieldName, condition: condition, function: "MAX");
         }

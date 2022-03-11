@@ -67,7 +67,7 @@ namespace DotNet.Business
                 //sb.Append(" AND " + BaseCalendarEntity.FieldCompanyId + " = " + companyId);
             }
             // 只有管理员才能看到所有的
-            if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
             {
                 sb.Append(" AND (" + BaseCalendarEntity.FieldUserCompanyId + " = 0 OR " + BaseCalendarEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
@@ -122,7 +122,7 @@ namespace DotNet.Business
                     errorMessage = "系统数据无权操作";
                 }
                 //检查是否为自己公司的数据
-                else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                 {
                     return base.SetDeleted(id, true, true);
                 }
@@ -158,7 +158,7 @@ namespace DotNet.Business
                         errorMessage = @"系统数据无权操作";
                     }
                     //检查是否为自己公司的数据
-                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                     {
                         result += base.SetDeleted(id, true, true);
                     }
@@ -197,7 +197,7 @@ namespace DotNet.Business
                     errorMessage = @"系统数据无权操作";
                 }
                 //检查是否为自己公司的数据
-                else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                 {
                     return base.UndoSetDeleted(id, true, true);
                 }
@@ -233,7 +233,7 @@ namespace DotNet.Business
                         errorMessage = @"系统数据无权操作";
                     }
                     //检查是否为自己公司的数据
-                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                     {
                         result += base.SetDeleted(id, true, true);
                     }
@@ -272,7 +272,7 @@ namespace DotNet.Business
                     errorMessage = "系统数据无权操作";
                 }
                 //检查是否为自己公司的数据
-                else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                 {
                     return base.SetEnabled(id, recordUser: true);
                 }
@@ -308,7 +308,7 @@ namespace DotNet.Business
                         errorMessage = @"系统数据无权操作";
                     }
                     //检查是否为自己公司的数据
-                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                     {
                         result += base.SetEnabled(id, recordUser: true);
                     }
@@ -347,7 +347,7 @@ namespace DotNet.Business
                     errorMessage = @"系统数据无权操作";
                 }
                 //检查是否为自己公司的数据
-                else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                 {
                     return base.SetDisabled(id, recordUser: true);
                 }
@@ -383,7 +383,7 @@ namespace DotNet.Business
                         errorMessage = @"系统数据无权操作";
                     }
                     //检查是否为自己公司的数据
-                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
+                    else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                     {
                         result += base.SetDisabled(id, true);
                     }

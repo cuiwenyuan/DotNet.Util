@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseModuleEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -31,6 +31,12 @@ namespace DotNet.Model
         /// </summary>
         [FieldDescription("主键")]
         public int Id { get; set; }
+
+        /// <summary>
+        /// 子系统编码
+        /// </summary>
+        [FieldDescription("子系统编码")]
+        public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 父节点主键
@@ -259,6 +265,10 @@ namespace DotNet.Model
             {
                 Id = BaseUtil.ConvertToInt(dr[FieldId]);
             }
+            if (dr.ContainsColumn(FieldSystemCode))
+            {
+                SystemCode = BaseUtil.ConvertToString(dr[FieldSystemCode]);
+            }
             if (dr.ContainsColumn(FieldParentId))
             {
                 ParentId = BaseUtil.ConvertToInt(dr[FieldParentId]);
@@ -416,6 +426,11 @@ namespace DotNet.Model
         /// 主键
         ///</summary>
         public const string FieldId = "Id";
+
+        ///<summary>
+        /// 子系统编码
+        ///</summary>
+        public const string FieldSystemCode = "SystemCode";
 
         ///<summary>
         /// 父节点主键

@@ -306,6 +306,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BaseParameterEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseParameterEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldCategoryCode, entity.CategoryCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterId, entity.ParameterId);
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterCode, entity.ParameterCode);

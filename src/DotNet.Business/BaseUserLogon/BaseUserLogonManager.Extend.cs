@@ -213,16 +213,54 @@ namespace DotNet.Business
             return DbHelper.ExecuteScalar(sql).ToString();
         }
 
+        #region GetLogonCount 获取登录次数
         /// <summary>
         /// 获取登录次数
         /// </summary>
-        /// <param name="days"></param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns></returns>
-        public string GetLogonCount(int days)
+        public int GetLogonCount(int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sql = "SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldEnabled + " = 1 AND (DATEADD(d, " + days + ", " + BaseUserLogonEntity.FieldLastVisitTime + ") > " + DbHelper.GetDbNow() + ")";
-            return DbHelper.ExecuteScalar(sql).ToString();
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldEnabled + " = 1 AND " + BaseUserLogonEntity.FieldDeleted + " = 0");
+            if (days > 0)
+            {
+                sb.Append(" AND (DATEADD(d, " + days + ", " + BaseUserLogonEntity.FieldLastVisitTime + ") > " + DbHelper.GetDbNow() + ")");
+            }
+            if (currentWeek)
+            {
+                sb.Append(" AND DATEDIFF(ww," + BaseUserLogonEntity.FieldLastVisitTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentMonth)
+            {
+                sb.Append(" AND DATEDIFF(mm," + BaseUserLogonEntity.FieldLastVisitTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentQuarter)
+            {
+                sb.Append(" AND DATEDIFF(qq," + BaseUserLogonEntity.FieldLastVisitTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentYear)
+            {
+                sb.Append(" AND DATEDIFF(yy," + BaseUserLogonEntity.FieldLastVisitTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseUserLogonEntity.FieldLastVisitTime + " >= " + startTime + ")");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseUserLogonEntity.FieldLastVisitTime + " < " + endTime + ")");
+            }
+            return DbHelper.ExecuteScalar(sb.Put()).ToInt();
         }
+
+        #endregion
 
         #region private int ResetVisitInfo(string id) 重置访问情况
         /// <summary>

@@ -44,7 +44,7 @@ namespace DotNet.Util
             {
                 try
                 {
-                    if(BaseSystemInfo.MailServerEnableSsl && BaseSystemInfo.MailServerPort == 465)
+                    if(BaseSystemInfo.MailServerSslEnabled && BaseSystemInfo.MailServerPort == 465)
                     {
 #if NET40_OR_GREATER
                         var message = new System.Web.Mail.MailMessage();
@@ -96,7 +96,7 @@ namespace DotNet.Util
                         message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", BaseSystemInfo.MailUserName);
                         message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", BaseSystemInfo.MailPassword);
                         message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", BaseSystemInfo.MailServerPort);//端口 
-                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpusessl", BaseSystemInfo.MailServerEnableSsl);
+                        message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpusessl", BaseSystemInfo.MailServerSslEnabled);
 
                         System.Web.Mail.SmtpMail.SmtpServer = BaseSystemInfo.MailServer;
                         System.Web.Mail.SmtpMail.Send(message);
@@ -172,7 +172,7 @@ namespace DotNet.Util
                         {
                             Credentials = new NetworkCredential(BaseSystemInfo.MailUserName, BaseSystemInfo.MailPassword),
                             //SSL设置
-                            EnableSsl = BaseSystemInfo.MailServerEnableSsl
+                            EnableSsl = BaseSystemInfo.MailServerSslEnabled
                         };
 
                         smtpClient.Send(message);

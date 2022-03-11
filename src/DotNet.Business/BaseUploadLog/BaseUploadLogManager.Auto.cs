@@ -309,6 +309,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BaseUploadLogEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseUploadLogEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFileName, entity.FileName);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFileExtension, entity.FileExtension);
             sqlBuilder.SetValue(BaseUploadLogEntity.FieldFilePath, entity.FilePath);

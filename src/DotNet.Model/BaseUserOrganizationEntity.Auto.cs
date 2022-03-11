@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOrganizationEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -17,11 +17,11 @@ namespace DotNet.Model
     /// 
     /// 修改记录
     /// 
-    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-02-07 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-28</date>
+    ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
     public partial class BaseUserOrganizationEntity : BaseEntity
@@ -36,37 +36,37 @@ namespace DotNet.Model
         /// 用户账户主键
         /// </summary>
         [FieldDescription("用户账户主键")]
-        public int UserId { get; set; }
+        public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
-        public int CompanyId { get; set; }
+        public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 分支机构主键
         /// </summary>
         [FieldDescription("分支机构主键")]
-        public int? SubCompanyId { get; set; } = null;
+        public int SubCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 部门主键
         /// </summary>
         [FieldDescription("部门主键")]
-        public int? DepartmentId { get; set; } = null;
+        public int DepartmentId { get; set; } = 0;
 
         /// <summary>
         /// 子部门主键
         /// </summary>
         [FieldDescription("子部门主键")]
-        public int? SubDepartmentId { get; set; } = null;
+        public int SubDepartmentId { get; set; } = 0;
 
         /// <summary>
         /// 工作组主键
         /// </summary>
         [FieldDescription("工作组主键")]
-        public int? WorkgroupId { get; set; } = null;
+        public int WorkgroupId { get; set; } = 0;
 
         /// <summary>
         /// 描述
@@ -173,19 +173,19 @@ namespace DotNet.Model
             }
             if (dr.ContainsColumn(FieldSubCompanyId))
             {
-                SubCompanyId = BaseUtil.ConvertToNullableInt(dr[FieldSubCompanyId]);
+                SubCompanyId = BaseUtil.ConvertToInt(dr[FieldSubCompanyId]);
             }
             if (dr.ContainsColumn(FieldDepartmentId))
             {
-                DepartmentId = BaseUtil.ConvertToNullableInt(dr[FieldDepartmentId]);
+                DepartmentId = BaseUtil.ConvertToInt(dr[FieldDepartmentId]);
             }
             if (dr.ContainsColumn(FieldSubDepartmentId))
             {
-                SubDepartmentId = BaseUtil.ConvertToNullableInt(dr[FieldSubDepartmentId]);
+                SubDepartmentId = BaseUtil.ConvertToInt(dr[FieldSubDepartmentId]);
             }
             if (dr.ContainsColumn(FieldWorkgroupId))
             {
-                WorkgroupId = BaseUtil.ConvertToNullableInt(dr[FieldWorkgroupId]);
+                WorkgroupId = BaseUtil.ConvertToInt(dr[FieldWorkgroupId]);
             }
             if (dr.ContainsColumn(FieldDescription))
             {

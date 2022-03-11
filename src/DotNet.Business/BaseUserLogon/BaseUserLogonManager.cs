@@ -67,7 +67,7 @@ namespace DotNet.Business
                 //sb.Append(" AND " + BaseUserLogonEntity.FieldCompanyId + " = " + companyId);
             }
             // 只有管理员才能看到所有的
-            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
             //{
                 //sb.Append(" AND (" + BaseUserLogonEntity.FieldUserCompanyId + " = 0 OR " + BaseUserLogonEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //}

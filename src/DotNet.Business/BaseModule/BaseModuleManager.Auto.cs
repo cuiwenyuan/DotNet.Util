@@ -307,6 +307,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BaseModuleEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseModuleEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseModuleEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseModuleEntity.FieldFullName, entity.FullName);

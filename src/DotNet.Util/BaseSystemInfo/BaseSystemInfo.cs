@@ -126,7 +126,7 @@ namespace DotNet.Util
         /// <summary>
         /// CreateOpenId
         /// </summary>
-        public static void CreateOpenId()
+        private static void CreateOpenId()
         {
             Thread.Sleep(10000);
             var openId = string.Empty;

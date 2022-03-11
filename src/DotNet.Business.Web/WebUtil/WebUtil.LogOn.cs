@@ -436,17 +436,17 @@ namespace DotNet.Business
         /// <param name="allInfo">是否保存所有的信息</param>
         public static void SaveCookie(BaseUserInfo userInfo, bool allInfo = false)
         {
-            var password = Encrypt(userInfo.Password);
+            //var password = Encrypt(userInfo.Password);
             var httpCookie = new HttpCookie(CookieName);
             if (!string.IsNullOrEmpty(CookieDomain))
             {
                 httpCookie.Domain = CookieDomain;
             }
             httpCookie.Values[CookieUserName] = HttpUtility.UrlEncode(userInfo.UserName);
-            if (BaseSystemInfo.RememberPassword)
-            {
-                httpCookie.Values[CookiePassword] = password;
-            }
+            //if (BaseSystemInfo.RememberPassword)
+            //{
+            //    httpCookie.Values[CookiePassword] = password;
+            //}
             httpCookie.Values["Id"] = userInfo.Id.ToString();
             httpCookie.Values["UserId"] = userInfo.Id.ToString();
             httpCookie.Values["OpenId"] = userInfo.OpenId;

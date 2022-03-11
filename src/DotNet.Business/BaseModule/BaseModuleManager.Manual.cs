@@ -460,15 +460,14 @@ namespace DotNet.Business
             for (var i = 0; i < _dtModule.Rows.Count; i++)
             {
                 //null或者0为顶级
-                var parentId = BaseUtil.ConvertToNullableInt(_dtModule.Rows[i][BaseModuleEntity.FieldParentId]);
-                if (parentId == null || parentId == 0)
+                if (_dtModule.Rows[i][BaseModuleEntity.FieldParentId].ToInt() == 0)
                 {
                     var dr = _moduleTable.NewRow();
                     dr[BaseModuleEntity.FieldId] = _dtModule.Rows[i][BaseModuleEntity.FieldId];
                     dr[BaseModuleEntity.FieldFullName] = _dtModule.Rows[i][BaseModuleEntity.FieldFullName];
                     _moduleTable.Rows.Add(dr);
                     //递归查找子级
-                    GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId]);
+                    GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId].ToInt());
                 }
             }
             return _moduleTable;
@@ -480,18 +479,18 @@ namespace DotNet.Business
         /// 获取子菜单模块
         /// </summary>
         /// <param name="parentId">父节点主键</param>
-        private void GetModule(object parentId)
+        private void GetModule(int parentId)
         {
             _head += "--";
             for (var i = 0; i < _dtModule.Rows.Count; i++)
             {
-                if (_dtModule.Rows[i][BaseModuleEntity.FieldParentId].ToString().Equals(parentId))
+                if (_dtModule.Rows[i][BaseModuleEntity.FieldParentId].ToInt() == parentId)
                 {
                     var dr = _moduleTable.NewRow();
                     dr[BaseModuleEntity.FieldId] = _dtModule.Rows[i][BaseModuleEntity.FieldId];
                     dr[BaseModuleEntity.FieldFullName] = _head + _dtModule.Rows[i][BaseModuleEntity.FieldFullName];
                     _moduleTable.Rows.Add(dr);
-                    GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId]);
+                    GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId].ToInt());
                 }
             }
             // 子级遍历完成后，退到父级

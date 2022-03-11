@@ -296,9 +296,9 @@ namespace DotNet.Util
                     BaseSystemInfo.RedisInitialDb = int.Parse(GetValue(_xmlDocument, "RedisInitialDb"));
                 }
             }
-            if (Exists("RedisEnableSsl"))
+            if (Exists("RedisSslEnabled"))
             {
-                BaseSystemInfo.RedisEnableSsl = GetValue(_xmlDocument, "RedisEnableSsl").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.RedisSslEnabled = GetValue(_xmlDocument, "RedisSslEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("RedisUserName"))
             {
@@ -336,9 +336,9 @@ namespace DotNet.Util
                     BaseSystemInfo.FtpPort = int.Parse(GetValue(_xmlDocument, "FtpPort"));
                 }
             }
-            if (Exists("FtpEnableSsl"))
+            if (Exists("FtpSslEnabled"))
             {
-                BaseSystemInfo.FtpEnableSsl = GetValue(_xmlDocument, "FtpEnableSsl").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.FtpSslEnabled = GetValue(_xmlDocument, "FtpSslEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("FtpUserName"))
             {
@@ -362,9 +362,9 @@ namespace DotNet.Util
                     BaseSystemInfo.MqttPort = int.Parse(GetValue(_xmlDocument, "MqttPort"));
                 }
             }
-            if (Exists("MqttEnableSsl"))
+            if (Exists("MqttSslEnabled"))
             {
-                BaseSystemInfo.MqttEnableSsl = GetValue(_xmlDocument, "MqttEnableSsl").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.MqttSslEnabled = GetValue(_xmlDocument, "MqttSslEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("MqttUserName"))
             {
@@ -377,13 +377,13 @@ namespace DotNet.Util
             #endregion
 
             #region 获取WebApi配置
-            if (Exists("WebApiEnableMonitor"))
+            if (Exists("WebApiMonitorEnabled"))
             {
-                BaseSystemInfo.WebApiEnableMonitor = GetValue(_xmlDocument, "WebApiEnableMonitor").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WebApiMonitorEnabled = GetValue(_xmlDocument, "WebApiMonitorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
-            if (Exists("WebApiEnableSlowMonitor"))
+            if (Exists("WebApiSlowMonitorEnabled"))
             {
-                BaseSystemInfo.WebApiEnableSlowMonitor = GetValue(_xmlDocument, "WebApiEnableSlowMonitor").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WebApiSlowMonitorEnabled = GetValue(_xmlDocument, "WebApiSlowMonitorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("WebApiSlowResponseMilliseconds"))
             {
@@ -1014,6 +1014,14 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.AppSecret = GetValue(_xmlDocument, "AppSecret");
             }
+            if (Exists("JwtEnabled"))
+            {
+                BaseSystemInfo.JwtEnabled = GetValue(_xmlDocument, "JwtEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (Exists("JwtSecret"))
+            {
+                BaseSystemInfo.JwtSecret = GetValue(_xmlDocument, "JwtSecret");
+            }
             if (Exists("ServiceUserName"))
             {
                 BaseSystemInfo.ServiceUserName = GetValue(_xmlDocument, "ServiceUserName");
@@ -1022,9 +1030,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ServicePassword = GetValue(_xmlDocument, "ServicePassword");
             }
-            if (Exists("EnableWhiteList"))
+            if (Exists("WhiteListEnabled"))
             {
-                BaseSystemInfo.EnableWhiteList = GetValue(_xmlDocument, "EnableWhiteList").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WhiteListEnabled = GetValue(_xmlDocument, "WhiteListEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("WhiteList"))
             {
@@ -1034,9 +1042,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.BlackList = GetValue(_xmlDocument, "BlackList");
             }
-            if (Exists("EnableAdministrator"))
+            if (Exists("AdministratorEnabled"))
             {
-                BaseSystemInfo.EnableAdministrator = GetValue(_xmlDocument, "EnableAdministrator").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.AdministratorEnabled = GetValue(_xmlDocument, "AdministratorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("RegisterKey"))
             {
@@ -1053,9 +1061,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.TraceabilityKey = GetValue(_xmlDocument, "TraceabilityKey");
             }
-            if (Exists("EnableTraceabilityCode"))
+            if (Exists("TraceabilityCodeEnabled"))
             {
-                BaseSystemInfo.EnableTraceabilityCode = GetValue(_xmlDocument, "EnableTraceabilityCode").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.TraceabilityCodeEnabled = GetValue(_xmlDocument, "TraceabilityCodeEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             //SMTP邮件服务器
             if (Exists("MailServer"))
@@ -1069,9 +1077,9 @@ namespace DotNet.Util
                     BaseSystemInfo.MailServerPort = Convert.ToInt32(GetValue(_xmlDocument, "MailServerPort"));
                 }
             }
-            if (Exists("MailServerEnableSsl"))
+            if (Exists("MailServerSslEnabled"))
             {
-                BaseSystemInfo.MailServerEnableSsl = GetValue(_xmlDocument, "MailServerEnableSsl").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.MailServerSslEnabled = GetValue(_xmlDocument, "MailServerSslEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (Exists("MailUserName"))
             {
@@ -1262,7 +1270,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "RedisServer", BaseSystemInfo.RedisServer);
             SetValue(xmlDocument, "RedisPort", BaseSystemInfo.RedisPort.ToString());
             SetValue(xmlDocument, "RedisInitialDb", BaseSystemInfo.RedisInitialDb.ToString());
-            SetValue(xmlDocument, "RedisEnableSsl", BaseSystemInfo.RedisEnableSsl.ToString());
+            SetValue(xmlDocument, "RedisSslEnabled", BaseSystemInfo.RedisSslEnabled.ToString());
             SetValue(xmlDocument, "RedisUserName", BaseSystemInfo.RedisUserName);
             SetValue(xmlDocument, "RedisPassword", BaseSystemInfo.RedisPassword);
             SetValue(xmlDocument, "RedisCacheMillisecond", BaseSystemInfo.RedisCacheMillisecond.ToString());
@@ -1272,7 +1280,7 @@ namespace DotNet.Util
             #region 写入FTP配置
             SetValue(xmlDocument, "FtpServer", BaseSystemInfo.FtpServer);
             SetValue(xmlDocument, "FtpPort", BaseSystemInfo.FtpPort.ToString());
-            SetValue(xmlDocument, "FtpEnableSsl", BaseSystemInfo.FtpEnableSsl.ToString());
+            SetValue(xmlDocument, "FtpSslEnabled", BaseSystemInfo.FtpSslEnabled.ToString());
             SetValue(xmlDocument, "FtpUserName", BaseSystemInfo.FtpUserName);
             SetValue(xmlDocument, "FtpPassword", BaseSystemInfo.FtpPassword);
             #endregion
@@ -1280,14 +1288,14 @@ namespace DotNet.Util
             #region 写入MQTT配置
             SetValue(xmlDocument, "MqttServer", BaseSystemInfo.MqttServer);
             SetValue(xmlDocument, "MqttPort", BaseSystemInfo.MqttPort.ToString());
-            SetValue(xmlDocument, "MqttEnableSsl", BaseSystemInfo.MqttEnableSsl.ToString());
+            SetValue(xmlDocument, "MqttSslEnabled", BaseSystemInfo.MqttSslEnabled.ToString());
             SetValue(xmlDocument, "MqttUserName", BaseSystemInfo.MqttUserName);
             SetValue(xmlDocument, "MqttPassword", BaseSystemInfo.MqttPassword);
             #endregion
 
             #region 写入WebApi配置
-            SetValue(xmlDocument, "WebApiEnableMonitor", BaseSystemInfo.WebApiEnableMonitor.ToString());
-            SetValue(xmlDocument, "WebApiEnableSlowMonitor", BaseSystemInfo.WebApiEnableSlowMonitor.ToString());
+            SetValue(xmlDocument, "WebApiMonitorEnabled", BaseSystemInfo.WebApiMonitorEnabled.ToString());
+            SetValue(xmlDocument, "WebApiSlowMonitorEnabled", BaseSystemInfo.WebApiSlowMonitorEnabled.ToString());
             SetValue(xmlDocument, "WebApiSlowResponseMilliseconds", BaseSystemInfo.WebApiSlowResponseMilliseconds.ToString());
             #endregion
 

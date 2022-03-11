@@ -107,6 +107,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region 获取角色拥有的权限列表
         /// <summary>
         /// 获取角色拥有的权限列表
         /// </summary>
@@ -135,6 +136,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public string[] GetPermissionIds(string systemCode, string roleId, string resourceCategory) 获取角色的权限主键数组
         /// <summary>

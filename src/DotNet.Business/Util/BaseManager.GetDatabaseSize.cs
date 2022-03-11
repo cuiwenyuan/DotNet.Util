@@ -50,8 +50,11 @@ namespace DotNet.Business
             try
             {
                 var dt = Fill(sb.Put());
-                //database_name,database_size
-                result = decimal.Parse(dt.Rows[0][1].ToString().Replace("MB", "").Trim()) / 1024;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    //database_name,database_size
+                    result = decimal.Parse(dt.Rows[0][1].ToString().Replace("MB", "").Trim()) / 1024;
+                }
             }
             catch (Exception ex)
             {
