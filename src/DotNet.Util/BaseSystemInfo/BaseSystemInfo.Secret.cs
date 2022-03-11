@@ -81,6 +81,16 @@ namespace DotNet.Util
         public static string AppSecret = "";
 
         /// <summary>
+        /// 启用JWT
+        /// </summary>
+        public static bool JwtEnabled = false;
+
+        /// <summary>
+        /// JWT Secret
+        /// </summary>
+        public static string JwtSecret = "DotNet.Troy.Cui@2022-03-03";
+
+        /// <summary>
         /// 遠端調用Service使用者名稱（提高系統安全性）
         /// </summary>
         public static string ServiceUserName = "Troy.Cui";
@@ -91,13 +101,12 @@ namespace DotNet.Util
         public static string ServicePassword = "CuiWenYuan";
 
         /// <summary>
-        /// 服务器端加密存储密码
+        /// 启用白名单
         /// </summary>
-        public static bool EnableWhiteList = false;
+        public static bool WhiteListEnabled = false;
 
         /// <summary>
-        /// 白名单
-        /// 121.40.33.143 电商的ip服务器位置
+        /// 白名单（IP地址,逗号分割）
         /// </summary>
         public static string WhiteList = "116.228.70.118,116.228.70.122,180.166.232.222,58.246.115.34,183.195.130.78,121.40.33.143";
 
@@ -109,6 +118,7 @@ namespace DotNet.Util
         /// <summary>
         /// 启用系统管理员（超级用户）
         /// </summary>
-        public static bool EnableAdministrator = true;
+        public static bool AdministratorEnabled = true;
+        
     }
 }

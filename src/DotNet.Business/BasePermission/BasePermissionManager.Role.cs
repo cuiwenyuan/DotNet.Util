@@ -30,6 +30,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager, IBaseManager
     {
+        #region public static string[] GetPermissionIdsByCache(string systemCode, string[] roleIds)
         /// <summary>
         /// 多个角色，都有啥权限？单个角色都有啥权限的循环获取？
         /// </summary>
@@ -64,7 +65,7 @@ namespace DotNet.Business
             return result;
         }
 
-
+        #endregion
 
         #region public string[] GetRoleIds(string systemCode, string permissionId) 获取角色主键数组
         /// <summary>
@@ -90,9 +91,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        //
-        // 授予权限的实现部分
-        //
+        #region 授予权限的实现部分
 
         #region public string GrantRole(string systemCode, string roleId, string permissionId, bool chekExists = true) 为了提高授权的运行速度
         /// <summary>
@@ -167,6 +166,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public int GrantRole(string systemCode, string roleId, string[] permissionIds) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -184,7 +184,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
+        #region public int GrantRole(string systemCode, string[] roleIds, string permissionId) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -202,7 +204,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
+        #region public int GrantRole(string systemCode, string[] roleIds, string[] permissionIds) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -225,11 +229,11 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #endregion
 
-        //
-        //  撤销权限的实现部分
-        //
+        #region 撤销权限的实现部分
 
         #region public int RevokeRole(string systemCode, string roleId, string permissionId) 为了提高撤销的运行速度
         /// <summary>
@@ -279,6 +283,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public int RevokeRole(string systemCode, string roleId, string[] permissionIds) 撤回
         /// <summary>
         /// 撤回
         /// </summary>
@@ -295,6 +300,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
+
+        #region public int RevokeRole(string systemCode, string[] roleIds, string permissionId) 撤回
 
         /// <summary>
         /// 撤回
@@ -313,6 +321,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public int RevokeRole(string systemCode, string[] roleIds, string[] permissionIds) 撤回
         /// <summary>
         /// 撤回
         /// </summary>
@@ -332,6 +343,7 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
         #region public int RevokeRoleAll(string systemCode, string roleId) 撤销角色全部权限
         /// <summary>
@@ -356,6 +368,8 @@ namespace DotNet.Business
             };
             return UpdateProperty(whereParameters, parameters);
         }
+        #endregion
+
         #endregion
     }
 }

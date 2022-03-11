@@ -21,12 +21,12 @@ namespace DotNet.Util
         /// <summary>
         /// WebApi是否启用性能监控日志（默认不开启）
         /// </summary>
-        public static bool WebApiEnableMonitor = false;
+        public static bool WebApiMonitorEnabled = false;
 
         /// <summary>
         /// WebApi是否启用慢响应监控日志（默认开启）
         /// </summary>
-        public static bool WebApiEnableSlowMonitor = true;
+        public static bool WebApiSlowMonitorEnabled = true;
 
         /// <summary>
         /// WebApi慢响应毫秒数（默认1000，即1秒钟）

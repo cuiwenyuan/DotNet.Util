@@ -720,30 +720,59 @@ namespace DotNet.Business
         /// 获取所有记录总数
         /// </summary>
         /// <param name="condition">查询条件(不需要以AND开头)</param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns>总数</returns>
-        int GetTotalCount(string condition = null);
+        int GetTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null);
 
         /// <summary>
         /// 获取所有记录（唯一值）总数
         /// </summary>
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不需要以AND开头)</param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns>总数</returns>
-        int GetTotalDistinctCount(string fieldName, string condition = null);
+        int GetTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null);
 
         /// <summary>
         /// 获取有效记录总数
         /// </summary>
         /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns>总数</returns>
-        int GetActiveTotalCount(string condition = null);
+        int GetActiveTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null);
 
         /// <summary>
         /// 获取有效记录（唯一值）总数
         /// </summary>
+        /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns>总数</returns>
-        int GetActiveTotalDistinctCount(string fieldName, string condition = null);
+        int GetActiveTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null);
 
         /// <summary>
         /// 是否唯一的

@@ -307,6 +307,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BasePermissionScopeEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BasePermissionScopeEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldResourceCategory, entity.ResourceCategory);
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldResourceId, entity.ResourceId);
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldTargetCategory, entity.TargetCategory);

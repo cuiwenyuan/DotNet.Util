@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserLogonEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -538,7 +538,7 @@ namespace DotNet.Model
         public const string FieldLogonCount = "LogonCount";
 
         ///<summary>
-        /// 允许同时有多用户登录
+        /// 是否并发用户
         ///</summary>
         public const string FieldConcurrentUser = "ConcurrentUser";
 

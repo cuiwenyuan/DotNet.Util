@@ -29,6 +29,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager, IBaseManager
     {
+        #region CheckPermission
         /// <summary>
         /// 判断用户是否有有相应的权限
         /// </summary>
@@ -68,6 +69,10 @@ namespace DotNet.Business
             return Exists(parameters);
         }
 
+        #endregion
+
+        #region ResetPermissionByCache
+
         /// <summary>
         /// 重置权限
         /// </summary>
@@ -93,6 +98,10 @@ namespace DotNet.Business
             return null;
         }
 
+        #endregion
+
+        #region GetPermissionIdsByCache
+
         /// <summary>
         /// 获取权限编号
         /// </summary>
@@ -110,6 +119,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public string[] GetPermissionIds(string systemCode, string userId) 获取用户的权限主键数组
         /// <summary>
@@ -133,9 +144,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        //
-        // 授予权限的实现部分
-        //
+        #region 授予权限的实现部分
 
         #region public string GrantUser(string systemCode, string userId, string permissionId, bool chekExists = true) 为了提高授权的运行速度
         /// <summary>
@@ -250,6 +259,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public int GrantUser(string systemCode, string userId, string[] permissionIds) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -269,7 +279,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public int GrantUser(string systemCode, string[] userIds, string permissionId) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -289,7 +301,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public int GrantUser(string systemCode, string[] userIds, string[] permissionIds) 授权
         /// <summary>
         /// 授权
         /// </summary>
@@ -312,11 +326,11 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #endregion
 
-        //
-        //  撤销权限的实现部分
-        //
+        #region 撤销权限的实现部分
 
         #region public int Revoke(string systemCode, string userId, string permissionId) 为了提高撤销的运行速度
         /// <summary>
@@ -390,6 +404,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public int RevokeUser(string systemCode, string userId, string[] permissionIds) 撤回
         /// <summary>
         /// 撤回
         /// </summary>
@@ -408,6 +423,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
+
+        #region public int RevokeUser(string systemCode, string[] userIds, string permissionId) 撤回
 
         /// <summary>
         /// 撤回
@@ -427,6 +445,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
+
+        #region public int RevokeUser(string systemCode, string[] userIds, string[] permissionIds) 撤回
         /// <summary>
         /// 撤回
         /// </summary>
@@ -448,7 +469,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public int RevokeUserAll(string systemCode, string userId) 撤回所有
         /// <summary>
         /// 撤回所有
         /// </summary>
@@ -469,6 +492,11 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
+
+        #endregion
+
+        #region GetUserIds
 
         /// <summary>
         /// 获得有某个权限的所有用户主键
@@ -482,6 +510,10 @@ namespace DotNet.Business
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             return GetUserIdsByPermissionId(systemCode, permissionId);
         }
+
+        #endregion
+
+        #region GetUserIdsByPermissionId
 
         /// <summary>
         /// 获取用户编号
@@ -519,5 +551,7 @@ namespace DotNet.Business
             }
             return result;
         }
+
+        #endregion
     }
 }

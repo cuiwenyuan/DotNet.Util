@@ -308,6 +308,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
+            sqlBuilder.SetValue(BaseUserRoleEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldRoleId, entity.RoleId);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldDescription, entity.Description);

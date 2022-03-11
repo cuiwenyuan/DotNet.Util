@@ -87,7 +87,7 @@ namespace DotNet.Business
                 //sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + companyId);
             }
             // 只有管理员才能看到所有的
-            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.EnableAdministrator))
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
             //{
             //sb.Append(" AND (" + BaseUserEntity.FieldUserCompanyId + " = 0 OR " + BaseUserEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //}
@@ -915,18 +915,55 @@ namespace DotNet.Business
             return DbHelper.ExecuteScalar(sql).ToString();
         }
 
+        #region GetRegistrationCount
+
         /// <summary>
         /// 获取注册用户数
         /// </summary>
-        /// <param name="days"></param>
+        /// <param name="days">最近多少天</param>
+        /// <param name="currentWeek">当周</param>
+        /// <param name="currentMonth">当月</param>
+        /// <param name="currentQuarter">当季</param>
+        /// <param name="currentYear">当年</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <returns></returns>
-        public string GetRegistrationCount(int days)
+        public int GetRegistrationCount(int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sql = "SELECT COUNT(*) AS UserCount "
-                            + " FROM " + CurrentTableName
-                            + "  WHERE Enabled = 1 AND (DATEADD(d, " + days + ", " + BaseUserEntity.FieldCreateTime + ") > " + DbHelper.GetDbNow() + ")";
-            return DbHelper.ExecuteScalar(sql).ToString();
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldDeleted + " = 0");
+            if (days > 0)
+            {
+                sb.Append(" AND (DATEADD(d, " + days + ", " + BaseUserEntity.FieldCreateTime + ") > " + DbHelper.GetDbNow() + ")");
+            }
+            if (currentWeek)
+            {
+                sb.Append(" AND DATEDIFF(ww," + BaseUserEntity.FieldCreateTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentMonth)
+            {
+                sb.Append(" AND DATEDIFF(mm," + BaseUserEntity.FieldCreateTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentQuarter)
+            {
+                sb.Append(" AND DATEDIFF(qq," + BaseUserEntity.FieldCreateTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (currentYear)
+            {
+                sb.Append(" AND DATEDIFF(yy," + BaseUserEntity.FieldCreateTime + "," + DbHelper.GetDbNow() + ") = 0");
+            }
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= " + startTime + ")");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " < " + endTime + ")");
+            }
+            return DbHelper.ExecuteScalar(sb.Put()).ToInt();
         }
+
+        #endregion
 
         #region public override int BatchSave(DataTable result) 批量保存
         /// <summary>

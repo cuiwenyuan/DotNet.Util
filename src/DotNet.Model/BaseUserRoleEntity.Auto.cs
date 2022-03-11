@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserRoleEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,14 +14,14 @@ namespace DotNet.Model
     /// <summary>
     /// BaseUserRoleEntity
     /// 用户角色表
-    ///
+    /// 
     /// 修改记录
-    ///
-    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-02-07 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-28</date>
+    ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
     public partial class BaseUserRoleEntity : BaseEntity
@@ -31,6 +31,12 @@ namespace DotNet.Model
         /// </summary>
         [FieldDescription("主键")]
         public int Id { get; set; }
+
+        /// <summary>
+        /// 子系统编码
+        /// </summary>
+        [FieldDescription("子系统编码")]
+        public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 用户主键
@@ -139,6 +145,10 @@ namespace DotNet.Model
             {
                 Id = BaseUtil.ConvertToInt(dr[FieldId]);
             }
+            if (dr.ContainsColumn(FieldSystemCode))
+            {
+                SystemCode = BaseUtil.ConvertToString(dr[FieldSystemCode]);
+            }
             if (dr.ContainsColumn(FieldUserId))
             {
                 UserId = BaseUtil.ConvertToInt(dr[FieldUserId]);
@@ -216,6 +226,11 @@ namespace DotNet.Model
         /// 主键
         ///</summary>
         public const string FieldId = "Id";
+
+        ///<summary>
+        /// 子系统编码
+        ///</summary>
+        public const string FieldSystemCode = "SystemCode";
 
         ///<summary>
         /// 用户主键
