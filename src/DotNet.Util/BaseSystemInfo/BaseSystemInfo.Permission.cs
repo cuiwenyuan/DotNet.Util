@@ -60,16 +60,6 @@ namespace DotNet.Util
         public static bool HandwrittenSignature = false;
 
         /// <summary>
-        /// 记录登录日志
-        /// </summary>
-        public static bool RecordLogonLog = true;
-
-        /// <summary>
-        /// 记录服务调用日志
-        /// </summary>
-        public static bool RecordLog = false;
-
-        /// <summary>
         /// 是否更新访问日期信息
         /// </summary>
         public static bool UpdateVisit = true;
@@ -83,20 +73,5 @@ namespace DotNet.Util
         /// 是否检查用户IP地址
         /// </summary>
         public static bool CheckIpAddress = false;
-
-        /// <summary>
-        /// 是否登记异常
-        /// </summary>
-        public static bool LogException = true;
-
-        /// <summary>
-        /// 是否记录数据库操作日志
-        /// </summary>
-        public static bool LogSql = false;
-
-        /// <summary>
-        /// 是否登记到 Windows 系统异常中
-        /// </summary>
-        public static bool EventLog = false;
     }
 }

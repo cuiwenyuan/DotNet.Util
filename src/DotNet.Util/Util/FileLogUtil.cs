@@ -44,16 +44,14 @@ namespace DotNet.Util
                                 logArr = new string[] { logPath, logMergeContent };
                                 temp.Add(logArr);
                             }
-                            //LogQueue.TryDequeue(out val);
-                            while (LogQueue.TryDequeue(out val))
-                            {
-                                //原子操作减1
-                                Interlocked.Decrement(ref _logCount);
-                            }
+                            LogQueue.TryDequeue(out val);
+                            //原子操作减1
+                            Interlocked.Decrement(ref _logCount);
                             foreach (var item in temp)
                             {
                                 WriteText(item[0], item[1]);
                             }
+
                         }
                     }
                 }
@@ -71,7 +69,11 @@ namespace DotNet.Util
         public static void WriteLog(string customDirectory, string preFile, string infoData)
         {
             //如果不给Log目录写入权限，日志队列积压将会导致内存暴增
-            if (_logCount > 1024) return;
+            if (_logCount > 1024)
+            {
+                LogUtil.WriteLog(_logCount.ToString(), "FileLogUtil");
+                return;
+            }
             var logPath = GetLogPath(customDirectory, preFile);
             LogQueue.Enqueue(new Tuple<string, string>(logPath, infoData));
             //原子操作加1
@@ -127,7 +129,6 @@ namespace DotNet.Util
         /// <param name="logContent">日志内容</param>
         private static void WriteText(string logPath, string logContent)
         {
-            //修复中文字符乱码的问题Troy.Cui 2017-07-25
             try
             {
                 //不存在就创建
@@ -141,23 +142,48 @@ namespace DotNet.Util
                             Directory.CreateDirectory(directoryName);
                         }
                     }
-                    //using (var fs = new FileStream(writerFileName, FileMode.OpenOrCreate, FileAccess.Write))
                     using (var fs = new FileStream(logPath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
-                        //byte[] buffer = Encoding.Default.GetBytes(string.Empty);
-                        ////使用utf-8编码格式
+                        //转字节和字节数组有性能损耗
+                        //byte[] buffer = Encoding.Default.GetBytes(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
                         //fs.Write(buffer, 0, buffer.Length);
+                        using (var sw = new StreamWriter(fs))
+                        {
+                            sw.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
+                            sw.Flush();
+                            sw.Dispose();
+                        }
+                        fs.Dispose();
                     }
                 }
-                using (var sw = new StreamWriter(logPath, true, Encoding.Default))
+                else
                 {
-                    sw.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
-                    sw.Flush();
+                    using (var fs = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        //转字节和字节数组有性能损耗
+                        //byte[] buffer = Encoding.Default.GetBytes(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
+                        //fs.Write(buffer, 0, buffer.Length);
+                        using (var sw = new StreamWriter(fs))
+                        {
+                            sw.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
+                            sw.Flush();
+                            sw.Dispose();
+                        }
+                        fs.Dispose();
+                    }
+
+                    //using (var sw = new StreamWriter(logPath, true, Encoding.Default))
+                    //{
+                    //    sw.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + Thread.CurrentThread.ManagedThreadId + " " + logContent);
+                    //    sw.Flush();
+                    //    sw.Dispose();
+                    //}
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                LogUtil.WriteException(ex);
+                LogUtil.WriteLog("logPath:" + logPath + "logContent:" + logContent, "Exception");
             }
         }
         #endregion

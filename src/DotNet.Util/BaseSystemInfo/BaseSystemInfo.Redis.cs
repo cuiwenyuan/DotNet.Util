@@ -139,7 +139,7 @@ namespace DotNet.Util
         /// <summary>
         /// Redis是否启用SSL
         /// </summary>
-        public static bool RedisEnableSsl = false;
+        public static bool RedisSslEnabled = false;
 
         /// <summary>
         /// Redis用户名（暂时无用）

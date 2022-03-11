@@ -1555,7 +1555,7 @@ namespace DotNet.Business
                 result.UserInfo.SystemCode = systemCode;
                 if (SystemEncryptPassword)
                 {
-                    result.UserInfo.Password = password;
+                    //result.UserInfo.Password = password;
                 }
 
                 // 这里是判断用户是否为系统管理员的

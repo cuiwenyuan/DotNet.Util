@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseRoleOrganizationEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,14 +13,14 @@ namespace DotNet.Model
     /// <summary>
     /// BaseRoleOrganizationEntity
     /// 角色组织机构关系表
-    ///
+    /// 
     /// 修改记录
-    ///
-    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-02-07 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-28</date>
+    ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
     public partial class BaseRoleOrganizationEntity : BaseEntity
@@ -32,16 +32,22 @@ namespace DotNet.Model
         public int Id { get; set; }
 
         /// <summary>
+        /// 子系统编码
+        /// </summary>
+        [FieldDescription("子系统编码")]
+        public string SystemCode { get; set; } = "Base";
+
+        /// <summary>
         /// 角色主键
         /// </summary>
         [FieldDescription("角色主键")]
-        public int RoleId { get; set; }
+        public int RoleId { get; set; } = 0;
 
         /// <summary>
         /// 组织机构主键
         /// </summary>
         [FieldDescription("组织机构主键")]
-        public int OrganizationId { get; set; }
+        public int OrganizationId { get; set; } = 0;
 
         /// <summary>
         /// 描述
@@ -138,6 +144,10 @@ namespace DotNet.Model
             {
                 Id = BaseUtil.ConvertToInt(dr[FieldId]);
             }
+            if (dr.ContainsColumn(FieldSystemCode))
+            {
+                SystemCode = BaseUtil.ConvertToString(dr[FieldSystemCode]);
+            }
             if (dr.ContainsColumn(FieldRoleId))
             {
                 RoleId = BaseUtil.ConvertToInt(dr[FieldRoleId]);
@@ -215,6 +225,11 @@ namespace DotNet.Model
         /// 主键
         ///</summary>
         public const string FieldId = "Id";
+
+        ///<summary>
+        /// 子系统编码
+        ///</summary>
+        public const string FieldSystemCode = "SystemCode";
 
         ///<summary>
         /// 角色主键

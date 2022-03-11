@@ -31,10 +31,10 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReaderByWhere
         /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="condition">查询条件</param>
+        /// <param name="parameters">条件参数</param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReaderByWhere(string condition = null, List<KeyValuePair<string, object>> parameters = null, int topLimit = 0, string order = null)
         {
@@ -44,7 +44,7 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReaderById
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">编号</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReaderById(string id)
         {
@@ -89,8 +89,8 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(int topLimit = 0, string order = null)
         {
@@ -100,7 +100,7 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="commandText">SQL命令字符串</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(string commandText)
         {
@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="ids"></param>
+        /// <param name="ids">编号</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(string[] ids)
         {
@@ -120,9 +120,9 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">字段名</param>
+        /// <param name="values">字段值</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(string name, Object[] values, string order = null)
         {
@@ -132,8 +132,8 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">条件参数</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(KeyValuePair<string, object> parameter, string order)
         {
@@ -147,9 +147,9 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter1">条件参数1</param>
+        /// <param name="parameter2">条件参数2</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order)
         {
@@ -164,9 +164,9 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">条件参数</param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(KeyValuePair<string, object> parameter, int topLimit = 0, string order = null)
         {
@@ -174,13 +174,13 @@ namespace DotNet.Business
             {
                 parameter
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit: topLimit, order: order);
         }
 
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">条件参数</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(params KeyValuePair<string, object>[] parameters)
         {
@@ -195,25 +195,15 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteReader
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">条件参数</param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序信息</param>
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
         {
             return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
         }
 
-        /// <summary>
-        /// ExecuteReader
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
-        /// <returns></returns>
-        public virtual IDataReader ExecuteReader(List<KeyValuePair<string, object>> parameters, string order)
-        {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
-        }
         #endregion
     }
 }

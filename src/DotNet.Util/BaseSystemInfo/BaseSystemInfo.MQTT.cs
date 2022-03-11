@@ -31,7 +31,7 @@ namespace DotNet.Util
         /// <summary>
         /// MQTT是否启用SSL
         /// </summary>
-        public static bool MqttEnableSsl = false;
+        public static bool MqttSslEnabled = false;
 
         /// <summary>
         /// MQTT用户名

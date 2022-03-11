@@ -83,9 +83,9 @@ namespace DotNet.Util
                 BaseSystemInfo.RegisterKey = ConfigurationManager.AppSettings["RegisterKey"];
             }
             //追溯码
-            if (ConfigurationManager.AppSettings["EnableTraceabilityCode"] != null)
+            if (ConfigurationManager.AppSettings["TraceabilityCodeEnabled"] != null)
             {
-                BaseSystemInfo.EnableTraceabilityCode = ConfigurationManager.AppSettings["EnableTraceabilityCode"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.TraceabilityCodeEnabled = ConfigurationManager.AppSettings["TraceabilityCodeEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (ConfigurationManager.AppSettings["TraceabilityKey"] != null)
             {
@@ -156,6 +156,14 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.AppSecret = ConfigurationManager.AppSettings["AppSecret"];
             }
+            if (ConfigurationManager.AppSettings["JwtEnabled"] != null)
+            {
+                BaseSystemInfo.JwtEnabled = ConfigurationManager.AppSettings["JwtEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (ConfigurationManager.AppSettings["JwtSecret"] != null)
+            {
+                BaseSystemInfo.JwtSecret = ConfigurationManager.AppSettings["JwtSecret"];
+            }
             if (ConfigurationManager.AppSettings["ServiceUserName"] != null)
             {
                 BaseSystemInfo.ServiceUserName = ConfigurationManager.AppSettings["ServiceUserName"];
@@ -164,9 +172,13 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ServicePassword = ConfigurationManager.AppSettings["ServicePassword"];
             }
-            if (ConfigurationManager.AppSettings["EnableWhiteList"] != null)
+            if (ConfigurationManager.AppSettings["WhiteListEnabled"] != null)
             {
-                BaseSystemInfo.EnableWhiteList = ConfigurationManager.AppSettings["EnableWhiteList"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WhiteListEnabled = ConfigurationManager.AppSettings["WhiteListEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (ConfigurationManager.AppSettings["WhiteListEnabled"] != null)
+            {
+                BaseSystemInfo.WhiteListEnabled = ConfigurationManager.AppSettings["WhiteListEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (ConfigurationManager.AppSettings["WhiteList"] != null)
             {
@@ -176,9 +188,9 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.BlackList = ConfigurationManager.AppSettings["BlackList"];
             }
-            if (ConfigurationManager.AppSettings["EnableAdministrator"] != null)
+            if (ConfigurationManager.AppSettings["AdministratorEnabled"] != null)
             {
-                BaseSystemInfo.EnableAdministrator = ConfigurationManager.AppSettings["EnableAdministrator"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.AdministratorEnabled = ConfigurationManager.AppSettings["AdministratorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             // BaseSystemInfo.CurrentLanguage = ConfigurationManager.AppSettings[BaseConfiguration.CURRENT_LANGUAGE];
             // BaseSystemInfo.Version = ConfigurationManager.AppSettings[BaseConfiguration.VERSION];
@@ -575,9 +587,9 @@ namespace DotNet.Util
                     BaseSystemInfo.MailServerPort = int.Parse(ConfigurationManager.AppSettings["MailServerPort"]);
                 }
             }
-            if (ConfigurationManager.AppSettings["MailServerEnableSsl"] != null)
+            if (ConfigurationManager.AppSettings["MailServerSslEnabled"] != null)
             {
-                BaseSystemInfo.MailServerEnableSsl = ConfigurationManager.AppSettings["MailServerEnableSsl"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.MailServerSslEnabled = ConfigurationManager.AppSettings["MailServerSslEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             if (ConfigurationManager.AppSettings["MailUserName"] != null)
             {
@@ -621,9 +633,9 @@ namespace DotNet.Util
                 }
             }
 
-            if (ConfigurationManager.AppSettings["MqttEnableSsl"] != null)
+            if (ConfigurationManager.AppSettings["MqttSslEnabled"] != null)
             {
-                BaseSystemInfo.MqttEnableSsl = ConfigurationManager.AppSettings["MqttEnableSsl"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.MqttSslEnabled = ConfigurationManager.AppSettings["MqttSslEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
             if (ConfigurationManager.AppSettings["MqttUserName"] != null)
@@ -644,14 +656,14 @@ namespace DotNet.Util
         /// </summary>
         public static void GetWebApiConfig()
         {
-            if (ConfigurationManager.AppSettings["WebApiEnableMonitor"] != null)
+            if (ConfigurationManager.AppSettings["WebApiMonitorEnabled"] != null)
             {
-                BaseSystemInfo.WebApiEnableMonitor = ConfigurationManager.AppSettings["WebApiEnableMonitor"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WebApiMonitorEnabled = ConfigurationManager.AppSettings["WebApiMonitorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            if (ConfigurationManager.AppSettings["WebApiEnableSlowMonitor"] != null)
+            if (ConfigurationManager.AppSettings["WebApiSlowMonitorEnabled"] != null)
             {
-                BaseSystemInfo.WebApiEnableSlowMonitor = ConfigurationManager.AppSettings["WebApiEnableSlowMonitor"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.WebApiSlowMonitorEnabled = ConfigurationManager.AppSettings["WebApiSlowMonitorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
             if (ConfigurationManager.AppSettings["WebApiSlowResponseMilliseconds"] != null)
@@ -827,9 +839,9 @@ namespace DotNet.Util
                 }
             }
 
-            if (ConfigurationManager.AppSettings["FtpEnableSsl"] != null)
+            if (ConfigurationManager.AppSettings["FtpSslEnabled"] != null)
             {
-                BaseSystemInfo.FtpEnableSsl = ConfigurationManager.AppSettings["FtpEnableSsl"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.FtpSslEnabled = ConfigurationManager.AppSettings["FtpSslEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
             if (ConfigurationManager.AppSettings["FtpUserName"] != null)
@@ -877,9 +889,9 @@ namespace DotNet.Util
                 }
             }
 
-            if (ConfigurationManager.AppSettings["RedisEnableSsl"] != null)
+            if (ConfigurationManager.AppSettings["RedisSslEnabled"] != null)
             {
-                BaseSystemInfo.RedisEnableSsl = ConfigurationManager.AppSettings["RedisEnableSsl"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+                BaseSystemInfo.RedisSslEnabled = ConfigurationManager.AppSettings["RedisSslEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
             if (ConfigurationManager.AppSettings["RedisUserName"] != null)

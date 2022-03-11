@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseCalendarEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -171,11 +171,11 @@ namespace DotNet.Model
             }
             if (dr.ContainsColumn(FieldFiscalMonth))
             {
-                FiscalMonth = BaseUtil.ConvertToNullableInt(dr[FieldFiscalMonth]);
+                FiscalMonth = BaseUtil.ConvertToNullableByteInt(dr[FieldFiscalMonth]);
             }
             if (dr.ContainsColumn(FieldFiscalDay))
             {
-                FiscalDay = BaseUtil.ConvertToNullableInt(dr[FieldFiscalDay]);
+                FiscalDay = BaseUtil.ConvertToNullableByteInt(dr[FieldFiscalDay]);
             }
             if (dr.ContainsColumn(FieldTransactionDate))
             {

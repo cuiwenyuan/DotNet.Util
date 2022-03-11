@@ -21,7 +21,7 @@ namespace DotNet.Util
         /// <summary>
         /// 是否启用追溯码
         /// </summary>
-        public static bool EnableTraceabilityCode = false;
+        public static bool TraceabilityCodeEnabled = false;
 
         /// <summary>
         /// 用于生成和反转追溯码的钥匙,随机的62位字符串，包含0-9a-zA-Z

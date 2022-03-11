@@ -10,11 +10,11 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     ///
-    ///     2008.03.16 版本：1.0 JiRiGaLa 结构优化整理。
+    ///     2022.01.16 版本：1.0 Troy.Cui 结构优化整理。
     ///		
     /// <author>
     ///		<name>Troy.Cui</name>
-    ///		<date>2008.03.16</date>
+    ///		<date>2022.01.17</date>
     /// </author> 
     /// </summary>
     public enum OrganizationCategory

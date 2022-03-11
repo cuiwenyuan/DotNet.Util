@@ -58,7 +58,7 @@ namespace DotNet.Util
                 url = url.Replace("{UserCode}", Code);
                 url = url.Replace("{UserName}", UserName);
                 url = url.Replace("{NickName}", NickName);
-                url = url.Replace("{Password}", Password);
+                //url = url.Replace("{Password}", Password);
                 url = url.Replace("{Id}", Id);
                 url = url.Replace("{UserId}", UserId.ToString());
                 url = url.Replace("{OpenId}", OpenId);
@@ -289,15 +289,15 @@ namespace DotNet.Util
             set => _identityAuthentication = value;
         }
 
-        private string _password = string.Empty;
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public virtual string Password
-        {
-            get => _password;
-            set => _password = value;
-        }
+        //private string _password = string.Empty;
+        ///// <summary>
+        ///// 密码
+        ///// </summary>
+        //public virtual string Password
+        //{
+        //    get => _password;
+        //    set => _password = value;
+        //}
 
         private string _ipAddress = string.Empty;
         /// <summary>
