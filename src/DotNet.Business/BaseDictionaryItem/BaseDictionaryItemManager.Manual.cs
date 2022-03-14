@@ -30,6 +30,92 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseDictionaryItemManager : BaseManager, IBaseManager
     {
+        #region UniqueAdd
+        /// <summary>
+        /// 检查唯一值式新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public string UniqueAdd(BaseDictionaryItemEntity entity, out Status status)
+        {
+            var result = string.Empty;
+            //检查是否重复
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDictionaryId, entity.DictionaryId),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldItemKey, entity.ItemKey),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0)
+            };
+
+            if (!IsUnique(parameters, entity.Id.ToString()))
+            {
+                //名称已重复
+                Status = Status.ErrorNameExist;
+                StatusCode = Status.ErrorNameExist.ToString();
+                StatusMessage = Status.ErrorNameExist.ToDescription();
+            }
+            else
+            {
+                result = AddEntity(entity);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    Status = Status.OkAdd;
+                    StatusCode = Status.OkAdd.ToString();
+                    StatusMessage = Status.OkAdd.ToDescription();
+                }
+                else
+                {
+                    Status = Status.Error;
+                    StatusCode = Status.Error.ToString();
+                    StatusMessage = Status.Error.ToDescription();
+                }
+            }
+            status = Status;
+            return result;
+        }
+
+        #endregion
+
+        #region UniqueUpdate
+        /// <summary>
+        /// 检查唯一值式更新
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int UniqueUpdate(BaseDictionaryItemEntity entity, out Status status)
+        {
+            var result = 0;
+
+            //检查是否重复
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDictionaryId, entity.DictionaryId),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldItemKey, entity.ItemKey),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0)
+            };
+
+            if (!IsUnique(parameters, entity.Id.ToString()))
+            {
+                //名称已重复
+                Status = Status.ErrorNameExist;
+                StatusCode = Status.ErrorNameExist.ToString();
+                StatusMessage = Status.ErrorNameExist.ToDescription();
+            }
+            else
+            {
+                result = UpdateEntity(entity);
+                Status = Status.OkUpdate;
+                StatusCode = Status.OkUpdate.ToString();
+                StatusMessage = Status.OkUpdate.ToDescription();
+            }
+            status = Status;
+            return result;
+        }
+
+        #endregion
+
         #region 更改父节点 ChangeParentId
         /// <summary>
         /// 更改父节点

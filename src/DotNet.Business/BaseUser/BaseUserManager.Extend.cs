@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //用户表名
             var tableNameUser = BaseUserEntity.CurrentTableName;
@@ -182,6 +182,15 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseUserEntity.FieldSimpleSpelling + " LIKE N'%" + searchKey + "%')");
+            }
+
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
 
             sb.Replace(" 1 = 1 AND ", "");

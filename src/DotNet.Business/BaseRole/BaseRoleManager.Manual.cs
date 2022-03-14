@@ -7,6 +7,9 @@ using System.Data;
 namespace DotNet.Business
 {
     using Model;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Util;
 
     /// <summary>
@@ -24,6 +27,193 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseRoleManager : BaseManager
     {
+        #region UniqueAdd
+        /// <summary>
+        /// 检查唯一值式新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public string UniqueAdd(BaseRoleEntity entity, out Status status)
+        {
+            var result = string.Empty;
+            //检查是否重复
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
+            };
+
+            //检查是否重复
+            var parametersCode = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
+            };
+
+            if (!IsUnique(parameters, entity.Id.ToString()))
+            {
+                //名称已重复
+                Status = Status.ErrorNameExist;
+                StatusCode = Status.ErrorNameExist.ToString();
+                StatusMessage = Status.ErrorNameExist.ToDescription();
+            }
+            else if (!IsUnique(parametersCode, entity.Id.ToString()))
+            {
+                //名称已重复
+                Status = Status.ErrorCodeExist;
+                StatusCode = Status.ErrorCodeExist.ToString();
+                StatusMessage = Status.ErrorCodeExist.ToDescription();
+            }
+            else
+            {
+                result = AddEntity(entity);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    Status = Status.OkAdd;
+                    StatusCode = Status.OkAdd.ToString();
+                    StatusMessage = Status.OkAdd.ToDescription();
+                }
+                else
+                {
+                    Status = Status.Error;
+                    StatusCode = Status.Error.ToString();
+                    StatusMessage = Status.Error.ToDescription();
+                }
+            }
+            status = Status;
+            return result;
+        }
+
+        #endregion
+
+        #region public int Update(BaseRoleEntity entity, out Status status) 更新
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="statusCode">返回状态码</param>
+        /// <returns>影响行数</returns>
+        public int UniqueUpdate(BaseRoleEntity entity, out Status status)
+        {
+            var result = 0;
+            // 检查是否已被其他人修改
+
+            if (DbUtil.IsUpdate(DbHelper, CurrentTableName, entity.Id, entity.UpdateUserId.ToString(), entity.UpdateTime))
+            {
+                // 数据已经被修改
+                status = Status.ErrorChanged;
+            }
+            else
+            {
+                // 检查名称是否重复
+                var parameters = new List<KeyValuePair<string, object>> {
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
+                };
+                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
+                {
+                    parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
+                }
+
+                //检查角色Code是否重复 Troy.Cui 2016-08-17
+                var parametersCode = new List<KeyValuePair<string, object>> {
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
+                };
+                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
+                {
+                    parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
+                }
+
+                if (Exists(parameters, entity.Id))
+                {
+                    // 名称已重复
+                    status = Status.ErrorNameExist;
+                    StatusCode = Status.ErrorNameExist.ToString();
+                    StatusMessage = Status.ErrorNameExist.ToDescription();
+                }
+                else if (Exists(parametersCode, entity.Id))
+                {
+                    // 编码已重复
+                    status = Status.ErrorCodeExist;
+                    StatusCode = Status.ErrorCodeExist.ToString();
+                    StatusMessage = Status.ErrorCodeExist.ToDescription();
+                }
+                else
+                {
+                    // 获取原始实体信息
+                    var entityOld = GetEntity(entity.Id.ToString());
+                    // 保存修改记录
+                    UpdateEntityLog(entity, entityOld);
+
+                    result = UpdateEntity(entity);
+                    if (result == 1)
+                    {
+                        status = Status.OkUpdate;
+                        StatusCode = Status.OkUpdate.ToString();
+                        StatusMessage = Status.OkUpdate.ToDescription();
+                    }
+                    else
+                    {
+                        status = Status.ErrorDeleted;
+                        StatusCode = Status.ErrorDeleted.ToString();
+                        StatusMessage = Status.ErrorDeleted.ToDescription();
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region public void UpdateEntityLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
+        /// <summary>
+        /// 保存实体修改记录
+        /// </summary>
+        /// <param name="newEntity">修改前的实体对象</param>
+        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="tableName">表名称</param>
+        public void UpdateEntityLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
+        {
+            if (string.IsNullOrEmpty(tableName))
+            {
+                //统一放在一个公共表 Troy.Cui 2016-08-17
+                tableName = BaseChangeLogEntity.CurrentTableName;
+            }
+            var manager = new BaseChangeLogManager(UserInfo, tableName);
+            foreach (var property in typeof(BaseRoleEntity).GetProperties())
+            {
+                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
+                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
+                //不记录创建人、修改人、没有修改的记录
+                if (!fieldDescription.NeedLog || oldValue == newValue)
+                {
+                    continue;
+                }
+                var record = new BaseChangeLogEntity
+                {
+                    TableName = CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseRoleEntity), "CurrentTableName"),
+                    ColumnName = property.Name,
+                    ColumnDescription = fieldDescription.Text,
+                    NewValue = newValue,
+                    OldValue = oldValue,
+                    RecordKey = oldEntity.Id.ToString()
+                };
+                manager.Add(record, true, false);
+            }
+        }
+        #endregion
+
         #region 高级查询
 
         /// <summary>
@@ -37,7 +227,9 @@ namespace DotNet.Business
         /// <param name="moduleIdExcluded">排除指定菜单模块</param>
         /// <param name="showInvisible">显示隐藏</param>
         /// <param name="codePrefix">前缀</param>
-        /// <param name="codePrefixExcluded"></param>
+        /// <param name="codePrefixExcluded">排除前缀</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
@@ -47,7 +239,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //角色表名
             var tableNameRole = BaseRoleEntity.CurrentTableName;
@@ -63,7 +255,7 @@ namespace DotNet.Business
                 }
             }
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
-            
+
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -79,6 +271,16 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseRoleEntity.FieldIsVisible + "  = 1 ");
             }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+            }
+
             //角色分类
             if (!string.IsNullOrEmpty(categoryCode))
             {
@@ -161,7 +363,7 @@ namespace DotNet.Business
             }
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();            
+            var sbView = Pool.StringBuilder.Get();
             //指定用户，就读取相应的UserRole授权日期
             if (ValidateUtil.IsInt(userId))
             {

@@ -61,7 +61,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        #region public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
 
         /// <summary>
         /// 添加用户
@@ -74,7 +74,7 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
@@ -85,11 +85,11 @@ namespace DotNet.Business
 
             var userManager = new BaseUserManager(dbHelper, userInfo);
             result = userManager.AddUser(entity, userLogonEntity);
-            statusCode = userManager.StatusCode;
+            status = userManager.Status;
             statusMessage = userManager.GetStateMessage();
 
             // 20140219 JiRiGaLa 添加成功的用户才增加联系方式
-            if (!string.IsNullOrEmpty(result) && statusCode.Equals(Status.OkAdd.ToString()) && userContactEntity != null)
+            if (!string.IsNullOrEmpty(result) && status == Status.OkAdd && userContactEntity != null)
             {
                 // 添加联系方式
                 userContactEntity.UserId = int.Parse(result);
@@ -99,7 +99,7 @@ namespace DotNet.Business
             }
 
             // 自己不用给自己发提示信息，这个提示信息是为了提高工作效率的，还是需要审核通过的，否则垃圾信息太多了
-            if (entity.Enabled == 0 && statusCode.Equals(Status.OkAdd.ToString()))
+            if (entity.Enabled == 0 && status == Status.OkAdd)
             {
                 // 不是系统管理员添加
                 if (!BaseUserManager.IsAdministrator(userInfo.Id))
@@ -127,7 +127,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, out string statusCode, out string statusMessage)
+        #region public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, out Status status, out string statusMessage)
 
         /// <summary>
         /// 添加用户
@@ -139,11 +139,11 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -151,7 +151,7 @@ namespace DotNet.Business
             {
                 result = CreateUser(dbHelper, userInfo, userEntity, userLogonEntity, userContactEntity, out returnCode, out returnMessage);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;
@@ -678,7 +678,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        #region public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
 
         /// <summary>
         /// 更新用户
@@ -690,11 +690,11 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out string statusCode, out string statusMessage)
+        public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -731,8 +731,9 @@ namespace DotNet.Business
                 }
                 if (result == 1)
                 {
+                    userManager.Status = Status.OkUpdate;
                     userManager.StatusCode = Status.OkUpdate.ToString();
-                    returnCode = userManager.StatusCode;
+                    returnCode = userManager.Status;
                 }
                 userManager.StatusMessage = userManager.GetStateMessage(returnCode);
                 // 更新员工信息
@@ -762,10 +763,10 @@ namespace DotNet.Business
                         //}
                     }
                 }
-                returnCode = userManager.StatusCode;
+                returnCode = userManager.Status;
                 returnMessage = userManager.StatusMessage;
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;

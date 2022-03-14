@@ -133,14 +133,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public string Add(BaseRoleEntity entity, out string statusCode) 添加
+        #region public string Add(BaseRoleEntity entity, out Status status) 添加
         /// <summary>
         /// 添加
         /// </summary>
         /// <param name="entity">实体</param>
         /// <param name="statusCode">返回状态码</param>
         /// <returns>主键</returns>
-        public string Add(BaseRoleEntity entity, out string statusCode)
+        public string Add(BaseRoleEntity entity, out Status status)
         {
             var result = string.Empty;
             // 检查名称是否重复
@@ -167,18 +167,18 @@ namespace DotNet.Business
             if (Exists(parameters))
             {
                 // 名称已重复
-                statusCode = Status.ErrorNameExist.ToString();
+                status = Status.ErrorNameExist;
             }
             else if (Exists(parametersCode))
             {
                 // 编码已重复
-                statusCode = Status.ErrorCodeExist.ToString();
+                status = Status.ErrorCodeExist;
             }
             else
             {
                 result = AddEntity(entity);
                 // 运行成功
-                statusCode = Status.OkAdd.ToString();
+                status = Status.OkAdd;
             }
             return result;
         }

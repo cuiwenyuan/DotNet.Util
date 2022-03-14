@@ -49,7 +49,6 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseModuleManager(dbHelper, userInfo);
-                var statusCode = string.Empty;
                 var permissionEntity = new BaseModuleEntity
                 {
                     Code = permissionCode,
@@ -58,7 +57,7 @@ namespace DotNet.Business
                     AllowEdit = 1,
                     IsScope = 0
                 };
-                result = manager.Add(permissionEntity, out statusCode);
+                result = manager.UniqueAdd(permissionEntity, out Status status);
             });
 
             return result;
@@ -187,13 +186,12 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var roleManager = new BaseRoleManager(dbHelper, userInfo);
-                var statusCode = string.Empty;
                 var roleEntity = new BaseRoleEntity
                 {
                     RealName = role,
                     Enabled = 1
                 };
-                result = roleManager.Add(roleEntity, out statusCode);
+                result = roleManager.Add(roleEntity, out Status status);
             });
             return result;
         }
@@ -274,7 +272,7 @@ namespace DotNet.Business
                 var roleId = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, roleName));
                 if (ValidateUtil.IsInt(userId) && !string.IsNullOrEmpty(roleId))
                 {
-                    result = userManager.RemoveFormRole(userInfo.SystemCode, userId, roleId);
+                    result = userManager.RemoveFromRole(userInfo.SystemCode, userId, roleId);
                 }
             });
             return result;

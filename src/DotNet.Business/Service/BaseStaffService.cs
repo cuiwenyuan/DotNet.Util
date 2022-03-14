@@ -85,7 +85,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage) 更新通讯地址
+        #region public int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage) 更新通讯地址
         /// <summary>
         /// 更新通讯地址
         /// </summary>
@@ -94,11 +94,11 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>影响行数</returns>
-        public int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage)
+        public int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -111,7 +111,7 @@ namespace DotNet.Business
                 // }
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }
@@ -150,7 +150,7 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage) 添加员工
+        #region public string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage) 添加员工
         /// <summary>
         /// 添加员工
         /// </summary>
@@ -159,11 +159,11 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>主键</returns>
-        public string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage)
+        public string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
@@ -174,13 +174,13 @@ namespace DotNet.Business
                 returnMessage = manager.GetStateMessage(returnCode);
                 // 2.自己不用给自己发提示信息，这个提示信息是为了提高工作效率的
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }
         #endregion
 
-        #region public int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage) 更新员工
+        #region public int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage) 更新员工
         /// <summary>
         /// 更新员工
         /// </summary>
@@ -189,11 +189,11 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>影响行数</returns>
-        public int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage)
+        public int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
@@ -203,7 +203,7 @@ namespace DotNet.Business
                 result = manager.UniqueUpdate(entity, out returnCode);
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }

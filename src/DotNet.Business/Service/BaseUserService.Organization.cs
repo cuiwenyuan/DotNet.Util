@@ -147,7 +147,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out string statusCode, out string statusMessage)
+        #region public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out Status status, out string statusMessage)
         /// <summary>
         /// 把用户添加到组织机构
         /// </summary>
@@ -156,9 +156,9 @@ namespace DotNet.Business
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out string statusCode, out string statusMessage)
+        public string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out Status status, out string statusMessage)
         {
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
             var result = string.Empty;
 
@@ -169,7 +169,7 @@ namespace DotNet.Business
                 result = userOrganizationManager.Add(entity, out returnCode);
                 returnMessage = userOrganizationManager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }

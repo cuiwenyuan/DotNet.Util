@@ -213,7 +213,7 @@ namespace DotNet.Business
             {
                 if (password.Length == 0)
                 {
-                    statusCode = StatusCode.PasswordCanNotBeNull.ToString();
+                    status = StatusCode.PasswordCanNotBeNull.ToString();
                     return result;
                 }
             }

@@ -155,20 +155,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Add(BaseStaffEntity staffEntity, out string statusCode)
+        #region public string Add(BaseStaffEntity staffEntity, out Status status)
         /// <summary>
         /// 添加员工
         /// </summary>
         /// <param name="staffEntity">实体</param>
         /// <param name="statusCode">返回状态码</param>
         /// <returns>主键</returns>
-        public string UniqueAdd(BaseStaffEntity staffEntity, out string statusCode)
+        public string UniqueAdd(BaseStaffEntity staffEntity, out Status status)
         {
             var result = string.Empty;
             if (!string.IsNullOrEmpty(staffEntity.UserName) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
             {
                 // 名称已重复
-                statusCode = Status.ErrorUserExist.ToString();
+                status = Status.ErrorUserExist;
             }
             else
             {
@@ -176,34 +176,34 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(staffEntity.EmployeeNumber) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
                 {
                     // 编号已重复
-                    statusCode = Status.ErrorCodeExist.ToString();
+                    status = Status.ErrorCodeExist;
                 }
                 else
                 {
                     result = AddEntity(staffEntity);
                     // 运行成功
-                    statusCode = Status.OkAdd.ToString();
+                    status = Status.OkAdd;
                 }
             }
             return result;
         }
         #endregion
 
-        #region public int Update(BaseStaffEntity staffEntity, out string statusCode)
+        #region public int Update(BaseStaffEntity staffEntity, out Status status)
         /// <summary>
         /// 更新员工
         /// </summary>
         /// <param name="staffEntity">实体</param>
         /// <param name="statusCode">返回状态码</param>
         /// <returns>影响行数</returns>
-        public int UniqueUpdate(BaseStaffEntity staffEntity, out string statusCode)
+        public int UniqueUpdate(BaseStaffEntity staffEntity, out Status status)
         {
             var result = 0;
             // 检查编号是否重复
             if (!string.IsNullOrEmpty(staffEntity.EmployeeNumber) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
             {
                 // 编号已重复
-                statusCode = Status.ErrorCodeExist.ToString();
+                status = Status.ErrorCodeExist;
             }
             else
             {
@@ -211,7 +211,7 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(staffEntity.UserName) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
                 {
                     // 名称已重复
-                    statusCode = Status.ErrorUserExist.ToString();
+                    status = Status.ErrorUserExist;
                 }
                 else
                 {
@@ -220,11 +220,11 @@ namespace DotNet.Business
                     UpdateUser(staffEntity.Id.ToString());
                     if (result > 0)
                     {
-                        statusCode = Status.OkUpdate.ToString();
+                        status = Status.OkUpdate;
                     }
                     else
                     {
-                        statusCode = Status.ErrorDeleted.ToString();
+                        status = Status.ErrorDeleted;
                     }
                 }
             }
@@ -232,21 +232,21 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int UpdateAddress(BaseStaffEntity staffEntity, out string statusCode) 更新
+        #region public int UpdateAddress(BaseStaffEntity staffEntity, out Status status) 更新
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="staffEntity">实体类</param>
         /// <param name="statusCode"></param>
         /// <returns>影响行数</returns>
-        public int UpdateAddress(BaseStaffEntity staffEntity, out string statusCode)
+        public int UpdateAddress(BaseStaffEntity staffEntity, out Status status)
         {
             var result = 0;
             // 检查是否已被其他人修改            
             //if (DbUtil.IsModifed(DbHelper, BaseStaffEntity.CurrentTableName, staffEntity.Id, staffEntity.UpdateUserId, staffEntity.UpdateTime))
             //{
             //    // 数据已经被修改
-            //    statusCode = StatusCode.ErrorChanged.ToString();
+            //    status = StatusCode.ErrorChanged.ToString();
             //}
             //else
             //{
@@ -256,12 +256,12 @@ namespace DotNet.Business
             {
                 // 按员工的修改信息，把用户信息进行修改
                 UpdateUser(staffEntity.Id.ToString());
-                statusCode = Status.OkUpdate.ToString();
+                status = Status.OkUpdate;
             }
             else
             {
                 // 数据可能被删除
-                statusCode = Status.ErrorDeleted.ToString();
+                status = Status.ErrorDeleted;
             }
             //}
             return result;

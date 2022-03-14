@@ -70,6 +70,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region 是否唯一的
         /// <summary>
         /// 是否唯一的(两个字段)
         /// </summary>
@@ -124,6 +127,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
+
+        #region 是否唯一的
 
         /// <summary>
         /// 是否唯一的(三个字段)
@@ -189,27 +195,29 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
+        #region 是否唯一的
         /// <summary>
-        /// 是否唯一的(三个字段)
+        /// 是否唯一的(条件参数)
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="excludeId">排除行id</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        public virtual bool IsUnique(List<KeyValuePair<string, string>> whereParameters, string excludeId, bool checkUserCompany = false)
+        public virtual bool IsUnique(List<KeyValuePair<string, object>> whereParameters, string excludeId, bool checkUserCompany = false)
         {
             var result = false;
             var sbWhere = Pool.StringBuilder.Get();
             foreach (var parameter in whereParameters)
             {
-                if (ValidateUtil.IsInt(parameter.Value))
+                if (ValidateUtil.IsInt(parameter.Value?.ToString()))
                 {
-                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = " + dbHelper.SqlSafe(parameter.Value) + " AND ");
+                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = " + dbHelper.SqlSafe(parameter.Value?.ToString()) + " AND ");
                 }
                 else
                 {
-                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = N'" + dbHelper.SqlSafe(parameter.Value) + "' AND ");
+                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = N'" + dbHelper.SqlSafe(parameter.Value?.ToString()) + "' AND ");
                 }
             }
             // 去掉最后一个AND

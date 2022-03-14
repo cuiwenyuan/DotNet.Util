@@ -99,7 +99,7 @@ namespace DotNet.IService
         /// <param name="entity">实体</param>
         /// <param name="statusCode">状态返回码</param>
         /// <param name="statusMessage">状态返回信息</param>
-        string Add(BaseUserInfo userInfo, string tableName, BaseDictionaryItemEntity entity, out string statusCode, out string statusMessage);
+        string Add(BaseUserInfo userInfo, string tableName, BaseDictionaryItemEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 更新编码
@@ -109,7 +109,7 @@ namespace DotNet.IService
         /// <param name="entity">实体</param>
         /// <param name="statusCode">状态返回码</param>
         /// <param name="statusMessage">状态返回信息</param>
-        int Update(BaseUserInfo userInfo, string tableName, BaseDictionaryItemEntity entity, out string statusCode, out string statusMessage);
+        int Update(BaseUserInfo userInfo, string tableName, BaseDictionaryItemEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 批量设置删除

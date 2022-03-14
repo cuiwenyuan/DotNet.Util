@@ -56,7 +56,7 @@ namespace DotNet.IService
         /// <param name="statusCode">状态消息码</param>
         /// <param name="statusMessage">状态消息</param>
         /// <returns>影响行数</returns>
-        int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage);
+        int UpdateAddress(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 更新通讯地址
@@ -74,7 +74,7 @@ namespace DotNet.IService
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>主键</returns>
-        string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage);
+        string AddStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage);
         
         /// <summary>
         /// 更新员工
@@ -84,7 +84,7 @@ namespace DotNet.IService
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>影响行数</returns>
-        int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out string statusCode, out string statusMessage);
+        int UpdateStaff(BaseUserInfo userInfo, BaseStaffEntity entity, out Status status, out string statusMessage);
         
         /// <summary>
         /// 获得员工列表

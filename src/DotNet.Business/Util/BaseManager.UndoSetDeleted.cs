@@ -36,8 +36,9 @@ namespace DotNet.Business
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
+        /// <param name="checkAllowDelete">检查允许删除</param>
         /// <returns>影响行数</returns>
-        public virtual int UndoSetDeleted(object id, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null)
+        public virtual int UndoSetDeleted(object id, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0));
@@ -59,8 +60,11 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(PrimaryKey, id),
                 new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 1),
                 new KeyValuePair<string, object>(BaseUtil.FieldEnabled, 0)
-        };
-
+            };
+            if (checkAllowDelete)
+            {
+                whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAllowDelete, 1));
+            }
             var result = SetProperty(whereParameters, parameters);
             if (result > 0)
             {
@@ -167,8 +171,9 @@ namespace DotNet.Business
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
+        /// <param name="checkAllowDelete">检查允许删除</param>
         /// <returns>影响行数</returns>
-        public virtual int UndoSetDeleted(string[] ids, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null)
+        public virtual int UndoSetDeleted(string[] ids, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {
             // 循环执行
             var result = 0;
@@ -180,7 +185,7 @@ namespace DotNet.Business
             {
                 foreach (var t in ids)
                 {
-                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp);
+                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp, checkAllowDelete);
                 }
             }
             if (result > 0)
@@ -202,7 +207,7 @@ namespace DotNet.Business
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
         /// <returns>影响行数</returns>
-        public virtual int UndoSetDeleted(List<KeyValuePair<string, object>> whereParameters, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null)
+        public virtual int UndoSetDeleted(List<KeyValuePair<string, object>> whereParameters, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0));
@@ -218,7 +223,10 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
             }
-
+            if (checkAllowDelete)
+            {
+                whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAllowDelete, 1));
+            }
             var result = SetProperty(whereParameters, parameters);
             if (result > 0)
             {

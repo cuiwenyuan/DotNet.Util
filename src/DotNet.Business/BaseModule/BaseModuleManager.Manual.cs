@@ -9,6 +9,7 @@ using System.Data;
 namespace DotNet.Business
 {
     using Model;
+    using System.Linq;
     using Util;
 
     /// <summary>
@@ -26,19 +27,160 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseModuleManager : BaseManager
     {
+        #region UniqueAdd
+        /// <summary>
+        /// 检查唯一值式新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public string UniqueAdd(BaseModuleEntity entity, out Status status)
+        {
+            var result = string.Empty;
+            //检查是否重复
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, entity.SystemCode),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
+            };
+
+            if (!IsUnique(parameters, entity.Id.ToString()))
+            {
+                //名称已重复
+                Status = Status.ErrorNameExist;
+                StatusCode = Status.ErrorNameExist.ToString();
+                StatusMessage = Status.ErrorNameExist.ToDescription();
+            }
+            else
+            {
+                result = AddEntity(entity);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    Status = Status.OkAdd;
+                    StatusCode = Status.OkAdd.ToString();
+                    StatusMessage = Status.OkAdd.ToDescription();
+                }
+                else
+                {
+                    Status = Status.Error;
+                    StatusCode = Status.Error.ToString();
+                    StatusMessage = Status.Error.ToDescription();
+                }
+            }
+            status = Status;
+            return result;
+        }
+
+        #endregion
+
+        #region public int UniqueUpdate(BaseModuleEntity entity, out Status status) 更新
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="statusCode">返回状态码</param>
+        /// <returns>返回</returns>
+        public int UniqueUpdate(BaseModuleEntity entity, out Status status)
+        {
+            var result = 0;
+
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, entity.SystemCode),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
+            };
+
+            // 检查编号是否重复
+            if ((entity.Code.Length > 0) && (Exists(parameters, entity.Id)))
+            {
+                // 编号已重复
+                status = Status.ErrorCodeExist;
+            }
+            else
+            {
+                // 获取原始实体信息
+                var entityOld = GetEntity(entity.Id);
+                // 保存修改记录
+                UpdateEntityLog(entity, entityOld);
+                // 2015-07-14 吉日嘎拉 只有允许修改的，才可以修改，不允许修改的，不让修改，但是把修改记录会保存起来的。
+                if (entityOld.AllowEdit == 1)
+                {
+                    result = UpdateEntity(entity);
+                    status = Status.AccessDeny;
+                }
+                if (result == 1)
+                {
+                    status = Status.OkUpdate;
+                }
+                else
+                {
+                    status = Status.ErrorDeleted;
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region 实体修改记录 public void UpdateEntityLog(BaseModuleEntity newEntity, BaseModuleEntity oldEntity)
+        /// <summary>
+        /// 保存实体修改记录
+        /// </summary>
+        /// <param name="newEntity">修改前的实体对象</param>
+        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="tableName">表名称</param>
+        public void UpdateEntityLog(BaseModuleEntity newEntity, BaseModuleEntity oldEntity, string tableName = null)
+        {
+            if (string.IsNullOrEmpty(tableName))
+            {
+                //统一放在一个公共表 Troy.Cui 2016-08-17
+                tableName = BaseChangeLogEntity.CurrentTableName;
+            }
+            var manager = new BaseChangeLogManager(UserInfo, tableName);
+            foreach (var property in typeof(BaseModuleEntity).GetProperties())
+            {
+                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
+                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
+                //不记录创建人、修改人、没有修改的记录
+                if (!fieldDescription.NeedLog || oldValue == newValue)
+                {
+                    continue;
+                }
+                var record = new BaseChangeLogEntity
+                {
+                    TableName = CurrentTableName,
+                    TableDescription = FieldExtensions.ToDescription(typeof(BaseModuleEntity), "CurrentTableName"),
+                    ColumnName = property.Name,
+                    ColumnDescription = fieldDescription.Text,
+                    NewValue = newValue,
+                    OldValue = oldValue,
+                    RecordKey = oldEntity.Id.ToString()
+                };
+                manager.Add(record, true, false);
+            }
+        }
+        #endregion
+
         #region 高级查询
         /// <summary>
         /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="categoryCode">分类编码</param>
-        /// <param name="userId"></param>
-        /// <param name="userIdExcluded"></param>
-        /// <param name="roleId"></param>
-        /// <param name="roleIdExcluded"></param>
-        /// <param name="showInvisible"></param>
-        /// <param name="isMenu"></param>
-        /// <param name="parentId"></param>
+        /// <param name="userId">用户编码</param>
+        /// <param name="userIdExcluded">排除用户编码</param>
+        /// <param name="roleId">角色编码</param>
+        /// <param name="roleIdExcluded">排除角色编码</param>
+        /// <param name="showInvisible">显示隐藏</param>
+        /// <param name="isMenu">是否菜单（1/0）</param>
+        /// <param name="parentId">父节点编号</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
         /// <param name="searchKey">查询字段</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
@@ -48,7 +190,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string roleId, string roleIdExcluded, bool showInvisible, string isMenu, string parentId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string roleId, string roleIdExcluded, bool showInvisible, string isMenu, string parentId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //菜单模块表名
             var tableNameModule = BaseModuleEntity.CurrentTableName;
@@ -84,6 +226,16 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(isMenu) && ValidateUtil.IsNumeric(isMenu))
             {
                 sb.Append(" AND " + BaseModuleEntity.FieldIsMenu + "  = " + isMenu);
+            }
+
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldCreateTime + " >= '" + startTime + "'");
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseModuleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
 
             //菜单模块分类

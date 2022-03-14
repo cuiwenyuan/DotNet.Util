@@ -629,7 +629,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        #region public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
 
         /// <summary>
         /// 验证用户
@@ -646,10 +646,10 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状态消息</param>
         /// <returns></returns>
-        public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication, bool webApiLogin, out string statusCode, out string statusMessage)
+        public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication, bool webApiLogin, out Status status, out string statusMessage)
         {
             BaseUserInfo result = null;
-            statusCode = Status.UserNotFound.ToString();
+            status = Status.UserNotFound;
             statusMessage = Status.UserNotFound.ToDescription();
 
             // 统一的登录服务
@@ -680,7 +680,7 @@ namespace DotNet.Business
             var userLogonResult = dotNetService.LogonService.UserLogon(taskId, userInfo, userName, password, openId);
             if (userLogonResult != null)
             {
-                statusCode = userLogonResult.StatusCode;
+                status = userLogonResult.Status;
                 statusMessage = userLogonResult.StatusMessage;
             }
             // 检查身份
@@ -916,7 +916,7 @@ namespace DotNet.Business
 
         #region 密码相关
 
-        #region public static bool ResetPassword(string email, out string statusCode, out string statusMessage, out string newPassword) 用户忘记密码，发送密码
+        #region public static bool ResetPassword(string email, out Status status, out string statusMessage, out string newPassword) 用户忘记密码，发送密码
 
         /// <summary>
         /// 用户忘记密码，发送密码
@@ -926,11 +926,11 @@ namespace DotNet.Business
         /// <param name="statusMessage">状态信息</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>成功发送密码</returns>
-        public static bool ResetPassword(string email, out string statusCode, out string statusMessage, out string newPassword)
+        public static bool ResetPassword(string email, out Status status, out string statusMessage, out string newPassword)
         {
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
-            statusCode = Status.UserNotFound.ToString();
+            status = Status.UserNotFound;
             statusMessage = "未找到对应的用户";
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
@@ -959,12 +959,12 @@ namespace DotNet.Business
                         if (userManager.SetPassword(userEntity.Id, newPassword) > 0)
                         {
                             result = true;
-                            statusCode = Status.Ok.ToString();
+                            status = Status.Ok;
                             statusMessage = "新密码已发送到您的注册邮箱" + email + "，请注意查收。";
                         }
                         else
                         {
-                            statusCode = Status.ErrorUpdate.ToString();
+                            status = Status.ErrorUpdate;
                             statusMessage = "更新数据库失败，请重试！";
                         }
                     }
@@ -972,7 +972,7 @@ namespace DotNet.Business
                     {
                         if (userEntity.Enabled == 0)
                         {
-                            statusCode = Status.UserLocked.ToString();
+                            status = Status.UserLocked;
                             statusMessage = "用户被锁定，不允许重置密码。";
                         }
                     }
@@ -982,7 +982,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public static bool SendPassword(string userName, out string statusCode, out string statusMessage) 用户忘记密码，发送密码
+        #region public static bool SendPassword(string userName, out Status status, out string statusMessage) 用户忘记密码，发送密码
         /// <summary>
         /// 用户忘记密码，发送密码
         /// </summary>
@@ -991,11 +991,11 @@ namespace DotNet.Business
         /// <param name="statusMessage">状态信息</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>成功发送密码</returns>
-        public static bool SendPassword(string userName, out string statusCode, out string statusMessage, out string newPassword)
+        public static bool SendPassword(string userName, out Status status, out string statusMessage, out string newPassword)
         {
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
-            statusCode = Status.UserNotFound.ToString();
+            status = Status.UserNotFound;
             statusMessage = "用户未找到，请重新输入用户名。";
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
@@ -1019,13 +1019,13 @@ namespace DotNet.Business
                     //    // 6.发送邮件给用户？
                     //    // 7.重新设置用户密码？
                     //    result = SendPassword(userEntity);
-                    //    statusCode = Status.Ok.ToString();
+                    //    status = Status.Ok.ToString();
                     //    statusMessage = "新密码已发送到您的注册邮箱" + userEntity.Email + "。";
                     //}
                     //else
                     //{
                     //    // 4.用户是否有邮件账户？
-                    //    statusCode = Status.UserNotEmail.ToString();
+                    //    status = Status.UserNotEmail.ToString();
                     //    statusMessage = "用户没有电子邮件地址，无法从新设置密码，请您及时联系系统管理员。";
                     //}
 
@@ -1034,12 +1034,12 @@ namespace DotNet.Business
                 {
                     if (userEntity.Enabled == 0)
                     {
-                        statusCode = Status.UserLocked.ToString();
+                        status = Status.UserLocked;
                         statusMessage = "用户被锁定，不允许设置密码。";
                     }
                     else
                     {
-                        statusCode = Status.UserNotActive.ToString();
+                        status = Status.UserNotActive;
                         statusMessage = "用户还未被激活，不允许设置密码。";
                     }
                 }

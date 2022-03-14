@@ -814,7 +814,7 @@ namespace DotNet.Business
         /// <param name="id">用户主键</param>
         /// <param name="statusCode"></param>
         /// <returns>用户类</returns>
-        public BaseUserInfo Impersonation(int id, out string statusCode)
+        public BaseUserInfo Impersonation(int id, out Status status)
         {
             BaseUserInfo userInfo = null;
             // 获得登录信息
@@ -826,7 +826,7 @@ namespace DotNet.Business
                 {
                     if (entity.UserOnline > 0)
                     {
-                        statusCode = Status.ErrorOnline.ToString();
+                        status = Status.ErrorOnline;
                         return userInfo;
                     }
                 }
@@ -843,7 +843,7 @@ namespace DotNet.Business
                 staffEntity.GetSingle(dataTableStaff);
                 userInfo = staffManager.ConvertToUserInfo(userInfo, staffEntity);
             }
-            statusCode = Status.Ok.ToString();
+            status = Status.Ok;
             // 登录、重新登录、扮演时的在线状态进行更新
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
             userLogonManager.ChangeOnline(id);

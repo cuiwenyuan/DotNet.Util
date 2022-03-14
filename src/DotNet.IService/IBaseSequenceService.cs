@@ -42,7 +42,7 @@ namespace DotNet.IService
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage);
+        string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 更新序列
@@ -52,7 +52,7 @@ namespace DotNet.IService
         /// <param name="statusCode">状态码</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage);
+        int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage);
         
         /// <summary>
         /// 获取序列号列表

@@ -117,7 +117,7 @@ namespace DotNet.Business
         /// <param name="entity">用户组织机构实体</param>
         /// <param name="statusCode">状态码</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserOrganizationEntity entity, out string statusCode)
+        public string Add(BaseUserOrganizationEntity entity, out Status status)
         {
             var result = string.Empty;
             // 判断数据是否重复了
@@ -135,13 +135,13 @@ namespace DotNet.Business
             if (Exists(parameters))
             {
                 // 用户名已重复
-                statusCode = Status.Exist.ToString();
+                status = Status.Exist;
             }
             else
             {
                 result = AddEntity(entity);
                 // 运行成功
-                statusCode = Status.OkAdd.ToString();
+                status = Status.OkAdd;
             }
             return result;
         }

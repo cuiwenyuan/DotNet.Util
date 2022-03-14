@@ -33,6 +33,11 @@ namespace DotNet.Model
         /// <summary>
         /// 状态码
         /// </summary>
+        public Status Status = Status.UserNotFound;
+
+        /// <summary>
+        /// 状态码
+        /// </summary>
         public string StatusCode = Status.UserNotFound.ToString();
 
         /// <summary>

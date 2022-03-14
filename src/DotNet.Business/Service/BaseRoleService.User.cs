@@ -36,11 +36,11 @@ namespace DotNet.Business
         /// <param name="statusCode">返回状态码</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>主键</returns>
-        public string AddWithUser(BaseUserInfo userInfo, BaseRoleEntity entity, string[] userIds, out string statusCode, out string statusMessage)
+        public string AddWithUser(BaseUserInfo userInfo, BaseRoleEntity entity, string[] userIds, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -62,7 +62,7 @@ namespace DotNet.Business
                 }
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;
@@ -131,7 +131,7 @@ namespace DotNet.Business
                 var manager = new BaseUserManager(dbHelper, userInfo);
                 if (userIds != null)
                 {
-                    result += manager.RemoveFormRole(userInfo.SystemCode, userIds, new string[] { roleId });
+                    result += manager.RemoveFromRole(userInfo.SystemCode, userIds, new string[] { roleId });
                 }
             });
 
