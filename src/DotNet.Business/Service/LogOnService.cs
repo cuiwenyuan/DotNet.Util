@@ -422,6 +422,7 @@ namespace DotNet.Business
                     // 获取登录后信息
                     // result.Message = BaseParameterManager.GetParameterByCache("BaseNotice", "System", "Logon", "Message");
                     // 获得状态消息
+                    Status = userManager.Status,
                     StatusCode = userManager.StatusCode,
                     StatusMessage = userManager.GetStateMessage()
                 };

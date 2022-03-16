@@ -53,6 +53,21 @@ namespace DotNet.Util
     /// </summary>
     public partial class BaseUtil
     {
+        public static Paging GetPaging(int pageNo = 1, int pageSize = 20)
+        {
+            var result = new Paging();
+            if (pageNo >= 1)
+            {
+                result.PageNo = pageNo;
+                result.PageIndex = pageNo - 1;
+            }
+            if (pageSize > 0)
+            {
+                result.PageSize = pageSize;
+            }
+            return result;
+        }
+
         /// <summary>
         /// 当发布评论时
         /// </summary>

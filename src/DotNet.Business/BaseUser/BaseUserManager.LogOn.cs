@@ -244,10 +244,12 @@ namespace DotNet.Business
                 // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
                 if (BaseSystemInfo.CheckPasswordStrength)
                 {
+                    result.Status = Status.ErrorLogon;
                     result.StatusCode = Status.ErrorLogon.ToString();
                 }
                 else
                 {
+                    result.Status = Status.UserNotFound;
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -282,6 +284,7 @@ namespace DotNet.Business
                     // 用户命重复了
                     //errorMark = 5;
                     BaseLogonLogManager.AddLog(systemCode, string.Empty, string.Empty, nickName, ipAddress, ipAddressName, macAddress, Status.UserDuplicate.ToDescription());
+                    result.Status = Status.UserDuplicate;
                     result.StatusCode = Status.UserDuplicate.ToString();
                 }
                 else
@@ -289,12 +292,14 @@ namespace DotNet.Business
                     //errorMark = 6;
                     // 用户没找到
                     BaseLogonLogManager.AddLog(systemCode, string.Empty, string.Empty, nickName, ipAddress, ipAddressName, macAddress, Status.UserNotFound.ToDescription());
+                    result.Status = Status.UserNotFound;
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
             }
             catch (Exception ex)
             {
+                result.Status = Status.SystemCodeError;
                 result.StatusCode = Status.SystemCodeError.ToString();
                 result.StatusMessage = ex.Message;
 
@@ -369,10 +374,12 @@ namespace DotNet.Business
                 // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
                 if (BaseSystemInfo.CheckPasswordStrength)
                 {
+                    result.Status = Status.ErrorLogon;
                     result.StatusCode = Status.ErrorLogon.ToString();
                 }
                 else
                 {
+                    result.Status = Status.UserNotFound;
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -389,6 +396,7 @@ namespace DotNet.Business
                     errorMark = 6;
                     // 用户没找到
                     BaseLogonLogManager.AddLog(systemCode, string.Empty, string.Empty, nickName, ipAddress, ipAddressName, macAddress, Status.UserNotFound.ToDescription());
+                    result.Status = Status.UserNotFound;
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
 
@@ -431,6 +439,7 @@ namespace DotNet.Business
                 userCode = SecretUtil.SqlSafe(userCode);
 
                 // 设备在手里，认为是安全的，不是人人都能有设备在手里
+                result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
                 result.StatusMessage = GetStateMessage(result.StatusCode);
                 if (string.IsNullOrEmpty(companyCode) || string.IsNullOrEmpty(userCode))
@@ -451,6 +460,7 @@ namespace DotNet.Business
                 companyId = BaseOrganizationManager.GetIdByCodeByCache(companyCode);
                 if (string.IsNullOrEmpty(companyId))
                 {
+                    result.Status = Status.CompanyNotFound;
                     result.StatusCode = Status.CompanyNotFound.ToString();
                     result.StatusMessage = GetStateMessage(result.StatusCode);
                     return result;
@@ -476,6 +486,7 @@ namespace DotNet.Business
                 }
                 if (dt != null && dt.Rows.Count > 1)
                 {
+                    result.Status = Status.UserDuplicate;
                     result.StatusCode = Status.UserDuplicate.ToString();
                     result.StatusMessage = GetStateMessage(result.StatusCode);
                     return result;
@@ -530,6 +541,7 @@ namespace DotNet.Business
 
             var result = new UserLogonResult
             {
+                Status = Status.Error,
                 StatusCode = "Error",
                 StatusMessage = "请用唯一用户名登录、若不知道唯一用户名、请向公司的管理员索取。"
             };
@@ -562,10 +574,12 @@ namespace DotNet.Business
 
             if (BaseSystemInfo.CheckPasswordStrength)
             {
+                result.Status = Status.ErrorLogon;
                 result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
+                result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -603,6 +617,7 @@ namespace DotNet.Business
             BaseUserEntity userEntity = null;
             if (dt != null && dt.Rows.Count > 1)
             {
+                result.Status = Status.UserDuplicate;
                 result.StatusCode = Status.UserDuplicate.ToString();
             }
             else if (dt != null && dt.Rows.Count == 1)
@@ -632,6 +647,7 @@ namespace DotNet.Business
                 dt = DbHelper.Fill(sql, dbParameters.ToArray());
                 if (dt != null && dt.Rows.Count > 1)
                 {
+                    result.Status = Status.UserDuplicate;
                     result.StatusCode = Status.UserDuplicate.ToString();
                 }
                 else if (dt != null && dt.Rows.Count == 1)
@@ -794,6 +810,7 @@ namespace DotNet.Business
                 //}
                 if (!mobileValidate)
                 {
+                    result.Status = Status.VerificationCodeError;
                     result.StatusCode = Status.VerificationCodeError.ToString();
                     result.StatusMessage = GetStateMessage(result.StatusCode);
                     return result;
@@ -897,11 +914,13 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
+                result.Status = Status.ErrorLogon;
                 result.StatusCode = Status.ErrorLogon.ToString();
                 result.StatusMessage = Status.ErrorLogon.ToDescription();
             }
             else
             {
+                result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
                 result.StatusMessage = Status.UserNotFound.ToDescription();
             }
@@ -974,12 +993,14 @@ namespace DotNet.Business
             {
                 // 用户命重复了
                 BaseLogonLogManager.AddLog(systemCode, string.Empty, userName, string.Empty, ipAddress, ipAddressName, macAddress, Status.UserDuplicate.ToDescription());
+                result.Status = Status.UserDuplicate;
                 result.StatusCode = Status.UserDuplicate.ToString();
             }
             else
             {
                 // 用户没找到
                 BaseLogonLogManager.AddLog(systemCode, string.Empty, userName, string.Empty, ipAddress, ipAddressName, macAddress, Status.UserNotFound.ToDescription());
+                result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -1031,10 +1052,12 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
+                result.Status = Status.ErrorLogon;
                 result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
+                result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -1102,10 +1125,12 @@ namespace DotNet.Business
             // 这是为了达到安全要求，不能提示用户未找到，那容易让别人猜测到帐户
             if (BaseSystemInfo.CheckPasswordStrength)
             {
+                result.Status = Status.ErrorLogon;
                 result.StatusCode = Status.ErrorLogon.ToString();
             }
             else
             {
+                result.Status = Status.ErrorLogon;
                 result.StatusCode = Status.UserNotFound.ToString();
             }
             result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -1154,6 +1179,7 @@ namespace DotNet.Business
             IsLogonByOpenId = true;
 
             // 用户没有找到状态
+            result.Status = Status.UserNotFound;
             result.StatusCode = Status.UserNotFound.ToString();
             result.StatusMessage = GetStateMessage(result.StatusCode);
             // 检查是否有效的合法的参数
@@ -1255,7 +1281,7 @@ namespace DotNet.Business
                 // 2015-12-24 吉日嘎拉进行代码分离、重复利用这部分代码、需要检查接口安全认证
                 result = CheckUser(userEntity, userLogonEntity);
                 // 2015-12-26 吉日嘎拉，修改状态判断，成功验证才可以。
-                if (!result.StatusCode.Equals(Status.Ok.ToString()))
+                if (!(result.Status == Status.Ok))
                 {
                     // 这个是登录失败的
                     BaseLogonLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, result.StatusMessage, 1, 0, sourceType, targetApplication, targetIp);
@@ -1330,7 +1356,7 @@ namespace DotNet.Business
                     // 没有设置IPAddress地址时不检查
 
                     /*
-                 
+
                     if (!string.IsNullOrEmpty(ipAddress))
                     {
                         parameters = new List<KeyValuePair<string, object>>();
@@ -1356,7 +1382,7 @@ namespace DotNet.Business
                             }
                         }
                     }
-                 
+
                     */
 
                     // 没有设置MAC地址时不检查
@@ -1365,6 +1391,7 @@ namespace DotNet.Business
                         // if (!CheckMACAddress(userLogonEntity.Id, macAddress))
                         if (!CheckMacAddressByCache(userLogonEntity.UserId.ToString(), macAddress))
                         {
+                            result.Status = Status.ErrorMacAddress;
                             result.StatusCode = Status.ErrorMacAddress.ToString();
                             result.StatusMessage = GetStateMessage(result.StatusCode);
                             errorMark = 17;
@@ -1398,6 +1425,7 @@ namespace DotNet.Business
                                 }
                                 if (!isSelf)
                                 {
+                                    result.Status = Status.ErrorOnline;
                                     result.StatusCode = Status.ErrorOnline.ToString();
                                     result.StatusMessage = GetStateMessage(result.StatusCode);
                                     errorMark = 19;
@@ -1498,10 +1526,12 @@ namespace DotNet.Business
                                 // 密码强度检查，若是要有安全要求比较高的，返回的提醒消息要进行特殊处理，不能返回非常明确的提示信息。
                                 if (BaseSystemInfo.CheckPasswordStrength)
                                 {
+                                    result.Status = Status.ErrorLogon;
                                     result.StatusCode = Status.ErrorLogon.ToString();
                                 }
                                 else
                                 {
+                                    result.Status = Status.PasswordError;
                                     result.StatusCode = Status.PasswordError.ToString();
                                 }
                                 result.StatusMessage = GetStateMessage(result.StatusCode);
@@ -1541,6 +1571,7 @@ namespace DotNet.Business
                 // userLogonManager.SetProperty(userEntity.Id, parameters);
 
                 // 可以正常登录了
+                result.Status = Status.Ok;
                 result.StatusCode = Status.Ok.ToString();
                 result.StatusMessage = GetStateMessage(result.StatusCode);
 

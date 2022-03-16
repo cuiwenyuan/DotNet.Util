@@ -152,7 +152,7 @@ namespace DotNet.Business
                     // 获取原始实体信息
                     var entityOld = GetEntity(entity.Id.ToString());
                     // 保存修改记录
-                    UpdateEntityLog(entity, entityOld);
+                    SaveEntityChangeLog(entity, entityOld);
 
                     result = UpdateEntity(entity);
                     if (result == 1)
@@ -174,14 +174,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public void UpdateEntityLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
+        #region SaveEntityChangeLog
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {

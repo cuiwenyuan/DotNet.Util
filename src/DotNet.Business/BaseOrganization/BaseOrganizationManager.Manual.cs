@@ -158,49 +158,52 @@ namespace DotNet.Business
 
                     // 获取原始实体信息
                     var entityOld = GetEntity(entity.Id);
-                    // 保存修改记录
-                    UpdateEntityLog(entity, entityOld);
-
-                    // 1:更新部门的信息
-                    result = UpdateEntity(entity);
-
-                    // 2:组织机构修改时，用户表的公司，部门，工作组数据给同步更新。
-                    var userManager = new BaseUserManager(DbHelper, UserInfo);
-                    switch (entity.CategoryCode)
+                    if (entityOld != null)
                     {
-                        case "Company":
-                            userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.FullName));
-                            break;
-                        case "SubCompany":
-                            userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.FullName));
-                            break;
-                        case "Department":
-                            userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.FullName));
-                            break;
-                        case "SubDepartment":
-                            userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.FullName));
-                            break;
-                        case "Workgroup":
-                            userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.FullName));
-                            break;
+                        // 保存修改记录，无论是否允许
+                        SaveEntityChangeLog(entity, entityOld);
 
-                    }
-                    // 03：组织机构修改时，文件夹同步更新
-                    // BaseFolderManager folderManager = new BaseFolderManager(this.DbHelper, this.UserInfo);
-                    // folderManager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.FullName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
-                    if (result == 1)
-                    {
-                        // AfterUpdate(entity);
-                        SetCache(entity.Id.ToString());
-                        Status = Status.OkUpdate;
-                        StatusCode = Status.OkUpdate.ToString();
-                        StatusMessage = Status.OkUpdate.ToDescription();
-                    }
-                    else
-                    {
-                        Status = Status.ErrorDeleted;
-                        StatusCode = Status.ErrorDeleted.ToString();
-                        StatusMessage = Status.ErrorDeleted.ToDescription();
+                        // 1:更新部门的信息
+                        result = UpdateEntity(entity);
+
+                        // 2:组织机构修改时，用户表的公司，部门，工作组数据给同步更新。
+                        var userManager = new BaseUserManager(DbHelper, UserInfo);
+                        switch (entity.CategoryCode)
+                        {
+                            case "Company":
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.FullName));
+                                break;
+                            case "SubCompany":
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.FullName));
+                                break;
+                            case "Department":
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.FullName));
+                                break;
+                            case "SubDepartment":
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.FullName));
+                                break;
+                            case "Workgroup":
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.FullName));
+                                break;
+
+                        }
+                        // 03：组织机构修改时，文件夹同步更新
+                        // BaseFolderManager folderManager = new BaseFolderManager(this.DbHelper, this.UserInfo);
+                        // folderManager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.FullName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
+                        if (result == 1)
+                        {
+                            // AfterUpdate(entity);
+                            SetCache(entity.Id.ToString());
+                            Status = Status.OkUpdate;
+                            StatusCode = Status.OkUpdate.ToString();
+                            StatusMessage = Status.OkUpdate.ToDescription();
+                        }
+                        else
+                        {
+                            Status = Status.ErrorDeleted;
+                            StatusCode = Status.ErrorDeleted.ToString();
+                            StatusMessage = Status.ErrorDeleted.ToDescription();
+                        }
                     }
                 }
             }
@@ -210,14 +213,14 @@ namespace DotNet.Business
 
         #endregion
 
-        #region public void UpdateEntityLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity)
+        #region SaveEntityChangeLog
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {

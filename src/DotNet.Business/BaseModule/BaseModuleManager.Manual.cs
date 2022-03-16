@@ -105,35 +105,39 @@ namespace DotNet.Business
             {
                 // 获取原始实体信息
                 var entityOld = GetEntity(entity.Id);
-                // 保存修改记录
-                UpdateEntityLog(entity, entityOld);
-                // 2015-07-14 吉日嘎拉 只有允许修改的，才可以修改，不允许修改的，不让修改，但是把修改记录会保存起来的。
-                if (entityOld.AllowEdit == 1)
+                if (entityOld != null)
                 {
-                    result = UpdateEntity(entity);
-                    status = Status.AccessDeny;
-                }
-                if (result == 1)
-                {
-                    status = Status.OkUpdate;
-                }
-                else
-                {
-                    status = Status.ErrorDeleted;
+                    // 保存修改记录，无论是否允许
+                    SaveEntityChangeLog(entity, entityOld);
+                    // 2015-07-14 吉日嘎拉 只有允许修改的，才可以修改，不允许修改的，不让修改，但是把修改记录会保存起来的。
+                    if (entityOld.AllowEdit == 1)
+                    {
+                        result = UpdateEntity(entity);
+                        status = Status.AccessDeny;
+                    }
+                    if (result == 1)
+                    {
+                        status = Status.OkUpdate;
+                    }
+                    else
+                    {
+                        status = Status.ErrorDeleted;
+                    }
                 }
             }
+            status = Status;
             return result;
         }
         #endregion
 
-        #region 实体修改记录 public void UpdateEntityLog(BaseModuleEntity newEntity, BaseModuleEntity oldEntity)
+        #region SaveEntityChangeLog
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseModuleEntity newEntity, BaseModuleEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseModuleEntity newEntity, BaseModuleEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
