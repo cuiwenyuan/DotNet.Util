@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <param name="companyId">查看公司主键</param>
         /// <param name="departmentId">查看部门主键</param>
         /// <param name="userId">查看用户主键</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -91,7 +91,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>

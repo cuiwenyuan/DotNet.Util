@@ -39,20 +39,20 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage);
+        string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 更新序列
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">序列实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage);
+        int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage);
         
         /// <summary>
         /// 获取序列号列表

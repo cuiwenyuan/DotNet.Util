@@ -64,34 +64,41 @@ namespace DotNet.Business
             json = string.Empty;
             userId = 0;
             openId = string.Empty;
-            try
+            if (!string.IsNullOrEmpty(token))
             {
-                IJsonSerializer serializer = new JsonNetSerializer();
-                IDateTimeProvider provider = new UtcDateTimeProvider();
-                IJwtValidator validator = new JwtValidator(serializer, provider);
-                IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                IJwtAlgorithm algorithm = new HMACSHA256Algorithm(); // symmetric
-                IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
+                try
+                {
+                    IJsonSerializer serializer = new JsonNetSerializer();
+                    IDateTimeProvider provider = new UtcDateTimeProvider();
+                    IJwtValidator validator = new JwtValidator(serializer, provider);
+                    IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+                    IJwtAlgorithm algorithm = new HMACSHA256Algorithm(); // symmetric
+                    IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
-                json = decoder.Decode(token, BaseSystemInfo.JwtSecret, verify: true);
-                var payload = decoder.DecodeToObject<IDictionary<string, object>>(token, BaseSystemInfo.JwtSecret, verify: true);
-                if (payload.ContainsKey("userId"))
-                {
-                    userId = payload["userId"].ToInt();
+                    json = decoder.Decode(token, BaseSystemInfo.JwtSecret, verify: true);
+                    var payload = decoder.DecodeToObject<IDictionary<string, object>>(token, BaseSystemInfo.JwtSecret, verify: true);
+                    if (payload.ContainsKey("userId"))
+                    {
+                        userId = payload["userId"].ToInt();
+                    }
+                    if (payload.ContainsKey("openId"))
+                    {
+                        openId = payload["openId"].ToString();
+                    }
+                    result = true;
                 }
-                if (payload.ContainsKey("openId"))
+                catch (TokenExpiredException)
                 {
-                    openId = payload["openId"].ToString();
+                    LogUtil.WriteLog("Token has expired");
                 }
-                result = true;
-            }
-            catch (TokenExpiredException)
-            {
-                LogUtil.WriteLog("Token has expired");
-            }
-            catch (SignatureVerificationException)
-            {
-                LogUtil.WriteLog("Token has invalid signature");
+                catch (SignatureVerificationException)
+                {
+                    LogUtil.WriteLog("Token has invalid signature");
+                }
+                catch (Exception)
+                {
+                    LogUtil.WriteLog("Token is empty");
+                }
             }
 
             return result;

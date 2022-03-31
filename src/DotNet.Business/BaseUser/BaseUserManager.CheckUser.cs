@@ -56,6 +56,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(userEntity.AuditStatus)
                 && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString()))
             {
+                result.Status = Status.WaitForAudit;
                 result.StatusCode = AuditStatus.WaitForAudit.ToString();
                 result.StatusMessage = AuditStatus.WaitForAudit.ToDescription();
                 //errorMark = 1;
@@ -65,6 +66,7 @@ namespace DotNet.Business
             // 用户是否有效的
             if (userEntity.Enabled == 0)
             {
+                result.Status = Status.LogonDeny;
                 result.StatusCode = Status.LogonDeny.ToString();
                 result.StatusMessage = Status.LogonDeny.ToDescription();
                 //errorMark = 2;
@@ -74,6 +76,7 @@ namespace DotNet.Business
             // 用户是否有效的
             if (userEntity.Enabled == -1)
             {
+                result.Status = Status.UserNotActive;
                 result.StatusCode = Status.UserNotActive.ToString();
                 result.StatusMessage = Status.UserNotActive.ToDescription();
                 //errorMark = 3;
@@ -85,6 +88,7 @@ namespace DotNet.Business
             // 2015-12-08 吉日嘎拉  
             if (userLogonEntity == null)
             {
+                result.Status = Status.MissingData;
                 result.StatusCode = Status.MissingData.ToString();
                 result.StatusMessage = Status.MissingData.ToDescription();
                 return result;
@@ -96,6 +100,7 @@ namespace DotNet.Business
             if (userLogonEntity.Enabled == 0)
             {
                 //errorMark = 8;
+                result.Status = Status.LogonDeny;
                 result.StatusCode = Status.LogonDeny.ToString();
                 result.StatusMessage = Status.LogonDeny.ToDescription();
                 return result;
@@ -116,6 +121,7 @@ namespace DotNet.Business
                 //errorMark = 15;
                 if (DateTime.Now < userLogonEntity.AllowStartTime)
                 {
+                    result.Status = Status.ServiceNotStart;
                     result.StatusCode = Status.ServiceNotStart.ToString();
                     result.StatusMessage = Status.ServiceNotStart.ToDescription();
                     //errorMark = 17;
@@ -129,6 +135,7 @@ namespace DotNet.Business
                 //errorMark = 19;
                 if (DateTime.Now > userLogonEntity.AllowEndTime)
                 {
+                    result.Status = Status.ServiceExpired;
                     result.StatusCode = Status.ServiceExpired.ToString();
                     result.StatusMessage = Status.ServiceExpired.ToDescription();
                     //errorMark = 20;
@@ -146,6 +153,7 @@ namespace DotNet.Business
                     //errorMark = 23;
                     if (userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime)
                     {
+                        result.Status = Status.UserLocked;
                         result.StatusCode = Status.UserLocked.ToString();
                         result.StatusMessage = Status.UserLocked.ToDescription();
                         //errorMark = 24;
@@ -161,13 +169,14 @@ namespace DotNet.Business
                 if (DateTime.Now < userLogonEntity.LockEndTime)
                 {
                     //errorMark = 27;
+                    result.Status = Status.UserLocked;
                     result.StatusCode = Status.UserLocked.ToString();
                     result.StatusMessage = Status.UserLocked.ToDescription();
                     //errorMark = 28;
                     return result;
                 }
             }
-
+            result.Status = Status.Ok;
             result.StatusCode = Status.Ok.ToString();
             result.StatusMessage = Status.Ok.ToDescription();
 

@@ -351,7 +351,7 @@ namespace DotNet.Business
         /// <summary>
         /// 分页查询
         /// </summary>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="companyId">公司主键</param>
         /// <param name="departmentId">部门主键</param>
         /// <param name="roleId">角色主键</param>

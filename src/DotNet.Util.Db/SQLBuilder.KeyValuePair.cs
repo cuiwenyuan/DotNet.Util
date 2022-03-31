@@ -42,8 +42,6 @@ namespace DotNet.Util
         public void SetWhere(KeyValuePair<string, object> parameter, string relation = " AND ")
         {
             SetWhere(parameter.Key, parameter.Value, parameter.Key, relation);
-            // string result = this.WhereSql;
-            // return result;
         }
         #endregion
 
@@ -60,8 +58,6 @@ namespace DotNet.Util
             {
                 SetWhere(key.Key, key.Value, key.Key, relation);
             }
-            // string result = this.WhereSql;
-            // return result;
         }
         #endregion
     }

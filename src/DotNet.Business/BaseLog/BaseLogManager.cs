@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -161,56 +161,6 @@ namespace DotNet.Business
             logManager.Add(entity);
         }
 
-        /// <summary>
-        /// 增加日志
-        /// </summary>
-        /// <param name="urlReferrer"></param>
-        /// <param name="adId"></param>
-        /// <param name="webUrl"></param>
-        public void AddWebLog(string urlReferrer, string adId, string webUrl)
-        {
-            /*
-            string userId = string.Empty;
-            if (!UserInfo.Id.Equals(UserInfo.IPAddress))
-            {
-                userId = UserInfo.Id;
-            }
-            string userName = string.Empty;
-            if (!UserInfo.UserName.Equals(UserInfo.IPAddress))
-            {
-                userName = UserInfo.UserName;
-            }
-            this.AddWebLog(urlReferrer, adId, webUrl, UserInfo.IPAddress, userId, userName);
-            */
-        }
-
-        /// <summary>
-        /// 写入网页访问日志
-        /// </summary>
-        /// <param name="urlReferrer">导入网址</param>
-        /// <param name="adId">广告商ID</param>
-        /// <param name="webUrl">访问的网址</param>
-        /// <param name="ipAddress">网络地址</param>
-        /// <param name="userId">用户主键</param>
-        /// <param name="userName">用户名</param>
-        public void AddWebLog(string urlReferrer, string adId, string webUrl, string ipAddress, string userId, string userName)
-        {
-            /*
-            BaseLogEntity entity = new BaseLogEntity();
-            entity.ProcessId = "WebLog";
-            entity.UrlReferrer = urlReferrer;
-            if (!string.IsNullOrEmpty(adId))
-            {
-                entity.MethodName = "AD";
-                entity.Parameters = adId;
-            }
-            entity.WebUrl = webUrl;
-            entity.IPAddress = ipAddress;
-            entity.UserId = userId;
-            entity.UserRealName = userName;
-            this.AddEntity(entity);
-            */
-        }
         /// <summary>
         /// 获取数据表
         /// </summary>
@@ -338,34 +288,6 @@ namespace DotNet.Business
             return dt;
         }
         #endregion
-
-        //public DataTable Search(string[] userIds, string search, bool? enabled, bool OnlyOnline)
-        //{
-        //    search = StringUtil.GetSearchString(search);
-        //    string sql = "SELECT " + BaseLogEntity.CurrentTableName + ".*," + BaseUserEntity.CurrentTableName+ ".* " 
-        //        + " FROM  " + BaseLogEntity.CurrentTableName + " LEFT OUTER JOIN "+
-        //        BaseUserEntity.CurrentTableName + " ON RTRIM(LTRIM(" + BaseUserEntity.FieldId +"))="+
-        //        BaseLogEntity.FieldUserId +
-        //        " WHERE 1=1 ";
-        //    //string sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1=1 ";
-
-        //    // 注意安全问题
-        //    if (userIds.Length >0) 
-        //    {
-        //        sql += " AND " + BaseLogEntity.FieldUserId + " IN (" + ObjectUtil.ToList(userIds) + ") ";
-        //    }
-
-
-        //     sql += " AND ("  + BaseLogEntity.CurrentTableName +"." + BaseLogEntity.FieldWebUrl + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserId + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserRealName + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUrlReferrer + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldIPAddress + " LIKE '%" + search + "%'"
-        //                + " OR " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldDescription + " LIKE '%" + search + "%')";
-
-        //    //sql += " ORDER BY " + BaseLogEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode;
-        //    return DbHelper.Fill(sql);
-        //}
 
         /// <summary>
         /// 搜索

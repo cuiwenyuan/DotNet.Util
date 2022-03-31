@@ -34,20 +34,20 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
         /// <param name="userIds">用户主键数组</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>主键</returns>
-        string AddWithUser(BaseUserInfo userInfo, BaseRoleEntity entity, string[] userIds, out string statusCode, out string statusMessage);
+        string AddWithUser(BaseUserInfo userInfo, BaseRoleEntity entity, string[] userIds, out Status status, out string statusMessage);
         
         /// <summary>
         /// 添加角色
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>主键</returns>
-        string Add(BaseUserInfo userInfo, BaseRoleEntity entity, out string statusCode, out string statusMessage);
+        string Add(BaseUserInfo userInfo, BaseRoleEntity entity, out Status status, out string statusMessage);
 
         /// <summary>
         /// 获取角色列表
@@ -123,10 +123,10 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>影响行数</returns>
-        int Update(BaseUserInfo userInfo, BaseRoleEntity entity, out string statusCode, out string statusMessage);
+        int Update(BaseUserInfo userInfo, BaseRoleEntity entity, out Status status, out string statusMessage);
         
         /// <summary>
         /// 获取列表

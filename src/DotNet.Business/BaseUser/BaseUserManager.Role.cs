@@ -1034,7 +1034,7 @@ namespace DotNet.Business
 
         #region 移除角色
 
-        #region RemoveFormRole(string systemCode, string userId, string roleId) 将用户从角色移除
+        #region RemoveFromRole(string systemCode, string userId, string roleId) 将用户从角色移除
         /// <summary>
         /// 将用户从角色移除
         /// </summary>
@@ -1042,7 +1042,7 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>影响行数</returns>
-        public int RemoveFormRole(string systemCode, string userId, string roleId)
+        public int RemoveFromRole(string systemCode, string userId, string roleId)
         {
             var tableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
@@ -1064,7 +1064,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region RemoveFormRole(string systemCode, string userId, string[] roleIds) 将用户从角色移除
+        #region RemoveFromRole(string systemCode, string userId, string[] roleIds) 将用户从角色移除
 
         /// <summary>
         /// 从角色中删除
@@ -1073,19 +1073,19 @@ namespace DotNet.Business
         /// <param name="userId"></param>
         /// <param name="roleIds"></param>
         /// <returns></returns>
-        public int RemoveFormRole(string systemCode, string userId, string[] roleIds)
+        public int RemoveFromRole(string systemCode, string userId, string[] roleIds)
         {
             var result = 0;
             for (var i = 0; i < roleIds.Length; i++)
             {
-                result += RemoveFormRole(systemCode, userId, roleIds[i]);
+                result += RemoveFromRole(systemCode, userId, roleIds[i]);
             }
             return result;
         }
 
         #endregion
 
-        #region RemoveFormRole(string systemCode, string[] userIds, string roleId) 将用户从角色移除
+        #region RemoveFromRole(string systemCode, string[] userIds, string roleId) 将用户从角色移除
 
         /// <summary>
         /// 从角色中删除
@@ -1094,18 +1094,18 @@ namespace DotNet.Business
         /// <param name="userIds"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public int RemoveFormRole(string systemCode, string[] userIds, string roleId)
+        public int RemoveFromRole(string systemCode, string[] userIds, string roleId)
         {
             var result = 0;
             for (var i = 0; i < userIds.Length; i++)
             {
-                result += RemoveFormRole(systemCode, userIds[i], roleId);
+                result += RemoveFromRole(systemCode, userIds[i], roleId);
             }
             return result;
         }
         #endregion
 
-        #region RemoveFormRole(string systemCode, string[] userIds, string[] roleIds) 将用户从角色移除
+        #region RemoveFromRole(string systemCode, string[] userIds, string[] roleIds) 将用户从角色移除
         /// <summary>
         /// 从角色中删除
         /// </summary>
@@ -1113,7 +1113,7 @@ namespace DotNet.Business
         /// <param name="userIds"></param>
         /// <param name="roleIds"></param>
         /// <returns></returns>
-        public int RemoveFormRole(string systemCode, string[] userIds, string[] roleIds)
+        public int RemoveFromRole(string systemCode, string[] userIds, string[] roleIds)
         {
             var result = 0;
 
@@ -1121,7 +1121,7 @@ namespace DotNet.Business
             {
                 for (var j = 0; j < roleIds.Length; j++)
                 {
-                    result += RemoveFormRole(systemCode, userIds[i], roleIds[j]);
+                    result += RemoveFromRole(systemCode, userIds[i], roleIds[j]);
                 }
             }
 

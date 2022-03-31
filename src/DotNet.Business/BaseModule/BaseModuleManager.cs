@@ -48,7 +48,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -240,24 +240,6 @@ namespace DotNet.Business
 
 
         /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="code">编号</param>
-        /// <param name="fullName">名称</param>
-        /// <param name="statusCode">返回状态码</param>
-        /// <returns>主键</returns>
-        public string AddByDetail(string code, string fullName, out string statusCode)
-        {
-            var permissionEntity = new BaseModuleEntity
-            {
-                Code = code,
-                FullName = fullName
-            };
-            return Add(permissionEntity, out statusCode);
-        }
-
-
-        /// <summary>
         /// 获得用户授权范围
         /// </summary>
         /// <param name="systemCode">系统编码</param>
@@ -403,62 +385,6 @@ namespace DotNet.Business
             result.TableName = CurrentTableName;
             return result;
         }
-
-        #region public string Add(string fullName)
-        /// <summary>
-        /// Add 添加的主键
-        /// </summary>
-        /// <param name="fullName">对象</param>
-        /// <returns>主键</returns>
-        public string Add(string fullName)
-        {
-            var statusCode = string.Empty;
-            var entity = new BaseModuleEntity
-            {
-                FullName = fullName
-            };
-            return Add(entity, out statusCode);
-        }
-        #endregion
-
-        #region public string Add(BaseModuleEntity entity, out string statusCode) 添加
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
-        /// <returns>返回</returns>
-        public string Add(BaseModuleEntity entity, out string statusCode)
-        {
-            var result = string.Empty;
-            // 检查名称是否重复
-            var parameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
-                new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName),
-                new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
-            };
-
-            if (!string.IsNullOrEmpty(entity.ParentId.ToString()))
-            {
-                parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId));
-            }            
-
-            if (Exists(parameters))
-            {
-                // 名称已重复
-                statusCode = Status.ErrorCodeExist.ToString();
-            }
-            else
-            {
-                result = AddEntity(entity);
-                // 运行成功
-                statusCode = Status.OkAdd.ToString();
-            }
-            return result;
-        }
-        #endregion
 
         #region public override int BatchSave(DataTable dt) 批量进行保存
         /// <summary>

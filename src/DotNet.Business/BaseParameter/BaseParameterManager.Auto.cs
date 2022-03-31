@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseParameterManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -16,11 +16,12 @@ namespace DotNet.Business
     /// 参数表的基类结构定义
     /// 
     /// 修改记录
-    /// 2021-09-27 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-03-25 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-27</date>
+    ///     <date>2022-03-25</date>
     /// </author>
     /// </summary>
     public partial class BaseParameterManager : BaseManager, IBaseManager
@@ -311,7 +312,6 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterId, entity.ParameterId);
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterCode, entity.ParameterCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldParameterContent, entity.ParameterContent);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldWorked, entity.Worked);
             sqlBuilder.SetValue(BaseParameterEntity.FieldDescription, entity.Description);
             sqlBuilder.SetValue(BaseParameterEntity.FieldSortCode, entity.SortCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldDeleted, entity.Deleted);

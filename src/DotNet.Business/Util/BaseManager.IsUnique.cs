@@ -70,6 +70,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region 是否唯一的
         /// <summary>
         /// 是否唯一的(两个字段)
         /// </summary>
@@ -124,6 +127,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
+
+        #region 是否唯一的
 
         /// <summary>
         /// 是否唯一的(三个字段)
@@ -189,51 +195,57 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
+        #region 是否唯一的
         /// <summary>
-        /// 是否唯一的(三个字段)
+        /// 是否唯一的(条件参数)
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="excludeId">排除行id</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        public virtual bool IsUnique(List<KeyValuePair<string, string>> whereParameters, string excludeId, bool checkUserCompany = false)
+        public virtual bool IsUnique(List<KeyValuePair<string, object>> whereParameters, string excludeId = null, bool checkUserCompany = false)
         {
             var result = false;
-            var sbWhere = Pool.StringBuilder.Get();
-            foreach (var parameter in whereParameters)
+
+            if (checkUserCompany)
             {
-                if (ValidateUtil.IsInt(parameter.Value))
+                whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUserCompanyId, UserInfo.CompanyId));
+            }
+
+            //result = !Exists(whereParameters, excludeId);
+
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + DbUtil.GetWhereString(dbHelper, whereParameters, BaseUtil.SqlLogicConditional));
+
+            if (!string.IsNullOrEmpty(excludeId))
+            {
+                if (ValidateUtil.IsInt(excludeId))
                 {
-                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = " + dbHelper.SqlSafe(parameter.Value) + " AND ");
+                    sb.Append(" " + BaseUtil.SqlLogicConditional + "(" + BaseUtil.FieldId + " <> " + excludeId + ") ");
                 }
                 else
                 {
-                    sbWhere.Append("" + dbHelper.SqlSafe(parameter.Key) + " = N'" + dbHelper.SqlSafe(parameter.Value) + "' AND ");
+                    sb.Append(" " + BaseUtil.SqlLogicConditional + "(" + BaseUtil.FieldId + " <> '" + excludeId + "') ");
                 }
-            }
-            // 去掉最后一个AND
-            sbWhere.Replace("AND", "", sbWhere.Length - 5, 4);
 
-            var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + sbWhere.Put());
-            //未删除
-            sb.Append(" AND " + BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
-            //当前用户所在公司或者系统公用数据
-            if (checkUserCompany)
-            {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
             }
-            if (ValidateUtil.IsInt(excludeId))
+
+            object obj;
+            if (whereParameters != null)
             {
-                sb.Append(" AND Id <> " + excludeId);
+                obj = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(whereParameters));
             }
-            //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            else
             {
-                result = true;
+                obj = dbHelper.ExecuteScalar(sb.Put());
             }
+            if (obj != null)
+            {
+                result = Convert.ToInt32(obj.ToString()) == 0;
+            }
+
             return result;
         }
         #endregion

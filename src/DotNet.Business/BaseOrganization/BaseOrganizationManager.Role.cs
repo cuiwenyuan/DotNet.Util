@@ -149,7 +149,7 @@ namespace DotNet.Business
         /// <param name="organizationId">组织机构主键</param>
         /// <param name="roleId">角色主键</param>
         /// <returns>影响行数</returns>
-        public int RemoveFormRole(string systemCode, string organizationId, string roleId)
+        public int RemoveFromRole(string systemCode, string organizationId, string roleId)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -167,14 +167,14 @@ namespace DotNet.Business
         /// <param name="organizationIds"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public int RemoveFormRole(string systemCode, string[] organizationIds, string roleId)
+        public int RemoveFromRole(string systemCode, string[] organizationIds, string roleId)
         {
             var result = 0;
 
             for (var i = 0; i < organizationIds.Length; i++)
             {
                 // 移除用户角色
-                result += RemoveFormRole(systemCode, organizationIds[i], roleId);
+                result += RemoveFromRole(systemCode, organizationIds[i], roleId);
             }
 
             return result;

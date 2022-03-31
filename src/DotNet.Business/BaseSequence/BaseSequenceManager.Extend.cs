@@ -197,21 +197,21 @@ namespace DotNet.Business
         /// 添加
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
-        public string Add(BaseSequenceEntity entity, out string statusCode)
+        /// <param name="status">状态</param>
+        public string Add(BaseSequenceEntity entity, out Status status)
         {
             var result = string.Empty;
             // 检查是否重复
             if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, entity.FullName)))
             {
                 // 名称已重复
-                statusCode = Status.ErrorNameExist.ToString();
+                status = Status.ErrorNameExist;
             }
             else
             {
                 result = AddEntity(entity);
                 // 运行成功
-                statusCode = Status.OkAdd.ToString();
+                status = Status.OkAdd;
             }
             return result;
         }
@@ -220,15 +220,15 @@ namespace DotNet.Business
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
-        public int Update(BaseSequenceEntity entity, out string statusCode)
+        /// <param name="status">状态</param>
+        public int Update(BaseSequenceEntity entity, out Status status)
         {
             var result = 0;
             // 检查名称是否重复
             if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, entity.FullName), entity.Id))
             {
                 // 名称已重复
-                statusCode = Status.ErrorNameExist.ToString();
+                status = Status.ErrorNameExist;
             }
             else
             {
@@ -236,12 +236,12 @@ namespace DotNet.Business
                 result = UpdateEntity(entity);
                 if (result == 1)
                 {
-                    statusCode = Status.OkUpdate.ToString();
+                    status = Status.OkUpdate;
                 }
                 else
                 {
                     // 数据可能被删除
-                    statusCode = Status.ErrorDeleted.ToString();
+                    status = Status.ErrorDeleted;
                 }
             }
             return result;

@@ -34,20 +34,15 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseParameterManager : BaseManager
     {
-        #region public string AddParameter(BaseParameterEntity entity)
+        #region public string UniqueAdd(BaseParameterEntity entity)
         /// <summary>
         /// 添加内容
         /// </summary>
         /// <param name="entity">内容</param>
-        /// <param name="identity"></param>
-        /// <param name="returnId"></param>
         /// <returns>主键</returns>
-        public string AddParameter(BaseParameterEntity entity, bool identity = true, bool returnId = true)
+        public string UniqueAdd(BaseParameterEntity entity)
         {
             var result = string.Empty;
-
-            Identity = identity;
-            ReturnId = returnId;
 
             // 此处检查this.exist()
             var parameters = new List<KeyValuePair<string, object>>
@@ -62,26 +57,37 @@ namespace DotNet.Business
             if (Exists(parameters))
             {
                 // 编号已重复
+                Status = Status.ErrorCodeExist;
                 StatusCode = Status.ErrorCodeExist.ToString();
             }
             else
             {
                 result = AddEntity(entity);
-                // 运行成功
-                StatusCode = Status.OkAdd.ToString();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    // 运行成功
+                    Status = Status.OkAdd;
+                    StatusCode = Status.OkAdd.ToString();
+                }
+                else
+                {
+                    // 失败
+                    Status = Status.Error;
+                    StatusCode = Status.Error.ToString();
+                }
             }
 
             return result;
         }
         #endregion
 
-        #region public int Update(BaseParameterEntity entity) 更新
+        #region public int UniqueUpdate(BaseParameterEntity entity) 更新
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity">参数基类表结构定义</param>
         /// <returns>影响行数</returns>
-        public int UpdateParameter(BaseParameterEntity entity)
+        public int UniqueUpdate(BaseParameterEntity entity)
         {
             var result = 0;
             // 检查是否已被其他人修改
@@ -95,7 +101,8 @@ namespace DotNet.Business
             // 检查编号是否重复
             if (Exists(new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterCode, entity.ParameterCode), entity.Id))
             {
-                // 文件夹名已重复
+                // 编码已重复
+                Status = Status.ErrorCodeExist;
                 StatusCode = Status.ErrorCodeExist.ToString();
             }
             else
@@ -104,11 +111,13 @@ namespace DotNet.Business
                 result = UpdateEntity(entity);
                 if (result == 1)
                 {
+                    Status = Status.OkUpdate;
                     StatusCode = Status.OkUpdate.ToString();
                 }
                 else
                 {
                     // 数据可能被删除
+                    Status = Status.ErrorDeleted;
                     StatusCode = Status.ErrorDeleted.ToString();
                 }
             }
@@ -217,7 +226,8 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldCategoryCode, categoryCode),
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterId, parameterId),
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterCode, parameterCode),
-                new KeyValuePair<string, object>(BaseParameterEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseParameterEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseParameterEntity.FieldEnabled, 1)
             };
             // 检测是否无效数据
             if ((parameterContent == null) || (parameterContent.Length == 0))
@@ -233,6 +243,7 @@ namespace DotNet.Business
                     // 进行增加操作
                     var entity = new BaseParameterEntity
                     {
+                        SystemCode = BaseSystemInfo.SystemCode,
                         CategoryCode = categoryCode,
                         ParameterId = parameterId,
                         ParameterCode = parameterCode,
@@ -241,7 +252,7 @@ namespace DotNet.Business
                         Deleted = 0,
                         SortCode = 1 // 不要排序了
                     };
-                    AddParameter(entity);
+                    UniqueAdd(entity);
                     result = 1;
                 }
             }
@@ -263,78 +274,6 @@ namespace DotNet.Business
         public int SetParameter(string categoryCode, string parameterId, string parameterCode, string parameterContent)
         {
             return SetParameter(BaseParameterEntity.CurrentTableName, categoryCode, parameterId, parameterCode, parameterContent);
-        }
-        #endregion
-
-        #region public int AddParameter(string categoryCode, string parameterId, string parameterCode, string parameterContent)
-        /// <summary>
-        /// 添加参数设置
-        /// </summary>
-        /// <param name="categoryCode">类别编号</param>
-        /// <param name="parameterId">参数主键</param>
-        /// <param name="parameterCode">编码</param>
-        /// <param name="parameterContent">参数内容</param>
-        /// <returns>主键</returns>
-        public string AddParameter(string categoryCode, string parameterId, string parameterCode, string parameterContent)
-        {
-            return AddParameter(BaseParameterEntity.CurrentTableName, categoryCode, parameterId, parameterCode, parameterContent);
-        }
-        #endregion
-
-        #region public int AddParameter(string tableName, string categoryCode, string parameterId, string parameterCode, string parameterContent)
-        /// <summary>
-        /// 添加参数设置
-        /// 2015-07-24 吉日嘎拉 按表名来添加、尽管添加的功能实现。
-        /// </summary>
-        /// <param name="tableName">表名</param>
-        /// <param name="categoryCode">类别编号</param>
-        /// <param name="parameterId">参数主键</param>
-        /// <param name="parameterCode">编码</param>
-        /// <param name="parameterContent">参数内容</param>
-        /// <returns>主键</returns>
-        public string AddParameter(string tableName, string categoryCode, string parameterId, string parameterCode, string parameterContent)
-        {
-            var result = string.Empty;
-
-            CurrentTableName = tableName;
-
-            /*
-            List<KeyValuePair<string, object>> parameters = new List<KeyValuePair<string, object>>();
-            parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldCategoryCode, categoryCode));
-            parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterId, parameterId));
-            parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterCode, parameterCode));
-            parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldDeleted, 0));
-            // 检测是否无效数据
-            if ((parameterContent == null) || (parameterContent.Length == 0))
-            {
-                this.SetDeleted(parameters);
-            }
-            else
-            {
-                parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterContent, parameterContent));
-                result = this.GetProperty(parameters, BaseParameterEntity.FieldId);
-                // 检测是否存在
-                if (string.IsNullOrEmpty(result))
-                {
-             */
-            // 进行增加操作
-            var entity = new BaseParameterEntity
-            {
-                //Id = Guid.NewGuid().ToString("N"),
-                CategoryCode = categoryCode,
-                ParameterId = parameterId,
-                ParameterCode = parameterCode,
-                ParameterContent = parameterContent,
-                Enabled = 1,
-                Deleted = 0
-            };
-            result = AddEntity(entity);
-            /*
-                }
-            }
-            */
-
-            return result;
         }
         #endregion
 

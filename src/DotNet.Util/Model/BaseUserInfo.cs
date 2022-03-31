@@ -199,6 +199,26 @@ namespace DotNet.Util
             set => _code = value;
         }
 
+        private string _gender = string.Empty;
+        /// <summary>
+        /// 姓名（男、女、保密、未知）
+        /// </summary>
+        public virtual string Gender
+        {
+            get => _gender;
+            set => _gender = value;
+        }
+
+        private string _birthday = string.Empty;
+        /// <summary>
+        /// 生日
+        /// </summary>
+        public virtual string Birthday
+        {
+            get => _birthday;
+            set => _birthday = value;
+        }
+
         private string _employeeNumber = string.Empty;
         /// <summary>
         /// 工号

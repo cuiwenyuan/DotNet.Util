@@ -54,6 +54,40 @@ namespace DotNet.Util
     public partial class BaseUtil
     {
         /// <summary>
+        /// 获取分页设置
+        /// </summary>
+        /// <param name="pageNo">页编号（从1开始，1代表第1页）</param>
+        /// <param name="pageSize">每页显示的记录数</param>
+        /// <param name="sortExpression">排序表达式（ORDER BY后的字段或多个字段）</param>
+        /// <param name="sortDirection">排序方向（DESC或ASC）</param>
+        /// <returns></returns>
+        public static Paging GetPaging(int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null)
+        {
+            var result = new Paging();
+            if (pageNo >= 1)
+            {
+                result.PageNo = pageNo;
+                result.PageIndex = pageNo - 1;
+            }
+            if (pageSize > 0)
+            {
+                result.PageSize = pageSize;
+            }
+            if (!string.IsNullOrEmpty(sortExpression))
+            {
+                result.SortExpression = sortExpression;
+            }
+            if (!string.IsNullOrEmpty(sortDirection))
+            {
+                if (sortDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase) || sortDirection.Equals("DESC", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.SortDirection = sortDirection;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 当发布评论时
         /// </summary>
         /// <param name="categoryId">类别主键</param>

@@ -81,7 +81,7 @@ namespace DotNet.Business
                 if (entityOld != null)
                 {
                     // 保存修改记录
-                    UpdateEntityLog(entity, entityOld);
+                    SaveEntityChangeLog(entity, entityOld);
                 }
             }            
             // 更新数据
@@ -99,14 +99,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public void UpdateEntityLog(BaseUserContactEntity newEntity, BaseUserContactEntity oldEntity, string tableName = null)
+        #region SaveEntityChangeLog
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
         /// <param name="newEntity">修改前的实体对象</param>
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void UpdateEntityLog(BaseUserContactEntity newEntity, BaseUserContactEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseUserContactEntity newEntity, BaseUserContactEntity oldEntity, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {

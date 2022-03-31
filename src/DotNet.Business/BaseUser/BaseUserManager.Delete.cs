@@ -43,7 +43,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="changeEnabled">修改有效状态</param>
-        /// <param name="recordUser">记录修改用户param>
+        /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="checkAllowDelete">检查允许删除</param>

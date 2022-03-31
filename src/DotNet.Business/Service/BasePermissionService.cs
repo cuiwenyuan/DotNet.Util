@@ -201,7 +201,6 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="systemCode">系统编码</param>
         /// <param name="userId">用户主键</param>
-        /// <param name="fromCache">是否从缓存读取</param>
         /// <returns>主键数组</returns>
         public string[] GetPermissionIds(BaseUserInfo userInfo, string systemCode, string userId)
         {
