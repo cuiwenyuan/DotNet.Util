@@ -59,7 +59,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -812,9 +812,9 @@ namespace DotNet.Business
         /// 扮演用户
         /// </summary>
         /// <param name="id">用户主键</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <returns>用户类</returns>
-        public BaseUserInfo Impersonation(int id, out string statusCode)
+        public BaseUserInfo Impersonation(int id, out Status status)
         {
             BaseUserInfo userInfo = null;
             // 获得登录信息
@@ -826,7 +826,7 @@ namespace DotNet.Business
                 {
                     if (entity.UserOnline > 0)
                     {
-                        statusCode = Status.ErrorOnline.ToString();
+                        status = Status.ErrorOnline;
                         return userInfo;
                     }
                 }
@@ -843,7 +843,7 @@ namespace DotNet.Business
                 staffEntity.GetSingle(dataTableStaff);
                 userInfo = staffManager.ConvertToUserInfo(userInfo, staffEntity);
             }
-            statusCode = Status.Ok.ToString();
+            status = Status.Ok;
             // 登录、重新登录、扮演时的在线状态进行更新
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
             userLogonManager.ChangeOnline(id);

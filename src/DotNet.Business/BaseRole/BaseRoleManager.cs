@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -133,14 +133,14 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public string Add(BaseRoleEntity entity, out string statusCode) 添加
+        #region public string Add(BaseRoleEntity entity, out Status status) 添加
         /// <summary>
         /// 添加
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>主键</returns>
-        public string Add(BaseRoleEntity entity, out string statusCode)
+        public string Add(BaseRoleEntity entity, out Status status)
         {
             var result = string.Empty;
             // 检查名称是否重复
@@ -167,18 +167,18 @@ namespace DotNet.Business
             if (Exists(parameters))
             {
                 // 名称已重复
-                statusCode = Status.ErrorNameExist.ToString();
+                status = Status.ErrorNameExist;
             }
             else if (Exists(parametersCode))
             {
                 // 编码已重复
-                statusCode = Status.ErrorCodeExist.ToString();
+                status = Status.ErrorCodeExist;
             }
             else
             {
                 result = AddEntity(entity);
                 // 运行成功
-                statusCode = Status.OkAdd.ToString();
+                status = Status.OkAdd;
             }
             return result;
         }
@@ -506,7 +506,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo"></param>
         /// <param name="categoryCode">分类编码</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>

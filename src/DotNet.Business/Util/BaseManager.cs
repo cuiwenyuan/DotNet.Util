@@ -399,6 +399,20 @@ namespace DotNet.Business
         /// <summary>
         /// 状态码的获取
         /// </summary>
+        private Status _status = Status.Error;
+
+        /// <summary>
+        /// 运行状态返回值
+        /// </summary>
+        public Status Status
+        {
+            get => _status;
+            set => _status = value;
+        }
+
+        /// <summary>
+        /// 状态码的获取
+        /// </summary>
         private string _statusCode = Status.Error.ToString();
 
         /// <summary>

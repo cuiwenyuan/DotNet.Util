@@ -122,14 +122,14 @@ namespace DotNet.Business
                     // 安全通讯密码、交易密码也生成好
                     // userLogonEntity.UserPassword = this.EncryptUserPassword(entity.CommunicationPassword);
                 }
-                // 2016.05.21 吉日嘎拉 完善创建信息
-                userLogonEntity.CreateTime = DateTime.Now;
-                userLogonEntity.UpdateTime = DateTime.Now;
-                if (UserInfo != null)
-                {
-                    userLogonEntity.CreateUserId = UserInfo.UserId;
-                    userLogonEntity.CreateBy = UserInfo.RealName;
-                }
+                //// 2016.05.21 吉日嘎拉 完善创建信息
+                //userLogonEntity.CreateTime = DateTime.Now;
+                //userLogonEntity.UpdateTime = DateTime.Now;
+                //if (UserInfo != null)
+                //{
+                //    userLogonEntity.CreateUserId = UserInfo.UserId;
+                //    userLogonEntity.CreateBy = UserInfo.RealName;
+                //}
                 new BaseUserLogonManager(DbHelper, UserInfo).Add(userLogonEntity);
 
                 AfterAdd(entity);

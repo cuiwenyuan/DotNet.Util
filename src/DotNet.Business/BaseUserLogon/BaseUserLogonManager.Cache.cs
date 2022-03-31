@@ -63,7 +63,7 @@ namespace DotNet.Business
         /// 重新设置缓存（重新强制设置缓存）可以提供外部调用的
         /// 20151007 吉日嘎拉，需要在一个连接上进行大量的操作
         /// </summary>
-        /// <param name="id">主键</param>
+        /// <param name="userId">主键</param>
         /// <returns>用户信息</returns>
         public static BaseUserLogonEntity SetCache(string userId)
         {

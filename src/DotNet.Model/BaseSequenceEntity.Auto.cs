@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseSequenceEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,15 +13,15 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseSequenceEntity
-    /// 序列产生器表
+    /// 序列
     /// 
     /// 修改记录
     /// 
-    /// 2021-09-26 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-02-07 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-26</date>
+    ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
     public partial class BaseSequenceEntity : BaseEntity
@@ -39,15 +39,15 @@ namespace DotNet.Model
         public string FullName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 序列号前缀
+        /// 前缀
         /// </summary>
-        [FieldDescription("序列号前缀")]
+        [FieldDescription("前缀")]
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
-        /// 序列号分隔符
+        /// 分隔符
         /// </summary>
-        [FieldDescription("序列号分隔符")]
+        [FieldDescription("分隔符")]
         public string Delimiter { get; set; } = string.Empty;
 
         /// <summary>
@@ -63,9 +63,9 @@ namespace DotNet.Model
         public int Reduction { get; set; } = 9999999;
 
         /// <summary>
-        /// 步骤
+        /// 步长
         /// </summary>
-        [FieldDescription("步骤")]
+        [FieldDescription("步长")]
         public int Step { get; set; } = 1;
 
         /// <summary>
@@ -257,9 +257,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 序列产生器表
+        /// 序列
         ///</summary>
-        [FieldDescription("序列产生器表")]
+        [FieldDescription("序列")]
         public const string CurrentTableName = "BaseSequence";
 
         ///<summary>
@@ -273,12 +273,12 @@ namespace DotNet.Model
         public const string FieldFullName = "FullName";
 
         ///<summary>
-        /// 序列号前缀
+        /// 前缀
         ///</summary>
         public const string FieldPrefix = "Prefix";
 
         ///<summary>
-        /// 序列号分隔符
+        /// 分隔符
         ///</summary>
         public const string FieldDelimiter = "Delimiter";
 
@@ -293,7 +293,7 @@ namespace DotNet.Model
         public const string FieldReduction = "Reduction";
 
         ///<summary>
-        /// 步骤
+        /// 步长
         ///</summary>
         public const string FieldStep = "Step";
 

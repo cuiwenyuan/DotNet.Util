@@ -41,14 +41,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserInfo userInfo, BaseRoleEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseRoleEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -69,7 +69,7 @@ namespace DotNet.Business
                 //    permissionManager.GetStateMessage(StatusCode);
                 //}
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;
@@ -376,14 +376,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseUserInfo userInfo, BaseRoleEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseRoleEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -394,7 +394,7 @@ namespace DotNet.Business
                 result = manager.UniqueUpdate(entity, out returnCode);
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;

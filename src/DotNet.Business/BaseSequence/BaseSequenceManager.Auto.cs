@@ -14,7 +14,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseSequenceManager
-    /// 序列产生器表
+    /// 序列
     /// 
     /// 修改记录
     /// 

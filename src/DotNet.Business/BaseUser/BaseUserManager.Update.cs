@@ -81,23 +81,28 @@ namespace DotNet.Business
 
                     // 获取原始实体信息
                     var entityOld = GetEntity(entity.Id);
-                    // 保存修改记录
-                    UpdateEntityLog(entity, entityOld);
-
-                    // 01：先更新自己的数据
-                    result = UpdateEntity(entity);
-                    // 02：用户修改时，用户文件夹同步更新
-                    // BaseFolderManager manager = new BaseFolderManager(this.DbHelper, this.UserInfo);
-                    // manager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
-
-                    if (result == 0)
+                    if (entityOld != null)
                     {
-                        StatusCode = Status.ErrorDeleted.ToString();
-                    }
-                    else
-                    {
-                        AfterUpdate(entity);
-                        StatusCode = Status.OkUpdate.ToString();
+                        // 保存修改记录
+                        SaveEntityChangeLog(entity, entityOld);
+
+                        // 01：先更新自己的数据
+                        result = UpdateEntity(entity);
+                        // 02：用户修改时，用户文件夹同步更新
+                        // BaseFolderManager manager = new BaseFolderManager(this.DbHelper, this.UserInfo);
+                        // manager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
+
+                        if (result == 0)
+                        {
+                            AfterUpdate(entity);
+                            Status = Status.OkUpdate;
+                            StatusCode = Status.OkUpdate.ToString();                            
+                        }
+                        else
+                        {
+                            Status = Status.ErrorDeleted;
+                            StatusCode = Status.ErrorDeleted.ToString();
+                        }
                     }
                 }
             }
@@ -106,7 +111,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int UpdateEntityLog(BaseUserEntity newEntity, BaseUserEntity oldEntity, string tableName = null)
+        #region SaveEntityChangeLog
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
@@ -114,7 +119,7 @@ namespace DotNet.Business
         /// <param name="oldEntity">修改后的实体对象</param>
         /// <param name="tableName">表名称</param>
         /// <returns>影响行数</returns>
-        public int UpdateEntityLog(BaseUserEntity newEntity, BaseUserEntity oldEntity, string tableName = null)
+        public int SaveEntityChangeLog(BaseUserEntity newEntity, BaseUserEntity oldEntity, string tableName = null)
         {
             var result = 0;
 

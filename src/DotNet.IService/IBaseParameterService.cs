@@ -86,18 +86,6 @@ namespace DotNet.IService
         int SetParameter(BaseUserInfo userInfo, string tableName, string categoryCode, string parameterId, string parameterCode, string parameterContent);
 
         /// <summary>
-        /// 添加参数设置
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="tableName">表名</param>
-        /// <param name="categoryCode">类别编号</param>
-        /// <param name="parameterId">参数主键</param>
-        /// <param name="parameterCode">编码</param>
-        /// <param name="parameterContent">参数内容</param>
-        /// <returns>主键</returns>
-        string AddParameter(BaseUserInfo userInfo, string tableName, string categoryCode, string parameterId, string parameterCode, string parameterContent);
-
-        /// <summary>
         /// 获取记录
         /// </summary>
         /// <param name="userInfo">用户</param>

@@ -5,7 +5,7 @@
 namespace DotNet.Util
 {
     /// <summary>
-    /// State
+    /// Status
     /// 程序运行状态。
     /// 
     /// 修改记录

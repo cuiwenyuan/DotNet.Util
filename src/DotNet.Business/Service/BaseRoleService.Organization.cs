@@ -113,7 +113,7 @@ namespace DotNet.Business
                 var manager = new BaseOrganizationManager(dbHelper, userInfo);
                 if (organizationIds != null)
                 {
-                    result += manager.RemoveFormRole(userInfo.SystemCode, organizationIds, roleId);
+                    result += manager.RemoveFromRole(userInfo.SystemCode, organizationIds, roleId);
                 }
             });
 

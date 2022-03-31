@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -46,6 +46,9 @@ namespace DotNet.Business
         /// <param name="sortDirection">排序方向</param>
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <param name="subCompanyId">子公司编号</param>
+        /// <param name="subDepartmentId">子部门编号</param>
+        /// <param name="workgroupId">工作组编号</param>
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUserOrganizationEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string subCompanyId = null, string subDepartmentId = null, string workgroupId = null)
         {
@@ -115,9 +118,9 @@ namespace DotNet.Business
         /// 添加用户组织机构关系
         /// </summary>
         /// <param name="entity">用户组织机构实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserOrganizationEntity entity, out string statusCode)
+        public string Add(BaseUserOrganizationEntity entity, out Status status)
         {
             var result = string.Empty;
             // 判断数据是否重复了
@@ -135,13 +138,13 @@ namespace DotNet.Business
             if (Exists(parameters))
             {
                 // 用户名已重复
-                statusCode = Status.Exist.ToString();
+                status = Status.Exist;
             }
             else
             {
                 result = AddEntity(entity);
                 // 运行成功
-                statusCode = Status.OkAdd.ToString();
+                status = Status.OkAdd;
             }
             return result;
         }

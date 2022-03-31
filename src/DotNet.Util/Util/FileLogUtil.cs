@@ -16,63 +16,56 @@ namespace DotNet.Util
     public static class FileLogUtil
     {
         static readonly ConcurrentQueue<Tuple<string, string>> LogQueue = new ConcurrentQueue<Tuple<string, string>>();
+        static Task WriteTask = default(Task);
         static readonly ManualResetEvent Pause = new ManualResetEvent(false);
         static volatile Int32 _logCount;
 
         //Mutex mmm = new Mutex();
         static FileLogUtil()
         {
-            var task = new Task((object obj) =>
+            WriteTask = new Task((object obj) =>
                 {
                     while (true)
                     {
-                        var val = default(Tuple<string, string>);
                         Pause.WaitOne();
                         Pause.Reset();
-                        foreach (var logItem in LogQueue)
+                        //for (var i = 0; i <= LogQueue.Count; i++)
+                        //foreach (var logItem in LogQueue)
+                        //{
+                        //    var val = default(Tuple<string, string>);
+                        //    if (LogQueue.TryDequeue(out val))
+                        //    {
+                        //        //原子操作减1                            
+                        //        Interlocked.Decrement(ref _logCount);
+                        //        WriteText(val.Item1, val.Item2);
+                        //    }
+                        //}
+                        var val = default(Tuple<string, string>);
+                        while (LogQueue.TryDequeue(out val))
                         {
-                            var temp = new List<string[]>();
-                            var logPath = logItem.Item1;
-                            var logMergeContent = logItem.Item2;
-                            var logArr = temp.FirstOrDefault(d => d[0].Equals(logPath));
-                            if (logArr != null)
-                            {
-                                logArr[1] = string.Concat(logArr[1], logMergeContent);
-                            }
-                            else
-                            {
-                                logArr = new string[] { logPath, logMergeContent };
-                                temp.Add(logArr);
-                            }
-                            LogQueue.TryDequeue(out val);
                             //原子操作减1
                             Interlocked.Decrement(ref _logCount);
-                            foreach (var item in temp)
-                            {
-                                WriteText(item[0], item[1]);
-                            }
-
+                            WriteText(val.Item1, val.Item2);
                         }
                     }
                 }
                 , null
                 , TaskCreationOptions.LongRunning);
-            task.Start();
+            WriteTask.Start();
         }
 
         /// <summary>
         /// WriteLog
         /// </summary>
-        /// <param name="customDirectory"></param>
-        /// <param name="preFile"></param>
-        /// <param name="infoData"></param>
+        /// <param name="customDirectory">自定义目录</param>
+        /// <param name="preFile">文件名</param>
+        /// <param name="infoData">数据</param>
         public static void WriteLog(string customDirectory, string preFile, string infoData)
         {
             //如果不给Log目录写入权限，日志队列积压将会导致内存暴增
             if (_logCount > 1024)
             {
-                LogUtil.WriteLog(_logCount.ToString(), "FileLogUtil");
-                return;
+                infoData += " : Current File Log Queue is " + _logCount + ", LogQueue Count is " + LogQueue.Count;
             }
             var logPath = GetLogPath(customDirectory, preFile);
             LogQueue.Enqueue(new Tuple<string, string>(logPath, infoData));
@@ -82,7 +75,12 @@ namespace DotNet.Util
         }
 
         #region private GetLogPath & WriteText
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customDirectory">自定义目录</param>
+        /// <param name="preFile">文件名</param>
+        /// <returns></returns>
         private static string GetLogPath(string customDirectory, string preFile)
         {
             string newFilePath;

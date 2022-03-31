@@ -138,31 +138,6 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 添加参数设置
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="tableName">表名</param>
-        /// <param name="categoryCode">类别编号</param>
-        /// <param name="parameterId">参数主键</param>
-        /// <param name="parameterCode">编码</param>
-        /// <param name="parameterContent">参数内容</param>
-        /// <returns>主键</returns>
-        public string AddParameter(BaseUserInfo userInfo, string tableName, string categoryCode, string parameterId,
-            string parameterCode, string parameterContent)
-        {
-            var result = string.Empty;
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
-            {
-                var manager = new BaseParameterManager(dbHelper, userInfo, tableName);
-                result = manager.AddParameter(tableName, categoryCode, parameterId, parameterCode, parameterContent);
-            });
-
-            return result;
-        }
-
-        /// <summary>
         /// 获取记录
         /// </summary>
         /// <param name="userInfo">用户</param>

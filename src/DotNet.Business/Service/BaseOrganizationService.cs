@@ -59,28 +59,27 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
+        #region public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out Status status, out string statusMessage)
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseOrganizationEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizationManager(dbHelper, userInfo);
-                result = manager.UniqueAdd(entity);
+                result = manager.UniqueAdd(entity, out returnCode);
                 //增加返回状态和信息Troy.Cui 2018-10-03
-                returnCode = manager.StatusCode;
                 returnMessage = manager.StatusMessage;
                 //returnMessage = manager.GetStateMessage(returnCode);
                 if (returnCode.Equals(Status.OkAdd.ToString()))
@@ -91,7 +90,7 @@ namespace DotNet.Business
                     //folderManager.FolderCheck(entity.Id.ToString(), entity.FullName);
                 }
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }
@@ -550,20 +549,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
+        #region public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out Status status, out string statusMessage)
         /// <summary>
         /// 更新组织机构
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseOrganizationEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -577,11 +576,11 @@ namespace DotNet.Business
                     // var folderManager = new BaseFolderManager(dbHelper, userInfo);
                     // result = folderManager.SetProperty(entity.Id.ToString(), new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.FullName));
                 }
-                returnCode = manager.StatusCode;
+                returnCode = manager.Status;
                 returnMessage = manager.StatusMessage;
             });
 
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;

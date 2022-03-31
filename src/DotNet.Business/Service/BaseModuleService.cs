@@ -220,14 +220,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserInfo userInfo, BaseModuleEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseModuleEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            Status returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -236,11 +236,11 @@ namespace DotNet.Business
                 var tableName = userInfo.SystemCode + "Module";
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
                 // 调用方法，并且返回运行结果
-                result = manager.Add(entity, out returnCode);
+                result = manager.UniqueAdd(entity, out returnCode);
                 // 获得状态消息
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;
@@ -251,14 +251,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseUserInfo userInfo, BaseModuleEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseModuleEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            Status returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -271,7 +271,7 @@ namespace DotNet.Business
                 // 获得状态消息
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;

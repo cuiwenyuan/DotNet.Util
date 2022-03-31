@@ -123,7 +123,7 @@ namespace DotNet.Business
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 if (ValidateUtil.IsInt(userId) && roleIds != null && roleIds.Length > 0)
                 {
-                    result += userManager.RemoveFormRole(userInfo.SystemCode, new string[] { userId.ToString() }, roleIds);
+                    result += userManager.RemoveFromRole(userInfo.SystemCode, new string[] { userId.ToString() }, roleIds);
                 }
             });
 
@@ -159,7 +159,7 @@ namespace DotNet.Business
                     if (!string.IsNullOrWhiteSpace(roleId))
                     {
                         var userManager = new BaseUserManager(dbHelper, userInfo);
-                        result += userManager.RemoveFormRole(systemCode, userId, roleId);
+                        result += userManager.RemoveFromRole(systemCode, userId, roleId);
                     }
                 }
             });

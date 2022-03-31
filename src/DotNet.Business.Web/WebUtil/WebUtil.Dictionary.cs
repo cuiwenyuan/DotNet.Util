@@ -133,7 +133,7 @@ namespace DotNet.Business
         /// <param name="addEmptyItem">是否增加空行</param>
         public static void BindBaseSystem(BaseUserInfo userInfo, DropDownList dropDownList, bool addEmptyItem = true)
         {
-            WebUtil.BindDictionary(userInfo, dropDownList, "BaseSystem");
+            WebUtil.BindDictionary(userInfo, dropDownList, "BaseSystemCode");
         }
 #endif
     }

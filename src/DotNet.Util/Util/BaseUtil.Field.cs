@@ -184,6 +184,11 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldAllowDelete = "AllowDelete";
 
+        /// <summary>
+        /// 用户公司主键
+        /// </summary>
+        public const string FieldUserCompanyId = "UserCompanyId";
+
         #endregion
     }
 }

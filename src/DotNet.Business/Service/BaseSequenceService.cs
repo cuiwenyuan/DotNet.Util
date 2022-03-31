@@ -39,20 +39,20 @@ namespace DotNet.Business
         private static Object _lock = new Object();
 
 
-        #region public string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage)
+        #region public string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
         /// <summary>
         /// 添加序列
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">序列实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
-        public string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
@@ -60,29 +60,29 @@ namespace DotNet.Business
                 var managerSequence = new BaseSequenceManager(dbHelper, userInfo);
                 // 调用方法，并且返回运行结果
                 result = managerSequence.Add(entity, out returnCode);
-                // result = businessCardManager.Add(businessCardEntity, out statusCode);
+                // result = businessCardManager.Add(businessCardEntity, out status);
                 returnMessage = managerSequence.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
 
             return result;
         }
         #endregion
 
-        #region public string Add(BaseUserInfo userInfo, DataTable result, out string statusCode, out string statusMessage)
+        #region public string Add(BaseUserInfo userInfo, DataTable result, out Status status, out string statusMessage)
         /// <summary>
         /// 添加编码
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="dt">数据表</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
-        public string Add(BaseUserInfo userInfo, DataTable dt, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, DataTable dt, out Status status, out string statusMessage)
         {
             var sequenceEntity = BaseEntity.Create<BaseSequenceEntity>(dt);
-            return Add(userInfo, sequenceEntity, out statusCode, out statusMessage);
+            return Add(userInfo, sequenceEntity, out status, out statusMessage);
         }
         #endregion
 
@@ -129,20 +129,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage)
+        #region public int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
         /// <summary>
         /// 更新序列
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">序列实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
-        public int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -151,28 +151,28 @@ namespace DotNet.Business
                 var manager = new BaseSequenceManager(dbHelper, userInfo);
                 // 编辑数据
                 result = manager.Update(entity, out returnCode);
-                // result = businessCardManager.Update(businessCardEntity, out statusCode);
+                // result = businessCardManager.Update(businessCardEntity, out status);
                 returnMessage = manager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }
         #endregion
 
-        #region public int Update(BaseUserInfo userInfo, DataTable result, out string statusCode, out string statusMessage)
+        #region public int Update(BaseUserInfo userInfo, DataTable result, out Status status, out string statusMessage)
         /// <summary>
         /// 更新编码
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="dt">数据表</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
-        public int Update(BaseUserInfo userInfo, DataTable dt, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, DataTable dt, out Status status, out string statusMessage)
         {
             var sequenceEntity = BaseEntity.Create<BaseSequenceEntity>(dt);
-            return Update(userInfo, sequenceEntity, out statusCode, out statusMessage);
+            return Update(userInfo, sequenceEntity, out status, out statusMessage);
         }
         #endregion
 

@@ -49,6 +49,7 @@ namespace DotNet.Business
             {
                 if (string.IsNullOrEmpty(newPassword))
                 {
+                    Status = Status.PasswordCanNotBeNull;
                     StatusCode = Status.PasswordCanNotBeNull.ToString();
                     return userInfo;
                 }
@@ -69,6 +70,7 @@ namespace DotNet.Business
             // 密码错误
             if (!entity.UserPassword.Equals(encryptOldPassword, StringComparison.CurrentCultureIgnoreCase))
             {
+                Status = Status.OldPasswordError;
                 StatusCode = Status.OldPasswordError.ToString();
                 return userInfo;
             }
@@ -157,7 +159,6 @@ namespace DotNet.Business
                     parameterEntity.ParameterContent = newPassword;
                     parameterEntity.Deleted = 0;
                     parameterEntity.Enabled = true;
-                    parameterEntity.Worked = true;
                     parameterManager.AddEntity(parameterEntity);
                 }
                 */
@@ -169,11 +170,13 @@ namespace DotNet.Business
                     // AfterChangePassword(this.UserInfo.Id, salt, oldPassword, newPassword);
                 }
                 // 修改密码成功，写入状态
+                Status = Status.ChangePasswordOk;
                 StatusCode = Status.ChangePasswordOk.ToString();
             }
             else
             {
                 // 数据可能被删除
+                Status = Status.ErrorDeleted;
                 StatusCode = Status.ErrorDeleted.ToString();
             }
 

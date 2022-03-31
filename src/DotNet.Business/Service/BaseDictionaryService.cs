@@ -152,20 +152,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Add(BaseUserInfo userInfo, BaseDictionaryEntity entity, out string statusCode, out string statusMessage) 添加实体
+        #region public string Add(BaseUserInfo userInfo, BaseDictionaryEntity entity, out Status status, out string statusMessage) 添加实体
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
-        public string Add(BaseUserInfo userInfo, BaseDictionaryEntity entity, out string statusCode, out string statusMessage)
+        public string Add(BaseUserInfo userInfo, BaseDictionaryEntity entity, out Status status, out string statusMessage)
         {
             var result = string.Empty;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -181,26 +181,26 @@ namespace DotNet.Business
                 result = itemsManager.Add(entity);
                 returnMessage = itemsManager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }
         #endregion
 
-        #region public int Update(BaseUserInfo userInfo, BaseDictionaryEntity entity, out string statusCode, out string statusMessage) 更新实体
+        #region public int Update(BaseUserInfo userInfo, BaseDictionaryEntity entity, out Status status, out string statusMessage) 更新实体
         /// <summary>
         /// 更新实体
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
-        public int Update(BaseUserInfo userInfo, BaseDictionaryEntity entity, out string statusCode, out string statusMessage)
+        public int Update(BaseUserInfo userInfo, BaseDictionaryEntity entity, out Status status, out string statusMessage)
         {
             var result = 0;
 
-            var returnCode = string.Empty;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
@@ -215,7 +215,7 @@ namespace DotNet.Business
                 result = itemsManager.Update(entity);
                 returnMessage = itemsManager.GetStateMessage(returnCode);
             });
-            statusCode = returnCode;
+            status = returnCode;
             statusMessage = returnMessage;
             return result;
         }

@@ -25,13 +25,13 @@ namespace DotNet.Business
         /// <param name="permissionCode">权限编号</param>
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
-        public static BaseUserInfo OAuthLogin(string systemCode, string oAuthName, string oAuthOpenId, string oAuthUnionId, string permissionCode, bool persistCookie, bool formsAuthentication, out string statusCode, out string statusMessage)
+        public static BaseUserInfo OAuthLogin(string systemCode, string oAuthName, string oAuthOpenId, string oAuthUnionId, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
         {
             BaseUserInfo result = null;
-            statusCode = Status.Error.ToString();
+            status = Status.Error;
             statusMessage = "登录失败";
             var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId);
             if (entity != null)
@@ -59,7 +59,7 @@ namespace DotNet.Business
                     var dotNetService = new DotNetService();
                     var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), entityUser.UserName);
                     // 检查身份
-                    if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+                    if (userLogonResult.Status == Status.Ok)
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
@@ -83,26 +83,29 @@ namespace DotNet.Business
                             }
                             Logon(userLogonResult.UserInfo, formsAuthentication);
 
+                            userLogonResult.Status = Status.Ok;
                             userLogonResult.StatusCode = Status.Ok.ToString();
                             userLogonResult.StatusMessage = "登录成功";
-                            statusCode = Status.Ok.ToString();
+                            status = Status.Ok;
                             statusMessage = "登录成功";
                             result = userLogonResult.UserInfo;
                         }
                         else
                         {
+                            userLogonResult.Status = Status.LogonDeny;
                             userLogonResult.StatusCode = Status.LogonDeny.ToString();
                             userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                            statusCode = Status.LogonDeny.ToString();
+                            status = Status.LogonDeny;
                             statusMessage = "访问被拒绝、您的账户没有访问权限。";
                             result = userLogonResult.UserInfo;
                         }
                     }
                     else
                     {
+                        userLogonResult.Status = Status.LogonDeny;
                         userLogonResult.StatusCode = Status.LogonDeny.ToString();
                         userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
-                        statusCode = Status.LogonDeny.ToString();
+                        status = Status.LogonDeny;
                         statusMessage = "访问被拒绝、您的账户没有访问权限。";
                         result = userLogonResult.UserInfo;
                     }

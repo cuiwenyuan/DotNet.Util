@@ -65,7 +65,9 @@ namespace DotNet.Util
             var result = new Dictionary<string, List<Dictionary<string, object>>>();
 
             foreach (DataTable dt in ds.Tables)
+            {
                 result.Add(dt.TableName, DataTableToList(dt));
+            }
 
             return result;
         }
@@ -77,7 +79,7 @@ namespace DotNet.Util
         /// <param name="columnNameLowerCase">小写表字段名</param>
         /// <param name="dateTimeFormat">时间日期格式</param>
         /// <returns>JSON字符串</returns> 
-        public static string DataTableToJson(DataTable dt, string dateTimeFormat= "MM-dd-yyyy HH:mm:ss", bool columnNameLowerCase = false)
+        public static string DataTableToJson(DataTable dt, string dateTimeFormat = "MM-dd-yyyy HH:mm:ss", bool columnNameLowerCase = false)
         {
             //return ObjectToJson(DataTableToList(dt));
 
