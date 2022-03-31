@@ -42,9 +42,9 @@ namespace DotNet.Business
         public virtual bool Exists(params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
-            foreach (var t in parameters)
+            foreach (var p in parameters)
             {
-                parametersList.Add(t);
+                parametersList.Add(p);
             }
             return DbUtil.Exists(DbHelper, CurrentTableName, parametersList);
         }
@@ -52,7 +52,7 @@ namespace DotNet.Business
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">条件</param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter)
         {
@@ -63,8 +63,8 @@ namespace DotNet.Business
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">条件1</param>
+        /// <param name="parameter2">条件2</param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
         {
@@ -75,9 +75,9 @@ namespace DotNet.Business
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="id"></param>
+        /// <param name="parameter1">条件1</param>
+        /// <param name="parameter2">条件2</param>
+        /// <param name="id">排除编号</param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, object id)
         {
@@ -88,8 +88,8 @@ namespace DotNet.Business
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">条件1</param>
+        /// <param name="parameter2">条件2</param>
         /// <param name="parameter"></param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter)
@@ -102,7 +102,7 @@ namespace DotNet.Business
         /// 判断数据是否存在
         /// </summary>
         /// <param name="parameter">参数</param>
-        /// <param name="id">主键</param>
+        /// <param name="id">排除主键</param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter, object id)
         {
@@ -123,7 +123,7 @@ namespace DotNet.Business
         /// 判断数据是否存在
         /// </summary>
         /// <param name="parameters">参数</param>
-        /// <param name="id">主键</param>
+        /// <param name="id">排除主键</param>
         /// <returns></returns>
         public virtual bool Exists(List<KeyValuePair<string, object>> parameters, object id = null)
         {

@@ -31,7 +31,8 @@ namespace DotNet.Business
         /// <summary>
         /// 检查唯一值式新增
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="status">状态</param>
         /// <returns></returns>
         public string UniqueAdd(BaseRoleEntity entity, out Status status)
         {
@@ -95,7 +96,7 @@ namespace DotNet.Business
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>影响行数</returns>
         public int UniqueUpdate(BaseRoleEntity entity, out Status status)
         {
@@ -230,7 +231,7 @@ namespace DotNet.Business
         /// <param name="codePrefixExcluded">排除前缀</param>
         /// <param name="startTime">开始时间</param>
         /// <param name="endTime">结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>

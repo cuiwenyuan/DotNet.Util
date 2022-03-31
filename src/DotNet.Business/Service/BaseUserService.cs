@@ -71,7 +71,7 @@ namespace DotNet.Business
         /// <param name="entity">用户实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
         public string CreateUser(IDbHelper dbHelper, BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
@@ -136,7 +136,7 @@ namespace DotNet.Business
         /// <param name="userEntity">用户实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity"></param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
         public string CreateUser(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
@@ -687,7 +687,7 @@ namespace DotNet.Business
         /// <param name="entity">用户实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
         public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)

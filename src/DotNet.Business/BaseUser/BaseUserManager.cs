@@ -59,7 +59,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -812,7 +812,7 @@ namespace DotNet.Business
         /// 扮演用户
         /// </summary>
         /// <param name="id">用户主键</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <returns>用户类</returns>
         public BaseUserInfo Impersonation(int id, out Status status)
         {

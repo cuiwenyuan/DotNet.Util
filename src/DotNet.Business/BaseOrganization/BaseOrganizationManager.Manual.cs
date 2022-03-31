@@ -32,6 +32,7 @@ namespace DotNet.Business
         /// 检查唯一值式新增
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
         public string UniqueAdd(BaseOrganizationEntity entity, out Status status)
         {
@@ -100,7 +101,8 @@ namespace DotNet.Business
         /// <summary>
         /// 更新
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="status">状态</param>
         /// <returns></returns>
         public int UniqueUpdate(BaseOrganizationEntity entity, out Status status)
         {
@@ -268,7 +270,7 @@ namespace DotNet.Business
         /// <param name="parentId">父节点编号</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -532,6 +534,11 @@ namespace DotNet.Business
         #endregion
 
         #region GetOrganizationCode 获得组织编码
+        /// <summary>
+        /// 获得组织编码
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetOrganizationCode(string id)
         {
             var result = string.Empty;
@@ -548,6 +555,11 @@ namespace DotNet.Business
         #endregion
 
         #region GetOrganizationName 获得组织名称
+        /// <summary>
+        /// 获得组织名称
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetOrganizationName(string id)
         {
             var result = string.Empty;

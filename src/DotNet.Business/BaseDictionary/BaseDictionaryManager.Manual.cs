@@ -35,7 +35,8 @@ namespace DotNet.Business
         /// <summary>
         /// 检查唯一值式新增
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="status">状态</param>
         /// <returns></returns>
         public string UniqueAdd(BaseDictionaryEntity entity, out Status status)
         {
@@ -82,7 +83,8 @@ namespace DotNet.Business
         /// <summary>
         /// 检查唯一值式更新
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="status">状态</param>
         /// <returns></returns>
         public int UniqueUpdate(BaseDictionaryEntity entity, out Status status)
         {

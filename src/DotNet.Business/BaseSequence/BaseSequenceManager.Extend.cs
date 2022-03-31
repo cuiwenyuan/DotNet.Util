@@ -197,7 +197,7 @@ namespace DotNet.Business
         /// 添加
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         public string Add(BaseSequenceEntity entity, out Status status)
         {
             var result = string.Empty;
@@ -220,7 +220,7 @@ namespace DotNet.Business
         /// 更新
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         public int Update(BaseSequenceEntity entity, out Status status)
         {
             var result = 0;

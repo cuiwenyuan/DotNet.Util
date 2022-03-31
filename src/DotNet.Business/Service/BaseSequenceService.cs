@@ -45,7 +45,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">序列实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
         public string Add(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
@@ -76,7 +76,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="dt">数据表</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
         public string Add(BaseUserInfo userInfo, DataTable dt, out Status status, out string statusMessage)
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">序列实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
         public int Update(BaseUserInfo userInfo, BaseSequenceEntity entity, out Status status, out string statusMessage)
@@ -166,7 +166,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="dt">数据表</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态信息</param>
         /// <returns>数据表</returns>
         public int Update(BaseUserInfo userInfo, DataTable dt, out Status status, out string statusMessage)

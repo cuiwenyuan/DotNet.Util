@@ -566,6 +566,7 @@ namespace DotNet.Business
                     userLogonResult = new UserLogonResult
                     {
                         UserInfo = result,
+                        Status = Status.Ok,
                         StatusCode = Status.Ok.ToString()
                     };
                     return userLogonResult;
@@ -601,7 +602,7 @@ namespace DotNet.Business
                     userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
                 }
                 // 检查身份
-                if (userLogonResult != null && userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+                if (userLogonResult != null && userLogonResult.Status == Status.Ok)
                 {
                     Logon(userLogonResult.UserInfo, false);
                 }
@@ -643,7 +644,7 @@ namespace DotNet.Business
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
         /// <param name="webApiLogin">是否WebApi登录，解决同一请求的Cookie清除无效问题</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状态消息</param>
         /// <returns></returns>
         public static BaseUserInfo Logon(string userName, string password, string openId, string permissionCode, string ipAddress, string systemCode, bool persistCookie, bool formsAuthentication, bool webApiLogin, out Status status, out string statusMessage)
@@ -684,7 +685,7 @@ namespace DotNet.Business
                 statusMessage = userLogonResult.StatusMessage;
             }
             // 检查身份
-            if (userLogonResult != null && userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult != null && userLogonResult.Status == Status.Ok)
             {
                 //LogUtil.WriteLog("Logon Ok");
 
@@ -712,6 +713,7 @@ namespace DotNet.Business
                 }
                 else
                 {
+                    userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
                     userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                 }
@@ -756,7 +758,7 @@ namespace DotNet.Business
             var dotNetService = new DotNetService();
             var userLogonResult = dotNetService.LogonService.LogonByCompany(taskId, userInfo, companyName, userName, password, openId);
             // 检查身份
-            if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult.Status == Status.Ok)
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
@@ -782,6 +784,7 @@ namespace DotNet.Business
                 }
                 else
                 {
+                    userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
                     userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                 }
@@ -922,7 +925,7 @@ namespace DotNet.Business
         /// 用户忘记密码，发送密码
         /// </summary>
         /// <param name="email">邮箱地址</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>成功发送密码</returns>
@@ -987,7 +990,7 @@ namespace DotNet.Business
         /// 用户忘记密码，发送密码
         /// </summary>
         /// <param name="userName">用户名</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>成功发送密码</returns>

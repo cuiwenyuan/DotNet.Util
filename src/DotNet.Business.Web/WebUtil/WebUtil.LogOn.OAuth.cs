@@ -25,7 +25,7 @@ namespace DotNet.Business
         /// <param name="permissionCode">权限编号</param>
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
         public static BaseUserInfo OAuthLogin(string systemCode, string oAuthName, string oAuthOpenId, string oAuthUnionId, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
@@ -59,7 +59,7 @@ namespace DotNet.Business
                     var dotNetService = new DotNetService();
                     var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), entityUser.UserName);
                     // 检查身份
-                    if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+                    if (userLogonResult.Status == Status.Ok)
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限

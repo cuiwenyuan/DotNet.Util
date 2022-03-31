@@ -29,11 +29,12 @@ namespace DotNet.Business
         /// <param name="permissionCode">权限编号</param>
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
         public static BaseUserInfo LogonByLdap(string domain, string lDap, string systemCode, string userName, string password, string openId, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
         {
+            BaseUserInfo baseUserInfo = null;
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
             var userInfo = GetUserInfo();
@@ -49,6 +50,9 @@ namespace DotNet.Business
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
+
+            status = Status.UserNotFound;
+            statusMessage = Status.UserNotFound.ToDescription();
 
             var dirEntry = new DirectoryEntry();
             dirEntry.Path = lDap;
@@ -68,7 +72,7 @@ namespace DotNet.Business
                     var dotNetService = new DotNetService();
                     var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), userName);
                     // 检查身份
-                    if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+                    if (userLogonResult.Status == Status.Ok)
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
@@ -94,24 +98,26 @@ namespace DotNet.Business
                         }
                         else
                         {
+                            userLogonResult.Status = Status.LogonDeny;
                             userLogonResult.StatusCode = Status.LogonDeny.ToString();
                             userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                             status = Status.LogonDeny;
                             statusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
-                            return userLogonResult.UserInfo;
+                            baseUserInfo = userLogonResult.UserInfo;
                         }
+
+                        userLogonResult.Status = Status.Ok;
+                        userLogonResult.StatusCode = Status.Ok.ToString();
+                        userLogonResult.StatusMessage = "登录成功";
+                        status = Status.Ok;
+                        statusMessage = "登录成功";
+                        baseUserInfo = userLogonResult.UserInfo;
                     }
-                    userLogonResult.StatusCode = Status.Ok.ToString();
-                    userLogonResult.StatusMessage = "登录成功";
-                    status = Status.Ok;
-                    statusMessage = "登录成功";
-                    return userLogonResult.UserInfo;
-                }
-                else
-                {
-                    status = Status.LogonDeny;
-                    statusMessage = "应用系统用户不存在，请联系管理员。";
-                    return null;
+                    else
+                    {
+                        status = Status.LogonDeny;
+                        statusMessage = "应用系统用户不存在，请联系管理员。";
+                    }
                 }
             }
             catch (Exception e)
@@ -119,10 +125,9 @@ namespace DotNet.Business
                 //Logon failure: unknown user name or bad password.
                 status = Status.LogonDeny;
                 statusMessage = "域服务器返回信息" + e.Message.Replace("\r\n", "");
-                return null;
             }
 
-            
+            return baseUserInfo;
         }
         #endregion
 
@@ -136,11 +141,12 @@ namespace DotNet.Business
         /// <param name="permissionCode">权限编号</param>
         /// <param name="persistCookie">是否保存密码</param>
         /// <param name="formsAuthentication">表单验证，是否需要重定位</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage"></param>
         /// <returns></returns>
         public static BaseUserInfo LogonWindowsAuthentication(string systemCode, string userName, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
         {
+            BaseUserInfo baseUserInfo = null;
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
             var userInfo = GetUserInfo();
@@ -161,7 +167,7 @@ namespace DotNet.Business
             var dotNetService = new DotNetService();
             var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), userName);
             // 检查身份
-            if (userLogonResult.StatusCode.Equals(Status.Ok.ToString()))
+            if (userLogonResult.Status == Status.Ok)
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
@@ -189,7 +195,7 @@ namespace DotNet.Business
                     userLogonResult.StatusMessage = "登录成功";
                     status = Status.Ok;
                     statusMessage = "登录成功";
-                    return userLogonResult.UserInfo;
+                    baseUserInfo = userLogonResult.UserInfo;
                 }
                 else
                 {
@@ -198,7 +204,7 @@ namespace DotNet.Business
                     userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
                     status = Status.LogonDeny;
                     statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                    return userLogonResult.UserInfo;
+                    baseUserInfo = userLogonResult.UserInfo;
                 }
             }
             else
@@ -208,9 +214,9 @@ namespace DotNet.Business
                 userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
                 status = Status.LogonDeny;
                 statusMessage = "访问被拒绝、您的账户没有访问权限。";
-                return userLogonResult.UserInfo;
+                baseUserInfo = userLogonResult.UserInfo;
             }
-
+            return baseUserInfo;
         }
         #endregion
 #endif

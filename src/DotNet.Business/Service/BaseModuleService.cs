@@ -220,7 +220,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>主键</returns>
         public string Add(BaseUserInfo userInfo, BaseModuleEntity entity, out Status status, out string statusMessage)
@@ -251,7 +251,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">返回状消息</param>
         /// <returns>影响行数</returns>
         public int Update(BaseUserInfo userInfo, BaseModuleEntity entity, out Status status, out string statusMessage)

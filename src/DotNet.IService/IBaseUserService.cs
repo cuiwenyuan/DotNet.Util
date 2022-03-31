@@ -45,7 +45,7 @@ namespace DotNet.IService
         /// <param name="entity">实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">联系方式</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
         string CreateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage);
@@ -217,7 +217,7 @@ namespace DotNet.IService
         /// <param name="entity">用户实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
         /// <param name="userContactEntity">用户联系方式实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>影响行数</returns>
         int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage);
@@ -344,7 +344,7 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo">用户</param>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">状态码</param>
+        /// <param name="status">状态</param>
         /// <param name="statusMessage">状态信息</param>
         /// <returns>主键</returns>
         string AddUserToOrganization(BaseUserInfo userInfo, BaseUserOrganizationEntity entity, out Status status, out string statusMessage);

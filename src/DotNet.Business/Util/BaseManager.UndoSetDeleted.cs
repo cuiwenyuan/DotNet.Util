@@ -206,6 +206,7 @@ namespace DotNet.Business
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
+        /// <param name="checkAllowDelete">检查是否允许删除</param>
         /// <returns>影响行数</returns>
         public virtual int UndoSetDeleted(List<KeyValuePair<string, object>> whereParameters, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {

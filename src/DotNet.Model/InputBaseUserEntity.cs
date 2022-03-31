@@ -26,6 +26,12 @@ namespace DotNet.Model
     public partial class InputBaseUserEntity
     {
         /// <summary>
+        /// 编号
+        /// </summary>
+        [FieldDescription("编号")]
+        public int Id { get; set; }
+
+        /// <summary>
         /// 来源
         /// </summary>
         [FieldDescription("来源")]

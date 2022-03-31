@@ -17,11 +17,11 @@ namespace DotNet.Model
     ///
     /// 修改记录
     /// 
-    /// 2021-09-26 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-03-25 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-26</date>
+    ///     <date>2022-03-25</date>
     /// </author>
     /// </summary>
     public partial class BaseParameterEntity : BaseEntity
@@ -57,16 +57,10 @@ namespace DotNet.Model
         public string ParameterCode { get; set; } = string.Empty;
 
         /// <summary>
-        /// 参数编码
+        /// 参数内容
         /// </summary>
-        [FieldDescription("参数编码")]
+        [FieldDescription("参数内容")]
         public string ParameterContent { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 处理状态
-        /// </summary>
-        [FieldDescription("处理状态")]
-        public int Worked { get; set; } = 0;
 
         /// <summary>
         /// 描述
@@ -183,10 +177,6 @@ namespace DotNet.Model
             {
                 ParameterContent = BaseUtil.ConvertToString(dr[FieldParameterContent]);
             }
-            if (dr.ContainsColumn(FieldWorked))
-            {
-                Worked = BaseUtil.ConvertToInt(dr[FieldWorked]);
-            }
             if (dr.ContainsColumn(FieldDescription))
             {
                 Description = BaseUtil.ConvertToString(dr[FieldDescription]);
@@ -278,14 +268,9 @@ namespace DotNet.Model
         public const string FieldParameterCode = "ParameterCode";
 
         ///<summary>
-        /// 参数编码
+        /// 参数内容
         ///</summary>
         public const string FieldParameterContent = "ParameterContent";
-
-        ///<summary>
-        /// 处理状态
-        ///</summary>
-        public const string FieldWorked = "Worked";
 
         ///<summary>
         /// 描述

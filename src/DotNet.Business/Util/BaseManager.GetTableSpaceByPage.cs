@@ -27,7 +27,7 @@ namespace DotNet.Business
         /// <summary>
         /// 查询数据库表空间
         /// </summary>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>

@@ -30,15 +30,22 @@ namespace DotNet.Util
                         Pause.WaitOne();
                         Pause.Reset();
                         //for (var i = 0; i <= LogQueue.Count; i++)
-                        foreach (var logItem in LogQueue)
+                        //foreach (var logItem in LogQueue)
+                        //{
+                        //    var val = default(Tuple<string, string>);
+                        //    if (LogQueue.TryDequeue(out val))
+                        //    {
+                        //        //原子操作减1                            
+                        //        Interlocked.Decrement(ref _logCount);
+                        //        WriteText(val.Item1, val.Item2);
+                        //    }
+                        //}
+                        var val = default(Tuple<string, string>);
+                        while (LogQueue.TryDequeue(out val))
                         {
-                            var val = default(Tuple<string, string>);
-                            if (LogQueue.TryDequeue(out val))
-                            {
-                                //原子操作减1                            
-                                Interlocked.Decrement(ref _logCount);
-                                WriteText(val.Item1, val.Item2);
-                            }
+                            //原子操作减1
+                            Interlocked.Decrement(ref _logCount);
+                            WriteText(val.Item1, val.Item2);
                         }
                     }
                 }
@@ -50,16 +57,16 @@ namespace DotNet.Util
         /// <summary>
         /// WriteLog
         /// </summary>
-        /// <param name="customDirectory"></param>
-        /// <param name="preFile"></param>
-        /// <param name="infoData"></param>
+        /// <param name="customDirectory">自定义目录</param>
+        /// <param name="preFile">文件名</param>
+        /// <param name="infoData">数据</param>
         public static void WriteLog(string customDirectory, string preFile, string infoData)
         {
             //如果不给Log目录写入权限，日志队列积压将会导致内存暴增
-            //if (_logCount > 1024)
-            //{
-            //    infoData += " : Current File Log Queue is " + _logCount + ", LogQueue Count is " + LogQueue.Count;
-            //}
+            if (_logCount > 1024)
+            {
+                infoData += " : Current File Log Queue is " + _logCount + ", LogQueue Count is " + LogQueue.Count;
+            }
             var logPath = GetLogPath(customDirectory, preFile);
             LogQueue.Enqueue(new Tuple<string, string>(logPath, infoData));
             //原子操作加1
@@ -68,7 +75,12 @@ namespace DotNet.Util
         }
 
         #region private GetLogPath & WriteText
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customDirectory">自定义目录</param>
+        /// <param name="preFile">文件名</param>
+        /// <returns></returns>
         private static string GetLogPath(string customDirectory, string preFile)
         {
             string newFilePath;

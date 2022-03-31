@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -138,7 +138,7 @@ namespace DotNet.Business
         /// 添加
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>主键</returns>
         public string Add(BaseRoleEntity entity, out Status status)
         {
@@ -506,7 +506,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo"></param>
         /// <param name="categoryCode">分类编码</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>

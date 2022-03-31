@@ -264,7 +264,7 @@ namespace DotNet.Business
         /// <param name="endTime">创建结束时间</param>
         /// <param name="messageType">消息类型</param>
         /// <param name="recipient">收件人</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -272,8 +272,9 @@ namespace DotNet.Business
         /// <param name="sortDirection">排序方向</param>
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <param name="source">来源</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string messageType, string recipient, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string source = null, string messageType = null, string recipient = null)
         {
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
@@ -291,7 +292,12 @@ namespace DotNet.Business
             {
                 //sb.Append(" AND CompanyId = " + companyId);
             }
-            sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+
+            if (UserInfo != null && !UserInfo.IsAdministrator)
+            {
+                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+            }
+
             if (ValidateUtil.IsInt(departmentId))
             {
                 //sb.Append(" AND DepartmentId = " + departmentId);
@@ -309,20 +315,25 @@ namespace DotNet.Business
             {
                 sb.Append(" AND CreateTime <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
+            if (!string.IsNullOrEmpty(source))
+            {
+                source = dbHelper.SqlSafe(source);
+                sb.Append(" AND " + BaseMessageSucceedEntity.FieldSource + " = N'" + source + "'");
+            }
             if (!string.IsNullOrEmpty(messageType))
             {
                 messageType = dbHelper.SqlSafe(messageType);
-                sb.Append(" AND MessageType = N'%" + messageType + "%'");
+                sb.Append(" AND " + BaseMessageSucceedEntity.FieldMessageType + " = N'" + messageType + "'");
             }
             if (!string.IsNullOrEmpty(recipient))
             {
                 recipient = dbHelper.SqlSafe(recipient);
-                sb.Append(" AND Recipient = N'%" + recipient + "%'");
+                sb.Append(" AND " + BaseMessageSucceedEntity.FieldRecipient + " = N'" + recipient + "'");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
+                sb.Append(" AND (" + BaseMessageSucceedEntity.FieldSubject + " LIKE N'%" + searchKey + "%' OR " + BaseMessageSucceedEntity.FieldBody + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");

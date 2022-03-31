@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <summary>
         /// 返回值
         /// </summary>
-        public string ResultValue = "";
+        public string Result = "";
 
         /// <summary>
         /// 返回状态代码
@@ -75,7 +75,7 @@ namespace DotNet.Util
                 {
                     // 需要签名的内容部分
                     var dataToSign = userInfo.Signature + "_"
-                        + ResultValue + "_"
+                        + Result + "_"
                         + Status + "_"
                         + StatusCode + "_"
                         + BaseSystemInfo.SecurityKey + "_";
@@ -102,7 +102,7 @@ namespace DotNet.Util
                 {
                     // 需要签名的内容部分
                     var dataToSign = userInfo.Signature + "_"
-                        + ResultValue + "_"
+                        + Result + "_"
                         + Status + "_"
                         + StatusCode + "_"
                         + BaseSystemInfo.SecurityKey + "_";

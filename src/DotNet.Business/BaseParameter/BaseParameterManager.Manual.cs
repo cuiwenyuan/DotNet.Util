@@ -40,7 +40,7 @@ namespace DotNet.Business
         /// <param name="userId">查看用户主键</param>
         /// <param name="startTime">创建开始时间</param>
         /// <param name="endTime">创建结束时间</param>
-        /// <param name="searchKey">查询字段</param>
+        /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -50,8 +50,9 @@ namespace DotNet.Business
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <param name="systemCode">子系统编码</param>
         /// <param name="parameterId">参数编号</param>
+        /// <param name="parameterCode">参数编码</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseParameterEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string systemCode = null, string parameterId = null)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseParameterEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string systemCode = null, string parameterId = null, string parameterCode = null)
         {
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
@@ -100,6 +101,11 @@ namespace DotNet.Business
             {
                 parameterId = dbHelper.SqlSafe(parameterId);
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterId + " = N'" + parameterId + "'");
+            }
+            if (!string.IsNullOrEmpty(parameterCode))
+            {
+                parameterCode = dbHelper.SqlSafe(parameterCode);
+                sb.Append(" AND " + BaseParameterEntity.FieldParameterCode + " = N'" + parameterCode + "'");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {

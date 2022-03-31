@@ -85,7 +85,7 @@ namespace DotNet.Business
                 var cacheTime = TimeSpan.FromMilliseconds(300000);
                 CacheUtil.Set(key, userInfo.OpenId, cacheTime);
 
-                result.ResultValue = authorizationCode;
+                result.Result = authorizationCode;
                 result.Status = true;
                 result.StatusCode = Status.Ok.ToString();
                 result.StatusMessage = Status.Ok.ToDescription();

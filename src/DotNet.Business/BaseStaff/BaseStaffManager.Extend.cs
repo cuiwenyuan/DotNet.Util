@@ -160,7 +160,7 @@ namespace DotNet.Business
         /// 添加员工
         /// </summary>
         /// <param name="staffEntity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>主键</returns>
         public string UniqueAdd(BaseStaffEntity staffEntity, out Status status)
         {
@@ -194,7 +194,7 @@ namespace DotNet.Business
         /// 更新员工
         /// </summary>
         /// <param name="staffEntity">实体</param>
-        /// <param name="statusCode">返回状态码</param>
+        /// <param name="status">状态</param>
         /// <returns>影响行数</returns>
         public int UniqueUpdate(BaseStaffEntity staffEntity, out Status status)
         {
@@ -237,7 +237,7 @@ namespace DotNet.Business
         /// 更新
         /// </summary>
         /// <param name="staffEntity">实体类</param>
-        /// <param name="statusCode"></param>
+        /// <param name="status">状态</param>
         /// <returns>影响行数</returns>
         public int UpdateAddress(BaseStaffEntity staffEntity, out Status status)
         {
