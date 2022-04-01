@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net40;net45;net46;net47;net48;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 Memory/Redis Cache utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.9</Version>
@@ -34,7 +34,7 @@
 		<Compile Remove="AppSetting.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.7" />
 		<PackageReference Include="ServiceStack" Version="5.9.2" />
 		<PackageReference Include="ServiceStack.Common" Version="5.9.2" />
@@ -44,7 +44,17 @@
 		
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+		<PackageReference Include="ServiceStack" Version="5.9.2" />
+		<PackageReference Include="ServiceStack.Common" Version="5.9.2" />
+		<PackageReference Include="ServiceStack.Interfaces" Version="5.9.2" />
+		<PackageReference Include="ServiceStack.Redis" Version="5.9.2" />
+		<PackageReference Include="ServiceStack.Text" Version="5.9.2" />
+
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46' Or '$(TargetFramework)'=='net47' Or '$(TargetFramework)'=='net48'">
 		<Reference Include="System.Web" />
 		<PackageReference Include="ServiceStack" Version="4.0.62" />
 		<PackageReference Include="ServiceStack.Common" Version="4.0.62" />

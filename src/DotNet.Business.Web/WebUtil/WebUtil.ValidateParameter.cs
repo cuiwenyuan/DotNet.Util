@@ -2,7 +2,9 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+#if NET40_OR_GREATER
 using System.Web;
+#endif
 
 namespace DotNet.Business
 {

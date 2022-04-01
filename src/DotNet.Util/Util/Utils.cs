@@ -2629,7 +2629,7 @@ namespace DotNet.Util
                     return HostingEnvironment.MapPath("~/" + virtualPath);
                 }
             }
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET6_0_OR_GREATER
             //非web程序引用
             virtualPath = virtualPath.Replace("/", "\\");
             if (virtualPath.StartsWith("~"))

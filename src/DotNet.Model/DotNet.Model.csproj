@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net40;net45;net46;net47;net48;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 		<Description>DotNet.Model is sample for User,Role,Menu,Permission etc. A set of .NET Standard 2.0 utilities(partial (great majority) support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
@@ -31,11 +31,11 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'net46'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 

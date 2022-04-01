@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;net45;net46;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net40;net45;net46;net47;net48;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET Standard 2.0 Database Access utilities(support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Version>1.0.13</Version>
@@ -46,14 +46,14 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="MySql.Data" Version="8.0.26" />
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.120" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.115" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46' Or '$(TargetFramework)'=='net47' Or '$(TargetFramework)'=='net48'">
 		<PackageReference Include="MySql.Data" Version="6.9.12" />
 		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.12.0" />
 		<PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.115.0" />
