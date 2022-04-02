@@ -12,6 +12,9 @@ using System.Web;
 #if NETSTANDARD2_0_OR_GREATER
 using Microsoft.AspNetCore.Http;
 #endif
+#if NET5_0_OR_GREATER
+using Microsoft.AspNetCore.Http;
+#endif
 namespace DotNet.Util
 {
     /// <summary>

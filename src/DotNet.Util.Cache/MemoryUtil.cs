@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 #if NET40_OR_GREATER
 using System.Web;
 using System.Web.Caching;
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
 using Microsoft.Extensions.Caching.Memory;
 #endif
 namespace DotNet.Util
@@ -22,7 +22,7 @@ namespace DotNet.Util
 #if NET40_OR_GREATER
         //HttpRuntime.Cache可用于Web和WinForm
         static readonly Cache Cache = HttpRuntime.Cache;
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
         static MemoryCache Cache = new MemoryCache(new MemoryCacheOptions());
 #endif
         /// <summary>
@@ -34,10 +34,6 @@ namespace DotNet.Util
         {
 #if NET40_OR_GREATER
             if (!string.IsNullOrEmpty(cacheKey) && Cache[cacheKey] == null)
-#elif NETSTANDARD2_0_OR_GREATER
-            object obj = null;
-            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
-#endif
             {
                 return true;
             }
@@ -45,6 +41,17 @@ namespace DotNet.Util
             {
                 return false;
             }
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            object obj = null;
+            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+#endif
         }
 
         /// <summary>
@@ -56,7 +63,7 @@ namespace DotNet.Util
         {
 #if NET40_OR_GREATER
             return Cache[cacheKey];
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
             if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
             {
@@ -181,7 +188,7 @@ namespace DotNet.Util
                 LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
             }
         }
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
         /// <summary>
         /// 设置当前应用程序指定CacheKey的Cache值
         /// </summary>
@@ -307,7 +314,7 @@ namespace DotNet.Util
             {
                 Cache.Remove(Convert.ToString(iDictionaryEnumerator.Key));
             }
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
             var cacheItems = entries as IDictionary;

@@ -54,6 +54,8 @@ namespace DotNet.Util
                 return (string)registryKey.GetValue(key);
             }
             return null;
+#elif NET5_0_OR_GREATER
+            return null;
 #endif
         }
         #endregion
