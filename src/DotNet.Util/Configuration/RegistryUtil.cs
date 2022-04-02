@@ -54,7 +54,7 @@ namespace DotNet.Util
                 return (string)registryKey.GetValue(key);
             }
             return null;
-#elif NET6_0_OR_GREATER
+#elif NET5_0_OR_GREATER
             return null;
 #endif
         }
