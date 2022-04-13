@@ -91,7 +91,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseRoleEntity.FieldRealName + " LIKE N'%" + searchKey + "%' OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+                sb.Append(" AND (" + BaseRoleEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
@@ -146,7 +146,7 @@ namespace DotNet.Business
             // 检查名称是否重复
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, entity.Name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
             if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
@@ -184,17 +184,17 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GetIdByRealName(string realName) 按名称获取主键
+        #region public string GetIdByRealName(string name) 按名称获取主键
         /// <summary>
         /// 按名称获取主键
         /// </summary>
-        /// <param name="realName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>主键</returns>
-        public string GetIdByRealName(string realName)
+        public string GetIdByName(string name)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, realName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
             };
@@ -211,14 +211,14 @@ namespace DotNet.Business
         /// <param name="systemCode">系统编号</param>
         /// <param name="id">主键</param>
         /// <returns>显示值</returns>
-        public static string GetRealNameByCache(string systemCode, string id)
+        public static string GetNameByCache(string systemCode, string id)
         {
             var result = string.Empty;
 
             var entity = GetEntityByCache("Base", id);
             if (entity != null)
             {
-                result = entity.RealName;
+                result = entity.Name;
             }
 
             return result;
@@ -247,16 +247,16 @@ namespace DotNet.Business
         /// 通过名称获取主键
         /// </summary>
         /// <param name="systemCode">系统编号</param>
-        /// <param name="realName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>显示值</returns>
-        public static string GetIdByNameByCache(string systemCode, string realName)
+        public static string GetIdByNameByCache(string systemCode, string name)
         {
             var result = string.Empty;
 
-            var entity = GetEntityByCacheByName(systemCode, realName);
+            var entity = GetEntityByCacheByName(systemCode, name);
             if (entity != null)
             {
-                result = entity.RealName;
+                result = entity.Name;
             }
 
             return result;
@@ -284,12 +284,12 @@ namespace DotNet.Business
         /// <summary>
         /// 按名称获取实体
         /// </summary>
-        /// <param name="realName">名称</param>
-        public BaseRoleEntity GetEntityByName(string realName)
+        /// <param name="name">名称</param>
+        public BaseRoleEntity GetEntityByName(string name)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, realName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
             return BaseEntity.Create<BaseRoleEntity>(ExecuteReader(parameters));
@@ -306,7 +306,7 @@ namespace DotNet.Business
 
             foreach (var entity in list)
             {
-                result += "," + entity.RealName;
+                result += "," + entity.Name;
             }
             if (!string.IsNullOrEmpty(result))
             {
@@ -351,7 +351,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, roleName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, roleName),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
             return GetDataTable(parameters, BaseRoleEntity.FieldSortCode);
@@ -374,7 +374,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetSearchString(searchKey);
-                sql += string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldRealName, searchKey, BaseRoleEntity.FieldDescription, searchKey);
+                sql += string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldName, searchKey, BaseRoleEntity.FieldDescription, searchKey);
             }
             if (!string.IsNullOrEmpty(organizationId))
             {
@@ -525,7 +525,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = string.Format("'{0}'", StringUtil.GetSearchString(searchKey));
-                condition += string.Format(" AND ({0} LIKE {1}", BaseRoleEntity.FieldRealName, searchKey);
+                condition += string.Format(" AND ({0} LIKE {1}", BaseRoleEntity.FieldName, searchKey);
                 condition += string.Format(" OR {0} LIKE {1}", BaseRoleEntity.FieldCategoryCode, searchKey);
                 condition += string.Format(" OR {0} LIKE {1})", BaseRoleEntity.FieldCode, searchKey);
             }
@@ -629,7 +629,7 @@ namespace DotNet.Business
 
             var commandText = @"SELECT BaseOrganization.Id
                                     , BaseOrganization.Code
-                                    , BaseOrganization.FullName 
+                                    , BaseOrganization.Name 
                                     , BaseOrganization.Description 
                                     , RoleOrganization.Enabled
                                     , RoleOrganization.CreateTime
@@ -848,9 +848,9 @@ namespace DotNet.Business
         /// 从缓存获取获取实体
         /// </summary>
         /// <param name="systemCode">系统编号</param>
-        /// <param name="realName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>权限实体</returns>
-        public static BaseRoleEntity GetEntityByCacheByName(string systemCode, string realName)
+        public static BaseRoleEntity GetEntityByCacheByName(string systemCode, string name)
         {
             BaseRoleEntity result = null;
 
@@ -874,10 +874,10 @@ namespace DotNet.Business
                 };
                 return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, false, cacheTime);
-            result = listRole.Find(t => t.RealName == realName);
+            result = listRole.Find(t => t.Name == name);
             //直接读取数据库
             //BaseRoleManager manager = new BaseRoleManager(tableName);
-            //result = manager.GetEntityByName(realName);
+            //result = manager.GetEntityByName(name);
 
             return result;
         }

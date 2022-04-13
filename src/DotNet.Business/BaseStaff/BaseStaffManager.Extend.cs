@@ -118,20 +118,20 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Add(string DepartmentId, string userName, string code, string fullName, bool isVirtual, bool isDimission, bool enabled, string description)
+        #region public string Add(string DepartmentId, string userName, string code, string realName, bool isVirtual, bool isDimission, bool enabled, string description)
         /// <summary>
         /// 添加员工
         /// </summary>
         /// <param name="departmentId">部门主键</param>
         /// <param name="userName">用户名</param>
         /// <param name="employeeNumber">工号</param>
-        /// <param name="fullName">名称</param>
+        /// <param name="realName">名称</param>
         /// <param name="isVirtual">虚拟用户</param>
         /// <param name="isDimission">离职</param>
         /// <param name="enabled">有效</param>
         /// <param name="description">备注</param>
         /// <returns>主键</returns>
-        public string Add(string departmentId, string userName, string employeeNumber, string fullName, bool isVirtual, bool isDimission, bool enabled, string description)
+        public string Add(string departmentId, string userName, string employeeNumber, string realName, bool isVirtual, bool isDimission, bool enabled, string description)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             var managerSequence = new BaseSequenceManager(DbHelper);
@@ -140,7 +140,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseStaffEntity.FieldId, sequence);
             sqlBuilder.SetValue(BaseStaffEntity.FieldEmployeeNumber, employeeNumber);
             sqlBuilder.SetValue(BaseStaffEntity.FieldUserName, userName);
-            sqlBuilder.SetValue(BaseStaffEntity.FieldRealName, fullName);
+            sqlBuilder.SetValue(BaseStaffEntity.FieldRealName, realName);
             sqlBuilder.SetValue(BaseStaffEntity.FieldDepartmentId, departmentId);
             sqlBuilder.SetValue(BaseStaffEntity.FieldSortCode, sequence);
             sqlBuilder.SetValue(BaseStaffEntity.FieldEnabled, enabled ? 1 : 0);
@@ -330,12 +330,12 @@ namespace DotNet.Business
         {
             var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
-                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyFullname "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyName "
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentCode"
-                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentName "
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsDuty WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DutyId) AS DutyName "
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsTitle WHERE Id = " + BaseStaffEntity.CurrentTableName + ".TitleId) AS TitleName "
-                + " ,(SELECT " + BaseRoleEntity.FieldRealName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
+                + " ,(SELECT " + BaseRoleEntity.FieldName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
                 + " FROM " + BaseStaffEntity.CurrentTableName + " LEFT OUTER JOIN " + BaseUserEntity.CurrentTableName
                 + "       ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId;
             if (!string.IsNullOrEmpty(departmentId))
@@ -484,8 +484,8 @@ namespace DotNet.Business
                 var dt = new DataTable();
                 var cmd = "SELECT * from BaseStaff ";
 
-                /*"SELECT A.* ,B.Code AS CompanyCode ,B.FullName AS CompanyName , " +
-                        " C.Code AS DepartmentCode ,C.FullName AS DepartmentName ,D.ItemName AS DutyName ," +
+                /*"SELECT A.* ,B.Code AS CompanyCode ,B.Name AS CompanyName , " +
+                        " C.Code AS DepartmentCode ,C.Name AS DepartmentName ,D.ItemName AS DutyName ," +
                         " F.RealName as RoleName  " +
                         " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganization B ON B.Id = A.CompanyId)" +
                         " LEFT OUTER JOIN BaseOrganization C ON C.Id = A.DepartmentId)" +
@@ -500,9 +500,9 @@ namespace DotNet.Business
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
-                            + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldFullName + " AS CompanyName "
+                            + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " AS CompanyName "
                             + "," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
-                            + "," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldFullName + " AS DepartmentName "
+                            + "," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldName + " AS DepartmentName "
                             //+ ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + "," + "OT.RoleName "
                             + " FROM " + BaseStaffEntity.CurrentTableName
@@ -523,8 +523,8 @@ namespace DotNet.Business
             {
                 sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldFullName + " LIKE '%" + searchKey + "%'";
+                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'";
+                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'";
                 //sql += " OR " + "ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'";
                 sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'";
@@ -561,8 +561,8 @@ namespace DotNet.Business
                 var dt = new DataTable();
                 var cmd = "SELECT * from BaseStaff ";
 
-                /*"SELECT A.* ,B.Code AS CompanyCode ,B.FullName AS CompanyName , " +
-                        " C.Code AS DepartmentCode ,C.FullName AS DepartmentName ,D.ItemName AS DutyName ," +
+                /*"SELECT A.* ,B.Code AS CompanyCode ,B.Name AS CompanyName , " +
+                        " C.Code AS DepartmentCode ,C.Name AS DepartmentName ,D.ItemName AS DutyName ," +
                         " F.RealName as RoleName  " +
                         " FROM (((((BaseStaff A LEFT OUTER JOIN BaseOrganization B ON B.Id = A.CompanyId)" +
                         " LEFT OUTER JOIN BaseOrganization C ON C.Id = A.DepartmentId)" +
@@ -636,7 +636,7 @@ namespace DotNet.Business
         {
             searchKey = StringUtil.GetSearchString(searchKey);
             var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
-                            + "," + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldFullName + " AS DepartmentName "
+                            + "," + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldName + " AS DepartmentName "
                             //+ ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + " FROM " + BaseStaffEntity.CurrentTableName
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " ON " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
@@ -709,19 +709,19 @@ namespace DotNet.Business
             var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " , " + BaseUserEntity.CurrentTableName + ".UserOnline"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
-                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyFullname "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyName "
 
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentCode"
-                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentName "
 
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupCode"
-                + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupName "
+                + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupName "
 
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsDuty WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DutyId) AS DutyName "
 
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsTitle WHERE Id = " + BaseStaffEntity.CurrentTableName + ".TitleId) AS TitleName "
 
-                + " ,(SELECT " + BaseRoleEntity.FieldRealName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
+                + " ,(SELECT " + BaseRoleEntity.FieldName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
                 // + " ,(SELECT COUNT(*) FROM " + BaseUserRoleEntity.CurrentTableName + " WHERE " + BaseUserRoleEntity.CurrentTableName + ".StaffID = " + BaseStaffEntity.CurrentTableName + ".Id) AS RoleCount "
                 + " FROM (" + BaseStaffEntity.CurrentTableName + " LEFT OUTER JOIN " + BaseUserEntity.CurrentTableName
                 + " ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + ") "
@@ -745,13 +745,13 @@ namespace DotNet.Business
             var sql = "SELECT A.* "
 
                             + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyCode"
-                            + " ,(SELECT FullName FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
+                            + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
 
                             + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentCode"
-                            + " ,(SELECT FullName FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentName "
+                            + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentName "
 
                             + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupCode"
-                            + " ,(SELECT " + BaseOrganizationEntity.FieldFullName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
+                            + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
 
                             + " ,(SELECT ItemName FROM ItemsDuty WHERE ItemsDuty.Id = A.DutyId) AS DutyName "
 

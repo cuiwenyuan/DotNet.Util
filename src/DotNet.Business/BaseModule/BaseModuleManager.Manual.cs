@@ -92,7 +92,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, entity.SystemCode),
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, entity.ParentId),
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, entity.Code),
-                new KeyValuePair<string, object>(BaseModuleEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseModuleEntity.FieldName, entity.Name),
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
             };
 
@@ -367,7 +367,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseModuleEntity.FieldFullName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" AND (" + BaseModuleEntity.FieldName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseModuleEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
@@ -381,7 +381,7 @@ namespace DotNet.Business
                 viewName = "SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldParentId;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldFullName;
+                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldName;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex;
@@ -395,7 +395,7 @@ namespace DotNet.Business
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDeleted;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldExpand;
+                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsScope;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldLastCall;
@@ -432,7 +432,7 @@ namespace DotNet.Business
                 viewName = "SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldParentId;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldFullName;
+                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldName;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex;
@@ -446,7 +446,7 @@ namespace DotNet.Business
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDeleted;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldExpand;
+                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsScope;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible;
                 viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldLastCall;
@@ -494,13 +494,13 @@ namespace DotNet.Business
             dt.Columns.Add("Id", typeof(int));
             dt.Columns.Add("ParentId", typeof(int));
             dt.Columns.Add("Code", typeof(string));
-            dt.Columns.Add("FullName", typeof(string));
+            dt.Columns.Add("Name", typeof(string));
             dt.Columns.Add("CategoryCode", typeof(string));
             dt.Columns.Add("Enabled", typeof(int));
             dt.Columns.Add("Deleted", typeof(int));
             dt.Columns.Add("IsMenu", typeof(int));
             dt.Columns.Add("IsPublic", typeof(int));
-            dt.Columns.Add("Expand", typeof(int));
+            dt.Columns.Add("IsExpand", typeof(int));
             dt.Columns.Add("CreateTime", typeof(DateTime));
             dt.Columns.Add("CreateBy", typeof(string));
             dt.Columns.Add("UpdateTime", typeof(DateTime));
@@ -551,13 +551,13 @@ namespace DotNet.Business
                     row["ParentId"] = int.Parse(t["ParentId"].ToString());
                 }
                 row["Code"] = t["Code"].ToString();
-                row["FullName"] = t["FullName"].ToString();
+                row["Name"] = t["Name"].ToString();
                 row["CategoryCode"] = t["CategoryCode"].ToString();
                 row["Enabled"] = int.Parse(t["Enabled"].ToString());
                 row["Deleted"] = int.Parse(t["Deleted"].ToString());
                 row["IsMenu"] = int.Parse(t["IsMenu"].ToString());
                 row["IsPublic"] = int.Parse(t["IsPublic"].ToString());
-                row["Expand"] = int.Parse(t["Expand"].ToString());
+                row["IsExpand"] = int.Parse(t["IsExpand"].ToString());
                 if (!string.IsNullOrEmpty(t["CreateTime"].ToString()))
                 {
                     row["CreateTime"] = DateTime.Parse(t["CreateTime"].ToString());
@@ -611,7 +611,7 @@ namespace DotNet.Business
             {
                 //建立表的列，不能重复建立
                 _moduleTable.Columns.Add(new DataColumn(BaseModuleEntity.FieldId, Type.GetType("System.Int32")));
-                _moduleTable.Columns.Add(new DataColumn(BaseModuleEntity.FieldFullName, Type.GetType("System.String")));
+                _moduleTable.Columns.Add(new DataColumn(BaseModuleEntity.FieldName, Type.GetType("System.String")));
             }
 
             for (var i = 0; i < _dtModule.Rows.Count; i++)
@@ -621,7 +621,7 @@ namespace DotNet.Business
                 {
                     var dr = _moduleTable.NewRow();
                     dr[BaseModuleEntity.FieldId] = _dtModule.Rows[i][BaseModuleEntity.FieldId];
-                    dr[BaseModuleEntity.FieldFullName] = _dtModule.Rows[i][BaseModuleEntity.FieldFullName];
+                    dr[BaseModuleEntity.FieldName] = _dtModule.Rows[i][BaseModuleEntity.FieldName];
                     _moduleTable.Rows.Add(dr);
                     //递归查找子级
                     GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId].ToInt());
@@ -645,7 +645,7 @@ namespace DotNet.Business
                 {
                     var dr = _moduleTable.NewRow();
                     dr[BaseModuleEntity.FieldId] = _dtModule.Rows[i][BaseModuleEntity.FieldId];
-                    dr[BaseModuleEntity.FieldFullName] = _head + _dtModule.Rows[i][BaseModuleEntity.FieldFullName];
+                    dr[BaseModuleEntity.FieldName] = _head + _dtModule.Rows[i][BaseModuleEntity.FieldName];
                     _moduleTable.Rows.Add(dr);
                     GetModule(_dtModule.Rows[i][BaseModuleEntity.FieldId].ToInt());
                 }

@@ -310,7 +310,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseModuleEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseModuleEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseModuleEntity.FieldCode, entity.Code);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldFullName, entity.FullName);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldName, entity.Name);
             sqlBuilder.SetValue(BaseModuleEntity.FieldCategoryCode, entity.CategoryCode);
             sqlBuilder.SetValue(BaseModuleEntity.FieldImageUrl, entity.ImageUrl);
             sqlBuilder.SetValue(BaseModuleEntity.FieldImageIndex, entity.ImageIndex);
@@ -322,7 +322,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseModuleEntity.FieldPermissionScopeTables, entity.PermissionScopeTables);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsMenu, entity.IsMenu);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsPublic, entity.IsPublic);
-            sqlBuilder.SetValue(BaseModuleEntity.FieldExpand, entity.Expand);
+            sqlBuilder.SetValue(BaseModuleEntity.FieldIsExpand, entity.IsExpand);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsScope, entity.IsScope);
             sqlBuilder.SetValue(BaseModuleEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseModuleEntity.FieldAllowEdit, entity.AllowEdit);

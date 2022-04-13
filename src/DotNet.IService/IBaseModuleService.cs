@@ -86,7 +86,7 @@ namespace DotNet.IService
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>名称</returns>
-        string GetFullNameByCode(BaseUserInfo userInfo, string code);
+        string GetNameByCode(BaseUserInfo userInfo, string code);
 
         /// <summary>
         /// 添加

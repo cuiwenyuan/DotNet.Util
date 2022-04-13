@@ -310,7 +310,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseRoleEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId);
             sqlBuilder.SetValue(BaseRoleEntity.FieldCode, entity.Code);
-            sqlBuilder.SetValue(BaseRoleEntity.FieldRealName, entity.RealName);
+            sqlBuilder.SetValue(BaseRoleEntity.FieldName, entity.Name);
             sqlBuilder.SetValue(BaseRoleEntity.FieldCategoryCode, entity.CategoryCode);
             sqlBuilder.SetValue(BaseRoleEntity.FieldAllowEdit, entity.AllowEdit);
             sqlBuilder.SetValue(BaseRoleEntity.FieldAllowDelete, entity.AllowDelete);

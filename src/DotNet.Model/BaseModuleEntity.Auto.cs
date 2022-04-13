@@ -54,12 +54,12 @@ namespace DotNet.Model
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
-        public string FullName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// 菜单分类System,Application
+        /// 菜单分类
         /// </summary>
-        [FieldDescription("菜单分类System,Application")]
+        [FieldDescription("菜单分类")]
         public string CategoryCode { get; set; } = "Application";
 
         /// <summary>
@@ -123,10 +123,10 @@ namespace DotNet.Model
         public int IsPublic { get; set; } = 1;
 
         /// <summary>
-        /// 展开状态
+        /// 是否展开
         /// </summary>
-        [FieldDescription("展开状态")]
-        public int Expand { get; set; } = 1;
+        [FieldDescription("是否展开")]
+        public int IsExpand { get; set; } = 1;
 
         /// <summary>
         /// 权限域
@@ -277,9 +277,9 @@ namespace DotNet.Model
             {
                 Code = BaseUtil.ConvertToString(dr[FieldCode]);
             }
-            if (dr.ContainsColumn(FieldFullName))
+            if (dr.ContainsColumn(FieldName))
             {
-                FullName = BaseUtil.ConvertToString(dr[FieldFullName]);
+                Name = BaseUtil.ConvertToString(dr[FieldName]);
             }
             if (dr.ContainsColumn(FieldCategoryCode))
             {
@@ -325,9 +325,9 @@ namespace DotNet.Model
             {
                 IsPublic = BaseUtil.ConvertToInt(dr[FieldIsPublic]);
             }
-            if (dr.ContainsColumn(FieldExpand))
+            if (dr.ContainsColumn(FieldIsExpand))
             {
-                Expand = BaseUtil.ConvertToInt(dr[FieldExpand]);
+                IsExpand = BaseUtil.ConvertToInt(dr[FieldIsExpand]);
             }
             if (dr.ContainsColumn(FieldIsScope))
             {
@@ -445,10 +445,10 @@ namespace DotNet.Model
         ///<summary>
         /// 名称
         ///</summary>
-        public const string FieldFullName = "FullName";
+        public const string FieldName = "Name";
 
         ///<summary>
-        /// 菜单分类System,Application
+        /// 菜单分类
         ///</summary>
         public const string FieldCategoryCode = "CategoryCode";
 
@@ -503,9 +503,9 @@ namespace DotNet.Model
         public const string FieldIsPublic = "IsPublic";
 
         ///<summary>
-        /// 展开状态
+        /// 是否展开
         ///</summary>
-        public const string FieldExpand = "Expand";
+        public const string FieldIsExpand = "IsExpand";
 
         ///<summary>
         /// 权限域

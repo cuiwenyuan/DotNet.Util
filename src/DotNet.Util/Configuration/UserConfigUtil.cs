@@ -381,9 +381,17 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.WebApiMonitorEnabled = GetValue(_xmlDocument, "WebApiMonitorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
+            if (Exists("WebApiMonitorFolder"))
+            {
+                BaseSystemInfo.WebApiMonitorFolder = GetValue(_xmlDocument, "WebApiMonitorFolder");
+            }
             if (Exists("WebApiSlowMonitorEnabled"))
             {
                 BaseSystemInfo.WebApiSlowMonitorEnabled = GetValue(_xmlDocument, "WebApiSlowMonitorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (Exists("WebApiSlowMonitorFolder"))
+            {
+                BaseSystemInfo.WebApiSlowMonitorFolder = GetValue(_xmlDocument, "WebApiSlowMonitorFolder");
             }
             if (Exists("WebApiSlowResponseMilliseconds"))
             {

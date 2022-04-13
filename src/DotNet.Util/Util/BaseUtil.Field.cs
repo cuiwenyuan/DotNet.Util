@@ -43,6 +43,11 @@ namespace DotNet.Util
         /// <summary>
         /// 名称字段
         /// </summary>
+        public const string FieldName = "Name";
+
+        /// <summary>
+        /// 名称字段
+        /// </summary>
         public const string FieldFullName = "FullName";
 
         /// <summary>

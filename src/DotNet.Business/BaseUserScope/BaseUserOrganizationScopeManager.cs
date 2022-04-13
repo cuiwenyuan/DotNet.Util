@@ -52,7 +52,7 @@ namespace DotNet.Business
             {
                 var tableName = UserInfo.SystemCode + "PermissionScope";
                 var sql = @"SELECT  BaseOrganization.Id AS OrganizationId
-                                          , BaseOrganization.FullName
+                                          , BaseOrganization.Name
                                           , BaseOrganization.ContainChildNodes
                                           , BasePermissionScope.TargetId
                                           , BasePermissionScope.ContainChild

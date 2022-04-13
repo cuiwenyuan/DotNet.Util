@@ -45,9 +45,9 @@ namespace DotNet.IService
         /// 获取实体按名称
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>实体</returns>
-        BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName);
+        BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string name);
 
         /// <summary>
         /// 判断字段是否重复

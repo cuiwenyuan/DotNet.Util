@@ -65,48 +65,48 @@ namespace DotNet.IService
         /// 获取序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        string Increment(BaseUserInfo userInfo, string fullName);
+        string Increment(BaseUserInfo userInfo, string name);
 
         /// <summary>
         /// 获取原序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充补零</param>
         /// <returns>序列号</returns>
-        string GetOldSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix);
+        string GetOldSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix);
 
         /// <summary>
         /// 获取新序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充补零</param>
         /// <returns>序列号</returns>
-        string GetNewSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix);
+        string GetNewSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix);
        
         /// <summary>
         /// 获取序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="count">个数</param>
         /// <returns>序列号</returns>
-        string[] GetBatchSequence(BaseUserInfo userInfo, string fullName, int count);
+        string[] GetBatchSequence(BaseUserInfo userInfo, string name, int count);
         
         /// <summary>
         /// 获取倒序序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        string GetReduction(BaseUserInfo userInfo, string fullName);
+        string GetReduction(BaseUserInfo userInfo, string name);
 
         /// <summary>
         /// 批量重置
