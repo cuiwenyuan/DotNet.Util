@@ -191,7 +191,7 @@ namespace DotNet.Business
         {
             if (!BaseSystemInfo.RecordLog)
             {
-                return string.Empty;
+                return "0";
             }
 
             var key = string.Empty;

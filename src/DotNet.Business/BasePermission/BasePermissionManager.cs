@@ -823,7 +823,7 @@ namespace DotNet.Business
             {
                 BaseModuleEntity permissionEntity = new BaseModuleEntity();
                 permissionEntity.Code = permissionCode;
-                permissionEntity.FullName = permissionCode;
+                permissionEntity.Name = permissionCode;
                 permissionEntity.IsScope = 0;
                 permissionEntity.IsPublic = 0;
                 permissionEntity.IsMenu = 0;

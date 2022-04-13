@@ -176,52 +176,52 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string Increment(BaseUserInfo userInfo, string fullName) 获取序列号
+        #region public string Increment(BaseUserInfo userInfo, string name) 获取序列号
         /// <summary>
         /// 获取序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string Increment(BaseUserInfo userInfo, string fullName)
+        public string Increment(BaseUserInfo userInfo, string name)
         {
             var result = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDbWithLock(userInfo, parameter, _lock, (dbHelper) =>
             {
-                result = Increment(dbHelper, userInfo, fullName);
+                result = Increment(dbHelper, userInfo, name);
             });
             return result;
         }
         #endregion
 
-        #region public string Increment(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName) 获取序列号
+        #region public string Increment(IDbHelper dbHelper, BaseUserInfo userInfo, string name) 获取序列号
         /// <summary>
         /// 获取序列号
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string Increment(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName)
+        public string Increment(IDbHelper dbHelper, BaseUserInfo userInfo, string name)
         {
             var managerSequence = new BaseSequenceManager(dbHelper, userInfo);
-            return managerSequence.Increment(fullName);
+            return managerSequence.Increment(name);
         }
         #endregion
 
-        #region public string GetOldSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取原序列号
+        #region public string GetOldSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取原序列号
         /// <summary>
         /// 获取原序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充补零</param>
         /// <returns>序列号</returns>
-        public string GetOldSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
+        public string GetOldSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
         {
             var result = string.Empty;
 
@@ -229,23 +229,23 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDbWithLock(userInfo, parameter, _lock, (dbHelper) =>
             {
                 var managerSequence = new BaseSequenceManager(dbHelper);
-                result = managerSequence.StoreCounter(fullName, defaultSequence, sequenceLength, fillZeroPrefix);
+                result = managerSequence.StoreCounter(name, defaultSequence, sequenceLength, fillZeroPrefix);
             });
             return result;
         }
         #endregion
 
-        #region public string GetNewSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取原序列号
+        #region public string GetNewSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取原序列号
         /// <summary>
         /// 获取新序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充补零</param>
         /// <returns>序列号</returns>
-        public string GetNewSequence(BaseUserInfo userInfo, string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
+        public string GetNewSequence(BaseUserInfo userInfo, string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
         {
             var result = string.Empty;
 
@@ -253,82 +253,82 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDbWithLock(userInfo, parameter, _lock, (dbHelper) =>
             {
                 var managerSequence = new BaseSequenceManager(dbHelper);
-                result = managerSequence.Increment(fullName, defaultSequence, sequenceLength, fillZeroPrefix);
+                result = managerSequence.Increment(name, defaultSequence, sequenceLength, fillZeroPrefix);
             });
             return result;
         }
         #endregion
 
 
-        #region public string[] GetBatchSequence(BaseUserInfo userInfo, string fullName, int count) 获取序列号
+        #region public string[] GetBatchSequence(BaseUserInfo userInfo, string name, int count) 获取序列号
         /// <summary>
         /// 获取序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="count">个数</param>
         /// <returns>序列号</returns>
-        public string[] GetBatchSequence(BaseUserInfo userInfo, string fullName, int count)
+        public string[] GetBatchSequence(BaseUserInfo userInfo, string name, int count)
         {
             var result = new string[0];
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                result = GetBatchSequence(dbHelper, userInfo, fullName, count);
+                result = GetBatchSequence(dbHelper, userInfo, name, count);
             });
             return result;
         }
         #endregion
 
-        #region public string[] GetBatchSequence(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName, count) 获取序列号
+        #region public string[] GetBatchSequence(IDbHelper dbHelper, BaseUserInfo userInfo, string name, count) 获取序列号
         /// <summary>
         /// 获取序列号
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="count">个数</param>
         /// <returns>序列号</returns>
-        public string[] GetBatchSequence(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName, int count)
+        public string[] GetBatchSequence(IDbHelper dbHelper, BaseUserInfo userInfo, string name, int count)
         {
             var managerSequence = new BaseSequenceManager(dbHelper, userInfo);
-            return managerSequence.GetBatchSequence(fullName, count);
+            return managerSequence.GetBatchSequence(name, count);
         }
         #endregion
 
-        #region public string GetReduction(BaseUserInfo userInfo, string fullName) 获取序列号
+        #region public string GetReduction(BaseUserInfo userInfo, string name) 获取序列号
         /// <summary>
         /// 获取倒序序列号
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string GetReduction(BaseUserInfo userInfo, string fullName)
+        public string GetReduction(BaseUserInfo userInfo, string name)
         {
             var result = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDbWithLock(userInfo, parameter, _lock, (dbHelper) =>
             {
-                result = GetReduction(dbHelper, userInfo, fullName);
+                result = GetReduction(dbHelper, userInfo, name);
             });
             return result;
         }
         #endregion
 
-        #region public string GetReduction(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName)
+        #region public string GetReduction(IDbHelper dbHelper, BaseUserInfo userInfo, string name)
         /// <summary>
         /// 获取倒序序列号
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string GetReduction(IDbHelper dbHelper, BaseUserInfo userInfo, string fullName)
+        public string GetReduction(IDbHelper dbHelper, BaseUserInfo userInfo, string name)
         {
             var managerSequence = new BaseSequenceManager(dbHelper, userInfo);
-            return managerSequence.GetReduction(fullName);
+            return managerSequence.GetReduction(name);
         }
         #endregion
 

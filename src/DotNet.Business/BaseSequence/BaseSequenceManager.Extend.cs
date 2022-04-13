@@ -110,12 +110,12 @@ namespace DotNet.Business
         /// <summary>
         /// 按名称获取实体
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>实体</returns>
-        BaseSequenceEntity GetEntityByName(string fullName)
+        BaseSequenceEntity GetEntityByName(string name)
         {
             BaseSequenceEntity sequenceEntity = null;
-            var dt = GetDataTable(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, fullName));
+            var dt = GetDataTable(new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, name));
             if (dt != null && dt.Rows.Count > 0)
             {
                 sequenceEntity = BaseEntity.Create<BaseSequenceEntity>(dt);
@@ -126,7 +126,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取添加
         /// </summary>
-        /// <param name="fullName">序列名</param>
+        /// <param name="name">序列名</param>
         /// /// <param name="defaultSequence">默认升序序列号</param>
         /// <param name="defaultReduction">默认降序序列号</param>
         /// <param name="defaultStep">递增或者递减数步调</param>
@@ -134,16 +134,16 @@ namespace DotNet.Business
         /// <param name="defaultDelimiter">默认分隔符</param>
         /// <param name="defaultIsVisable">默认的可见性</param>
         /// <returns>序列实体</returns>
-        BaseSequenceEntity GetEntityByAdd(string fullName, int? defaultSequence = null, int? defaultReduction = null, int? defaultStep = null, string defaultPrefix = "", string defaultDelimiter = "", int? defaultIsVisable = null)
+        BaseSequenceEntity GetEntityByAdd(string name, int? defaultSequence = null, int? defaultReduction = null, int? defaultStep = null, string defaultPrefix = "", string defaultDelimiter = "", int? defaultIsVisable = null)
         {
-            BaseSequenceEntity sequenceEntity = GetEntityByName(fullName);
+            BaseSequenceEntity sequenceEntity = GetEntityByName(name);
             if (sequenceEntity == null)
             {
                 sequenceEntity = new BaseSequenceEntity
                 {
                     // 这里是为了多种数据库的兼容
                     //Id = Guid.NewGuid().ToString("N"),
-                    FullName = fullName,
+                    Name = name,
                     SortCode = 1
                 };
                 if (defaultSequence == null)
@@ -202,7 +202,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
             // 检查是否重复
-            if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, entity.FullName)))
+            if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, entity.Name)))
             {
                 // 名称已重复
                 status = Status.ErrorNameExist;
@@ -225,7 +225,7 @@ namespace DotNet.Business
         {
             var result = 0;
             // 检查名称是否重复
-            if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, entity.FullName), entity.Id))
+            if (Exists(new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, entity.Name), entity.Id))
             {
                 // 名称已重复
                 status = Status.ErrorNameExist;
@@ -303,55 +303,55 @@ namespace DotNet.Business
         //
 
 
-        #region public string StoreCounter(string fullName) 获得原序列号
+        #region public string StoreCounter(string name) 获得原序列号
         /// <summary>
         /// 获得原序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string StoreCounter(string fullName)
+        public string StoreCounter(string name)
         {
-            return StoreCounter(fullName, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
+            return StoreCounter(name, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion
 
-        #region public string StoreCounter(string fullName, int defaultSequence) 获得原序列号
+        #region public string StoreCounter(string name, int defaultSequence) 获得原序列号
         /// <summary>
         /// 获得原序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <returns>序列号</returns>
-        public string StoreCounter(string fullName, int defaultSequence)
+        public string StoreCounter(string name, int defaultSequence)
         {
-            return StoreCounter(fullName, defaultSequence, DefaultSequenceLength, FillZeroPrefix);
+            return StoreCounter(name, defaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion
 
-        #region public string StoreCounter(string fullName, int defaultSequence, int sequenceLength) 获得原序列号
+        #region public string StoreCounter(string name, int defaultSequence, int sequenceLength) 获得原序列号
         /// <summary>
         /// 获得原序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <returns>序列号</returns>
-        public string StoreCounter(string fullName, int defaultSequence, int sequenceLength)
+        public string StoreCounter(string name, int defaultSequence, int sequenceLength)
         {
-            return StoreCounter(fullName, defaultSequence, sequenceLength, false);
+            return StoreCounter(name, defaultSequence, sequenceLength, false);
         }
         #endregion
 
-        #region public string StoreCounter(string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取序原列号
+        #region public string StoreCounter(string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix) 获取序原列号
         /// <summary>
         /// 获得原序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充补零</param>
         /// <returns>序列号</returns>
-        public string StoreCounter(string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
+        public string StoreCounter(string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix)
         {
             var sequence = string.Empty;
             // 这里用锁的机制，提高并发控制能力
@@ -362,7 +362,7 @@ namespace DotNet.Business
                 DefaultReduction = defaultSequence;
                 DefaultSequence = defaultSequence + 1;
 
-                var entity = GetEntityByAdd(fullName);
+                var entity = GetEntityByAdd(name);
                 sequence = Increment(entity);
             }
             return sequence;
@@ -376,96 +376,96 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Oracle的序列
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public string GetOracleSequence(string fullName)
+        public string GetOracleSequence(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT SEQ_" + fullName.ToUpper() + ".NEXTVAL FROM DUAL ").ToString();
+            return DbHelper.ExecuteScalar("SELECT SEQ_" + name.ToUpper() + ".NEXTVAL FROM DUAL ").ToString();
         }
 
         /// <summary>
         /// 获取Oracle的序列
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public string GetOracleStoreCounter(string fullName)
+        public string GetOracleStoreCounter(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT SEQ_" + fullName.ToUpper() + ".CURRVAL FROM DUAL ").ToString();
+            return DbHelper.ExecuteScalar("SELECT SEQ_" + name.ToUpper() + ".CURRVAL FROM DUAL ").ToString();
         }
 
         /// <summary>
         /// 获取DB2的序列
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public string GetDb2Sequence(string fullName)
+        public string GetDb2Sequence(string name)
         {
             // 当前是自增量，并且是DB2数据库
-            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR SEQ_" + fullName.ToUpper() + " FROM sysibm.sysdummy1").ToString();
+            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR SEQ_" + name.ToUpper() + " FROM sysibm.sysdummy1").ToString();
         }
 
-        #region public string Increment(string fullName) 获得序列号
+        #region public string Increment(string name) 获得序列号
         /// <summary>
         /// 获得序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string Increment(string fullName)
+        public string Increment(string name)
         {
             if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
-                return GetOracleSequence(fullName);
+                return GetOracleSequence(name);
             }
             if (DbHelper.CurrentDbType == CurrentDbType.Db2)
             {
-                return GetDb2Sequence(fullName);
+                return GetDb2Sequence(name);
             }
-            return Increment(fullName, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
+            return Increment(name, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion
 
-        #region public string Increment(string fullName, int defaultSequence) 获得序列号
+        #region public string Increment(string name, int defaultSequence) 获得序列号
         /// <summary>
         /// 获得序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <returns>序列号</returns>
-        public string Increment(string fullName, int defaultSequence)
+        public string Increment(string name, int defaultSequence)
         {
-            return Increment(fullName, defaultSequence, DefaultSequenceLength, FillZeroPrefix);
+            return Increment(name, defaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion
 
-        #region public string Increment(string fullName, int defaultSequence, int sequenceLength) 获得序列号
+        #region public string Increment(string name, int defaultSequence, int sequenceLength) 获得序列号
         /// <summary>
         /// 获得序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <returns>序列号</returns>
-        public string Increment(string fullName, int defaultSequence, int sequenceLength)
+        public string Increment(string name, int defaultSequence, int sequenceLength)
         {
-            return Increment(fullName, defaultSequence, sequenceLength, false);
+            return Increment(name, defaultSequence, sequenceLength, false);
         }
         #endregion
 
-        #region public string Increment(string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix, string prefix = "", string delimiter = "") 获取序列号
+        #region public string Increment(string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix, string prefix = "", string delimiter = "") 获取序列号
 
         /// <summary>
         /// 获得序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <param name="sequenceLength">序列长度</param>
         /// <param name="fillZeroPrefix">是否填充零</param>
         /// <param name="prefix"></param>
         /// <param name="delimiter"></param>
         /// <returns>序列实体</returns>
-        public string Increment(string fullName, int defaultSequence, int sequenceLength, bool fillZeroPrefix, string prefix = "", string delimiter = "")
+        public string Increment(string name, int defaultSequence, int sequenceLength, bool fillZeroPrefix, string prefix = "", string delimiter = "")
         {
             DefaultSequence = defaultSequence;
             SequenceLength = sequenceLength;
@@ -491,18 +491,18 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        entity = GetEntityByAdd(fullName);
-                        UpdateSequence(fullName);
+                        entity = GetEntityByAdd(name);
+                        UpdateSequence(name);
                         break;
                     case CurrentDbType.Oracle:
                         // 这里加锁机制。
                         if (DbHelper.InTransaction)
                         {
                             // 不可以影响别人的事务
-                            entity = GetSequenceByLock(fullName, defaultSequence);
+                            entity = GetSequenceByLock(name, defaultSequence);
                             if (StatusCode == Status.LockOk.ToString())
                             {
-                                if (UpdateSequence(fullName) > 0)
+                                if (UpdateSequence(name) > 0)
                                 {
                                     StatusCode = Status.LockOk.ToString();
                                 }
@@ -519,11 +519,11 @@ namespace DotNet.Business
                             try
                             {
                                 StatusCode = Status.CanNotLock.ToString();
-                                entity = GetSequenceByLock(fullName, defaultSequence);
+                                entity = GetSequenceByLock(name, defaultSequence);
                                 if (StatusCode == Status.LockOk.ToString())
                                 {
                                     StatusCode = Status.CanNotLock.ToString();
-                                    if (UpdateSequence(fullName) > 0)
+                                    if (UpdateSequence(name) > 0)
                                     {
                                         // 提交事务
                                         dbTransaction.Commit();
@@ -569,32 +569,32 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region protected int UpdateSequence(string fullName) 更新升序序列
+        #region protected int UpdateSequence(string name) 更新升序序列
         /// <summary>
         /// 更新升序序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>影响行数</returns>
-        protected int UpdateSequence(string fullName)
+        protected int UpdateSequence(string name)
         {
-            return UpdateSequence(fullName, 1);
+            return UpdateSequence(name, 1);
         }
         #endregion
 
-        #region protected int UpdateSequence(string fullName, int sequenceCount) 更新升序序列
+        #region protected int UpdateSequence(string name, int sequenceCount) 更新升序序列
         /// <summary>
         /// 更新升序序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="sequenceCount">序列个数</param>
         /// <returns>影响行数</returns>
-        protected int UpdateSequence(string fullName, int sequenceCount)
+        protected int UpdateSequence(string name, int sequenceCount)
         {
             // 更新数据库里的值
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             sqlBuilder.SetFormula(BaseSequenceEntity.FieldSequence, BaseSequenceEntity.FieldSequence + " + " + sequenceCount + " * " + BaseSequenceEntity.FieldStep);
-            sqlBuilder.SetWhere(BaseSequenceEntity.FieldFullName, fullName);
+            sqlBuilder.SetWhere(BaseSequenceEntity.FieldName, name);
             return sqlBuilder.EndUpdate();
         }
         #endregion
@@ -603,26 +603,26 @@ namespace DotNet.Business
 
         #region 三 获取降序序列(没有序列时，涉及到并发问题、锁机制，更新序列时会有锁机制)
 
-        #region public string GetReduction(string fullName) 获取倒序序列号
+        #region public string GetReduction(string name) 获取倒序序列号
         /// <summary>
         /// 获取倒序序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>序列号</returns>
-        public string GetReduction(string fullName)
+        public string GetReduction(string name)
         {
-            return GetReduction(fullName, DefaultSequence);
+            return GetReduction(name, DefaultSequence);
         }
         #endregion
 
-        #region public string GetReduction(string fullName, int defaultSequence) 获取倒序序列号
+        #region public string GetReduction(string name, int defaultSequence) 获取倒序序列号
         /// <summary>
         /// 获取倒序序列号
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="defaultSequence">默认序列值</param>
         /// <returns>序列号</returns>
-        public string GetReduction(string fullName, int defaultSequence)
+        public string GetReduction(string name, int defaultSequence)
         {
             // 写入调试信息
 #if (DEBUG)
@@ -644,17 +644,17 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        sequenceEntity = GetEntityByAdd(fullName);
-                        UpdateReduction(fullName);
+                        sequenceEntity = GetEntityByAdd(name);
+                        UpdateReduction(name);
                         break;
                     case CurrentDbType.Oracle:
                         if (DbHelper.InTransaction)
                         {
                             //不可以影响别人的事务
-                            sequenceEntity = GetSequenceByLock(fullName, defaultSequence);
+                            sequenceEntity = GetSequenceByLock(name, defaultSequence);
                             if (StatusCode == Status.LockOk.ToString())
                             {
-                                if (UpdateReduction(fullName) > 0)
+                                if (UpdateReduction(name) > 0)
                                 {
                                     StatusCode = Status.LockOk.ToString();
                                 }
@@ -672,11 +672,11 @@ namespace DotNet.Business
                                 // 开始事务
                                 DbHelper.BeginTransaction();
                                 StatusCode = Status.CanNotLock.ToString();
-                                sequenceEntity = GetSequenceByLock(fullName, defaultSequence);
+                                sequenceEntity = GetSequenceByLock(name, defaultSequence);
                                 if (StatusCode == Status.LockOk.ToString())
                                 {
                                     StatusCode = Status.CanNotLock.ToString();
-                                    if (UpdateReduction(fullName) > 0)
+                                    if (UpdateReduction(name) > 0)
                                     {
                                         // 提交事务
                                         DbHelper.CommitTransaction();
@@ -721,32 +721,32 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region protected int UpdateReduction(string fullName)
+        #region protected int UpdateReduction(string name)
         /// <summary>
         /// 更新降序序列
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <returns>影响行数</returns>
-        protected int UpdateReduction(string fullName)
+        protected int UpdateReduction(string name)
         {
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             sqlBuilder.SetFormula(BaseSequenceEntity.FieldReduction, BaseSequenceEntity.FieldReduction + " - " + BaseSequenceEntity.FieldStep);
-            sqlBuilder.SetWhere(BaseSequenceEntity.FieldFullName, fullName);
+            sqlBuilder.SetWhere(BaseSequenceEntity.FieldName, name);
             return sqlBuilder.EndUpdate();
         }
         #endregion
 
-        #region protected BaseSequenceEntity GetSequenceByLock(string fullName, int defaultSequence) 获得序列
+        #region protected BaseSequenceEntity GetSequenceByLock(string name, int defaultSequence) 获得序列
         /// <summary>
         /// 获得序列
         /// </summary>
-        /// <param name="fullName">序列名</param>
+        /// <param name="name">序列名</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <returns>序列实体</returns>
-        protected BaseSequenceEntity GetSequenceByLock(string fullName, int defaultSequence)
+        protected BaseSequenceEntity GetSequenceByLock(string name, int defaultSequence)
         {
-            var sequenceEntity = GetEntityByAdd(fullName);
+            var sequenceEntity = GetEntityByAdd(name);
             if (sequenceEntity == null)
             {
                 // 这里添加记录时加锁机制。
@@ -755,11 +755,11 @@ namespace DotNet.Business
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
                     // 被锁定的记录数
-                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, BaseSequenceEntity.CurrentTableName));
+                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, BaseSequenceEntity.CurrentTableName));
                     if (lockCount > 0)
                     {
 
-                        sequenceEntity.FullName = fullName;
+                        sequenceEntity.Name = name;
                         sequenceEntity.Reduction = defaultSequence - 1;
                         sequenceEntity.Sequence = defaultSequence;
                         sequenceEntity.Step = DefaultStep;
@@ -776,7 +776,7 @@ namespace DotNet.Business
                 if (StatusCode == Status.LockOk.ToString())
                 {
                     // JiRiGaLa 这个是否能省略
-                    sequenceEntity = GetEntityByAdd(fullName);
+                    sequenceEntity = GetEntityByAdd(name);
                 }
             }
             else
@@ -787,10 +787,10 @@ namespace DotNet.Business
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
                     // 被锁定的记录数
-                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldFullName, fullName));
+                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, name));
                     if (lockCount > 0)
                     {
-                        sequenceEntity = GetEntityByAdd(fullName);
+                        sequenceEntity = GetEntityByAdd(name);
                         StatusCode = Status.LockOk.ToString();
                         break;
                     }
@@ -808,16 +808,16 @@ namespace DotNet.Business
 
         #region 四 批量获取新序列(没有序列时，涉及到并发问题、锁机制，更新序列时会有锁机制)
 
-        #region public string[] GetBatchSequence(string fullName, int sequenceCount) 获取序列号数组
+        #region public string[] GetBatchSequence(string name, int sequenceCount) 获取序列号数组
         /// <summary>
         /// 获取序列号数组
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="sequenceCount">序列个数</param>
         /// <returns>序列号</returns>
-        public string[] GetBatchSequence(string fullName, int sequenceCount)
+        public string[] GetBatchSequence(string name, int sequenceCount)
         {
-            return GetBatchSequence(fullName, sequenceCount, DefaultSequence);
+            return GetBatchSequence(name, sequenceCount, DefaultSequence);
         }
         #endregion
 
@@ -840,15 +840,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string[] GetBatchSequence(string fullName, int sequenceCount, int defaultSequence) 获取序列号数组
+        #region public string[] GetBatchSequence(string name, int sequenceCount, int defaultSequence) 获取序列号数组
         /// <summary>
         /// 获取序列号数组
         /// </summary>
-        /// <param name="fullName">序列名称</param>
+        /// <param name="name">序列名称</param>
         /// <param name="sequenceCount">序列个数</param>
         /// <param name="defaultSequence">默认序列</param>
         /// <returns>序列号</returns>
-        public string[] GetBatchSequence(string fullName, int sequenceCount, int defaultSequence)
+        public string[] GetBatchSequence(string name, int sequenceCount, int defaultSequence)
         {
             // 写入调试信息
 #if (DEBUG)
@@ -867,21 +867,21 @@ namespace DotNet.Business
                     case CurrentDbType.Access:
                     case CurrentDbType.MySql:
                     case CurrentDbType.SqlServer:
-                        var entity = GetEntityByAdd(fullName);
-                        UpdateSequence(fullName, sequenceCount);
+                        var entity = GetEntityByAdd(name);
+                        UpdateSequence(name, sequenceCount);
                         // 这里循环产生ID数组
                         result = Increment(entity, sequenceCount);
                         break;
                     case CurrentDbType.Db2:
                         for (var i = 0; i < sequenceCount; i++)
                         {
-                            result[i] = GetDb2Sequence(fullName);
+                            result[i] = GetDb2Sequence(name);
                         }
                         break;
                     case CurrentDbType.Oracle:
                         for (var i = 0; i < sequenceCount; i++)
                         {
-                            result[i] = GetOracleSequence(fullName);
+                            result[i] = GetOracleSequence(name);
                         }
                         break;
                 }
@@ -922,7 +922,7 @@ namespace DotNet.Business
                     var commandText = string.Format(@"UPDATE BaseSequence
                                                SET Sequence = (SELECT MAX(SortCode) + 1  AS MaxSortCode FROM {0})
 	                                               , Reduction = ( SELECT MIN(SortCode) -1 AS MinSortCode FROM {0})
-                                             WHERE FullName = '{0}' ", sequenceEntity.FullName);
+                                             WHERE Name = '{0}' ", sequenceEntity.Name);
                     try
                     {
                         ExecuteNonQuery(commandText);
@@ -946,11 +946,11 @@ namespace DotNet.Business
         /// <summary>
         /// 重置
         /// </summary>
-        /// <param name="fullName">序列名（默认为表名）</param>
+        /// <param name="name">序列名（默认为表名）</param>
         /// <returns>影响行数</returns>
-        public int Reset(string fullName)
+        public int Reset(string name)
         {
-            var commandText = string.Format(@"UPDATE " + CurrentTableName + " SET Sequence = (SELECT ISNULL(MAX(SortCode),10000000) AS MaxSortCode FROM {0} WHERE SortCode > 0), Reduction = (SELECT ISNULL(MIN(SortCode),9999999) AS MinSortCode FROM {0} WHERE SortCode > 0) WHERE FullName = N'{0}' ", fullName);
+            var commandText = string.Format(@"UPDATE " + CurrentTableName + " SET Sequence = (SELECT ISNULL(MAX(SortCode),10000000) AS MaxSortCode FROM {0} WHERE SortCode > 0), Reduction = (SELECT ISNULL(MIN(SortCode),9999999) AS MinSortCode FROM {0} WHERE SortCode > 0) WHERE Name = N'{0}' ", name);
             var result = ExecuteNonQuery(commandText);
             return result;
         }

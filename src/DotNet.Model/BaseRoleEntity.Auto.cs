@@ -54,7 +54,7 @@ namespace DotNet.Model
         /// 角色名称
         /// </summary>
         [FieldDescription("角色名称")]
-        public string RealName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 角色分类
@@ -187,9 +187,9 @@ namespace DotNet.Model
             {
                 Code = BaseUtil.ConvertToString(dr[FieldCode]);
             }
-            if (dr.ContainsColumn(FieldRealName))
+            if (dr.ContainsColumn(FieldName))
             {
-                RealName = BaseUtil.ConvertToString(dr[FieldRealName]);
+                Name = BaseUtil.ConvertToString(dr[FieldName]);
             }
             if (dr.ContainsColumn(FieldCategoryCode))
             {
@@ -295,7 +295,7 @@ namespace DotNet.Model
         ///<summary>
         /// 角色名称
         ///</summary>
-        public const string FieldRealName = "RealName";
+        public const string FieldName = "Name";
 
         ///<summary>
         /// 角色分类

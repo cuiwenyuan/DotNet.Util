@@ -375,11 +375,11 @@ namespace DotNet.Model
 
         #region UserLogon
 
-        /// <summary>
-        /// 用户密码
-        /// </summary>
-        [FieldDescription("用户密码")]
-        public string UserPassword { get; set; } = string.Empty;
+        ///// <summary>
+        ///// 用户密码
+        ///// </summary>
+        //[FieldDescription("用户密码")]
+        //public string UserPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// 当点登录标识
@@ -501,11 +501,11 @@ namespace DotNet.Model
         [FieldDescription("密码提示答案")]
         public string AnswerQuestion { get; set; } = string.Empty;
 
-        /// <summary>
-        /// 密码加盐
-        /// </summary>
-        [FieldDescription("密码加盐")]
-        public string Salt { get; set; } = string.Empty;
+        ///// <summary>
+        ///// 密码加盐
+        ///// </summary>
+        //[FieldDescription("密码加盐")]
+        //public string Salt { get; set; } = string.Empty;
 
         /// <summary>
         /// OpenId过期时间
@@ -611,7 +611,7 @@ namespace DotNet.Model
         /// 公司邮件
         /// </summary>
         [FieldDescription("公司邮件")]
-        public string CompanyMail { get; set; } = null;
+        public string CompanyEmail { get; set; } = null;
 
         /// <summary>
         /// YY

@@ -252,7 +252,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string fullName)
+        #region public BaseUserEntity GetEntityByRealName(BaseUserInfo userInfo, string realName)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
@@ -388,7 +388,7 @@ namespace DotNet.Business
                         {
                             for (var i = 0; i < roleIds.Length; i++)
                             {
-                                roleName = roleName + BaseUtil.GetProperty(dataTableRole, roleIds[i], BaseRoleEntity.FieldRealName) + " ";
+                                roleName = roleName + BaseUtil.GetProperty(dataTableRole, roleIds[i], BaseRoleEntity.FieldName) + " ";
                             }
                         }
                         // 设置角色的名称
@@ -572,7 +572,7 @@ namespace DotNet.Business
                 {
                     for (var i = 0; i < roleIds.Length; i++)
                     {
-                        roleName = roleName + BaseRoleManager.GetRealNameByCache(userInfo.SystemCode, roleIds[i]) + ", ";
+                        roleName = roleName + BaseRoleManager.GetNameByCache(userInfo.SystemCode, roleIds[i]) + ", ";
                     }
                 }
                 // 设置角色的名称

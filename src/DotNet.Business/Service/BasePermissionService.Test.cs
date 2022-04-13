@@ -188,7 +188,7 @@ namespace DotNet.Business
                 var roleManager = new BaseRoleManager(dbHelper, userInfo);
                 var roleEntity = new BaseRoleEntity
                 {
-                    RealName = role,
+                    Name = role,
                     Enabled = 1
                 };
                 result = roleManager.Add(roleEntity, out Status status);
@@ -212,7 +212,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var roleManager = new BaseRoleManager(dbHelper, userInfo);
-                var id = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, role));
+                var id = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldName, role));
                 if (!string.IsNullOrEmpty(id))
                 {
                     // 在删除时，可能会把相关的其他配置角色会删除掉，所以需要调用这个方法。
@@ -241,7 +241,7 @@ namespace DotNet.Business
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 var userId = userManager.GetId(new KeyValuePair<string, object>(BaseUserEntity.FieldUserName, userName));
                 var roleManager = new BaseRoleManager(dbHelper, userInfo);
-                var roleId = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, roleName));
+                var roleId = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldName, roleName));
                 if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(roleId))
                 {
                     userManager.AddToRole(userInfo.SystemCode, new string[] { userId }, new string[] { roleId });
@@ -269,7 +269,7 @@ namespace DotNet.Business
                 var userManager = new BaseUserManager(dbHelper, userInfo);
                 var userId = userManager.GetId(new KeyValuePair<string, object>(BaseUserEntity.FieldUserName, userName));
                 var roleManager = new BaseRoleManager(dbHelper, userInfo);
-                var roleId = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, roleName));
+                var roleId = roleManager.GetId(new KeyValuePair<string, object>(BaseRoleEntity.FieldName, roleName));
                 if (ValidateUtil.IsInt(userId) && !string.IsNullOrEmpty(roleId))
                 {
                     result = userManager.RemoveFromRole(userInfo.SystemCode, userId, roleId);

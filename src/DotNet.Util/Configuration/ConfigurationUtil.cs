@@ -661,9 +661,19 @@ namespace DotNet.Util
                 BaseSystemInfo.WebApiMonitorEnabled = ConfigurationManager.AppSettings["WebApiMonitorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
+            if (ConfigurationManager.AppSettings["WebApiMonitorFolder"] != null)
+            {
+                BaseSystemInfo.WebApiMonitorFolder = ConfigurationManager.AppSettings["WebApiMonitorFolder"];
+            }
+
             if (ConfigurationManager.AppSettings["WebApiSlowMonitorEnabled"] != null)
             {
                 BaseSystemInfo.WebApiSlowMonitorEnabled = ConfigurationManager.AppSettings["WebApiSlowMonitorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (ConfigurationManager.AppSettings["WebApiSlowMonitorFolder"] != null)
+            {
+                BaseSystemInfo.WebApiSlowMonitorFolder = ConfigurationManager.AppSettings["WebApiSlowMonitorFolder"];
             }
 
             if (ConfigurationManager.AppSettings["WebApiSlowResponseMilliseconds"] != null)

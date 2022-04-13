@@ -70,7 +70,7 @@ namespace DotNet.Business
                 // 先获得角色主键
                 var tableName = userInfo.SystemCode + "Role";
                 var roleManager = new BaseRoleManager(dbHelper, userInfo, tableName);
-                var roleCode = roleManager.GetProperty(new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, roleName), BaseRoleEntity.FieldCode);
+                var roleCode = roleManager.GetProperty(new KeyValuePair<string, object>(BaseRoleEntity.FieldName, roleName), BaseRoleEntity.FieldCode);
                 // 判断用户的默认角色
                 if (!string.IsNullOrEmpty(roleCode))
                 {
@@ -500,7 +500,7 @@ namespace DotNet.Business
                     var moduleEntity = new BaseModuleManager().GetEntityByCache(userInfo, id);
                     if (moduleEntity != null)
                     {
-                        dr["PermissionName"] = moduleEntity.FullName;
+                        dr["PermissionName"] = moduleEntity.Name;
                         dr["PermissionCode"] = moduleEntity.Code;
                     }
                     if (dr["ResourceCategory"].ToString().Equals(BaseUserEntity.CurrentTableName))
@@ -520,7 +520,7 @@ namespace DotNet.Business
                         var organizationEntity = BaseOrganizationManager.GetEntityByCache(id);
                         if (organizationEntity != null)
                         {
-                            dr["ResourceName"] = organizationEntity.FullName;
+                            dr["ResourceName"] = organizationEntity.Name;
                             dr["ResourceCategoryName"] = "网点";
                         }
                     }
@@ -530,7 +530,7 @@ namespace DotNet.Business
                         var roleEntity = BaseRoleManager.GetEntityByCache(userInfo, id);
                         if (roleEntity != null)
                         {
-                            dr["ResourceName"] = roleEntity.RealName;
+                            dr["ResourceName"] = roleEntity.Name;
                             dr["ResourceCategoryName"] = "角色";
                         }
                     }

@@ -67,7 +67,7 @@ namespace DotNet.Business
                         // 重置权限缓存数据
                         BasePermissionManager.ResetPermissionByCache(systemCode, null, entity.Id.ToString());
                         result++;
-                        System.Console.WriteLine(result + " : " + entity.RealName);
+                        System.Console.WriteLine(result + " : " + entity.Name);
                     }
                 }
                 dataReader.Close();

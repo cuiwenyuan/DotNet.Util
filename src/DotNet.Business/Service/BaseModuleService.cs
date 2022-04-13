@@ -200,7 +200,7 @@ namespace DotNet.Business
         /// <param name="userInfo">用户</param>
         /// <param name="code">编号</param>
         /// <returns>数据表</returns>
-        public string GetFullNameByCode(BaseUserInfo userInfo, string code)
+        public string GetNameByCode(BaseUserInfo userInfo, string code)
         {
             var result = string.Empty;
 
@@ -209,7 +209,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Module";
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
-                result = manager.GetFullNameByCode(code);
+                result = manager.GetNameByCode(code);
             });
 
             return result;

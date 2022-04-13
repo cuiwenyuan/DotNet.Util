@@ -311,7 +311,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldParentId, entity.ParentId);
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldParentName, entity.ParentName);
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldCode, entity.Code);
-            sqlBuilder.SetValue(BaseOrganizationEntity.FieldFullName, entity.FullName);
+            sqlBuilder.SetValue(BaseOrganizationEntity.FieldName, entity.Name);
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldShortName, entity.ShortName);
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldStandardName, entity.StandardName);
             sqlBuilder.SetValue(BaseOrganizationEntity.FieldStandardCode, entity.StandardCode);

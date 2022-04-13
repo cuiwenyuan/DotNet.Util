@@ -37,7 +37,7 @@ namespace DotNet.Business
             var roleManager = new BaseRoleManager(UserInfo);
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, dutyName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, dutyName),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCategoryCode, "SystemRole"),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)

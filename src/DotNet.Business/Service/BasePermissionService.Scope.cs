@@ -294,7 +294,7 @@ namespace DotNet.Business
                     var permissionEntity = new BaseModuleEntity
                     {
                         Code = "Resource.ManagePermission",
-                        FullName = "资源管理范围权限（系统默认）",
+                        Name = "资源管理范围权限（系统默认）",
                         IsScope = 1,
                         Enabled = 1,
                         AllowDelete = 0

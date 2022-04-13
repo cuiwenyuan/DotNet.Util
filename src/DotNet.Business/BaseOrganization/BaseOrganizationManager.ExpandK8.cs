@@ -101,7 +101,7 @@ namespace DotNet.Business
                             entity.ParentId = 0;
                         }
                         
-                        entity.FullName = dr["SITE_NAME"].ToString();
+                        entity.Name = dr["SITE_NAME"].ToString();
                         entity.ShortName = dr["SITE_NAME"].ToString();
                         entity.CategoryCode = dr["TYPE"].ToString();
                         entity.OuterPhone = dr["PHONE"].ToString();

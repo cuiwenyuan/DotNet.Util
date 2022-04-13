@@ -12,7 +12,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// InputBaseUserEntity
-    /// 系统用户表
+    /// 用于后台增加用户
     ///
     /// 修改记录
     ///

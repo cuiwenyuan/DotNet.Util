@@ -87,7 +87,7 @@ namespace DotNet.Business
                     entity.Id = int.Parse(result);
                     //Troy.Cui 2018-10-18去掉这里的Folder检查
                     //var folderManager = new BaseFolderManager(dbHelper, userInfo);
-                    //folderManager.FolderCheck(entity.Id.ToString(), entity.FullName);
+                    //folderManager.FolderCheck(entity.Id.ToString(), entity.Name);
                 }
             });
             status = returnCode;
@@ -138,14 +138,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
+        #region public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string name)
         /// <summary>
         /// 按名称获取实体
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="fullName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>实体</returns>
-        public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string fullName)
+        public BaseOrganizationEntity GetEntityByName(BaseUserInfo userInfo, string name)
         {
             BaseOrganizationEntity entity = null;
 
@@ -153,7 +153,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizationManager(dbHelper, userInfo);
-                entity = manager.GetEntityByName(fullName);
+                entity = manager.GetEntityByName(name);
             });
             return entity;
         }
@@ -574,7 +574,7 @@ namespace DotNet.Business
                 if (manager.StatusCode.Equals(Status.OkUpdate.ToString()))
                 {
                     // var folderManager = new BaseFolderManager(dbHelper, userInfo);
-                    // result = folderManager.SetProperty(entity.Id.ToString(), new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.FullName));
+                    // result = folderManager.SetProperty(entity.Id.ToString(), new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name));
                 }
                 returnCode = manager.Status;
                 returnMessage = manager.StatusMessage;

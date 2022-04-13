@@ -100,7 +100,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseModuleEntity.FieldFullName + " LIKE N'%" + searchKey + "%' OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+                sb.Append(" AND (" + BaseModuleEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
@@ -202,11 +202,11 @@ namespace DotNet.Business
                     entity.Code = permissionCode;
                     if (string.IsNullOrEmpty(permissionName))
                     {
-                        entity.FullName = permissionCode;
+                        entity.Name = permissionCode;
                     }
                     else
                     {
-                        entity.FullName = permissionName;
+                        entity.Name = permissionName;
                     }
                     entity.ParentId = null;
                     entity.IsScope = 0;
@@ -578,18 +578,18 @@ namespace DotNet.Business
             }
             var commandText = @"SELECT Role.Id
                                     , Role.Code
-                                    , Role.RealName 
+                                    , Role.Name 
                                     , Role.Description 
                                     , Permission.Enabled
                                     , Permission.CreateTime
                                     , Permission.CreateBy
                                     , Permission.UpdateTime
                                     , Permission.UpdateBy
- FROM (SELECT Id, Code, RealName, Description FROM BaseRole ";
+ FROM (SELECT Id, Code, Name, Description FROM BaseRole ";
 
             if (!systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
-                commandText += " UNION SELECT Id, Code, RealName, Description FROM roleTableName ";
+                commandText += " UNION SELECT Id, Code, Name, Description FROM " + roleTableName;
             }
 
             commandText += @") Role RIGHT OUTER JOIN
@@ -646,7 +646,7 @@ namespace DotNet.Business
 
             var commandText = @"SELECT BaseOrganization.Id
                                     , BaseOrganization.Code
-                                    , BaseOrganization.FullName 
+                                    , BaseOrganization.Name 
                                     , BaseOrganization.Description 
                                     , Permission.Enabled
                                     , Permission.CreateTime
@@ -796,7 +796,7 @@ namespace DotNet.Business
                 var moduleEntity = GetEntityByCache(systemCode, id);
                 if (moduleEntity != null)
                 {
-                    result = moduleEntity.FullName;
+                    result = moduleEntity.Name;
                 }
             }
 

@@ -41,7 +41,7 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, entity.Name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
@@ -113,7 +113,7 @@ namespace DotNet.Business
                 // 检查名称是否重复
                 var parameters = new List<KeyValuePair<string, object>> {
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
-                    new KeyValuePair<string, object>(BaseRoleEntity.FieldRealName, entity.RealName),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldName, entity.Name),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
@@ -358,7 +358,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseRoleEntity.FieldRealName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" AND (" + BaseRoleEntity.FieldName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseRoleEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
@@ -372,7 +372,7 @@ namespace DotNet.Business
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCode);
-                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldRealName);
+                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldName);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldAllowEdit);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldAllowDelete);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldIsVisible);
@@ -398,7 +398,7 @@ namespace DotNet.Business
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCode);
-                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldRealName);
+                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldName);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldAllowEdit);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldAllowDelete);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldIsVisible);

@@ -44,7 +44,7 @@ namespace DotNet.Business
                     UserId = int.Parse(UserInfo.Id),
                     RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
-                    Description = "强制下线：" + ((result == 1) ? "成功" : "失败")
+                    Description = "强制下线：" + ((result >= 1) ? "成功" : "失败")
                 };
                 new BaseLogManager(UserInfo).Add(entity);
             }
@@ -72,7 +72,7 @@ namespace DotNet.Business
                     UserId = int.Parse(UserInfo.Id),
                     RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
-                    Description = "设置并发用户：" + ((result == 1) ? "成功" : "失败")
+                    Description = "设置并发用户：" + ((result >= 1) ? "成功" : "失败")
                 };
                 new BaseLogManager(UserInfo).Add(entity);
             }
@@ -100,7 +100,7 @@ namespace DotNet.Business
                     UserId = int.Parse(UserInfo.Id),
                     RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
-                    Description = "撤销设置并发用户：" + ((result == 1) ? "成功" : "失败")
+                    Description = "撤销设置并发用户：" + ((result >= 1) ? "成功" : "失败")
                 };
                 new BaseLogManager(UserInfo).Add(entity);
             }
@@ -120,11 +120,15 @@ namespace DotNet.Business
         public int Lock(string[] userIds, int minutes = 365)
         {
             var result = 0;
+            if (minutes > 9999)
+            {
+                minutes = 9999;
+            }
             if (userIds != null)
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldAllowStartTime, DateTime.Now),
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartTime, DateTime.Now),
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, DateTime.Now.AddMinutes(minutes))
                 };
 
@@ -135,7 +139,7 @@ namespace DotNet.Business
                     UserId = int.Parse(UserInfo.Id),
                     RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
-                    Description = "锁定用户：" + ((result == 1) ? "成功" : "失败")
+                    Description = "锁定用户：" + ((result >= 1) ? "成功" : "失败")
                 };
                 new BaseLogManager(UserInfo).Add(entity);
             }
@@ -158,7 +162,7 @@ namespace DotNet.Business
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldAllowStartTime, null),
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartTime, null),
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, null)
                 };
 
@@ -169,7 +173,7 @@ namespace DotNet.Business
                     UserId = int.Parse(UserInfo.Id),
                     RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
-                    Description = "解除锁定用户：" + ((result == 1) ? "成功" : "失败")
+                    Description = "解除锁定用户：" + ((result >= 1) ? "成功" : "失败")
                 };
                 new BaseLogManager(UserInfo).Add(entity);
             }

@@ -463,7 +463,7 @@ namespace DotNet.Business
             }
 
             var sb = Pool.StringBuilder.Get();
-            sb.AppendLine("SELECT BaseRole.Code, BaseRole.RealName, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
+            sb.AppendLine("SELECT BaseRole.Code, BaseRole.Name, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
             sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
             sb.AppendLine(" WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
             //替换表名
@@ -753,7 +753,7 @@ namespace DotNet.Business
 
             var commandText = @"SELECT BaseRole.Id
                                     , BaseRole.Code 
-                                    , BaseRole.RealName 
+                                    , BaseRole.Name 
                                     , BaseRole.Description
                                     , UserRole.UserId
                                     , UserRole.Enabled

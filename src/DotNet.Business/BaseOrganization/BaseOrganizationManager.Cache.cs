@@ -85,8 +85,8 @@ namespace DotNet.Business
                 key = "OBC:" + entity.Code;
                 CacheUtil.Set<string>(key, entity.Id.ToString());
 
-                //key = "OrganizationByName:" + entity.FullName;
-                key = "OBN:" + entity.FullName;
+                //key = "OrganizationByName:" + entity.Name;
+                key = "OBN:" + entity.Name;
                 CacheUtil.Set<string>(key, entity.Id.ToString());
             }
         }
@@ -113,16 +113,16 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存获取
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static BaseOrganizationEntity GetEntityByNameByCache(string fullName)
+        public static BaseOrganizationEntity GetEntityByNameByCache(string name)
         {
             BaseOrganizationEntity result = null;
-            if (!string.IsNullOrEmpty(fullName))
+            if (!string.IsNullOrEmpty(name))
             {
-                // string key = "OrganizationByName:" + fullName;
-                var key = "OBN:" + fullName;
-                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetEntityByName(fullName), true);
+                // string key = "OrganizationByName:" + name;
+                var key = "OBN:" + name;
+                result = CacheUtil.Cache(key, () => new BaseOrganizationManager().GetEntityByName(name), true);
             }
 
             return result;
@@ -166,11 +166,11 @@ namespace DotNet.Business
             var id = organizationEntity.Id;
             // 2016-01-06 吉日嘎拉 网点编号不能大小写转换，否则查询就乱套了，不能改变原样
             var code = organizationEntity.Code;
-            var fullName = organizationEntity.FullName;
+            var name = organizationEntity.Name;
             var simpleSpelling = organizationEntity.SimpleSpelling;
             var enabled = organizationEntity.Enabled.ToString();
             var deletionStateCode = organizationEntity.Deleted.ToString();
-            var organization = id + ";" + code + ";" + fullName + ";" + enabled + ";" + deletionStateCode;
+            var organization = id + ";" + code + ";" + name + ";" + enabled + ";" + deletionStateCode;
 
             // 2016-04-11 吉日嘎拉 已经被删除的网点不需要缓存了
             if (organizationEntity.Deleted == 1)
@@ -186,9 +186,9 @@ namespace DotNet.Business
                 key = "All:" + code.ToLower();
                 CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
             }
-            if (!string.IsNullOrEmpty(fullName))
+            if (!string.IsNullOrEmpty(name))
             {
-                key = "All:" + fullName.ToLower();
+                key = "All:" + name.ToLower();
                 CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
             }
             if (!string.IsNullOrEmpty(simpleSpelling))
@@ -208,11 +208,11 @@ namespace DotNet.Business
             var id = organizationEntity.Id;
             // 2016-01-06 吉日嘎拉 网点编号不能大小写转换，否则查询就乱套了，不能改变原样
             var code = organizationEntity.Code;
-            var fullName = organizationEntity.FullName;
+            var name = organizationEntity.Name;
             var simpleSpelling = organizationEntity.SimpleSpelling;
             var enabled = organizationEntity.Enabled.ToString();
             var deletionStateCode = organizationEntity.Deleted.ToString();
-            var organization = id + ";" + code + ";" + fullName + ";" + enabled + ";" + deletionStateCode;
+            var organization = id + ";" + code + ";" + name + ";" + enabled + ";" + deletionStateCode;
             // 2016-04-11 吉日嘎拉 已经被删除的网点不需要缓存了
             if (organizationEntity.Deleted == 1)
             {
@@ -231,9 +231,9 @@ namespace DotNet.Business
                     key = "ParentId:" + parentId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "ParentId:" + parentId + ":" + fullName.ToLower();
+                    key = "ParentId:" + parentId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -255,11 +255,11 @@ namespace DotNet.Business
             var id = organizationEntity.Id;
             // 2016-01-06 吉日嘎拉 网点编号不能大小写转换，否则查询就乱套了，不能改变原样
             var code = organizationEntity.Code;
-            var fullName = organizationEntity.FullName;
+            var name = organizationEntity.Name;
             var simpleSpelling = organizationEntity.SimpleSpelling;
             var enabled = organizationEntity.Enabled.ToString();
             var deletionStateCode = organizationEntity.Deleted.ToString();
-            var organization = id + ";" + code + ";" + fullName + ";" + enabled + ";" + deletionStateCode;
+            var organization = id + ";" + code + ";" + name + ";" + enabled + ";" + deletionStateCode;
             // 2016-04-11 吉日嘎拉 已经被删除的网点不需要缓存了
             if (organizationEntity.Deleted == 1)
             {
@@ -278,9 +278,9 @@ namespace DotNet.Business
                     key = "CompanyId:" + organizationEntity.CompanyId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "CompanyId:" + organizationEntity.CompanyId + ":" + fullName.ToLower();
+                    key = "CompanyId:" + organizationEntity.CompanyId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -302,11 +302,11 @@ namespace DotNet.Business
             var id = organizationEntity.Id;
             // 2016-01-06 吉日嘎拉 网点编号不能大小写转换，否则查询就乱套了，不能改变原样
             var code = organizationEntity.Code;
-            var fullName = organizationEntity.FullName;
+            var name = organizationEntity.Name;
             var simpleSpelling = organizationEntity.SimpleSpelling;
             var enabled = organizationEntity.Enabled.ToString();
             var deletionStateCode = organizationEntity.Deleted.ToString();
-            var organization = id + ";" + code + ";" + fullName + ";" + enabled + ";" + deletionStateCode;
+            var organization = id + ";" + code + ";" + name + ";" + enabled + ";" + deletionStateCode;
             // 2016-04-11 吉日嘎拉 已经被删除的网点不需要缓存了
             if (organizationEntity.Deleted == 1)
             {
@@ -326,9 +326,9 @@ namespace DotNet.Business
                     key = "CostCenterId:" + costCenterId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "CostCenterId:" + costCenterId + ":" + fullName.ToLower();
+                    key = "CostCenterId:" + costCenterId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -348,9 +348,9 @@ namespace DotNet.Business
                     key = "ProvinceId:" + provinceId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "ProvinceId:" + provinceId + ":" + fullName.ToLower();
+                    key = "ProvinceId:" + provinceId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -370,9 +370,9 @@ namespace DotNet.Business
                     key = "CityId:" + cityId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "CityId:" + cityId + ":" + fullName.ToLower();
+                    key = "CityId:" + cityId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -392,9 +392,9 @@ namespace DotNet.Business
                     key = "StartId:" + startId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(fullName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    key = "StartId:" + startId + ":" + fullName.ToLower();
+                    key = "StartId:" + startId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
                 if (!string.IsNullOrEmpty(simpleSpelling))
@@ -416,7 +416,7 @@ namespace DotNet.Business
             {
                 Id = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldId].ToString()),
                 Code = dataReader[BaseOrganizationEntity.FieldCode].ToString(),
-                FullName = dataReader[BaseOrganizationEntity.FieldFullName].ToString(),
+                Name = dataReader[BaseOrganizationEntity.FieldName].ToString(),
                 SimpleSpelling = dataReader[BaseOrganizationEntity.FieldSimpleSpelling].ToString().ToLower(),
                 CostCenterId = dataReader[BaseOrganizationEntity.FieldCostCenterId].ToString(),
                 ProvinceId = BaseUtil.ConvertToInt(dataReader[BaseOrganizationEntity.FieldProvinceId].ToString()),

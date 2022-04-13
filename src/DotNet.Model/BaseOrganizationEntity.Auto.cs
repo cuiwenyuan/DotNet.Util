@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOrganizationEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ namespace DotNet.Model
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
-        public string FullName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 简称
@@ -409,9 +409,9 @@ namespace DotNet.Model
             {
                 Code = BaseUtil.ConvertToString(dr[FieldCode]);
             }
-            if (dr.ContainsColumn(FieldFullName))
+            if (dr.ContainsColumn(FieldName))
             {
-                FullName = BaseUtil.ConvertToString(dr[FieldFullName]);
+                Name = BaseUtil.ConvertToString(dr[FieldName]);
             }
             if (dr.ContainsColumn(FieldShortName))
             {
@@ -665,7 +665,7 @@ namespace DotNet.Model
         ///<summary>
         /// 名称
         ///</summary>
-        public const string FieldFullName = "FullName";
+        public const string FieldName = "Name";
 
         ///<summary>
         /// 简称

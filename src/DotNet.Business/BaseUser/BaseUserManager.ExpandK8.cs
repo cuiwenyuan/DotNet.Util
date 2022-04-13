@@ -62,7 +62,7 @@ namespace DotNet.Business
             userEntity.Deleted = 0;
             if (userEntity.CompanyId > 0)
             {
-                if (string.IsNullOrEmpty(organizationManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, userEntity.CompanyName), BaseOrganizationEntity.FieldId)))
+                if (string.IsNullOrEmpty(organizationManager.GetProperty(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, userEntity.CompanyName), BaseOrganizationEntity.FieldId)))
                 {
                     Console.WriteLine("无CompanyId " + userEntity.Id + ":" + userEntity.UserName + ":" + userEntity.RealName);
                     return 0;
