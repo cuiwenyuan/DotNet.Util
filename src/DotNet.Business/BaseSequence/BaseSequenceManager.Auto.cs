@@ -308,7 +308,7 @@ namespace DotNet.Business
         private void SetEntity(SqlBuilder sqlBuilder, BaseSequenceEntity entity)
         {
             SetEntityExtend(sqlBuilder, entity);
-            sqlBuilder.SetValue(BaseSequenceEntity.FieldFullName, entity.FullName);
+            sqlBuilder.SetValue(BaseSequenceEntity.FieldName, entity.Name);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldPrefix, entity.Prefix);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldDelimiter, entity.Delimiter);
             sqlBuilder.SetValue(BaseSequenceEntity.FieldSequence, entity.Sequence);

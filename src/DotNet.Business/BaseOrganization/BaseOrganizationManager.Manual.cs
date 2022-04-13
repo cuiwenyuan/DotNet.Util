@@ -44,7 +44,7 @@ namespace DotNet.Business
             {
                 //父项不等于空的时候，才检查名称重复
                 parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, entity.ParentId));
-                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, entity.FullName));
+                parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, entity.Name));
                 parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1));
                 parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
             }
@@ -118,7 +118,7 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, entity.ParentId),
-                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, entity.FullName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, entity.Name),
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
 
@@ -150,12 +150,12 @@ namespace DotNet.Business
                     if (string.IsNullOrEmpty(entity.QuickQuery))
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
-                        entity.QuickQuery = StringUtil.GetPinyin(entity.FullName).ToLower();
+                        entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                     }
                     if (string.IsNullOrEmpty(entity.SimpleSpelling))
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
-                        entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.FullName).ToLower();
+                        entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();
                     }
 
                     // 获取原始实体信息
@@ -173,25 +173,25 @@ namespace DotNet.Business
                         switch (entity.CategoryCode)
                         {
                             case "Company":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.FullName));
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.Name));
                                 break;
                             case "SubCompany":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.FullName));
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.Name));
                                 break;
                             case "Department":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.FullName));
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.Name));
                                 break;
                             case "SubDepartment":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.FullName));
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.Name));
                                 break;
                             case "Workgroup":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.FullName));
+                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.Name));
                                 break;
 
                         }
                         // 03：组织机构修改时，文件夹同步更新
                         // BaseFolderManager folderManager = new BaseFolderManager(this.DbHelper, this.UserInfo);
-                        // folderManager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.FullName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
+                        // folderManager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
                         if (result == 1)
                         {
                             // AfterUpdate(entity);
@@ -419,7 +419,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseOrganizationEntity.FieldFullName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" AND (" + BaseOrganizationEntity.FieldName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseOrganizationEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseOrganizationEntity.FieldShortName + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseOrganizationEntity.FieldStandardName + " LIKE N'%" + searchKey + "%'");
@@ -451,7 +451,7 @@ namespace DotNet.Business
             dt.Columns.Add("Id", typeof(int));
             dt.Columns.Add("ParentId", typeof(int));
             dt.Columns.Add("Code", typeof(string));
-            dt.Columns.Add("FullName", typeof(string));
+            dt.Columns.Add("Name", typeof(string));
             dt.Columns.Add("CategoryCode", typeof(string));
             dt.Columns.Add("Description", typeof(string));
             dt.Columns.Add("Enabled", typeof(int));
@@ -506,7 +506,7 @@ namespace DotNet.Business
                     row["ParentId"] = int.Parse(dr[i]["ParentId"].ToString());
                 }
                 row["Code"] = dr[i]["Code"].ToString();
-                row["FullName"] = dr[i]["FullName"].ToString();
+                row["Name"] = dr[i]["Name"].ToString();
                 row["CategoryCode"] = dr[i]["CategoryCode"].ToString();
                 row["Description"] = dr[i]["Description"].ToString();
                 row["Enabled"] = int.Parse(dr[i]["Enabled"].ToString());
@@ -568,7 +568,7 @@ namespace DotNet.Business
                 var entity = GetEntity(id);
                 if (entity != null)
                 {
-                    result = entity.FullName;
+                    result = entity.Name;
                 }
             }
             return result;

@@ -178,7 +178,7 @@ namespace DotNet.Business
 
                 // 设置用户的公司主键，有时候不需要同步所有的账户，只同步增量账户
                 // 设置用户的公司主键
-                // commandText = @"UPDATE basestaff SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = basestaff.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''";
+                // commandText = @"UPDATE basestaff SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.name = basestaff.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''";
                 // 公司名称重复的数据需要找出来
                 DbHelper.ExecuteNonQuery(commandText);
                 Console.WriteLine(commandText);

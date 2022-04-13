@@ -664,7 +664,7 @@ namespace DotNet.Business
                     //    if (organizationEntity != null)
                     //    {
                     //        userEntity.CompanyId = organizationEntity.Id.ToString();
-                    //        userEntity.CompanyName = organizationEntity.FullName;
+                    //        userEntity.CompanyName = organizationEntity.Name;
                     //        result = LogonByEntity(userEntity, password, openId, systemCode, ipAddress, ipAddressName, macAddress, computerName, checkUserPassword, validateUserOnly, checkMacAddress);
                     //    }
 

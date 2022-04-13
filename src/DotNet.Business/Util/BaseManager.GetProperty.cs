@@ -82,39 +82,39 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public virtual string GetCodeByFullName(string fullName) 获取编号
+        #region public virtual string GetCodeByName(string name) 获取编号
         /// <summary>
         /// 获取名称
         /// </summary>
-        /// <param name="fullName">名称</param>
+        /// <param name="name">名称</param>
         /// <returns>编码</returns>
-        public virtual string GetCodeByFullName(string fullName)
+        public virtual string GetCodeByName(string name)
         {
-            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldFullName, fullName), BaseUtil.FieldCode);
+            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldName, name), BaseUtil.FieldCode);
         }
         #endregion
 
-        #region public virtual string GetFullNameByCode(string code) 获取名称
+        #region public virtual string GetNameByCode(string code) 获取名称
         /// <summary>
         /// 获取名称
         /// </summary>
         /// <param name="code">编码</param>
         /// <returns>名称</returns>
-        public virtual string GetFullNameByCode(string code)
+        public virtual string GetNameByCode(string code)
         {
-            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldCode, code), BaseUtil.FieldFullName);
+            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldCode, code), BaseUtil.FieldName);
         }
         #endregion
 
-        #region public virtual string GetFullNameById(string id) 获取名称
+        #region public virtual string GetNameById(string id) 获取名称
         /// <summary>
         /// 获取名称
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>名称</returns>
-        public virtual string GetFullNameById(string id)
+        public virtual string GetNameById(string id)
         {
-            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldId, id), BaseUtil.FieldFullName);
+            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldId, id), BaseUtil.FieldName);
         }
         #endregion
 
@@ -173,16 +173,16 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public virtual string GetFullNameByCategory(string categoryCode, string code) 获取名称
+        #region public virtual string GetNameByCategory(string categoryCode, string code) 获取名称
         /// <summary>
         /// 获取名称
         /// </summary>
         /// <param name="categoryCode">类别主键</param>
         /// <param name="code">编码</param>
         /// <returns>名称</returns>
-        public virtual string GetFullNameByCategory(string categoryCode, string code)
+        public virtual string GetNameByCategory(string categoryCode, string code)
         {
-            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldCategoryCode, categoryCode), new KeyValuePair<string, object>(BaseUtil.FieldCode, code), BaseUtil.FieldFullName);
+            return GetProperty(new KeyValuePair<string, object>(BaseUtil.FieldCategoryCode, categoryCode), new KeyValuePair<string, object>(BaseUtil.FieldCode, code), BaseUtil.FieldName);
         }
         #endregion
 

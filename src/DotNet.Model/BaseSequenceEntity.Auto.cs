@@ -36,7 +36,7 @@ namespace DotNet.Model
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
-        public string FullName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 前缀
@@ -169,9 +169,9 @@ namespace DotNet.Model
             {
                 Id = BaseUtil.ConvertToInt(dr[FieldId]);
             }
-            if (dr.ContainsColumn(FieldFullName))
+            if (dr.ContainsColumn(FieldName))
             {
-                FullName = BaseUtil.ConvertToString(dr[FieldFullName]);
+                Name = BaseUtil.ConvertToString(dr[FieldName]);
             }
             if (dr.ContainsColumn(FieldPrefix))
             {
@@ -270,7 +270,7 @@ namespace DotNet.Model
         ///<summary>
         /// 名称
         ///</summary>
-        public const string FieldFullName = "FullName";
+        public const string FieldName = "Name";
 
         ///<summary>
         /// 前缀

@@ -26,7 +26,7 @@ namespace DotNet.Util
         /// <summary>
         /// 记录服务调用日志
         /// </summary>
-        public static bool RecordLog = false;
+        public static bool RecordLog = true;
 
         /// <summary>
         /// 是否登记异常

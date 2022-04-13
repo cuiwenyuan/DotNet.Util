@@ -49,7 +49,7 @@ namespace DotNet.Business
             // 把部门的主键找出来
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, organizationName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, organizationName),
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };

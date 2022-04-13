@@ -106,7 +106,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
-                sb.Append(" AND (" + BaseOrganizationEntity.FieldFullName + " LIKE N'%" + searchKey + "%' OR " + BaseOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
+                sb.Append(" AND (" + BaseOrganizationEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
@@ -149,7 +149,7 @@ namespace DotNet.Business
 
             foreach (var entity in list)
             {
-                result += "," + entity.FullName;
+                result += "," + entity.Name;
             }
             if (!string.IsNullOrEmpty(result))
             {
@@ -176,12 +176,12 @@ namespace DotNet.Business
         /// <summary>
         /// 按名称获取实体
         /// </summary>
-        /// <param name="fullName">名称</param>
-        public BaseOrganizationEntity GetEntityByName(string fullName)
+        /// <param name="name">名称</param>
+        public BaseOrganizationEntity GetEntityByName(string name)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldFullName, fullName),
+                new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, name),
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
             return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(parameters));
@@ -228,14 +228,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public DataTable GetFullNameDepartment(DataTable dt)
+        public DataTable GetNameDepartment(DataTable dt)
         {
             foreach (DataRow dr in dt.Rows)
             {
                 var subCompanyNameEntity = GetEntity(dr[BaseOrganizationEntity.FieldParentId].ToString());
-                dr[BaseOrganizationEntity.FieldFullName] = subCompanyNameEntity.FullName + "--" + dr[BaseOrganizationEntity.FieldFullName];
+                dr[BaseOrganizationEntity.FieldName] = subCompanyNameEntity.Name + "--" + dr[BaseOrganizationEntity.FieldName];
                 var companyEntity = GetEntity(subCompanyNameEntity.ParentId.ToString());
-                dr[BaseOrganizationEntity.FieldFullName] = companyEntity.FullName + "--" + dr[BaseOrganizationEntity.FieldFullName];
+                dr[BaseOrganizationEntity.FieldName] = companyEntity.Name + "--" + dr[BaseOrganizationEntity.FieldName];
             }
             return dt;
         }
@@ -384,7 +384,7 @@ namespace DotNet.Business
             {
                 // 建立表的列，不能重复建立
                 _organizationTable.Columns.Add(new DataColumn(BaseOrganizationEntity.FieldId, Type.GetType("System.Int32")));
-                _organizationTable.Columns.Add(new DataColumn(BaseOrganizationEntity.FieldFullName, Type.GetType("System.String")));
+                _organizationTable.Columns.Add(new DataColumn(BaseOrganizationEntity.FieldName, Type.GetType("System.String")));
             }
 
             // 查找子部门
@@ -395,7 +395,7 @@ namespace DotNet.Business
                 {
                     var dr = _organizationTable.NewRow();
                     dr[BaseOrganizationEntity.FieldId] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldId];
-                    dr[BaseOrganizationEntity.FieldFullName] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldFullName];
+                    dr[BaseOrganizationEntity.FieldName] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldName];
                     _organizationTable.Rows.Add(dr);
                     GetSubOrganization(BaseUtil.ConvertToInt(_dtOrganization.Rows[i][BaseOrganizationEntity.FieldId]));
                 }
@@ -418,7 +418,7 @@ namespace DotNet.Business
                 {
                     var dr = _organizationTable.NewRow();
                     dr[BaseOrganizationEntity.FieldId] = _dtOrganization.Rows[i][BaseOrganizationEntity.FieldId];
-                    dr[BaseOrganizationEntity.FieldFullName] = _head + _dtOrganization.Rows[i][BaseOrganizationEntity.FieldFullName];
+                    dr[BaseOrganizationEntity.FieldName] = _head + _dtOrganization.Rows[i][BaseOrganizationEntity.FieldName];
                     _organizationTable.Rows.Add(dr);
                     GetSubOrganization(BaseUtil.ConvertToInt(_dtOrganization.Rows[i][BaseOrganizationEntity.FieldId]));
                 }
@@ -517,12 +517,12 @@ namespace DotNet.Business
                 if (string.IsNullOrEmpty(entity.QuickQuery))
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
-                    entity.QuickQuery = StringUtil.GetPinyin(entity.FullName).ToLower();
+                    entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                 }
                 if (string.IsNullOrEmpty(entity.SimpleSpelling))
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
-                    entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.FullName).ToLower();
+                    entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();
                 }
                 result += UpdateEntity(entity);
             }
@@ -561,14 +561,14 @@ namespace DotNet.Business
                 searchKey = searchKey.Trim().ToLower();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
                     }
-                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldFullName, searchKey));
+                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldName, searchKey));
                 }
                 sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
                 return DbHelper.Fill(sql, dbParameters.ToArray());
@@ -584,14 +584,14 @@ namespace DotNet.Business
                 searchKey = searchKey.Trim();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldFullName, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldFullName));
+                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
                     }
-                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldFullName, searchKey));
+                    dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldName, searchKey));
                 }
 
                 if (!string.IsNullOrEmpty(parentId))
@@ -721,7 +721,7 @@ namespace DotNet.Business
                                          ,b.WebEnabled AS Enabled
                                          ,o.SendFee
                                          ,o.LevelTwoTransferFee
-                                         ,o.FullName
+                                         ,o.Name
                                          ,o.Updateon
                                          ,b.WebsiteName
                                          ,b.Allow_Topayment
@@ -774,14 +774,14 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存获取
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static string GetIdByNameByCache(string fullName)
+        public static string GetIdByNameByCache(string name)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(fullName))
+            if (!string.IsNullOrEmpty(name))
             {
-                var entity = GetEntityByNameByCache(fullName);
+                var entity = GetEntityByNameByCache(name);
                 if (entity != null)
                 {
                     result = entity.Id.ToString();
@@ -802,7 +802,7 @@ namespace DotNet.Business
                 var entity = GetEntityByCodeByCache(code);
                 if (entity != null)
                 {
-                    result = entity.FullName;
+                    result = entity.Name;
                 }
             }
             return result;
@@ -842,7 +842,7 @@ namespace DotNet.Business
             var entity = GetEntityByCache(id);
             if (entity != null)
             {
-                result = entity.FullName;
+                result = entity.Name;
             }
 
             return result;
@@ -906,7 +906,7 @@ namespace DotNet.Business
                     {
                         SetCache(entity);
                         result++;
-                        Console.WriteLine(result + " : " + entity.FullName);
+                        Console.WriteLine(result + " : " + entity.Name);
                     }
                 }
                 dataReader.Close();
