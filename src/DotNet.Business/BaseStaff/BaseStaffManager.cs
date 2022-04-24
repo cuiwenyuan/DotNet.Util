@@ -17,7 +17,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseStaffManager
-    /// 员工（职员）表管理层
+    /// 员工管理层
     /// 
     /// 修改记录
     /// 

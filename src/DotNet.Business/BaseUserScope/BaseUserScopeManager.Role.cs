@@ -85,7 +85,7 @@ namespace DotNet.Business
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             if (!string.IsNullOrEmpty(permissionId))
             {
-                // 对应哪个角色表
+                // 对应哪个角色
                 var roleTableName = systemCode + "Role";
                 var entity = new BasePermissionScopeEntity
                 {

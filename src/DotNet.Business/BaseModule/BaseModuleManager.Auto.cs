@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseModuleManager
-    /// 模块（菜单）表
+    /// 模块菜单操作
     /// 
     /// 修改记录
     /// 

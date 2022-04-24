@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseUserEntity
-    /// 系统用户表
+    /// 用户账号
     ///
     /// 修改记录
     ///
@@ -616,9 +616,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 系统用户表
+        /// 用户账号
         ///</summary>
-        [FieldDescription("系统用户表")]
+        [FieldDescription("用户账号")]
         public const string CurrentTableName = "BaseUser";
 
         ///<summary>

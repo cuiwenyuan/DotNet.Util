@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserOpenAuthManager
-    /// 用户OAuth表管理层
+    /// 用户OAuth管理层
     /// 
     /// 修改记录
     /// 

@@ -14,7 +14,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseOrganizationManager
-    /// 组织机构、部门表
+    /// 组织机构
     ///
     /// 修改记录
     ///

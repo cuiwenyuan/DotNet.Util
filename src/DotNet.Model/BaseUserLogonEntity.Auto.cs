@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseUserLogonEntity
-    /// 系统用户登录信息表
+    /// 用户登录信息
     ///
     /// 修改记录
     ///
@@ -467,9 +467,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 系统用户登录信息表
+        /// 用户登录信息
         ///</summary>
-        [FieldDescription("系统用户登录信息表")]
+        [FieldDescription("用户登录信息")]
         public const string CurrentTableName = "BaseUserLogon";
 
         ///<summary>

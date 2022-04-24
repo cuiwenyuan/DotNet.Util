@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseOrganizationEntity
-    /// 组织机构、部门表
+    /// 组织机构
     ///
     /// 修改记录
     ///
@@ -637,9 +637,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 组织机构、部门表
+        /// 组织机构
         ///</summary>
-        [FieldDescription("组织机构、部门表")]
+        [FieldDescription("组织机构")]
         public const string CurrentTableName = "BaseOrganization";
 
         ///<summary>

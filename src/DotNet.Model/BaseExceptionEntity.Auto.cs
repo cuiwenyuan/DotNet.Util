@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseExceptionEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseExceptionEntity
-    /// 系统异常表
+    /// 系统异常
     /// 
     /// 修改记录
     /// 
@@ -336,9 +336,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 系统异常表
+        /// 系统异常
         ///</summary>
-        [FieldDescription("系统异常表")]
+        [FieldDescription("系统异常")]
         public const string CurrentTableName = "BaseException";
 
         ///<summary>

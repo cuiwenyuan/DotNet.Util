@@ -35,87 +35,6 @@ namespace DotNet.Model
         {
         }
 
-        /// <summary>
-        /// 从数据行读取
-        /// </summary>
-        /// <param name="dr">数据行</param>
-        public virtual void GetFromExtend(DataRow dr)
-        {
-            GetFromExtend(new DrDataRow(dr));
-        }
-
-        /// <summary>
-        /// 从数据流读取
-        /// </summary>
-        /// <param name="dataReader">数据流</param>
-        public virtual void GetFromExtend(IDataReader dataReader)
-        {
-            GetFromExtend(new DrDataReader(dataReader));
-        }
-
-        /// <summary>
-        /// 从自定义数据流读取
-        /// </summary>
-        /// <param name="dr">数据流</param>
-        public virtual void GetFromExtend(IDataRow dr)
-        {
-
-        }
-
-        /// <summary>
-        /// 可以按各种特殊需要获取字符串的长度
-        /// </summary>
-        /// <param name="text">字符串</param>
-        /// <returns>长度</returns>
-        private int GetLength(string text)
-        {
-            // string text = " 【中文】（12.21）(ァぁ)[En] ";
-            //  var String_Len = text.Length;
-            // var ASCII_Len = Encoding.ASCII.GetBytes(text).Length;
-            // var Default_Len = Encoding.Default.GetBytes(text).Length;
-            // var BigEndianUnicode_Len = Encoding.BigEndianUnicode.GetBytes(text).Length;
-            // var Unicode_Len = Encoding.Unicode.GetBytes(text).Length;
-            // var UTF32_Len = Encoding.UTF32.GetBytes(text).Length;
-            // var UTF7_Len = Encoding.UTF7.GetBytes(text).Length;
-            // var UTF8_Len = Encoding.UTF8.GetBytes(text).Length;
-            // var GB2312_Len = Encoding.GetEncoding("GB2312").GetBytes(text).Length;
-            return Encoding.GetEncoding("GB2312").GetBytes(text).Length;
-        }
-
-        /// <summary>
-        /// 后台输入验证
-        /// 2013.06.12 JiRiGaLa 完善
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool IsValid(out string message)
-        {
-            var returnValue = true;
-            message = string.Empty;
-            foreach (var propertyInfo in GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                var name = propertyInfo.Name;
-                var value = propertyInfo.GetValue(this, null);
-                if ((propertyInfo.PropertyType.IsValueType || propertyInfo.PropertyType.Name.StartsWith("String")) && value != null)
-                {
-                    var validObject = (GetType().GetProperty(name)?.GetCustomAttributes(typeof(StringLengthAttribute), false));
-                    if (validObject != null && validObject.Length > 0)
-                    {
-                        var stringLengthAttribute = (StringLengthAttribute)validObject[0];
-                        if (stringLengthAttribute.MaximumLength < GetLength(value.ToString()))
-                        {
-                            returnValue = false;
-                            // name 这个可以是返回的字段
-                            // value 这个可以是返回的出错的内容
-                            // 这里是返回消息
-                            message = stringLengthAttribute.ErrorMessage;
-                            break;
-                        }
-                    }
-                }
-            }
-            return returnValue;
-        }
-
         #region IBaseEntity 成员
         /// <summary>
         /// GetFrom
@@ -162,6 +81,82 @@ namespace DotNet.Model
         }
 
         #endregion
+
+        /// <summary>
+        /// 从数据行读取
+        /// </summary>
+        /// <param name="dr">数据行</param>
+        public virtual void GetFromExtend(DataRow dr)
+        {
+            GetFromExtend(new DrDataRow(dr));
+        }
+
+        /// <summary>
+        /// 从数据流读取
+        /// </summary>
+        /// <param name="dataReader">数据流</param>
+        public virtual void GetFromExtend(IDataReader dataReader)
+        {
+            GetFromExtend(new DrDataReader(dataReader));
+        }
+
+        /// <summary>
+        /// 从自定义数据流读取
+        /// </summary>
+        /// <param name="dr">数据流</param>
+        public virtual void GetFromExtend(IDataRow dr)
+        {
+
+        }
+
+        /// <summary>
+        /// 可以按各种特殊需要获取字符串的长度
+        /// </summary>
+        /// <param name="text">字符串</param>
+        /// <param name="encoding">编码，默认gb2312，可选UTF8</param>
+        /// <returns>长度</returns>
+        private int GetLength(string text, string encoding = "gb2312")
+        {
+            return Encoding.GetEncoding(encoding).GetBytes(text).Length;
+        }
+
+        #region public virtual bool IsValid(out string message)
+        /// <summary>
+        /// 后台输入验证
+        /// 2013.06.12 JiRiGaLa 完善
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsValid(out string message)
+        {
+            var result = true;
+            message = string.Empty;
+            foreach (var propertyInfo in GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var name = propertyInfo.Name;
+                var value = propertyInfo.GetValue(this, null);
+                if ((propertyInfo.PropertyType.IsValueType || propertyInfo.PropertyType.Name.StartsWith("String")) && value != null)
+                {
+                    var validObject = (GetType().GetProperty(name)?.GetCustomAttributes(typeof(StringLengthAttribute), false));
+                    if (validObject != null && validObject.Length > 0)
+                    {
+                        var stringLengthAttribute = (StringLengthAttribute)validObject[0];
+                        if (stringLengthAttribute.MaximumLength < GetLength(value.ToString()))
+                        {
+                            result = false;
+                            // name 这个可以是返回的字段
+                            // value 这个可以是返回的出错的内容
+                            // 这里是返回消息
+                            message = stringLengthAttribute.ErrorMessage;
+                            break;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region public static T Create<T>()
         /// <summary>
         /// 创建实体
         /// </summary>
@@ -171,6 +166,9 @@ namespace DotNet.Model
         {
             return new T();
         }
+        #endregion
+
+        #region public static T Create<T>(DataTable dt)
         /// <summary>
         /// 创建实体
         /// </summary>
@@ -187,6 +185,9 @@ namespace DotNet.Model
             entity.GetFrom(dt.Rows[0]);
             return entity;
         }
+        #endregion
+
+        #region public static T Create<T>(DataRow dr)
         /// <summary>
         /// 创建实体
         /// </summary>
@@ -199,6 +200,9 @@ namespace DotNet.Model
             entity.GetFrom(dr);
             return entity;
         }
+        #endregion
+
+        #region public static T Create<T>(IDataReader dataReader, bool close = true)
         /// <summary>
         /// 创建实体(没有对象时需要返回null)
         /// </summary>
@@ -233,6 +237,9 @@ namespace DotNet.Model
             }
             return entity;
         }
+        #endregion
+
+        #region GetList public static List<T> GetList<T>(DataTable dt)
         /// <summary>
         /// 获取List
         /// </summary>
@@ -252,6 +259,9 @@ namespace DotNet.Model
             }
             return ls;
         }
+        #endregion
+
+        #region public static List<T> GetList<T>(IDataReader dataReader)
         /// <summary>
         /// 获取List
         /// </summary>
@@ -274,5 +284,6 @@ namespace DotNet.Model
             }
             return ls;
         }
+        #endregion
     }
 }

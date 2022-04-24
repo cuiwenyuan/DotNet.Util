@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseParameterEntity
-    /// 参数表的基类结构定义
+    /// 参数
     ///
     /// 修改记录
     /// 
@@ -237,9 +237,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 参数表的基类结构定义
+        /// 参数
         ///</summary>
-        [FieldDescription("参数表的基类结构定义")]
+        [FieldDescription("参数")]
         public const string CurrentTableName = "BaseParameter";
 
         ///<summary>

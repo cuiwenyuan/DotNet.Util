@@ -14,7 +14,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserRoleManager
-    /// 用户角色表
+    /// 用户角色
     /// 
     /// 修改记录
     ///

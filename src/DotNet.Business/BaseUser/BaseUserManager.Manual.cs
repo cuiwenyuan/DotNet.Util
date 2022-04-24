@@ -40,11 +40,14 @@ namespace DotNet.Business
                 //操作日志
                 var entity = new BaseLogEntity
                 {
-                    UserId = int.Parse(UserInfo.Id),
-                    RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
                     Description = "设置超级管理员：" + ((result >= 1) ? "成功" : "失败")
                 };
+                if (UserInfo != null)
+                {
+                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.RealName = UserInfo.RealName;
+                }
                 new BaseLogManager(UserInfo).Add(entity);
             }
 
@@ -68,11 +71,14 @@ namespace DotNet.Business
                 //操作日志
                 var entity = new BaseLogEntity
                 {
-                    UserId = int.Parse(UserInfo.Id),
-                    RealName = UserInfo.RealName,
                     Parameters = userIds.ToString(),
                     Description = "撤销设置超级管理员：" + ((result >= 1) ? "成功" : "失败")
                 };
+                if (UserInfo != null)
+                {
+                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.RealName = UserInfo.RealName;
+                }
                 new BaseLogManager(UserInfo).Add(entity);
             }
 

@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserLogonManager
-    /// 系统用户登录信息表
+    /// 用户登录信息
     /// 
     /// 修改记录
     ///

@@ -17,7 +17,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseOperationLogManager
-    /// 操作日志表管理层
+    /// 操作日志管理层
     /// 
     /// 修改记录
     /// 

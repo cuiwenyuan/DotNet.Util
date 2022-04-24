@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseChangeLogManager
-    /// 变更日志表
+    /// 变更日志
     /// 
     /// 修改记录
     /// 

@@ -17,7 +17,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseParameterManager
-    /// 参数表的基类结构定义管理层
+    /// 参数管理层
     /// 
     /// 修改记录
     /// 
