@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BasePermissionEntity
-    /// 操作权限表
+    /// 权限
     ///
     /// 修改记录
     ///
@@ -257,9 +257,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 操作权限表
+        /// 权限
         ///</summary>
-        [FieldDescription("操作权限表")]
+        [FieldDescription("权限")]
         public const string CurrentTableName = "BasePermission";
 
         ///<summary>

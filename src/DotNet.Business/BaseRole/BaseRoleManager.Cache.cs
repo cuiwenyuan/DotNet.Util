@@ -12,7 +12,7 @@ namespace DotNet.Business
 
     /// <remarks>
     /// BaseRoleManager
-    /// 角色表缓存
+    /// 角色缓存
     /// 
     /// 修改记录
     /// 

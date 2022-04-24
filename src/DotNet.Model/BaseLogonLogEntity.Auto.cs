@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseLogonLogEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -397,9 +397,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 登录日志表
+        /// 登录日志
         ///</summary>
-        [FieldDescription("登录日志表")]
+        [FieldDescription("登录日志")]
         public const string CurrentTableName = "BaseLogonLog";
 
         ///<summary>

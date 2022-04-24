@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseUserOrganizationEntity
-    /// 用户组织关系（兼任）表
+    /// 用户兼任
     /// 
     /// 修改记录
     /// 
@@ -247,9 +247,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 用户组织关系（兼任）表
+        /// 用户兼任
         ///</summary>
-        [FieldDescription("用户组织关系（兼任）表")]
+        [FieldDescription("用户兼任")]
         public const string CurrentTableName = "BaseUserOrganization";
 
         ///<summary>

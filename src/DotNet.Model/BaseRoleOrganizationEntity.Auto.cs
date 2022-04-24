@@ -12,7 +12,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseRoleOrganizationEntity
-    /// 角色组织机构关系表
+    /// 角色组织机构
     /// 
     /// 修改记录
     /// 
@@ -216,9 +216,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 角色组织机构关系表
+        /// 角色组织机构
         ///</summary>
-        [FieldDescription("角色组织机构关系表")]
+        [FieldDescription("角色组织机构")]
         public const string CurrentTableName = "BaseRoleOrganization";
 
         ///<summary>

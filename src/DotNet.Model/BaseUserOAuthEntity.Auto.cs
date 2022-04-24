@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOAuthEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseUserOAuthEntity
-    /// 用户OAuth表
+    /// 用户OAuth
     /// 
     /// 修改记录
     /// 
@@ -256,9 +256,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 用户OAuth表
+        /// 用户OAuth
         ///</summary>
-        [FieldDescription("用户OAuth表")]
+        [FieldDescription("用户OAuth")]
         public const string CurrentTableName = "BaseUserOAuth";
 
         ///<summary>

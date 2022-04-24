@@ -21,7 +21,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        #region 删除缓存
+        #region 删除DataTable缓存
 
         /// <summary>
         /// 删除缓存
@@ -40,7 +40,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 删除缓存
+        #region 删除Entity缓存
 
         /// <summary>
         /// 删除缓存
@@ -64,7 +64,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 删除缓存
+        #region 删除Entity缓存
 
         /// <summary>
         /// 删除缓存

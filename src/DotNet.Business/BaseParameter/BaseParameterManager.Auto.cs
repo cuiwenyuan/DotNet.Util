@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseParameterManager
-    /// 参数表的基类结构定义
+    /// 参数
     /// 
     /// 修改记录
     /// 
