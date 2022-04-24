@@ -17,7 +17,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseRoleOrganizationManager
-    /// 角色组织机构关系表管理层
+    /// 角色组织机构管理层
     /// 
     /// 修改记录
     /// 

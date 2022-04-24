@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BasePermissionManager
-    /// 操作权限表
+    /// 权限
     ///
     /// 修改记录
     ///

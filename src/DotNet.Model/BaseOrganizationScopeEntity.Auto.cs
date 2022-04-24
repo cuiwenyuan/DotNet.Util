@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOrganizationScopeEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// organizeScopeEntity
-    /// 基于组织机构的权限范围
+    /// 组织机构权限范围
     /// 
     /// 修改记录
     /// 
@@ -357,9 +357,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 基于组织机构的权限范围
+        /// 组织机构权限范围
         ///</summary>
-        [FieldDescription("基于组织机构的权限范围")]
+        [FieldDescription("组织机构权限范围")]
         public const string CurrentTableName = "BaseOrganizationScope";
 
         ///<summary>

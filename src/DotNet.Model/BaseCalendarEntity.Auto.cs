@@ -48,25 +48,25 @@ namespace DotNet.Model
         /// 年度
         /// </summary>
         [FieldDescription("年度")]
-        public int FiscalYear { get; set; }
+        public int? FiscalYear { get; set; } = null;
 
         /// <summary>
         /// 月份
         /// </summary>
         [FieldDescription("月份")]
-        public int FiscalMonth { get; set; }
+        public int? FiscalMonth { get; set; } = null;
 
         /// <summary>
         /// 日
         /// </summary>
         [FieldDescription("日")]
-        public int FiscalDay { get; set; }
+        public int? FiscalDay { get; set; } = null;
 
         /// <summary>
         /// 操作日期
         /// </summary>
         [FieldDescription("操作日期")]
-        public DateTime TransactionDate { get; set; } = DateTime.Now;
+        public DateTime? TransactionDate { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 排序编号
@@ -167,19 +167,19 @@ namespace DotNet.Model
             }
             if (dr.ContainsColumn(FieldFiscalYear))
             {
-                FiscalYear = BaseUtil.ConvertToInt(dr[FieldFiscalYear]);
+                FiscalYear = BaseUtil.ConvertToNullableInt(dr[FieldFiscalYear]);
             }
             if (dr.ContainsColumn(FieldFiscalMonth))
             {
-                FiscalMonth = BaseUtil.ConvertToByteInt(dr[FieldFiscalMonth]);
+                FiscalMonth = BaseUtil.ConvertToNullableByteInt(dr[FieldFiscalMonth]);
             }
             if (dr.ContainsColumn(FieldFiscalDay))
             {
-                FiscalDay = BaseUtil.ConvertToByteInt(dr[FieldFiscalDay]);
+                FiscalDay = BaseUtil.ConvertToNullableByteInt(dr[FieldFiscalDay]);
             }
             if (dr.ContainsColumn(FieldTransactionDate))
             {
-                TransactionDate = BaseUtil.ConvertToDateTime(dr[FieldTransactionDate]);
+                TransactionDate = BaseUtil.ConvertToNullableDateTime(dr[FieldTransactionDate]);
             }
             if (dr.ContainsColumn(FieldSortCode))
             {

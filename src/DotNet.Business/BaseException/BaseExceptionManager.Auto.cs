@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseExceptionManager
-    /// 系统异常表
+    /// 系统异常
     /// 
     /// 修改记录
     /// 

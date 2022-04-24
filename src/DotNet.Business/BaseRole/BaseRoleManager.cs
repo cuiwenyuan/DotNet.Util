@@ -16,7 +16,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseRoleManager 
-    /// 角色表结构定义部分
+    /// 角色结构定义部分
     ///
     /// 修改记录
     ///
@@ -712,7 +712,7 @@ namespace DotNet.Business
             // 删除角色权限结构定义
             // result = DbUtil.Delete(DbHelper, BaseRoleModuleOperationTable.TableName, BaseRoleModuleOperationTable.FieldRoleId, id);
 
-            // 删除员工角色表结构定义部分
+            // 删除员工角色结构定义部分
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, id)

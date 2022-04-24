@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserOrganizationManager
-    /// 用户组织关系（兼任）表
+    /// 用户兼任
     /// 
     /// 修改记录
     /// 

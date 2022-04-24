@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseStaffEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseStaffEntity
-    /// 员工（职员）表
+    /// 员工
     /// 
     /// 修改记录
     /// 
@@ -1077,9 +1077,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 员工（职员）表
+        /// 员工
         ///</summary>
-        [FieldDescription("员工（职员）表")]
+        [FieldDescription("员工")]
         public const string CurrentTableName = "BaseStaff";
 
         ///<summary>

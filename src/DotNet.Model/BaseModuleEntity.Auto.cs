@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseModuleEntity
-    /// 模块（菜单）表
+    /// 模块菜单操作
     /// 
     /// 修改记录
     /// 
@@ -417,9 +417,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 模块（菜单）表
+        /// 模块菜单操作
         ///</summary>
-        [FieldDescription("模块（菜单）表")]
+        [FieldDescription("模块菜单操作")]
         public const string CurrentTableName = "BaseModule";
 
         ///<summary>

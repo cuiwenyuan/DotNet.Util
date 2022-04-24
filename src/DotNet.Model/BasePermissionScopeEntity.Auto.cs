@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BasePermissionScopeEntity
-    /// 数据权限表
+    /// 数据权限
     ///
     /// 修改记录
     ///
@@ -287,9 +287,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 数据权限表
+        /// 数据权限
         ///</summary>
-        [FieldDescription("数据权限表")]
+        [FieldDescription("数据权限")]
         public const string CurrentTableName = "BasePermissionScope";
 
         ///<summary>

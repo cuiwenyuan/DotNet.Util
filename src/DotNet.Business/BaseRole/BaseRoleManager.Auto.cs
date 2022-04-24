@@ -13,7 +13,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseRoleManager
-    /// 角色表
+    /// 角色
     ///
     /// 修改记录
     ///

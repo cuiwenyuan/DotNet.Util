@@ -26,7 +26,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取所有记录总数
         /// </summary>
-        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="condition">查询条件(不包含WHERE和第一个AND)</param>
         /// <param name="days">最近多少天</param>
         /// <param name="currentWeek">当周</param>
         /// <param name="currentMonth">当月</param>
@@ -37,7 +37,8 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
@@ -70,6 +71,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
+            sb.Replace(" 1 = 1 AND ", "");
             return DbUtil.Count(DbHelper, CurrentTableName, condition: sb.Put());
         }
         #endregion
@@ -79,7 +81,7 @@ namespace DotNet.Business
         /// 获取所有记录唯一值总数
         /// </summary>
         /// <param name="fieldName">字段名</param>
-        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="condition">查询条件(不包含WHERE和第一个AND)</param>
         /// <param name="days">最近多少天</param>
         /// <param name="currentWeek">当周</param>
         /// <param name="currentMonth">当月</param>
@@ -90,7 +92,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
@@ -123,6 +125,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
+            sb.Replace(" 1 = 1 AND ", "");
             return DbUtil.DistinctCount(DbHelper, CurrentTableName, fieldName, condition: sb.Put());
         }
         #endregion
@@ -131,7 +134,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取有效记录总数
         /// </summary>
-        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="condition">查询条件(不包含WHERE和第一个AND)</param>
         /// <param name="days">最近多少天</param>
         /// <param name="currentWeek">当周</param>
         /// <param name="currentMonth">当月</param>
@@ -143,7 +146,7 @@ namespace DotNet.Business
         public virtual int GetActiveTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
             var sb = Pool.StringBuilder.Get();
-            sb.Append((BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
+            sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
@@ -157,7 +160,7 @@ namespace DotNet.Business
         /// 获取有效唯一值记录总数
         /// </summary>
         /// <param name="fieldName">字段名</param>
-        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="condition">查询条件(不包含WHERE和第一个AND)</param>
         /// <param name="days">最近多少天</param>
         /// <param name="currentWeek">当周</param>
         /// <param name="currentMonth">当月</param>
@@ -169,7 +172,7 @@ namespace DotNet.Business
         public virtual int GetActiveTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
             var sb = Pool.StringBuilder.Get();
-            sb.Append((BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
+            sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);

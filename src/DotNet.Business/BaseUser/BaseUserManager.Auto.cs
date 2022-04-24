@@ -14,7 +14,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserManager
-    /// 系统用户表
+    /// 用户账号
     ///
     /// 修改记录
     ///

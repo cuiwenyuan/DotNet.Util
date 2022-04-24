@@ -103,39 +103,38 @@ namespace DotNet.Business
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
-        /// <param name="newEntity">修改前的实体对象</param>
-        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void SaveEntityChangeLog(BaseUserContactEntity newEntity, BaseUserContactEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseUserContactEntity entityNew, BaseUserContactEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
-                tableName = BaseUserEntity.CurrentTableName + "_LOG";
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
             }
             var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseUserContactEntity).GetProperties())
             {
-                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
-                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var oldValue = Convert.ToString(property.GetValue(entityOld, null));
+                var newValue = Convert.ToString(property.GetValue(entityNew, null));
                 var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
                 //不记录创建人、修改人、没有修改的记录
                 if (!fieldDescription.NeedLog || oldValue == newValue)
                 {
                     continue;
                 }
-                var record = new BaseChangeLogEntity
+                var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
                     TableDescription = FieldExtensions.ToDescription(typeof(BaseUserContactEntity), "CurrentTableName"),
-                    RecordKey = oldEntity.Id.ToString(),
+                    RecordKey = entityOld.Id.ToString(),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue
                 };
-                manager.Add(record, true, false);
+                manager.Add(entity, true, false);
             }
         }
         #endregion

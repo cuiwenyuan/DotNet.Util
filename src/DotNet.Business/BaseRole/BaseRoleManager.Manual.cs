@@ -179,10 +179,10 @@ namespace DotNet.Business
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
-        /// <param name="newEntity">修改前的实体对象</param>
-        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void SaveEntityChangeLog(BaseRoleEntity newEntity, BaseRoleEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseRoleEntity entityNew, BaseRoleEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -192,15 +192,15 @@ namespace DotNet.Business
             var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseRoleEntity).GetProperties())
             {
-                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
-                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var oldValue = Convert.ToString(property.GetValue(entityOld, null));
+                var newValue = Convert.ToString(property.GetValue(entityNew, null));
                 var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
                 //不记录创建人、修改人、没有修改的记录
                 if (!fieldDescription.NeedLog || oldValue == newValue)
                 {
                     continue;
                 }
-                var record = new BaseChangeLogEntity
+                var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
                     TableDescription = FieldExtensions.ToDescription(typeof(BaseRoleEntity), "CurrentTableName"),
@@ -208,9 +208,9 @@ namespace DotNet.Business
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    RecordKey = oldEntity.Id.ToString()
+                    RecordKey = entityOld.Id.ToString()
                 };
-                manager.Add(record, true, false);
+                manager.Add(entity, true, false);
             }
         }
         #endregion
@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            //角色表名
+            //角色名
             var tableNameRole = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrEmpty(systemCode))
             {

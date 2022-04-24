@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseParameterManager.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -17,15 +17,15 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseParameterManager
-    /// 参数表的基类结构定义管理层
+    /// 参数管理层
     /// 
     /// 修改记录
     /// 
-    ///	2021-10-07 版本：1.0 Troy.Cui 创建文件。
+    ///	2022-03-25 版本：1.0 Troy.Cui 创建文件。
     ///		
     /// <author>
     ///	<name>Troy.Cui</name>
-    ///	<date>2021-10-07</date>
+    ///	<date>2022-03-25</date>
     /// </author> 
     /// </summary>
     public partial class BaseParameterManager : BaseManager, IBaseManager

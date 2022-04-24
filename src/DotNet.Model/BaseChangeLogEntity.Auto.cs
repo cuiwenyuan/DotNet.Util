@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseChangeLogEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseChangeLogEntity
-    /// 变更日志表
+    /// 变更日志
     /// 
     /// 修改记录
     /// 
@@ -277,9 +277,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 变更日志表
+        /// 变更日志
         ///</summary>
-        [FieldDescription("变更日志表")]
+        [FieldDescription("变更日志")]
         public const string CurrentTableName = "BaseChangeLog";
 
         ///<summary>

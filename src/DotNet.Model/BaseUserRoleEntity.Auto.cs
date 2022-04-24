@@ -13,7 +13,7 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseUserRoleEntity
-    /// 用户角色表
+    /// 用户角色
     /// 
     /// 修改记录
     /// 
@@ -217,9 +217,9 @@ namespace DotNet.Model
         }
 
         ///<summary>
-        /// 用户角色表
+        /// 用户角色
         ///</summary>
-        [FieldDescription("用户角色表")]
+        [FieldDescription("用户角色")]
         public const string CurrentTableName = "BaseUserRole";
 
         ///<summary>

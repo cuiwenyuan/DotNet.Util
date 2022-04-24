@@ -17,7 +17,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseOrganizationScopeManager
-    /// 基于组织机构的权限范围管理层
+    /// 组织机构权限范围管理层
     /// 
     /// 修改记录
     /// 
