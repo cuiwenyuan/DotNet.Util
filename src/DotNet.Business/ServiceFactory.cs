@@ -25,8 +25,8 @@ namespace DotNet.Business
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <typeparam name="Service"></typeparam>
-        /// <typeparam name="IService"></typeparam>
+        /// <typeparam name="Service">服务</typeparam>
+        /// <typeparam name="IService">服务泛型</typeparam>
         /// <returns></returns>
 		public IService CreateService<Service, IService>() where Service : IService, new()
         {

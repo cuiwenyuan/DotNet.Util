@@ -58,16 +58,17 @@ namespace DotNet.Util
         /// WriteLog
         /// </summary>
         /// <param name="customDirectory">自定义目录</param>
-        /// <param name="preFile">文件名</param>
+        /// <param name="fileName">文件名</param>
         /// <param name="infoData">数据</param>
-        public static void WriteLog(string customDirectory, string preFile, string infoData)
+        /// <param name="extension">文件扩展名</param>
+        public static void WriteLog(string customDirectory, string fileName, string infoData, string extension)
         {
             //如果不给Log目录写入权限，日志队列积压将会导致内存暴增
             if (_logCount > 1024)
             {
                 infoData += " : Current File Log Queue is " + _logCount + ", LogQueue Count is " + LogQueue.Count;
             }
-            var logPath = GetLogPath(customDirectory, preFile);
+            var logPath = GetLogPath(customDirectory, fileName, extension);
             LogQueue.Enqueue(new Tuple<string, string>(logPath, infoData));
             //原子操作加1
             Interlocked.Increment(ref _logCount);
@@ -79,9 +80,9 @@ namespace DotNet.Util
         /// 
         /// </summary>
         /// <param name="customDirectory">自定义目录</param>
-        /// <param name="preFile">文件名</param>
+        /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        private static string GetLogPath(string customDirectory, string preFile)
+        private static string GetLogPath(string customDirectory, string fileName, string extension)
         {
             string newFilePath;
             var logDir = string.IsNullOrEmpty(customDirectory) ? Path.Combine(Environment.CurrentDirectory, "Log") : customDirectory;
@@ -89,21 +90,22 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(logDir);
             }
-            var filePaths = Directory.GetFiles(logDir, preFile, SearchOption.TopDirectoryOnly).ToList();
+            var fileNameKey = fileName.Substring(0, fileName.LastIndexOf("_") + 1);
+            string fileNamePattern = "*." + extension;
+            //var filePaths = Directory.GetFiles(logDir, fileNamePattern, SearchOption.TopDirectoryOnly).Where(s => s.Contains(fileNameKey)).ToList();
+            var filePaths = Directory.GetFiles(logDir, fileNameKey+fileNamePattern, SearchOption.TopDirectoryOnly).ToList();
 
             if (filePaths.Count > 0)
             {
                 var fileMaxLen = filePaths.Max(d => d.Length);
                 var lastFilePath = filePaths.Where(d => d.Length == fileMaxLen).OrderByDescending(d => d).FirstOrDefault();
-                if (lastFilePath != null && new FileInfo(lastFilePath).Length > 1 * 1024 * 1024)
+                if (lastFilePath != null && new FileInfo(lastFilePath).Length > 100 * 1024 * 1024)
                 {
-                    var no = new Regex(@"(?is)(?<=\()(.*)(?=\))").Match(Path.GetFileName(lastFilePath)).Value;
+                    var lastFileName = Path.GetFileName(lastFilePath);
+                    var no = lastFileName.Substring(lastFileName.LastIndexOf("_") + 1, lastFileName.Length - lastFileName.LastIndexOf("_") - 1 - extension.Length - 1);
                     var tempNo = 0;
                     var parse = int.TryParse(no, out tempNo);
-                    var formatNo = string.Format("-{0}", parse ? (tempNo + 1) : tempNo);
-                    var newFileName = preFile.Replace(".txt", string.Format("_{0}.log", formatNo));
-                    //以.log后缀的日志 2017.12.19 Troy Cui
-                    newFileName = newFileName.Replace(".log", string.Format("_{0}.log", formatNo));
+                    var newFileName = lastFileName.Substring(0, lastFileName.LastIndexOf("_") + 1) + (tempNo + 1) + "." + extension;
                     newFilePath = Path.Combine(logDir, newFileName);
                 }
                 else
@@ -113,10 +115,7 @@ namespace DotNet.Util
             }
             else
             {
-                var newFileName = preFile.Replace(".txt", string.Format("_{0}.txt", 0));
-                //以.log后缀的日志 2017.12.19 Troy Cui
-                newFileName = newFileName.Replace(".log", string.Format("_{0}.log", 0));
-                newFilePath = Path.Combine(logDir, newFileName);
+                newFilePath = Path.Combine(logDir, fileName);
             }
             return newFilePath;
         }

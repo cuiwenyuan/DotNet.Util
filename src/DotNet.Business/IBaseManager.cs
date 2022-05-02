@@ -40,6 +40,10 @@ namespace DotNet.Business
         /// 当前表名
         /// </summary>
         string CurrentTableName { get; set; }
+        /// <summary>
+        /// 当前表描述
+        /// </summary>
+        string CurrentTableDescription { get; set; }
 
         #region 增删改
 
@@ -842,6 +846,16 @@ namespace DotNet.Business
         /// <param name="id">编号</param>
         /// <returns></returns>
         bool RemoveCache(int id);
+
+        /// <summary>
+        /// 保存实体修改日志
+        /// </summary>
+        /// <param name="recordKey">记录主键</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
+        /// <param name="tableName">表名称</param>
+        /// <param name="systemCode">子系统编码</param>
+        void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null);
 
         #endregion
 
