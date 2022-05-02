@@ -342,7 +342,7 @@ namespace DotNet.Util
         /// <param name="commandText"></param>
         public virtual void WriteLog(string commandText)
         {
-            var fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + " _ " + FileName;
+            var fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + FileName + "_0.log";
             WriteLog(commandText, fileName);
         }
 
@@ -367,7 +367,7 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(logDirectory);
             }
-            FileLogUtil.WriteLog(logDirectory, fileName, commandText);
+            FileLogUtil.WriteLog(logDirectory, fileName, commandText, "log");
 
         }
         #endregion

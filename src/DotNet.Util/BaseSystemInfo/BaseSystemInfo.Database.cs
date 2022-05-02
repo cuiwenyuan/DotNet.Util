@@ -459,6 +459,45 @@ namespace DotNet.Util
         public static string WmsDbConnectionString = string.Empty;
         #endregion
 
+        #region ZBWMS
+        /// <summary>
+        /// ZBWMS数据库类别
+        /// </summary>
+        public static CurrentDbType ZbwmsDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// ZBWMS数据库
+        /// </summary>
+        private static string _zbwmsDbConnection = string.Empty;
+        /// <summary>
+        /// ZBWMS数据库连接
+        /// </summary>
+        public static string ZbwmsDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_zbwmsDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ZBWMSDbConnection"]))
+                    {
+                        _zbwmsDbConnection = ConfigurationManager.AppSettings["ZBWMSDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_zbwmsDbConnection))
+                    {
+                        _zbwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_ZBWMS;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _zbwmsDbConnection;
+            }
+            // 默认的数据库连接
+            set => _zbwmsDbConnection = value;
+        }
+        /// <summary>
+        /// ZBWMS数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string ZbwmsDbConnectionString = string.Empty;
+        #endregion
+
         #region MES
         /// <summary>
         /// MES数据库类别
@@ -1123,9 +1162,89 @@ namespace DotNet.Util
         public static string MemberDbConnectionString = string.Empty;
         #endregion
 
+        #region Budget
         /// <summary>
-        /// 数据库表版本(默认为4版本)
+        /// Budget数据库类别
         /// </summary>
-        public static int DatabaseTableVersion = 4;
+        public static CurrentDbType BudgetDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// Budget数据库
+        /// </summary>
+        private static string _budgetDbConnection = string.Empty;
+        /// <summary>
+        /// Budget数据库连接
+        /// </summary>
+        public static string BudgetDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_budgetDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["BudgetDbConnection"]))
+                    {
+                        _budgetDbConnection = ConfigurationManager.AppSettings["BudgetDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_budgetDbConnection))
+                    {
+                        _budgetDbConnection = "Data Source=localhost;Initial Catalog=Business_Budget;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _budgetDbConnection;
+            }
+            // 默认的数据库连接
+            set => _budgetDbConnection = value;
+        }
+        /// <summary>
+        /// Budget数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string BudgetDbConnectionString = string.Empty;
+        #endregion
+
+        #region ITAMS
+        /// <summary>
+        /// ITAMS数据库类别
+        /// </summary>
+        public static CurrentDbType ItamsDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// ITAMS数据库
+        /// </summary>
+        private static string _itamsDbConnection = string.Empty;
+        /// <summary>
+        /// ITAMS数据库连接
+        /// </summary>
+        public static string ItamsDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_itamsDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ItamsDbConnection"]))
+                    {
+                        _itamsDbConnection = ConfigurationManager.AppSettings["ItamsDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_itamsDbConnection))
+                    {
+                        _itamsDbConnection = "Data Source=localhost;Initial Catalog=Business_ITAMS;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _itamsDbConnection;
+            }
+            // 默认的数据库连接
+            set => _itamsDbConnection = value;
+        }
+        /// <summary>
+        /// ITAMS数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string ItamsDbConnectionString = string.Empty;
+        #endregion
+
+
+
+        /// <summary>
+        /// 数据库表版本(默认为5版本)
+        /// </summary>
+        public static int DatabaseTableVersion = 5;
     }
 }

@@ -55,8 +55,8 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(logDirectory);
             }
-            var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + suffix + "." + extension;
-            FileLogUtil.WriteLog(logDirectory, fileName, exception);
+            var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + suffix + "_0." + extension;
+            FileLogUtil.WriteLog(logDirectory, fileName, exception, extension);
         }
 
         /// <summary>
