@@ -144,10 +144,16 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldUpdateIp = "UpdateIp";
 
+        #region IsAudited
         /// <summary>
         /// 是否已审核 
         /// </summary>
         public const string FieldIsAudited = "IsAudited";
+
+        /// <summary>
+        /// 审核时间
+        /// </summary>
+        public const string FieldAuditedTime = "AuditedTime";
 
         /// <summary>
         /// 审核时间
@@ -164,10 +170,18 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldAuditedUserName = "AuditedUserName";
 
+        #endregion
+
+        #region IsCancelled
         /// <summary>
         /// 是否已取消
         /// </summary>
         public const string FieldIsCancelled = "IsCancelled";
+
+        /// <summary>
+        /// 取消时间
+        /// </summary>
+        public const string FieldCancelledTime = "CancelledTime";
 
         /// <summary>
         /// 取消时间
@@ -183,6 +197,109 @@ namespace DotNet.Util
         /// 取消人用户名
         /// </summary>
         public const string FieldCancelledUserName = "CancelledUserName";
+
+        #endregion
+
+        #region IsApproved
+        /// <summary>
+        /// 是否已批准
+        /// </summary>
+        public const string FieldIsApproved = "IsApproved";
+
+        /// <summary>
+        /// 批准时间
+        /// </summary>
+        public const string FieldApprovedTime = "ApprovedTime";
+
+        #endregion
+
+        #region IsRejected
+
+        /// <summary>
+        /// 是否已拒绝
+        /// </summary>
+        public const string FieldIsRejected = "IsRejected";
+
+        /// <summary>
+        /// 拒绝时间
+        /// </summary>
+        public const string FieldRejectedTime = "RejectedTime";
+
+        #endregion
+
+        #region IsClosed
+        /// <summary>
+        /// 是否已关闭
+        /// </summary>
+        public const string FieldIsClosed = "IsClosed";
+
+        /// <summary>
+        /// 关闭时间
+        /// </summary>
+        public const string FieldClosedTime = "ClosedTime";
+
+        #endregion
+
+        #region IsConfirmed
+        /// <summary>
+        /// 是否已确认
+        /// </summary>
+        public const string FieldIsConfirmed = "IsConfirmed";
+
+        /// <summary>
+        /// 确认时间
+        /// </summary>
+        public const string FieldConfirmedTime = "ConfirmedTime";
+        #endregion
+
+        #region IsReleased
+        /// <summary>
+        /// 是否已下达
+        /// </summary>
+        public const string FieldIsReleased = "IsReleased";
+
+        /// <summary>
+        /// 下达时间
+        /// </summary>
+        public const string FieldReleasedTime = "ReleasedTime";
+        #endregion
+
+        #region IsCompleted
+        /// <summary>
+        /// 是否已完成
+        /// </summary>
+        public const string FieldIsCompleted = "IsCompleted";
+
+        /// <summary>
+        /// 完成时间
+        /// </summary>
+        public const string FieldCompletedTime = "CompletedTime";
+        #endregion
+
+        #region IsFinished
+        /// <summary>
+        /// 是否已完成
+        /// </summary>
+        public const string FieldIsFinished = "IsFinished";
+
+        /// <summary>
+        /// 完成时间
+        /// </summary>
+        public const string FieldFinishedTime = "FinishedTime";
+        #endregion
+
+        #region IsAssigned
+        /// <summary>
+        /// 是否已分配
+        /// </summary>
+        public const string FieldIsAssigned = "IsAssigned";
+
+        /// <summary>
+        /// 分配时间
+        /// </summary>
+        public const string FieldAssignedTime = "AssignedTime";
+
+        #endregion
 
         /// <summary>
         /// 允许删除

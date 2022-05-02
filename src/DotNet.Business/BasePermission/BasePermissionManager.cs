@@ -580,20 +580,9 @@ namespace DotNet.Business
                 // 2015-11-19 所有的系统都继承基础角色的权限
                 // 2022-01-04 Troy.Cui 停用集成基础角色
                 useBaseRole = false;
-                // 2015-01-21 吉日嘎拉，实现判断别人的权限，是否超级管理员
-                var isAdministrator = false;
 
-                if (UserInfo != null && BaseUserManager.IsAdministrator(UserInfo.Id.ToString()))
-                {
-                    if (UserInfo.Id.Equals(userId))
-                    {
-                        isAdministrator = true;
-                    }
-                    else
-                    {
-                        isAdministrator = BaseUserManager.IsAdministrator(userId);
-                    }
-                }
+                var isAdministrator = BaseUserManager.IsAdministrator(userId);
+
                 if (isAdministrator)
                 {
                     result = new BaseModuleManager().GetEntitiesByCache(systemCode);
@@ -608,6 +597,7 @@ namespace DotNet.Business
                     // 若是以前赋予的权限，后来有些权限设置为无效了，那就不应该再获取哪些无效的权限才对。
                     if (permissionIds != null && permissionIds.Length > 0)
                     {
+                        // 要特别注意IsPublic的设置，容易造成失控
                         result = (entities as List<BaseModuleEntity>).Where(t => (t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0) || permissionIds.Contains(t.Id.ToString())).ToList();
                     }
                     else

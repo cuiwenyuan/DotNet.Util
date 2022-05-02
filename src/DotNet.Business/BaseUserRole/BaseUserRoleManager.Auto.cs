@@ -211,7 +211,7 @@ namespace DotNet.Business
                 {
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, "SEQ_" + CurrentTableName.ToUpper() + ".NEXTVAL ");
+                        sqlBuilder.SetFormula(PrimaryKey, CurrentTableName.ToUpper() + "_SEQ.NEXTVAL ");
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {

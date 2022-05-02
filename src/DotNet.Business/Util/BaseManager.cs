@@ -84,7 +84,7 @@ namespace DotNet.Business
         /// </summary>
         public string CurrentIndex { get; set; }
 
-        private static object _locker = new Object();
+        private static readonly object _locker = new Object();
 
         /// <summary>
         /// 当前的数据库连接
