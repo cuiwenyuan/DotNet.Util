@@ -1240,7 +1240,44 @@ namespace DotNet.Util
         public static string ItamsDbConnectionString = string.Empty;
         #endregion
 
-
+        #region CardTicket
+        /// <summary>
+        /// CardTicket数据库类别
+        /// </summary>
+        public static CurrentDbType CardTicketDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// CardTicket数据库
+        /// </summary>
+        private static string _cardTicketDbConnection = string.Empty;
+        /// <summary>
+        /// CardTicket数据库连接
+        /// </summary>
+        public static string CardTicketDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_cardTicketDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CardTicketDbConnection"]))
+                    {
+                        _cardTicketDbConnection = ConfigurationManager.AppSettings["CardTicketDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_cardTicketDbConnection))
+                    {
+                        _cardTicketDbConnection = "Data Source=localhost;Initial Catalog=Business_CardTicket;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _cardTicketDbConnection;
+            }
+            // 默认的数据库连接
+            set => _cardTicketDbConnection = value;
+        }
+        /// <summary>
+        /// CardTicket数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string CardTicketDbConnectionString = string.Empty;
+        #endregion
 
         /// <summary>
         /// 数据库表版本(默认为5版本)

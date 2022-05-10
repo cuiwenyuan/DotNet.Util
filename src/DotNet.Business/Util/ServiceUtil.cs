@@ -247,7 +247,7 @@ namespace DotNet.Business
 
                 lock (locker)
                 {
-                    using (var dbHelper = DbHelperFactory.GetHelper(GetDbType(DbType.UserCenterWrite)))
+                    using (var dbHelper = DbHelperFactory.Create(GetDbType(DbType.UserCenterWrite)))
                     {
                         try
                         {
@@ -461,7 +461,7 @@ namespace DotNet.Business
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            using (var dbHelper = DbHelperFactory.GetHelper(GetDbType(dbType), GetDbConnection(dbType)))
+            using (var dbHelper = DbHelperFactory.Create(GetDbType(dbType), GetDbConnection(dbType)))
             {
                 try
                 {

@@ -148,22 +148,20 @@ namespace DotNet.Business
             // 把所有的数据都缓存起来的代码
             var manager = new BaseParameterManager();
 
-            using (var dataReader = manager.ExecuteReader(parameters))
+            var dataReader = manager.ExecuteReader(parameters);
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var key = "MAC:" + dataReader[BaseParameterEntity.FieldParameterId];
+                var key = "MAC:" + dataReader[BaseParameterEntity.FieldParameterId];
 
-                    var macAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                    CacheUtil.Set(key, macAddress);
-                    result++;
-                    if (result % 500 == 0)
-                    {
-                        Console.WriteLine(result + " : " + macAddress);
-                    }
+                var macAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                CacheUtil.Set(key, macAddress);
+                result++;
+                if (result % 500 == 0)
+                {
+                    Console.WriteLine(result + " : " + macAddress);
                 }
-                dataReader.Close();
             }
+            dataReader.Close();
             return result;
         }
 

@@ -68,7 +68,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(connectionString))
             {
                 // 01：可以从k8里读取公司、用户、密码的。
-                var dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 var staffManager = new BaseStaffManager(UserInfo);
                 if (string.IsNullOrEmpty(condition))
                 {
@@ -167,14 +167,12 @@ namespace DotNet.Business
                 //var sTaffExpressManager = new BaseUserExpressManager(UserInfo);
                 //var userManager = new BaseUserManager(UserInfo);
                 //var userLogonManager = new BaseUserLogonManager(UserInfo);
-                //using (var dataReader = DbHelper.ExecuteReader(commandText))
+                //var dataReader = DbHelper.ExecuteReader(commandText);
+                //while (dataReader.Read())
                 //{
-                //    while (dataReader.Read())
-                //    {
-                //        result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager, userLogonManager);
-                //    }
-                //    dataReader.Close();
+                //    result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager, userLogonManager);
                 //}
+                //dataReader.Close();
 
                 // 设置用户的公司主键，有时候不需要同步所有的账户，只同步增量账户
                 // 设置用户的公司主键

@@ -196,7 +196,7 @@ namespace DotNet.Util
         //public static string ModuleService = "菜单服务";
         //public static string ModuleServiceGetDataTable = "取得列表";
         //public static string ModuleServiceGetEntity = "取得实体";
-        //public static string ModuleServiceGetFullNameByCode = "透过编号取得菜单名称";
+        //public static string ModuleServiceGetNameByCode = "透过编号取得菜单名称";
         //public static string ModuleServiceAdd = "新增菜单";
         //public static string ModuleServiceUpdate = "更新菜单";
         //public static string ModuleServiceGetDataTableByParent = "依父节点取得列表";

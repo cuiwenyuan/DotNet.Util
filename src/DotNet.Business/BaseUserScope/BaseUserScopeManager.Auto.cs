@@ -31,7 +31,7 @@ namespace DotNet.Business
         {
             if (dbHelper == null)
             {
-                dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
+                dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
             CurrentTableName = BasePermissionScopeEntity.CurrentTableName;
         }

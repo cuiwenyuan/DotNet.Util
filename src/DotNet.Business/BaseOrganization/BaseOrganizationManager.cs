@@ -897,20 +897,18 @@ namespace DotNet.Business
 
             // 把所有的组织机构都缓存起来的代码
             var manager = new BaseOrganizationManager();
-            using (var dataReader = manager.ExecuteReader())
+            var dataReader = manager.ExecuteReader();
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
+                var entity = BaseEntity.Create<BaseOrganizationEntity>(dataReader, false);
+                if (entity != null)
                 {
-                    var entity = BaseEntity.Create<BaseOrganizationEntity>(dataReader, false);
-                    if (entity != null)
-                    {
-                        SetCache(entity);
-                        result++;
-                        Console.WriteLine(result + " : " + entity.Name);
-                    }
+                    SetCache(entity);
+                    result++;
+                    Console.WriteLine(result + " : " + entity.Name);
                 }
-                dataReader.Close();
             }
+            dataReader.Close();
 
             return result;
         }

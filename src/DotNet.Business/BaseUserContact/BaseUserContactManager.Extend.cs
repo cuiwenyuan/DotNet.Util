@@ -85,7 +85,7 @@ namespace DotNet.Business
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Format(@"UPDATE TAB_USER 
                                                         SET Mobile = null
                                                       WHERE Id = {0} "
@@ -188,17 +188,15 @@ namespace DotNet.Business
 
             // 把所有的数据都缓存起来的代码
             var manager = new BaseUserContactManager();
-            using (var dataReader = manager.ExecuteReader())
+            var dataReader = manager.ExecuteReader();
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var entity = BaseEntity.Create<BaseUserContactEntity>(dataReader, false);
-                    SetCache(entity);
-                    result++;
-                    System.Console.WriteLine(result + " : " + entity.Telephone);
-                }
-                dataReader.Close();
+                var entity = BaseEntity.Create<BaseUserContactEntity>(dataReader, false);
+                SetCache(entity);
+                result++;
+                System.Console.WriteLine(result + " : " + entity.Telephone);
             }
+            dataReader.Close();
 
             return result;
         }

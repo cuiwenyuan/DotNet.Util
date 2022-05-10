@@ -47,10 +47,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, null, topLimit, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, null, topLimit, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -65,10 +63,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", BaseUtil.FieldId, ids))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", BaseUtil.FieldId, ids);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -85,10 +81,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", name, values, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", name, values, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -106,11 +100,9 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(parameter);
-            
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order))
-            {
-                result = GetList<T>(dr);
-            }
+
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -133,10 +125,8 @@ namespace DotNet.Business
                 parameter2
             };
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -155,10 +145,8 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -174,10 +162,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -194,10 +180,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -217,13 +201,11 @@ namespace DotNet.Business
             {
                 parametersList.Add(p);
             }
-            
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parametersList))
-            {
-                result = GetList<T>(dr);
-            }
 
-            return result;
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parametersList);
+            result = GetList<T>(dr);
+
+                return result;
         }
 
         /// <summary>
@@ -236,10 +218,8 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            using (var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, condition))
-            {
-                result = GetList<T>(dr);
-            }
+            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, condition);
+            result = GetList<T>(dr);
 
             return result;
         }
@@ -255,11 +235,9 @@ namespace DotNet.Business
         public virtual List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new()
         {
             List<T> result;
+            var dr = DbUtil.ExecuteReader2(DbHelper, CurrentTableName, condition, topLimit, order);
+            result = GetList<T>(dr);
 
-            using (var dr = DbUtil.ExecuteReader2(DbHelper, CurrentTableName, condition, topLimit, order))
-            {
-                result = GetList<T>(dr);
-            }
 
             return result;
         }
@@ -268,26 +246,25 @@ namespace DotNet.Business
         /// 获取集合对象
         /// </summary>
         /// <typeparam name="T">泛型实体</typeparam>
-        /// <param name="dr"></param>
+        /// <param name="dataReader"></param>
         /// <returns></returns>
-        public List<T> GetList<T>(IDataReader dr) where T : BaseEntity, new()
+        public List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
         {
             // 还能继承 IBaseEntity<T>
             var result = new List<T>();
-
-            // 2016-09-17 吉日嘎拉 这里防止数据库链接没关闭掉、把数据库拖累了。
-            // using (dr)
-            //{
-            while (dr.Read())
+            if (dataReader != null)
             {
-                // T t = new T();
-                // listT.Add(t.GetFrom(dr));
-                // T dynTemp = BaseEntity.Create<T>();
-                // listT.Add((T)dynTemp.GetFrom(dr));
-                result.Add(BaseEntity.Create<T>(dr, false));
+                while (dataReader.Read())
+                {
+                    // T t = new T();
+                    // listT.Add(t.GetFrom(dr));
+                    // T dynTemp = BaseEntity.Create<T>();
+                    // listT.Add((T)dynTemp.GetFrom(dr));
+                    result.Add(BaseEntity.Create<T>(dataReader, false));
+                }
+                dataReader.Close();
             }
-            dr.Close();
-            //}
+
 
             return result;
         }

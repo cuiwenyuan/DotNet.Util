@@ -731,14 +731,12 @@ namespace DotNet.Business
 
                 var ids = new List<string>();
                 errorMark = 3;
-                using (var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
+                var dataReader = DbHelper.ExecuteReader(sb.ToString(), dbParameters.ToArray());
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
-                    {
-                        ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
-                    }
+                    ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
                 }
-
+                dataReader.Close();
                 // string[] userRolePermissionIds = ids.ToArray();
                 result = StringUtil.Concat(result, ids.ToArray());
 
@@ -766,13 +764,12 @@ namespace DotNet.Business
                         };
                         ids = new List<string>();
                         errorMark = 4;
-                        using (var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
+                        dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
+                        while (dataReader.Read())
                         {
-                            while (dataReader.Read())
-                            {
-                                ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
-                            }
+                            ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
                         }
+                        dataReader.Close();
                         // string[] organizationPermission = ids.ToArray();
                         result = StringUtil.Concat(result, ids.ToArray());
                     }

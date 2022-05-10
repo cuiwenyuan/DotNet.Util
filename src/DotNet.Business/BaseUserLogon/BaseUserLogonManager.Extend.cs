@@ -121,7 +121,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection))
+            using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection))
             {
                 // 需要能支持多个业务子系统的登录方法、多密码、多终端登录
                 var userLogonEntityTableName = "BaseUserLogon";

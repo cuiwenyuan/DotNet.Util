@@ -1109,16 +1109,14 @@ namespace DotNet.Business
 
             // 把所有的数据都缓存起来的代码
             var manager = new BaseUserManager();
-            using (var dataReader = manager.ExecuteReader(0, BaseUserEntity.FieldId))
+            var dataReader = manager.ExecuteReader(0, BaseUserEntity.FieldId);
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var entity = BaseEntity.Create<BaseUserEntity>(dataReader, false);
-                    SetCache(entity);
-                    result++;
-                }
-                dataReader.Close();
+                var entity = BaseEntity.Create<BaseUserEntity>(dataReader, false);
+                SetCache(entity);
+                result++;
             }
+            dataReader.Close();
 
             return result;
         }

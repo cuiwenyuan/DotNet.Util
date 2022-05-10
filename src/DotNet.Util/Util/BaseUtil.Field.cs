@@ -301,6 +301,19 @@ namespace DotNet.Util
 
         #endregion
 
+        #region IsScraped
+        /// <summary>
+        /// 是否已作废
+        /// </summary>
+        public const string FieldIsScraped = "IsScraped";
+
+        /// <summary>
+        /// 作废时间
+        /// </summary>
+        public const string FieldScrapedTime = "ScrapedTime";
+
+        #endregion
+
         /// <summary>
         /// 允许删除
         /// </summary>

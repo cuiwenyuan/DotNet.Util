@@ -41,8 +41,8 @@ namespace DotNet.Business
             var tableName = systemCode + "RoleOrganization";
 
             // 需要显示未被删除的用户
-            var sql = "SELECT OrganizationId FROM " + tableName 
-                            + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId) 
+            var sql = "SELECT OrganizationId FROM " + tableName
+                            + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
                                   + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                                   + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)";
 
@@ -52,19 +52,18 @@ namespace DotNet.Business
             };
 
             var organizationIds = new List<string>();
-            using (var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray()))
+            var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    organizationIds.Add(dataReader[BaseRoleOrganizationEntity.FieldOrganizationId].ToString());
-                }
+                organizationIds.Add(dataReader[BaseRoleOrganizationEntity.FieldOrganizationId].ToString());
             }
+            dataReader.Close();
             result = organizationIds.ToArray();
 
             // 2015-12-08 吉日嘎拉 提高效率参数化执行
             // var dt = DbHelper.Fill(sql, dbParameters.ToArray());
             // BaseUtil.FieldToArray(dt, BaseRoleOrganizationEntity.FieldOrganizationId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
-            
+
             return result;
         }
         #endregion
