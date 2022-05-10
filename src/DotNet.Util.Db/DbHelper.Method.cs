@@ -58,7 +58,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDbDataParameter MakeParameter(string targetFiled, object targetValue)
         {
-            var dbHelper = DbHelperFactory.GetHelper(DbType);
+            var dbHelper = DbHelperFactory.Create(DbType, DbConnection);
             return dbHelper.MakeParameter(targetFiled, targetValue);
         }
         #endregion
@@ -131,7 +131,7 @@ namespace DotNet.Util
         public static int ExecuteNonQuery(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
             var result = 0;
-            var dbHelper = DbHelperFactory.GetHelper(DbType, connectionString);
+            var dbHelper = DbHelperFactory.Create(DbType, connectionString);
             result = dbHelper.ExecuteNonQuery(commandText, dbParameters, commandType);
             dbHelper.Close();
             return result;
@@ -164,7 +164,7 @@ namespace DotNet.Util
         public static object ExecuteScalar(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
             object result = null;
-            var dbHelper = DbHelperFactory.GetHelper(DbType, connectionString);
+            var dbHelper = DbHelperFactory.Create(DbType, connectionString);
             result = dbHelper.ExecuteScalar(commandText, dbParameters, commandType);
             dbHelper.Close();
             return result;
@@ -196,7 +196,7 @@ namespace DotNet.Util
         /// <returns>结果集流</returns>
         public static IDataReader ExecuteReader(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
-            var dbHelper = DbHelperFactory.GetHelper(DbType, connectionString);
+            var dbHelper = DbHelperFactory.Create(DbType, connectionString);
             dbHelper.MustCloseConnection = true;
             return dbHelper.ExecuteReader(commandText, dbParameters, commandType);
         }
@@ -228,7 +228,7 @@ namespace DotNet.Util
         public static DataTable Fill(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
             var dt = new DataTable("DotNet");
-            var dbHelper = DbHelperFactory.GetHelper(DbType, connectionString);
+            var dbHelper = DbHelperFactory.Create(DbType, connectionString);
             dbHelper.Fill(dt, commandText, dbParameters, commandType);
             dbHelper.Close();
             return dt;

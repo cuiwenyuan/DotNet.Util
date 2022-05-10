@@ -296,51 +296,6 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
         {
-            // 这里是需要完善的功能，完善了这个，是一次重大突破           
-            //string sql = "SELECT * FROM " + tableName;
-            //string whereSql = string.Empty;
-            //if (topLimit != 0)
-            //{
-            //	switch (dbHelper.CurrentDbType)
-            //	{
-            //		case CurrentDbType.Access:
-            //		case CurrentDbType.SqlServer:
-            //			sql = "SELECT TOP " + topLimit.ToString() + " * FROM " + tableName;
-            //			break;
-            //		case CurrentDbType.Oracle:
-            //			whereSql = " ROWNUM < = " + topLimit;
-            //			break;
-            //	}
-            //}
-            //string subSql = GetWhereString(dbHelper, parameters, BaseUtil.SQLLogicConditional);
-            //if (!string.IsNullOrEmpty(subSql))
-            //{
-            //	if (whereSql.Length > 0)
-            //	{
-            //		whereSql = whereSql + BaseUtil.SQLLogicConditional + subSql;
-            //	}
-            //	else
-            //	{
-            //		whereSql = subSql;
-            //	}
-            //}
-            //if (whereSql.Length > 0)
-            //{
-            //	sql += " WHERE " + whereSql;
-            //}
-            //if ((order != null) && (order.Length > 0))
-            //{
-            //	sql += " ORDER BY " + order;
-            //}
-            //if (topLimit != 0)
-            //{
-            //	switch (dbHelper.CurrentDbType)
-            //	{
-            //		case CurrentDbType.MySql:
-            //			sql += " LIMIT 0, " + topLimit;
-            //			break;
-            //	}
-            //}
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional), topLimit, order);
             if (parameters != null && parameters.Count > 0)
             {

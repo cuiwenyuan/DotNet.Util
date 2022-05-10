@@ -811,6 +811,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.WmsDbConnectionString = GetValue(_xmlDocument, "WMSDbConnection");
             }
+            if (Exists("ZBWMSDbConnection"))
+            {
+                BaseSystemInfo.ZbwmsDbConnectionString = GetValue(_xmlDocument, "ZBWMSDbConnection");
+            }
             if (Exists("MESDbConnection"))
             {
                 BaseSystemInfo.MesDbConnectionString = GetValue(_xmlDocument, "MESDbConnection");
@@ -879,6 +883,18 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.MemberDbConnectionString = GetValue(_xmlDocument, "MemberDbConnection");
             }
+            if (Exists("BudgetDbConnection"))
+            {
+                BaseSystemInfo.BudgetDbConnectionString = GetValue(_xmlDocument, "BudgetDbConnection");
+            }
+            if (Exists("ItamsDbConnection"))
+            {
+                BaseSystemInfo.ItamsDbConnectionString = GetValue(_xmlDocument, "ItamsDbConnection");
+            }
+            if (Exists("CardTicketDbConnection"))
+            {
+                BaseSystemInfo.CardTicketDbConnectionString = GetValue(_xmlDocument, "CardTicketDbConnection");
+            }
             BaseSystemInfo.UserCenterDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
             BaseSystemInfo.LogonLogDbConnection = BaseSystemInfo.LogonLogDbConnectionString;
             BaseSystemInfo.MessageDbConnection = BaseSystemInfo.MessageDbConnectionString;
@@ -888,6 +904,7 @@ namespace DotNet.Util
             BaseSystemInfo.BpmDbConnection = BaseSystemInfo.BpmDbConnectionString;
             BaseSystemInfo.ErpDbConnection = BaseSystemInfo.ErpDbConnectionString;
             BaseSystemInfo.WmsDbConnection = BaseSystemInfo.WmsDbConnectionString;
+            BaseSystemInfo.ZbwmsDbConnection = BaseSystemInfo.ZbwmsDbConnectionString;
             BaseSystemInfo.MesDbConnection = BaseSystemInfo.MesDbConnectionString;
             BaseSystemInfo.HrmDbConnection = BaseSystemInfo.HrmDbConnectionString;
             BaseSystemInfo.CrmDbConnection = BaseSystemInfo.CrmDbConnectionString;
@@ -905,6 +922,9 @@ namespace DotNet.Util
             BaseSystemInfo.ImsDbConnection = BaseSystemInfo.ImsDbConnectionString;
             BaseSystemInfo.OmsDbConnection = BaseSystemInfo.OmsDbConnectionString;
             BaseSystemInfo.MemberDbConnection = BaseSystemInfo.MemberDbConnectionString;
+            BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
+            BaseSystemInfo.ItamsDbConnection = BaseSystemInfo.ItamsDbConnectionString;
+            BaseSystemInfo.CardTicketDbConnection = BaseSystemInfo.CardTicketDbConnectionString;
 
             if (Exists("EncryptDbConnection"))
             {
@@ -921,6 +941,7 @@ namespace DotNet.Util
                     BaseSystemInfo.BpmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BpmDbConnectionString);
                     BaseSystemInfo.ErpDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ErpDbConnectionString);
                     BaseSystemInfo.WmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WmsDbConnectionString);
+                    BaseSystemInfo.ZbwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ZbwmsDbConnectionString);
                     BaseSystemInfo.MesDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MesDbConnectionString);
                     BaseSystemInfo.HrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.HrmDbConnectionString);
                     BaseSystemInfo.CrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CrmDbConnectionString);

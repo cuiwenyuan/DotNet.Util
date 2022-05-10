@@ -29,13 +29,11 @@ namespace DotNet.Util
             {
                 return entities;
             }
-            using (dataReader)
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    entities.Add(dataReader.ToEntity<T>());
-                }
+                entities.Add(dataReader.ToEntity<T>());
             }
+            dataReader.Close();
             return entities;
         }
 
@@ -59,61 +57,66 @@ namespace DotNet.Util
         /// IDataReader转泛型IList(纯反射，无需定义Entity的GetFrom)
         /// </summary>
         /// <typeparam name="T">泛型实体T</typeparam>
-        /// <param name="dr">DataReader对象</param>
+        /// <param name="dataReader">DataReader对象</param>
         /// <returns></returns>
-        public static List<T> ToAnyList<T>(this IDataReader dr) where T : class, new()
+        public static List<T> ToAnyList<T>(this IDataReader dataReader) where T : class, new()
         {
             var ls = new List<T>();
             //获取传入的数据类型
             var t = typeof(T);
             //遍历DataReader对象
-            while (dr.Read())
+            while (dataReader.Read())
             {
                 //使用与指定参数匹配最高的构造函数，来创建指定类型的实例
                 var entity = Activator.CreateInstance<T>();
-                for (var i = 0; i < dr.FieldCount; i++)
+                for (var i = 0; i < dataReader.FieldCount; i++)
                 {
                     //判断字段值是否为空或不存在的值
-                    if (!BaseUtil.IsNullOrDbNull(dr[i]))
+                    if (!BaseUtil.IsNullOrDbNull(dataReader[i]))
                     {
                         //匹配字段名
-                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                        var pi = t.GetProperty(dataReader.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                         if (pi != null)
                         {
                             //绑定实体对象中同名的字段  
-                            pi.SetValue(entity, BaseUtil.ChangeType(dr[i], pi.PropertyType), null);
+                            pi.SetValue(entity, BaseUtil.ChangeType(dataReader[i], pi.PropertyType), null);
                         }
                     }
                 }
                 ls.Add(entity);
             }
+            dataReader.Close();
             return ls;
         }
 
         /// <summary>
-        /// IDataReader(while (dr.Read()){}中使用)循环读取转实体(纯反射，无需定义Entity的GetFrom)
+        /// IDataReader(while (dataReader.Read()){}中使用)循环读取转实体(纯反射，无需定义Entity的GetFrom)
         /// </summary>
         /// <typeparam name="T">T</typeparam>
-        /// <param name="dr">IDataReader对象</param>
+        /// <param name="dataReader">IDataReader对象</param>
         /// <returns></returns>
-        public static T ToAnyEntity<T>(this IDataReader dr)
+        public static T ToAnyEntity<T>(this IDataReader dataReader)
         {
-            if (dr.Read())
+            if (dataReader != null)
             {
-                var t = typeof(T);
-                var count = dr.FieldCount;
                 var entity = Activator.CreateInstance<T>();
-                for (var i = 0; i < count; i++)
+                while (dataReader.Read())
                 {
-                    if (!BaseUtil.IsNullOrDbNull(dr[i]))
+                    var t = typeof(T);
+                    var count = dataReader.FieldCount;
+                    for (var i = 0; i < count; i++)
                     {
-                        var pi = t.GetProperty(dr.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                        if (pi != null)
+                        if (!BaseUtil.IsNullOrDbNull(dataReader[i]))
                         {
-                            pi.SetValue(entity, BaseUtil.ChangeType(dr[i], pi.PropertyType), null);
+                            var pi = t.GetProperty(dataReader.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                            if (pi != null)
+                            {
+                                pi.SetValue(entity, BaseUtil.ChangeType(dataReader[i], pi.PropertyType), null);
+                            }
                         }
                     }
                 }
+                dataReader.Close();
                 return entity;
             }
             else

@@ -68,7 +68,7 @@ namespace DotNet.Business
         {
             var result = DateTime.Now;
 
-            using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
+            using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
             {
                 result = DateTime.Parse(dbHelper.GetDbDateTime());
             }
@@ -256,7 +256,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType))
+            using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType))
             {
                 try
                 {
@@ -455,7 +455,7 @@ namespace DotNet.Business
             // }
             // 确认用户是否登录了？是否进行了匿名的破坏工作
             /*
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbConnection);
+            IDbHelper dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbConnection);
             var userManager = new BaseUserManager(dbHelper, result);
             if (!userManager.UserIsLogon(result))
             {
