@@ -36,7 +36,7 @@ namespace DotNet.Business
         {
             if (dbHelper == null)
             {
-                dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
+                dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
             if (string.IsNullOrEmpty(CurrentTableName))
             {

@@ -216,18 +216,16 @@ namespace DotNet.Model
             T entity = null;
             if (close)
             {
-                using (dataReader)
+                if (dataReader != null)
                 {
-                    if (dataReader != null)
+                    while (dataReader.Read())
                     {
-                        while (dataReader.Read())
-                        {
-                            entity = Create<T>();
-                            entity.GetFrom(dataReader);
-                            //只读取第一行
-                            break;
-                        }
-                    }                    
+                        entity = Create<T>();
+                        entity.GetFrom(dataReader);
+                        //只读取第一行
+                        break;
+                    }
+                    dataReader.Close();
                 }
             }
             else
@@ -275,13 +273,11 @@ namespace DotNet.Model
             {
                 return ls;
             }
-            using (dataReader)
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    ls.Add(Create<T>(dataReader, false));
-                }
+                ls.Add(Create<T>(dataReader, false));
             }
+            dataReader.Close();
             return ls;
         }
         #endregion

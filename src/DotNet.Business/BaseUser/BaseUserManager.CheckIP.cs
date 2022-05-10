@@ -115,18 +115,16 @@ namespace DotNet.Business
             // 把所有的数据都缓存起来的代码
             var manager = new BaseParameterManager();
 
-            using (var dataReader = manager.ExecuteReader(parameters))
+            var dataReader = manager.ExecuteReader(parameters);
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var key = "IP:" + dataReader[BaseParameterEntity.FieldParameterId];
-                    var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                    CacheUtil.Set(key, ipAddress);
-                    result++;
-                    Console.WriteLine(result + " : " + ipAddress);
-                }
-                dataReader.Close();
+                var key = "IP:" + dataReader[BaseParameterEntity.FieldParameterId];
+                var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                CacheUtil.Set(key, ipAddress);
+                result++;
+                Console.WriteLine(result + " : " + ipAddress);
             }
+            dataReader.Close();
             return result;
         }
 
@@ -170,16 +168,14 @@ namespace DotNet.Business
             {
                 SelectFields = BaseParameterEntity.FieldParameterContent
             };
-            using (var dataReader = parameterManager.ExecuteReader(parameters))
+            var dataReader = parameterManager.ExecuteReader(parameters);
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                    CacheUtil.Set(key, ipAddress);
-                    result++;
-                }
-                dataReader.Close();
+                var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                CacheUtil.Set(key, ipAddress);
+                result++;
             }
+            dataReader.Close();
 
             return result;
         }

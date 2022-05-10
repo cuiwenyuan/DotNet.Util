@@ -57,7 +57,7 @@ namespace DotNet.Business
             DateTime? openIdTimeout = DateTime.Now.AddHours(8);
             try
             {
-                using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
+                using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
                 {
                     // 是否更新访问日期信息
                     List<IDbDataParameter> dbParameters = null;

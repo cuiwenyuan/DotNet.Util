@@ -55,24 +55,21 @@ namespace DotNet.Business
             {
                 CurrentTableName = systemCode + "Role"
             };
-            using (var dataReader = manager.ExecuteReader())
+            var dataReader = manager.ExecuteReader();
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
+                var entity = BaseEntity.Create<BaseRoleEntity>(dataReader, false);
+                if (entity != null)
                 {
-                    var entity = BaseEntity.Create<BaseRoleEntity>(dataReader, false);
-                    if (entity != null)
-                    {
-                        // 设置角色本身的缓存
-                        SetCache(systemCode, entity);
-                        // 重置权限缓存数据
-                        BasePermissionManager.ResetPermissionByCache(systemCode, null, entity.Id.ToString());
-                        result++;
-                        System.Console.WriteLine(result + " : " + entity.Name);
-                    }
+                    // 设置角色本身的缓存
+                    SetCache(systemCode, entity);
+                    // 重置权限缓存数据
+                    BasePermissionManager.ResetPermissionByCache(systemCode, null, entity.Id.ToString());
+                    result++;
+                    System.Console.WriteLine(result + " : " + entity.Name);
                 }
-                dataReader.Close();
             }
-
+            dataReader.Close();
             return result;
         }
         /// <summary>

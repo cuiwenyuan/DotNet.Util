@@ -80,7 +80,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(connectionString))
             {
                 // 01：可以从k8里读取公司、用户、密码的。
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Empty;
                 BaseUserLogonManager userLogonManager = new Business.BaseUserLogonManager(this.UserInfo);
                 if (string.IsNullOrEmpty(conditional))
@@ -144,21 +144,19 @@ namespace DotNet.Business
                 }
 
                 string commandText = "SELECT Id FROM baseuser WHERE id < 1000000";
-                using (IDataReader dataReader = userLogonManager.DbHelper.ExecuteReader(commandText))
+                var dataReader = userLogonManager.DbHelper.ExecuteReader(commandText);
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
+                    string id = dataReader["id"].ToString();
+                    commandText = "SELECT COUNT(*) AS Rcount FROM TAB_USER WHERE id='" + id + "'");
+                    object rcount = dbHelper.ExecuteScalar(commandText);
+                    if (rcount == null || rcount.ToString().Equals("0"))
                     {
-                        string id = dataReader["id"].ToString();
-                        commandText = "SELECT COUNT(*) AS Rcount FROM TAB_USER WHERE id='" + id + "'");
-                        object rcount = dbHelper.ExecuteScalar(commandText);
-                        if (rcount == null || rcount.ToString().Equals("0"))
-                        {
-                            commandText = "DELETE FROM baseuser WHERE id ='" + id + "'");
-                            userLogonManager.DbHelper.ExecuteNonQuery(commandText);
-                        }
+                        commandText = "DELETE FROM baseuser WHERE id ='" + id + "'");
+                        userLogonManager.DbHelper.ExecuteNonQuery(commandText);
                     }
                 }
-                
+                dataReader.Close();
                 commandText = "SELECT * FROM TAB_USER WHERE bl_type != 1 "; // BL_LOCK_FLAG = 1
                 if (!string.IsNullOrEmpty(conditional))
                 {
@@ -174,15 +172,13 @@ namespace DotNet.Business
                 BaseUserContactManager userContactManager = new BaseUserContactManager(this.UserInfo);
 
                 int deleteFlag = 0;
-                using (IDataReader dataReader = dbHelper.ExecuteReader(commandText))
+                var dataReader = dbHelper.ExecuteReader(commandText);
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
-                    {
-                        result += ImportUser(dataReader, organizationManager, userLogonManager, userContactManager);
-                        deleteFlag++;
-                    }
-                    dataReader.Close();
+                    result += ImportUser(dataReader, organizationManager, userLogonManager, userContactManager);
+                    deleteFlag++;
                 }
+                dataReader.Close();
                 if (deleteFlag == 0 && !string.IsNullOrWhiteSpace(conditional) && conditional.IndexOf("ONLY_USER_NAME") < 0)
                 {
                     //删除BASEUSER
@@ -242,7 +238,7 @@ namespace DotNet.Business
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Format(@"UPDATE TAB_USER 
                                                         SET USER_NAME = {0} 
                                                             , ONLY_USER_NAME = {1}
@@ -295,7 +291,7 @@ namespace DotNet.Business
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Format("UPDATE TAB_USER SET USER_PASSWORD = NULL, USER_PASSWD = {0}, SALT = {1}, CHANGEPASSWORDDATE = {2}, OPENID = {3} WHERE ID = {4}"
                     , dbHelper.GetParameter("password")
                     , dbHelper.GetParameter("salt")
@@ -327,7 +323,7 @@ namespace DotNet.Business
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 BaseManager manager = new BaseManager(dbHelper, UserInfo, "TAB_USER");
                 result = manager.SetProperty(new KeyValuePair<string, object>("Id", userIds), new KeyValuePair<string, object>("USER_PASSWORD", password));
             }
@@ -340,7 +336,7 @@ namespace DotNet.Business
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             if (!string.IsNullOrEmpty(connectionString))
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Format("UPDATE TAB_USER SET USER_PASSWORD = NULL, USER_PASSWD = {0}, SALT = {1}, CHANGEPASSWORDDATE = {2} WHERE ID = {3}"
                     , dbHelper.GetParameter("password")
                     , dbHelper.GetParameter("salt")

@@ -152,13 +152,12 @@ namespace DotNet.Business
             try
             {
                 errorMark = 1;
-                using (var dataReader = DbHelper.ExecuteReader(commandText, dbParameters.ToArray()))
+                var dataReader = DbHelper.ExecuteReader(commandText, dbParameters.ToArray());
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
-                    {
-                        ids.Add(dataReader[BaseOrganizationEntity.FieldId].ToString());
-                    }
+                    ids.Add(dataReader[BaseOrganizationEntity.FieldId].ToString());
                 }
+                dataReader.Close();
                 result = ids.ToArray();
             }
             catch (Exception ex)

@@ -54,20 +54,18 @@ namespace DotNet.Business
             {
                 CurrentTableName = systemCode + "Module"
             };
-            using (var dataReader = manager.ExecuteReader())
+            var dataReader = manager.ExecuteReader();
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
+                var entity = BaseEntity.Create<BaseModuleEntity>(dataReader, false);
+                if (entity != null)
                 {
-                    var entity = BaseEntity.Create<BaseModuleEntity>(dataReader, false);
-                    if (entity != null)
-                    {
-                        SetCache(systemCode, entity);
-                        result++;
-                        System.Console.WriteLine(result + " : " + entity.Code);
-                    }
+                    SetCache(systemCode, entity);
+                    result++;
+                    System.Console.WriteLine(result + " : " + entity.Code);
                 }
-                dataReader.Close();
             }
+            dataReader.Close();
 
             return result;
         }

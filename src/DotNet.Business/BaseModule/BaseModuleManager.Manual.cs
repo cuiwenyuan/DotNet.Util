@@ -100,7 +100,9 @@ namespace DotNet.Business
             if ((entity.Code.Length > 0) && (Exists(parameters, entity.Id)))
             {
                 // 编号已重复
-                status = Status.ErrorCodeExist;
+                Status = Status.ErrorCodeExist;
+                StatusCode = Status.ErrorCodeExist.ToString();
+                StatusMessage = Status.ErrorCodeExist.ToDescription();
             }
             else
             {
@@ -114,15 +116,24 @@ namespace DotNet.Business
                     if (entityOld.AllowEdit == 1)
                     {
                         result = UpdateEntity(entity);
-                        status = Status.AccessDeny;
-                    }
-                    if (result == 1)
-                    {
-                        status = Status.OkUpdate;
+                        if (result == 1)
+                        {
+                            Status = Status.OkUpdate;
+                            StatusCode = Status.OkUpdate.ToString();
+                            StatusMessage = Status.OkUpdate.ToDescription();
+                        }
+                        else
+                        {
+                            Status = Status.ErrorDeleted;
+                            StatusCode = Status.ErrorDeleted.ToString();
+                            StatusMessage = Status.ErrorDeleted.ToDescription();
+                        }
                     }
                     else
                     {
-                        status = Status.ErrorDeleted;
+                        Status = Status.NotAllowEdit;
+                        StatusCode = Status.NotAllowEdit.ToString();
+                        StatusMessage = Status.NotAllowEdit.ToDescription();
                     }
                 }
             }

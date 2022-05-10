@@ -71,7 +71,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(connectionString))
             {
                 // 01：可以从k8里读取公司、用户、密码的。
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(CurrentDbType.Oracle, connectionString);
+                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 BaseOrganizationManager organizationManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
                 // 不不存在的组织机构删除掉TAB_SITE是远程试图
                 string commandText = "DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)";
@@ -83,50 +83,50 @@ namespace DotNet.Business
                 {
                     commandText += conditional;
                 }
-                using (IDataReader dr = dbHelper.ExecuteReader(commandText))
+
+                var dataReader = dbHelper.ExecuteReader(commandText);
+
+                while (dataReader.Read())
                 {
-                    while (dr.Read())
+                    // 这里需要从数据库读取、否则容易造成丢失数据
+                    BaseOrganizationEntity entity = organizationManager.GetEntity(dataReader["ID"].ToString());
+                    if (entity == null)
                     {
-                        // 这里需要从数据库读取、否则容易造成丢失数据
-                        BaseOrganizationEntity entity = organizationManager.GetEntity(dr["ID"].ToString());
-                        if (entity == null)
-                        {
-                            entity = new BaseOrganizationEntity();
-                            //entity.Id = dr["ID"].ToString();
-                        }
-                        entity.Code = dr["SITE_CODE"].ToString();
-                        if (string.IsNullOrEmpty(entity.ParentName) || !entity.ParentName.Equals(dr["SUPERIOR_SITE"].ToString()))
-                        {
-                            entity.ParentName = dr["SUPERIOR_SITE"].ToString();
-                            entity.ParentId = 0;
-                        }
-                        
-                        entity.Name = dr["SITE_NAME"].ToString();
-                        entity.ShortName = dr["SITE_NAME"].ToString();
-                        entity.CategoryCode = dr["TYPE"].ToString();
-                        entity.OuterPhone = dr["PHONE"].ToString();
-                        entity.Fax = dr["FAX"].ToString();
-                        entity.Province = dr["PROVINCE"].ToString();
-                        entity.City = dr["CITY"].ToString();
-                        entity.District = dr["RANGE_NAME"].ToString();
-
-                        entity.CostCenter = dr["SUPERIOR_FINANCE_CENTER"].ToString();
-                        entity.Area = dr["BIG_AREA_NAME"].ToString();
-                        entity.CompanyName = dr["SITE1_NAME"].ToString();
-
-                        if (!string.IsNullOrEmpty(dr["ORDER_BY"].ToString()))
-                        {
-                            entity.SortCode = int.Parse(dr["ORDER_BY"].ToString());
-                        }
-                        // 02：可以把读取到的数据能写入到用户中心的。
-                        result = organizationManager.UpdateEntity(entity);
-                        if (result == 0)
-                        {
-                            organizationManager.AddEntity(entity);
-                        }
+                        entity = new BaseOrganizationEntity();
+                        //entity.Id = dr["ID"].ToString();
                     }
-                    dr.Close();
+                    entity.Code = dataReader["SITE_CODE"].ToString();
+                    if (string.IsNullOrEmpty(entity.ParentName) || !entity.ParentName.Equals(dataReader["SUPERIOR_SITE"].ToString()))
+                    {
+                        entity.ParentName = dataReader["SUPERIOR_SITE"].ToString();
+                        entity.ParentId = 0;
+                    }
+
+                    entity.Name = dataReader["SITE_NAME"].ToString();
+                    entity.ShortName = dataReader["SITE_NAME"].ToString();
+                    entity.CategoryCode = dataReader["TYPE"].ToString();
+                    entity.OuterPhone = dataReader["PHONE"].ToString();
+                    entity.Fax = dataReader["FAX"].ToString();
+                    entity.Province = dataReader["PROVINCE"].ToString();
+                    entity.City = dataReader["CITY"].ToString();
+                    entity.District = dataReader["RANGE_NAME"].ToString();
+
+                    entity.CostCenter = dataReader["SUPERIOR_FINANCE_CENTER"].ToString();
+                    entity.Area = dataReader["BIG_AREA_NAME"].ToString();
+                    entity.CompanyName = dataReader["SITE1_NAME"].ToString();
+
+                    if (!string.IsNullOrEmpty(dataReader["ORDER_BY"].ToString()))
+                    {
+                        entity.SortCode = int.Parse(dataReader["ORDER_BY"].ToString());
+                    }
+                    // 02：可以把读取到的数据能写入到用户中心的。
+                    result = organizationManager.UpdateEntity(entity);
+                    if (result == 0)
+                    {
+                        organizationManager.AddEntity(entity);
+                    }
                 }
+                dataReader.Close();
                 // 填充 parentname
                 // select * from baseorganization where parentname is null
                 commandText = @"update baseorganization set parentname = (select fullname from baseorganization t where t.id = baseorganization.parentId) where parentname is null";

@@ -118,21 +118,25 @@ namespace DotNet.Business
                     if (entityOld.AllowEdit == 1)
                     {
                         result = UpdateEntity(entity);
-                        Status = Status.AccessDeny;
-                        StatusCode = Status.AccessDeny.ToString();
-                        StatusMessage = Status.AccessDeny.ToDescription();
-                    }
-                    if (result == 1)
-                    {
-                        Status = Status.OkUpdate;
-                        StatusCode = Status.OkUpdate.ToString();
-                        StatusMessage = Status.OkUpdate.ToDescription();
+
+                        if (result == 1)
+                        {
+                            Status = Status.OkUpdate;
+                            StatusCode = Status.OkUpdate.ToString();
+                            StatusMessage = Status.OkUpdate.ToDescription();
+                        }
+                        else
+                        {
+                            Status = Status.ErrorDeleted;
+                            StatusCode = Status.ErrorDeleted.ToString();
+                            StatusMessage = Status.ErrorDeleted.ToDescription();
+                        }
                     }
                     else
                     {
-                        Status = Status.ErrorDeleted;
-                        StatusCode = Status.ErrorDeleted.ToString();
-                        StatusMessage = Status.ErrorDeleted.ToDescription();
+                        Status = Status.NotAllowEdit;
+                        StatusCode = Status.NotAllowEdit.ToString();
+                        StatusMessage = Status.NotAllowEdit.ToDescription();
                     }
                 }
             }
@@ -146,10 +150,10 @@ namespace DotNet.Business
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
-        /// <param name="newEntity">修改前的实体对象</param>
-        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void SaveEntityChangeLog(BaseDictionaryEntity newEntity, BaseDictionaryEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseDictionaryEntity entityNew, BaseDictionaryEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -159,15 +163,15 @@ namespace DotNet.Business
             var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseDictionaryEntity).GetProperties())
             {
-                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
-                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var oldValue = Convert.ToString(property.GetValue(entityOld, null));
+                var newValue = Convert.ToString(property.GetValue(entityNew, null));
                 var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
                 //不记录创建人、修改人、没有修改的记录
                 if (!fieldDescription.NeedLog || oldValue == newValue)
                 {
                     continue;
                 }
-                var record = new BaseChangeLogEntity
+                var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
                     TableDescription = FieldExtensions.ToDescription(typeof(BaseDictionaryEntity), "CurrentTableName"),
@@ -175,9 +179,9 @@ namespace DotNet.Business
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    RecordKey = oldEntity.Id.ToString()
+                    RecordKey = entityOld.Id.ToString()
                 };
-                manager.Add(record, true, false);
+                manager.Add(entity, true, false);
             }
         }
         #endregion

@@ -100,9 +100,17 @@ namespace DotNet.Util
         /// </summary>
         public virtual DbProviderFactory GetInstance()
         {
-            if (_dbProviderFactory == null)
+            //if (_dbProviderFactory == null)
+            //{
+            //    _dbProviderFactory = DbHelperFactory.Create().GetInstance();
+            //}
+            // 懒汉式，双重校验锁，只在第一次创建实例时加锁，提高访问性能 2022-05-10 Troy.Cui
+            if (_dbProviderFactory != null) return _dbProviderFactory;
+            lock (this)
             {
-                _dbProviderFactory = DbHelperFactory.GetHelper().GetInstance();
+                if (_dbProviderFactory != null) return _dbProviderFactory;
+
+                _dbProviderFactory = DbHelperFactory.Create(CurrentDbType, ConnectionString).GetInstance();
             }
 
             return _dbProviderFactory;
@@ -271,6 +279,11 @@ namespace DotNet.Util
             {
                 if (DbConnection.State == ConnectionState.Closed)
                 {
+                    DbConnection.Open();
+                }
+                else if (DbConnection.State == ConnectionState.Broken)
+                {
+                    DbConnection.Close();
                     DbConnection.Open();
                 }
                 // 这里是不允许自动关闭了

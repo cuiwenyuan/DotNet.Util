@@ -73,7 +73,7 @@ namespace DotNet.Business
         {
             get
             {
-                var dbHelper = DbHelperFactory.GetHelper(ServiceDbType, ServiceDbConnection);
+                var dbHelper = DbHelperFactory.Create(ServiceDbType, ServiceDbConnection);
                 return dbHelper;
             }
         }

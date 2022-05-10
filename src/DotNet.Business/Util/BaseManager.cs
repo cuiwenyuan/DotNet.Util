@@ -104,9 +104,9 @@ namespace DotNet.Business
                     {
                         if (dbHelper == null)
                         {
-                            //dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection);
+                            //dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection);
                             //Troy 20160521不要强制默认UserCenter，要读取当前的数据库
-                            dbHelper = DbHelperFactory.GetHelper();
+                            dbHelper = DbHelperFactory.Create();
                             //是自动打开关闭数据库状态
                             dbHelper.MustCloseConnection = true;
                         }

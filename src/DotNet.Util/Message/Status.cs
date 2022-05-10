@@ -156,11 +156,7 @@ namespace DotNet.Util
         /// </summary>
         [EnumDescription("密码错误")]
         PasswordError = 27,
-        /// <summary>
-        /// 验证码错误
-        /// </summary>
-        [EnumDescription("验证码错误")]
-        VerificationCodeError = 127,
+        
         /// <summary>
         /// 登录被拒绝
         /// </summary>
@@ -307,6 +303,12 @@ namespace DotNet.Util
         [EnumDescription("参数错误")]
         ParameterError = 77,
         /// <summary>
+        /// 参数错误
+        /// </summary>
+        [EnumDescription("不允许修改")]
+        NotAllowEdit = 78,
+
+        /// <summary>
         /// 退出系统
         /// </summary>
         [EnumDescription("退出系统")]
@@ -316,6 +318,13 @@ namespace DotNet.Util
         /// </summary>
         [EnumDescription("公司没有找到")]
         CompanyNotFound = 126,
+
+        /// <summary>
+        /// 验证码错误
+        /// </summary>
+        [EnumDescription("验证码错误")]
+        VerificationCodeError = 127,
+
         /// <summary>
         /// 数据被篡改，网络被劫持
         /// </summary>

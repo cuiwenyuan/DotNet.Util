@@ -412,6 +412,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.WmsDbConnectionString = ConfigurationManager.AppSettings["WMSDbConnection"];
             }
+            if (ConfigurationManager.AppSettings["ZBWMSDbConnection"] != null)
+            {
+                BaseSystemInfo.ZbwmsDbConnectionString = ConfigurationManager.AppSettings["ZBWMSDbConnection"];
+            }
             if (ConfigurationManager.AppSettings["MESDbConnection"] != null)
             {
                 BaseSystemInfo.MesDbConnectionString = ConfigurationManager.AppSettings["MESDbConnection"];
@@ -480,6 +484,18 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.MemberDbConnectionString = ConfigurationManager.AppSettings["MemberDbConnection"];
             }
+            if (ConfigurationManager.AppSettings["BudgetDbConnection"] != null)
+            {
+                BaseSystemInfo.BudgetDbConnectionString = ConfigurationManager.AppSettings["BudgetDbConnection"];
+            }
+            if (ConfigurationManager.AppSettings["ItamsDbConnection"] != null)
+            {
+                BaseSystemInfo.ItamsDbConnectionString = ConfigurationManager.AppSettings["ItamsDbConnection"];
+            }
+            if (ConfigurationManager.AppSettings["CardTicketDbConnection"] != null)
+            {
+                BaseSystemInfo.CardTicketDbConnectionString = ConfigurationManager.AppSettings["CardTicketDbConnection"];
+            }
             // 对加密的数据库连接进行解密操作
             if (BaseSystemInfo.EncryptDbConnection)
             {
@@ -493,6 +509,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BpmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BpmDbConnectionString);
                 BaseSystemInfo.ErpDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ErpDbConnectionString);
                 BaseSystemInfo.WmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WmsDbConnectionString);
+                BaseSystemInfo.ZbwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ZbwmsDbConnectionString);
                 BaseSystemInfo.MesDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MesDbConnectionString);
                 BaseSystemInfo.HrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.HrmDbConnectionString);
                 BaseSystemInfo.CrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CrmDbConnectionString);
@@ -510,6 +527,9 @@ namespace DotNet.Util
                 BaseSystemInfo.ImsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ImsDbConnectionString);
                 BaseSystemInfo.OmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.OmsDbConnectionString);
                 BaseSystemInfo.MemberDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MemberDbConnectionString);
+                BaseSystemInfo.BudgetDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BudgetDbConnectionString);
+                BaseSystemInfo.ItamsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ItamsDbConnectionString);
+                BaseSystemInfo.CardTicketDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CardTicketDbConnectionString);
             }
             else
             {
@@ -523,6 +543,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BpmDbConnection = BaseSystemInfo.BpmDbConnectionString;
                 BaseSystemInfo.ErpDbConnection = BaseSystemInfo.ErpDbConnectionString;
                 BaseSystemInfo.WmsDbConnection = BaseSystemInfo.WmsDbConnectionString;
+                BaseSystemInfo.ZbwmsDbConnection = BaseSystemInfo.ZbwmsDbConnectionString;
                 BaseSystemInfo.MesDbConnection = BaseSystemInfo.MesDbConnectionString;
                 BaseSystemInfo.HrmDbConnection = BaseSystemInfo.HrmDbConnectionString;
                 BaseSystemInfo.CrmDbConnection = BaseSystemInfo.CrmDbConnectionString;
@@ -540,6 +561,9 @@ namespace DotNet.Util
                 BaseSystemInfo.ImsDbConnection = BaseSystemInfo.ImsDbConnectionString;
                 BaseSystemInfo.OmsDbConnection = BaseSystemInfo.OmsDbConnectionString;
                 BaseSystemInfo.MemberDbConnection = BaseSystemInfo.MemberDbConnectionString;
+                BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
+                BaseSystemInfo.ItamsDbConnection = BaseSystemInfo.ItamsDbConnectionString;
+                BaseSystemInfo.CardTicketDbConnection = BaseSystemInfo.CardTicketDbConnectionString;
             }
 
             BaseSystemInfo.UserCenterReadDbConnection = BaseSystemInfo.UserCenterDbConnection;

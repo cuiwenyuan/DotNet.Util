@@ -111,24 +111,22 @@ namespace DotNet.Business
             var commandText = "SELECT " + BaseUserLogonEntity.FieldUserId + "," + BaseUserLogonEntity.FieldOpenId
                                 + " FROM " + BaseUserLogonEntity.CurrentTableName + " T WHERE T." + BaseUserLogonEntity.FieldUserPassword + " IS NOT NULL AND T." + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " IS NOT NULL AND T." + BaseUserLogonEntity.FieldEnabled + " = 1 AND T." + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " - sysdate < 0.5";
 
-            using (var dataReader = manager.ExecuteReader(commandText))
+            var dataReader = manager.ExecuteReader(commandText);
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    var userId = dataReader[BaseUserLogonEntity.FieldUserId].ToString();
-                    var openId = dataReader[BaseUserLogonEntity.FieldOpenId].ToString();
-                    //暂停Redis缓存 Troy.Cui 2018.07.24，根本没用到Redis，分离DotNet.Business.Web后，就更没必要了
-                    CacheUtil.Set(userId, openId);
+                var userId = dataReader[BaseUserLogonEntity.FieldUserId].ToString();
+                var openId = dataReader[BaseUserLogonEntity.FieldOpenId].ToString();
+                //暂停Redis缓存 Troy.Cui 2018.07.24，根本没用到Redis，分离DotNet.Business.Web后，就更没必要了
+                CacheUtil.Set(userId, openId);
 
-                    result++;
-                    if (result % 500 == 0)
-                    {
-                        Console.WriteLine(result + " : OpenIdClient User : " + userId);
-                    }
+                result++;
+                if (result % 500 == 0)
+                {
+                    Console.WriteLine(result + " : OpenIdClient User : " + userId);
                 }
-                dataReader.Close();
-                Console.WriteLine(result + " : 完成 ");
             }
+            dataReader.Close();
+            Console.WriteLine(result + " : 完成 ");
 
             return result;
         }

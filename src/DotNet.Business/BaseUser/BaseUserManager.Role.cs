@@ -515,14 +515,12 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldDeleted, 0)
             };
 
-            using (var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
+            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    result.Add(dataReader[BaseUserRoleEntity.FieldRoleId].ToString());
-                }
-                dataReader.Close();
+                result.Add(dataReader[BaseUserRoleEntity.FieldRoleId].ToString());
             }
+            dataReader.Close();
 
             return result.ToArray();
             // return BaseUtil.FieldToArray(result, BaseUserRoleEntity.FieldRoleId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
@@ -826,7 +824,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            using (var dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
+            using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection))
             {
                 var commandText = @"SELECT COUNT(*) FROM " + BaseUserEntity.CurrentTableName
                                     + " WHERE Id = " + dbHelper.GetParameter(BaseUserEntity.FieldId)
@@ -922,13 +920,12 @@ namespace DotNet.Business
             // return BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
             var userIds = new List<string>();
-            using (var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray()))
+            var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
+            while (dataReader.Read())
             {
-                while (dataReader.Read())
-                {
-                    userIds.Add(dataReader["UserId"].ToString());
-                }
+                userIds.Add(dataReader["UserId"].ToString());
             }
+            dataReader.Close();
             result = userIds.ToArray();
 
             return result;
@@ -955,13 +952,12 @@ namespace DotNet.Business
                                 + "  AND (" + BaseUserRoleEntity.FieldUserId + " IN (SELECT " + BaseUserEntity.FieldId + " FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0)) AND (" + BaseUserRoleEntity.FieldDeleted + " = 0)";
 
                 var ids = new List<string>();
-                using (var dr = DbHelper.ExecuteReader(commandText))
+                var dataReader = DbHelper.ExecuteReader(commandText);
+                while (dataReader.Read())
                 {
-                    while (dr.Read())
-                    {
-                        ids.Add(dr["UserId"].ToString());
-                    }
+                    ids.Add(dataReader["UserId"].ToString());
                 }
+                dataReader.Close();
                 result = ids.ToArray();
             }
 
