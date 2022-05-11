@@ -75,79 +75,79 @@ namespace DotNet.Business
                     // 不不存在的用户删除掉tab_user是远程试图
                     /*
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 10000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 10000 )";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 20000 AND id >= 10000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id <20000 AND id >= 10000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 30000 AND id >= 20000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 30000 AND id >= 20000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 40000 AND id >= 30000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 40000 AND id >= 30000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 50000 AND id >= 40000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 50000 AND id >= 40000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 60000 AND id >= 50000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 60000 AND id >= 50000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 70000 AND id >= 60000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 70000 AND id >= 60000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 80000 AND id >= 70000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 80000 AND id >= 70000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 90000 AND id >= 80000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 90000 AND id >= 80000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 100000 AND id >= 90000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 100000 AND id >= 90000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 110000 AND id >= 100000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 110000 AND id >= 100000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 120000 AND id >= 110000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 120000 AND id >= 110000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 130000 AND id >= 120000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 130000 AND id >= 120000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 200000 AND id >= 130000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 200000 AND id >= 130000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 300000 AND id >= 200000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 300000 AND id >= 200000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 400000 AND id >= 300000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 400000 AND id >= 300000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 600000 AND id >= 400000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 600000 AND id >= 400000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 800000 AND id >= 600000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 800000 AND id >= 600000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
 
                     commandText = "DELETE FROM " + BaseStaffEntity.CurrentTableName + " WHERE id < 1000000 AND id >= 800000 AND id NOT IN (SELECT id FROM TAB_EMPLOYEE WHERE id < 1000000 AND id >= 800000)";
-                    staffManager.DbHelper.ExecuteNonQuery(commandText);
+                    staffManager.ExecuteNonQuery(commandText);
                     System.Console.WriteLine(commandText);
                     */
                 }
@@ -168,17 +168,21 @@ namespace DotNet.Business
                 //var userManager = new BaseUserManager(UserInfo);
                 //var userLogonManager = new BaseUserLogonManager(UserInfo);
                 //var dataReader = DbHelper.ExecuteReader(commandText);
-                //while (dataReader.Read())
+                //if (dataReader != null && !dataReader.IsClosed)
                 //{
-                //    result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager, userLogonManager);
+                //    while (dataReader.Read())
+                //    {
+                //        result += ImportStaff(dataReader, staffManager, sTaffExpressManager, userManager,
+                //            userLogonManager);
+                //    }
+                //    dataReader.Close();
                 //}
-                //dataReader.Close();
 
                 // 设置用户的公司主键，有时候不需要同步所有的账户，只同步增量账户
                 // 设置用户的公司主键
                 // commandText = @"UPDATE basestaff SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.name = basestaff.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''";
                 // 公司名称重复的数据需要找出来
-                DbHelper.ExecuteNonQuery(commandText);
+                ExecuteNonQuery(commandText);
                 Console.WriteLine(commandText);
             }
             return result;

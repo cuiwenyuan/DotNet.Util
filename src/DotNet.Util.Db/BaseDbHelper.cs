@@ -5,8 +5,10 @@
 using System;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace DotNet.Util
 {
@@ -39,43 +41,40 @@ namespace DotNet.Util
         #endregion
 
         #region private DbConnection DbConnection 数据库连接必要条件参数
-        // 数据库连接
+        /// <summary>
+        /// 数据库连接
+        /// </summary>
         private DbConnection _dbConnection = null;
         /// <summary>
         /// 数据库连接
         /// </summary>
-        public DbConnection DbConnection
+        public virtual DbConnection DbConnection
         {
             get
             {
-                if (_dbConnection == null)
-                {
-                    //若没打开，就变成自动打开关闭的
-                    Open();
-                    MustCloseConnection = true;
-                }
+                if (_dbConnection != null) return _dbConnection;
+                Open();
                 return _dbConnection;
+                
             }
             set => _dbConnection = value;
         }
 
-        // 命令
         /// <summary>
         /// 命令
         /// </summary>
-        public DbCommand DbCommand { get; set; } = null;
+        protected DbCommand DbCommand { get; set; } = null;
 
         // 数据库适配器
         /// <summary>
         /// 数据库适配器
         /// </summary>
-        public DbDataAdapter DbDataAdapter { get; set; } = null;
+        protected DbDataAdapter DbDataAdapter { get; set; } = null;
 
-        // 数据库连接
         /// <summary>
-        /// 数据库连接
+        /// 数据库连接字符串
         /// </summary>
-        public string ConnectionString { get; set; } = "Data Source=localhost;Initial Catalog=UserCenterV4;Integrated Security=SSPI;";
+        public string ConnectionString { get; set; } = string.Empty;
 
         private DbTransaction _dbTransaction = null;
 
@@ -87,10 +86,15 @@ namespace DotNet.Util
         /// <summary>
         /// 日志文件名
         /// </summary>
-        public string FileName = "BaseDbHelper.txt";    // sql查询句日志
+        public string FileName = "BaseDbHelper.txt";
 
         /// <summary>
-        /// 默认打开关闭数据库选项（默认为否）
+        /// 版本
+        /// </summary>
+        public string ServerVersion = string.Empty;
+
+        /// <summary>
+        /// 默认打开关闭数据库连接选项（默认为否）
         /// </summary>
         public bool MustCloseConnection { get; set; } = false;
 
@@ -100,18 +104,17 @@ namespace DotNet.Util
         /// </summary>
         public virtual DbProviderFactory GetInstance()
         {
-            //if (_dbProviderFactory == null)
-            //{
-            //    _dbProviderFactory = DbHelperFactory.Create().GetInstance();
-            //}
-            // 懒汉式，双重校验锁，只在第一次创建实例时加锁，提高访问性能 2022-05-10 Troy.Cui
-            if (_dbProviderFactory != null) return _dbProviderFactory;
-            lock (this)
+            if (_dbProviderFactory == null)
             {
-                if (_dbProviderFactory != null) return _dbProviderFactory;
-
                 _dbProviderFactory = DbHelperFactory.Create(CurrentDbType, ConnectionString).GetInstance();
             }
+            //// 懒汉式，双重校验锁，只在第一次创建实例时加锁，提高访问性能 2022-05-10 Troy.Cui
+            //if (_dbProviderFactory != null) return _dbProviderFactory;
+            //lock (this)
+            //{
+            //    if (_dbProviderFactory != null) return _dbProviderFactory;
+            //    _dbProviderFactory = DbHelperFactory.Create(CurrentDbType, ConnectionString).GetInstance();
+            //}
 
             return _dbProviderFactory;
         }
@@ -176,15 +179,11 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection Open()
         {
-            // 这里是获取一个连接的详细方法
             if (string.IsNullOrEmpty(ConnectionString))
             {
+                BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
-                {
-                    BaseConfiguration.GetSetting();
-                }
-                //读取不到，就用用户中心数据库
+                // 读取不到，就用用户中心数据库
                 if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
@@ -207,28 +206,19 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection Open(string connectionString)
         {
-            // 这里数据库连接打开的时候，就判断注册属性的有效性
-            if (!SecretUtil.CheckRegister())
-            {
-                // 若没有进行注册，让程序无法打开数据库比较好。
-                connectionString = string.Empty;
-
-                // 抛出异常信息显示给客户
-                throw new Exception(BaseSystemInfo.RegisterException);
-            }
-
             //若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
             _dbConnection = GetInstance().CreateConnection();
-            var dbConnection = _dbConnection;
-            if (dbConnection != null)
+            //var dbConnection = _dbConnection;
+            if (_dbConnection != null)
             {
-                dbConnection.ConnectionString = ConnectionString;
-                dbConnection.Open();
-                //MustCloseConnection = false;
-                //修改为必须关闭 Troy.Cui 2018.07.02
-                MustCloseConnection = true;
-                return dbConnection;
+                _dbConnection.ConnectionString = ConnectionString;
+                _dbConnection.Open();
+                if (_dbConnection.State == ConnectionState.Open)
+                {
+                    ServerVersion = _dbConnection.ServerVersion;
+                }
+                return _dbConnection;
             }
             return null;
         }
@@ -279,11 +269,6 @@ namespace DotNet.Util
             {
                 if (DbConnection.State == ConnectionState.Closed)
                 {
-                    DbConnection.Open();
-                }
-                else if (DbConnection.State == ConnectionState.Broken)
-                {
-                    DbConnection.Close();
                     DbConnection.Open();
                 }
                 // 这里是不允许自动关闭了
@@ -339,8 +324,10 @@ namespace DotNet.Util
             if (_dbConnection != null)
             {
                 _dbConnection.Close();
-                //Troy Cui 2018.01.02启用，解决应用程序池的问题
                 _dbConnection.Dispose();
+#if (DEBUG)
+                Trace.WriteLine(DateTime.Now + " :DbConnection Close: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
             }
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
             Dispose();
@@ -393,24 +380,37 @@ namespace DotNet.Util
         {
             if (DbCommand != null)
             {
+#if (DEBUG)
+                Trace.WriteLine(DateTime.Now + " :DbCommand Dispose: " + DbCommand + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
                 DbCommand.Dispose();
             }
             if (DbDataAdapter != null)
             {
+#if (DEBUG)
+                Trace.WriteLine(DateTime.Now + " :DbDataAdapter Dispose: " + DbDataAdapter + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
                 DbDataAdapter.Dispose();
             }
-            if (_dbTransaction != null)
+            if (_dbTransaction != null && !InTransaction)
             {
+#if (DEBUG)
+                Trace.WriteLine(DateTime.Now + " :_dbTransaction Dispose: " + _dbTransaction + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
                 _dbTransaction.Dispose();
             }
             // 关闭数据库连接
             if (_dbConnection != null)
             {
+#if (DEBUG)
+                Trace.WriteLine(DateTime.Now + " :DbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
                     _dbConnection.Close();
                     _dbConnection.Dispose();
                 }
+
             }
             _dbConnection = null;
         }

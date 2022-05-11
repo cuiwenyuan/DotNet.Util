@@ -133,7 +133,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public string QuickAdd(string tableName, string tableDescription, string operation, string recordKey)
         {
-            BaseOperationLogEntity entity = new BaseOperationLogEntity
+            var entity = new BaseOperationLogEntity
             {
                 SystemCode = BaseSystemInfo.SystemCode,
                 TableName = tableName,

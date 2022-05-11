@@ -208,15 +208,14 @@ namespace DotNet.Model
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="dataReader"></param>
-        /// <param name="close"></param>
+        /// <param name="onlyFirstRow">只读取第一行</param>
         /// <returns></returns>
-        public static T Create<T>(IDataReader dataReader, bool close = true) where T : BaseEntity, new()
+        public static T Create<T>(IDataReader dataReader, bool onlyFirstRow = true) where T : BaseEntity, new()
         {
-            // 2015-07-14 没有对象时需要返回 null, 否则很多程序逻辑需要修改了
             T entity = null;
-            if (close)
+            if (onlyFirstRow)
             {
-                if (dataReader != null)
+                if (dataReader != null && !dataReader.IsClosed)
                 {
                     while (dataReader.Read())
                     {
@@ -269,15 +268,15 @@ namespace DotNet.Model
         public static List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
         {
             var ls = new List<T>();
-            if ((dataReader == null))
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                return ls;
+                while (dataReader.Read())
+                {
+                    ls.Add(Create<T>(dataReader, false));
+                }
+                dataReader.Close();
             }
-            while (dataReader.Read())
-            {
-                ls.Add(Create<T>(dataReader, false));
-            }
-            dataReader.Close();
+
             return ls;
         }
         #endregion

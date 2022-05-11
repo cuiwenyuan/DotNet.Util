@@ -38,8 +38,8 @@ namespace DotNet.Business
         /// <param name="systemCode">子系统编码</param>
         public virtual void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null)
         {
-            Type oldType = entityOld.GetType();
-            Type newType = entityNew.GetType();
+            var oldType = entityOld.GetType();
+            var newType = entityNew.GetType();
 
             if (newType.Equals(oldType) && oldType.IsClass && newType.IsClass)
             {

@@ -213,7 +213,7 @@ namespace DotNet.Business
                 }
                 catch (Exception ex)
                 {
-                    string writeMessage = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
+                    var writeMessage = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + Environment.NewLine + "Message:" + ex.Message
                         + Environment.NewLine + "Source:" + ex.Source
@@ -862,13 +862,13 @@ namespace DotNet.Business
             var result = 0;
             var sql = "DELETE FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.CurrentTableName + ") ";
-            result += DbHelper.ExecuteNonQuery(sql);
+            result += ExecuteNonQuery(sql);
             // 更新排序顺序情况
             sql = "UPDATE " + BaseUserEntity.CurrentTableName
                      + " SET SortCode = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode
                      + " FROM " + BaseStaffEntity.CurrentTableName
                      + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId;
-            result += DbHelper.ExecuteNonQuery(sql);
+            result += ExecuteNonQuery(sql);
             return result;
         }
         #endregion
@@ -896,7 +896,7 @@ namespace DotNet.Business
         public int CheckUserStaff()
         {
             var sql = "UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ";
-            return DbHelper.ExecuteNonQuery(sql);
+            return ExecuteNonQuery(sql);
         }
         #endregion
 
@@ -1110,13 +1110,17 @@ namespace DotNet.Business
             // 把所有的数据都缓存起来的代码
             var manager = new BaseUserManager();
             var dataReader = manager.ExecuteReader(0, BaseUserEntity.FieldId);
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var entity = BaseEntity.Create<BaseUserEntity>(dataReader, false);
-                SetCache(entity);
-                result++;
+                while (dataReader.Read())
+                {
+                    var entity = BaseEntity.Create<BaseUserEntity>(dataReader, false);
+                    SetCache(entity);
+                    result++;
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
 
             return result;
         }

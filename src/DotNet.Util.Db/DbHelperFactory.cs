@@ -49,9 +49,7 @@ namespace DotNet.Util
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
 
-            //var dbHelper = GetHelper(dbType, connectionString);
-            // Dictionary.TryGetValue 在多线程高并发下有可能抛出空异常
-            var dbHelper = DbHelpers.GetOrAdd(key: Convert.ToBase64String(Encoding.UTF8.GetBytes(connectionString)), valueFactory: _ => GetHelper(dbType, connectionString));
+            var dbHelper = GetHelper(dbType, connectionString);
 
             return dbHelper;
         }
@@ -68,19 +66,20 @@ namespace DotNet.Util
         /// <returns>数据库访问类</returns>
         public static IDbHelper GetHelper(CurrentDbType dbType = CurrentDbType.SqlServer, string connectionString = null)
         {
-            // 这里是每次都获取新的数据库连接,否则会有并发访问的问题存在
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                connectionString = BaseSystemInfo.UserCenterDbConnection;
+            }
             var dbHelperClass = DbHelper.GetDbHelperClass(dbType);
             var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
+            // 千万不要用以下代码，不然会经常数据库访问异常！
+            // Dictionary.TryGetValue 在多线程高并发下有可能抛出空异常
+            //var dbHelper = DbHelpers.GetOrAdd(key: Convert.ToBase64String(Encoding.UTF8.GetBytes(connectionString)), valueFactory: _ => (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true));
+
             if (dbHelper != null)
             {
-                if (!string.IsNullOrEmpty(connectionString))
-                {
-                    dbHelper.ConnectionString = connectionString;
-                }
-                else
-                {
-                    dbHelper.ConnectionString = BaseSystemInfo.BusinessDbConnection;
-                }
+
+                dbHelper.ConnectionString = connectionString;
             }
 
             return dbHelper;

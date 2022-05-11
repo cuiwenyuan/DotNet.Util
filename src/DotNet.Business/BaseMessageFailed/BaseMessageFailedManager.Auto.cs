@@ -168,10 +168,10 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseMessageFailedEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseMessageFailedEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseMessageFailedEntity>(cacheKey, () => BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseMessageFailedEntity>(cacheKey, () => BaseEntity.Create<BaseMessageFailedEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         public BaseMessageFailedEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
-            return BaseEntity.Create<BaseMessageFailedEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseMessageFailedEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

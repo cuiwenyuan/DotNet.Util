@@ -150,7 +150,7 @@ namespace DotNet.Business
             //                    + " FROM " + tableName
             //                    + " WHERE " + BaseUtil.FieldId + " = '" + targetId + "') "
             //                    + " WHERE " + BaseUtil.FieldId + " = '" + Id + "' ";
-            // result = DbHelper.ExecuteNonQuery(sql);
+            // result = ExecuteNonQuery(sql);
 
             var whereParameters =
                 new List<KeyValuePair<string, object>>

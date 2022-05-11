@@ -153,11 +153,16 @@ namespace DotNet.Business
             {
                 errorMark = 1;
                 var dataReader = DbHelper.ExecuteReader(commandText, dbParameters.ToArray());
-                while (dataReader.Read())
+                if (dataReader != null && !dataReader.IsClosed)
                 {
-                    ids.Add(dataReader[BaseOrganizationEntity.FieldId].ToString());
+                    while (dataReader.Read())
+                    {
+                        ids.Add(dataReader[BaseOrganizationEntity.FieldId].ToString());
+                    }
+
+                    dataReader.Close();
                 }
-                dataReader.Close();
+
                 result = ids.ToArray();
             }
             catch (Exception ex)
@@ -227,7 +232,7 @@ namespace DotNet.Business
                 sql += " AND (" + BaseUserEntity.FieldProvince + " IS NULL)";
             }
 
-            result = DbHelper.ExecuteNonQuery(sql);
+            result = ExecuteNonQuery(sql);
 
             sql = "UPDATE " + BaseUserEntity.CurrentTableName
                               + " SET " + BaseUserEntity.FieldCity + " = ( SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCity
@@ -247,7 +252,7 @@ namespace DotNet.Business
                 sql += " AND (" + BaseUserEntity.FieldProvince + " IS NULL OR " + BaseUserEntity.FieldDistrict + " IS NULL)";
             }
 
-            result = DbHelper.ExecuteNonQuery(sql);
+            result = ExecuteNonQuery(sql);
 
             return result;
         }

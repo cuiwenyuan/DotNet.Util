@@ -149,19 +149,24 @@ namespace DotNet.Business
             var manager = new BaseParameterManager();
 
             var dataReader = manager.ExecuteReader(parameters);
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var key = "MAC:" + dataReader[BaseParameterEntity.FieldParameterId];
-
-                var macAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                CacheUtil.Set(key, macAddress);
-                result++;
-                if (result % 500 == 0)
+                while (dataReader.Read())
                 {
-                    Console.WriteLine(result + " : " + macAddress);
+                    var key = "MAC:" + dataReader[BaseParameterEntity.FieldParameterId];
+
+                    var macAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                    CacheUtil.Set(key, macAddress);
+                    result++;
+                    if (result % 500 == 0)
+                    {
+                        Console.WriteLine(result + " : " + macAddress);
+                    }
                 }
+
+                dataReader.Close();
             }
-            dataReader.Close();
+
             return result;
         }
 
@@ -208,7 +213,7 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseParameterEntity.FieldCategoryCode, "MacAddress"),
                 DbHelper.MakeParameter(BaseParameterEntity.FieldParameterId, userId)
             };
-            result = DbHelper.ExecuteNonQuery(commandText, dbParameters.ToArray());
+            result = ExecuteNonQuery(commandText, dbParameters.ToArray());
 
             return result;
         }

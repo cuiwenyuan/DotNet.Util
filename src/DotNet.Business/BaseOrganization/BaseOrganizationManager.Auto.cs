@@ -169,10 +169,10 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseOrganizationEntity GetEntity(int id)
         {
-            //return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //return BaseEntity.Create<BaseOrganizationEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             var cacheKey = CurrentTableName + ".Entity." + id;
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<BaseOrganizationEntity>(cacheKey, () => BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            return CacheUtil.Cache<BaseOrganizationEntity>(cacheKey, () => BaseEntity.Create<BaseOrganizationEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         public BaseOrganizationEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
-            return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseOrganizationEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

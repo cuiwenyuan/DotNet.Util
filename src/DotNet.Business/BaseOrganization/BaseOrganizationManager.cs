@@ -184,7 +184,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldName, name),
                 new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)
             };
-            return BaseEntity.Create<BaseOrganizationEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseOrganizationEntity>(GetDataTable(parameters));
         }
 
         /// <summary>
@@ -898,17 +898,21 @@ namespace DotNet.Business
             // 把所有的组织机构都缓存起来的代码
             var manager = new BaseOrganizationManager();
             var dataReader = manager.ExecuteReader();
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var entity = BaseEntity.Create<BaseOrganizationEntity>(dataReader, false);
-                if (entity != null)
+                while (dataReader.Read())
                 {
-                    SetCache(entity);
-                    result++;
-                    Console.WriteLine(result + " : " + entity.Name);
+                    var entity = BaseEntity.Create<BaseOrganizationEntity>(dataReader, false);
+                    if (entity != null)
+                    {
+                        SetCache(entity);
+                        result++;
+                        Console.WriteLine(result + " : " + entity.Name);
+                    }
                 }
+
+                dataReader.Close();
             }
-            dataReader.Close();
 
             return result;
         }

@@ -116,15 +116,20 @@ namespace DotNet.Business
             var manager = new BaseParameterManager();
 
             var dataReader = manager.ExecuteReader(parameters);
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var key = "IP:" + dataReader[BaseParameterEntity.FieldParameterId];
-                var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                CacheUtil.Set(key, ipAddress);
-                result++;
-                Console.WriteLine(result + " : " + ipAddress);
+                while (dataReader.Read())
+                {
+                    var key = "IP:" + dataReader[BaseParameterEntity.FieldParameterId];
+                    var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                    CacheUtil.Set(key, ipAddress);
+                    result++;
+                    Console.WriteLine(result + " : " + ipAddress);
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
+
             return result;
         }
 
@@ -169,13 +174,17 @@ namespace DotNet.Business
                 SelectFields = BaseParameterEntity.FieldParameterContent
             };
             var dataReader = parameterManager.ExecuteReader(parameters);
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
-                CacheUtil.Set(key, ipAddress);
-                result++;
+                while (dataReader.Read())
+                {
+                    var ipAddress = dataReader[BaseParameterEntity.FieldParameterContent].ToString().ToLower();
+                    CacheUtil.Set(key, ipAddress);
+                    result++;
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
 
             return result;
         }
@@ -205,7 +214,7 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseParameterEntity.FieldCategoryCode, "IPAddress"),
                 DbHelper.MakeParameter(BaseParameterEntity.FieldParameterId, userId)
             };
-            result = DbHelper.ExecuteNonQuery(commandText, dbParameters.ToArray());
+            result = ExecuteNonQuery(commandText, dbParameters.ToArray());
 
             return result;
         }

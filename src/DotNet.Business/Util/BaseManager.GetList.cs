@@ -252,14 +252,10 @@ namespace DotNet.Business
         {
             // 还能继承 IBaseEntity<T>
             var result = new List<T>();
-            if (dataReader != null)
+            if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())
                 {
-                    // T t = new T();
-                    // listT.Add(t.GetFrom(dr));
-                    // T dynTemp = BaseEntity.Create<T>();
-                    // listT.Add((T)dynTemp.GetFrom(dr));
                     result.Add(BaseEntity.Create<T>(dataReader, false));
                 }
                 dataReader.Close();
