@@ -516,11 +516,15 @@ namespace DotNet.Business
             };
 
             var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                result.Add(dataReader[BaseUserRoleEntity.FieldRoleId].ToString());
+                while (dataReader.Read())
+                {
+                    result.Add(dataReader[BaseUserRoleEntity.FieldRoleId].ToString());
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
 
             return result.ToArray();
             // return BaseUtil.FieldToArray(result, BaseUserRoleEntity.FieldRoleId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
@@ -921,11 +925,16 @@ namespace DotNet.Business
 
             var userIds = new List<string>();
             var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                userIds.Add(dataReader["UserId"].ToString());
+                while (dataReader.Read())
+                {
+                    userIds.Add(dataReader["UserId"].ToString());
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
+
             result = userIds.ToArray();
 
             return result;
@@ -953,11 +962,16 @@ namespace DotNet.Business
 
                 var ids = new List<string>();
                 var dataReader = DbHelper.ExecuteReader(commandText);
-                while (dataReader.Read())
+                if (dataReader != null && !dataReader.IsClosed)
                 {
-                    ids.Add(dataReader["UserId"].ToString());
+                    while (dataReader.Read())
+                    {
+                        ids.Add(dataReader["UserId"].ToString());
+                    }
+
+                    dataReader.Close();
                 }
-                dataReader.Close();
+
                 result = ids.ToArray();
             }
 

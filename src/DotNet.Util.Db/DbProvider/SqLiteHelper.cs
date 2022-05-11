@@ -47,7 +47,7 @@ namespace DotNet.Util
         public SqLiteHelper(string connectionString)
             : this()
         {
-            this.ConnectionString = connectionString;
+            ConnectionString = connectionString;
         }
         #endregion
 
@@ -93,10 +93,10 @@ namespace DotNet.Util
         /// <returns>日期时间</returns>
         public override string GetDbDateTime()
         {
-            string commandText = " SELECT " + this.GetDbNow();
-            this.Open();
-            string dateTime = this.ExecuteScalar(commandText, null, CommandType.Text).ToString();
-            this.Close();
+            var commandText = " SELECT " + this.GetDbNow();
+            Open();
+            var dateTime = ExecuteScalar(commandText, null, CommandType.Text).ToString();
+            Close();
             return dateTime;
         }
         #endregion
@@ -142,10 +142,10 @@ namespace DotNet.Util
         public override IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
         {
             // 这里需要用泛型列表，因为有不合法的数组的时候
-            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
+            var dbParameters = new List<IDbDataParameter>();
             if (targetFileds != null && targetValues != null)
             {
-                for (int i = 0; i < targetFileds.Length; i++)
+                for (var i = 0; i < targetFileds.Length; i++)
                 {
                     if (targetFileds[i] != null && targetValues[i] != null && (!(targetValues[i] is Array)))
                     {
@@ -166,7 +166,7 @@ namespace DotNet.Util
         public override IDbDataParameter[] MakeParameters(Dictionary<string, object> parameters)
         {
             // 这里需要用泛型列表，因为有不合法的数组的时候
-            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
+            var dbParameters = new List<IDbDataParameter>();
             if (parameters != null && parameters.Count > 0)
             {
                 foreach (var parameter in parameters)
@@ -190,7 +190,7 @@ namespace DotNet.Util
         public override IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters)
         {
             // 这里需要用泛型列表，因为有不合法的数组的时候
-            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
+            var dbParameters = new List<IDbDataParameter>();
             if (parameters != null && parameters.Count > 0)
             {
                 foreach (var parameter in parameters)
@@ -287,9 +287,9 @@ namespace DotNet.Util
         /// <returns>字符加</returns>
         public override string PlusSign(params string[] values)
         {
-            string returnValue = string.Empty;
+            var returnValue = string.Empty;
             returnValue = " CONCAT(";
-            for (int i = 0; i < values.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
                 returnValue += values[i] + " ,";
             }

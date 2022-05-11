@@ -227,7 +227,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            Status returnCode = Status.Ok;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
@@ -258,7 +258,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            Status returnCode = Status.Ok;
+            var returnCode = Status.Ok;
             var returnMessage = string.Empty;
 
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());

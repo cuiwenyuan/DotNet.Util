@@ -19,7 +19,7 @@ namespace DotNet.Util
     ///     2012.03.17 版本：1.3 zhangyi  精细化注释
     ///		2008.08.26 版本：1.2 JiRiGaLa 修改Open时的错误反馈。
     ///		2008.06.01 版本：1.1 JiRiGaLa 数据库连接获得方式进行改进，构造函数获得调通。
-    ///		2008.05.07 版本：1.0 Troy Cui 创建。
+    ///		2008.05.07 版本：1.0 JiRiGaLa 创建。
     /// 
     /// <author>
     ///		<name>Troy.Cui</name>
@@ -60,7 +60,7 @@ namespace DotNet.Util
         /// 构造函数,设置数据库连接
         /// </summary>
         /// <param name="connectionString">数据连接</param>
-        public SqlHelper(string connectionString)
+        public SqlHelper(string connectionString) : this()
         {
             ConnectionString = connectionString;
         }
@@ -327,32 +327,32 @@ namespace DotNet.Util
             using (var tran = sqlConnection.BeginTransaction())
             {
                 // 批量保存数据，只能用于Sql
-                var sqlbulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
+                var sqlBulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
                 // 设置源表名称
-                sqlbulkCopy.DestinationTableName = dt.TableName;
+                sqlBulkCopy.DestinationTableName = dt.TableName;
                 // 设置超时限制
-                sqlbulkCopy.BulkCopyTimeout = 1000;
+                sqlBulkCopy.BulkCopyTimeout = 1000;
 
                 foreach (DataColumn dtColumn in dt.Columns)
                 {
-                    sqlbulkCopy.ColumnMappings.Add(dtColumn.ColumnName, dtColumn.ColumnName);
+                    sqlBulkCopy.ColumnMappings.Add(dtColumn.ColumnName, dtColumn.ColumnName);
                 }
                 try
                 {
                     // 写入
-                    sqlbulkCopy.WriteToServer(dt);
+                    sqlBulkCopy.WriteToServer(dt);
                     // 提交事务
                     tran.Commit();
                 }
                 catch(Exception ex)
                 {
                     tran.Rollback();
-                    sqlbulkCopy.Close();
+                    sqlBulkCopy.Close();
                     LogUtil.WriteException(ex);
                 }
                 finally
                 {
-                    sqlbulkCopy.Close();
+                    sqlBulkCopy.Close();
                     Close();
                 }
             }

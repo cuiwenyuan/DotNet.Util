@@ -25,15 +25,16 @@ namespace DotNet.Util
         public static List<T> ToList<T>(this IDataReader dataReader) where T : new()
         {
             var entities = new List<T>();
-            if ((dataReader == null))
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                return entities;
+                while (dataReader.Read())
+                {
+                    entities.Add(dataReader.ToEntity<T>());
+                }
+
+                dataReader.Close();
             }
-            while (dataReader.Read())
-            {
-                entities.Add(dataReader.ToEntity<T>());
-            }
-            dataReader.Close();
+
             return entities;
         }
 
@@ -64,28 +65,31 @@ namespace DotNet.Util
             var ls = new List<T>();
             //获取传入的数据类型
             var t = typeof(T);
-            //遍历DataReader对象
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                //使用与指定参数匹配最高的构造函数，来创建指定类型的实例
-                var entity = Activator.CreateInstance<T>();
-                for (var i = 0; i < dataReader.FieldCount; i++)
+                //遍历DataReader对象
+                while (dataReader.Read())
                 {
-                    //判断字段值是否为空或不存在的值
-                    if (!BaseUtil.IsNullOrDbNull(dataReader[i]))
+                    //使用与指定参数匹配最高的构造函数，来创建指定类型的实例
+                    var entity = Activator.CreateInstance<T>();
+                    for (var i = 0; i < dataReader.FieldCount; i++)
                     {
-                        //匹配字段名
-                        var pi = t.GetProperty(dataReader.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                        if (pi != null)
+                        //判断字段值是否为空或不存在的值
+                        if (!BaseUtil.IsNullOrDbNull(dataReader[i]))
                         {
-                            //绑定实体对象中同名的字段  
-                            pi.SetValue(entity, BaseUtil.ChangeType(dataReader[i], pi.PropertyType), null);
+                            //匹配字段名
+                            var pi = t.GetProperty(dataReader.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                            if (pi != null)
+                            {
+                                //绑定实体对象中同名的字段  
+                                pi.SetValue(entity, BaseUtil.ChangeType(dataReader[i], pi.PropertyType), null);
+                            }
                         }
                     }
+                    ls.Add(entity);
                 }
-                ls.Add(entity);
+                dataReader.Close();
             }
-            dataReader.Close();
             return ls;
         }
 
@@ -97,7 +101,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static T ToAnyEntity<T>(this IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null && !dataReader.IsClosed)
             {
                 var entity = Activator.CreateInstance<T>();
                 while (dataReader.Read())

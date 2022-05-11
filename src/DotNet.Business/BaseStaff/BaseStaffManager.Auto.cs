@@ -168,10 +168,10 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseStaffEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseStaffEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseStaffEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseStaffEntity>(cacheKey, () => BaseEntity.Create<BaseStaffEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseStaffEntity>(cacheKey, () => BaseEntity.Create<BaseStaffEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         public BaseStaffEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
-            return BaseEntity.Create<BaseStaffEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseStaffEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

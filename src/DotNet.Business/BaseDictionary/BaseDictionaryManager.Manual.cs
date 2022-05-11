@@ -202,7 +202,7 @@ namespace DotNet.Business
             };
             var cacheKey = CurrentTableName + ".Entity." + code;
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<BaseDictionaryEntity>(cacheKey, () => BaseEntity.Create<BaseDictionaryEntity>(ExecuteReader(parameters)), true, false, cacheTime);
+            return CacheUtil.Cache<BaseDictionaryEntity>(cacheKey, () => BaseEntity.Create<BaseDictionaryEntity>(GetDataTable(parameters)), true, false, cacheTime);
         }
         #endregion
     }

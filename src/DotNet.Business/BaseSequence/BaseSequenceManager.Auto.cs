@@ -169,10 +169,10 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseSequenceEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseSequenceEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseSequenceEntity>(cacheKey, () => BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseSequenceEntity>(cacheKey, () => BaseEntity.Create<BaseSequenceEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         public BaseSequenceEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
-            return BaseEntity.Create<BaseSequenceEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseSequenceEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

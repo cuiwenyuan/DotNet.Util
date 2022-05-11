@@ -155,7 +155,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldCode, code),
                 new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
             };
-            result = BaseEntity.Create<BaseModuleEntity>(ExecuteReader(parameters));
+            result = BaseEntity.Create<BaseModuleEntity>(GetDataTable(parameters));
 
             return result;
         }

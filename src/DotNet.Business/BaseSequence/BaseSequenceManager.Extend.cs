@@ -136,7 +136,7 @@ namespace DotNet.Business
         /// <returns>序列实体</returns>
         BaseSequenceEntity GetEntityByAdd(string name, int? defaultSequence = null, int? defaultReduction = null, int? defaultStep = null, string defaultPrefix = "", string defaultDelimiter = "", int? defaultIsVisable = null)
         {
-            BaseSequenceEntity sequenceEntity = GetEntityByName(name);
+            var sequenceEntity = GetEntityByName(name);
             if (sequenceEntity == null)
             {
                 sequenceEntity = new BaseSequenceEntity
@@ -476,8 +476,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliStart = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             BaseSequenceEntity entity = null;
@@ -561,8 +561,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             return Increment(entity);
@@ -626,8 +626,8 @@ namespace DotNet.Business
         {
             // 写入调试信息
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliStart = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             BaseSequenceEntity sequenceEntity = null;
@@ -713,8 +713,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             return Decrement(sequenceEntity);
@@ -852,8 +852,8 @@ namespace DotNet.Business
         {
             // 写入调试信息
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliStart = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             var result = new string[sequenceCount];
@@ -889,8 +889,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             return result;

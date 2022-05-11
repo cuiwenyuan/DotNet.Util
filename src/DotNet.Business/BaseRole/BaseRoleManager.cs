@@ -276,7 +276,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            result = BaseEntity.Create<BaseRoleEntity>(ExecuteReader(parameters));
+            result = BaseEntity.Create<BaseRoleEntity>(GetDataTable(parameters));
 
             return result;
         }
@@ -292,7 +292,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldName, name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            return BaseEntity.Create<BaseRoleEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseRoleEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

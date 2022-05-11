@@ -45,10 +45,10 @@ namespace DotNet.Business
         /// <param name="userId">主键</param>
         public BaseUserLogonEntity GetEntityByUserId(int userId)
         {
-            return BaseEntity.Create<BaseUserLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId))); ;
+            return BaseEntity.Create<BaseUserLogonEntity>(GetDataTable(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId))); ;
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseUserLogonEntity>(cacheKey, () => BaseEntity.Create<BaseUserLogonEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseUserLogonEntity>(cacheKey, () => BaseEntity.Create<BaseUserLogonEntity>(GetDataTable(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId))), true, false, cacheTime);
         }
         #endregion
 
@@ -195,7 +195,7 @@ namespace DotNet.Business
                 result = Guid.NewGuid().ToString("N");
                 var sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldOpenId + " = '" + result + "', " + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeoutTime) + " WHERE " + BaseUserLogonEntity.FieldOpenId + " = '" + UserInfo.OpenId + "' ";
 
-                if (!(DbHelper.ExecuteNonQuery(sql, dbParameters.ToArray()) > 0))
+                if (!(ExecuteNonQuery(sql, dbParameters.ToArray()) > 0))
                 {
                     result = string.Empty;
                 }
@@ -339,7 +339,7 @@ namespace DotNet.Business
             }
 
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
+            var milliStart = Environment.TickCount;
 #endif
 
             // 更新在线状态和最后一次访问时间
@@ -363,12 +363,12 @@ namespace DotNet.Business
             {
                 sql += " AND " + BaseUserLogonEntity.FieldUserOnline + " = 1";
             }
-            result += DbHelper.ExecuteNonQuery(sql);
+            result += ExecuteNonQuery(sql);
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
 #endif
 
             return result;
@@ -392,7 +392,7 @@ namespace DotNet.Business
             }
 
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
+            var milliStart = Environment.TickCount;
 #endif
 
             var sql = string.Empty;
@@ -402,19 +402,19 @@ namespace DotNet.Business
             {
                 case CurrentDbType.SqlServer:
                     sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL OR (DATEADD(s, " + BaseSystemInfo.OnlineTimeout + ", " + BaseUserLogonEntity.FieldLastVisitTime + ") < " + DbHelper.GetDbNow() + "))";
-                    result += DbHelper.ExecuteNonQuery(sql);
+                    result += ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Oracle:
                     sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL OR " + BaseUserLogonEntity.FieldLastVisitTime + " < (SYSDATE - " + BaseSystemInfo.OnlineTimeout + " / 24 * 60 * 60 ))";
-                    result += DbHelper.ExecuteNonQuery(sql);
+                    result += ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.MySql:
                     sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NOT NULL) AND (DATE_ADD(" + BaseUserLogonEntity.FieldLastVisitTime + ", Interval " + BaseSystemInfo.OnlineTimeout + " SECOND) < " + DbHelper.GetDbNow() + "))";
-                    result += DbHelper.ExecuteNonQuery(sql);
+                    result += ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Db2:
                     sql = "UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NOT NULL) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " + " + BaseSystemInfo.OnlineTimeout + " SECONDS < " + DbHelper.GetDbNow() + "))";
-                    result += DbHelper.ExecuteNonQuery(sql);
+                    result += ExecuteNonQuery(sql);
                     break;
                 case CurrentDbType.Access:
                     break;
@@ -422,8 +422,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
 #endif
 
             return result;
@@ -440,7 +440,7 @@ namespace DotNet.Business
             var result = false;
 
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
+            var milliStart = Environment.TickCount;
 #endif
 
             CheckOnline();
@@ -459,8 +459,8 @@ namespace DotNet.Business
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
 #endif
 
             return result;

@@ -48,7 +48,7 @@ namespace DotNet.Business
             var dbParameters = new List<IDbDataParameter>();
             dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode));
             dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId));
-            result = DbHelper.ExecuteNonQuery(commandText, dbParameters.ToArray());
+            result = ExecuteNonQuery(commandText, dbParameters.ToArray());
 
             return result;
         }

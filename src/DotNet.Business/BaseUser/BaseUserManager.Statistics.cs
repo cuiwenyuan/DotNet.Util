@@ -36,7 +36,7 @@ namespace DotNet.Business
 
             // 先把用户来源都修改为 空。
             var commandText = "UPDATE " + BaseUserEntity.CurrentTableName + " SET " + BaseUserEntity.FieldUserFrom + " = NULL WHERE " + BaseUserEntity.FieldUserFrom + " = 'Base'";
-            result = DbHelper.ExecuteNonQuery(commandText);
+            result = ExecuteNonQuery(commandText);
             // 通过中天登录的，都设置为 "Base";
             var key = string.Empty;
             result = 0;
@@ -48,7 +48,7 @@ namespace DotNet.Business
                 {
                     i++;
                     commandText = "UPDATE " + BaseUserEntity.CurrentTableName + " SET " + BaseUserEntity.FieldUserFrom + " = 'Base' WHERE " + BaseUserEntity.FieldId + " = " + id;
-                    result += DbHelper.ExecuteNonQuery(commandText);
+                    result += ExecuteNonQuery(commandText);
                     Console.WriteLine("Count:" + i + "/" + list.Count + " Id:" + id);
                 }
 
