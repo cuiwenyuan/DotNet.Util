@@ -168,10 +168,10 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseChangeLogEntity GetEntity(int id)
         {
-            return BaseEntity.Create<BaseChangeLogEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id)));
+            return BaseEntity.Create<BaseChangeLogEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseChangeLogEntity>(cacheKey, () => BaseEntity.Create<BaseChangeLogEntity>(ExecuteReader(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseChangeLogEntity>(cacheKey, () => BaseEntity.Create<BaseChangeLogEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         public BaseChangeLogEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
-            return BaseEntity.Create<BaseChangeLogEntity>(ExecuteReader(parameters));
+            return BaseEntity.Create<BaseChangeLogEntity>(GetDataTable(parameters));
         }
 
         /// <summary>

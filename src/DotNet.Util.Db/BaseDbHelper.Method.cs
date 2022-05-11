@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace DotNet.Util
 {
@@ -63,35 +64,35 @@ namespace DotNet.Util
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
         /// <returns>结果集流</returns>
-        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters,
-            CommandType commandType)
+        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             //自动打开
+            MustCloseConnection = false;
             if (DbConnection == null)
             {
                 Open();
-                MustCloseConnection = true;
             }
-            else if (DbConnection.State == ConnectionState.Closed)
+
+            DbDataReader dbDataReader = null;
+            if (DbConnection.State == ConnectionState.Closed)
             {
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Open();
             }
             else if (DbConnection.State == ConnectionState.Broken)
             {
-                Close();
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Close();
+                DbConnection.Open();
             }
-
-            // 这里要关闭数据库才可以的
-            DbDataReader dbDataReader = null;
-            try
+            using (DbCommand = DbConnection.CreateCommand())
             {
-                using (DbCommand = DbConnection.CreateCommand())
+                try
                 {
+#if (DEBUG)
+                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
+                    DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
@@ -123,64 +124,68 @@ namespace DotNet.Util
 
                     // 写入日志
                     SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
-
+                    if (DbConnection.State != ConnectionState.Open)
+                    {
+                        DbConnection.Open();
+                    }
                     dbDataReader = DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
-
                 }
-            }
-            catch (Exception e)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
+                catch (Exception e)
                 {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-
-                LogUtil.WriteException(e, sb.Put());
-            }
-            finally
-            {
-                //一定不要自动关闭连接
-                //if (MustCloseConnection)
-                //{
-                //    Close();
-                //}
-                if (DbCommand.Parameters != null)
-                {
-                    DbCommand.Parameters.Clear();
-                }
-            }
-            stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
-            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
-                {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                else
-                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
                     sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+
+                    LogUtil.WriteException(e, sb.Put());
                 }
-                sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteReader");
+                finally
+                {
+                    //因为使用了CommandBehavior.CloseConnection，不需要关闭连接
+                    //一定不要自动关闭连接，但需要在dataReader.Read()之后手动执行dataReader.Close()
+                    //if (MustCloseConnection)
+                    //{
+                    //    Close();
+                    //}
+                    if (DbCommand != null)
+                    {
+                        DbCommand.Parameters.Clear();
+                    }
+                }
+                stopwatch.Stop();
+                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
+                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(statisticsText);
+                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteReader");
+                }
             }
+
             return dbDataReader;
         }
         #endregion
@@ -252,28 +257,30 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // 自动打开
+            MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
-                MustCloseConnection = true;
-            }
-            else if (DbConnection.State == ConnectionState.Closed)
-            {
-                Open();
-                MustCloseConnection = true;
-            }
-            else if (DbConnection.State == ConnectionState.Broken)
-            {
-                Close();
-                Open();
-                MustCloseConnection = true;
             }
 
             var result = -1;
-            try
+            if (DbConnection.State == ConnectionState.Closed)
             {
-                using (DbCommand = DbConnection.CreateCommand())
+                DbConnection.Open();
+            }
+            else if (DbConnection.State == ConnectionState.Broken)
+            {
+                DbConnection.Close();
+                DbConnection.Open();
+            }
+            using (DbCommand = DbConnection.CreateCommand())
+            {
+                try
                 {
+#if (DEBUG)
+                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
+                    DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
@@ -297,16 +304,19 @@ namespace DotNet.Util
                         for (var i = 0; i < dbParameters.Length; i++)
                         {
                             // 启用非空判断 2022-05-10 Troy.Cui
-                            if (dbParameters[i] != null)
-                            {
-                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                            }
+                            //if (dbParameters[i] != null)
+                            //{
+                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            //}
                         }
                     }
 
                     //写入日志 
                     SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
-
+                    if (DbConnection.State != ConnectionState.Open)
+                    {
+                        DbConnection.Open();
+                    }
                     result = DbCommand.ExecuteNonQuery();
 
                     if (CurrentDbType == CurrentDbType.SqlServer)
@@ -314,60 +324,61 @@ namespace DotNet.Util
                         SetBackParamValue(dbParameters);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
+                catch (Exception e)
                 {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
                     {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    LogUtil.WriteException(e, sb.Put());
+                }
+                finally
+                {
+                    //自动关闭
+                    if (MustCloseConnection)
+                    {
+                        Close();
+                    }
+                    else
+                    {
+                        DbCommand.Parameters.Clear();
                     }
                 }
-                LogUtil.WriteException(e, sb.Put());
-            }
-            finally
-            {
-                //自动关闭
-                if (MustCloseConnection)
+
+                stopwatch.Stop();
+                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    Close();
-                }
-                else
-                {
-                    DbCommand.Parameters.Clear();
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(statisticsText);
+                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteNonQuery");
                 }
             }
 
-            stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
-            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
-                {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                else
-                {
-                    sb.Append(" ");
-                }
-                sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteNonQuery");
-            }
             return result;
         }
         #endregion
@@ -430,28 +441,30 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // 自动打开
+            MustCloseConnection = true;
             if (DbConnection == null)
             {
-                MustCloseConnection = true;
                 Open();
-            }
-            else if (DbConnection.State == ConnectionState.Closed)
-            {
-                MustCloseConnection = true;
-                Open();
-            }
-            else if (DbConnection.State == ConnectionState.Broken)
-            {
-                Close();
-                Open();
-                MustCloseConnection = true;
             }
 
             object result = null;
-            try
+            if (DbConnection.State == ConnectionState.Closed)
             {
-                using (DbCommand = DbConnection.CreateCommand())
+                DbConnection.Open();
+            }
+            else if (DbConnection.State == ConnectionState.Broken)
+            {
+                DbConnection.Close();
+                DbConnection.Open();
+            }
+            using (DbCommand = DbConnection.CreateCommand())
+            {
+                try
                 {
+#if (DEBUG)
+                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
+                    DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
@@ -485,6 +498,10 @@ namespace DotNet.Util
 
                     //写入日志 
                     SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    if (DbConnection.State != ConnectionState.Open)
+                    {
+                        DbConnection.Open();
+                    }
                     result = DbCommand.ExecuteScalar();
 
                     // 这里进行输出参数的处理
@@ -493,59 +510,60 @@ namespace DotNet.Util
                         SetBackParamValue(dbParameters);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
+                catch (Exception e)
                 {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                LogUtil.WriteException(e, sb.Put());
-            }
-            finally
-            {
-                //自动关闭
-                if (MustCloseConnection)
-                {
-                    Close();
-                }
-                else
-                {
-                    DbCommand.Parameters.Clear();
-                }
-            }
-            stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
-            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
-                {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                else
-                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
                     sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    LogUtil.WriteException(e, sb.Put());
                 }
-                sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteScalar");
+                finally
+                {
+                    //自动关闭
+                    if (MustCloseConnection)
+                    {
+                        Close();
+                    }
+                    else
+                    {
+                        DbCommand.Parameters.Clear();
+                    }
+                }
+                stopwatch.Stop();
+                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
+                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(statisticsText);
+                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteScalar");
+                }
             }
+
             return result;
         }
         #endregion
@@ -635,27 +653,28 @@ namespace DotNet.Util
             stopwatch.Start();
 
             // 自动打开
+            MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
-                MustCloseConnection = true;
             }
-            else if (DbConnection.State == ConnectionState.Closed)
+            if (DbConnection.State == ConnectionState.Closed)
             {
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Open();
             }
             else if (DbConnection.State == ConnectionState.Broken)
             {
-                Close();
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Close();
+                DbConnection.Open();
             }
-
-            try
+            using (DbCommand = DbConnection.CreateCommand())
             {
-                using (DbCommand = DbConnection.CreateCommand())
+                try
                 {
+#if (DEBUG)
+                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
+                    DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
@@ -666,6 +685,7 @@ namespace DotNet.Util
                         // 各种平台的换行符
                         //_dbCommand.CommandText = commandText.Replace("r\n", " ").Replace('\n', ' ').Replace('\r', ' ');
                     }
+
                     DbCommand.CommandType = commandType;
                     if (_dbTransaction != null)
                     {
@@ -677,6 +697,7 @@ namespace DotNet.Util
                     if (dbDataAdapter != null)
                     {
                         dbDataAdapter.SelectCommand = DbCommand;
+                        DbCommand.Parameters.Clear();
                         if ((dbParameters != null) && (dbParameters.Length > 0))
                         {
                             foreach (var t in dbParameters)
@@ -690,65 +711,73 @@ namespace DotNet.Util
                             // dbCommand.Parameters.AddRange(dbParameters);
                         }
 
+                        if (DbConnection.State != ConnectionState.Open)
+                        {
+                            DbConnection.Open();
+                        }
+
                         dbDataAdapter.Fill(dt);
                         SetBackParamValue(dbParameters);
-                        dbDataAdapter.SelectCommand.Parameters.Clear();
+                        dbDataAdapter.SelectCommand?.Parameters?.Clear();
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                //Troy.Cui 2020.05.13
-                dt = null;
-                //记录异常
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
+                catch (Exception e)
                 {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                LogUtil.WriteException(e, sb.Put());
-            }
-            finally
-            {
-                //自动关闭
-                if (MustCloseConnection)
-                {
-                    Close();
-                }
-                //记录日志，任何时候都写跟踪日志，出错了也要写
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
-            }
-
-            stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
-            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
-                {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                else
-                {
+                    //Troy.Cui 2020.05.13
+                    dt = null;
+                    //记录异常
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
                     sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    LogUtil.WriteException(e, sb.Put());
                 }
-                sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
+                finally
+                {
+                    //自动关闭
+                    if (MustCloseConnection)
+                    {
+                        Close();
+                    }
+                    else
+                    {
+                        DbCommand.Parameters.Clear();
+                    }
+                    //记录日志，任何时候都写跟踪日志，出错了也要写
+                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                }
+                stopwatch.Stop();
+                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
+                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(statisticsText);
+                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
+                }
             }
 
             return dt;
@@ -800,27 +829,27 @@ namespace DotNet.Util
             stopwatch.Start();
 
             // 自动打开
+            MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
-                MustCloseConnection = true;
             }
-            else if (DbConnection.State == ConnectionState.Closed)
+            if (DbConnection.State == ConnectionState.Closed)
             {
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Open();
             }
             else if (DbConnection.State == ConnectionState.Broken)
             {
-                Close();
-                Open();
-                MustCloseConnection = true;
+                DbConnection.Close();
+                DbConnection.Open();
             }
-
-            try
+            using (DbCommand = DbConnection.CreateCommand())
             {
-                using (DbCommand = DbConnection.CreateCommand())
+                try
                 {
+#if (DEBUG)
+                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+#endif
                     //dbCommand.Parameters.Clear();
                     //if ((dbParameters != null) && (dbParameters.Length > 0))
                     //{
@@ -832,6 +861,7 @@ namespace DotNet.Util
                     //        }
                     //    }
                     //}
+                    DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
@@ -848,7 +878,7 @@ namespace DotNet.Util
                     {
                         DbCommand.Transaction = _dbTransaction;
                     }
-
+                    DbCommand.Parameters.Clear();
                     if ((dbParameters != null) && (dbParameters.Length > 0))
                     {
                         for (var i = 0; i < dbParameters.Length; i++)
@@ -866,72 +896,75 @@ namespace DotNet.Util
 
                     DbDataAdapter = GetInstance().CreateDataAdapter();
                     DbDataAdapter.SelectCommand = DbCommand;
+                    if (DbConnection.State != ConnectionState.Open)
+                    {
+                        DbConnection.Open();
+                    }
                     DbDataAdapter.Fill(dataSet, tableName);
 
                     SetBackParamValue(dbParameters);
                 }
-            }
-            catch (Exception e)
-            {
-                //Troy.Cui 2020.05.13
-                dataSet = null;
-                //记录异常
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(tableName);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
+                catch (Exception e)
                 {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-
-                LogUtil.WriteException(e, sb.Put());
-            }
-            finally
-            {
-                if (MustCloseConnection)
-                {
-                    Close();
-                }
-                else
-                {
-                    DbDataAdapter?.SelectCommand.Parameters.Clear();
-                }
-            }
-
-            stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
-            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
-            {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append(commandText);
-                sb.Append(" ");
-                sb.Append(tableName);
-                sb.Append(" ");
-                sb.Append(commandType.ToString());
-                if (dbParameters != null)
-                {
-                    sb.Append(" dbParameters: ");
-                    foreach (var parameter in dbParameters)
-                    {
-                        sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                    }
-                }
-                else
-                {
+                    //Troy.Cui 2020.05.13
+                    dataSet = null;
+                    //记录异常
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
                     sb.Append(" ");
-                }
-                sb.Append(statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
-            }
+                    sb.Append(tableName);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
 
+                    LogUtil.WriteException(e, sb.Put());
+                }
+                finally
+                {
+                    if (MustCloseConnection)
+                    {
+                        Close();
+                    }
+                    else
+                    {
+                        DbDataAdapter?.SelectCommand.Parameters.Clear();
+                    }
+                }
+
+                stopwatch.Stop();
+                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
+                {
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append(commandText);
+                    sb.Append(" ");
+                    sb.Append(tableName);
+                    sb.Append(" ");
+                    sb.Append(commandType.ToString());
+                    if (dbParameters != null)
+                    {
+                        sb.Append(" dbParameters: ");
+                        foreach (var parameter in dbParameters)
+                        {
+                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(statisticsText);
+                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
+                }
+            }
             return dataSet;
         }
         /// <summary>

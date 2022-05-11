@@ -278,8 +278,8 @@ namespace DotNet.Util
         {
             // 写入调试信息
 #if (DEBUG)
-            int milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliStart = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
 
             Prepare();
@@ -288,8 +288,8 @@ namespace DotNet.Util
 
             // 写入调试信息
 #if (DEBUG)
-            int milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.TimeFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            var milliEnd = Environment.TickCount;
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
 #endif
         }
         #endregion
@@ -736,7 +736,8 @@ namespace DotNet.Util
                 // 读取返回值
                 if (ReturnId)
                 {
-                    result = int.Parse(_dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray())?.ToString());
+                    var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
+                    result = obj.ToInt();
                 }
                 else
                 {

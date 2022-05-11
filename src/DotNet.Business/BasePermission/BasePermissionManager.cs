@@ -732,11 +732,16 @@ namespace DotNet.Business
                 var ids = new List<string>();
                 errorMark = 3;
                 var dataReader = DbHelper.ExecuteReader(sb.ToString(), dbParameters.ToArray());
-                while (dataReader.Read())
+                if (dataReader != null && !dataReader.IsClosed)
                 {
-                    ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
+                    while (dataReader.Read())
+                    {
+                        ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
+                    }
+
+                    dataReader.Close();
                 }
-                dataReader.Close();
+
                 // string[] userRolePermissionIds = ids.ToArray();
                 result = StringUtil.Concat(result, ids.ToArray());
 
@@ -765,11 +770,16 @@ namespace DotNet.Business
                         ids = new List<string>();
                         errorMark = 4;
                         dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
-                        while (dataReader.Read())
+                        if (dataReader != null && !dataReader.IsClosed)
                         {
-                            ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
+                            while (dataReader.Read())
+                            {
+                                ids.Add(dataReader[BasePermissionEntity.FieldPermissionId].ToString());
+                            }
+
+                            dataReader.Close();
                         }
-                        dataReader.Close();
+
                         // string[] organizationPermission = ids.ToArray();
                         result = StringUtil.Concat(result, ids.ToArray());
                     }
@@ -808,7 +818,7 @@ namespace DotNet.Business
 #if (DEBUG)
             if (string.IsNullOrEmpty(permissionId))
             {
-                BaseModuleEntity permissionEntity = new BaseModuleEntity();
+                var permissionEntity = new BaseModuleEntity();
                 permissionEntity.Code = permissionCode;
                 permissionEntity.Name = permissionCode;
                 permissionEntity.IsScope = 0;
@@ -821,13 +831,13 @@ namespace DotNet.Business
                 permissionEntity.Enabled = 1;
                 // 这里是防止主键重复？
                 // permissionEntity.ID = BaseUtil.NewGuid();
-                BaseModuleManager moduleManager = new BaseModuleManager();
+                var moduleManager = new BaseModuleManager();
                 moduleManager.AddEntity(permissionEntity);
             }
             else
             {
                 // 更新最后一次访问日期，设置为当前服务器日期
-                SqlBuilder sqlBuilder = new SqlBuilder(DbHelper);
+                var sqlBuilder = new SqlBuilder(DbHelper);
                 sqlBuilder.BeginUpdate(CurrentTableName);
                 sqlBuilder.SetDbNow(BaseModuleEntity.FieldLastCall);
                 sqlBuilder.SetWhere(BaseModuleEntity.FieldId, permissionId);

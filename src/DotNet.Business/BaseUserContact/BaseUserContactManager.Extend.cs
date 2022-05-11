@@ -40,10 +40,10 @@ namespace DotNet.Business
         /// <param name="userId">主键</param>
         public BaseUserContactEntity GetEntityByUserId(int userId)
         {
-            return BaseEntity.Create<BaseUserContactEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserContactEntity.FieldUserId, userId))); ;
+            return BaseEntity.Create<BaseUserContactEntity>(GetDataTable(new KeyValuePair<string, object>(BaseUserContactEntity.FieldUserId, userId))); ;
             //var cacheKey = CurrentTableName + ".Entity." + id;
             //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            //return CacheUtil.Cache<BaseUserContactEntity>(cacheKey, () => BaseEntity.Create<BaseUserContactEntity>(ExecuteReader(new KeyValuePair<string, object>(BaseUserContactEntity.FieldUserId, userId))), true, false, cacheTime);
+            //return CacheUtil.Cache<BaseUserContactEntity>(cacheKey, () => BaseEntity.Create<BaseUserContactEntity>(GetDataTable(new KeyValuePair<string, object>(BaseUserContactEntity.FieldUserId, userId))), true, false, cacheTime);
         }
         #endregion
 
@@ -189,14 +189,18 @@ namespace DotNet.Business
             // 把所有的数据都缓存起来的代码
             var manager = new BaseUserContactManager();
             var dataReader = manager.ExecuteReader();
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                var entity = BaseEntity.Create<BaseUserContactEntity>(dataReader, false);
-                SetCache(entity);
-                result++;
-                System.Console.WriteLine(result + " : " + entity.Telephone);
+                while (dataReader.Read())
+                {
+                    var entity = BaseEntity.Create<BaseUserContactEntity>(dataReader, false);
+                    SetCache(entity);
+                    result++;
+                    System.Console.WriteLine(result + " : " + entity.Telephone);
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
 
             return result;
         }

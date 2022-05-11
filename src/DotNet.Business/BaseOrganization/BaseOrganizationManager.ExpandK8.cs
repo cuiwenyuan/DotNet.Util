@@ -36,14 +36,14 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Synchronous(bool all = false)
         {
-            int result = 0;
-            string connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
+            var result = 0;
+            var connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
             string conditional = null;
             if (!all)
             {
-                int id = 0;
-                string commandText = "SELECT MAX(id) FROM BaseOrganization WHERE id < 1000000";
-                Object maxObject = DbHelper.ExecuteScalar(commandText);
+                var id = 0;
+                var commandText = "SELECT MAX(id) FROM BaseOrganization WHERE id < 1000000";
+                var maxObject = DbHelper.ExecuteScalar(commandText);
                 if (maxObject != null)
                 {
                     id = int.Parse(maxObject.ToString());
@@ -63,7 +63,7 @@ namespace DotNet.Business
         public int ImportK8Organization(string connectionString = null, string conditional = null)
         {
             // delete from baseorganization where id < 1000000
-            int result = 0;
+            var result = 0;
             if (string.IsNullOrEmpty(connectionString))
             {
                 connectionString = ConfigurationUtil.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
@@ -71,11 +71,11 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(connectionString))
             {
                 // 01：可以从k8里读取公司、用户、密码的。
-                IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
-                BaseOrganizationManager organizationManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
+                var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
+                var organizationManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
                 // 不不存在的组织机构删除掉TAB_SITE是远程试图
-                string commandText = "DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)";
-                organizationManager.DbHelper.ExecuteNonQuery(commandText);
+                var commandText = "DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)";
+                organizationManager.ExecuteNonQuery(commandText);
 
                 // 同步数据
                 commandText = "SELECT * FROM TAB_SITE WHERE BL_NOT_INPUT IS NULL OR BL_NOT_INPUT = 0 ";
@@ -85,64 +85,71 @@ namespace DotNet.Business
                 }
 
                 var dataReader = dbHelper.ExecuteReader(commandText);
-
-                while (dataReader.Read())
+                if (dataReader != null && !dataReader.IsClosed)
                 {
-                    // 这里需要从数据库读取、否则容易造成丢失数据
-                    BaseOrganizationEntity entity = organizationManager.GetEntity(dataReader["ID"].ToString());
-                    if (entity == null)
+                    while (dataReader.Read())
                     {
-                        entity = new BaseOrganizationEntity();
-                        //entity.Id = dr["ID"].ToString();
-                    }
-                    entity.Code = dataReader["SITE_CODE"].ToString();
-                    if (string.IsNullOrEmpty(entity.ParentName) || !entity.ParentName.Equals(dataReader["SUPERIOR_SITE"].ToString()))
-                    {
-                        entity.ParentName = dataReader["SUPERIOR_SITE"].ToString();
-                        entity.ParentId = 0;
+                        // 这里需要从数据库读取、否则容易造成丢失数据
+                        var entity = organizationManager.GetEntity(dataReader["ID"].ToString());
+                        if (entity == null)
+                        {
+                            entity = new BaseOrganizationEntity();
+                            //entity.Id = dr["ID"].ToString();
+                        }
+
+                        entity.Code = dataReader["SITE_CODE"].ToString();
+                        if (string.IsNullOrEmpty(entity.ParentName) ||
+                            !entity.ParentName.Equals(dataReader["SUPERIOR_SITE"].ToString()))
+                        {
+                            entity.ParentName = dataReader["SUPERIOR_SITE"].ToString();
+                            entity.ParentId = 0;
+                        }
+
+                        entity.Name = dataReader["SITE_NAME"].ToString();
+                        entity.ShortName = dataReader["SITE_NAME"].ToString();
+                        entity.CategoryCode = dataReader["TYPE"].ToString();
+                        entity.OuterPhone = dataReader["PHONE"].ToString();
+                        entity.Fax = dataReader["FAX"].ToString();
+                        entity.Province = dataReader["PROVINCE"].ToString();
+                        entity.City = dataReader["CITY"].ToString();
+                        entity.District = dataReader["RANGE_NAME"].ToString();
+
+                        entity.CostCenter = dataReader["SUPERIOR_FINANCE_CENTER"].ToString();
+                        entity.Area = dataReader["BIG_AREA_NAME"].ToString();
+                        entity.CompanyName = dataReader["SITE1_NAME"].ToString();
+
+                        if (!string.IsNullOrEmpty(dataReader["ORDER_BY"].ToString()))
+                        {
+                            entity.SortCode = int.Parse(dataReader["ORDER_BY"].ToString());
+                        }
+
+                        // 02：可以把读取到的数据能写入到用户中心的。
+                        result = organizationManager.UpdateEntity(entity);
+                        if (result == 0)
+                        {
+                            organizationManager.AddEntity(entity);
+                        }
                     }
 
-                    entity.Name = dataReader["SITE_NAME"].ToString();
-                    entity.ShortName = dataReader["SITE_NAME"].ToString();
-                    entity.CategoryCode = dataReader["TYPE"].ToString();
-                    entity.OuterPhone = dataReader["PHONE"].ToString();
-                    entity.Fax = dataReader["FAX"].ToString();
-                    entity.Province = dataReader["PROVINCE"].ToString();
-                    entity.City = dataReader["CITY"].ToString();
-                    entity.District = dataReader["RANGE_NAME"].ToString();
-
-                    entity.CostCenter = dataReader["SUPERIOR_FINANCE_CENTER"].ToString();
-                    entity.Area = dataReader["BIG_AREA_NAME"].ToString();
-                    entity.CompanyName = dataReader["SITE1_NAME"].ToString();
-
-                    if (!string.IsNullOrEmpty(dataReader["ORDER_BY"].ToString()))
-                    {
-                        entity.SortCode = int.Parse(dataReader["ORDER_BY"].ToString());
-                    }
-                    // 02：可以把读取到的数据能写入到用户中心的。
-                    result = organizationManager.UpdateEntity(entity);
-                    if (result == 0)
-                    {
-                        organizationManager.AddEntity(entity);
-                    }
+                    dataReader.Close();
                 }
-                dataReader.Close();
+
                 // 填充 parentname
                 // select * from baseorganization where parentname is null
                 commandText = @"update baseorganization set parentname = (select fullname from baseorganization t where t.id = baseorganization.parentId) where parentname is null";
-                this.DbHelper.ExecuteNonQuery(commandText);
+                ExecuteNonQuery(commandText);
                 // 填充 parentId
                 // select * from baseorganization where parentId is null
                 commandText = @"UPDATE baseorganization SET parentId = (SELECT Id FROM baseorganization t WHERE t.fullname = baseorganization.parentname) WHERE parentId IS NULL";
                 // 100000 以下是基础数据的，100000 以上是通用权限管理系统的
                 // UPDATE baseorganization SET parentId = (SELECT Id FROM baseorganization t WHERE t.fullname = baseorganization.parentname) WHERE parentId < 100000
-                this.DbHelper.ExecuteNonQuery(commandText);
+                ExecuteNonQuery(commandText);
                 // 更新错误数据
                 commandText = @"UPDATE baseorganization SET parentId = null WHERE id = parentId";
-                this.DbHelper.ExecuteNonQuery(commandText);
+                ExecuteNonQuery(commandText);
                 // 设置员工的公司主键
                 commandText = @"UPDATE baseuser SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = baseuser.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''";
-                this.DbHelper.ExecuteNonQuery(commandText);
+                ExecuteNonQuery(commandText);
             }
             return result;
         }

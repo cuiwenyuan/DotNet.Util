@@ -75,7 +75,7 @@ namespace DotNet.Business
                     {
                         DbHelper.MakeParameter(BaseUserEntity.FieldId, userEntity.Id)
                     };
-                    result = DbHelper.ExecuteNonQuery(sql, dbParameters.ToArray());
+                    result = ExecuteNonQuery(sql, dbParameters.ToArray());
                 }
             }
 

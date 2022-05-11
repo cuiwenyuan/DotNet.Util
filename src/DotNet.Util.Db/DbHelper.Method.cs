@@ -197,7 +197,6 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
             var dbHelper = DbHelperFactory.Create(DbType, connectionString);
-            dbHelper.MustCloseConnection = true;
             return dbHelper.ExecuteReader(commandText, dbParameters, commandType);
         }
         #endregion

@@ -57,7 +57,7 @@ namespace DotNet.Business
                     AllowEdit = 1,
                     IsScope = 0
                 };
-                result = manager.UniqueAdd(permissionEntity, out Status status);
+                result = manager.UniqueAdd(permissionEntity, out var status);
             });
 
             return result;
@@ -191,7 +191,7 @@ namespace DotNet.Business
                     Name = role,
                     Enabled = 1
                 };
-                result = roleManager.Add(roleEntity, out Status status);
+                result = roleManager.Add(roleEntity, out var status);
             });
             return result;
         }

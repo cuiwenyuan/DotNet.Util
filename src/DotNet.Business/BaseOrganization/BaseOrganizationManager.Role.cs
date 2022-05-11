@@ -53,11 +53,16 @@ namespace DotNet.Business
 
             var organizationIds = new List<string>();
             var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
-            while (dataReader.Read())
+            if (dataReader != null && !dataReader.IsClosed)
             {
-                organizationIds.Add(dataReader[BaseRoleOrganizationEntity.FieldOrganizationId].ToString());
+                while (dataReader.Read())
+                {
+                    organizationIds.Add(dataReader[BaseRoleOrganizationEntity.FieldOrganizationId].ToString());
+                }
+
+                dataReader.Close();
             }
-            dataReader.Close();
+
             result = organizationIds.ToArray();
 
             // 2015-12-08 吉日嘎拉 提高效率参数化执行
