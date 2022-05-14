@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// 
     /// <author>
     ///		<name>Troy.Cui</name>
-    ///		<date>2008.08.26</date>
+    ///		<date>2022.05.11</date>
     /// </author> 
     /// </summary>
     public partial interface IDbHelper : IDisposable
@@ -33,6 +33,11 @@ namespace DotNet.Util
         /// </summary>
         /// <returns>数据源类的实现的实例</returns>
         DbProviderFactory GetInstance();
+
+        /// <summary>
+        /// 连接名
+        /// </summary>
+        string ConnectionName { get; }
 
         /// <summary>
         /// 当前数据库类型
@@ -50,13 +55,18 @@ namespace DotNet.Util
         string ConnectionString { get; set; }
 
         /// <summary>
-        /// 获得数据库当前日期
+        /// 服务器版本
+        /// </summary>
+        string ServerVersion { get; set; }
+
+        /// <summary>
+        /// 获得数据库当前日期 字符串
         /// </summary>
         /// <returns>当前日期</returns>
         string GetDbNow();
 
         /// <summary>
-        /// 获得数据库当前日期
+        /// 获得数据库当前日期 执行SQL后的结果
         /// </summary>
         /// <returns>当前日期</returns>
         string GetDbDateTime();
@@ -120,7 +130,7 @@ namespace DotNet.Util
         /// <param name="parameters">参数</param>
         /// <returns>参数集</returns>
         IDbDataParameter[] MakeParameters(Dictionary<string, object> parameters);
-		
+
         /// <summary>
         /// 获取参数
         /// </summary>
@@ -367,5 +377,14 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="commandText">sql查询</param>
         void WriteLog(string commandText);
+
+        /// <summary>
+        /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
+        /// </summary>
+        /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
+        /// <param name="destinationTableName">目标表名称</param>
+        /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
+        /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
+        bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0);
     }
 }

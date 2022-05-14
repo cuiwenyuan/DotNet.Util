@@ -29,7 +29,7 @@ namespace DotNet.Util
     {
         // SqlServer By StoredProcedure
 
-        #region public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
         /// <summary>
         /// 使用存储过程获取分页数据
         /// </summary>
@@ -43,7 +43,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
         {
             IDataReader dataReader = null;
             recordCount = 0;
@@ -84,7 +84,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
             string condition = null, string selectField = null) where TModel : new()
         {
             return
@@ -94,7 +94,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
 
         /// <summary>
         /// 分页获取指定数量的数据
@@ -108,7 +108,7 @@ namespace DotNet.Util
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             if (string.IsNullOrEmpty(sortExpression))
             {
@@ -170,7 +170,7 @@ namespace DotNet.Util
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null) where TModel : new()
         {
             return ExecuteReaderByPage(dbHelper, recordCount, pageNo, pageSize, sql, dbParameters, sortExpression, sortDirection).ToList<TModel>();
         }
@@ -179,7 +179,7 @@ namespace DotNet.Util
 
         // Oracle GetDataTableByPage
 
-        #region public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
         /// <summary>
         /// Oracle 获取分页数据
         /// </summary>
@@ -191,7 +191,7 @@ namespace DotNet.Util
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
         {
             return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy);
         }
@@ -207,14 +207,14 @@ namespace DotNet.Util
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy) where TModel : new()
         {
             return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, orderBy).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         /// <summary>
         /// Oracle 获取分页数据（防注入功能的）
         /// </summary>
@@ -228,7 +228,7 @@ namespace DotNet.Util
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前索引</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         {
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
@@ -284,13 +284,13 @@ namespace DotNet.Util
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前索引</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null) where TModel : new()
         {
             return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, currentIndex).ToList<TModel>();
         }
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
@@ -304,7 +304,7 @@ namespace DotNet.Util
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy)
         {
             IDataReader result = null;
             recordCount = 0;
@@ -329,7 +329,7 @@ namespace DotNet.Util
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy) where TModel : new()
         {
             return ExecuteReaderByPage(dbHelper, out recordCount, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy).ToList<TModel>();
         }

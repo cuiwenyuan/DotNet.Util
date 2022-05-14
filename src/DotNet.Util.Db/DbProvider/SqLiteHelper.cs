@@ -29,7 +29,7 @@ namespace DotNet.Util
     /// </author> 
     /// </summary>
 
-    public class SqLiteHelper : BaseDbHelper, IDbHelper
+    public class SqLiteHelper : DbHelper, IDbHelper
     {
         #region   构造方法
         /// <summary>

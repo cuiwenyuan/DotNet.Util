@@ -31,7 +31,7 @@ namespace DotNet.Util
         /// <param name="tableName">数据来源表名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>数据表</returns>
-        public static int Count(IDbHelper dbHelper, string tableName, string condition = null)
+        public static int Count(this IDbHelper dbHelper, string tableName, string condition = null)
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
@@ -58,7 +58,7 @@ namespace DotNet.Util
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>数据表</returns>
-        public static int DistinctCount(IDbHelper dbHelper, string tableName, string fieldName, string condition = null)
+        public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null)
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();

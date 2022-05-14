@@ -21,7 +21,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
 
         /// <summary>
         /// 分页获取指定数量的数据
@@ -36,7 +36,7 @@ namespace DotNet.Util
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             if (string.IsNullOrEmpty(sortExpression))
             {

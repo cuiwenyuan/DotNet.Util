@@ -15,7 +15,7 @@ namespace DotNet.Util
     /// OleDbHelper
     /// 有关数据库连接的方法。
     /// 
-    /// 修改纪录
+    /// 修改记录
     ///
     ///		2011.01.22 版本：5.6 JiRiGaLa 参数首字母大小写规范化。
     ///		2008.08.26 版本：5.5 JiRiGaLa 修改 Open 时的错误反馈。
@@ -70,7 +70,7 @@ namespace DotNet.Util
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>
-    public class OleDbHelper : BaseDbHelper, IDbHelper
+    public class OleDbHelper : DbHelper, IDbHelper
     {
         /// <summary>
         /// GetInstance
@@ -118,14 +118,14 @@ namespace DotNet.Util
         /// <returns>日期时间</returns>
         public override string GetDbNow()
         {
-            var result = " Getdate() ";
+            var result = " GETDATE() ";
             switch (CurrentDbType)
             {
                 case CurrentDbType.Access:
                     result = "'" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + "'";
                     break;
                 case CurrentDbType.SqlServer:
-                    result = " GetDate() ";
+                    result = " GETDATE() ";
                     break;
                 case CurrentDbType.Oracle:
                     result = " SYSDATE ";

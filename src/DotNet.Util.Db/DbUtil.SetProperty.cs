@@ -21,7 +21,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int SetProperty(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters) 设置属性
+        #region public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters) 设置属性
         /// <summary>
         /// 设置属性
         /// </summary>
@@ -30,7 +30,7 @@ namespace DotNet.Util
         /// <param name="whereParameters">条件字段,条件值</param>
         /// <param name="parameters">更新字段,更新值</param>
         /// <returns>影响行数</returns>
-        public static int SetProperty(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
+        public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
         {
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginUpdate(tableName);

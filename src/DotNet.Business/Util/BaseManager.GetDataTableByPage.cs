@@ -105,7 +105,7 @@ namespace DotNet.Business
         /// <summary>
         /// 分页读取数据
         /// </summary>
-        /// <param name="iDbHelper">指定数据IDbHelper</param>
+        /// <param name="dbHelper">指定数据IDbHelper</param>
         /// <param name="recordCount">条数</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示</param>
@@ -116,13 +116,13 @@ namespace DotNet.Business
         /// <param name="dbParameters">数据参数</param>
         /// <param name="selectField">选择哪些字段</param>
         /// <returns>数据表</returns>
-        public virtual DataTable GetDataTableByPage(IDbHelper iDbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
+        public virtual DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
                 tableName = CurrentTableName;
             }
-            if (tableName.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0 || iDbHelper.CurrentDbType == CurrentDbType.MySql || iDbHelper.CurrentDbType == CurrentDbType.Oracle)
+            if (tableName.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0 || dbHelper.CurrentDbType == CurrentDbType.MySql || dbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
                 // 统计总条数
                 var commandText = string.Empty;
@@ -142,7 +142,7 @@ namespace DotNet.Business
                     // commandText = "(" + tableName + ") AS T ";
                 }
                 commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
-                var returnObject = iDbHelper.ExecuteScalar(commandText, dbParameters);
+                var returnObject = dbHelper.ExecuteScalar(commandText, dbParameters);
                 if (returnObject != null)
                 {
                     recordCount = int.Parse(returnObject.ToString());
@@ -153,10 +153,10 @@ namespace DotNet.Business
                 }
                 //return DbUtil.GetDataTableByPage(DbHelper, recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
                 //Troy 20160521 自定义View分页怎能没有查询条件带入
-                return DbUtil.GetDataTableByPage(iDbHelper, recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
+                return DbUtil.GetDataTableByPage(dbHelper, recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
             }
             // 这个是调用存储过程的方法
-            return DbUtil.GetDataTableByPage(iDbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+            return DbUtil.GetDataTableByPage(dbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
         #endregion
     }
