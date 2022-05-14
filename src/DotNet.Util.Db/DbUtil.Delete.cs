@@ -21,7 +21,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public int static Delete(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null) 删除表格数据
+        #region public int static Delete(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null) 删除表格数据
         /// <summary>
         /// 删除表格数据
         /// </summary>
@@ -29,7 +29,7 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">删除条件</param>
         /// <returns>影响行数</returns>
-        public static int Delete(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null)
+        public static int Delete(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("DELETE FROM " + tableName);
@@ -42,14 +42,14 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int Truncate(IDbHelper dbHelper, string tableName) 截断表格数据
+        #region public static int Truncate(this IDbHelper dbHelper, string tableName) 截断表格数据
         /// <summary>
         /// 截断表格数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">目标表格</param>
         /// <returns>是否成功</returns>
-        public static int Truncate(IDbHelper dbHelper, string tableName)
+        public static int Truncate(this IDbHelper dbHelper, string tableName)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("TRUNCATE TABLE " + tableName);

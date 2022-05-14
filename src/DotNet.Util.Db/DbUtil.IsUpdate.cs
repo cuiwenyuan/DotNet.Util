@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static bool IsUpdate(IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
+        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
 
         /// <summary>
         /// 数据是否已经被别人修改了
@@ -34,13 +34,13 @@ namespace DotNet.Util
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime)
+        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime);
         }
         #endregion
 
-        #region public static bool IsUpdate(IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
+        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
 
         /// <summary>
         /// 数据是否已经被别人修改了
@@ -52,7 +52,7 @@ namespace DotNet.Util
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime)
+        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             var result = false;
             var sb = Pool.StringBuilder.Get();

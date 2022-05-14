@@ -17,7 +17,7 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     ///
-    ///		2008.09.24 版本：1.0 Troy Cui 创建。
+    ///		2008.09.24 版本：1.0 JiRiGaLa 创建。
     /// 
     /// 版本：1.0
     /// 
@@ -26,7 +26,7 @@ namespace DotNet.Util
     ///		<date>2008.09.24</date>
     /// </author> 
     /// </summary>
-    public class MySqlHelper : BaseDbHelper, IDbHelper
+    public class MySqlHelper : DbHelper, IDbHelper
     {
         /// <summary>
         /// Connection

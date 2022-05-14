@@ -33,7 +33,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
         /// <returns>数据表</returns>
-        public static int AggregateInt(IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
@@ -61,7 +61,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
         /// <returns>数据表</returns>
-        public static decimal AggregateDecimal(IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         {
             var result = 0M;
             var sb = Pool.StringBuilder.Get();

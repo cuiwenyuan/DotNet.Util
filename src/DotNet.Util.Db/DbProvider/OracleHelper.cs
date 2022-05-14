@@ -20,7 +20,7 @@ namespace DotNet.Util
     ///		2008.08.26 版本：1.3 JiRiGaLa 修改Open时的错误反馈。
     ///		2008.06.01 版本：1.2 JiRiGaLa 数据库连接获得方式进行改进，构造函数获得调通。
     ///		2008.05.08 版本：1.1 JiRiGaLa 调试通过，修改一些 有关参数的 Bug。
-    ///		2008.05.07 版本：1.0 Troy Cui 创建。
+    ///		2008.05.07 版本：1.0 JiRiGaLa 创建。
     /// 
     /// 版本：1.3
     /// 
@@ -29,7 +29,7 @@ namespace DotNet.Util
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>
-    public class OracleHelper : BaseDbHelper, IDbHelper
+    public class OracleHelper : DbHelper, IDbHelper
     {
         /// <summary>
         /// GetInstance

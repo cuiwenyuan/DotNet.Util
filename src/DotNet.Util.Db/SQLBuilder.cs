@@ -16,10 +16,11 @@ namespace DotNet.Util
     /// SQL语句生成器（适合简单的添加、删除、更新等语句，可以写出编译时强类型检查的效果）
     /// 
     /// 修改记录
-    /// 
-    ///     2021.11.01 版本：5.0 Troy       改进性能，采用StringBuilderPool。
-    ///     2013.04.01 版本：4.0 JiRiGaLa   改进性能，采用StringBuilder。
-    ///     2012.03.17 版本：3.7 zhangyi    修改注释
+    ///
+    ///     2022.05.12 版本：5.0 Troy.Cui    完善描述和Region。
+    ///     2021.11.01 版本：5.0 Troy.Cui    改进性能，采用StringBuilderPool。
+    ///     2013.04.01 版本：4.0 JiRiGaLa    改进性能，采用StringBuilder。
+    ///     2012.03.17 版本：3.7 zhangyi     修改注释
     ///     2010.06.20 版本：3.1 JiRiGaLa	支持Oracle序列功能改进。
     ///     2010.06.13 版本：3.0 JiRiGaLa	改进为支持静态方法，不用数据库Open、Close的方式，AutoOpenClose开关。
     ///     2008.08.30 版本：2.3 JiRiGaLa	确认 BeginSelect 方法的正确性。
@@ -38,7 +39,7 @@ namespace DotNet.Util
     ///		
     /// <author>
     ///		<name>Troy.Cui</name>
-    ///		<date>2013.04.01</date>
+    ///		<date>2022.05.12</date>
     /// </author> 
     /// </summary>
     public partial class SqlBuilder
@@ -174,6 +175,8 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region public void SelectTop(int? topN) 获取前几条数据
+
         /// <summary>
         /// 获取前几条数据
         /// </summary>
@@ -182,6 +185,8 @@ namespace DotNet.Util
         {
             _topN = topN;
         }
+
+        #endregion
 
         #region public void BeginInsert(string tableName) 开始插入
         /// <summary>
@@ -279,7 +284,7 @@ namespace DotNet.Util
             // 写入调试信息
 #if (DEBUG)
             var milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             Prepare();
@@ -289,11 +294,10 @@ namespace DotNet.Util
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
         }
         #endregion
-
 
         #region public void SetFormula(string targetFiled, string formula, string relation) 设置公式
         /// <summary>
@@ -326,6 +330,8 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region private string GetDbNow()
+
         private string GetDbNow()
         {
             var sb = Pool.StringBuilder.Get();
@@ -335,10 +341,12 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append(DbHelper.GetDbNow(_dbType));
+                sb.Append(DbUtil.GetDbNow(_dbType));
             }
             return sb.Put();
         }
+
+        #endregion
 
         #region public void SetDBNow(string targetFiled) 设置为当前时间
         /// <summary>
@@ -393,7 +401,7 @@ namespace DotNet.Util
                     else
                     {
                         // 判断数据库连接类型
-                        _updateSql.Append(targetFiled + " = " + DbHelper.GetParameter(_dbType, targetFiledName) + ", ");
+                        _updateSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, targetFiledName) + ", ");
                         AddParameter(targetFiledName, targetValue);
                         //else
                         //{
@@ -414,7 +422,7 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        _insertValue.Append(DbHelper.GetParameter(_dbType, targetFiledName) + ", ");
+                        _insertValue.Append(DbUtil.GetParameter(_dbType, targetFiledName) + ", ");
                         AddParameter(targetFiledName, targetValue);
                     }
                     break;
@@ -433,7 +441,6 @@ namespace DotNet.Util
             DbParameters.Add(new KeyValuePair<string, object>(targetFiled, targetValue));
         }
         #endregion
-
 
         #region public string SetWhere(string sqlWhere) 设置条件
         /// <summary>
@@ -503,7 +510,7 @@ namespace DotNet.Util
             }
             else
             {
-                _whereSql.Append(targetFiled + " = " + DbHelper.GetParameter(_dbType, targetFiledName));
+                _whereSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, targetFiledName));
                 AddParameter(targetFiledName, targetValue);
             }
             // return this.WhereSql;
@@ -526,6 +533,8 @@ namespace DotNet.Util
             return _orderBy;
         }
         #endregion
+
+        #region public string SetOrderByRandom() 随机排序函数
 
         /// <summary>
         /// 数据库中的随机排序功能实现
@@ -552,6 +561,8 @@ namespace DotNet.Util
             }
             return _orderBy;
         }
+
+        #endregion
 
         #region public int EndSelect() 结束查询
         /// <summary>
@@ -640,6 +651,8 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region public string PrepareCommand() 准备生成sql语句
+
         /// <summary>
         /// 准备生成sql语句
         /// </summary>
@@ -710,6 +723,8 @@ namespace DotNet.Util
 
             return CommandText;
         }
+
+        #endregion
 
         #region private int Execute() 执行语句
         /// <summary>

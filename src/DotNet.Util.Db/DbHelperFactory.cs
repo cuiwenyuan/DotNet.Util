@@ -34,24 +34,19 @@ namespace DotNet.Util
     ///		<date>2022.05.09</date>
     /// </author> 
     /// </summary>
-    public class DbHelperFactory
+    public static class DbHelperFactory
     {
         #region 创建支持并发缓存的单一实例 Create
 
-        private static readonly ConcurrentDictionary<string, IDbHelper> DbHelpers = new(StringComparer.OrdinalIgnoreCase);
         /// <summary>
         /// 获取指定的数据库连接
         /// </summary>
-        /// <param name="dbType">数据库类型</param>
+        /// <param name="currentDbType">数据库类型</param>
         /// <param name="connectionString">数据库连接串</param>
         /// <returns>数据库访问类</returns>
-        public static IDbHelper Create(CurrentDbType dbType = CurrentDbType.SqlServer, string connectionString = null)
+        public static IDbHelper Create(CurrentDbType currentDbType = CurrentDbType.SqlServer, string connectionString = null)
         {
-            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
-
-            var dbHelper = GetHelper(dbType, connectionString);
-
-            return dbHelper;
+            return DbUtil.GetDbHelper(currentDbType, connectionString);
         }
 
         #endregion
@@ -61,31 +56,15 @@ namespace DotNet.Util
         /// <summary>
         /// 获取指定的数据库连接
         /// </summary>
-        /// <param name="dbType">数据库类型</param>
+        /// <param name="currentDbType">当前数据库类型</param>
         /// <param name="connectionString">数据库连接串</param>
         /// <returns>数据库访问类</returns>
-        public static IDbHelper GetHelper(CurrentDbType dbType = CurrentDbType.SqlServer, string connectionString = null)
+        [Obsolete("Please use Create method from 2022-05-01", true)]
+        public static IDbHelper GetHelper(CurrentDbType currentDbType = CurrentDbType.SqlServer, string connectionString = null)
         {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                connectionString = BaseSystemInfo.UserCenterDbConnection;
-            }
-            var dbHelperClass = DbHelper.GetDbHelperClass(dbType);
-            var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
-            // 千万不要用以下代码，不然会经常数据库访问异常！
-            // Dictionary.TryGetValue 在多线程高并发下有可能抛出空异常
-            //var dbHelper = DbHelpers.GetOrAdd(key: Convert.ToBase64String(Encoding.UTF8.GetBytes(connectionString)), valueFactory: _ => (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true));
-
-            if (dbHelper != null)
-            {
-
-                dbHelper.ConnectionString = connectionString;
-            }
-
-            return dbHelper;
+            return DbUtil.GetDbHelper(currentDbType, connectionString);
         }
 
         #endregion
-
     }
 }

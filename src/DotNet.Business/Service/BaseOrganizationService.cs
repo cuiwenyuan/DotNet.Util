@@ -784,7 +784,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int BatchSetCode(BaseUserInfo userInfo, string[] ids, string[] codes)
+        #region public int BatchSetSortCode(BaseUserInfo userInfo, string[] ids, string[] codes)
         /// <summary>
         /// 批量重新生成编号
         /// </summary>
@@ -792,7 +792,7 @@ namespace DotNet.Business
         /// <param name="ids">主键</param>
         /// <param name="codes">编号</param>
         /// <returns>影响行数</returns>
-        public int BatchSetCode(BaseUserInfo userInfo, string[] ids, string[] codes)
+        public int BatchSetSortCode(BaseUserInfo userInfo, string[] ids, string[] codes)
         {
             var result = 0;
 
@@ -800,7 +800,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseOrganizationManager(dbHelper, userInfo);
-                result = manager.BatchSetCode(ids, codes);
+                result = manager.BatchSetSortCode(ids, codes);
             });
             return result;
         }

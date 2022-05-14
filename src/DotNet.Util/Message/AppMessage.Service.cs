@@ -242,7 +242,7 @@ namespace DotNet.Util
         //public static string OrganizationServiceBatchSave = "批量储存";
         //public static string OrganizationServiceMoveTo = "移动组织机构";
         //public static string OrganizationServiceBatchMoveTo = "批量移动";
-        //public static string OrganizationServiceBatchSetCode = "批量重新产生编号";
+        //public static string OrganizationServiceBatchSetSortCode = "批量重新产生编号";
         //public static string OrganizationServiceBatchSetSortCode = "批量重新产生排序码";
 
         //// ParameterService参数服务及相关的方法名称定义
