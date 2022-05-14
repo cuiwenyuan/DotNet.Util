@@ -247,7 +247,7 @@ namespace DotNet.IService
         /// <param name="ids">主键数组</param>
         /// <param name="codes">编号数组</param>
         /// <returns>影响行数</returns>
-        int BatchSetCode(BaseUserInfo userInfo, string[] ids, string[] codes);
+        int BatchSetSortCode(BaseUserInfo userInfo, string[] ids, string[] codes);
 
         /// <summary>
         /// 保存组织机构排序顺序

@@ -219,21 +219,21 @@ namespace DotNet.Business
         /// <summary>
         /// 设置数据库连接、当前用户
         /// </summary>
-        /// <param name="iDbHelper">数据库连接接口</param>
+        /// <param name="dbHelper">数据库连接接口</param>
         /// <param name="userInfo">用户信息</param>
-        public void SetConnection(IDbHelper iDbHelper, BaseUserInfo userInfo)
+        public void SetConnection(IDbHelper dbHelper, BaseUserInfo userInfo)
         {
-            SetConnection(iDbHelper);
+            SetConnection(dbHelper);
             UserInfo = userInfo;
         }
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="iDbHelper">数据库连接接口</param>
-        public virtual void SetParameter(IDbHelper iDbHelper)
+        /// <param name="dbHelper">数据库连接接口</param>
+        public virtual void SetParameter(IDbHelper dbHelper)
         {
-            DbHelper = iDbHelper;
+            DbHelper = dbHelper;
         }
 
         /// <summary>
@@ -248,11 +248,11 @@ namespace DotNet.Business
         /// <summary>
         /// 设置参数
         /// </summary>
-        /// <param name="iDbHelper">数据库连接接口</param>
+        /// <param name="dbHelper">数据库连接接口</param>
         /// <param name="userInfo">用户信息</param>
-        public virtual void SetParameter(IDbHelper iDbHelper, BaseUserInfo userInfo)
+        public virtual void SetParameter(IDbHelper dbHelper, BaseUserInfo userInfo)
         {
-            DbHelper = iDbHelper;
+            DbHelper = dbHelper;
             UserInfo = userInfo;
         }
 
@@ -600,14 +600,14 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public int BatchSetCode(string[] ids, string[] codes) 重置编号
+        #region public int BatchSetSortCode(string[] ids, string[] codes) 重置编号
         /// <summary>
         /// 重置编号
         /// </summary>
         /// <param name="ids">主键数组</param>
         /// <param name="codes">编号数组</param>
         /// <returns>影响行数</returns>
-        public int BatchSetCode(string[] ids, string[] codes)
+        public int BatchSetSortCode(string[] ids, string[] codes)
         {
             var result = 0;
             for (var i = 0; i < ids.Length; i++)
@@ -618,12 +618,9 @@ namespace DotNet.Business
         }
         #endregion
 
-        //重新生成排序码
-
-
-        #region public int BatchSetSortCode(string[] ids) 重置排序码
+        #region public int BatchSetSortCode(string[] ids) 批量设置排序码
         /// <summary>
-        /// 重置排序码
+        /// 批量设置排序码
         /// </summary>
         /// <param name="ids">主键数组</param>
         /// <returns>影响行数</returns>

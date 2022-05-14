@@ -131,5 +131,33 @@ namespace DotNet.Util
 
         #endregion
 
+        #region 是否包含某列
+
+        /// <summary>
+        /// 判断 DataReader 里面是否包含指定的列
+        /// </summary>
+        /// <param name="dataReader">IDataReader对象</param>
+        /// <param name="columnName">字段名</param>
+        /// <returns></returns>
+        public static bool ReaderExists(this IDataReader dataReader, string columnName)
+        {
+            var result = false;
+            if (dataReader != null && !dataReader.IsClosed)
+            {
+                var count = dataReader.FieldCount;
+                for (var i = 0; i < count; i++)
+                {
+                    if (dataReader.GetName(i).Equals(columnName))
+                    {
+                        result = true;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
     }
 }

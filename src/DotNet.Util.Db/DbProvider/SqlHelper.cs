@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace DotNet.Util
 {
@@ -26,7 +27,7 @@ namespace DotNet.Util
     ///		<date>2008.08.26</date>
     /// </author> 
     /// </summary>
-    public class SqlHelper : BaseDbHelper, IDbHelper, IDbHelperExtend
+    public class SqlHelper : DbHelper, IDbHelper
     {
         /// <summary>
         /// GetInstance
@@ -68,7 +69,7 @@ namespace DotNet.Util
 
         #region public string GetDbNow() 获得数据库日期时间 字符串
         /// <summary>
-        /// 获得数据库当前日期时间
+        /// 获得数据库当前日期时间 字符串
         /// </summary>
         /// <returns>日期时间</returns>
         public override string GetDbNow()
@@ -79,7 +80,7 @@ namespace DotNet.Util
 
         #region public string GetDbDateTime() 获得数据库日期时间 执行SQL后的结果
         /// <summary>
-        /// 获得数据库日期时间
+        /// 获得数据库日期时间 执行SQL后的结果
         /// </summary>
         /// <returns>日期时间</returns>
         public override string GetDbDateTime()
@@ -184,7 +185,7 @@ namespace DotNet.Util
             return dbParameters.ToArray();
         }
         #endregion
-                
+
         #region public IDbDataParameter[] MakeParameters(Dictionary<string, object> parameters) 获取参数
         /// <summary>
         /// 获取参数
@@ -208,7 +209,7 @@ namespace DotNet.Util
             return dbParameters.ToArray();
         }
         #endregion
-        
+
         #region public IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters) 获取参数泛型列表
         /// <summary>
         /// 获取参数泛型列表
@@ -315,9 +316,19 @@ namespace DotNet.Util
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
         /// </summary>
-        /// <param name="dt">源内存数据表</param>
-        public void SqlBulkCopyData(DataTable dt)
+        /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
+        /// <param name="destinationTableName">目标表名称</param>
+        /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
+        /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
+        public override bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0)
         {
+            var result = false;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            if (string.IsNullOrEmpty(destinationTableName))
+            {
+                destinationTableName = dt.TableName;
+            }
             // SQL 数据连接
             SqlConnection sqlConnection = null;
             // 打开数据库
@@ -328,10 +339,11 @@ namespace DotNet.Util
             {
                 // 批量保存数据，只能用于Sql
                 var sqlBulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
-                // 设置源表名称
-                sqlBulkCopy.DestinationTableName = dt.TableName;
+                sqlBulkCopy.BatchSize = batchSize;
+                // 设置目标表名称
+                sqlBulkCopy.DestinationTableName = destinationTableName;
                 // 设置超时限制
-                sqlBulkCopy.BulkCopyTimeout = 1000;
+                sqlBulkCopy.BulkCopyTimeout = bulkCopyTimeout;
 
                 foreach (DataColumn dtColumn in dt.Columns)
                 {
@@ -343,8 +355,9 @@ namespace DotNet.Util
                     sqlBulkCopy.WriteToServer(dt);
                     // 提交事务
                     tran.Commit();
+                    result = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     tran.Rollback();
                     sqlBulkCopy.Close();
@@ -356,6 +369,17 @@ namespace DotNet.Util
                     Close();
                 }
             }
+            stopwatch.Stop();
+            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            SqlUtil.WriteLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
+            if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
+            {
+                var sb = Pool.StringBuilder.Get();
+                sb.Append("SqlBulkCopy to Table " + destinationTableName + " , " + statisticsText);
+                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.SqlBulkCopy");
+            }
+
+            return result;
         }
         #endregion
     }

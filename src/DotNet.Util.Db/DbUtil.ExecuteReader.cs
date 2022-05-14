@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
         /// <summary>
         /// 获取数据表 一参 参数为数组
         /// </summary>
@@ -33,7 +33,7 @@ namespace DotNet.Util
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
@@ -61,7 +61,7 @@ namespace DotNet.Util
         /// <param name="values"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(IDbHelper dbHelper, string tableName, string name,
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string name,
             object[] values, string order = null) where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, name, values, order).ToList<TModel>();
@@ -91,7 +91,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string condition)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition)
         {
             return ExecuteReader2(dbHelper, tableName, condition);
         }
@@ -103,7 +103,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(IDbHelper dbHelper, string tableName, string condition) where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition) where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, condition).ToList<TModel>();
         }
@@ -116,7 +116,7 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader2(IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
+        public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
         {
             // 这里是需要完善的功能，完善了这个，是一次重大突破 
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
@@ -132,7 +132,7 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader2<TModel>(IDbHelper dbHelper, string tableName, string condition, int topLimit = 0,
+        public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0,
             string order = null) where TModel : new()
         {
             return ExecuteReader2(dbHelper, tableName, condition, topLimit, order).ToList<TModel>();
@@ -147,7 +147,7 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static string ExecuteReaderQueryString(IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
+        public static string ExecuteReaderQueryString(this IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
         {
             var sb = Pool.StringBuilder.Get();
 
@@ -236,7 +236,7 @@ namespace DotNet.Util
             return sb.Put();
         }
 
-        #region public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
 
         /// <summary>
         /// 获取数据表 一参 参数为数组
@@ -248,7 +248,7 @@ namespace DotNet.Util
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
@@ -278,13 +278,14 @@ namespace DotNet.Util
         /// <param name="values"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(IDbHelper dbHelper, string tableName, string selectField, string name,
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string selectField, string name,
             object[] values, string order = null) where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, selectField, name, values, order).ToList<TModel>();
         }
 
         #endregion
+        
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -294,7 +295,7 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
         {
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional), topLimit, order);
             if (parameters != null && parameters.Count > 0)
@@ -316,7 +317,7 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(IDbHelper dbHelper, string tableName,
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName,
             List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, parameters, topLimit, order).ToList<TModel>();
@@ -333,7 +334,7 @@ namespace DotNet.Util
         /// <param name="order">派讯</param>
         /// <param name="selectField">查询的字段</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
@@ -400,7 +401,7 @@ namespace DotNet.Util
         /// <param name="order"></param>
         /// <param name="selectField"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(IDbHelper dbHelper, string tableName,
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName,
             List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null,
             string selectField = " * ") where TModel : new()
         {

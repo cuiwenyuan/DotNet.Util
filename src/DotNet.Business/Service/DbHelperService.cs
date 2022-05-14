@@ -127,7 +127,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             if (userManager.UserIsLogon(userInfo))
             {
-                result = DbHelper.ExecuteNonQuery(commandText, DbHelper.MakeParameters(dbParameters), Util.DbHelper.GetCommandType(commandType));
+                result = DbHelper.ExecuteNonQuery(commandText, DbHelper.MakeParameters(dbParameters), DbUtil.GetCommandType(commandType));
             }
             return result;
         }
@@ -174,7 +174,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             if (userManager.UserIsLogon(userInfo))
             {
-                result = DbHelper.ExecuteScalar(commandText, DbHelper.MakeParameters(dbParameters), DotNet.Util.DbHelper.GetCommandType(commandType));
+                result = DbHelper.ExecuteScalar(commandText, DbHelper.MakeParameters(dbParameters), DbUtil.GetCommandType(commandType));
             }
             return result;
         }
@@ -221,7 +221,7 @@ namespace DotNet.Business
             // 判断是否已经登录的用户？
             if (userManager.UserIsLogon(userInfo))
             {
-                result = DbHelper.Fill(commandText, DbHelper.MakeParameters(dbParameters), DotNet.Util.DbHelper.GetCommandType(commandType));
+                result = DbHelper.Fill(commandText, DbHelper.MakeParameters(dbParameters), DbUtil.GetCommandType(commandType));
             }
             return result;
         }

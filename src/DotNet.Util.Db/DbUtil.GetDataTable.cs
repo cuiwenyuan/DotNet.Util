@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
         /// <summary>
         /// 获取数据表 一参 参数为数组
         /// </summary>
@@ -33,7 +33,7 @@ namespace DotNet.Util
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
@@ -53,7 +53,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
 
         /// <summary>
         /// GetDataTable
@@ -65,7 +65,7 @@ namespace DotNet.Util
         /// <param name="order"></param>
         /// <param name="sqlLogicConditional"></param>
         /// <returns></returns>
-        public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
         {
             // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sb = Pool.StringBuilder.Get();
@@ -141,7 +141,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
 
         /// <summary>
         /// GetDataTable
@@ -154,7 +154,7 @@ namespace DotNet.Util
         /// <param name="order"></param>
         /// <param name="selectField"></param>
         /// <returns></returns>
-        public static DataTable GetDataTable(IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);

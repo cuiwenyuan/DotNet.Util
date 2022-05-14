@@ -33,7 +33,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static int LockNoWait(IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
+        public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
             for (var i = 0; i < parameters.Length; i++)
@@ -44,7 +44,7 @@ namespace DotNet.Util
         }
 
 
-        #region public static int LockNoWait(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters) 记录是否存在
+        #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters) 记录是否存在
         /// <summary>
         /// 锁定表记录
         /// </summary>
@@ -52,7 +52,7 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">参数</param>
         /// <returns>锁定的行数</returns>
-        public static int LockNoWait(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters)
+        public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters)
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();

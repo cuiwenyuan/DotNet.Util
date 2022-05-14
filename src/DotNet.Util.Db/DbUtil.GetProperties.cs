@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static string[] GetProperties(IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField) 获取数据表
+        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField) 获取数据表
         /// <summary>
         /// 获取数据表
         /// 这个方法按道理目标数据不会非常大，所以可以不优化，问题不大
@@ -34,7 +34,7 @@ namespace DotNet.Util
         /// <param name="values">字段值</param>
         /// <param name="targetField">目标字段</param>
         /// <returns>数据表</returns>
-        public static string[] GetProperties(IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
+        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
         {
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", values) + ")");
@@ -43,7 +43,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string[] GetProperties(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null) 获取数据权限
+        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null) 获取数据权限
         /// <summary>
         /// 获取数据表
         /// </summary>
@@ -53,7 +53,7 @@ namespace DotNet.Util
         /// <param name="topLimit">前几个记录</param>
         /// <param name="targetField">目标字段</param>
         /// <returns>数据表</returns>
-        public static string[] GetProperties(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null)
+        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null)
         {
             var result = new List<string>();
 

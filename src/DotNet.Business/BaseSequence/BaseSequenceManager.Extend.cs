@@ -477,7 +477,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             BaseSequenceEntity entity = null;
@@ -562,7 +562,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             return Increment(entity);
@@ -627,7 +627,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             BaseSequenceEntity sequenceEntity = null;
@@ -714,7 +714,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             return Decrement(sequenceEntity);
@@ -853,7 +853,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             var result = new string[sequenceCount];
@@ -890,7 +890,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod().ReflectedType.Name + "." + MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             return result;

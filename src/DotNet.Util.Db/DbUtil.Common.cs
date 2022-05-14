@@ -68,15 +68,15 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetWhereString(IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation) 获得条件语句
+        #region public static string GetWhereString(this IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation) 获得条件语句
         /// <summary>
         /// 获得条件语句
-       /// </summary>
-       /// <param name="dbHelper"></param>
-       /// <param name="parameters"></param>
-       /// <param name="relation"></param>
-       /// <returns></returns>
-        public static string GetWhereString(IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation)
+        /// </summary>
+        /// <param name="dbHelper"></param>
+        /// <param name="parameters"></param>
+        /// <param name="relation"></param>
+        /// <returns></returns>
+        public static string GetWhereString(this IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation)
         {
             var result = string.Empty;
             if (parameters == null)
@@ -133,7 +133,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetWhereString(IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
+        #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
         /// <summary>
         /// 获得条件语句
         /// 20110523 吉日嘎拉，改进空数组 
@@ -143,7 +143,7 @@ namespace DotNet.Util
         /// <param name="values">字段值</param>
         /// <param name="relation">逻辑关系</param>
         /// <returns>字符串</returns>
-        public static string GetWhereString(IDbHelper dbHelper, ref string[] names, Object[] values, string relation)
+        public static string GetWhereString(this IDbHelper dbHelper, ref string[] names, Object[] values, string relation)
         {
             var result = string.Empty;
             var subSqlQuery = string.Empty;
@@ -200,7 +200,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int UpdateRecord(IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue) 更新记录
+        #region public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue) 更新记录
         /// <summary>
         /// 更新记录
         /// </summary>
@@ -211,7 +211,7 @@ namespace DotNet.Util
         /// <param name="targetField">更新字段</param>
         /// <param name="targetValue">更新值</param>
         /// <returns>影响行数</returns>
-        public static int UpdateRecord(IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue)
+        public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue)
         {
             var result = 0;
             var sqlBuilder = new SqlBuilder(dbHelper);
@@ -223,7 +223,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int Insert(IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues) 设置属性
+        #region public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues) 设置属性
         /// <summary>
         /// 设置属性
         /// </summary>
@@ -232,7 +232,7 @@ namespace DotNet.Util
         /// <param name="targetFields">更新字段</param>
         /// <param name="targetValues">更新值</param>
         /// <returns>影响行数</returns>
-        public static int Insert(IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues)
+        public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues)
         {
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginInsert(tableName);
@@ -243,8 +243,8 @@ namespace DotNet.Util
             return sqlBuilder.EndInsert();
         }
         #endregion
-        
-        #region public static DataTable GetFromProcedure(IDbHelper dbHelper, string procedureName, string tableName) 通过存储过程获取表数据
+
+        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName) 通过存储过程获取表数据
         /// <summary>
         /// 通过存储过程获取表数据
         /// </summary>
@@ -252,7 +252,7 @@ namespace DotNet.Util
         /// <param name="procedureName">存储过程名</param>
         /// <param name="tableName">填充表</param>
         /// <returns>数据权限</returns>
-        public static DataTable GetFromProcedure(IDbHelper dbHelper, string procedureName, string tableName)
+        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName)
         {
             var dt = new DataTable(tableName);
             dbHelper.Fill(dt, procedureName, (IDbDataParameter[])null, CommandType.StoredProcedure);
@@ -260,7 +260,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetFromProcedure(IDbHelper dbHelper, string procedureName, string tableName, string id) 通过存储过程获取表数据
+        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id) 通过存储过程获取表数据
         /// <summary>
         /// 通过存储过程获取表数据
         /// </summary>
@@ -269,7 +269,7 @@ namespace DotNet.Util
         /// <param name="tableName">填充表</param>
         /// <param name="id">主键值</param>
         /// <returns>数据权限</returns>
-        public static DataTable GetFromProcedure(IDbHelper dbHelper, string procedureName, string tableName, string id)
+        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id)
         {
             var names = new string[1];
             var values = new Object[1];

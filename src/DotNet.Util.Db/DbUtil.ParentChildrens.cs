@@ -28,7 +28,7 @@ namespace DotNet.Util
         // 树型结构的算法
         //
 
-        #region public static DataTable GetParentsByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
+        #region public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
         /// </summary>
@@ -39,7 +39,7 @@ namespace DotNet.Util
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
         /// <returns>数据表</returns>
-        public static DataTable GetParentsByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
             var sb = Pool.StringBuilder.Get();
             if (idOnly)
@@ -75,7 +75,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetChildrens(IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, bool idOnly) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -87,7 +87,7 @@ namespace DotNet.Util
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrens(IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false)
+        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false)
         {
             var sb = Pool.StringBuilder.Get();
             var dt = new DataTable(tableName);
@@ -146,7 +146,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetChildrens(IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -158,7 +158,7 @@ namespace DotNet.Util
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrens(IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly)
+        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly)
         {
             var sb = Pool.StringBuilder.Get();
             if (idOnly)
@@ -180,7 +180,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetChildrensByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -191,7 +191,7 @@ namespace DotNet.Util
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrensByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
             var sb = Pool.StringBuilder.Get();
             if (idOnly)
@@ -223,7 +223,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DataTable GetParentChildrensByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取父子节点列表
+        #region public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取父子节点列表
         /// <summary>
         /// 获取父子节点列表
         /// </summary>
@@ -234,7 +234,7 @@ namespace DotNet.Util
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
         /// <returns>数据表</returns>
-        public static DataTable GetParentChildrensByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
             var sb = Pool.StringBuilder.Get();
             if (idOnly)
@@ -278,7 +278,7 @@ namespace DotNet.Util
 
 
 
-        #region public static string[] GetParentsIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
+        #region public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
         /// </summary>
@@ -288,13 +288,13 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <returns>主键数组</returns>
-        public static string[] GetParentsIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
             return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
 
-        #region public static string[] GetChildrensId(IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order) 获取子节点列表
+        #region public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -305,13 +305,13 @@ namespace DotNet.Util
         /// <param name="fieldParentId">父亲节点字段</param>
         /// <param name="order">排序</param>
         /// <returns>主键数组</returns>
-        public static string[] GetChildrensId(IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order)
+        public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order)
         {
             return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
 
-        #region public static string[] GetChildrensIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取子节点列表
+        #region public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -321,13 +321,13 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <returns>主键数组</returns>
-        public static string[] GetChildrensIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
             return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
 
-        #region public static string[] GetParentChildrensIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父子节点列表
+        #region public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父子节点列表
         /// <summary>
         /// 获取父子节点列表
         /// </summary>
@@ -337,14 +337,14 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <returns>主键数组</returns>
-        public static string[] GetParentChildrensIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
             return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
 
 
-        #region public static string GetParentIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code) 获取父节点
+        #region public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code) 获取父节点
         /// <summary>
         /// 获取父节点
         /// </summary>
@@ -353,7 +353,7 @@ namespace DotNet.Util
         /// <param name="fieldCode">编码字段</param>
         /// <param name="code">编号</param>
         /// <returns>主键</returns>
-        public static string GetParentIdByCode(IDbHelper dbHelper, string tableName, string fieldCode, string code)
+        public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code)
         {
             var parentId = string.Empty;
             var sb = Pool.StringBuilder.Get();

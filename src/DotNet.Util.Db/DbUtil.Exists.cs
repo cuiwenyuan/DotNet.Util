@@ -32,7 +32,7 @@ namespace DotNet.Util
         /// <param name="parameters">目标字段,值</param>
         /// <param name="parameter">参数</param>
         /// <returns>行数</returns>
-        public static int GetCount(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
+        public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
@@ -78,7 +78,7 @@ namespace DotNet.Util
         /// <param name="dbParameters">参数</param>
         /// <param name="currentIndex"></param>
         /// <returns>行数</returns>
-        public static int GetCount(IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null)
+        public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null)
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
@@ -109,7 +109,7 @@ namespace DotNet.Util
         /// <param name="dbHelper">dbHelper</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public static bool Exists(IDbHelper dbHelper, string tableName)
+        public static bool Exists(this IDbHelper dbHelper, string tableName)
         {
             var result = false;
             var sb = Pool.StringBuilder.Get();
@@ -138,7 +138,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool Exists(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null) 记录是否存在
+        #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null) 记录是否存在
 
         /// <summary>
         /// 记录是否存在
@@ -148,7 +148,7 @@ namespace DotNet.Util
         /// <param name="parameters">参数</param>
         /// <param name="parameter">参数</param>
         /// <returns>存在</returns>
-        public static bool Exists(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
+        public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
         {
             return GetCount(dbHelper, tableName, parameters, parameter) > 0;
         }

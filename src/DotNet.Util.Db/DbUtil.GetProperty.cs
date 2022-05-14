@@ -24,7 +24,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static string GetProperty(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int? topLimit = null, string orderBy = null)
+        #region public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int? topLimit = null, string orderBy = null)
         /// <summary>
         /// 读取属性
         /// </summary>
@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <param name="topLimit">TOP多少行</param>
         /// <param name="orderBy">排序</param>
         /// <returns>属性</returns>
-        public static string GetProperty(IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int topLimit = 1, string orderBy = null)
+        public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int topLimit = 1, string orderBy = null)
         {
             var result = string.Empty;
 

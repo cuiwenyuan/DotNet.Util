@@ -454,14 +454,14 @@ namespace DotNet.Business
                 {
                     condition += " AND ";
                 }
-                condition += BasePermissionEntity.FieldCreateTime + " >= " + DbHelper.GetParameter(BaseSystemInfo.UserCenterDbType, "startDate");
+                condition += BasePermissionEntity.FieldCreateTime + " >= " + DbUtil.GetParameter(BaseSystemInfo.UserCenterDbType, "startDate");
                 dbParameters.Add(new KeyValuePair<string, object>("startDate", startDate));
 
                 if (!string.IsNullOrEmpty(condition))
                 {
                     condition += " AND ";
                 }
-                condition += BasePermissionEntity.FieldCreateTime + " <= " + DbHelper.GetParameter(BaseSystemInfo.UserCenterDbType, "endDate");
+                condition += BasePermissionEntity.FieldCreateTime + " <= " + DbUtil.GetParameter(BaseSystemInfo.UserCenterDbType, "endDate");
                 dbParameters.Add(new KeyValuePair<string, object>("endDate", endDate));
 
                 var tableName = BasePermissionEntity.CurrentTableName;
