@@ -820,9 +820,10 @@ namespace DotNet.Business
         /// <param name="id">行id</param>
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
+        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string id, string tableName, string tableFieldName, bool checkUserCompany = false);
+        bool IsUsed(string id, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否被用过（批量）
@@ -830,9 +831,10 @@ namespace DotNet.Business
         /// <param name="ids">行Ids</param>
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
+        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string[] ids, string tableName, string tableFieldName, bool checkUserCompany = false);
+        bool IsUsed(string[] ids, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 删除缓存

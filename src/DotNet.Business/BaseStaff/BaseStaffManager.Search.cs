@@ -217,7 +217,7 @@ namespace DotNet.Business
                 condition += " OR " + BaseStaffEntity.FieldQuickQuery + " LIKE " + searchKey + ")";
                 // condition += " OR " + BaseStaffEntity.FieldSimpleSpelling + " LIKE " + searchKey + ")";
             }
-            recordCount = DbUtil.GetCount(DbHelper, CurrentTableName, condition);
+            recordCount = DbHelper.GetCount(CurrentTableName, condition);
             CurrentTableName = "BaseStaff";
 
             return DbUtil.GetDataTableByPage(DbHelper, CurrentTableName, SelectFields, pageNo, pageSize, condition, order);

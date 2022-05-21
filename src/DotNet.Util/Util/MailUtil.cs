@@ -16,7 +16,7 @@ namespace DotNet.Util
     /// 邮件发送
     /// 
     /// 修改记录
-    ///     2018.10.15 版本：2.0 Troy.Cui	优化多收件人并增加MailServerPort和MailServerEnableSsl。
+    ///     2018.10.15 版本：2.0 Troy.Cui	优化多收件人并增加MailServerPort和MailServerSslEnabled。
     ///		2016.07.22 版本：1.0 songbiao	主键创建。
     ///		
     /// <author>
