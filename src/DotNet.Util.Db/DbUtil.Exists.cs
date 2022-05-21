@@ -109,7 +109,7 @@ namespace DotNet.Util
         /// <param name="dbHelper">dbHelper</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public static bool Exists(this IDbHelper dbHelper, string tableName)
+        public static bool TableExists(this IDbHelper dbHelper, string tableName)
         {
             var result = false;
             var sb = Pool.StringBuilder.Get();

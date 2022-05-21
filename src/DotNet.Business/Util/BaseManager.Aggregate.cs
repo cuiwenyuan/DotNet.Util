@@ -109,7 +109,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetMaxInt(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateInt(DbHelper, CurrentTableName, fieldName, condition: condition, function: "MAX");
+            return DbHelper.AggregateInt(CurrentTableName, fieldName, condition: condition, function: "MAX");
         }
         #endregion
 

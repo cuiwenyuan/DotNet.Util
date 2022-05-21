@@ -18,7 +18,6 @@ namespace DotNet.Util
         static readonly ConcurrentQueue<Tuple<string, string>> LogQueue = new ConcurrentQueue<Tuple<string, string>>();
         static Task WriteTask = default(Task);
         static readonly ManualResetEvent Pause = new ManualResetEvent(false);
-        static volatile Int32 _logCount;
 
         //Mutex mmm = new Mutex();
         static FileLogUtil()
@@ -29,22 +28,9 @@ namespace DotNet.Util
                     {
                         Pause.WaitOne();
                         Pause.Reset();
-                        //for (var i = 0; i <= LogQueue.Count; i++)
-                        //foreach (var logItem in LogQueue)
-                        //{
-                        //    var val = default(Tuple<string, string>);
-                        //    if (LogQueue.TryDequeue(out val))
-                        //    {
-                        //        //原子操作减1                            
-                        //        Interlocked.Decrement(ref _logCount);
-                        //        WriteText(val.Item1, val.Item2);
-                        //    }
-                        //}
                         var val = default(Tuple<string, string>);
                         while (LogQueue.TryDequeue(out val))
                         {
-                            //原子操作减1
-                            Interlocked.Decrement(ref _logCount);
                             WriteText(val.Item1, val.Item2);
                         }
                     }
@@ -64,23 +50,23 @@ namespace DotNet.Util
         public static void WriteLog(string customDirectory, string fileName, string infoData, string extension)
         {
             //如果不给Log目录写入权限，日志队列积压将会导致内存暴增
-            if (_logCount > 1024)
+            if (LogQueue.Count > 1024)
             {
-                infoData += " : Current File Log Queue is " + _logCount + ", LogQueue Count is " + LogQueue.Count;
+                infoData += " : LogQueue Count is " + LogQueue.Count;
             }
             var logPath = GetLogPath(customDirectory, fileName, extension);
             LogQueue.Enqueue(new Tuple<string, string>(logPath, infoData));
-            //原子操作加1
-            Interlocked.Increment(ref _logCount);
             Pause.Set();
         }
 
         #region private GetLogPath & WriteText
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="customDirectory">自定义目录</param>
         /// <param name="fileName">文件名</param>
+        /// <param name="extension">文件后缀</param>
         /// <returns></returns>
         private static string GetLogPath(string customDirectory, string fileName, string extension)
         {

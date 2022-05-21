@@ -31,7 +31,7 @@ namespace DotNet.Business
         public virtual bool Exists(object id)
         {
             var parameters = new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) };
-            return DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+            return DbHelper.Exists(CurrentTableName, parameters);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace DotNet.Business
             {
                 parametersList.Add(p);
             }
-            return DbUtil.Exists(DbHelper, CurrentTableName, parametersList);
+            return DbHelper.Exists(CurrentTableName, parametersList);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace DotNet.Business
         public virtual bool Exists(KeyValuePair<string, object> parameter)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
-            return DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+            return DbHelper.Exists(CurrentTableName, parameters);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace DotNet.Business
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
-            return DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+            return DbHelper.Exists(CurrentTableName, parameters);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace DotNet.Business
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, object id)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
-            return DbUtil.Exists(DbHelper, CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
+            return DbHelper.Exists(CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace DotNet.Business
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
-            return DbUtil.Exists(DbHelper, CurrentTableName, parameters, parameter);
+            return DbHelper.Exists(CurrentTableName, parameters, parameter);
         }
 
         /// <summary>
@@ -111,11 +111,11 @@ namespace DotNet.Business
             if (id != null && !string.IsNullOrWhiteSpace(id.ToString()))
             {
 
-                return DbUtil.Exists(DbHelper, CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
+                return DbHelper.Exists(CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
             }
             else
             {
-                return DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+                return DbHelper.Exists(CurrentTableName, parameters);
             }
         }
 
@@ -130,11 +130,11 @@ namespace DotNet.Business
             // 还要判断传来的不能是空格
             if (id != null && !string.IsNullOrWhiteSpace(id.ToString()))
             {
-                return DbUtil.Exists(DbHelper, CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
+                return DbHelper.Exists(CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
             }
             else
             {
-                return DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+                return DbHelper.Exists(CurrentTableName, parameters);
             }
         }
     }

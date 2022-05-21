@@ -802,7 +802,10 @@ namespace DotNet.Util
 #if NET40_OR_GREATER
             if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
             {
-                BaseSystemInfo.ApplicationId = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
+                if (System.Web.Hosting.HostingEnvironment.ApplicationID != null)
+                {
+                    BaseSystemInfo.ApplicationId = System.Web.Hosting.HostingEnvironment.ApplicationID.Replace("/", "");
+                }
             }
 #endif
 

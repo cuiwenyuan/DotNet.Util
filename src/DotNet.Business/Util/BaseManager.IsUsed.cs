@@ -30,15 +30,16 @@ namespace DotNet.Business
         /// <param name="id">行id</param>
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
+        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        public virtual bool IsUsed(string id, string tableName, string tableFieldName, bool checkUserCompany = false)
+        public virtual bool IsUsed(string id, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false)
         {
             var result = false;
-            if (DbUtil.Exists(dbHelper, tableName) && ValidateUtil.IsInt(id))
+            if (dbHelper.TableExists(tableName) && ValidateUtil.IsInt(id))
             {
                 var sb = Pool.StringBuilder.Get();
-                sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " A INNER JOIN " + tableName + " B ON B." + tableFieldName + " = A.Id WHERE A.Id = " + id + "");
+                sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " A INNER JOIN " + tableName + " B ON B." + tableFieldName + " = A." + currentTableFieldName + " WHERE A.Id = " + id + "");
                 //未删除
                 sb.Append(" AND A." + (BaseUtil.FieldDeleted) + " = 0 AND A." + BaseUtil.FieldEnabled + " = 1 ");
                 sb.Append(" AND B." + (BaseUtil.FieldDeleted) + " = 0 AND B." + BaseUtil.FieldEnabled + " = 1 ");
@@ -66,14 +67,15 @@ namespace DotNet.Business
         /// <param name="ids">行Ids</param>
         /// <param name="tableName">要检查的关联表名</param>
         /// <param name="tableFieldName">要检查的关联表字段名</param>
+        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        public virtual bool IsUsed(string[] ids, string tableName, string tableFieldName, bool checkUserCompany = false)
+        public virtual bool IsUsed(string[] ids, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false)
         {
             var result = false;
             for (var i = 0; i <= ids.Length - 1; i++)
             {
-                result = IsUsed(ids[i], tableName, tableFieldName, checkUserCompany);
+                result = IsUsed(ids[i], tableName, tableFieldName, currentTableFieldName: currentTableFieldName, checkUserCompany: checkUserCompany);
                 if (result)
                 {
                     return result;

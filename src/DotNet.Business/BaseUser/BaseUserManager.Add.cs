@@ -59,7 +59,7 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, entity.UserName),
                         new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)
                     };
-                    if (DbUtil.Exists(DbHelper, BaseStaffEntity.CurrentTableName, parameters))
+                    if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
                     {
                         // 编号已重复
                         StatusCode = Status.ErrorNameExist.ToString();
@@ -71,7 +71,7 @@ namespace DotNet.Business
                             new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, entity.Code),
                             new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)
                         };
-                        if (DbUtil.Exists(DbHelper, BaseStaffEntity.CurrentTableName, parameters))
+                        if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
                         {
                             // 编号已重复
                             StatusCode = Status.ErrorCodeExist.ToString();

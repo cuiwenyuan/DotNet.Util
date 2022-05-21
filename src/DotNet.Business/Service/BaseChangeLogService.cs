@@ -59,7 +59,7 @@ namespace DotNet.Business
                 {
                     if (SecretUtil.IsSqlSafe(conditions))
                     {
-                        myRecordCount = DbUtil.GetCount(dbHelper, tableName, conditions, dbHelper.MakeParameters(dbParameters));
+                        myRecordCount = dbHelper.GetCount(tableName, conditions, dbHelper.MakeParameters(dbParameters));
                         result = DbUtil.GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbHelper.MakeParameters(dbParameters), orderBy);
                     }
                     else
