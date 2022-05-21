@@ -34,8 +34,9 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="fieldName">字段名</param>
         /// <param name="fieldDelimiter">分隔符</param>
+        /// <param name="allEnglishLetterUpperCaseToLowerCaseEnabled">是否启用全英文大写字母转为小写</param>
         /// <returns></returns>
-        public static string ConvertToPascal(string fieldName, string fieldDelimiter)
+        public static string ConvertToPascal(string fieldName, string fieldDelimiter, bool allEnglishLetterUpperCaseToLowerCaseEnabled = true)
         {
             var result = string.Empty;
             if (string.IsNullOrWhiteSpace(fieldName))
@@ -70,7 +71,7 @@ namespace DotNet.Util
                                 }
                             }
                         }
-                        else if (IsAllEnglishLetterUpperCase(fieldName))
+                        else if (allEnglishLetterUpperCaseToLowerCaseEnabled && IsAllEnglishLetterUpperCase(fieldName))
                         {
                             //如果字段中的英文字符全部都是大写的，特别针对Oracle数据库的字段
                             result = fieldName.Substring(0, 1).ToUpper() + fieldName.Substring(1).ToLower();
@@ -91,11 +92,12 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="fieldName">字段名</param>
         /// <param name="fieldDelimiter">分隔符</param>
+        /// <param name="allEnglishLetterUpperCaseToLowerCaseEnabled">是否启用全英文大写字母转为小写</param>
         /// <returns></returns>
-        public static string ConvertToCamel(string fieldName, string fieldDelimiter)
+        public static string ConvertToCamel(string fieldName, string fieldDelimiter, bool allEnglishLetterUpperCaseToLowerCaseEnabled = true)
         {
             //先Pascal
-            var result = ConvertToPascal(fieldName, fieldDelimiter);
+            var result = ConvertToPascal(fieldName, fieldDelimiter, allEnglishLetterUpperCaseToLowerCaseEnabled);
             //然后首字母小写
             if (result.Length == 1)
             {
@@ -105,7 +107,6 @@ namespace DotNet.Util
             {
                 result = result.Substring(0, 1).ToLower() + result.Substring(1);
             }
-
             return result;
         }
 

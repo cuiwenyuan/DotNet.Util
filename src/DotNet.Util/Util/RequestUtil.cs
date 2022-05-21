@@ -221,7 +221,7 @@ namespace DotNet.Util
         /// <param name="strName">Url参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url参数的int类型值</returns>
-        public static int GetQueryInt(string strName, int defValue)
+        public static int GetQueryInt(string strName, int defValue = 0)
         {
             return Utils.StrToInt(HttpContext.Current.Request.QueryString[strName], defValue);
         }
@@ -233,7 +233,7 @@ namespace DotNet.Util
         /// <param name="strName">表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>表单参数的int类型值</returns>
-        public static int GetFormInt(string strName, int defValue)
+        public static int GetFormInt(string strName, int defValue = 0)
         {
             return Utils.StrToInt(HttpContext.Current.Request.Form[strName], defValue);
         }
@@ -244,7 +244,7 @@ namespace DotNet.Util
         /// <param name="strName">Url或表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url或表单参数的int类型值</returns>
-        public static int GetInt(string strName, int defValue)
+        public static int GetInt(string strName, int defValue = 0)
         {
             if (GetQueryInt(strName, defValue) == defValue)
                 return GetFormInt(strName, defValue);
@@ -258,7 +258,7 @@ namespace DotNet.Util
         /// <param name="strName">Url参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url参数的int类型值</returns>
-        public static float GetQueryFloat(string strName, float defValue)
+        public static float GetQueryFloat(string strName, float defValue = 0F)
         {
             return Utils.StrToFloat(HttpContext.Current.Request.QueryString[strName], defValue);
         }
@@ -270,7 +270,7 @@ namespace DotNet.Util
         /// <param name="strName">表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>表单参数的float类型值</returns>
-        public static float GetFormFloat(string strName, float defValue)
+        public static float GetFormFloat(string strName, float defValue = 0F)
         {
             return Utils.StrToFloat(HttpContext.Current.Request.Form[strName], defValue);
         }
@@ -281,7 +281,7 @@ namespace DotNet.Util
         /// <param name="strName">Url或表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url或表单参数的int类型值</returns>
-        public static float GetFloat(string strName, float defValue)
+        public static float GetFloat(string strName, float defValue = 0F)
         {
             if (Math.Abs(GetQueryFloat(strName, defValue) - defValue) < 0.001)
                 return GetFormFloat(strName, defValue);
@@ -295,7 +295,7 @@ namespace DotNet.Util
         /// <param name="strName">Url参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url参数的int类型值</returns>
-        public static decimal GetQueryDecimal(string strName, decimal defValue)
+        public static decimal GetQueryDecimal(string strName, decimal defValue = 0M)
         {
             return Utils.StrToDecimal(HttpContext.Current.Request.QueryString[strName], defValue);
         }
@@ -307,7 +307,7 @@ namespace DotNet.Util
         /// <param name="strName">表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>表单参数的float类型值</returns>
-        public static decimal GetFormDecimal(string strName, decimal defValue)
+        public static decimal GetFormDecimal(string strName, decimal defValue = 0M)
         {
             return Utils.StrToDecimal(HttpContext.Current.Request.Form[strName], defValue);
         }
@@ -318,7 +318,7 @@ namespace DotNet.Util
         /// <param name="strName">Url或表单参数</param>
         /// <param name="defValue">缺省值</param>
         /// <returns>Url或表单参数的int类型值</returns>
-        public static decimal GetDecimal(string strName, decimal defValue)
+        public static decimal GetDecimal(string strName, decimal defValue = 0M)
         {
             if (GetQueryDecimal(strName, defValue) == defValue)
                 return GetFormDecimal(strName, defValue);

@@ -86,7 +86,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId));
             }
 
-            result = DbUtil.Exists(DbHelper, CurrentTableName, parameters);
+            result = DbHelper.Exists(CurrentTableName, parameters);
 
             return result;
         }

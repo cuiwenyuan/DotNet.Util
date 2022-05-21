@@ -412,7 +412,7 @@ namespace DotNet.Business
                 condition += " OR " + BaseUserEntity.FieldQuickQuery + " LIKE " + searchKey;
                 condition += " OR " + BaseUserEntity.FieldSimpleSpelling + " LIKE " + searchKey + ")";
             }
-            recordCount = DbUtil.GetCount(DbHelper, CurrentTableName, condition);
+            recordCount = DbHelper.GetCount(CurrentTableName, condition);
             CurrentTableName = "BaseUser";
             if (ShowUserLogonInfo)
             {
