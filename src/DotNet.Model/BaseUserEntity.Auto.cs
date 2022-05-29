@@ -56,6 +56,12 @@ namespace DotNet.Model
         public string NickName { get; set; } = string.Empty;
 
         /// <summary>
+        /// 头像
+        /// </summary>
+        [FieldDescription("头像")]
+        public string AvatarUrl { get; set; } = string.Empty;
+
+        /// <summary>
         /// 编号
         /// </summary>
         [FieldDescription("编号")]
@@ -400,6 +406,10 @@ namespace DotNet.Model
             {
                 NickName = BaseUtil.ConvertToString(dr[FieldNickName]);
             }
+            if (dr.ContainsColumn(FieldAvatarUrl))
+            {
+                AvatarUrl = BaseUtil.ConvertToString(dr[FieldAvatarUrl]);
+            }
             if (dr.ContainsColumn(FieldCode))
             {
                 Code = BaseUtil.ConvertToString(dr[FieldCode]);
@@ -645,6 +655,11 @@ namespace DotNet.Model
         /// 呢称
         ///</summary>
         public const string FieldNickName = "NickName";
+
+        ///<summary>
+        /// 头像
+        ///</summary>
+        public const string FieldAvatarUrl = "AvatarUrl";
 
         ///<summary>
         /// 编号

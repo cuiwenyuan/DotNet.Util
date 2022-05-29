@@ -31,7 +31,7 @@ namespace DotNet.Business
         public virtual int SetProperty(KeyValuePair<string, object> parameter)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, null, parameters);
+            return DbHelper.SetProperty(CurrentTableName, null, parameters);
         }
         /// <summary>
         /// 设置属性
@@ -141,7 +141,7 @@ namespace DotNet.Business
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
@@ -153,7 +153,7 @@ namespace DotNet.Business
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
@@ -165,7 +165,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
@@ -176,7 +176,7 @@ namespace DotNet.Business
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 设置属性
@@ -186,7 +186,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
         {
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
     }
 }

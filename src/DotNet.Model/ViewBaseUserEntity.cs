@@ -56,6 +56,12 @@ namespace DotNet.Model
         public string NickName { get; set; } = string.Empty;
 
         /// <summary>
+        /// 头像
+        /// </summary>
+        [FieldDescription("头像")]
+        public string AvatarUrl { get; set; } = string.Empty;
+
+        /// <summary>
         /// 编号
         /// </summary>
         [FieldDescription("编号")]

@@ -328,6 +328,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserEntity.FieldUserName, entity.UserName);
             sqlBuilder.SetValue(BaseUserEntity.FieldRealName, entity.RealName);
             sqlBuilder.SetValue(BaseUserEntity.FieldNickName, entity.NickName);
+            sqlBuilder.SetValue(BaseUserEntity.FieldAvatarUrl, entity.AvatarUrl);
             sqlBuilder.SetValue(BaseUserEntity.FieldCode, entity.Code);
             sqlBuilder.SetValue(BaseUserEntity.FieldEmployeeNumber, entity.EmployeeNumber);
             sqlBuilder.SetValue(BaseUserEntity.FieldIdCard, entity.IdCard);
