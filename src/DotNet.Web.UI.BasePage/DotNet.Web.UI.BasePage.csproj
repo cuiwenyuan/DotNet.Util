@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40;net45;net46;net47;net48;net5.0;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net40;net45;net46;net47;net48</TargetFrameworks>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-		<Description>DotNet.Business is sample for User,Role,Menu,Module,Permission etc Management. A set of .NET 5/6/Standard 2.0/Standard 2.1 utilities(partial but great majority support .net framework 4.0/4.5/4.6). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Description>DotNet.Web.UI.BasePage is BasePage for WebForm Applications. More details please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.11</Version>
+		<Version>1.0.0</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
-		<PackageTags>DotNet Business</PackageTags>
+		<PackageTags>DotNet Business Webform</PackageTags>
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>Wangcaisoft.DotNet.Business</PackageId>
+		<PackageId>Wangcaisoft.DotNet.Web.UI.BasePage</PackageId>
 		<PackageIcon>logo.128.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>DotNet.Business</AssemblyName>
-		<RootNamespace>DotNet.Business</RootNamespace>
+		<AssemblyName>DotNet.Web.UI.BasePage</AssemblyName>
+		<RootNamespace>BasePage</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -31,17 +31,28 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)'=='net45' Or '$(TargetFramework)'=='net46' Or '$(TargetFramework)'=='net47' Or '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net48'">
 		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.Net" />
 		<Reference Include="System.Web" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
-		<ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
-		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
-		<ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj" />
+	  <PackageReference Include="JWT" Version="8.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNet.Business.Web\DotNet.Business.Web.csproj" />
+		<ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj" />
 		<ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
+		<ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
+		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.DirectoryServices" />
 	</ItemGroup>
 
 </Project>

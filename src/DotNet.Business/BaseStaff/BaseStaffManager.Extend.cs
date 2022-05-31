@@ -866,7 +866,7 @@ namespace DotNet.Business
                 result += userManager.SetDeleted(userId);
             }
             // 将员工的用户设置为空
-            result += SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, staffId), new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, null));
+            result += SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, staffId), new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, 0));
             return result;
         }
         #endregion
