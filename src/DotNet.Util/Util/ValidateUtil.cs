@@ -567,5 +567,96 @@ namespace DotNet.Util
             var format = @"^[1-9]*[1-9][0-9]*$";
             return Regex.IsMatch(qq, format);
         }
+
+        #region UPC-A
+        /// <summary>
+        /// 是否为UPC-A编码
+        /// </summary>
+        /// <param name="code">UPC-A code</param>
+        /// <returns></returns>
+        public static bool IsUPCA(string code)
+        {
+            var result = false;
+            if (!string.IsNullOrEmpty(code))
+            {
+                var checkDigit = 0;
+                var isDigitsOnly = IsDigitsOnly(code);
+                if (code.Length == 11 && isDigitsOnly)
+                {
+                    // Add Fake CheckSum
+                    checkDigit = CalculateUPCACheckDigit(code);
+                    code += checkDigit.ToString();
+                }
+                else if (code.Length == 12)
+                {
+                    checkDigit = code[11];
+                }
+                if (code.Length == 12 && isDigitsOnly)
+                {
+                    //60984399883
+                    //Check digit calculation is based on modulus 10 with digits in an odd
+                    //position (from right to left) being weighted 1 and even position digits
+                    //being weighted 3. 
+                    //Implementation based on http://stackoverflow.com/questions/10143547/how-do-i-validate-a-upc-or-ean-code
+                    result = checkDigit == CalculateUPCACheckDigit(code);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate UPCA Check Digit
+        /// </summary>
+        /// <param name="code">This should exclude the check digit</param>
+        /// <returns></returns>
+        private static int CalculateUPCACheckDigit(string code)
+        {
+            //5 - step algorithm for check digit calculation:
+            //Let's assume that we are using the fictitious code 05432122345.
+            //Add all of the digits in the odd positions(digits in position 1, 3, 5, 7, 9, and 11)
+            //0 + 4 + 2 + 2 + 3 + 5 = 16
+            //Multiply by 3.
+            //16 * 3 = 48
+            //Add all of the digits in even positions(digits in position 2, 4, 6, 8 and 10).
+            //5 + 3 + 1 + 2 + 4 = 15
+            //Sum the results of steps 3 and 2.
+            //48 + 15 = 63
+            //Determine what number needs to be added to the result of step 4 in order to create a multiple of 10.
+            //63 + 7 = 70
+            //The check digit therefore equals 7.
+            var check = 0;
+            var sum = 0;
+            if (code.Length >= 11)
+            {
+                code = code.Cut(11);
+                for (int i = 0; i < code.Length; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        sum += int.Parse(code.Substring(code.Length - 1 - i, 1)) * 3;
+                    }
+                    else
+                    {
+                        sum += int.Parse(code.Substring(code.Length - 1 - i, 1));
+                    }
+
+                }
+                check = (10 - (sum % 10)) % 10;
+            }
+            return check;
+        }
+
+        private static bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
+        }
+        #endregion
+
     }
 }

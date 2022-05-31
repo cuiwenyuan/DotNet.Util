@@ -462,6 +462,81 @@ namespace DotNet.Util
             return responseStr;
         }
         #endregion
+        #region 下载图片 DownloadPicture
+        
+        /// <summary>
+        /// 下载图片
+        /// </summary>
+        /// <param name="pictureUrl">图片Http地址</param>
+        /// <param name="filePath">保存路径</param>
+        /// <param name="folder">目录(前后不带/)</param>
+        /// <param name="fileName"></param>
+        /// <param name="fileExtension">文件后缀(以.开头)</param>
+        /// <param name="timeOut">Request最大请求时间，如果为-1则无限制</param>
+        /// <returns></returns>
+        public static bool DownloadPicture(string pictureUrl, out string filePath, string folder = "WeChat", string fileName = null, string fileExtension = ".png", int timeOut = -1)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            }
+            filePath = AppDomain.CurrentDomain.BaseDirectory + "\\" + folder + "\\" + fileName + fileExtension;
+            //是否存在文件夹,没存在则创建
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\" + folder + "\\"))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\" + folder + "\\");
+            }
+            bool result = false;
+            WebResponse response = null;
+            Stream stream = null;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(pictureUrl);
+                if (timeOut != -1) request.Timeout = timeOut;
+                response = request.GetResponse();
+                stream = response.GetResponseStream();
+                if (!response.ContentType.ToLower().StartsWith("text/"))
+                    result = SaveBinaryFile(response, filePath);
+            }
+            catch (Exception e)
+            {
+                LogUtil.WriteException(e);
+            }
+            finally
+            {
+                stream?.Close();
+                response?.Close();
+            }
+            return result;
+        }
+        private static bool SaveBinaryFile(WebResponse response, string savePath)
+        {
+            var result = false;
+            byte[] buffer = new byte[1024];
+            Stream outStream = null;
+            Stream inStream = null;
+            try
+            {
+                if (File.Exists(savePath)) File.Delete(savePath);
+                outStream = File.Create(savePath);
+                inStream = response.GetResponseStream();
+                int l;
+                do
+                {
+                    l = inStream.Read(buffer, 0, buffer.Length);
+                    if (l > 0) outStream.Write(buffer, 0, l);
+                } while (l > 0);
+                result = true;
+            }
+            finally
+            {
+                outStream?.Close();
+                inStream?.Close();
+            }
+            return result;
+        }
+
+        #endregion
 
 #if NETSTANDARD2_0_OR_GREATER
         /// <summary>

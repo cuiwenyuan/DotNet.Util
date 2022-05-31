@@ -56,7 +56,7 @@ namespace DotNet.Business
                 var cacheTime = TimeSpan.FromMilliseconds(3600000);
                 entityList = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id.ToString(), userInfo.CompanyId, true), true);
             }
-
+            //LogUtil.WriteLog(JsonUtil.ObjectToJson(entityList));
             return entityList;
         }
         #endregion

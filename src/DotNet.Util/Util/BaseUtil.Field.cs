@@ -150,10 +150,7 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldIsAudited = "IsAudited";
 
-        /// <summary>
-        /// 审核时间
-        /// </summary>
-        public const string FieldAuditedTime = "AuditedTime";
+        #region 老版本
 
         /// <summary>
         /// 审核时间
@@ -172,16 +169,39 @@ namespace DotNet.Util
 
         #endregion
 
+        #region 新版本
+
+        /// <summary>
+        /// 审核时间
+        /// </summary>
+        public const string FieldAuditTime = "AuditTime";
+
+        /// <summary>
+        /// 审核人用户主键
+        /// </summary>
+        public const string FieldAuditUserId = "AuditUserId";
+
+        /// <summary>
+        /// 审核人用户名
+        /// </summary>
+        public const string FieldAuditUserName = "AuditUserName";
+
+        /// <summary>
+        /// 审核人
+        /// </summary>
+        public const string FieldAuditBy = "AuditBy";
+
+        #endregion
+
+        #endregion
+
         #region IsCancelled
         /// <summary>
         /// 是否已取消
         /// </summary>
         public const string FieldIsCancelled = "IsCancelled";
 
-        /// <summary>
-        /// 取消时间
-        /// </summary>
-        public const string FieldCancelledTime = "CancelledTime";
+        #region 老版本
 
         /// <summary>
         /// 取消时间
@@ -197,6 +217,32 @@ namespace DotNet.Util
         /// 取消人用户名
         /// </summary>
         public const string FieldCancelledUserName = "CancelledUserName";
+
+        #endregion
+
+        #region 新版本
+
+        /// <summary>
+        /// 取消时间
+        /// </summary>
+        public const string FieldCancelTime = "CancelTime";
+
+        /// <summary>
+        /// 取消人用户主键
+        /// </summary>
+        public const string FieldCancelUserId = "CancelUserId";
+
+        /// <summary>
+        /// 取消人用户名
+        /// </summary>
+        public const string FieldCancelUserName = "CancelUserName";
+
+        /// <summary>
+        /// 取消人
+        /// </summary>
+        public const string FieldCancelBy = "CancelBy";
+
+        #endregion
 
         #endregion
 

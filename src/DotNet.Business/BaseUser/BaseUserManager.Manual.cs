@@ -107,6 +107,7 @@ namespace DotNet.Business
                         UserName = entityUser.UserName,
                         RealName = entityUser.RealName,
                         NickName = entityUser.NickName,
+                        AvatarUrl = entityUser.AvatarUrl,
                         Code = entityUser.Code,
                         EmployeeNumber = entityUser.EmployeeNumber,
                         IdCard = entityUser.IdCard,
