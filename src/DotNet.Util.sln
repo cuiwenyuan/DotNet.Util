@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.IService", "DotNet.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business.Web", "DotNet.Business.Web\DotNet.Business.Web.csproj", "{D28A7016-B114-4BFD-9BBC-884BCE039DF5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Web.UI.BasePage", "DotNet.Web.UI.BasePage\DotNet.Web.UI.BasePage.csproj", "{8EAEAA97-2B65-4395-960F-38DF35F3741A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EAEAA97-2B65-4395-960F-38DF35F3741A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EAEAA97-2B65-4395-960F-38DF35F3741A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EAEAA97-2B65-4395-960F-38DF35F3741A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EAEAA97-2B65-4395-960F-38DF35F3741A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
