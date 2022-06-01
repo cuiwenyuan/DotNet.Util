@@ -219,7 +219,7 @@ namespace DotNet.Business
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR SEQ_" + CurrentTableName.ToUpper());
+                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR " + CurrentTableName.ToUpper() + "_SEQ");
                     }
                 }
                 else

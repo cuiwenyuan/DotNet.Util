@@ -381,7 +381,7 @@ namespace DotNet.Business
         public string GetOracleSequence(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT SEQ_" + name.ToUpper() + ".NEXTVAL FROM DUAL ").ToString();
+            return DbHelper.ExecuteScalar("SELECT " + name.ToUpper() + "_SEQ.NEXTVAL FROM DUAL ").ToString();
         }
 
         /// <summary>
@@ -392,7 +392,7 @@ namespace DotNet.Business
         public string GetOracleStoreCounter(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT SEQ_" + name.ToUpper() + ".CURRVAL FROM DUAL ").ToString();
+            return DbHelper.ExecuteScalar("SELECT " + name.ToUpper() + "_SEQ.CURRVAL FROM DUAL ").ToString();
         }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace DotNet.Business
         public string GetDb2Sequence(string name)
         {
             // 当前是自增量，并且是DB2数据库
-            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR SEQ_" + name.ToUpper() + " FROM sysibm.sysdummy1").ToString();
+            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR " + name.ToUpper() + "_SEQ FROM sysibm.sysdummy1").ToString();
         }
 
         #region public string Increment(string name) 获得序列号

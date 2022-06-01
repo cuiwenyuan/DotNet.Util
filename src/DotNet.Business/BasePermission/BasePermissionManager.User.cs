@@ -225,7 +225,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
             if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, "SEQ_" + BaseChangeLogEntity.CurrentTableName + ".NEXTVAL");
+                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
             }
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, userId);
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "授权");
@@ -369,7 +369,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
             if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, "SEQ_" + BaseChangeLogEntity.CurrentTableName + ".NEXTVAL");
+                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
             }
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, userId);
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "撤销授权");
