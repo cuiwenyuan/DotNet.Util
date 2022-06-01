@@ -6,13 +6,16 @@ using System;
 using System.Data;
 using System.IO;
 using System.Text;
+#if NET40_OR_GREATER
 using System.Windows.Forms;
+#endif
 using NPOI.SS.UserModel;
 
 namespace DotNet.Util
 {
     public partial class ExcelUtil
     {
+#if NET40_OR_GREATER
         private int _returnStatus = 0;
         private string _returnMessage = null;
 
@@ -229,6 +232,7 @@ namespace DotNet.Util
             return sb.Put();
         }
         #endregion
+#endif
 
     }
 }
