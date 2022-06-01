@@ -10,7 +10,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
+#if NET40_OR_GREATER
+using System.Web;
+#endif
 using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Converter;
@@ -34,6 +36,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
+#if NET40_OR_GREATER
         #region ExcelToTable
         /// <summary>
         /// Excel导入成Datable
@@ -236,7 +239,6 @@ namespace DotNet.Util
             }
         }
         #endregion
-
 
         #region Excel导入
 
@@ -630,37 +632,6 @@ namespace DotNet.Util
         }
 
         #endregion
-
-        #region 上传Excel文件到服务器
-
-        /// <summary>
-        /// 保存Excel文件
-        /// <para>Excel的导入导出都会在服务器生成一个文件</para>
-        /// <para>路径：UpFiles/ExcelFiles</para>
-        /// </summary>
-        /// <param name="file">传入的文件对象</param>
-        /// <returns>如果保存成功则返回文件的位置;如果保存失败则返回空</returns>
-        //public static string SaveExcelFile(HttpPostedFile file)
-        public static string SaveExcelFile(IFormFile file)
-        {
-            try
-            {
-                var fileName = file.FileName.Insert(file.FileName.LastIndexOf('.'), "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-                var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/UpFiles/ExcelFiles"), fileName);
-                var directoryName = Path.GetDirectoryName(filePath);
-                if (directoryName != null && !Directory.Exists(directoryName))
-                {
-                    Directory.CreateDirectory(directoryName);
-                }
-                //file.SaveAs();
-                file.CopyTo(filePath);
-                return filePath;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-        #endregion
+#endif
     }
 }
