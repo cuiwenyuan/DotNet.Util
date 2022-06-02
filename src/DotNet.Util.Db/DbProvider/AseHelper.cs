@@ -7,7 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Collections.Generic;
 
-namespace DotNet.Utilities
+namespace DotNet.Util
 {
 	using Sybase.Data.AseClient;
 
@@ -26,7 +26,7 @@ namespace DotNet.Utilities
     ///		<date>2013.01.15</date>
 	/// </author> 
 	/// </summary>
-	public class AseHelper : BaseDbHelper, IDbHelper
+	public class AseHelper : DbHelper, IDbHelper
 	{
 		public AseConnection  connection   = new AseConnection();
 		public AseCommand     command      = new AseCommand();

@@ -141,8 +141,6 @@ namespace DotNet.Business
             {
                 sequenceEntity = new BaseSequenceEntity
                 {
-                    // 这里是为了多种数据库的兼容
-                    //Id = Guid.NewGuid().ToString("N"),
                     Name = name,
                     SortCode = 1
                 };
@@ -381,7 +379,10 @@ namespace DotNet.Business
         public string GetOracleSequence(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT " + name.ToUpper() + "_SEQ.NEXTVAL FROM DUAL ").ToString();
+            // Oracle的最大Sequence长度为30位
+            var sequenceName = ("SC_" + name.ToUpper() + "_SEQ").Cut(30);
+            DbHelper.SequenceExists(sequenceName);
+            return DbHelper.ExecuteScalar("SELECT " + sequenceName + ".NEXTVAL FROM DUAL ")?.ToString();
         }
 
         /// <summary>
@@ -392,7 +393,10 @@ namespace DotNet.Business
         public string GetOracleStoreCounter(string name)
         {
             // 当前是自增量，并且是Oracle数据库
-            return DbHelper.ExecuteScalar("SELECT " + name.ToUpper() + "_SEQ.CURRVAL FROM DUAL ").ToString();
+            // Oracle的最大Sequence长度为30位
+            var sequenceName = ("SC_" + name.ToUpper() + "_SEQ").Cut(30);
+            DbHelper.SequenceExists(sequenceName);
+            return DbHelper.ExecuteScalar("SELECT " + sequenceName + ".CURRVAL FROM DUAL ")?.ToString();
         }
 
         /// <summary>
@@ -403,7 +407,7 @@ namespace DotNet.Business
         public string GetDb2Sequence(string name)
         {
             // 当前是自增量，并且是DB2数据库
-            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR " + name.ToUpper() + "_SEQ FROM sysibm.sysdummy1").ToString();
+            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR SC_" + name.ToUpper() + "_SEQ FROM sysibm.sysdummy1").ToString();
         }
 
         #region public string Increment(string name) 获得序列号
@@ -414,14 +418,14 @@ namespace DotNet.Business
         /// <returns>序列号</returns>
         public string Increment(string name)
         {
-            //if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
-            //{
-            //    return GetOracleSequence(name);
-            //}
-            //if (DbHelper.CurrentDbType == CurrentDbType.Db2)
-            //{
-            //    return GetDb2Sequence(name);
-            //}
+            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+            {
+                return GetOracleSequence(name);
+            }
+            if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+            {
+                return GetDb2Sequence(name);
+            }
             return Increment(name, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion

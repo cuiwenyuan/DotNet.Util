@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 
-namespace DotNet.Utilities
+namespace DotNet.Util
 {
 	using IBM.Data.DB2;
 
@@ -26,7 +26,7 @@ namespace DotNet.Utilities
 	///		<date>2011.07.19</date>
 	/// </author> 
 	/// </summary>
-	public class DB2Helper : BaseDbHelper, IDbHelper
+	public class DB2Helper : DbHelper, IDbHelper
 	{
 		public override DbProviderFactory GetInstance()
 		{

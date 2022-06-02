@@ -138,6 +138,40 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region 序列是否存在
+
+        /// <summary>
+        /// 序列是否存在
+        /// </summary>
+        /// <param name="dbHelper">dbHelper</param>
+        /// <param name="sequenceName">表名</param>
+        /// <param name="autoCreate">自动创建</param>
+        /// <returns></returns>
+        public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true)
+        {
+            var result = false;
+            var sb = Pool.StringBuilder.Get();
+            if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
+            {
+                sb.Append($"SELECT COUNT(*) FROM USER_SEQUENCES WHERE SEQUENCE_NAME = '{sequenceName.ToUpper()}'");
+            }
+            else if (dbHelper.CurrentDbType == CurrentDbType.Db2)
+            {
+                // TODO
+            }
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null && obj != DBNull.Value)
+            {
+                result = Convert.ToInt32(obj.ToString()) > 0;
+            }
+            if (!result && dbHelper.CurrentDbType == CurrentDbType.Oracle && autoCreate)
+            {
+                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1");
+            }
+            return result;
+        }
+        #endregion
+
         #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null) 记录是否存在
 
         /// <summary>

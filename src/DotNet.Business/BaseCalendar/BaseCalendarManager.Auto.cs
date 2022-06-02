@@ -4,7 +4,9 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace DotNet.Business
 {
@@ -118,7 +120,7 @@ namespace DotNet.Business
         {
             Identity = identity;
             ReturnId = returnId;
-            entity.Id = int.Parse(AddEntity(entity));
+            entity.Id = AddEntity(entity).ToInt();
             return entity.Id.ToString();
         }
 
@@ -135,7 +137,7 @@ namespace DotNet.Business
             ReturnId = returnId;
             if (entity.Id == 0)
             {
-                entity.Id = int.Parse(AddEntity(entity));
+                entity.Id = AddEntity(entity).ToInt();
                 return entity.Id.ToString();
             }
             else
@@ -159,7 +161,7 @@ namespace DotNet.Business
         /// <param name="id">主键</param>
         public BaseCalendarEntity GetEntity(string id)
         {
-            return ValidateUtil.IsInt(id) ? GetEntity(int.Parse(id)) : null;
+            return ValidateUtil.IsInt(id) ? GetEntity(id.ToInt()) : null;
         }
 
         /// <summary>
@@ -194,7 +196,7 @@ namespace DotNet.Business
             {
                 var managerSequence = new BaseSequenceManager(DbHelper, Identity);
                 key = managerSequence.Increment(CurrentTableName);
-                entity.SortCode = int.Parse(key);
+                entity.SortCode = key.ToInt();
             }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
             sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
@@ -222,7 +224,7 @@ namespace DotNet.Business
                     if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
                     {
                         var managerSequence = new BaseSequenceManager(DbHelper);
-                        entity.Id = int.Parse(managerSequence.Increment(CurrentTableName));
+                        entity.Id = managerSequence.Increment(CurrentTableName).ToInt();
                         sqlBuilder.SetValue(PrimaryKey, entity.Id);
                     }
                 }
