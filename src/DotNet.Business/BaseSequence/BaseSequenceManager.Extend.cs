@@ -414,14 +414,14 @@ namespace DotNet.Business
         /// <returns>序列号</returns>
         public string Increment(string name)
         {
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
-            {
-                return GetOracleSequence(name);
-            }
-            if (DbHelper.CurrentDbType == CurrentDbType.Db2)
-            {
-                return GetDb2Sequence(name);
-            }
+            //if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+            //{
+            //    return GetOracleSequence(name);
+            //}
+            //if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+            //{
+            //    return GetDb2Sequence(name);
+            //}
             return Increment(name, DefaultSequence, DefaultSequenceLength, FillZeroPrefix);
         }
         #endregion
