@@ -232,7 +232,7 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -245,7 +245,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -282,7 +282,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
             }

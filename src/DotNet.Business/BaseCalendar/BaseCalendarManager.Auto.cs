@@ -232,7 +232,7 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -245,7 +245,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -282,7 +282,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
             }

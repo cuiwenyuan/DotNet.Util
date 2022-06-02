@@ -233,7 +233,7 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -246,7 +246,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -283,7 +283,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageSucceedEntity.FieldUpdateBy, UserInfo.RealName);
             }

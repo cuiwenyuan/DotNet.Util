@@ -233,7 +233,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseOperationLogEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseOperationLogEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -246,7 +246,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseOperationLogEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -283,7 +283,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseOperationLogEntity.FieldUpdateBy, UserInfo.RealName);
             }

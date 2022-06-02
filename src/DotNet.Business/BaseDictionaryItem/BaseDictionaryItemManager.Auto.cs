@@ -233,7 +233,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -246,7 +246,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -283,7 +283,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldUpdateBy, UserInfo.RealName);
             }

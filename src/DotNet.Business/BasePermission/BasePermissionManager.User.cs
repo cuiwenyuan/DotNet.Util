@@ -183,7 +183,7 @@ namespace DotNet.Business
                     {
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0),
-                        new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateUserId, UserInfo.Id),
+                        new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateUserId, UserInfo.UserId),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateBy, UserInfo.RealName),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateTime, DateTime.Now)
                     };

@@ -239,7 +239,7 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -252,7 +252,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -289,7 +289,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateBy, UserInfo.RealName);
             }

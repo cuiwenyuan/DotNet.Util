@@ -214,9 +214,9 @@ namespace DotNet.Business
         {
             if (UserInfo != null)
             {
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.Id)))
+                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId)))
                 {
-                    parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.Id));
+                    parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 }
                 if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName)))
                 {

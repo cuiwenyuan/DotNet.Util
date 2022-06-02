@@ -40,7 +40,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldEnabled, 1));
             if (recordUser && UserInfo != null)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.Id));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 //宋彪发现这里的错误 文字与格式字符串错误
@@ -85,7 +85,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldEnabled, 1));
             if (recordUser && UserInfo != null)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.Id));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 //宋彪发现这里的错误 文字与格式字符串错误
@@ -196,7 +196,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldEnabled, 1));
             if (recordUser && UserInfo != null)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.Id));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));

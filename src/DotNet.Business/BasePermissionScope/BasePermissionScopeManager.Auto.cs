@@ -230,7 +230,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldCreateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldCreateBy, UserInfo.RealName);
             }
@@ -243,7 +243,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BasePermissionScopeEntity.FieldCreateIp, Utils.GetIp());
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateBy, UserInfo.RealName);
             }
@@ -280,7 +280,7 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateUserName, UserInfo.UserName);
                 sqlBuilder.SetValue(BasePermissionScopeEntity.FieldUpdateBy, UserInfo.RealName);
             }
