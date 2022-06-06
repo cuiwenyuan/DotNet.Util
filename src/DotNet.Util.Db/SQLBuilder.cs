@@ -701,6 +701,15 @@ namespace DotNet.Util
                                 CommandText += "; SELECT LAST_INSERT_ID(); ";
                             }
                             break;
+                        // Oracle 返回自增主键 Troy.Cui 崔文远
+                        case CurrentDbType.Oracle:
+                            if (ReturnId)
+                            {
+                                // Oracle的最大Sequence长度为30位
+                                var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
+                                CommandText += "; SELECT " + sequenceName + ".CURRVAL FROM DUAL; ";
+                            }
+                            break;
                     }
                 }
             }

@@ -91,7 +91,7 @@ namespace DotNet.Business
         /// <summary>
         /// 默认的可见性
         /// </summary>
-        public int DefaultIsVisable = 1;
+        public int DefaultIsVisible = 1;
 
         private static readonly object SequenceLock = new object();
 
@@ -184,7 +184,7 @@ namespace DotNet.Business
                 {
                     sequenceEntity.Delimiter = DefaultDelimiter;
                 }
-                sequenceEntity.IsVisible = DefaultIsVisable;
+                sequenceEntity.IsVisible = DefaultIsVisible;
                 Add(sequenceEntity);
             }
 
@@ -374,27 +374,27 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Oracle的序列
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="sequenceName"></param>
         /// <returns></returns>
-        public string GetOracleSequence(string name)
+        public string GetOracleSequence(string sequenceName)
         {
             // 当前是自增量，并且是Oracle数据库
             // Oracle的最大Sequence长度为30位
-            var sequenceName = ("SC_" + name.ToUpper() + "_SEQ").Cut(30);
+            sequenceName = sequenceName.ToUpper().Cut(30);
             DbHelper.SequenceExists(sequenceName);
             return DbHelper.ExecuteScalar("SELECT " + sequenceName + ".NEXTVAL FROM DUAL ")?.ToString();
         }
 
         /// <summary>
-        /// 获取Oracle的序列
+        /// 获取Oracle的当前序列
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="sequenceName"></param>
         /// <returns></returns>
-        public string GetOracleStoreCounter(string name)
+        public string GetOracleStoreCounter(string sequenceName)
         {
             // 当前是自增量，并且是Oracle数据库
             // Oracle的最大Sequence长度为30位
-            var sequenceName = ("SC_" + name.ToUpper() + "_SEQ").Cut(30);
+            sequenceName = sequenceName.ToUpper().Cut(30);
             DbHelper.SequenceExists(sequenceName);
             return DbHelper.ExecuteScalar("SELECT " + sequenceName + ".CURRVAL FROM DUAL ")?.ToString();
         }
@@ -402,12 +402,12 @@ namespace DotNet.Business
         /// <summary>
         /// 获取DB2的序列
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="sequenceName"></param>
         /// <returns></returns>
-        public string GetDb2Sequence(string name)
+        public string GetDb2Sequence(string sequenceName)
         {
             // 当前是自增量，并且是DB2数据库
-            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR SC_" + name.ToUpper() + "_SEQ FROM sysibm.sysdummy1").ToString();
+            return DbHelper.ExecuteScalar("SELECT NEXTVAL FOR " + sequenceName.ToUpper() + " FROM sysibm.sysdummy1").ToString();
         }
 
         #region public string Increment(string name) 获得序列号

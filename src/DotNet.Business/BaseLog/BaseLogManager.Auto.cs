@@ -200,7 +200,14 @@ namespace DotNet.Business
             if (entity.SortCode == 0)
             {
                 //var managerSequence = new BaseSequenceManager(DbHelper, Identity);
-                //key = managerSequence.Increment(CurrentTableName);
+                //if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
+                //{
+                //    key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
+                //}
+                //else
+                //{
+                //    key = managerSequence.Increment(CurrentTableName);
+                //}
                 //entity.SortCode = key.ToInt();
             }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
@@ -217,11 +224,11 @@ namespace DotNet.Business
                 {
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, CurrentTableName.ToUpper() + "_SEQ.NEXTVAL");
+                        sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName}_SEQ.NEXTVAL");
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, "NEXT VALUE FOR " + CurrentTableName.ToUpper() + "_SEQ");
+                        sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName}_SEQ");
                     }
                 }
                 else
@@ -229,7 +236,7 @@ namespace DotNet.Business
                     if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
                     {
                         var managerSequence = new BaseSequenceManager(DbHelper);
-                        entity.Id = managerSequence.Increment(CurrentTableName).ToInt();
+                        entity.Id = managerSequence.Increment($"{CurrentTableName}_SEQ").ToInt();
                         sqlBuilder.SetValue(PrimaryKey, entity.Id);
                     }
                 }
@@ -266,7 +273,6 @@ namespace DotNet.Business
             }
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
             {
-                //return entity.Id.ToString();
                 key = entity.Id.ToString();
             }
             if (!string.IsNullOrWhiteSpace(key))
