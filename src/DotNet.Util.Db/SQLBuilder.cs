@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
@@ -650,6 +651,8 @@ namespace DotNet.Util
         }
         #endregion
 
+        static readonly Regex RegSeq = new(@"\b(\w+)\.NEXTVAL\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         #region public string PrepareCommand() 准备生成sql语句
 
         /// <summary>
@@ -684,30 +687,43 @@ namespace DotNet.Util
                             // 需要返回主键
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT SCOPE_IDENTITY(); ";
+                                CommandText += "; SELECT SCOPE_IDENTITY();";
                             }
                             break;
                         case CurrentDbType.Access:
                             // 需要返回主键
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT @@identity AS ID FROM " + _tableName + "; ";
+                                CommandText += "; SELECT @@identity AS ID FROM " + _tableName + ";";
                             }
                             break;
                         // Mysql 返回自增主键 胡流东
                         case CurrentDbType.MySql:
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT LAST_INSERT_ID(); ";
+                                CommandText += "; SELECT LAST_INSERT_ID();";
                             }
                             break;
-                        // Oracle 返回自增主键 Troy.Cui 崔文远
+                        // SqLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
+                        case CurrentDbType.SqLite:
+                            CommandText += "; SELECT last_insert_rowid() newid;";
+                            break;
+                        // Oracle 返回自增主键 Troy.Cui 崔文远 2022-06-06
                         case CurrentDbType.Oracle:
+                            // 有两种方式
+                            // 1、在写入新数据前，先用NEXTVAL获取序列，赋值给主键ID
+                            // 2、在INSERT语句中给ID赋值NEXTVAL序列，利用此处的动态处理获取CURRVAL
                             if (ReturnId)
                             {
-                                // Oracle的最大Sequence长度为30位
-                                var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
-                                CommandText += "; SELECT " + sequenceName + ".CURRVAL FROM DUAL; ";
+                                var m = RegSeq.Match(CommandText);
+                                if (m != null && m.Success && m.Groups != null && m.Groups.Count > 0)
+                                {
+                                    // Oracle的最大Sequence长度为30位
+                                    //var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
+                                    var sequenceName = m.Groups[1].Value.Cut(30);
+                                    // 以BEGIN开始，以END;结尾(END后的分号不能省!)，中间的每个sql语句不需要以分号;结尾，只要以空格分开即可
+                                    CommandText = $"DECLEAR IDENTITY NUMBER; BEGIN {CommandText}; SELECT {sequenceName}.CURRVAL INTO IDENTITY FROM DUAL; END;";
+                                }
                             }
                             break;
                     }
@@ -754,7 +770,7 @@ namespace DotNet.Util
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
 
-            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.MySql))
+            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SqLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
             {
                 // 读取返回值
                 if (ReturnId)
