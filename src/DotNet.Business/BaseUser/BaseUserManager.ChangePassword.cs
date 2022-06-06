@@ -123,7 +123,7 @@ namespace DotNet.Business
             sqlBuilder.SetDbNow(BaseUserLogonEntity.FieldUpdateTime);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName);
             }
             sqlBuilder.SetWhere(BaseUserLogonEntity.FieldUserId, userId);

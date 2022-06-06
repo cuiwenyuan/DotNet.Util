@@ -183,7 +183,7 @@ namespace DotNet.Business
                     {
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0),
-                        new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateUserId, UserInfo.Id),
+                        new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateUserId, UserInfo.UserId),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateBy, UserInfo.RealName),
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateTime, DateTime.Now)
                     };
@@ -225,7 +225,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
             if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, "SEQ_" + BaseChangeLogEntity.CurrentTableName + ".NEXTVAL");
+                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
             }
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, userId);
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "授权");
@@ -369,7 +369,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
             if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, "SEQ_" + BaseChangeLogEntity.CurrentTableName + ".NEXTVAL");
+                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
             }
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, userId);
             sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "撤销授权");

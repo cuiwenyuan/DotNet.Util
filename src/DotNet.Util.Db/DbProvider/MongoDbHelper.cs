@@ -13,7 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DotNet.Utilities
+namespace DotNet.Util
 {
     /// <summary>
     /// MongoDbHelper 数据库操作
@@ -30,7 +30,7 @@ namespace DotNet.Utilities
     ///		<date>2016.09.01</date>
     /// </author> 
     /// </summary>
-    public class MongoDbHelper
+    public class MongoDbHelper : DbHelper, IDbHelper
     {
         /// <summary>
         /// 数据库链接

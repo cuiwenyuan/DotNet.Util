@@ -107,7 +107,7 @@ namespace DotNet.Business
             };
             if (UserInfo != null)
             {
-                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.Id));
+                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUpdateBy, UserInfo.RealName));
             }
 

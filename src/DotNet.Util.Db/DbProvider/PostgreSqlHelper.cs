@@ -7,7 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Collections.Generic;
 
-namespace DotNet.Utilities
+namespace DotNet.Util
 {
     using Npgsql;
 
@@ -26,7 +26,7 @@ namespace DotNet.Utilities
     ///		<date>2013.01.15</date>
 	/// </author> 
 	/// </summary>
-	public class PostgreSqlHelper : BaseDbHelper, IDbHelper
+	public class PostgreSqlHelper : DbHelper, IDbHelper
 	{
 		public NpgsqlConnection  connection   = new NpgsqlConnection();
 		public NpgsqlCommand     command      = new NpgsqlCommand();
@@ -76,7 +76,7 @@ namespace DotNet.Utilities
 		/// 获得数据库日期时间
 		/// </summary>
 		/// <returns>日期时间</returns>
-		public string GetDbNow()
+		public override string GetDbNow()
 		{
             return " now() ";
 		}
@@ -87,7 +87,7 @@ namespace DotNet.Utilities
 		/// 获得数据库日期时间
 		/// </summary>
 		/// <returns>日期时间</returns>
-        public string GetDbDateTime()
+        public override string GetDbDateTime()
 		{
 			string commandText = " SELECT " + this.GetDbNow();
 			this.Open();
@@ -106,7 +106,7 @@ namespace DotNet.Utilities
 		/// <returns>参数</returns>
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
-			return new NpgsqlParameter(targetFiled, targetValue);
+			return (IDbDataParameter)NpgsqlParameter(targetFiled, targetValue);
 		}
 		#endregion
 
@@ -117,7 +117,7 @@ namespace DotNet.Utilities
 		/// <param name="targetFiled">目标字段</param>
 		/// <param name="targetValue">值</param>
 		/// <returns>参数集</returns>
-		public IDbDataParameter MakeParameter(string targetFiled, object targetValue)
+		public override IDbDataParameter MakeParameter(string targetFiled, object targetValue)
 		{
 			IDbDataParameter dbParameter = null;
 			if (targetFiled != null)
@@ -132,10 +132,10 @@ namespace DotNet.Utilities
 		/// <summary>
 		/// 获取参数
 		/// </summary>
-		/// <param name="targetFiled">目标字段</param>
-		/// <param name="targetValue">值</param>
+		/// <param name="targetFileds">目标字段</param>
+		/// <param name="targetValues">值</param>
 		/// <returns>参数集</returns>
-		public IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
+		public override IDbDataParameter[] MakeParameters(string[] targetFileds, Object[] targetValues)
 		{
 			List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
 			if (targetFileds != null && targetValues != null)
@@ -158,7 +158,7 @@ namespace DotNet.Utilities
 		/// </summary>
 		/// <param name="parameters">参数</param>
 		/// <returns>参数集</returns>
-		public IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters)
+		public override IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters)
 		{
 			// 这里需要用泛型列表，因为有不合法的数组的时候
 			List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
@@ -215,7 +215,7 @@ namespace DotNet.Utilities
 		/// <param name="parameterSize">大小</param>
 		/// <param name="parameterDirection">输出方向</param>
 		/// <returns>参数集</returns>
-		public IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
+		public override IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
 		{
 			NpgsqlParameter parameter;
 
@@ -234,7 +234,7 @@ namespace DotNet.Utilities
 				parameter.Value = parameterValue;
 			}
 			
-			return parameter;
+			return (IDbDataParameter)parameter;
 		}
 		#endregion 
 
@@ -244,30 +244,30 @@ namespace DotNet.Utilities
 		/// </summary>
 		/// <param name="parameter">参数名称</param>
 		/// <returns>字符串</returns>
-		public string GetParameter(string parameter)
+		public override string GetParameter(string parameter)
 		{
             return " :" + parameter + " ";
 		}
-		#endregion
+        #endregion
 
-        //#region string PlusSign(params string[] values) 获得Sql字符串相加符号
-        ///// <summary>
-        /////  获得Sql字符串相加符号
-        ///// </summary>
-        ///// <param name="values">参数值</param>
-        ///// <returns>字符加</returns>
-        //public string PlusSign(params string[] values)
-        //{
-        //    string returnValue = string.Empty;
-        //    returnValue = " CONCAT(";
-        //    for (int i = 0; i < values.Length; i++)
-        //    {
-        //        returnValue += values[i] + " ,";
-        //    }
-        //    returnValue = returnValue.Substring(0, returnValue.Length - 2);
-        //    returnValue += ")";
-        //    return returnValue;
-        //}
-        //#endregion
-	}
+        #region string PlusSign(params string[] values) 获得Sql字符串相加符号
+        /// <summary>
+        ///  获得Sql字符串相加符号
+        /// </summary>
+        /// <param name="values">参数值</param>
+        /// <returns>字符加</returns>
+        public override string PlusSign(params string[] values)
+        {
+            string returnValue = string.Empty;
+            returnValue = " CONCAT(";
+            for (int i = 0; i < values.Length; i++)
+            {
+                returnValue += values[i] + " ,";
+            }
+            returnValue = returnValue.Substring(0, returnValue.Length - 2);
+            returnValue += ")";
+            return returnValue;
+        }
+        #endregion
+    }
 }

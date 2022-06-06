@@ -31,15 +31,15 @@ namespace DotNet.Util
         /// <summary>
         /// Connection
         /// </summary>
-        public MySqlConnection Connection = new MySqlConnection();
+        public MySqlConnection Connection = new();
         /// <summary>
         /// Command
         /// </summary>
-        public MySqlCommand Command = new MySqlCommand();
+        public MySqlCommand Command = new();
         /// <summary>
         /// DataAdapter
         /// </summary>
-        public MySqlDataAdapter DataAdapter = new MySqlDataAdapter();
+        public MySqlDataAdapter DataAdapter = new();
         /// <summary>
         /// Transaction
         /// </summary>

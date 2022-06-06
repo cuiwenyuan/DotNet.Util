@@ -8,7 +8,7 @@ using System.Data.Common;
 using System.Data.OracleClient;
 using System.Collections.Generic;
 
-namespace DotNet.Utilities
+namespace DotNet.Util
 {
 	/// <summary>
 	/// OracleHelper
@@ -28,7 +28,7 @@ namespace DotNet.Utilities
 	///		<date>2008.08.26</date>
 	/// </author> 
 	/// </summary>
-	public class MSOracleHelper : BaseDbHelper, IDbHelper
+	public class MSOracleHelper : DbHelper, IDbHelper
 	{
 		public override DbProviderFactory GetInstance()
 		{
