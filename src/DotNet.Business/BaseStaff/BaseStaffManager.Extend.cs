@@ -146,7 +146,7 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseStaffEntity.FieldEnabled, enabled ? 1 : 0);
             if (UserInfo != null)
             {
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserId, UserInfo.Id);
+                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserId, UserInfo.UserId);
                 sqlBuilder.SetValue(BaseStaffEntity.FieldCreateTime, UserInfo.RealName);
             }
             sqlBuilder.SetDbNow(BaseStaffEntity.FieldCreateTime);

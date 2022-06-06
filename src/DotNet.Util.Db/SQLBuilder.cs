@@ -307,8 +307,7 @@ namespace DotNet.Util
         /// <param name="formula">公式</param>
         public void SetFormula(string targetFiled, string formula)
         {
-            var relation = " = ";
-            SetFormula(targetFiled, formula, relation);
+            SetFormula(targetFiled, formula, " = ");
         }
         /// <summary>
         /// 设置公式
