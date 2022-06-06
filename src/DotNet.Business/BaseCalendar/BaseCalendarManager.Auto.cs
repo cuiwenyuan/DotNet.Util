@@ -197,7 +197,7 @@ namespace DotNet.Business
                 var managerSequence = new BaseSequenceManager(DbHelper, Identity);
                 if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
                 {
-                    key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ")
+                    key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
                 }
                 else
                 {
@@ -219,11 +219,11 @@ namespace DotNet.Business
                 {
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName.ToUpper()}_SEQ.NEXTVAL");
+                        sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName}_SEQ.NEXTVAL");
                     }
                     if (DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName.ToUpper()}_SEQ");
+                        sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName}_SEQ");
                     }
                 }
                 else
