@@ -658,8 +658,9 @@ namespace DotNet.Util
         /// <summary>
         /// 准备生成sql语句
         /// </summary>
-        public string PrepareCommand()
+        public string PrepareCommand(out string identitySql)
         {
+            identitySql = string.Empty;
             if (_sqlOperation == DbOperation.Insert || _sqlOperation == DbOperation.ReplaceInto)
             {
                 var sbField = Pool.StringBuilder.Get();
@@ -706,14 +707,17 @@ namespace DotNet.Util
                             break;
                         // SqLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
                         case CurrentDbType.SqLite:
-                            CommandText += "; SELECT last_insert_rowid() newid;";
+                            if (ReturnId)
+                            {
+                                CommandText += "; SELECT last_insert_rowid() newid;";
+                            }
                             break;
                         // Oracle 返回自增主键 Troy.Cui 崔文远 2022-06-06
                         case CurrentDbType.Oracle:
                             // 有两种方式
-                            // 1、在写入新数据前，先用NEXTVAL获取序列，赋值给主键ID
+                            // 1、在写入新数据前，先用NEXTVAL获取序列，赋值给主键ID，就是PreIdentity为True
                             // 2、在INSERT语句中给ID赋值NEXTVAL序列，利用此处的动态处理获取CURRVAL
-                            if (ReturnId)
+                            if (ReturnId && !PreIdentity)
                             {
                                 var m = RegSeq.Match(CommandText);
                                 if (m != null && m.Success && m.Groups != null && m.Groups.Count > 0)
@@ -721,8 +725,18 @@ namespace DotNet.Util
                                     // Oracle的最大Sequence长度为30位
                                     //var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
                                     var sequenceName = m.Groups[1].Value.Cut(30);
-                                    // 以BEGIN开始，以END;结尾(END后的分号不能省!)，中间的每个sql语句不需要以分号;结尾，只要以空格分开即可
-                                    CommandText = $"DECLEAR IDENTITY NUMBER; BEGIN {CommandText}; SELECT {sequenceName}.CURRVAL INTO IDENTITY FROM DUAL; END;";
+                                    // 以BEGIN开始，以END;结尾(END后的分号不能省!)，中间的每个sql语句需要以分号;结尾
+                                    //以下代码不好用！！！
+                                    //var sb = Pool.StringBuilder.Get();
+                                    //sb.AppendLine("BEGIN");
+                                    //if (!string.IsNullOrEmpty(CommandText))
+                                    //{
+                                    //    sb.AppendLine(CommandText.TrimEnd(";") + ";");
+                                    //    sb.AppendLine($"SELECT {sequenceName}.CURRVAL FROM DUAL;");
+                                    //    sb.AppendLine("END;");
+                                    //}
+                                    //CommandText = sb.Put();
+                                    identitySql = $"SELECT {sequenceName}.CURRVAL FROM DUAL";
                                 }
                             }
                             break;
@@ -761,7 +775,7 @@ namespace DotNet.Util
             var result = 0;
 
             // 准备生成sql语句
-            PrepareCommand();
+            PrepareCommand(out var identitySql);
 
             // 参数进行规范化
             var dbParameters = new List<IDbDataParameter>();
@@ -775,8 +789,22 @@ namespace DotNet.Util
                 // 读取返回值
                 if (ReturnId)
                 {
-                    var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
-                    result = obj.ToInt();
+                    if (_dbHelper.CurrentDbType == CurrentDbType.Oracle)
+                    {
+                        // 执行语句
+                        result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                        if (result > 0 && !string.IsNullOrEmpty(identitySql) && !PreIdentity && ReturnId)
+                        {
+                            // 获取当前序列主键
+                            var obj = _dbHelper.ExecuteScalar(identitySql);
+                            result = obj.ToInt();
+                        }
+                    }
+                    else
+                    {
+                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
+                        result = obj.ToInt();
+                    }
                 }
                 else
                 {
