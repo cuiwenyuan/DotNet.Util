@@ -46,6 +46,11 @@ namespace DotNet.Util
     public partial class SqlBuilder
     {
         /// <summary>
+        /// 是否预先获取Sequence分配自增量，用于Oracle和DB2
+        /// </summary>
+        public bool PreIdentity = true;
+
+        /// <summary>
         /// 是否采用自增量的方式
         /// </summary>
         public bool Identity = false;
