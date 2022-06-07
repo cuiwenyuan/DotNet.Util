@@ -49,5 +49,31 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj">
+      <Project>{eefb10f9-33ba-427d-8af3-6d9b31ed97df}</Project>
+      <Name>DotNet.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj">
+      <Project>{8c000df4-68cd-4e13-b641-a42744242776}</Project>
+      <Name>DotNet.IService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj">
+      <Project>{04c95c83-267d-4524-99e4-349e34e72e80}</Project>
+      <Name>DotNet.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj">
+      <Project>{ab8baaef-a930-485c-a4e3-b0691688366c}</Project>
+      <Name>DotNet.Util.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj">
+      <Project>{b90f3549-be46-4bcc-942a-328afcbf6f57}</Project>
+      <Name>DotNet.Util.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj">
+      <Project>{f771f81a-dcc3-4d5f-9643-5184fe5b0e6f}</Project>
+      <Name>DotNet.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
