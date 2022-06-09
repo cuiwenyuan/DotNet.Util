@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DotNet.Util
 {
@@ -44,6 +45,11 @@ namespace DotNet.Util
     /// </summary>
     public partial class SqlBuilder
     {
+        /// <summary>
+        /// 是否预先获取Sequence分配自增量，用于Oracle和DB2
+        /// </summary>
+        public bool PreIdentity = true;
+
         /// <summary>
         /// 是否采用自增量的方式
         /// </summary>
@@ -650,13 +656,16 @@ namespace DotNet.Util
         }
         #endregion
 
+        static readonly Regex RegSeq = new(@"\b(\w+)\.NEXTVAL\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         #region public string PrepareCommand() 准备生成sql语句
 
         /// <summary>
         /// 准备生成sql语句
         /// </summary>
-        public string PrepareCommand()
+        public string PrepareCommand(out string identitySql)
         {
+            identitySql = string.Empty;
             if (_sqlOperation == DbOperation.Insert || _sqlOperation == DbOperation.ReplaceInto)
             {
                 var sbField = Pool.StringBuilder.Get();
@@ -684,30 +693,57 @@ namespace DotNet.Util
                             // 需要返回主键
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT SCOPE_IDENTITY(); ";
+                                CommandText += "; SELECT SCOPE_IDENTITY();";
                             }
                             break;
                         case CurrentDbType.Access:
                             // 需要返回主键
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT @@identity AS ID FROM " + _tableName + "; ";
+                                CommandText += "; SELECT @@identity AS ID FROM " + _tableName + ";";
                             }
                             break;
                         // Mysql 返回自增主键 胡流东
                         case CurrentDbType.MySql:
                             if (ReturnId)
                             {
-                                CommandText += "; SELECT LAST_INSERT_ID(); ";
+                                CommandText += "; SELECT LAST_INSERT_ID();";
                             }
                             break;
-                        // Oracle 返回自增主键 Troy.Cui 崔文远
-                        case CurrentDbType.Oracle:
+                        // SqLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
+                        case CurrentDbType.SqLite:
                             if (ReturnId)
                             {
-                                // Oracle的最大Sequence长度为30位
-                                var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
-                                CommandText += "; SELECT " + sequenceName + ".CURRVAL FROM DUAL; ";
+                                CommandText += "; SELECT last_insert_rowid() newid;";
+                            }
+                            break;
+                        // Oracle 返回自增主键 Troy.Cui 崔文远 2022-06-06
+                        case CurrentDbType.Oracle:
+                            // 有两种方式
+                            // 1、在写入新数据前，先用NEXTVAL获取序列，赋值给主键ID，就是PreIdentity为True
+                            // 2、在INSERT语句中给ID赋值NEXTVAL序列，利用此处的动态处理获取CURRVAL
+                            if (ReturnId && !PreIdentity)
+                            {
+                                var m = RegSeq.Match(CommandText);
+                                if (m != null && m.Success && m.Groups != null && m.Groups.Count > 0)
+                                {
+                                    // Oracle的最大Sequence长度为30位
+                                    //var sequenceName = (_tableName.ToUpper() + "_SEQ").Cut(30);
+                                    var sequenceName = m.Groups[1].Value.Cut(30);
+                                    // 以BEGIN开始，以END;结尾(END后的分号不能省!)，中间的每个sql语句需要以分号;结尾
+                                    //以下代码不好用！！！
+                                    //var sb = Pool.StringBuilder.Get();
+                                    //sb.AppendLine("BEGIN");
+                                    //if (!string.IsNullOrEmpty(CommandText))
+                                    //{
+                                    //    sb.AppendLine(CommandText.TrimEnd(";") + ";");
+                                    //    sb.AppendLine($"SELECT {sequenceName}.CURRVAL FROM DUAL;");
+                                    //    sb.AppendLine("END;");
+                                    //}
+                                    //CommandText = sb.Put();
+                                    // 用这种方式会存在并发获取到的序号不准确的问题
+                                    identitySql = $"SELECT {sequenceName}.CURRVAL FROM DUAL";
+                                }
                             }
                             break;
                     }
@@ -745,7 +781,7 @@ namespace DotNet.Util
             var result = 0;
 
             // 准备生成sql语句
-            PrepareCommand();
+            PrepareCommand(out var identitySql);
 
             // 参数进行规范化
             var dbParameters = new List<IDbDataParameter>();
@@ -754,13 +790,27 @@ namespace DotNet.Util
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
 
-            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.MySql))
+            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SqLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
             {
                 // 读取返回值
                 if (ReturnId)
                 {
-                    var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
-                    result = obj.ToInt();
+                    if (_dbHelper.CurrentDbType == CurrentDbType.Oracle)
+                    {
+                        // 执行语句
+                        result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                        if (result > 0 && !string.IsNullOrEmpty(identitySql) && !PreIdentity && ReturnId)
+                        {
+                            // 获取当前序列主键
+                            var obj = _dbHelper.ExecuteScalar(identitySql);
+                            result = obj.ToInt();
+                        }
+                    }
+                    else
+                    {
+                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
+                        result = obj.ToInt();
+                    }
                 }
                 else
                 {

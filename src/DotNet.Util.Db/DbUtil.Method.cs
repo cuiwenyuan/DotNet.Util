@@ -30,7 +30,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDbDataParameter MakeParameter(string targetFiled, object targetValue)
         {
-            var dbHelper = DbHelperFactory.Create(CurrentDbType, DbConnection);
+            var dbHelper = DbHelperFactory.Create(CurrentDbType, ConnectionString);
             return dbHelper.MakeParameter(targetFiled, targetValue);
         }
         #endregion        
@@ -45,7 +45,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public static int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
-            return ExecuteNonQuery(DbConnection, commandText, dbParameters, commandType);
+            return ExecuteNonQuery(ConnectionString, commandText, dbParameters, commandType);
         }
         #endregion
 
@@ -78,7 +78,7 @@ namespace DotNet.Util
         /// <returns>object</returns>
         public static object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
-            return ExecuteScalar(DbConnection, commandText, dbParameters, commandType);
+            return ExecuteScalar(ConnectionString, commandText, dbParameters, commandType);
         }
         #endregion
 
@@ -111,7 +111,7 @@ namespace DotNet.Util
         /// <returns>结果集流</returns>
         public static IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
-            return ExecuteReader(DbConnection, commandText, dbParameters, commandType);
+            return ExecuteReader(ConnectionString, commandText, dbParameters, commandType);
         }
         #endregion
 
@@ -141,7 +141,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable Fill(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text)
         {
-            return Fill(DbConnection, commandText, dbParameters, commandType);
+            return Fill(ConnectionString, commandText, dbParameters, commandType);
         }
         #endregion
 
