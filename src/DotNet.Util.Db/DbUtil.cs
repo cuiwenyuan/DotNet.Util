@@ -123,7 +123,7 @@ namespace DotNet.Util
         /// <summary>
         /// 数据库连接串，这里是为了简化思路
         /// </summary>
-        public static string DbConnection = BaseSystemInfo.BusinessDbConnection;
+        public static string ConnectionString = BaseSystemInfo.BusinessDbConnection;
 
         /// <summary>
         /// 数据库类型，这里也是为了简化思路
@@ -160,7 +160,69 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetParameter(string parameter) 获得参数Sql表达式
+        #region public static string ToDbTime(this IDbHelper dbHelper, DateTime dateTime) 获得数据库格式的时间，用于SQL查询语句中的条件中
+
+        /// <summary>
+        /// 获得数据库格式的时间，用于SQL查询语句中的条件中
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="dateTime">日期或时间</param>
+        /// <returns>字符串</returns>
+        public static string ToDbTime(this IDbHelper dbHelper, DateTime dateTime)
+        {
+            return ToDbTime(dbHelper.CurrentDbType, dateTime.ToString());
+        }
+        #endregion
+
+        #region public static string ToDbTime(this IDbHelper dbHelper, string dateTime) 获得数据库格式的时间，用于SQL查询语句中的条件中
+
+        /// <summary>
+        /// 获得数据库格式的时间，用于SQL查询语句中的条件中
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="dateTime">日期或时间</param>
+        /// <returns>字符串</returns>
+        public static string ToDbTime(this IDbHelper dbHelper, string dateTime)
+        {
+            return ToDbTime(dbHelper.CurrentDbType, dateTime);
+        }
+        #endregion
+
+        #region public static string ToDbTime(CurrentDbType dbType, string dateTime) 获得数据库格式的时间，用于SQL查询语句中的条件中
+        /// <summary>
+        /// 获得数据库格式的时间，用于SQL查询语句中的条件中
+        /// </summary>
+        /// <param name="dbType">数据库类型</param>
+        /// <param name="dateTime">日期或时间</param>
+        /// <returns>当前日期</returns>
+        public static string ToDbTime(CurrentDbType dbType, string dateTime)
+        {
+            var sb = Pool.StringBuilder.Get();
+            if (ValidateUtil.IsDateTime(dateTime))
+            {
+                switch (dbType)
+                {
+                    case CurrentDbType.SqlServer:
+                    case CurrentDbType.Access:
+                    case CurrentDbType.Ase:
+                    case CurrentDbType.PostgreSql:
+                    case CurrentDbType.SqLite:
+                        sb.Append("'" + dateTime + "'");
+                        break;
+                    case CurrentDbType.Db2:
+                    case CurrentDbType.Oracle:
+                        sb.Append("TO_DATE('" + dateTime + "','yyyy-mm-dd hh24:mi:ss')");
+                        break;
+                    case CurrentDbType.MySql:
+                        sb.Append("'" + dateTime + "'");
+                        break;
+                }
+            }
+            return sb.Put();
+        }
+        #endregion
+
+        #region public static string GetParameter(this IDbHelper dbHelper, string parameter) 获得参数Sql表达式
 
         /// <summary>
         /// 获得参数Sql表达式
@@ -174,16 +236,16 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetParameter(CurrentDbType currentDbType, string parameter) 获得参数Sql表达式
+        #region public static string GetParameter(CurrentDbType dbType, string parameter) 获得参数Sql表达式
         /// <summary>
         /// 获得参数Sql表达式
         /// </summary>
-        /// <param name="currentDbType">数据库类型</param>
+        /// <param name="dbType">数据库类型</param>
         /// <param name="parameter">参数名称</param>
         /// <returns>字符串</returns>
-        public static string GetParameter(CurrentDbType currentDbType, string parameter)
+        public static string GetParameter(CurrentDbType dbType, string parameter)
         {
-            switch (currentDbType)
+            switch (dbType)
             {
                 case CurrentDbType.SqlServer:
                 case CurrentDbType.Access:

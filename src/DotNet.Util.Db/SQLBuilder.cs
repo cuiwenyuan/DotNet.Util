@@ -741,6 +741,7 @@ namespace DotNet.Util
                                     //    sb.AppendLine("END;");
                                     //}
                                     //CommandText = sb.Put();
+                                    // 用这种方式会存在并发获取到的序号不准确的问题
                                     identitySql = $"SELECT {sequenceName}.CURRVAL FROM DUAL";
                                 }
                             }
