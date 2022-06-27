@@ -198,7 +198,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         #endregion
 
@@ -605,7 +605,7 @@ namespace DotNet.Business
             }
             commandText = "(" + commandText + ") T ";
             // 2015-12-05 吉日嘎拉 增加参数化功能
-            result = DbUtil.GetDataTableByPage(DbHelper, out recordCount, commandText, "*", pageNo, pageSize, null, dbParameters.ToArray(), orderBy);
+            result = DbHelper.GetDataTableByPage(out recordCount, commandText, "*", pageNo, pageSize, null, dbParameters.ToArray(), orderBy);
 
             return result;
         }
@@ -717,7 +717,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, id)
             };
-            result += DbUtil.Delete(DbHelper, BaseUserRoleEntity.CurrentTableName, parameters);
+            result += DbHelper.Delete(BaseUserRoleEntity.CurrentTableName, parameters);
 
             // 删除角色的表结构定义部分
             parameters = new List<KeyValuePair<string, object>>
@@ -725,7 +725,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldId, id),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldAllowDelete, 1)
             };
-            result += DbUtil.Delete(DbHelper, CurrentTableName, parameters);
+            result += DbHelper.Delete(CurrentTableName, parameters);
 
             return result;
         }

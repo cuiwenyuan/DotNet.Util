@@ -32,7 +32,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, null, parameters);
+            return DbHelper.SetProperty(CurrentTableName, null, parameters);
         }
         /// <summary>
         /// 更新属性（带UserInfo自动更新字段）
@@ -150,7 +150,7 @@ namespace DotNet.Business
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 更新属性（带UserInfo自动更新字段）
@@ -164,7 +164,7 @@ namespace DotNet.Business
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 更新属性（带UserInfo自动更新字段）
@@ -177,7 +177,7 @@ namespace DotNet.Business
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 更新属性（带UserInfo自动更新字段）
@@ -190,7 +190,7 @@ namespace DotNet.Business
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
         /// <summary>
         /// 更新属性（带UserInfo自动更新字段）
@@ -202,7 +202,7 @@ namespace DotNet.Business
         public virtual int UpdateProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string clientIp = null)
         {
             AddUpdateInfo(parameters, clientIp);
-            return DbUtil.SetProperty(DbHelper, CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
         }
 
         /// <summary>

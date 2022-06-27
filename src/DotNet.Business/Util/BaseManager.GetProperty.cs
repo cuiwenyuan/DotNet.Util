@@ -78,7 +78,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUtil.FieldId, id),
                 new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldCode);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldCode);
         }
         #endregion
 
@@ -156,7 +156,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUtil.FieldCode, code),
                 new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         #endregion
 
@@ -201,7 +201,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldId, id)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, targetField);
+            return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
         /// <summary>
         /// 获取属性
@@ -215,7 +215,7 @@ namespace DotNet.Business
             {
                 whereParameter
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, targetField);
+            return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
         /// <summary>
         /// 获取属性
@@ -231,7 +231,7 @@ namespace DotNet.Business
                 parameter1,
                 parameter2
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, targetField);
+            return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
         /// <summary>
         /// 获取属性
@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual string GetProperty(List<KeyValuePair<string, object>> whereParameters, string targetField, string orderBy = null)
         {
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, whereParameters, targetField, 1, orderBy);
+            return DbHelper.GetProperty(CurrentTableName, whereParameters, targetField, 1, orderBy);
         }
         /// <summary>
         /// 获取编号
@@ -255,7 +255,7 @@ namespace DotNet.Business
             {
                 parameter
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         /// <summary>
         /// 获取编号
@@ -270,7 +270,7 @@ namespace DotNet.Business
                 parameter1,
                 parameter2
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         /// <summary>
         /// 获取编号
@@ -279,7 +279,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual string GetId(List<KeyValuePair<string, object>> parameters)
         {
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         /// <summary>
         /// 获取编号
@@ -293,7 +293,7 @@ namespace DotNet.Business
             {
                 parameterList.Add(parameter);
             }
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameterList, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameterList, BaseUtil.FieldId);
         }
     }
 }

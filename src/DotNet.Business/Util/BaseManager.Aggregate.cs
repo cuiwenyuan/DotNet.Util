@@ -31,7 +31,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetSumInt(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateInt(DbHelper, CurrentTableName, fieldName, condition: condition, function: "SUM");
+            return DbHelper.AggregateInt(CurrentTableName, fieldName, condition: condition, function: "SUM");
         }
         #endregion
 
@@ -44,7 +44,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual decimal GetSumDecimal(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateDecimal(DbHelper, CurrentTableName, fieldName, condition: condition, function: "SUM");
+            return DbHelper.AggregateDecimal(CurrentTableName, fieldName, condition: condition, function: "SUM");
         }
         #endregion
 
@@ -57,7 +57,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetAvgInt(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateInt(DbHelper, CurrentTableName, fieldName, condition: condition, function: "AVG");
+            return DbHelper.AggregateInt(CurrentTableName, fieldName, condition: condition, function: "AVG");
         }
         #endregion
 
@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual decimal GetAvgDecimal(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateDecimal(DbHelper, CurrentTableName, fieldName, condition: condition, function: "AVG");
+            return DbHelper.AggregateDecimal(CurrentTableName, fieldName, condition: condition, function: "AVG");
         }
         #endregion
 
@@ -83,7 +83,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetMin(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateInt(DbHelper, CurrentTableName, fieldName, condition: condition, function: "MIN");
+            return DbHelper.AggregateInt(CurrentTableName, fieldName, condition: condition, function: "MIN");
         }
         #endregion
 
@@ -96,7 +96,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual decimal GetDecimal(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateDecimal(DbHelper, CurrentTableName, fieldName, condition: condition, function: "MIN");
+            return DbHelper.AggregateDecimal(CurrentTableName, fieldName, condition: condition, function: "MIN");
         }
         #endregion
 
@@ -122,7 +122,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual decimal GetMaxDecimal(string fieldName, string condition = null)
         {
-            return DbUtil.AggregateDecimal(DbHelper, CurrentTableName, fieldName, condition: condition, function: "MAX");
+            return DbHelper.AggregateDecimal(CurrentTableName, fieldName, condition: condition, function: "MAX");
         }
         #endregion
     }
