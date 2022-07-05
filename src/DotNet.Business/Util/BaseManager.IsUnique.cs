@@ -217,7 +217,7 @@ namespace DotNet.Business
             //result = !Exists(whereParameters, excludeId);
 
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + DbUtil.GetWhereString(dbHelper, whereParameters, BaseUtil.SqlLogicConditional));
+            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + dbHelper.GetWhereString(whereParameters, BaseUtil.SqlLogicConditional));
 
             if (!string.IsNullOrEmpty(excludeId))
             {

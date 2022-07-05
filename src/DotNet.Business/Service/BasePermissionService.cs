@@ -471,7 +471,7 @@ namespace DotNet.Business
                 }
 
                 myRecordCount = dbHelper.GetCount(tableName, condition, dbHelper.MakeParameters(dbParameters));
-                result = DbUtil.GetDataTableByPage(dbHelper, tableName, "*", pageNo, pageSize, condition, dbHelper.MakeParameters(dbParameters), BasePermissionEntity.FieldCreateTime + " DESC");
+                result = dbHelper.GetDataTableByPage(tableName, "*", pageNo, pageSize, condition, dbHelper.MakeParameters(dbParameters), BasePermissionEntity.FieldCreateTime + " DESC");
 
                 if (!result.Columns.Contains("ResourceCategoryName"))
                 {

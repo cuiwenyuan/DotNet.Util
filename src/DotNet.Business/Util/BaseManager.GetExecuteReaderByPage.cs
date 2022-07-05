@@ -39,7 +39,7 @@ namespace DotNet.Business
         public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
             recordCount = DbHelper.GetCount(CurrentTableName, condition, dbParameters, CurrentIndex);
-            return DbUtil.ExecuteReaderByPage(DbHelper, CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
+            return DbHelper.ExecuteReaderByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
         }
 
         /// <summary>
@@ -104,10 +104,10 @@ namespace DotNet.Business
                 {
                     recordCount = 0;
                 }
-                return DbUtil.ExecuteReaderByPage(DbHelper, recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
+                return DbHelper.ExecuteReaderByPage(recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
             }
             // 这个是调用存储过程的方法
-            return DbUtil.ExecuteReaderByPage(DbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+            return DbHelper.ExecuteReaderByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
 
         /// <summary>

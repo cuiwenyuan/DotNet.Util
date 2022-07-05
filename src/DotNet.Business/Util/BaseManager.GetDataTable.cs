@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(string condition, List<KeyValuePair<string, object>> parameters, string order)
         {
-            var subSql = DbUtil.GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional);
+            var subSql = dbHelper.GetWhereString(parameters, BaseUtil.SqlLogicConditional);
             if (!string.IsNullOrEmpty(subSql))
             {
                 if (!string.IsNullOrWhiteSpace(condition))
@@ -120,7 +120,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldCategoryCode, categoryCode)
             };
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters);
+            return DbHelper.GetDataTable(CurrentTableName, parameters);
         }
         #endregion
 
@@ -136,7 +136,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldParentId, parentId)
             };
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, 0, BaseUtil.FieldSortCode);
+            return DbHelper.GetDataTable(CurrentTableName, parameters, 0, BaseUtil.FieldSortCode);
         }
         #endregion
 
@@ -151,7 +151,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(int topLimit = 0, string order = null)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, null, topLimit, order);
+            return DbHelper.GetDataTable(CurrentTableName, null, topLimit, order);
         }
         /// <summary>
         /// GetDataTable
@@ -169,7 +169,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(string[] ids)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, BaseUtil.FieldId, ids);
+            return DbHelper.GetDataTable(CurrentTableName, BaseUtil.FieldId, ids);
         }
         /// <summary>
         /// GetDataTable
@@ -180,7 +180,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(string name, Object[] values, string order = null)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, name, values, order);
+            return DbHelper.GetDataTable(CurrentTableName, name, values, order);
         }
         /// <summary>
         /// GetDataTable
@@ -191,7 +191,7 @@ namespace DotNet.Business
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, string order)
         {
             var parameters = new List<KeyValuePair<string, object>> { whereParameters };
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, 0, order);
+            return DbHelper.GetDataTable(CurrentTableName, parameters, 0, order);
         }
         /// <summary>
         /// GetDataTable
@@ -203,7 +203,7 @@ namespace DotNet.Business
         public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, 0, order);
+            return DbHelper.GetDataTable(CurrentTableName, parameters, 0, order);
         }
         /// <summary>
         /// GetDataTable
@@ -215,7 +215,7 @@ namespace DotNet.Business
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, int topLimit = 0, string order = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { whereParameters };
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parameters, topLimit, order);
+            return DbHelper.GetDataTable(CurrentTableName, parameters, topLimit, order);
         }
         /// <summary>
         /// GetDataTable
@@ -229,7 +229,7 @@ namespace DotNet.Business
             {
                 parametersList.Add(p);
             }
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, parametersList);
+            return DbHelper.GetDataTable(CurrentTableName, parametersList);
         }
         /// <summary>
         /// GetDataTable
@@ -240,7 +240,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, int topLimit = 0, string order = null)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, whereParameters, topLimit, order);
+            return DbHelper.GetDataTable(CurrentTableName, whereParameters, topLimit, order);
         }
         /// <summary>
         /// GetDataTable
@@ -250,7 +250,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, string order)
         {
-            return DbUtil.GetDataTable(DbHelper, CurrentTableName, whereParameters, 0, order);
+            return DbHelper.GetDataTable(CurrentTableName, whereParameters, 0, order);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual IDataReader ExecuteReaderByWhere(string condition = null, List<KeyValuePair<string, object>> parameters = null, int topLimit = 0, string order = null)
         {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, condition, topLimit, order, "*");
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, condition, topLimit, order, "*");
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldCategoryCode, categoryCode)
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters);
         }
         #endregion
 
@@ -79,7 +79,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldParentId, parentId)
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, BaseUtil.FieldSortCode);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, 0, BaseUtil.FieldSortCode);
         }
         #endregion
 
@@ -94,7 +94,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(int topLimit = 0, string order = null)
         {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, null, string.Empty, topLimit, order, SelectFields);
+            return DbHelper.ExecuteReader(CurrentTableName, null, string.Empty, topLimit, order, SelectFields);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(string[] ids)
         {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, BaseUtil.FieldId, ids);
+            return DbHelper.ExecuteReader(CurrentTableName, BaseUtil.FieldId, ids);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(string name, Object[] values, string order = null)
         {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, name, values, order);
+            return DbHelper.ExecuteReader(CurrentTableName, name, values, order);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace DotNet.Business
             {
                 parameter
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace DotNet.Business
                 parameter1,
                 parameter2
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace DotNet.Business
             {
                 parameter
             };
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit: topLimit, order: order);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, topLimit: topLimit, order: order);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace DotNet.Business
             {
                 parametersList.Add(parameters[i]);
             }
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parametersList);
+            return DbHelper.ExecuteReader(CurrentTableName, parametersList);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual IDataReader ExecuteReader(List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
         {
-            return DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            return DbHelper.ExecuteReader(CurrentTableName, parameters, topLimit, order);
         }
 
         #endregion

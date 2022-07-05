@@ -931,7 +931,7 @@ namespace DotNet.Business
                 userManager.DeleteEntity(staffEntity.UserId);
                 // 删除员工本表
                 parameters.Add(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id));
-                result = DbUtil.Delete(DbHelper, BaseStaffEntity.CurrentTableName, parameters);
+                result = DbHelper.Delete(BaseStaffEntity.CurrentTableName, parameters);
             }
             return result;
         }
@@ -968,7 +968,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0),
                 new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUtil.FieldId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
         #endregion
     }

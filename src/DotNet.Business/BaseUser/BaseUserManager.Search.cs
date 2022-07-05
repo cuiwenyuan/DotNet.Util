@@ -439,7 +439,7 @@ namespace DotNet.Business
                 case CurrentDbType.Db2:
                     break;
             }
-            return DbUtil.GetDataTableByPage(DbHelper, CurrentTableName, SelectFields, pageNo, pageSize, condition, order);
+            return DbHelper.GetDataTableByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, order);
         }
         #endregion
     }
