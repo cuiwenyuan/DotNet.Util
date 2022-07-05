@@ -759,7 +759,7 @@ namespace DotNet.Business
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
                     // 被锁定的记录数
-                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, BaseSequenceEntity.CurrentTableName));
+                    var lockCount = DbHelper.LockNoWait(BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, BaseSequenceEntity.CurrentTableName));
                     if (lockCount > 0)
                     {
 
@@ -791,7 +791,7 @@ namespace DotNet.Business
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
                     // 被锁定的记录数
-                    var lockCount = DbUtil.LockNoWait(DbHelper, BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, name));
+                    var lockCount = DbHelper.LockNoWait(BaseSequenceEntity.CurrentTableName, new KeyValuePair<string, object>(BaseSequenceEntity.FieldName, name));
                     if (lockCount > 0)
                     {
                         sequenceEntity = GetEntityByAdd(name);

@@ -118,7 +118,7 @@ namespace DotNet.Business
 		private int MyDelete(List<KeyValuePair<string, object>> parameters)
         {
             parameters = GetDeleteExtParam(parameters);
-            return DbUtil.Delete(DbHelper, CurrentTableName, parameters);
+            return DbHelper.Delete(CurrentTableName, parameters);
         }
 
         #endregion
@@ -129,7 +129,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual int Truncate()
         {
-            return DbUtil.Truncate(DbHelper, CurrentTableName);
+            return DbHelper.Truncate(CurrentTableName);
         }
 
         /// <summary>

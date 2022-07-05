@@ -47,7 +47,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, null, topLimit, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, null, topLimit, order);
             result = GetList<T>(dr);
 
             return result;
@@ -63,7 +63,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", BaseUtil.FieldId, ids);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, "*", BaseUtil.FieldId, ids);
             result = GetList<T>(dr);
 
             return result;
@@ -81,7 +81,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, "*", name, values, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, "*", name, values, order);
             result = GetList<T>(dr);
 
             return result;
@@ -101,7 +101,7 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(parameter);
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
             result = GetList<T>(dr);
 
             return result;
@@ -125,7 +125,7 @@ namespace DotNet.Business
                 parameter2
             };
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
             result = GetList<T>(dr);
 
             return result;
@@ -145,7 +145,7 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, topLimit, order);
             result = GetList<T>(dr);
 
             return result;
@@ -162,7 +162,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, 0, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
             result = GetList<T>(dr);
 
             return result;
@@ -180,7 +180,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parameters, topLimit, order);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, topLimit, order);
             result = GetList<T>(dr);
 
             return result;
@@ -202,7 +202,7 @@ namespace DotNet.Business
                 parametersList.Add(p);
             }
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, parametersList);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, parametersList);
             result = GetList<T>(dr);
 
                 return result;
@@ -218,7 +218,7 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var dr = DbUtil.ExecuteReader(DbHelper, CurrentTableName, condition);
+            var dr = DbHelper.ExecuteReader(CurrentTableName, condition);
             result = GetList<T>(dr);
 
             return result;
@@ -235,7 +235,7 @@ namespace DotNet.Business
         public virtual List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new()
         {
             List<T> result;
-            var dr = DbUtil.ExecuteReader2(DbHelper, CurrentTableName, condition, topLimit, order);
+            var dr = DbHelper.ExecuteReader2(CurrentTableName, condition, topLimit, order);
             result = GetList<T>(dr);
 
 

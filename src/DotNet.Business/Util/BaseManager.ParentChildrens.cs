@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetParentsByCode(string fieldCode, string code, string order)
         {
-            return DbUtil.GetParentsByCode(DbHelper, CurrentTableName, fieldCode, code, order);
+            return DbHelper.GetParentsByCode(CurrentTableName, fieldCode, code, order);
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetChildrens(string fieldId, string id, string fieldParentId, string order)
         {
-            return DbUtil.GetChildrens(DbHelper, CurrentTableName, fieldId, id, fieldParentId, order);
+            return DbHelper.GetChildrens(CurrentTableName, fieldId, id, fieldParentId, order);
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetChildrensByCode(string fieldCode, string code, string order)
         {
-            return DbUtil.GetChildrensByCode(DbHelper, CurrentTableName, fieldCode, code, order);
+            return DbHelper.GetChildrensByCode(CurrentTableName, fieldCode, code, order);
         }
         #endregion
 
@@ -81,7 +81,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetParentChildrensByCode(string fieldCode, string code, string order)
         {
-            return DbUtil.GetParentChildrensByCode(DbHelper, CurrentTableName, fieldCode, code, order);
+            return DbHelper.GetParentChildrensByCode(CurrentTableName, fieldCode, code, order);
         }
         #endregion
 
@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns>主键数组</returns>
         public string[] GetParentsIdByCode(string fieldCode, string code)
         {
-            return DbUtil.GetParentsIdByCode(DbHelper, CurrentTableName, fieldCode, code, string.Empty);
+            return DbHelper.GetParentsIdByCode(CurrentTableName, fieldCode, code, string.Empty);
         }
         #endregion
 
@@ -109,7 +109,7 @@ namespace DotNet.Business
         /// <returns>主键数组</returns>
         public string[] GetChildrensId(string fieldId, string id, string fieldParentId)
         {
-            return DbUtil.GetChildrensId(DbHelper, CurrentTableName, fieldId, id, fieldParentId, string.Empty);
+            return DbHelper.GetChildrensId(CurrentTableName, fieldId, id, fieldParentId, string.Empty);
         }
         #endregion
 
@@ -122,7 +122,7 @@ namespace DotNet.Business
         /// <returns>主键数组</returns>
         public string[] GetChildrensIdByCode(string fieldCode, string code)
         {
-            return DbUtil.GetChildrensIdByCode(DbHelper, CurrentTableName, fieldCode, code, string.Empty);
+            return DbHelper.GetChildrensIdByCode(CurrentTableName, fieldCode, code, string.Empty);
         }
         #endregion
 
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// <returns>主键数组</returns>
         public string[] GetParentChildrensIdByCode(string fieldCode, string code)
         {
-            return DbUtil.GetParentChildrensIdByCode(DbHelper, CurrentTableName, fieldCode, code, string.Empty);
+            return DbHelper.GetParentChildrensIdByCode(CurrentTableName, fieldCode, code, string.Empty);
         }
         #endregion
 
@@ -148,7 +148,7 @@ namespace DotNet.Business
         /// <returns>主键</returns>
         public string GetParentIdByCode(string fieldCode, string code)
         {
-            return DbUtil.GetParentIdByCode(DbHelper, CurrentTableName, fieldCode, code);
+            return DbHelper.GetParentIdByCode(CurrentTableName, fieldCode, code);
         }
         #endregion
     }

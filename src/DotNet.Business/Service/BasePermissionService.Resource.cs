@@ -118,7 +118,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, resourceId)
                 };
 
-                var dt = DbUtil.GetDataTable(dbHelper, BasePermissionEntity.CurrentTableName, parameters);
+                var dt = dbHelper.GetDataTable(BasePermissionEntity.CurrentTableName, parameters);
                 result = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldPermissionId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
             });
             return result;
@@ -237,7 +237,7 @@ namespace DotNet.Business
                 };
 
                 var tableName = userInfo.SystemCode + "PermissionScope";
-                result = DbUtil.GetProperties(dbHelper, tableName, parameters, 0, BasePermissionScopeEntity.FieldTargetId);
+                result = dbHelper.GetProperties(tableName, parameters, 0, BasePermissionScopeEntity.FieldTargetId);
             });
             return result;
         }
@@ -273,7 +273,7 @@ namespace DotNet.Business
                 };
 
                 var tableName = userInfo.SystemCode + "PermissionScope";
-                result = DbUtil.GetProperties(dbHelper, tableName, parameters, 0, BasePermissionScopeEntity.FieldResourceId);
+                result = dbHelper.GetProperties(tableName, parameters, 0, BasePermissionScopeEntity.FieldResourceId);
             });
             return result;
         }

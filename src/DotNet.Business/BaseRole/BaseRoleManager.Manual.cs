@@ -103,7 +103,7 @@ namespace DotNet.Business
             var result = 0;
             // 检查是否已被其他人修改
 
-            if (DbUtil.IsUpdate(DbHelper, CurrentTableName, entity.Id, entity.UpdateUserId.ToString(), entity.UpdateTime))
+            if (DbHelper.IsUpdate(CurrentTableName, entity.Id, entity.UpdateUserId.ToString(), entity.UpdateTime))
             {
                 // 数据已经被修改
                 status = Status.ErrorChanged;

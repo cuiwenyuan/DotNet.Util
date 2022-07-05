@@ -44,7 +44,7 @@ namespace DotNet.Business
                 var fieldId = "TargetId"; // "UserId";
                 string order = null;
                 var idOnly = true;
-                var dt = DbUtil.GetChildrens(DbHelper, tableName, fieldId, userId.ToString(), fieldParentId, order, idOnly);
+                var dt = DbHelper.GetChildrens(tableName, fieldId, userId.ToString(), fieldParentId, order, idOnly);
                 result = BaseUtil.FieldToArray(dt, "TargetId");
             }
             return result;

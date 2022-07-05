@@ -72,7 +72,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return DbUtil.Count(DbHelper, CurrentTableName, condition: sb.Put());
+            return DbHelper.Count(CurrentTableName, condition: sb.Put());
         }
         #endregion
 
@@ -126,7 +126,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return DbUtil.DistinctCount(DbHelper, CurrentTableName, fieldName, condition: sb.Put());
+            return DbHelper.DistinctCount(CurrentTableName, fieldName, condition: sb.Put());
         }
         #endregion
 

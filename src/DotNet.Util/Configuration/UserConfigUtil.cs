@@ -972,54 +972,6 @@ namespace DotNet.Util
                 {
                     BaseSystemInfo.MessageDbConnection = BaseSystemInfo.UserCenterDbConnection;
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.WorkFlowDbConnection))
-                {
-                    // BaseSystemInfo.WorkFlowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
-                {
-                    // BaseSystemInfo.BusinessDbConnection = "Data Source=localhost;Initial Catalog=ProjectV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.WebAppDbConnection))
-                {
-                    // BaseSystemInfo.WebAppDbConnection = "Data Source=localhost;Initial Catalog=ProjectV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.BpmDbConnection))
-                {
-                    // BaseSystemInfo.BpmDbConnection = "Data Source=localhost;Initial Catalog=BPMDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.ErpDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=ERPDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.MesDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=MESDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.HrmDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=HRMDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.CrmDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=CRMDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.OaDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=OADB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.LabelDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=LabelDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.WebDbConnection))
-                {
-                    // BaseSystemInfo.ErpDbConnection = "Data Source=localhost;Initial Catalog=WebDB;Integrated Security=SSPI;";
-                }
-                if (string.IsNullOrEmpty(BaseSystemInfo.CmsDbConnection))
-                {
-                    // BaseSystemInfo.CmsDbConnection = "Data Source=localhost;Initial Catalog=CMSDB;Integrated Security=SSPI;";
-                }
 
             }
 
@@ -1440,6 +1392,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "BpmDbConnection", BaseSystemInfo.BpmDbConnectionString);
             SetValue(xmlDocument, "ErpDbConnection", BaseSystemInfo.ErpDbConnectionString);
             SetValue(xmlDocument, "WmsDbConnection", BaseSystemInfo.WmsDbConnectionString);
+            SetValue(xmlDocument, "ZbwmsDbConnection", BaseSystemInfo.ZbwmsDbConnectionString);
             SetValue(xmlDocument, "MesDbConnection", BaseSystemInfo.MesDbConnectionString);
             SetValue(xmlDocument, "HrmDbConnection", BaseSystemInfo.HrmDbConnectionString);
             SetValue(xmlDocument, "CrmDbConnection", BaseSystemInfo.CrmDbConnectionString);
@@ -1456,6 +1409,9 @@ namespace DotNet.Util
             SetValue(xmlDocument, "ImsDbConnection", BaseSystemInfo.ImsDbConnectionString);
             SetValue(xmlDocument, "OmsDbConnection", BaseSystemInfo.OmsDbConnectionString);
             SetValue(xmlDocument, "MemberDbConnection", BaseSystemInfo.MemberDbConnectionString);
+            SetValue(xmlDocument, "BudgetDbConnection", BaseSystemInfo.BudgetDbConnectionString);
+            SetValue(xmlDocument, "ItamsDbConnection", BaseSystemInfo.ItamsDbConnectionString);
+            SetValue(xmlDocument, "CardTicketDbConnection", BaseSystemInfo.CardTicketDbConnectionString);
             SetValue(xmlDocument, "DatabaseTableVersion", BaseSystemInfo.DatabaseTableVersion.ToString());
 
             SetValue(xmlDocument, "RegisterKey", BaseSystemInfo.RegisterKey);

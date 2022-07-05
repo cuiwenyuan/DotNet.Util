@@ -39,7 +39,7 @@ namespace DotNet.Business
         public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
             recordCount = DbHelper.GetCount(CurrentTableName, condition, dbParameters, CurrentIndex);
-            return DbUtil.GetDataTableByPage(DbHelper, CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
+            return DbHelper.GetDataTableByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
         }
 
         #region GetDataTableByPage
@@ -93,10 +93,10 @@ namespace DotNet.Business
                 }
                 //return DbUtil.GetDataTableByPage(DbHelper, recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
                 //Troy 20160521 自定义View分页怎能没有查询条件带入
-                return DbUtil.GetDataTableByPage(DbHelper, recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
+                return DbHelper.GetDataTableByPage(recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
             }
             // 这个是调用存储过程的方法
-            return DbUtil.GetDataTableByPage(DbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+            return DbHelper.GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
         #endregion
 
@@ -153,10 +153,10 @@ namespace DotNet.Business
                 }
                 //return DbUtil.GetDataTableByPage(DbHelper, recordCount, pageNo, pageSize, tableName, dbParameters, sortExpression, sortDirection);
                 //Troy 20160521 自定义View分页怎能没有查询条件带入
-                return DbUtil.GetDataTableByPage(dbHelper, recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
+                return dbHelper.GetDataTableByPage(recordCount, pageNo, pageSize, tableName, condition, dbParameters, sortExpression, sortDirection);
             }
             // 这个是调用存储过程的方法
-            return DbUtil.GetDataTableByPage(dbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+            return dbHelper.GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
         #endregion
     }

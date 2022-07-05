@@ -105,7 +105,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
             };
-            userId = DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogonEntity.FieldUserId);
+            userId = DbHelper.GetProperty(CurrentTableName, parameters, BaseUserLogonEntity.FieldUserId);
             result = !string.IsNullOrEmpty(userId);
 
             return result;
@@ -134,7 +134,7 @@ namespace DotNet.Business
                 {
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userInfo.Id)
                 };
-                result = DbUtil.GetProperty(dbHelper, userLogonEntityTableName, parameters, BaseUserLogonEntity.FieldOpenId);
+                result = dbHelper.GetProperty(userLogonEntityTableName, parameters, BaseUserLogonEntity.FieldOpenId);
                 dbHelper.Close();
             }
 
@@ -153,7 +153,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
             };
-            return DbUtil.GetProperty(DbHelper, CurrentTableName, parameters, BaseUserLogonEntity.FieldUserId);
+            return DbHelper.GetProperty(CurrentTableName, parameters, BaseUserLogonEntity.FieldUserId);
         }
         #endregion
 

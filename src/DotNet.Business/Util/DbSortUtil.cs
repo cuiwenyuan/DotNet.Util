@@ -81,7 +81,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sequence)
             };
-            return DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            return dbHelper.SetProperty(tableName, whereParameters, parameters);
         }
         #endregion
 
@@ -113,7 +113,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sequence)
             };
-            return DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            return dbHelper.SetProperty(tableName, whereParameters, parameters);
         }
 
 
@@ -135,13 +135,13 @@ namespace DotNet.Business
                 {
                     new KeyValuePair<string, object>(BaseUtil.FieldId, id)
                 };
-            var sortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var sortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
             // 目标主键的排序码
             parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldId, targetId)
             };
-            var targetSortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var targetSortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
 
             // 以下方法，在MySQL里不能正常运行，虽然效率是很高
             // 设置要移动的主键的排序码（注：少读取数据库一次，提高主键运行效率）
@@ -162,7 +162,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, targetSortCode)
             };
             // 设置目标主键的排序码
-            result += DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            result += dbHelper.SetProperty(tableName, whereParameters, parameters);
             whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldId, targetId)
@@ -172,7 +172,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode)
             };
             // 设置目标主键的排序码
-            result += DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            result += dbHelper.SetProperty(tableName, whereParameters, parameters);
             return result;
         }
         #endregion
@@ -200,7 +200,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sequence)
             };
-            return DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            return dbHelper.SetProperty(tableName, whereParameters, parameters);
         }
         #endregion
 
@@ -232,7 +232,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sequence)
             };
-            return DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            return dbHelper.SetProperty(tableName, whereParameters, parameters);
         }
 
         //以下是通过数据库底层进行排序位置交换（这些方法不常用）
@@ -334,14 +334,14 @@ namespace DotNet.Business
                 {
                     new KeyValuePair<string, object>(BaseUtil.FieldId, id)
                 };
-            var sortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var sortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
 
             parameters =
                 new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BaseUtil.FieldId, upId)
                 };
-            var upSortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var upSortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
             
             //把upId的SortCode更新为当前SortCode
             var whereParameters =
@@ -353,7 +353,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode)
             };
-            DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            dbHelper.SetProperty(tableName, whereParameters, parameters);
 
             //把当前的SortCode更新为upId的upSortCode
             whereParameters =
@@ -365,7 +365,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, upSortCode)
             };
-            result = DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            result = dbHelper.SetProperty(tableName, whereParameters, parameters);
             return result;
         }
         #endregion
@@ -481,13 +481,13 @@ namespace DotNet.Business
                 {
                     new KeyValuePair<string, object>(BaseUtil.FieldId, id)
                 };
-            var sortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var sortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
             parameters =
                 new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BaseUtil.FieldId, downId)
                 };
-            var downSortCode = DbUtil.GetProperty(dbHelper, tableName, parameters, BaseUtil.FieldSortCode);
+            var downSortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
 
             //把downId的SortCode更新为当前SortCode
             var whereParameters = new List<KeyValuePair<string, object>>
@@ -498,7 +498,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode)
             };
-            DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            dbHelper.SetProperty(tableName, whereParameters, parameters);
 
             //把当前的SortCode更新为downId的downSortCode
             whereParameters =
@@ -510,7 +510,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, downSortCode)
             };
-            result = DbUtil.SetProperty(dbHelper, tableName, whereParameters, parameters);
+            result = dbHelper.SetProperty(tableName, whereParameters, parameters);
             return result;
         }
         #endregion
