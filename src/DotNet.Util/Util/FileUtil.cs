@@ -446,7 +446,7 @@ namespace DotNet.Util
         public static string BytesToReadableSize(long number)
         {
             double last = 1;
-            for (int i = 0; i < Suffixes.Length; i++)
+            for (var i = 0; i < Suffixes.Length; i++)
             {
                 var current = Math.Pow(1024, i + 1);
                 var temp = number / current;
@@ -615,7 +615,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static decimal GetDirectorySize(string dirPath)
         {
-            decimal result = 0M;
+            var result = 0M;
             if (Directory.Exists(dirPath))
             {
                 var di = new DirectoryInfo(dirPath);

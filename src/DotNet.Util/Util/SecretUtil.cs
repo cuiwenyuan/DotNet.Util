@@ -188,11 +188,11 @@ namespace DotNet.Util
 
                 #region 方法3
                 //1.创建一个MD5对象
-                MD5 md5 = MD5.Create();
+                var md5 = MD5.Create();
                 //2.把字符串变一个byte[]
-                byte[] buffer = Encoding.UTF8.GetBytes(password);
+                var buffer = Encoding.UTF8.GetBytes(password);
                 //3.将一个byte[]通过MD5计算到一个新的byte[]，新的byte[]就是计算md5后的结果。
-                byte[] md5Buffer = md5.ComputeHash(buffer);
+                var md5Buffer = md5.ComputeHash(buffer);
                 //释放资源
                 md5.Clear();
                 //4.将计算后的结果直接显示为字符串
@@ -226,11 +226,11 @@ namespace DotNet.Util
             {
                 #region 方法3
                 //1.创建一个MD5对象
-                SHA1 sha1 = SHA1.Create();
+                var sha1 = SHA1.Create();
                 //2.把字符串变一个byte[]
-                byte[] buffer = Encoding.UTF8.GetBytes(password);
+                var buffer = Encoding.UTF8.GetBytes(password);
                 //3.将一个byte[]通过SHA1计算到一个新的byte[]，新的byte[]就是计算SHA1后的结果。
-                byte[] sha1Buffer = sha1.ComputeHash(buffer);
+                var sha1Buffer = sha1.ComputeHash(buffer);
                 //释放资源
                 sha1.Clear();
                 //sha1.Dispose();//释放当前实例使用的所有资源

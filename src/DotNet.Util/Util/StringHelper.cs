@@ -38,7 +38,7 @@ namespace DotNet.Util
         {
             var sb = Pool.StringBuilder.Get();
             var rd = new Random();
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 sb.Append(_constant[rd.Next(_constant.Length)]);
             }
@@ -54,7 +54,7 @@ namespace DotNet.Util
         {
             var sb = Pool.StringBuilder.Get();
             var rd = new Random();
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 sb.Append(_constant[rd.Next(10)]);
             }

@@ -47,15 +47,15 @@ namespace DotNet.Util
             //画噪线 
             for (var i = 0; i < 4; i++)
             {
-                int x1 = r.Next(bmp.Width);
-                int y1 = r.Next(bmp.Height);
-                int x2 = r.Next(bmp.Width);
-                int y2 = r.Next(bmp.Height);
+                var x1 = r.Next(bmp.Width);
+                var y1 = r.Next(bmp.Height);
+                var x2 = r.Next(bmp.Width);
+                var y2 = r.Next(bmp.Height);
                 g.DrawLine(new Pen(_colors.RandomGet()), x1, y1, x2, y2);
             }
 
             //画验证码字符串 
-            for (int i = 0; i < code.Length; i++)
+            for (var i = 0; i < code.Length; i++)
             {
                 g.DrawString(code[i].ToString(), font, new SolidBrush(_colors.RandomGet()), (float)i * 16 + 2, 8);
             }

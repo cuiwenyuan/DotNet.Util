@@ -52,7 +52,7 @@ namespace DotNet.Util
             var returnValue = defaultValue;
             if (targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out int result)) returnValue = result;
+                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -66,7 +66,7 @@ namespace DotNet.Util
             int? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out int result)) returnValue = result;
+                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -80,7 +80,7 @@ namespace DotNet.Util
             Byte returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out Byte result)) returnValue = result;
+                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -94,7 +94,7 @@ namespace DotNet.Util
             Byte? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out Byte result)) returnValue = result;
+                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -108,7 +108,7 @@ namespace DotNet.Util
             var returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out Int32 result)) returnValue = result;
+                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -122,7 +122,7 @@ namespace DotNet.Util
             Int32? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out Int32 result)) returnValue = result;
+                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -136,7 +136,7 @@ namespace DotNet.Util
             Int64 returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out Int64 result)) returnValue = result;
+                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -150,7 +150,7 @@ namespace DotNet.Util
             Int64? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out Int64 result)) returnValue = result;
+                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -164,7 +164,7 @@ namespace DotNet.Util
             long returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out long result)) returnValue = result;
+                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -178,7 +178,7 @@ namespace DotNet.Util
             long? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out long result)) returnValue = result;
+                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -192,7 +192,7 @@ namespace DotNet.Util
             Double returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out Double result)) returnValue = result;
+                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -206,7 +206,7 @@ namespace DotNet.Util
             Double? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out Double result)) returnValue = result;
+                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -220,7 +220,7 @@ namespace DotNet.Util
             float returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out float result)) returnValue = result;
+                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -234,7 +234,7 @@ namespace DotNet.Util
             float? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out float result)) returnValue = result;
+                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -248,7 +248,7 @@ namespace DotNet.Util
             decimal returnValue = 0;
             if (targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out decimal result)) returnValue = result;
+                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -262,7 +262,7 @@ namespace DotNet.Util
             decimal? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out decimal result)) returnValue = result;
+                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -292,7 +292,7 @@ namespace DotNet.Util
             DateTime? returnValue = null;
             if (targetValue != DBNull.Value)
             {
-                if (DateTime.TryParse(targetValue.ToString(), out DateTime dt)) returnValue = dt;
+                if (DateTime.TryParse(targetValue.ToString(), out var dt)) returnValue = dt;
             }
 
             return returnValue;
@@ -348,8 +348,8 @@ namespace DotNet.Util
             }
             if (!type.IsInterface && type.IsGenericType)
             {
-                Type innerType = type.GetGenericArguments()[0];
-                object innerValue = ChangeType(value, innerType);
+                var innerType = type.GetGenericArguments()[0];
+                var innerValue = ChangeType(value, innerType);
                 return Activator.CreateInstance(type, new object[] { innerValue });
             }
             if (value is string && type == typeof(Guid)) return new Guid(value as string);

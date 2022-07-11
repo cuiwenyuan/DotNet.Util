@@ -43,7 +43,7 @@ public partial class BasePage : System.Web.UI.Page
         var enumerator = HttpRuntime.Cache.GetEnumerator();
         GC.Collect();
         GC.WaitForFullGCComplete();
-        long start = GC.GetTotalMemory(true);
+        var start = GC.GetTotalMemory(true);
         //循环读取
         while (enumerator.MoveNext())
         {
@@ -53,8 +53,8 @@ public partial class BasePage : System.Web.UI.Page
                 row["CacheKey"] = enumerator.Key.ToString();
                 GC.Collect();
                 GC.WaitForFullGCComplete();
-                long end = GC.GetTotalMemory(true);
-                long size = end - start;
+                var end = GC.GetTotalMemory(true);
+                var size = end - start;
                 start = end;
                 row["CacheSize"] = size;
             }

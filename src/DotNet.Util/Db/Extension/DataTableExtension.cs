@@ -66,7 +66,7 @@ namespace DotNet.Util
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    T entity = new T();
+                    var entity = new T();
                     foreach (var pi in properties)
                     {
                         var typeName = pi.Name;

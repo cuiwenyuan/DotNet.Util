@@ -27,7 +27,7 @@ namespace DotNet.Util
             {
                 // open the stream...
                 fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                XmlSerializer serializer = new XmlSerializer(type);
+                var serializer = new XmlSerializer(type);
                 return serializer.Deserialize(fs);
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace DotNet.Util
             try
             {
                 fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                XmlSerializer serializer = new XmlSerializer(obj.GetType());
+                var serializer = new XmlSerializer(obj.GetType());
                 serializer.Serialize(fs, obj);
             }
             catch (Exception ex)

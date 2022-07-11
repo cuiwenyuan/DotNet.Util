@@ -453,7 +453,7 @@ namespace DotNet.Util
                             var dc = new DataColumn(field.Value);
                             dt.Columns.Add(dc);
                             //映射CSV的字段列索引
-                            for (int i = 0; i < headColumnCount; i++)
+                            for (var i = 0; i < headColumnCount; i++)
                             {
                                 if (ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, i);
                             }
@@ -462,7 +462,7 @@ namespace DotNet.Util
                     else
                     {
                         //根据第一行实际列数，进行匹配映射来创建
-                        for (int i = 0; i < headColumnCount; i++)
+                        for (var i = 0; i < headColumnCount; i++)
                         {
                             var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList));
                             dt.Columns.Add(dc);
@@ -493,7 +493,7 @@ namespace DotNet.Util
                         else
                         {
                             //根据第一行实际列数，进行匹配映射来创建
-                            for (int i = 0; i < headColumnCount; i++)
+                            for (var i = 0; i < headColumnCount; i++)
                             {
                                 var dc = new DataColumn(ConvertColumnName("C" + (i + 1), fieldList: fieldList));
                                 dt.Columns.Add(dc);
@@ -513,7 +513,7 @@ namespace DotNet.Util
                             var dr = dt.NewRow();
                             foreach (var d in dicFieldIndex)
                             {
-                                for (int j = 0; j < lineColumnCount; j++)
+                                for (var j = 0; j < lineColumnCount; j++)
                                 {
                                     if (j == d.Value)
                                     {
@@ -530,7 +530,7 @@ namespace DotNet.Util
                         if (lineColumnCount == headColumnCount)
                         {
                             var dr = dt.NewRow();
-                            for (int j = 0; j < lineColumnCount; j++)
+                            for (var j = 0; j < lineColumnCount; j++)
                             {
                                 dr[j] = ReadSpecialCharacter(arr, j, separator);
                             }

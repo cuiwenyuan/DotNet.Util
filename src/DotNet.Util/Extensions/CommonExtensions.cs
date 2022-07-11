@@ -25,7 +25,7 @@ namespace DotNet.Util
             if (s == null || s == DBNull.Value)
                 return 0;
 
-            byte.TryParse(s.ToString(), out byte result);
+            byte.TryParse(s.ToString(), out var result);
             return result;
         }
 
@@ -39,7 +39,7 @@ namespace DotNet.Util
             if (s == null || s == DBNull.Value)
                 return default;
 
-            char.TryParse(s.ToString(), out char result);
+            char.TryParse(s.ToString(), out var result);
             return result;
         }
 
@@ -53,7 +53,7 @@ namespace DotNet.Util
             if (s == null || s == DBNull.Value)
                 return 0;
 
-            short.TryParse(s.ToString(), out short result);
+            short.TryParse(s.ToString(), out var result);
             return result;
         }
 
@@ -69,7 +69,7 @@ namespace DotNet.Util
             if (s == null || s == DBNull.Value)
                 return DateTime.MinValue;
 
-            DateTime.TryParse(s.ToString(), out DateTime result);
+            DateTime.TryParse(s.ToString(), out var result);
             return result;
         }
 
@@ -97,7 +97,7 @@ namespace DotNet.Util
             if (s.Equals(0) || s.Equals("0") || s.Equals("false") || s.Equals("否") || s.Equals("no"))
                 return false;
 
-            Boolean.TryParse(s.ToString(), out bool result);
+            Boolean.TryParse(s.ToString(), out var result);
             return result;
         }
 
@@ -108,7 +108,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Guid ToGuid(this string s)
         {
-            if (s.NotNull() && Guid.TryParse(s, out Guid val))
+            if (s.NotNull() && Guid.TryParse(s, out var val))
                 return val;
 
             return Guid.Empty;
@@ -121,7 +121,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Guid ToGuid(this object s)
         {
-            if (s != null && Guid.TryParse(s.ToString(), out Guid val))
+            if (s != null && Guid.TryParse(s.ToString(), out var val))
                 return val;
 
             return Guid.Empty;

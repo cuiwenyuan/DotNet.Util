@@ -52,7 +52,7 @@ namespace DotNet.Util
             if (string.IsNullOrEmpty(s))
                 return s;
 
-            string str = s.First().ToString().ToLower() + s.Substring(1);
+            var str = s.First().ToString().ToLower() + s.Substring(1);
             return str;
         }
 
@@ -66,7 +66,7 @@ namespace DotNet.Util
             if (string.IsNullOrEmpty(s))
                 return s;
 
-            string str = s.First().ToString().ToUpper() + s.Substring(1);
+            var str = s.First().ToString().ToUpper() + s.Substring(1);
             return str;
         }
 
