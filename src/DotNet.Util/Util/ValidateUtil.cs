@@ -629,7 +629,7 @@ namespace DotNet.Util
             if (code.Length >= 11)
             {
                 code = code.Cut(11);
-                for (int i = 0; i < code.Length; i++)
+                for (var i = 0; i < code.Length; i++)
                 {
                     if (i % 2 == 0)
                     {
@@ -648,7 +648,7 @@ namespace DotNet.Util
 
         private static bool IsDigitsOnly(string str)
         {
-            foreach (char c in str)
+            foreach (var c in str)
             {
                 if (c < '0' || c > '9')
                     return false;

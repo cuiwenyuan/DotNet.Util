@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		<date>2011.03.13</date>
     /// </author>
     /// </summary>
-    public partial class BaseUserScopeManager : BaseManager, IBaseManager
+    public partial class BaseUserScopeManager : BaseManager
     {
         ////
         ////

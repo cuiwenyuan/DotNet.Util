@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		<date>2008.03.28</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionManager : BaseManager, IBaseManager
+    public partial class BasePermissionManager : BaseManager
     {
         #region CheckPermission
         /// <summary>

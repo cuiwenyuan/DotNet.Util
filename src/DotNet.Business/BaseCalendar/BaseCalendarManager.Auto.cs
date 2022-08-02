@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///     <date>2020-03-22</date>
     /// </author>
     /// </summary>
-    public partial class BaseCalendarManager : BaseManager, IBaseManager
+    public partial class BaseCalendarManager : BaseManager
     {
         /// <summary>
         /// 构造函数
@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseCalendarEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseCalendarEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseCalendarEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

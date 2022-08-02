@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		<date>2021-01-12</date>
     /// </author>
     /// </summary>
-    public partial class BaseUserRoleManager : BaseManager, IBaseManager
+    public partial class BaseUserRoleManager : BaseManager
     {
         #region 新增或激活 AddOrActive
         /// <summary>

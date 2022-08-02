@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///	<date>2016-12-18</date>
     /// </author> 
     /// </summary>
-    public partial class BaseMessageQueueManager : BaseManager, IBaseManager
+    public partial class BaseMessageQueueManager : BaseManager
     {
         #region 删除缓存
 

@@ -83,7 +83,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static T Get<T>(string cacheKey)
         {
-            object obj = Get(cacheKey);
+            var obj = Get(cacheKey);
             return obj == null ? default(T) : (T)obj;
         }
 

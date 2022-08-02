@@ -350,9 +350,9 @@ namespace DotNet.Util
         {
             try
             {
-                MemoryStream ms = new MemoryStream();
+                var ms = new MemoryStream();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                byte[] arr = new byte[ms.Length];
+                var arr = new byte[ms.Length];
                 ms.Position = 0;
                 ms.Read(arr, 0, (int)ms.Length);
                 ms.Close();
@@ -374,9 +374,9 @@ namespace DotNet.Util
         {
             try
             {
-                byte[] array = Convert.FromBase64String(inputStr);
-                MemoryStream ms = new MemoryStream(array);
-                Bitmap bitmap = new Bitmap(ms);
+                var array = Convert.FromBase64String(inputStr);
+                var ms = new MemoryStream(array);
+                var bitmap = new Bitmap(ms);
                 ms.Close();
                 return bitmap;
             }

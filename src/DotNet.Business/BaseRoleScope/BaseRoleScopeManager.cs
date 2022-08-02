@@ -22,7 +22,7 @@ namespace DotNet.Business
     ///		<date>2008.05.24</date>
     /// </author>
     /// </summary>
-    public partial class BaseRoleScopeManager : BaseManager, IBaseManager
+    public partial class BaseRoleScopeManager : BaseManager
     {
         /// <summary>
         /// 构造函数

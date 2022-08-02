@@ -379,7 +379,7 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(fullPhysicalUpLoadPath);
             }
-            int fileSize = 0;
+            var fileSize = 0;
             //保存文件
             var fs = new FileStream(newPhysicalFilePath, FileMode.Create);
             var bw = new BinaryWriter(fs);

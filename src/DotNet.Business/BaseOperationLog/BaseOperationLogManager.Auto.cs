@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2021-11-08</date>
     /// </author>
     /// </summary>
-    public partial class BaseOperationLogManager : BaseManager, IBaseManager
+    public partial class BaseOperationLogManager : BaseManager
     {
         /// <summary>
         /// 构造函数
@@ -44,7 +44,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseOperationLogEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseOperationLogEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseOperationLogEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

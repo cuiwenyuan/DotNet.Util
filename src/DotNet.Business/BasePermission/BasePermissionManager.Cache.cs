@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///		<date>2015.07.10</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionManager : BaseManager, IBaseManager
+    public partial class BasePermissionManager : BaseManager
     {
         /// <summary>
         /// 是否验证

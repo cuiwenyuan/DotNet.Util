@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///	<date>2020-02-12</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserOAuthManager : BaseManager, IBaseManager
+    public partial class BaseUserOAuthManager : BaseManager
     {
         #region 是否唯一的
 

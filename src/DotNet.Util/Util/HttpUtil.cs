@@ -486,12 +486,12 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\" + folder + "\\");
             }
-            bool result = false;
+            var result = false;
             WebResponse response = null;
             Stream stream = null;
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(pictureUrl);
+                var request = (HttpWebRequest)WebRequest.Create(pictureUrl);
                 if (timeOut != -1) request.Timeout = timeOut;
                 response = request.GetResponse();
                 stream = response.GetResponseStream();
@@ -512,7 +512,7 @@ namespace DotNet.Util
         private static bool SaveBinaryFile(WebResponse response, string savePath)
         {
             var result = false;
-            byte[] buffer = new byte[1024];
+            var buffer = new byte[1024];
             Stream outStream = null;
             Stream inStream = null;
             try
@@ -550,7 +550,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
             if (!string.IsNullOrEmpty(contentType))
             {
@@ -564,16 +564,16 @@ namespace DotNet.Util
 
             try
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(postData ?? "");
-                using (Stream sendStream = request.GetRequestStream())
+                var bytes = Encoding.UTF8.GetBytes(postData ?? "");
+                using (var sendStream = request.GetRequestStream())
                 {
                     sendStream.Write(bytes, 0, bytes.Length);
                 }
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Stream responseStream = response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                    var responseStream = response.GetResponseStream();
+                    var streamReader = new StreamReader(responseStream, Encoding.UTF8);
                     return streamReader.ReadToEndAsync();
                 }
             }
@@ -593,16 +593,16 @@ namespace DotNet.Util
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 if (headers != null)
                 {
                     foreach (var header in headers)
                         request.Headers[header.Key] = header.Value;
                 }
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Stream responseStream = response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                    var responseStream = response.GetResponseStream();
+                    var streamReader = new StreamReader(responseStream, Encoding.UTF8);
                     return streamReader.ReadToEndAsync();
                 }
             }

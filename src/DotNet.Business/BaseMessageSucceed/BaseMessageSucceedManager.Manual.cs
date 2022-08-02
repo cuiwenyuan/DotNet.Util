@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///	<date>2016-12-18</date>
     /// </author> 
     /// </summary>
-    public partial class BaseMessageSucceedManager : BaseManager, IBaseManager
+    public partial class BaseMessageSucceedManager : BaseManager
     {
         #region 高级查询
 

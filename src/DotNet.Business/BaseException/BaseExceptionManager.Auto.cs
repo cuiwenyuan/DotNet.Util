@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///     <date>2021-09-28</date>
     /// </author>
     /// </summary>
-    public partial class BaseExceptionManager : BaseManager, IBaseManager
+    public partial class BaseExceptionManager : BaseManager
     {
         /// <summary>
         /// 构造函数
@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseExceptionEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseExceptionEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseExceptionEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

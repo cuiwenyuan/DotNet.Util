@@ -33,7 +33,7 @@ namespace DotNet.Util
             var type = value.GetType();
             var info = type.GetField(value.ToString());
             var key = type.FullName + info.Name;
-            if (!DescriptionCache.TryGetValue(key, out string desc))
+            if (!DescriptionCache.TryGetValue(key, out var desc))
             {
                 var attrs = info.GetCustomAttributes(typeof(DescriptionAttribute), true);
                 if (attrs.Length < 1)
@@ -88,7 +88,7 @@ namespace DotNet.Util
             {
                 #region ==忽略UnKnown属性==
 
-                if (!ListCacheNoIgnore.TryGetValue(enumType.TypeHandle, out List<OptionResultModel> list))
+                if (!ListCacheNoIgnore.TryGetValue(enumType.TypeHandle, out var list))
                 {
                     list = Enum.GetValues(enumType).Cast<Enum>()
                         .Where(m => !m.ToString().Equals("UnKnown")).Select(x => new OptionResultModel
@@ -108,7 +108,7 @@ namespace DotNet.Util
             {
                 #region ==包含UnKnown选项==
 
-                if (!ListCache.TryGetValue(enumType.TypeHandle, out List<OptionResultModel> list))
+                if (!ListCache.TryGetValue(enumType.TypeHandle, out var list))
                 {
                     list = Enum.GetValues(enumType).Cast<Enum>().Select(x => new OptionResultModel
                     {

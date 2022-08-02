@@ -25,7 +25,7 @@ namespace DotNet.Business
     ///		<date>2018-09-07</date>
     /// </author>
     /// </summary>
-    public partial class BaseUserRoleManager : BaseManager, IBaseManager
+    public partial class BaseUserRoleManager : BaseManager
     {
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUserRoleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
@@ -79,11 +79,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             if (!string.IsNullOrEmpty(searchKey))
             {

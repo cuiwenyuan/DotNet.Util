@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2020-03-22</date>
     /// </author>
     /// </summary>
-    public partial class BaseMessageSucceedManager : BaseManager, IBaseManager
+    public partial class BaseMessageSucceedManager : BaseManager
     {
         /// <summary>
         /// 构造函数
@@ -44,7 +44,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseMessageSucceedEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseMessageSucceedEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseMessageSucceedEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

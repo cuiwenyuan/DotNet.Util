@@ -7,6 +7,7 @@ using System.Data;
 namespace DotNet.Business
 {
     using Model;
+    using System;
     using Util;
 
     /// <summary>
@@ -74,11 +75,11 @@ namespace DotNet.Business
             //创建日期
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))
@@ -147,11 +148,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //子系统编码
             if (!string.IsNullOrEmpty(systemCode))

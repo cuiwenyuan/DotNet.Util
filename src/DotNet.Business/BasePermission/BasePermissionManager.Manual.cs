@@ -28,7 +28,7 @@ namespace DotNet.Business
     ///		<date>2021.12.06</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionManager : BaseManager, IBaseManager
+    public partial class BasePermissionManager : BaseManager
     {
         #region public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null) 获用户拥有的操作权限列表
         /// <summary>

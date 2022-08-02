@@ -188,11 +188,11 @@ namespace DotNet.Business
             //创建日期
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))
