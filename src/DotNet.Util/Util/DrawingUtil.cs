@@ -15,17 +15,6 @@ namespace DotNet.Util
     {//颜色列表，用于验证码、噪线、噪点 
         private readonly Color[] _colors = new[] { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
 
-        private readonly StringHelper _stringHelper;
-
-        /// <summary>
-        /// DrawingUtil
-        /// </summary>
-        /// <param name="stringHelper"></param>
-        public DrawingUtil(StringHelper stringHelper)
-        {
-            _stringHelper = stringHelper;
-        }
-
         /// <summary>
         /// 绘制验证码图片，返回图片的字节数组
         /// </summary>
@@ -34,7 +23,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public byte[] DrawVerifyCode(out string code, int length = 6)
         {
-            code = _stringHelper.GenerateRandomNumber(length);
+            code = RandomUtil.GetNumber(length);
             //创建画布
             var bmp = new Bitmap(4 + 16 * code.Length, 40);
             //字体
