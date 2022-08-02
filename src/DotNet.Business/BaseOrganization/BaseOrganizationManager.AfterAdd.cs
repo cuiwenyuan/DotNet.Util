@@ -20,7 +20,7 @@ namespace DotNet.Business
     ///		<date>2016.02.02</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizationManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {
         /// <summary>
         /// 添加之后，需要重新刷新缓存，否则其他读取数据的地方会乱了，或者不及时了

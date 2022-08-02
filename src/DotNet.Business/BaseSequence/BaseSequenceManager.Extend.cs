@@ -42,7 +42,7 @@ namespace DotNet.Business
     ///		<date>2010.01.25</date>
     /// </author> 
     /// </summary>
-    public partial class BaseSequenceManager : BaseManager, IBaseManager
+    public partial class BaseSequenceManager : BaseManager
     {
         /// <summary>
         /// 是否前缀补零

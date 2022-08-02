@@ -43,13 +43,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string SelectExcelFile()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Excel文件(*.XLS)|*.XLS";
 
             openFileDialog.Multiselect = false;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string filePath = openFileDialog.FileNames[0];
+                var filePath = openFileDialog.FileNames[0];
                 return filePath;
             }
             else
@@ -64,9 +64,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string OpenXlsXlsxFile()
         {
-            string filePath = string.Empty;
+            var filePath = string.Empty;
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Excel 工作簿(*.xls,*.xlsx)|*.xls;*.xlsx|Excel 97-2003 工作簿(*.xls)|*.xls|Excel 2010 工作簿(*.xlsx)|*.xlsx|所有文件|*.*";
             // openFileDialog.Filter = "Excel 97-2003 工作簿(*.xls)|*.xls|Excel2010文件(*.xlsx)|*.xlsx|所有文件|*.*";
             openFileDialog.FilterIndex = 0;
@@ -86,13 +86,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string SelectTxtFile()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "文本文件(*.txt)|*.txt";
 
             openFileDialog.Multiselect = false;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string filePath = openFileDialog.FileNames[0];
+                var filePath = openFileDialog.FileNames[0];
                 return filePath;
             }
             else
@@ -118,7 +118,7 @@ namespace DotNet.Util
             var dt = new DataTable();
             //HSSFWorkbook wb;
             IWorkbook wb;
-            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 //只支持2007及以下低版本
                 //wb = new HSSFWorkbook(file);
@@ -147,7 +147,7 @@ namespace DotNet.Util
                 {
                     columnName = headerRow.GetCell(i).StringCellValue;
                 }
-                DataColumn column = new DataColumn(columnName);
+                var column = new DataColumn(columnName);
                 dt.Columns.Add(column);
             }
 
@@ -186,7 +186,7 @@ namespace DotNet.Util
         /// <returns>提示信息</returns>
         public static string CheckColumnExist(string columnNames, string needCheckColumnName)
         {
-            string result = string.Empty;
+            var result = string.Empty;
             if (!needCheckColumnName.Contains(columnNames))
             {
                 result += "\"" + columnNames + "\"这一列不存在，需添加此列。\r\n";
@@ -205,9 +205,9 @@ namespace DotNet.Util
         public static string CheckIsNullOrEmpty(DataTable dt, string[] checkStrings)
         {
             var sb = Pool.StringBuilder.Get();
-            for (int j = 0; j < dt.Rows.Count; j++)
+            for (var j = 0; j < dt.Rows.Count; j++)
             {
-                for (int i = 0; i < checkStrings.Length; i++)
+                for (var i = 0; i < checkStrings.Length; i++)
                 {
                     if (string.IsNullOrEmpty(dt.Rows[j][checkStrings[i]].ToString()))
                     {
@@ -229,7 +229,7 @@ namespace DotNet.Util
         public static string DataTableColumn2String(DataTable dt)
         {
             var sb = Pool.StringBuilder.Get();
-            for (int i = 0; i < dt.Columns.Count; i++)
+            for (var i = 0; i < dt.Columns.Count; i++)
             {
                 if (i > 0)
                 {

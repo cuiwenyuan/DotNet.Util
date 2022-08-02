@@ -29,7 +29,7 @@ namespace DotNet.Business
     ///	<date>2021-10-26</date>
     /// </author> 
     /// </summary>
-    public partial class BaseDictionaryItemManager : BaseManager, IBaseManager
+    public partial class BaseDictionaryItemManager : BaseManager
     {
         #region UniqueAdd
         /// <summary>
@@ -173,7 +173,7 @@ namespace DotNet.Business
                 var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseDictionaryItemEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseDictionaryItemEntity).FieldDescription("CurrentTableName"),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,

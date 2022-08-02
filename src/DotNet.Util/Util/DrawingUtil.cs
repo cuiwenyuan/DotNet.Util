@@ -15,17 +15,6 @@ namespace DotNet.Util
     {//颜色列表，用于验证码、噪线、噪点 
         private readonly Color[] _colors = new[] { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
 
-        private readonly StringHelper _stringHelper;
-
-        /// <summary>
-        /// DrawingUtil
-        /// </summary>
-        /// <param name="stringHelper"></param>
-        public DrawingUtil(StringHelper stringHelper)
-        {
-            _stringHelper = stringHelper;
-        }
-
         /// <summary>
         /// 绘制验证码图片，返回图片的字节数组
         /// </summary>
@@ -34,7 +23,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public byte[] DrawVerifyCode(out string code, int length = 6)
         {
-            code = _stringHelper.GenerateRandomNumber(length);
+            code = RandomUtil.GetNumber(length);
             //创建画布
             var bmp = new Bitmap(4 + 16 * code.Length, 40);
             //字体
@@ -47,15 +36,15 @@ namespace DotNet.Util
             //画噪线 
             for (var i = 0; i < 4; i++)
             {
-                int x1 = r.Next(bmp.Width);
-                int y1 = r.Next(bmp.Height);
-                int x2 = r.Next(bmp.Width);
-                int y2 = r.Next(bmp.Height);
+                var x1 = r.Next(bmp.Width);
+                var y1 = r.Next(bmp.Height);
+                var x2 = r.Next(bmp.Width);
+                var y2 = r.Next(bmp.Height);
                 g.DrawLine(new Pen(_colors.RandomGet()), x1, y1, x2, y2);
             }
 
             //画验证码字符串 
-            for (int i = 0; i < code.Length; i++)
+            for (var i = 0; i < code.Length; i++)
             {
                 g.DrawString(code[i].ToString(), font, new SolidBrush(_colors.RandomGet()), (float)i * 16 + 2, 8);
             }

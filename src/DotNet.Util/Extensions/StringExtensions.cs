@@ -54,7 +54,7 @@ namespace DotNet.Util
         public static DateTime GetTimeSpmpToDate(this object timeStamp)
         {
             if (timeStamp == null) return dateStart;
-            DateTime dateTime = new DateTime(longTime + Convert.ToInt64(timeStamp) * samllTime, DateTimeKind.Utc).ToLocalTime();
+            var dateTime = new DateTime(longTime + Convert.ToInt64(timeStamp) * samllTime, DateTimeKind.Utc).ToLocalTime();
             return dateTime;
         }
         //public static string CreateHtmlParas(this string urlPath, int? userId = null)
@@ -75,7 +75,7 @@ namespace DotNet.Util
         {
             if (string.IsNullOrEmpty(str))
                 return false;
-            string Url = @"(http://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?";
+            var Url = @"(http://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?";
             return Regex.IsMatch(str, Url);
 
         }
@@ -107,7 +107,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool GetGuid(this string guid, out Guid outId)
         {
-            Guid emptyId = Guid.Empty;
+            var emptyId = Guid.Empty;
             return Guid.TryParse(guid, out outId);
         }
 
@@ -131,7 +131,7 @@ namespace DotNet.Util
         {
             if (obj == null)
                 return false;
-            bool reslut = Int32.TryParse(obj.ToString(), out int _number);
+            var reslut = Int32.TryParse(obj.ToString(), out var _number);
             return reslut;
 
         }
@@ -143,7 +143,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsDate(this object str)
         {
-            DateTime dateTime = DateTime.Now;
+            var dateTime = DateTime.Now;
             if (str.IsDate(out dateTime))
             {
                 if (dateTime.Year <= 1990)
@@ -179,11 +179,11 @@ namespace DotNet.Util
         {
             if (string.IsNullOrEmpty(str))
                 return false;
-            int precision = 32;
-            int scale = 5;
+            var precision = 32;
+            var scale = 5;
             try
             {
-                string[] numbers = formatString.Split(',');
+                var numbers = formatString.Split(',');
                 precision = Convert.ToInt32(numbers[0]);
                 scale = Convert.ToInt32(numbers[1]);
             }
@@ -204,7 +204,7 @@ namespace DotNet.Util
             {
                 return false;
             }
-            string pattern = @"(^\d{1," + precision + "}";
+            var pattern = @"(^\d{1," + precision + "}";
             if (scale > 0)
             {
                 pattern += @"\.\d{0," + scale + "}$)|" + pattern;
@@ -234,8 +234,8 @@ namespace DotNet.Util
         {
             if (obj == null)
                 return 0;
-            int _number = 0;
-            bool reslut = Int32.TryParse(obj.ToString(), out _number);
+            var _number = 0;
+            var reslut = Int32.TryParse(obj.ToString(), out _number);
             return _number;
 
         }
@@ -335,7 +335,7 @@ namespace DotNet.Util
 
             try
             {
-                string str = obj.ToString();
+                var str = obj.ToString();
                 if (str.IsNumber(25, 15)) return Convert.ToDecimal(obj);
                 else return str;
             }
@@ -354,7 +354,7 @@ namespace DotNet.Util
         {
             if (System.DBNull.Value.Equals(obj) || null == obj)
                 return null;
-            bool result = DateTime.TryParse(obj.ToString(), out DateTime dateTime);
+            var result = DateTime.TryParse(obj.ToString(), out var dateTime);
             if (!result)
                 return null;
             return dateTime;
@@ -395,7 +395,7 @@ namespace DotNet.Util
                 case "System.Decimal":
                     return ToDecimal(str);
                 case "System.DateTime":
-                    return ToDateTime(str);
+                    //return ToDateTime(str);
                 case "System.Guid":
                     return ToGuid(str);
             }
@@ -453,7 +453,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static short? ToInt16(this string value)
         {
-            if (short.TryParse(value, out short value2))
+            if (short.TryParse(value, out var value2))
             {
                 return value2;
             }
@@ -573,20 +573,6 @@ namespace DotNet.Util
             return null;
         }
 
-        /// <summary>
-        /// ToDateTime
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static DateTime? ToDateTime(this string value)
-        {
-            DateTime value2;
-            if (DateTime.TryParse(value, out value2))
-            {
-                return value2;
-            }
-            return null;
-        }
 
         /// <summary>
         /// ToInt32
@@ -631,8 +617,8 @@ namespace DotNet.Util
         public static string GenerateRandomNumber(this int length)
         {
             var sb = new StringBuilder(62);
-            Random rd = new Random();
-            for (int i = 0; i < length; i++)
+            var rd = new Random();
+            for (var i = 0; i < length; i++)
             {
                 sb.Append(randomConstant[rd.Next(62)]);
             }

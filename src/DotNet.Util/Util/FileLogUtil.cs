@@ -77,7 +77,7 @@ namespace DotNet.Util
                 Directory.CreateDirectory(logDir);
             }
             var fileNameKey = fileName.Substring(0, fileName.LastIndexOf("_") + 1);
-            string fileNamePattern = "*." + extension;
+            var fileNamePattern = "*." + extension;
             //var filePaths = Directory.GetFiles(logDir, fileNamePattern, SearchOption.TopDirectoryOnly).Where(s => s.Contains(fileNameKey)).ToList();
             var filePaths = Directory.GetFiles(logDir, fileNameKey+fileNamePattern, SearchOption.TopDirectoryOnly).ToList();
 

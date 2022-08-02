@@ -519,7 +519,7 @@ namespace DotNet.Util
             DateTime FirstofMonth;
             FirstofMonth = Convert.ToDateTime(day.Date.Year + "-" + day.Date.Month + "-" + 1);
 
-            int i = (int)FirstofMonth.Date.DayOfWeek;
+            var i = (int)FirstofMonth.Date.DayOfWeek;
             if (i == 0)
             {
                 i = 7;
@@ -599,7 +599,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static long GetTimeStamp(string dt, string precision = "s")
         {
-            long currentTicks = DateTime.Now.ToUniversalTime().Ticks;
+            var currentTicks = DateTime.Now.ToUniversalTime().Ticks;
             if (ValidateUtil.IsDateTime(dt))
             {
                 currentTicks = DateTime.Parse(dt).ToUniversalTime().Ticks;
@@ -655,22 +655,22 @@ namespace DotNet.Util
         /// <returns></returns>
         public static DateTime GetLocalTime(long timestamp, string precision = "s")
         {
-            DateTime converted = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            var converted = new DateTime(1970, 1, 1, 0, 0, 0, 0);
             if (precision.Equals("ms", StringComparison.OrdinalIgnoreCase))
             {
                 //毫秒
-                DateTime newDateTime = converted.AddMilliseconds(timestamp);
+                var newDateTime = converted.AddMilliseconds(timestamp);
                 return newDateTime.ToLocalTime();
             }
             else if (precision.Equals("s", StringComparison.OrdinalIgnoreCase))
             {
                 //秒
-                DateTime newDateTime = converted.AddSeconds(timestamp);
+                var newDateTime = converted.AddSeconds(timestamp);
                 return newDateTime.ToLocalTime();
             }
             else
             {
-                DateTime newDateTime = converted.AddSeconds(timestamp);
+                var newDateTime = converted.AddSeconds(timestamp);
                 return newDateTime.ToLocalTime();
             }
 

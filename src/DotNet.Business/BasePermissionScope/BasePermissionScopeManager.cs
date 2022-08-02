@@ -51,7 +51,7 @@ namespace DotNet.Business
     ///		<date>2007.03.03</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionScopeManager : BaseManager, IBaseManager
+    public partial class BasePermissionScopeManager : BaseManager
     {
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BasePermissionScopeEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
@@ -105,11 +105,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BasePermissionScopeEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BasePermissionScopeEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             if (!string.IsNullOrEmpty(searchKey))
             {

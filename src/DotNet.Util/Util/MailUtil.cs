@@ -67,9 +67,9 @@ namespace DotNet.Util
                             message.Attachments.Clear();
                             try
                             {
-                                string[] attachPath = attachmentPaths.Split(';');
+                                var attachPath = attachmentPaths.Split(';');
                                 System.Web.Mail.MailAttachment attachFile = null;
-                                foreach (string path in attachPath)
+                                foreach (var path in attachPath)
                                 {
                                     //string extName = Path.GetExtension(path).ToLower(); //获取扩展名
                                     //FileStream fs = new FileStream(HostingEnvironment.MapPath("/") + pathFileName, FileMode.Open, FileAccess.Read);
@@ -145,9 +145,9 @@ namespace DotNet.Util
                             message.Attachments.Clear();
                             try
                             {
-                                string[] attachPath = attachmentPaths.Split(';');
+                                var attachPath = attachmentPaths.Split(';');
                                 Attachment attachFile = null;
-                                foreach (string path in attachPath)
+                                foreach (var path in attachPath)
                                 {
                                     //string extName = Path.GetExtension(path).ToLower(); //获取扩展名  
                                     //FileStream fs = new FileStream(HostingEnvironment.MapPath("/") + pathFileName, FileMode.Open, FileAccess.Read);

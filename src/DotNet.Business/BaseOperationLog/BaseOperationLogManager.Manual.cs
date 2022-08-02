@@ -28,7 +28,7 @@ namespace DotNet.Business
     ///	<date>2021-11-08</date>
     /// </author> 
     /// </summary>
-    public partial class BaseOperationLogManager : BaseManager, IBaseManager
+    public partial class BaseOperationLogManager : BaseManager
     {
         #region 高级查询
         /// <summary>
@@ -86,11 +86,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseOperationLogEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseOperationLogEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseOperationLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseOperationLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             if (!string.IsNullOrEmpty(operation))
             {

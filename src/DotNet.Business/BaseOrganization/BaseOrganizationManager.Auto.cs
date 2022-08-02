@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///     <date>2021-09-26</date>
     /// </author>
     /// </summary>
-    public partial class BaseOrganizationManager : BaseManager, IBaseManager
+    public partial class BaseOrganizationManager : BaseManager
     {
         /// <summary>
         /// 构造函数
@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseOrganizationEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseOrganizationEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseOrganizationEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

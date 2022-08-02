@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///	<date>2016-07-20</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUploadLogManager : BaseManager, IBaseManager
+    public partial class BaseUploadLogManager : BaseManager
     {
         
     }

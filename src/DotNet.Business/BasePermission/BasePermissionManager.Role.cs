@@ -28,7 +28,7 @@ namespace DotNet.Business
     ///		<date>2016.02.25</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionManager : BaseManager, IBaseManager
+    public partial class BasePermissionManager : BaseManager
     {
         #region public static string[] GetPermissionIdsByCache(string systemCode, string[] roleIds)
         /// <summary>

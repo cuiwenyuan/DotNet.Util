@@ -153,7 +153,7 @@ namespace DotNet.Util
 
         private static Int16 GetRnd(Random seekRand)
         {
-            Int16 s = (Int16)seekRand.Next(1, 11);
+            var s = (Int16)seekRand.Next(1, 11);
             return s;
         }
     }

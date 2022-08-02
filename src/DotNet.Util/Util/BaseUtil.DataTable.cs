@@ -112,8 +112,8 @@ namespace DotNet.Util
             if (!string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
             {
                 filterExpression = fieldName + " = '" + fieldValue + "'";
-                DataRow[] row = dt.Select(filterExpression);
-                for (int i = 0; i < row.Length; i++)
+                var row = dt.Select(filterExpression);
+                for (var i = 0; i < row.Length; i++)
                 {
                     dtNew.ImportRow(row[i]);
                 }

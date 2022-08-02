@@ -21,7 +21,7 @@ namespace DotNet.Business
     ///		<date>2012.08.06</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionScopeManager : BaseManager, IBaseManager
+    public partial class BasePermissionScopeManager : BaseManager
     {
         /// <summary>
         /// 获取用户权限树
