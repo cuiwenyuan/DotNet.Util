@@ -68,6 +68,7 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region private static string AddWhere(string condition, string appendWhere)
 
         // 读取列表部分 填充IDataReader 常用
         /// <summary>
@@ -84,6 +85,11 @@ namespace DotNet.Util
             }
             return condition + BaseUtil.SqlLogicConditional + appendWhere;
         }
+
+        #endregion
+
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition)
+
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -95,6 +101,11 @@ namespace DotNet.Util
         {
             return ExecuteReader2(dbHelper, tableName, condition);
         }
+
+        #endregion
+
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition) where TModel : new()
+
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -107,6 +118,11 @@ namespace DotNet.Util
         {
             return ExecuteReader(dbHelper, tableName, condition).ToList<TModel>();
         }
+
+        #endregion
+
+        #region public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
+
         /// <summary>
         /// ExecuteReader2
         /// </summary>
@@ -122,6 +138,11 @@ namespace DotNet.Util
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
             return dbHelper.ExecuteReader(sql);
         }
+
+        #endregion
+
+        #region public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null) where TModel : new()
+
         /// <summary>
         /// ExecuteReader2
         /// </summary>
@@ -132,11 +153,15 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0,
-            string order = null) where TModel : new()
+        public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null) where TModel : new()
         {
             return ExecuteReader2(dbHelper, tableName, condition, topLimit, order).ToList<TModel>();
         }
+
+        #endregion
+
+        #region public static string ExecuteReaderQueryString(this IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
+
         /// <summary>
         /// ExecuteReaderQueryString
         /// </summary>
@@ -236,6 +261,8 @@ namespace DotNet.Util
             return sb.Put();
         }
 
+        #endregion
+
         #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
 
         /// <summary>
@@ -285,7 +312,9 @@ namespace DotNet.Util
         }
 
         #endregion
-        
+
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
+
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -307,6 +336,11 @@ namespace DotNet.Util
                 return dbHelper.ExecuteReader(sql);
             }
         }
+
+        #endregion
+
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
+
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -317,11 +351,14 @@ namespace DotNet.Util
         /// <param name="topLimit"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName,
-            List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, parameters, topLimit, order).ToList<TModel>();
         }
+
+        #endregion
+
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
 
         /// <summary>
         /// 参数化查询 
@@ -389,6 +426,10 @@ namespace DotNet.Util
                 return dbHelper.ExecuteReader(sb.Put());
             }
         }
+
+        #endregion
+
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ") where TModel : new()
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -401,12 +442,12 @@ namespace DotNet.Util
         /// <param name="order"></param>
         /// <param name="selectField"></param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName,
-            List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null,
-            string selectField = " * ") where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ") where TModel : new()
         {
             return ExecuteReader(dbHelper, tableName, parameters, conditions, topLimit, order, selectField)
                     .ToList<TModel>();
         }
+
+        #endregion
     }
 }

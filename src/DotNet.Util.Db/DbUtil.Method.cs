@@ -2,6 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using System;
 using System.Data;
 
 namespace DotNet.Util
@@ -173,26 +174,29 @@ namespace DotNet.Util
         public static void ExecuteCommandWithSplitter(string commandText, string splitter)
         {
             var startPos = 0;
-            do
+            if (!string.IsNullOrWhiteSpace(commandText))
             {
-                var lastPos = commandText.IndexOf(splitter, startPos);
-                var length = (lastPos > startPos ? lastPos : commandText.Length) - startPos;
-                var query = commandText.Substring(startPos, length);
+                do
+                {
+                    var lastPos = commandText.IndexOf(splitter, startPos, StringComparison.Ordinal);
+                    var length = (lastPos > startPos ? lastPos : commandText.Length) - startPos;
+                    var query = commandText.Substring(startPos, length);
 
-                if (query.Trim().Length > 0)
-                {
-                    ExecuteNonQuery(query, null, CommandType.Text);
-                }
+                    if (query.Trim().Length > 0)
+                    {
+                        ExecuteNonQuery(query, null, CommandType.Text);
+                    }
 
-                if (lastPos == -1)
-                {
-                    break;
-                }
-                else
-                {
-                    startPos = lastPos + splitter.Length;
-                }
-            } while (startPos < commandText.Length);
+                    if (lastPos == -1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        startPos = lastPos + splitter.Length;
+                    }
+                } while (startPos < commandText.Length);
+            }
         }
 
         /// <summary>
