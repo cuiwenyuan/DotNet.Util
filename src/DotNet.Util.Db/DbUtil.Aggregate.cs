@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region Aggregate
+        #region public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         /// <summary>
         /// 获取聚合函数值
         /// </summary>
@@ -51,7 +51,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region Aggregate
+        #region public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         /// <summary>
         /// 获取聚合函数值
         /// </summary>

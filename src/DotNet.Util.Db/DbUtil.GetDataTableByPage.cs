@@ -223,8 +223,7 @@ namespace DotNet.Util
             return dt;
         }
         #endregion
-
-
+        
 
         #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
         /// <summary>
