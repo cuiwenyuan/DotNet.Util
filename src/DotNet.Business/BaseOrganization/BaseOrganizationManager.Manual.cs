@@ -219,10 +219,10 @@ namespace DotNet.Business
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
-        /// <param name="newEntity">修改前的实体对象</param>
-        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
         /// <param name="tableName">表名称</param>
-        public void SaveEntityChangeLog(BaseOrganizationEntity newEntity, BaseOrganizationEntity oldEntity, string tableName = null)
+        public void SaveEntityChangeLog(BaseOrganizationEntity entityNew, BaseOrganizationEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -232,25 +232,25 @@ namespace DotNet.Business
             var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseOrganizationEntity).GetProperties())
             {
-                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
-                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var oldValue = Convert.ToString(property.GetValue(entityOld, null));
+                var newValue = Convert.ToString(property.GetValue(entityNew, null));
                 var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
                 //不记录创建人、修改人、没有修改的记录
                 if (!fieldDescription.NeedLog || oldValue == newValue)
                 {
                     continue;
                 }
-                var record = new BaseChangeLogEntity
+                var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseOrganizationEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseOrganizationEntity).FieldDescription("CurrentTableName"),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
-                    RecordKey = oldEntity.Id.ToString(),
+                    RecordKey = entityOld.Id.ToString(),
                     NewValue = newValue,
                     OldValue = oldValue
                 };
-                manager.Add(record, true, false);
+                manager.Add(entity, true, false);
             }
         }
         #endregion
@@ -409,11 +409,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))

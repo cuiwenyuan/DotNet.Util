@@ -395,7 +395,7 @@ namespace DotNet.Util
                 case "System.Decimal":
                     return ToDecimal(str);
                 case "System.DateTime":
-                    return ToDateTime(str);
+                    //return ToDateTime(str);
                 case "System.Guid":
                     return ToGuid(str);
             }
@@ -573,20 +573,6 @@ namespace DotNet.Util
             return null;
         }
 
-        /// <summary>
-        /// ToDateTime
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static DateTime? ToDateTime(this string value)
-        {
-            DateTime value2;
-            if (DateTime.TryParse(value, out value2))
-            {
-                return value2;
-            }
-            return null;
-        }
 
         /// <summary>
         /// ToInt32

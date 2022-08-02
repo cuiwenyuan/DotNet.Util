@@ -57,22 +57,6 @@ namespace DotNet.Util
             return result;
         }
 
-        
-
-        /// <summary>
-        /// 转换成DateTime
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public static DateTime ToDateTime(this object s)
-        {
-            if (s == null || s == DBNull.Value)
-                return DateTime.MinValue;
-
-            DateTime.TryParse(s.ToString(), out var result);
-            return result;
-        }
-
         /// <summary>
         /// 转换成Date
         /// </summary>

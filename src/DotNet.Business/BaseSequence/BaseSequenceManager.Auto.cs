@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseSequenceEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = FieldExtensions.ToDescription(typeof(BaseSequenceEntity), "CurrentTableName");
+            CurrentTableDescription = typeof(BaseSequenceEntity).FieldDescription("CurrentTableName");
             PrimaryKey = "Id";
         }
 

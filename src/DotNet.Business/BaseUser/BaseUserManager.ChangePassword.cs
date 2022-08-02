@@ -37,7 +37,7 @@ namespace DotNet.Business
         public virtual BaseUserInfo ChangePassword(string userId, string oldPassword, string newPassword)
         {
             #if (DEBUG)
-                int milliStart = Environment.TickCount;
+                var milliStart = Environment.TickCount;
             #endif
 
             var encryptOldPassword = oldPassword;
@@ -138,7 +138,7 @@ namespace DotNet.Business
                 var record = new BaseChangeLogEntity
                 {
                     TableName = BaseUserLogonEntity.CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserLogonEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseUserLogonEntity).FieldDescription("CurrentTableName"),
                     ColumnName = BaseUserLogonEntity.FieldUserPassword,
                     ColumnDescription = "用户密码",
                     RecordKey = userId.ToString(),

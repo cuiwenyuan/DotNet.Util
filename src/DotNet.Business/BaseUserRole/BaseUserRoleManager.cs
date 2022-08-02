@@ -79,11 +79,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             if (!string.IsNullOrEmpty(searchKey))
             {

@@ -90,11 +90,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             if (!string.IsNullOrEmpty(searchKey))
             {

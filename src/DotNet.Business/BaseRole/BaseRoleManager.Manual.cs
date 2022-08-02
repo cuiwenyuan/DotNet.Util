@@ -203,7 +203,7 @@ namespace DotNet.Business
                 var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseRoleEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseRoleEntity).FieldDescription("CurrentTableName"),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
@@ -275,11 +275,11 @@ namespace DotNet.Business
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseRoleEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
 
             //角色分类

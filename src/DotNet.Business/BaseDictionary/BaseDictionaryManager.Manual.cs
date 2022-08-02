@@ -174,7 +174,7 @@ namespace DotNet.Business
                 var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseDictionaryEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseDictionaryEntity).FieldDescription("CurrentTableName"),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,

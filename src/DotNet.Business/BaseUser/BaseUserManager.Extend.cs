@@ -7,6 +7,7 @@ using System.Data;
 namespace DotNet.Business
 {
     using Model;
+    using System;
     using Util;
 
     /// <summary>
@@ -188,11 +189,11 @@ namespace DotNet.Business
 
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= '" + startTime + "'");
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
 
             sb.Replace(" 1 = 1 AND ", "");

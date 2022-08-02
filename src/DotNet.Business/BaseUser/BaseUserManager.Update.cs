@@ -115,11 +115,11 @@ namespace DotNet.Business
         /// <summary>
         /// 保存实体修改记录
         /// </summary>
-        /// <param name="newEntity">修改前的实体对象</param>
-        /// <param name="oldEntity">修改后的实体对象</param>
+        /// <param name="entityNew">修改后的实体对象</param>
+        /// <param name="entityOld">修改前的实体对象</param>
         /// <param name="tableName">表名称</param>
         /// <returns>影响行数</returns>
-        public int SaveEntityChangeLog(BaseUserEntity newEntity, BaseUserEntity oldEntity, string tableName = null)
+        public int SaveEntityChangeLog(BaseUserEntity entityNew, BaseUserEntity entityOld, string tableName = null)
         {
             var result = 0;
 
@@ -131,25 +131,25 @@ namespace DotNet.Business
             var manager = new BaseChangeLogManager(UserInfo, tableName);
             foreach (var property in typeof(BaseUserEntity).GetProperties())
             {
-                var oldValue = Convert.ToString(property.GetValue(oldEntity, null));
-                var newValue = Convert.ToString(property.GetValue(newEntity, null));
+                var oldValue = Convert.ToString(property.GetValue(entityOld, null));
+                var newValue = Convert.ToString(property.GetValue(entityNew, null));
                 var fieldDescription = property.GetCustomAttributes(typeof(FieldDescription), false).FirstOrDefault() as FieldDescription;
                 // 不记录创建人、修改人、没有修改的记录
                 if (!fieldDescription.NeedLog || oldValue == newValue)
                 {
                     continue;
                 }
-                var record = new BaseChangeLogEntity
+                var entity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = FieldExtensions.ToDescription(typeof(BaseUserEntity), "CurrentTableName"),
+                    TableDescription = typeof(BaseUserEntity).FieldDescription("CurrentTableName"),
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
-                    RecordKey = oldEntity.Id.ToString(),
+                    RecordKey = entityOld.Id.ToString(),
                     NewValue = newValue,
                     OldValue = oldValue
                 };
-                manager.Add(record, true, false);
+                manager.Add(entity, true, false);
                 result++;
             }
 
