@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2021-11-08</date>
     /// </author>
     /// </summary>
-    public partial class BaseOperationLogManager : BaseManager, IBaseManager
+    public partial class BaseOperationLogManager : BaseManager
     {
         /// <summary>
         /// 构造函数

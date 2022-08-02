@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2021-10-26</date>
     /// </author>
     /// </summary>
-    public partial class BaseDictionaryManager : BaseManager, IBaseManager
+    public partial class BaseDictionaryManager : BaseManager
     {
         /// <summary>
         /// 构造函数

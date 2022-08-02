@@ -51,7 +51,7 @@ namespace DotNet.Business
     ///		<date>2007.03.03</date>
     /// </author>
     /// </summary>
-    public partial class BasePermissionScopeManager : BaseManager, IBaseManager
+    public partial class BasePermissionScopeManager : BaseManager
     {
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BasePermissionScopeEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>

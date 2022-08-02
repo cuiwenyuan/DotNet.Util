@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2021-09-30</date>
     /// </author>
     /// </summary>
-    public partial class BaseRoleOrganizationManager : BaseManager, IBaseManager
+    public partial class BaseRoleOrganizationManager : BaseManager
     {
         /// <summary>
         /// 构造函数

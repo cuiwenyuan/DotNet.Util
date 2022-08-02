@@ -28,7 +28,7 @@ namespace DotNet.Business
     ///	<date>2021-10-04</date>
     /// </author> 
     /// </summary>
-    public partial class BaseExceptionManager : BaseManager, IBaseManager
+    public partial class BaseExceptionManager : BaseManager
     {
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseExceptionEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>

@@ -26,7 +26,7 @@ namespace DotNet.Business
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
-    public partial class BaseChangeLogManager : BaseManager, IBaseManager
+    public partial class BaseChangeLogManager : BaseManager
     {
         /// <summary>
         /// 构造函数

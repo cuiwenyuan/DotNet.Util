@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///     <date>2020-03-22</date>
     /// </author>
     /// </summary>
-    public partial class BaseMessageSucceedManager : BaseManager, IBaseManager
+    public partial class BaseMessageSucceedManager : BaseManager
     {
         /// <summary>
         /// 构造函数

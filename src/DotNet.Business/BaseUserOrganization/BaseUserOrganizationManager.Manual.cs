@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///		<date>2015.11.28</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUserOrganizationManager : BaseManager, IBaseManager
+    public partial class BaseUserOrganizationManager : BaseManager
     {
         #region 高级查询
         /// <summary>

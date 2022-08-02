@@ -27,7 +27,7 @@ namespace DotNet.Business
     ///	<date>2020-03-22</date>
     /// </author> 
     /// </summary>
-    public partial class BaseUploadLogManager : BaseManager, IBaseManager
+    public partial class BaseUploadLogManager : BaseManager
     {
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
