@@ -276,8 +276,7 @@ namespace DotNet.Util
         }
         #endregion
 
-
-
+        
         #region public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
