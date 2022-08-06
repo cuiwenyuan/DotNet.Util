@@ -21,7 +21,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        #region 删除DataTable缓存
+        #region public virtual bool RemoveCache()
 
         /// <summary>
         /// 删除缓存
@@ -40,7 +40,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 删除Entity缓存
+        #region public virtual bool RemoveCache(int id)
 
         /// <summary>
         /// 删除缓存
@@ -64,7 +64,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 删除Entity缓存
+        #region public virtual bool RemoveCache(long id)
 
         /// <summary>
         /// 删除缓存
@@ -78,6 +78,30 @@ namespace DotNet.Business
             if (id == 0)
             {
                 CacheUtil.RemoveByRegex("^" + cacheKeyEntity + "+\\d+$");
+            }
+            else
+            {
+                cacheKeyEntity += id;
+                result = CacheUtil.Remove(cacheKeyEntity);
+            }
+            return result;
+        }
+        #endregion
+
+        #region public virtual bool RemoveCache(string id)
+
+        /// <summary>
+        /// 删除缓存
+        /// </summary>
+        /// <param name="id">编号</param>
+        /// <returns></returns>
+        public virtual bool RemoveCache(string id)
+        {
+            var result = false;
+            var cacheKeyEntity = CurrentTableName + ".Entity.";
+            if (string.IsNullOrEmpty(id))
+            {
+                CacheUtil.RemoveByRegex("^" + cacheKeyEntity + "+\\w+$");
             }
             else
             {
