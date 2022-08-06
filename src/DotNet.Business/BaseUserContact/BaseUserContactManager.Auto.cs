@@ -304,9 +304,6 @@ namespace DotNet.Business
             return result;
         }
 
-        // 这个是声明扩展方法
-        partial void SetEntityExtend(SqlBuilder sqlBuilder, BaseUserContactEntity entity);
-
         /// <summary>
         /// 设置实体
         /// </summary>
@@ -314,7 +311,6 @@ namespace DotNet.Business
         /// <param name="entity">实体</param>
         private void SetEntity(SqlBuilder sqlBuilder, BaseUserContactEntity entity)
         {
-            SetEntityExtend(sqlBuilder, entity);
             sqlBuilder.SetValue(BaseUserContactEntity.FieldUserId, entity.UserId);
             sqlBuilder.SetValue(BaseUserContactEntity.FieldShowEmail, entity.ShowEmail);
             sqlBuilder.SetValue(BaseUserContactEntity.FieldEmail, entity.Email);
@@ -342,19 +338,5 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseUserContactEntity.FieldEnabled, entity.Enabled);
         }
 
-        /// <summary>
-        /// 删除实体
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns>影响行数</returns>
-        public int Delete(int id)
-        {
-            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
-            if (result > 0)
-            {
-                RemoveCache(id);
-            }
-            return result;
-        }
     }
 }
