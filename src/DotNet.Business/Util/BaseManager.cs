@@ -36,12 +36,6 @@ namespace DotNet.Business
         /// </summary>
         public string TaskId = string.Empty;
 
-        ///// <summary>
-        ///// 设置实体
-        ///// </summary>
-        ///// <param name="sqlBuilder">实体</param>
-        //public void SetEntityExtend(SqlBuilder sqlBuilder);
-
         /// <summary>
         /// 数据表主键，需要用单一字段做为主键，建议默认为Id字段
         /// </summary>
@@ -257,6 +251,9 @@ namespace DotNet.Business
         }
 
         #region 类对应的数据库最终操作
+
+        #region public virtual string AddEntity(object entity)
+
         /// <summary>
         /// 添加对象
         /// </summary>
@@ -266,6 +263,10 @@ namespace DotNet.Business
         {
             return string.Empty;
         }
+
+        #endregion
+
+        #region public virtual int UpdateEntity(object entity)
 
         /// <summary>
         /// 更新对象
@@ -277,6 +278,10 @@ namespace DotNet.Business
             return 0;
         }
 
+        #endregion
+
+        #region public virtual int DeleteEntity(object id)
+
         /// <summary>
         /// 删除对象
         /// </summary>
@@ -286,6 +291,10 @@ namespace DotNet.Business
         {
             return DeleteEntity(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
         }
+
+        #endregion
+
+        #region public virtual int DeleteEntity(params KeyValuePair<string, object>[] parameters)
 
         /// <summary>
         /// 删除对象
@@ -301,6 +310,46 @@ namespace DotNet.Business
             }
             return MyDelete(parametersList);
             //return DbUtil.Delete(DbHelper, this.CurrentTableName, parametersList);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 删除实体（可以override这些方法）
+
+        /// <summary>
+        /// 删除实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns>影响行数</returns>
+        public virtual int Delete(int id)
+        {
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
+            if (result > 0)
+            {
+                RemoveCache(id);
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region 删除实体（可以override这些方法）
+
+        /// <summary>
+        /// 删除实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns>影响行数</returns>
+        public virtual int Delete(string id)
+        {
+            var result = Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) });
+            if (result > 0)
+            {
+                RemoveCache(id);
+            }
+            return result;
         }
 
         #endregion
