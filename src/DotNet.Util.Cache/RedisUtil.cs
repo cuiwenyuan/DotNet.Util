@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ServiceStack.Redis;
+using FreeRedis;
 
 namespace DotNet.Util
 {
@@ -11,42 +11,16 @@ namespace DotNet.Util
 
     public class RedisUtil
     {
-        //默认缓存过期时间单位秒
-        private static int _secondsTimeOut = 30 * 60;
-        //数据库
-        private static long _initialDb;
-        //地址
-        private static string _url;
-        private static PooledRedisClientManager _instance = null;
-        private static readonly object Locker = new Object();
-
-        private static PooledRedisClientManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (Locker)
-                    {
-                        if (_instance == null)
-                        {
-                            _initialDb = BaseSystemInfo.RedisInitialDb;
-                            //RedisPassword@RedisServer:RedisPort
-                            _url = BaseSystemInfo.RedisPassword + "@" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort;
-                            _instance = new PooledRedisClientManager(_initialDb, new string[] { _url });
-                        }
-                    }
-                }
-                return _instance;
-            }
-        }
         static RedisUtil()
         {
         }
 
         private static RedisClient GetClient()
         {
-            return (RedisClient)Instance.GetClient();
+            var cli = new RedisClient("" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            // Redis命令行日志
+            cli.Notice += (s, e) => LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
+            return cli;
         }
 
         /// <summary>
@@ -58,7 +32,7 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                return redisClient.ContainsKey(cacheKey);
+                return redisClient.Exists(cacheKey);
             }
         }
 
@@ -75,11 +49,8 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                if (timeout > 0)
-                {
-                    _secondsTimeOut = timeout;
-                }
-                return redisClient.Add<T>(key, t, DateTime.Now.AddHours(_secondsTimeOut));
+                redisClient.Set<T>(key, t, timeout);
+                return true;
             }
         }
         /// <summary>
@@ -94,7 +65,8 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                return redisClient.Add<T>(key, t, timeSpan);
+                redisClient.Set<T>(key, t, timeSpan);
+                return true;
             }
         }
 
@@ -110,11 +82,8 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                if (timeout > 0)
-                {
-                    _secondsTimeOut = timeout;
-                }
-                return redisClient.Set<T>(key, t, DateTime.Now.AddSeconds(_secondsTimeOut));
+                redisClient.Set<T>(key, t, timeout);
+                return true;
             }
         }
         /// <summary>
@@ -129,7 +98,8 @@ namespace DotNet.Util
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                return redisClient.Set<T>(key, t, timeSpan);
+                redisClient.Set<T>(key, t, timeSpan);
+                return true;
             }
         }
 
@@ -162,7 +132,8 @@ namespace DotNet.Util
             {
                 using (var redisClient = RedisUtil.GetClient())
                 {
-                    return redisClient.Remove(key);
+                    redisClient.Del(key);
+                    return  true;
                 }
             }
             return false;
@@ -174,11 +145,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveAll()
         {
-            var cacheKeys = GetAllKeys();
-
             using (var redisClient = RedisUtil.GetClient())
             {
-                redisClient.RemoveAll(cacheKeys);
+                redisClient.FlushDb();
             }
         }
 
@@ -193,7 +162,11 @@ namespace DotNet.Util
             {
                 using (var redisClient = RedisUtil.GetClient())
                 {
-                    redisClient.RemoveByRegex(pattern);
+                    var keys = redisClient.Keys(pattern);
+                    foreach (var key in keys)
+                    {
+                        redisClient.Del(key);
+                    }
                 }
             }
         }
@@ -202,118 +175,15 @@ namespace DotNet.Util
         /// 获取所有缓存键
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetAllKeys()
+        public static string[] GetAllKeys()
         {
             using (var redisClient = RedisUtil.GetClient())
             {
-                return redisClient.GetAllKeys();
+                return redisClient.Keys("*");
             }
         }
 
         #endregion
-
-        #region 链表操作
-        /// <summary>
-        /// 获取链表数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="listId"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetList<T>(string listId)
-        {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                var iRedisClient = redisClient.As<T>();
-                return iRedisClient.Lists[listId];
-            }
-        }
-
-        /// <summary>
-        /// IEnumerable数据添加到链表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="listId"></param>
-        /// <param name="values"></param>
-        /// <param name="timeout"></param>
-        public static void AddList<T>(string listId, IEnumerable<T> values, int timeout = 0)
-        {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.Expire(listId, 60);
-                var iRedisClient = redisClient.As<T>();
-                if (timeout >= 0)
-                {
-                    if (timeout > 0)
-                    {
-                        _secondsTimeOut = timeout;
-                    }
-                    redisClient.Expire(listId, _secondsTimeOut);
-                }
-                var redisList = iRedisClient.Lists[listId];
-                redisList.AddRange(values);
-                iRedisClient.Save();
-            }
-        }
-
-        /// <summary>
-        /// 添加单个实体到链表中
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="listId"></param>
-        /// <param name="item"></param>
-        /// <param name="timeout"></param>
-        public static void AddEntityToList<T>(string listId, T item, int timeout = 0)
-        {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                var iRedisClient = redisClient.As<T>();
-                if (timeout >= 0)
-                {
-                    if (timeout > 0)
-                    {
-                        _secondsTimeOut = timeout;
-                    }
-                    redisClient.Expire(listId, _secondsTimeOut);
-                }
-                var redisList = iRedisClient.Lists[listId];
-                redisList.Add(item);
-                iRedisClient.Save();
-            }
-        }
-
-        /// <summary>
-        /// 在链表中删除单个实体
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="listId"></param>
-        /// <param name="t"></param>
-        public static void RemoveEntityFromList<T>(string listId, T t)
-        {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                var iRedisClient = redisClient.As<T>();
-                var redisList = iRedisClient.Lists[listId];
-                redisList.RemoveValue(t);
-                iRedisClient.Save();
-            }
-        }
-
-        /// <summary>
-        /// 根据lambada表达式删除符合条件的实体
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="listId"></param>
-        /// <param name="func"></param>
-        public static void RemoveEntityFromList<T>(string listId, Func<T, bool> func)
-        {
-            var iRedisClient = RedisUtil.GetClient().As<T>();
-            var redisList = iRedisClient.Lists[listId];
-            var value = redisList.Where(func).FirstOrDefault();
-            redisList.RemoveValue(value);
-            iRedisClient.Save();
-        }
-        #endregion
-
 
     }
 }
