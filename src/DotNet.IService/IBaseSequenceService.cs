@@ -11,7 +11,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// ISequenceService
+    /// IBaseSequenceService
     /// 序列接口
     /// 
     /// 修改记录

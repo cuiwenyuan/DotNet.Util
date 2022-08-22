@@ -13,13 +13,22 @@ namespace DotNet.Util
     {
         static RedisUtil()
         {
+            //redisClient = GetClient();
         }
+
+        //private static RedisClient redisClient;
 
         private static RedisClient GetClient()
         {
-            var cli = new RedisClient("" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            var sb = Pool.StringBuilder.Get().Append(BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            LogUtil.WriteLog(sb.ToString());
+            var cli = new RedisClient(sb.Put());
             // Redis命令行日志
-            cli.Notice += (s, e) => LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
+            cli.Notice += (s, e) =>
+            {
+                Console.WriteLine(e.Log);
+                //LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
+            };
             return cli;
         }
 
@@ -133,7 +142,7 @@ namespace DotNet.Util
                 using (var redisClient = RedisUtil.GetClient())
                 {
                     redisClient.Del(key);
-                    return  true;
+                    return true;
                 }
             }
             return false;

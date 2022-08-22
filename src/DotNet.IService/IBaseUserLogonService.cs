@@ -13,7 +13,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// ILogonService
+    /// IBaseUserLogonService
     /// 
     /// 修改记录
     /// 

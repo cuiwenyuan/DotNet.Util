@@ -12,7 +12,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IParameterService
+    /// IBaseParameterService
     /// 参数服务接口
     /// 
     /// 修改记录

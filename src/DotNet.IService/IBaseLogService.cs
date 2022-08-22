@@ -10,7 +10,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// ILogService
+    /// IBaseLogService
     /// 
     /// 修改记录
     /// 

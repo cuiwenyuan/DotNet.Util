@@ -38,6 +38,12 @@ namespace DotNet.Util
         public string Result = "";
 
         /// <summary>
+        /// 返回值
+        /// </summary>
+        [Obsolete("Please use Result from 2022-08-18")]
+        public string ResultValue => Result;
+
+        /// <summary>
         /// 返回状态代码
         /// </summary>
         public string StatusCode = "UnknownError";

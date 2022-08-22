@@ -23,7 +23,7 @@ namespace DotNet.Business
     ///		<date>2011.08.21</date>
     /// </author> 
     /// </summary>
-    
+
     public partial class DotNetService : AbstractServiceFactory
     {
         // private static readonly string servicePath = BaseSystemInfo.Service;
@@ -84,79 +84,79 @@ namespace DotNet.Business
         /// <summary>
         /// 登录服务
         /// </summary>
-        public virtual IBaseUserLogonService LogonService => _serviceFactory.CreateLogonService();
+        public virtual IBaseUserLogonService LogonService => _serviceFactory.CreateBaseLogonService();
         /// <summary>
         /// 序号服务
         /// </summary>
-        public virtual IBaseSequenceService SequenceService => _serviceFactory.CreateSequenceService();
+        public virtual IBaseSequenceService SequenceService => _serviceFactory.CreateBaseSequenceService();
         /// <summary>
         /// 用户服务
         /// </summary>
-        public virtual IBaseUserService UserService => _serviceFactory.CreateUserService();
+        public virtual IBaseUserService UserService => _serviceFactory.CreateBaseUserService();
 
         /// <summary>
         /// 日志服务
         /// </summary>
-        public virtual IBaseLogService LogService => _serviceFactory.CreateLogService();
+        public virtual IBaseLogService LogService => _serviceFactory.CreateBaseLogService();
 
         /// <summary>
         /// 异常服务
         /// </summary>
-        public virtual IBaseExceptionService ExceptionService => _serviceFactory.CreateExceptionService();
+        public virtual IBaseExceptionService ExceptionService => _serviceFactory.CreateBaseExceptionService();
 
         /// <summary>
         /// 权限服务
         /// </summary>
-        public virtual IBasePermissionService PermissionService => _serviceFactory.CreatePermissionService();
+        public virtual IBasePermissionService PermissionService => _serviceFactory.CreateBasePermissionService();
 
         /// <summary>
         /// 组织机构服务
         /// </summary>
-        public virtual IBaseOrganizationService OrganizationService => _serviceFactory.CreateOrganizationService();
+        public virtual IBaseOrganizationService OrganizationService => _serviceFactory.CreateBaseOrganizationService();
 
         ///// <summary>
         ///// 字典服务
         ///// </summary>
-        //public virtual IBaseItemsService BaseItemsService => _serviceFactory.CreateBaseItemsService();
+        //public virtual IBaseItemsService BaseItemsService => _serviceFactory.CreateBaseBaseItemsService();
 
         ///// <summary>
         ///// 字典明细服务
         ///// </summary>
-        //public virtual IBaseItemDetailsService BaseItemDetailsService => _serviceFactory.CreateBaseItemDetailsService();
+        //public virtual IBaseItemDetailsService BaseItemDetailsService => _serviceFactory.CreateBaseBaseItemDetailsService();
 
         ///// <summary>
         ///// 字典服务
         ///// </summary>
-        //public virtual IBaseItemsService ItemsService => _serviceFactory.CreateItemsService();
+        //public virtual IBaseItemsService ItemsService => _serviceFactory.CreateBaseItemsService();
 
         ///// <summary>
         ///// 字典明细服务
         ///// </summary>
-        //public virtual IBaseItemDetailsService ItemDetailsService => _serviceFactory.CreateItemDetailsService();
+        //public virtual IBaseItemDetailsService ItemDetailsService => _serviceFactory.CreateBaseItemDetailsService();
 
         /// <summary>
         /// 模块菜单服务
         /// </summary>
-        public virtual IBaseModuleService ModuleService => _serviceFactory.CreateModuleService();
+        public virtual IBaseModuleService ModuleService => _serviceFactory.CreateBaseModuleService();
 
         /// <summary>
         /// 修改记录服务
         /// </summary>
-        public virtual IBaseChangeLogService ChangeLogService => _serviceFactory.CreateChangeLogService();
+        public virtual IBaseChangeLogService ChangeLogService => _serviceFactory.CreateBaseChangeLogService();
 
         /// <summary>
         /// 员工服务
         /// </summary>
-        public virtual IBaseStaffService StaffService => _serviceFactory.CreateStaffService();
+        public virtual IBaseStaffService StaffService => _serviceFactory.CreateBaseStaffService();
 
         /// <summary>
         /// 角色服务
         /// </summary>
-        public virtual IBaseRoleService RoleService => _serviceFactory.CreateRoleService();
+        public virtual IBaseRoleService RoleService => _serviceFactory.CreateBaseRoleService();
 
         /// <summary>
         /// 参数服务
         /// </summary>
-        public virtual IBaseParameterService ParameterService => _serviceFactory.CreateParameterService();
+        public virtual IBaseParameterService ParameterService => _serviceFactory.CreateBaseParameterService();
     }
 }

@@ -13,7 +13,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// LogService
+    /// BaseLogService
     /// 日志服务
     /// 
     /// 修改记录
@@ -28,7 +28,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public class LogService : IBaseLogService
+    public class BaseLogService : IBaseLogService
     {
         /// <summary>
         /// 业务中心数据库连接

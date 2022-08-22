@@ -34,7 +34,7 @@ namespace DotNet.Business
     /// </summary>
 
 
-    public partial class LogonService : IBaseUserLogonService
+    public partial class BaseUserLogonService : IBaseUserLogonService
     {
         /// <summary>
         /// 获取系统版本号

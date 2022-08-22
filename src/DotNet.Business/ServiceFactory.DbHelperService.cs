@@ -27,7 +27,7 @@ namespace DotNet.Business
         /// 创建业务数据库服务
         /// </summary>
         /// <returns>数据库服务</returns>
-        public virtual IDbHelperService CreateBusinessDbHelperService()
+        public virtual IDbHelperService CreateBaseBusinessDbHelperService()
         {
             return new BusinessDbHelperService();
         }
@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// 创建用户中心数据库服务
         /// </summary>
         /// <returns>数据库服务</returns>
-        public virtual IDbHelperService CreateUserCenterDbHelperService()
+        public virtual IDbHelperService CreateBaseUserCenterDbHelperService()
         {
             return new UserCenterDbHelperService();
         }
@@ -45,7 +45,7 @@ namespace DotNet.Business
         /// 登录日志数据库服务
         /// </summary>
         /// <returns>数据库服务</returns>
-        public virtual IDbHelperService CreateLogonLogDbHelperService()
+        public virtual IDbHelperService CreateBaseLogonLogDbHelperService()
         {
             return new LogonLogDbHelperService();
         }

@@ -12,7 +12,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IModuleService
+    /// IBaseModuleService
     /// 
     /// 修改记录
     /// 
