@@ -16,13 +16,26 @@ namespace DotNet.Test._452
             //读取配置文件
             BaseConfiguration.GetSetting();
 
-            CacheUtil.redisEnabled = true;
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
-            //}
+            for (var i = 0; i < 100; i++)
+            {
+                Task.Run(() =>
+                {
+                    DbTest();
+                });
+            }
 
-            for (int i = 0; i < 10; i++)
+            CacheUtil.redisEnabled = true;
+            for (int i = 1000000; i < 1000100; i++)
+            {
+                CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
+            }
+
+            for (int i = 1000000; i < 1000100; i++)
+            {
+                Console.WriteLine(CacheUtil.Get<string>("Test" + i, isRedis: true));
+            }
+
+            for (int i = 10000; i < 11000; i++)
             {
                 var entity = new BaseUserContactEntity();
                 entity.Id = 1;
@@ -30,11 +43,33 @@ namespace DotNet.Test._452
                 CacheUtil.Set("entity" + i, entity, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
             }
 
-            for (int i = 0; i < 10; i++)
-            {
-                var entity = CacheUtil.Get<BaseUserContactEntity>("entity" + i, isRedis: true);
-                Console.WriteLine(JsonUtil.ObjectToJson(entity));
-            }
+            //for (int i = 10000; i < 11000; i++)
+            //{
+            //    var entity = CacheUtil.Get<BaseUserContactEntity>("entity" + i, isRedis: true);
+            //    Console.WriteLine(JsonUtil.ObjectToJson(entity));
+            //}
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    var ls = new List<BaseUserContactEntity>();
+            //    for (int j = 0; j < RandUtil.Next(1, 10); j++)
+            //    {
+            //        ls.Add(new BaseUserContactEntity()
+            //        {
+            //            Id = j,
+            //            Email = "Troy.Cui@" + j + ".com"
+            //        });
+            //    }
+
+            //    CacheUtil.Set("listentity" + i, ls, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
+            //}
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    var ls = CacheUtil.Get<List<BaseUserContactEntity>>("listentity" + i, isRedis: true);
+            //    Console.WriteLine(JsonUtil.ObjectToJson(ls));
+            //}
+            Console.WriteLine("Done");
 
             Console.ReadLine();
             //// Oracle
@@ -42,6 +77,18 @@ namespace DotNet.Test._452
             //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
             //var commandText = string.Empty;
             //dbHelper.ExecuteNonQuery(commandText);
+        }
+        private static void DbTest()
+        {
+            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=ovm08.corp.waiglobal.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = oraprod)));User Id=waiweb;Password=web4wai;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
+            //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
+            //var manager = new EmailRecipientManager(dbHelper);
+            //var entity = new EmailRecipientEntity();
+            //entity.Recipient = "Troy.Cui@waiglobal.com";
+            //entity.Name = "Troy.Cui";
+            //entity.Category = "Shipping & Handling";
+            //var entityId = manager.Add(entity);
+            //Console.WriteLine(entityId);
         }
     }
 }
