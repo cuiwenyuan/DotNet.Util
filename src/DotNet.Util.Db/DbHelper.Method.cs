@@ -108,6 +108,7 @@ namespace DotNet.Util
                     if (_dbTransaction != null)
                     {
                         DbCommand.Transaction = _dbTransaction;
+                        MustCloseConnection = false;
                     }
 
                     if (dbParameters != null)
@@ -295,6 +296,7 @@ namespace DotNet.Util
                     if (_dbTransaction != null)
                     {
                         DbCommand.Transaction = _dbTransaction;
+                        MustCloseConnection = false;
                     }
 
                     if (dbParameters != null)
@@ -480,6 +482,7 @@ namespace DotNet.Util
                     if (_dbTransaction != null)
                     {
                         DbCommand.Transaction = _dbTransaction;
+                        MustCloseConnection = false;
                     }
 
                     if (dbParameters != null)
@@ -688,6 +691,7 @@ namespace DotNet.Util
                     if (_dbTransaction != null)
                     {
                         DbCommand.Transaction = _dbTransaction;
+                        MustCloseConnection = false;
                     }
 
                     DbDataAdapter = GetInstance().CreateDataAdapter();
@@ -875,6 +879,7 @@ namespace DotNet.Util
                     if (_dbTransaction != null)
                     {
                         DbCommand.Transaction = _dbTransaction;
+                        MustCloseConnection = false;
                     }
                     DbCommand.Parameters.Clear();
                     if ((dbParameters != null) && (dbParameters.Length > 0))

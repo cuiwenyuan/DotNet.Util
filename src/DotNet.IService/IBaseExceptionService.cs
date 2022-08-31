@@ -11,7 +11,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IExceptionService
+    /// IBaseExceptionService
     /// 
     /// 修改记录
     /// 

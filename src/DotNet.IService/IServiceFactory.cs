@@ -31,102 +31,102 @@ namespace DotNet.IService
         /// 创建选项明细服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseDictionaryService CreateBaseDictionaryService();
+        IBaseDictionaryService CreateBaseBaseDictionaryService();
 
         /// <summary>
         /// 创建选项服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseDictionaryItemService CreateBaseDictionaryItemService();
+        IBaseDictionaryItemService CreateBaseBaseDictionaryItemService();
 
         /// <summary>
         /// 创建业务数据库服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IDbHelperService CreateBusinessDbHelperService();
+        IDbHelperService CreateBaseBusinessDbHelperService();
 
         /// <summary>
         /// 创建用户中心数据库服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IDbHelperService CreateUserCenterDbHelperService();
+        IDbHelperService CreateBaseUserCenterDbHelperService();
 
         /// <summary>
         /// 登录日志数据库服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IDbHelperService CreateLogonLogDbHelperService();
+        IDbHelperService CreateBaseLogonLogDbHelperService();
 
         /// <summary>
         /// 创建异常服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseExceptionService CreateExceptionService();
+        IBaseExceptionService CreateBaseExceptionService();
 
         /// <summary>
         /// 创建登录服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseUserLogonService CreateLogonService();
+        IBaseUserLogonService CreateBaseLogonService();
 
         /// <summary>
         /// 创建用户服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseUserService CreateUserService();
+        IBaseUserService CreateBaseUserService();
         
         /// <summary>
         /// 创建日志服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseLogService CreateLogService();
+        IBaseLogService CreateBaseLogService();
 
         /// <summary>
         /// 创建模块服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseModuleService CreateModuleService();
+        IBaseModuleService CreateBaseModuleService();
 
         /// <summary>
         /// 修改记录
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseChangeLogService CreateChangeLogService();
+        IBaseChangeLogService CreateBaseChangeLogService();
 
         /// <summary>
         /// 创建组织机构服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseOrganizationService CreateOrganizationService();
+        IBaseOrganizationService CreateBaseOrganizationService();
 
         /// <summary>
         /// 创建参数服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseParameterService CreateParameterService();
+        IBaseParameterService CreateBaseParameterService();
 
         /// <summary>
         /// 创建权限管理服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBasePermissionService CreatePermissionService();
+        IBasePermissionService CreateBasePermissionService();
 
         /// <summary>
         /// 创建角色服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseRoleService CreateRoleService();
+        IBaseRoleService CreateBaseRoleService();
 
         /// <summary>
         /// 创建序列服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseSequenceService CreateSequenceService();
+        IBaseSequenceService CreateBaseSequenceService();
 
         /// <summary>
         /// 创建员工服务
         /// </summary>
         /// <returns>服务接口</returns>
-        IBaseStaffService CreateStaffService();
+        IBaseStaffService CreateBaseStaffService();
     }
 }

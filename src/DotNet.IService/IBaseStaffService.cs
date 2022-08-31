@@ -12,7 +12,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IStaffService
+    /// IBaseStaffService
     /// 
     /// 修改记录
     /// 

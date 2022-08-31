@@ -9,7 +9,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IPermissionService
+    /// IBasePermissionService
     /// 与权限判断等相关的接口定义
     /// 
     /// 修改记录

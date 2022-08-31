@@ -9,7 +9,7 @@ namespace DotNet.Business
     using Util;
 
     /// <summary>
-    /// BaseUserCenterDbHelperService
+    /// UserCenterDbHelperService
     /// 
     /// 修改记录
     /// 

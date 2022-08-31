@@ -27,17 +27,17 @@ namespace DotNet.Business
         /// <returns></returns>
         public static string BuildUrl(string url, string paramText, string paramValue)
         {
-            var reg = new Regex(string.Format("{0}=[^&]*", paramText), RegexOptions.IgnoreCase);
+            var reg = new Regex($"{paramText}=[^&]*", RegexOptions.IgnoreCase);
             var reg1 = new Regex("[&]{2,}", RegexOptions.IgnoreCase);
             var _url = reg.Replace(url, "");
             //_url = reg1.Replace(_url, "");
             if (_url.IndexOf("?", StringComparison.Ordinal) == -1)
             {
-                _url += string.Format("?{0}={1}", paramText, paramValue);//?
+                _url += $"?{paramText}={paramValue}";//?
             }
             else
             {
-                _url += string.Format("&{0}={1}", paramText, paramValue);//&
+                _url += $"&{paramText}={paramValue}";//&
             }
             _url = reg1.Replace(_url, "&");
             _url = _url.Replace("?&", "?");
@@ -103,6 +103,7 @@ namespace DotNet.Business
         /// <param name="addEmptyItem">是否增加空行</param>
         public static void SetDropDownList(DropDownList dropDownList, DataTable dt, string fieldValue = "Id", string fieldText = "Name", string sortCode = "SortCode", bool addEmptyItem = true)
         {
+            dropDownList.Items.Clear();
             dropDownList.DataValueField = fieldValue;
             dropDownList.DataTextField = fieldText;
             if (dt != null && dt.Rows.Count > 0)
