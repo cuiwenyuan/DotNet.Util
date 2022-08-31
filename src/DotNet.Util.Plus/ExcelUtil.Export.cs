@@ -104,75 +104,71 @@ namespace DotNet.Util
             var rowIndex = 1;
 
             // 写出数据
-            foreach (DataRow dataTableRow in dt.Rows)
+            foreach (DataRow dr in dt.Rows)
             {
                 var dataRow = sheet.CreateRow(rowIndex);
                 if (fieldList == null)
                 {
                     for (var i = 0; i < dt.Columns.Count; i++)
                     {
-                        //if (dataGridView.Columns[i].Visible && (dataGridView.Columns[i].Name.ToUpper() != "colSelected".ToUpper()))
-                        //{
                         switch (dt.Columns[i].DataType.ToString())
                         {
                             case "System.String":
                             default:
-                                dataRow.CreateCell(i).SetCellValue(
-                                    Convert.ToString(Convert.IsDBNull(dataTableRow[i]) ? "" : dataTableRow[i])
-                                    );
+                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : dr[i]));
                                 break;
                             case "System.DateTime":
-                                dataRow.CreateCell(i).SetCellValue(
-                                    Convert.ToString(Convert.IsDBNull(dataTableRow[i]) ? "" : DateTime.Parse(dataTableRow[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat)));
+                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                 break;
                             case "System.Int16":
                             case "System.Int32":
+                                dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0 : dr[i].ToInt());
+                                break;
                             case "System.Int64":
+                                dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0 : dr[i].ToLong());
+                                break;
                             case "System.Decimal":
                             case "System.Double":
-                                dataRow.CreateCell(i).SetCellValue(
-                                    Convert.ToDouble(Convert.IsDBNull(dataTableRow[i]) ? 0 : dataTableRow[i])
-                                    );
+                                dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0D : dr[i].ToDouble());
                                 break;
                         }
-                        //                    }
                     }
                 }
                 else
                 {
                     var j = 0;
                     foreach (var field in fieldList)
-                    //for (int i = 0; i < dt.Columns.Count; i++)
                     {
-                        //if (dataGridView.Columns[i].Visible && (dataGridView.Columns[i].Name.ToUpper() != "colSelected".ToUpper()))
-                        //{
                         try
                         {
-                            switch (dt.Columns[field.Key].DataType.ToString())
+                            if (dt.Columns.Contains(field.Key))
                             {
-                                case "System.String":
-                                default:
-                                    dataRow.CreateCell(j).SetCellValue(
-                                        Convert.ToString(Convert.IsDBNull(dataTableRow[field.Key]) ? "" : dataTableRow[field.Key])
-                                        );
-                                    break;
-                                case "System.DateTime":
-                                    dataRow.CreateCell(j).SetCellValue(
-                                        Convert.ToString(Convert.IsDBNull(dataTableRow[field.Key]) ? "" : DateTime.Parse(dataTableRow[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat)));
-                                    break;
-                                case "System.Int16":
-                                case "System.Int32":
-                                case "System.Int64":
-                                case "System.Decimal":
-
-                                case "System.Double":
-                                    dataRow.CreateCell(j).SetCellValue(
-                                        Convert.ToDouble(Convert.IsDBNull(dataTableRow[field.Key]) ? 0 : dataTableRow[field.Key])
-                                        );
-                                    break;
+                                switch (dt.Columns[field.Key].DataType.ToString())
+                                {
+                                    case "System.String":
+                                    default:
+                                        dataRow.CreateCell(j).SetCellValue(
+                                            Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : dr[field.Key])
+                                            );
+                                        break;
+                                    case "System.DateTime":
+                                        dataRow.CreateCell(j).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        break;
+                                    case "System.Int16":
+                                    case "System.Int32":
+                                        dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0 : dr[field.Key].ToInt());
+                                        break;
+                                    case "System.Int64":
+                                        dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0 : dr[field.Key].ToLong());
+                                        break;
+                                    case "System.Decimal":
+                                    case "System.Double":
+                                        dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
+                                        break;
+                                }
+                                j++;
                             }
-                            //                    }
-                            j++;
+
                         }
                         catch (Exception)
                         {
@@ -229,7 +225,7 @@ namespace DotNet.Util
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.WriteException(ex);
+                        LogUtil.WriteException(ex, "header fieldList == null");
                         continue;
                     }
                 }
@@ -246,7 +242,7 @@ namespace DotNet.Util
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.WriteException(ex);
+                        LogUtil.WriteException(ex, "header fieldList != null");
                         continue;
                     }
                 }
@@ -255,9 +251,8 @@ namespace DotNet.Util
             var rowIndex = 1;
             var hasPicture = false;
             // 写出数据
-            foreach (DataRow dtRow in dt.Rows)
+            foreach (DataRow dr in dt.Rows)
             {
-
                 var dataRow = sheet.CreateRow(rowIndex);
                 if (fieldList == null)
                 {
@@ -270,7 +265,7 @@ namespace DotNet.Util
                                 case "System.String":
                                 default:
                                     //获取后缀名
-                                    var filePath = Convert.ToString(Convert.IsDBNull(dtRow[i]) ? "" : dtRow[i]);
+                                    var filePath = Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : dr[i]);
                                     var suffix = filePath.Substring(
                                         filePath.LastIndexOf('.') + 1,
                                         filePath.Length - filePath.LastIndexOf('.') - 1
@@ -290,25 +285,23 @@ namespace DotNet.Util
                                     else
                                     {
                                         dataRow.CreateCell(i).SetCellValue(
-                                            Convert.ToString(Convert.IsDBNull(dtRow[i]) ? "" : dtRow[i])
+                                            Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : dr[i])
                                         );
                                     }
                                     break;
                                 case "System.DateTime":
-                                    dataRow.CreateCell(i).SetCellValue(
-                                        Convert.ToString(Convert.IsDBNull(dtRow[i])
-                                            ? ""
-                                            : DateTime.Parse(dtRow[i].ToString())
-                                                .ToString(BaseSystemInfo.DateTimeFormat)));
+                                    dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                     break;
                                 case "System.Int16":
                                 case "System.Int32":
+                                    dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0 : dr[i].ToInt());
+                                    break;
                                 case "System.Int64":
+                                    dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0 : dr[i].ToLong());
+                                    break;
                                 case "System.Decimal":
                                 case "System.Double":
-                                    dataRow.CreateCell(i).SetCellValue(
-                                        Convert.ToDouble(Convert.IsDBNull(dtRow[i]) ? 0 : dtRow[i])
-                                    );
+                                    dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[i]) ? 0D : dr[i].ToDouble());
                                     break;
                             }
                             //列宽自适应会造成导出图片出问题
@@ -319,7 +312,7 @@ namespace DotNet.Util
                         }
                         catch (Exception ex)
                         {
-                            LogUtil.WriteException(ex);
+                            LogUtil.WriteException(ex, "fieldList == null");
                             continue;
                         }
                     }
@@ -328,63 +321,63 @@ namespace DotNet.Util
                 {
                     var i = 0;
                     foreach (var field in fieldList)
-                    //for (int i = 0; i < dt.Columns.Count; i++)
                     {
                         try
                         {
-                            switch (dt.Columns[field.Key].DataType.ToString())
+                            if (dt.Columns.Contains(field.Key))
                             {
-                                case "System.String":
-                                default:
-                                    //获取后缀名
-                                    var filePath = Convert.ToString(Convert.IsDBNull(dtRow[field.Key]) ? "" : dtRow[field.Key]);
-                                    var suffix = filePath.Substring(
-                                    filePath.LastIndexOf('.') + 1,
-                                    filePath.Length - filePath.LastIndexOf('.') - 1
-                                    );
-                                    hasPicture = false;
-                                    if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
-                                    {
-                                        hasPicture = true;
-                                        //正方形的例子50*20 x 10*256
-                                        dataRow.Height = 100 * 20;
-                                        sheet.SetColumnWidth(i, 20 * 256);
-                                        AddPicture(workbook, sheet, filePath, rowIndex, i, suffix);
-                                        //sheet.GetColumnWidth(i);
-
-                                    }
-                                    else
-                                    {
-                                        dataRow.CreateCell(i).SetCellValue(
-                                            Convert.ToString(Convert.IsDBNull(dtRow[field.Key]) ? "" : dtRow[field.Key])
-                                            );
-                                    }
-                                    break;
-                                case "System.DateTime":
-                                    dataRow.CreateCell(i).SetCellValue(
-                                        Convert.ToString(Convert.IsDBNull(dtRow[field.Key]) ? "" : DateTime.Parse(dtRow[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat)));
-                                    break;
-                                case "System.Int16":
-                                case "System.Int32":
-                                case "System.Int64":
-                                case "System.Decimal":
-
-                                case "System.Double":
-                                    dataRow.CreateCell(i).SetCellValue(
-                                        Convert.ToDouble(Convert.IsDBNull(dtRow[field.Key]) ? 0 : dtRow[field.Key])
+                                switch (dt.Columns[field.Key].DataType.ToString())
+                                {
+                                    case "System.String":
+                                    default:
+                                        //获取后缀名
+                                        var filePath = Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : dr[field.Key]);
+                                        var suffix = filePath.Substring(
+                                        filePath.LastIndexOf('.') + 1,
+                                        filePath.Length - filePath.LastIndexOf('.') - 1
                                         );
-                                    break;
+                                        hasPicture = false;
+                                        if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
+                                        {
+                                            hasPicture = true;
+                                            //正方形的例子50*20 x 10*256
+                                            dataRow.Height = 100 * 20;
+                                            sheet.SetColumnWidth(i, 20 * 256);
+                                            AddPicture(workbook, sheet, filePath, rowIndex, i, suffix);
+                                            //sheet.GetColumnWidth(i);
+
+                                        }
+                                        else
+                                        {
+                                            dataRow.CreateCell(i).SetCellValue(filePath);
+                                        }
+                                        break;
+                                    case "System.DateTime":
+                                        dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        break;
+                                    case "System.Int16":
+                                    case "System.Int32":
+                                        dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0 : dr[field.Key].ToInt());
+                                        break;
+                                    case "System.Int64":
+                                        dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0 : dr[field.Key].ToLong());
+                                        break;
+                                    case "System.Decimal":
+                                    case "System.Double":
+                                        dataRow.CreateCell(i).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
+                                        break;
+                                }
+                                //列宽自适应会造成导出图片出问题
+                                if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
+                                {
+                                    sheet.AutoSizeColumn(i);
+                                }
+                                i++;
                             }
-                            //列宽自适应会造成导出图片出问题
-                            if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
-                            {
-                                sheet.AutoSizeColumn(i);
-                            }
-                            i++;
                         }
                         catch (Exception ex)
                         {
-                            LogUtil.WriteException(ex);
+                            LogUtil.WriteException(ex, "fieldList != null");
                             continue;
                         }
                     }

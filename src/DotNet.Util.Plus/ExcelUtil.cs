@@ -632,6 +632,36 @@ namespace DotNet.Util
         }
 
         #endregion
+
+        #region 上传Excel文件到服务器
+
+        /// <summary>
+        /// 保存Excel文件
+        /// <para>Excel的导入导出都会在服务器生成一个文件</para>
+        /// <para>路径：UpFiles/ExcelFiles</para>
+        /// </summary>
+        /// <param name="file">传入的文件对象</param>
+        /// <returns>如果保存成功则返回文件的位置;如果保存失败则返回空</returns>
+        public static string SaveExcelFile(HttpPostedFile file)
+        {
+            try
+            {
+                var fileName = file.FileName.Insert(file.FileName.LastIndexOf('.'), "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/UpFiles/ExcelFiles"), fileName);
+                var directoryName = Path.GetDirectoryName(filePath);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                {
+                    Directory.CreateDirectory(directoryName);
+                }
+                file.SaveAs(filePath);
+                return filePath;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
 #endif
     }
 }
