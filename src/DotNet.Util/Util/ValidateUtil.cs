@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -656,6 +657,141 @@ namespace DotNet.Util
 
             return true;
         }
+        #endregion
+
+        #region VIN
+
+        /// <summary>
+        /// 是否为合法的VIN
+        /// </summary>
+        /// <param name="vin"></param>
+        /// <returns></returns>
+        public static bool IsVIN(string vin)
+        {
+            var result = false;
+            var upperVin = vin.ToUpper();
+            //排除字母I、O、Q
+            if (!string.IsNullOrEmpty(vin) && vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                // VIN码从第1位到第17位的“加权值”：
+                var vinMapWeighting = new Dictionary<int, int>
+                    {
+                        { 1, 8 },
+                        { 2, 7 },
+                        { 3, 6 },
+                        { 4, 5 },
+                        { 5, 4 },
+                        { 6, 3 },
+                        { 7, 2 },
+                        { 8, 10 },
+                        { 9, 0 },
+                        { 10, 9 },
+                        { 11, 8 },
+                        { 12, 7 },
+                        { 13, 6 },
+                        { 14, 5 },
+                        { 15, 4 },
+                        { 16, 3 },
+                        { 17, 2 }
+                    };
+                // VIN码各位数字的“对应值”
+                var vinMapValue = new Dictionary<string, int>
+                    {
+                        { "0", 0 },
+                        { "1", 1 },
+                        { "2", 2 },
+                        { "3", 3 },
+                        { "4", 4 },
+                        { "5", 5 },
+                        { "6", 6 },
+                        { "7", 7 },
+                        { "8", 8 },
+                        { "9", 9 },
+                        { "A", 1 },
+                        { "B", 2 },
+                        { "C", 3 },
+                        { "D", 4 },
+                        { "E", 5 },
+                        { "F", 6 },
+                        { "G", 7 },
+                        { "H", 8 },
+                        //{ "I", 9 },
+                        { "J", 1 },
+                        { "K", 2 },
+                        { "L", 3 },
+                        { "M", 4 },
+                        { "N", 5 },
+                        //{ "O", 6 },
+                        { "P", 7 },
+                        //{ "Q", 8 },
+                        { "R", 9 },
+                        { "S", 2 },
+                        { "T", 3 },
+                        { "U", 4 },
+                        { "V", 5 },
+                        { "W", 6 },
+                        { "X", 7 },
+                        { "Y", 8 },
+                        { "Z", 9 }
+                    };
+
+                var len = upperVin.Length;
+                var vinArr = new string[len];
+                for (var i = 0; i < len; i++)
+                {
+                    vinArr[i] = upperVin.Substring(i, 1);
+                }
+                var amount = 0;
+                for (var i = 0; i < vinArr.Length; i++)
+                {
+                    //VIN码从从第一位开始，码数字的对应值×该位的加权值，计算全部17位的乘积值相加
+                    if (vinMapValue.ContainsKey(vinArr[i].ToUpper()))
+                        amount += vinMapValue[vinArr[i].ToUpper()] * vinMapWeighting[i + 1];
+                }
+                //乘积值相加除以11、若余数为10，即为字母Ｘ
+                if (amount % 11 == 10)
+                {
+                    if (vinArr[8].ToUpper() == "X")
+                    {
+                        result = true;
+                    }
+
+                }
+                else
+                {
+                    //VIN码从从第一位开始，码数字的对应值×该位的加权值，计算全部17位的乘积值相加除以11，所得的余数，即为第九位校验值
+                    if (vinMapValue.ContainsKey(vinArr[8].ToUpper()))
+                    {
+                        if (amount % 11 == vinMapValue[vinArr[8].ToUpper()])
+                        {
+                            result = true;
+                        }
+                    }
+                }
+
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region IsPlateNumber
+        /// <summary>
+        /// 是否为车牌号
+        /// </summary>
+        /// <param name="plateNumber">车牌号</param>
+        /// <returns></returns>
+        public static bool IsPlateNumber(string plateNumber)
+        {
+            var result = false;
+            if (!string.IsNullOrEmpty(plateNumber) && plateNumber.Length == 7)
+            {
+                const string pattern = @"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+                result = Regex.IsMatch(plateNumber, pattern);
+            }
+            return result;
+        }
+
         #endregion
 
     }

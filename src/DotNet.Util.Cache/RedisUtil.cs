@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FreeRedis;
+using Newtonsoft.Json;
 
 namespace DotNet.Util
 {
@@ -13,16 +14,30 @@ namespace DotNet.Util
     {
         static RedisUtil()
         {
+
         }
+
+        // 单例并只有一个连接，叶老板推荐
+        private static RedisClient redisClient { get; } = GetClient();
+        // 以下代码每次调用都会有一个实例，千万不要用
+        //private static RedisClient redisClient => GetClient();
 
         private static RedisClient GetClient()
         {
-            var cli = new RedisClient("" + BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            var sb = Pool.StringBuilder.Get().Append(BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            var cli = new RedisClient(sb.Put());
+            cli.Serialize = obj => JsonConvert.SerializeObject(obj);
+            cli.Deserialize = (json, type) => JsonConvert.DeserializeObject(json, type);
             // Redis命令行日志
-            cli.Notice += (s, e) => LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
+            cli.Notice += (s, e) =>
+            {
+                Console.WriteLine(e.Log);
+                //LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
+            };
             return cli;
         }
 
+        #region 是否存在指定CacheKey
         /// <summary>
         /// 是否存在指定CacheKey
         /// </summary>
@@ -30,11 +45,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                return redisClient.Exists(cacheKey);
-            }
+            return redisClient.Exists(cacheKey);
         }
+        #endregion
 
         #region Key/Value读取和存储
         /// <summary>
@@ -47,11 +60,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Add<T>(string key, T t, int timeout)
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.Set<T>(key, t, timeout);
-                return true;
-            }
+            redisClient.Set<T>(key, t, timeout);
+            return true;
         }
         /// <summary>
         /// 添加新缓存
@@ -63,11 +73,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Add<T>(string key, T t, TimeSpan timeSpan)
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.Set<T>(key, t, timeSpan);
-                return true;
-            }
+            redisClient.Set<T>(key, t, timeSpan);
+            return true;
         }
 
         /// <summary>
@@ -80,11 +87,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Set<T>(string key, T t, int timeout = 0)
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.Set<T>(key, t, timeout);
-                return true;
-            }
+            redisClient.Set<T>(key, t, timeout);
+            return true;
         }
         /// <summary>
         /// 设置缓存
@@ -96,11 +100,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Set<T>(string key, T t, TimeSpan timeSpan)
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.Set<T>(key, t, timeSpan);
-                return true;
-            }
+            redisClient.Set<T>(key, t, timeSpan);
+            return true;
         }
 
 
@@ -114,10 +115,7 @@ namespace DotNet.Util
         {
             if (!string.IsNullOrWhiteSpace(key))
             {
-                using (var redisClient = RedisUtil.GetClient())
-                {
-                    return redisClient.Get<T>(key);
-                }
+                return redisClient.Get<T>(key);
             }
             return default(T);
         }
@@ -130,11 +128,8 @@ namespace DotNet.Util
         {
             if (!string.IsNullOrWhiteSpace(key))
             {
-                using (var redisClient = RedisUtil.GetClient())
-                {
-                    redisClient.Del(key);
-                    return  true;
-                }
+                redisClient.Del(key);
+                return true;
             }
             return false;
         }
@@ -145,10 +140,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveAll()
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                redisClient.FlushDb();
-            }
+            redisClient.FlushDb();
         }
 
         /// <summary>
@@ -160,13 +152,10 @@ namespace DotNet.Util
         {
             if (!string.IsNullOrWhiteSpace(pattern))
             {
-                using (var redisClient = RedisUtil.GetClient())
+                var keys = redisClient.Keys(pattern);
+                foreach (var key in keys)
                 {
-                    var keys = redisClient.Keys(pattern);
-                    foreach (var key in keys)
-                    {
-                        redisClient.Del(key);
-                    }
+                    redisClient.Del(key);
                 }
             }
         }
@@ -177,10 +166,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string[] GetAllKeys()
         {
-            using (var redisClient = RedisUtil.GetClient())
-            {
-                return redisClient.Keys("*");
-            }
+            return redisClient.Keys("*");
         }
 
         #endregion

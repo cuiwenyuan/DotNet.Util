@@ -12,7 +12,7 @@ namespace DotNet.IService
     using Util;
 
     /// <summary>
-    /// IRoleService
+    /// IBaseRoleService
     /// 角色接口
     /// 
     /// 修改记录

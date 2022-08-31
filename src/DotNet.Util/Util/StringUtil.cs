@@ -566,17 +566,17 @@ namespace DotNet.Util
             {
                 return "";
             }
-            var sbText = new StringBuilder();
+            var sb = Pool.StringBuilder.Get();
             var hiddenCharCount = info.Length - left - right;
             if (hiddenCharCount > 0)
             {
                 string prefix = info.Substring(0, left), suffix = info.Substring(info.Length - right);
-                sbText.Append(prefix);
+                sb.Append(prefix);
                 for (var i = 0; i < hiddenCharCount; i++)
                 {
-                    sbText.Append("*");
+                    sb.Append("*");
                 }
-                sbText.Append(suffix);
+                sb.Append(suffix);
             }
             else
             {
@@ -584,26 +584,26 @@ namespace DotNet.Util
                 {
                     if (info.Length > left && left > 0)
                     {
-                        sbText.Append(info.Substring(0, left) + "****");
+                        sb.Append(info.Substring(0, left) + "****");
                     }
                     else
                     {
-                        sbText.Append(info.Substring(0, 1) + "****");
+                        sb.Append(info.Substring(0, 1) + "****");
                     }
                 }
                 else
                 {
                     if (info.Length > right && right > 0)
                     {
-                        sbText.Append("****" + info.Substring(info.Length - right));
+                        sb.Append("****" + info.Substring(info.Length - right));
                     }
                     else
                     {
-                        sbText.Append("****" + info.Substring(info.Length - 1));
+                        sb.Append("****" + info.Substring(info.Length - 1));
                     }
                 }
             }
-            return sbText.ToString();
+            return sb.Put();
         }
 
         /// <summary>

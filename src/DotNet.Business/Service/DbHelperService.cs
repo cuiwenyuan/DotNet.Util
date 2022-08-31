@@ -65,7 +65,7 @@ namespace DotNet.Business
 
             // 加强安全验证防止未授权匿名调用
 #if (!DEBUG)
-            LogonService.UserIsLogon(null, userInfo);
+            BaseUserLogonService.UserIsLogon(null, userInfo);
 #endif
         }
 

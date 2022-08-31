@@ -28,7 +28,7 @@ namespace DotNet.Business
         /// <typeparam name="Service">服务</typeparam>
         /// <typeparam name="IService">服务泛型</typeparam>
         /// <returns></returns>
-		public IService CreateService<Service, IService>() where Service : IService, new()
+		public IService CreateBaseService<Service, IService>() where Service : IService, new()
         {
             return new Service();
         }
@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <returns></returns>
-		public TService CreateService<TService>() where TService : new()
+		public TService CreateBaseService<TService>() where TService : new()
         {
             return new TService();
         }
@@ -54,16 +54,16 @@ namespace DotNet.Business
         /// 创建登录服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseUserLogonService CreateLogonService()
+        public virtual IBaseUserLogonService CreateBaseLogonService()
         {
-            return new LogonService();
+            return new BaseUserLogonService();
         }
 
         /// <summary>
         /// 创建序列服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseSequenceService CreateSequenceService()
+        public virtual IBaseSequenceService CreateBaseSequenceService()
         {
             return new BaseSequenceService();
         }
@@ -72,7 +72,7 @@ namespace DotNet.Business
         /// 创建用户服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseUserService CreateUserService()
+        public virtual IBaseUserService CreateBaseUserService()
         {
             return new BaseUserService();
         }
@@ -81,16 +81,16 @@ namespace DotNet.Business
         /// 创建日志服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseLogService CreateLogService()
+        public virtual IBaseLogService CreateBaseLogService()
         {
-            return new LogService();
+            return new BaseLogService();
         }
 
         /// <summary>
         /// 创建异常服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseExceptionService CreateExceptionService()
+        public virtual IBaseExceptionService CreateBaseExceptionService()
         {
             return new BaseExceptionService();
         }
@@ -99,7 +99,7 @@ namespace DotNet.Business
         /// 创建权限服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBasePermissionService CreatePermissionService()
+        public virtual IBasePermissionService CreateBasePermissionService()
         {
             return new BasePermissionService();
         }
@@ -108,7 +108,7 @@ namespace DotNet.Business
         /// 创建组织机构服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseOrganizationService CreateOrganizationService()
+        public virtual IBaseOrganizationService CreateBaseOrganizationService()
         {
             return new BaseOrganizationService();
         }
@@ -117,7 +117,7 @@ namespace DotNet.Business
         /// 创建字典服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseDictionaryService CreateBaseDictionaryService()
+        public virtual IBaseDictionaryService CreateBaseBaseDictionaryService()
         {
             return new BaseDictionaryService();
         }
@@ -126,7 +126,7 @@ namespace DotNet.Business
         /// 创建字典明细服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseDictionaryItemService CreateBaseDictionaryItemService()
+        public virtual IBaseDictionaryItemService CreateBaseBaseDictionaryItemService()
         {
             return new BaseDictionaryItemService();
         }
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// 创建模块菜单服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseModuleService CreateModuleService()
+        public virtual IBaseModuleService CreateBaseModuleService()
         {
             return new BaseModuleService();
         }
@@ -144,7 +144,7 @@ namespace DotNet.Business
         /// 创建修改记录服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseChangeLogService CreateChangeLogService()
+        public virtual IBaseChangeLogService CreateBaseChangeLogService()
         {
             return new BaseChangeLogService();
         }
@@ -153,7 +153,7 @@ namespace DotNet.Business
         /// 创建员工服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseStaffService CreateStaffService()
+        public virtual IBaseStaffService CreateBaseStaffService()
         {
             return new BaseStaffService();
         }
@@ -162,7 +162,7 @@ namespace DotNet.Business
         /// 创建角色服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseRoleService CreateRoleService()
+        public virtual IBaseRoleService CreateBaseRoleService()
         {
             return new BaseRoleService();
         }
@@ -171,7 +171,7 @@ namespace DotNet.Business
         /// 创建参数服务
         /// </summary>
         /// <returns></returns>
-        public virtual IBaseParameterService CreateParameterService()
+        public virtual IBaseParameterService CreateBaseParameterService()
         {
             return new BaseParameterService();
         }

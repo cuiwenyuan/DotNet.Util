@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// <summary>
     /// DotNetService
     /// 
-    /// 修改纪录
+    /// 修改记录
     ///
     ///		2015.04.30 版本：3.0 JiRiGaLa 分离方法，提高安全性。
     ///		2011.08.21 版本：2.0 JiRiGaLa 方便在系统组件化用,命名进行了修改。
@@ -32,7 +32,7 @@ namespace DotNet.Business
         {
             get
             {
-                return _serviceFactory.CreateBusinessDbHelperService();
+                return _serviceFactory.CreateBaseBusinessDbHelperService();
             }
         }
 
@@ -43,18 +43,18 @@ namespace DotNet.Business
         {
             get
             {
-                return _serviceFactory.CreateUserCenterDbHelperService();
+                return _serviceFactory.CreateBaseUserCenterDbHelperService();
             }
         }
 
         /// <summary>
         /// 登录日志服务
         /// </summary>
-        public virtual IDbHelperService LoginLogDbHelperService
+        public virtual IDbHelperService LogonLogDbHelperService
         {
             get
             {
-                return _serviceFactory.CreateLogonLogDbHelperService();
+                return _serviceFactory.CreateBaseLogonLogDbHelperService();
             }
         }
     }

@@ -24,7 +24,7 @@ namespace DotNet.Business
     ///		<date>2009.04.15</date>
     /// </author> 
     /// </summary>
-    public partial class LogonService : IBaseUserLogonService
+    public partial class BaseUserLogonService : IBaseUserLogonService
     {
 
         #region public BaseUserInfo LogonByUserName(string taskId, string systemCode, BaseUserInfo userInfo, string userName)
