@@ -2,6 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 
 namespace DotNet.Util
@@ -76,8 +77,13 @@ namespace DotNet.Util
             if (minId > 0)
             {
                 var maxId = minId + batchSize;
-                dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " > " + minId + " AND " + BaseUtil.FieldId + " <=" + maxId);
+                var result = dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " <=" + maxId);
+                Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total line: " + result);
                 BatchDelete(dbHelper, tableName, condition, batchSize: batchSize);
+            }
+            else
+            {
+                Console.WriteLine("tableName: " + tableName + " has no data matched to delete");
             }
         }
         #endregion
