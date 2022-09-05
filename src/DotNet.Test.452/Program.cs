@@ -16,32 +16,36 @@ namespace DotNet.Test._452
             //读取配置文件
             BaseConfiguration.GetSetting();
 
-            for (var i = 0; i < 100; i++)
-            {
-                Task.Run(() =>
-                {
-                    DbTest();
-                });
-            }
+            BaseSystemInfo.LogSql = true;
 
-            CacheUtil.redisEnabled = true;
-            for (int i = 1000000; i < 1000100; i++)
-            {
-                CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
-            }
+            BatchDelete();
 
-            for (int i = 1000000; i < 1000100; i++)
-            {
-                Console.WriteLine(CacheUtil.Get<string>("Test" + i, isRedis: true));
-            }
+            //for (var i = 0; i < 100; i++)
+            //{
+            //    Task.Run(() =>
+            //    {
+            //        DbTest();
+            //    });
+            //}
 
-            for (int i = 10000; i < 11000; i++)
-            {
-                var entity = new BaseUserContactEntity();
-                entity.Id = 1;
-                entity.Email = "Troy.Cui@email.com";
-                CacheUtil.Set("entity" + i, entity, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
-            }
+            //CacheUtil.redisEnabled = true;
+            //for (int i = 1000000; i < 1000100; i++)
+            //{
+            //    CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
+            //}
+
+            //for (int i = 1000000; i < 1000100; i++)
+            //{
+            //    Console.WriteLine(CacheUtil.Get<string>("Test" + i, isRedis: true));
+            //}
+
+            //for (int i = 10000; i < 11000; i++)
+            //{
+            //    var entity = new BaseUserContactEntity();
+            //    entity.Id = 1;
+            //    entity.Email = "Troy.Cui@email.com";
+            //    CacheUtil.Set("entity" + i, entity, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
+            //}
 
             //for (int i = 10000; i < 11000; i++)
             //{
@@ -69,6 +73,7 @@ namespace DotNet.Test._452
             //    var ls = CacheUtil.Get<List<BaseUserContactEntity>>("listentity" + i, isRedis: true);
             //    Console.WriteLine(JsonUtil.ObjectToJson(ls));
             //}
+
             Console.WriteLine("Done");
 
             Console.ReadLine();
@@ -80,15 +85,21 @@ namespace DotNet.Test._452
         }
         private static void DbTest()
         {
-            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=ovm08.corp.waiglobal.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = oraprod)));User Id=waiweb;Password=web4wai;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
+            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = oraprod)));User Id=wangcaisoft;Password=wangcaisoft;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
             //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
             //var manager = new EmailRecipientManager(dbHelper);
             //var entity = new EmailRecipientEntity();
-            //entity.Recipient = "Troy.Cui@waiglobal.com";
+            //entity.Recipient = "Troy.Cui@wangcaisoft.com";
             //entity.Name = "Troy.Cui";
             //entity.Category = "Shipping & Handling";
             //var entityId = manager.Add(entity);
             //Console.WriteLine(entityId);
+        }
+
+        private static void BatchDelete()
+        {
+            var dbHelper = DbHelperFactory.Create(CurrentDbType.SqlServer, "Data Source=localhost;Initial Catalog=DB_Test;User Id = sa ; Password = wangcaisoft.com;");
+            dbHelper.BatchDelete("Common_MessageQueue", "CreateOn <= '" + DateTime.Now.AddDays(-365).ToString(BaseSystemInfo.DateTimeFormat) + "'", 100);
         }
     }
 }
