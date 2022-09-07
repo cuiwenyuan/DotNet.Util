@@ -358,7 +358,7 @@ namespace DotNet.Util
         }
         #endregion
 
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 
         #region GetResponseCsv 在浏览器中获得CSV格式文件
         /// <summary>

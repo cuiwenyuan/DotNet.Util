@@ -59,7 +59,7 @@ namespace DotNet.Util
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogUtil.WriteException(ex);
             }
             finally
             {

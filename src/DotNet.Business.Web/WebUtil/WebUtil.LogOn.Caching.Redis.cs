@@ -6,7 +6,7 @@ using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web;
 using System.Web.Configuration;
 #endif
@@ -25,7 +25,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         /// <summary>
         /// 检查前端传来的用户信息是否正确
         /// 一些接口调用需要检查

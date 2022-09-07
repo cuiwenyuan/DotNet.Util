@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 
@@ -45,7 +45,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 
         #region public static bool SetDropDownListValue(DropDownList dropDownList, string selectedValue)
         /// <summary>

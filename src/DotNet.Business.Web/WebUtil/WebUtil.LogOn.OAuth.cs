@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         #region OAuth登录
 
         /// <summary>
