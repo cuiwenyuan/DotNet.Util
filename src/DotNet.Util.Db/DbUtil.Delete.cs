@@ -2,6 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 
 namespace DotNet.Util
@@ -21,9 +22,9 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public int static Delete(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null) 删除表格数据
+        #region public int static Delete(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null) 删除表数据
         /// <summary>
-        /// 删除表格数据
+        /// 删除表数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">目标表名</param>
@@ -42,9 +43,54 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int Truncate(this IDbHelper dbHelper, string tableName) 截断表格数据
+        #region public int static Delete(this IDbHelper dbHelper, string tableName, string condition) 删除表数据
         /// <summary>
-        /// 截断表格数据
+        /// 删除表数据
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">目标表名</param>
+        /// <param name="condition">删除条件(不含WHERE)</param>
+        /// <returns>影响行数</returns>
+        public static int Delete(this IDbHelper dbHelper, string tableName, string condition)
+        {
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("DELETE FROM " + tableName);
+            if (!string.IsNullOrEmpty(condition))
+            {
+                sb.Append(" WHERE " + condition);
+            }
+            return dbHelper.ExecuteNonQuery(sb.Put());
+        }
+        #endregion
+
+        #region public void BatchDelete(this IDbHelper dbHelper, string tableName, string condition, int batchSize = 100)
+        /// <summary>
+        /// 批量删除（针对超过几百万行的表进行批次删除）
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">目标表名</param>
+        /// <param name="condition">删除条件(不含WHERE)</param>
+        /// <param name="batchSize">批次大小</param>
+        public static void BatchDelete(this IDbHelper dbHelper, string tableName, string condition, int batchSize = 100)
+        {
+            var minId = dbHelper.AggregateInt(tableName, BaseUtil.FieldId, condition: condition, function: "MIN");
+            if (minId > 0 && batchSize >= 1)
+            {
+                var maxId = minId + batchSize;
+                var result = dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " <" + maxId);
+                Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total deleted: " + result);
+                BatchDelete(dbHelper, tableName, condition, batchSize: batchSize);
+            }
+            else
+            {
+                Console.WriteLine("tableName: " + tableName + " has no matched data to delete");
+            }
+        }
+        #endregion
+
+        #region public static int Truncate(this IDbHelper dbHelper, string tableName) 截断表数据
+        /// <summary>
+        /// 截断表数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">目标表格</param>

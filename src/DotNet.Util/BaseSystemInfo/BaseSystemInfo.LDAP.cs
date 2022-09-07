@@ -36,7 +36,7 @@ namespace DotNet.Util
                 }
                 if (string.IsNullOrEmpty(_ldapPath))
                 {
-                    _ldapPath = "LDAP://DC=CORP,DC=waiglobal,DC=com";
+                    _ldapPath = "LDAP://DC=CORP,DC=wangcaisoft,DC=com";
                 }
                 return _ldapPath;
             }
@@ -60,7 +60,7 @@ namespace DotNet.Util
                     }
                     if (string.IsNullOrEmpty(_ldapDomain))
                     {
-                        _ldapDomain = "corpwaiglobal";
+                        _ldapDomain = "wangcaisoft";
                     }
                 }
                 return _ldapDomain;

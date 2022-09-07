@@ -13,35 +13,41 @@ namespace DotNet.Test._452
     {
         static void Main(string[] args)
         {
-            //读取配置文件
-            BaseConfiguration.GetSetting();
+            // 读取客户端配置文件
+            BaseSystemInfo.ConfigurationFrom = ConfigurationCategory.UserConfig;
+            UserConfigUtil.GetConfig();
 
-            for (var i = 0; i < 100; i++)
-            {
-                Task.Run(() =>
-                {
-                    DbTest();
-                });
-            }
+            BaseSystemInfo.LogSql = true;
+            BaseSystemInfo.LogException = true;
 
-            CacheUtil.redisEnabled = true;
-            for (int i = 1000000; i < 1000100; i++)
-            {
-                CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
-            }
+            BatchDelete();
 
-            for (int i = 1000000; i < 1000100; i++)
-            {
-                Console.WriteLine(CacheUtil.Get<string>("Test" + i, isRedis: true));
-            }
+            //for (var i = 0; i < 100; i++)
+            //{
+            //    Task.Run(() =>
+            //    {
+            //        DbTest();
+            //    });
+            //}
 
-            for (int i = 10000; i < 11000; i++)
-            {
-                var entity = new BaseUserContactEntity();
-                entity.Id = 1;
-                entity.Email = "Troy.Cui@email.com";
-                CacheUtil.Set("entity" + i, entity, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
-            }
+            //CacheUtil.redisEnabled = true;
+            //for (int i = 1000000; i < 1000100; i++)
+            //{
+            //    CacheUtil.Set("Test" + i, DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat), cacheTime: new TimeSpan(0, 0, 0, i), isRedis: true);
+            //}
+
+            //for (int i = 1000000; i < 1000100; i++)
+            //{
+            //    Console.WriteLine(CacheUtil.Get<string>("Test" + i, isRedis: true));
+            //}
+
+            //for (int i = 10000; i < 11000; i++)
+            //{
+            //    var entity = new BaseUserContactEntity();
+            //    entity.Id = 1;
+            //    entity.Email = "Troy.Cui@email.com";
+            //    CacheUtil.Set("entity" + i, entity, cacheTime: new TimeSpan(0, i, i, i), isRedis: true);
+            //}
 
             //for (int i = 10000; i < 11000; i++)
             //{
@@ -69,6 +75,7 @@ namespace DotNet.Test._452
             //    var ls = CacheUtil.Get<List<BaseUserContactEntity>>("listentity" + i, isRedis: true);
             //    Console.WriteLine(JsonUtil.ObjectToJson(ls));
             //}
+
             Console.WriteLine("Done");
 
             Console.ReadLine();
@@ -80,15 +87,34 @@ namespace DotNet.Test._452
         }
         private static void DbTest()
         {
-            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=ovm08.corp.waiglobal.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = oraprod)));User Id=waiweb;Password=web4wai;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
+            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = WangCaiMa)));User Id=WangCaiMa;Password=123456;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
             //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
             //var manager = new EmailRecipientManager(dbHelper);
             //var entity = new EmailRecipientEntity();
-            //entity.Recipient = "Troy.Cui@waiglobal.com";
+            //entity.Recipient = "Troy.Cui@wangcaisoft.com";
             //entity.Name = "Troy.Cui";
             //entity.Category = "Shipping & Handling";
             //var entityId = manager.Add(entity);
             //Console.WriteLine(entityId);
+        }
+
+        private static void BatchDelete()
+        {
+            var batchSize = new XmlConfigUtil().GetValue("BatchSize", defaultValue: "1000", "Global").ToInt();
+            var dataStoredDays = new XmlConfigUtil().GetValue("DataStoredDays", defaultValue: "90", "Global").ToInt();
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ConsumeDetail] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkFee] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkingFee] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_PayToken] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkRecord] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkSpace] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            var dbHelper = DbHelperFactory.Create(CurrentDbType.SqlServer, BaseSystemInfo.BusinessDbConnection);
+            dbHelper.BatchDelete("WeLinkPark_ConsumeDetail", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkFee", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkingFee", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_PayToken", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkRecord", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkSpace", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
         }
     }
 }
