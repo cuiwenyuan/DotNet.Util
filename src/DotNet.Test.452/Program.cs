@@ -13,10 +13,12 @@ namespace DotNet.Test._452
     {
         static void Main(string[] args)
         {
-            //读取配置文件
-            BaseConfiguration.GetSetting();
+            // 读取客户端配置文件
+            BaseSystemInfo.ConfigurationFrom = ConfigurationCategory.UserConfig;
+            UserConfigUtil.GetConfig();
 
             BaseSystemInfo.LogSql = true;
+            BaseSystemInfo.LogException = true;
 
             BatchDelete();
 
@@ -85,7 +87,7 @@ namespace DotNet.Test._452
         }
         private static void DbTest()
         {
-            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = oraprod)));User Id=wangcaisoft;Password=wangcaisoft;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
+            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = WangCaiMa)));User Id=WangCaiMa;Password=123456;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
             //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
             //var manager = new EmailRecipientManager(dbHelper);
             //var entity = new EmailRecipientEntity();
@@ -98,8 +100,21 @@ namespace DotNet.Test._452
 
         private static void BatchDelete()
         {
-            var dbHelper = DbHelperFactory.Create(CurrentDbType.SqlServer, "Data Source=localhost;Initial Catalog=DB_Test;User Id = sa ; Password = wangcaisoft.com;");
-            dbHelper.BatchDelete("Common_MessageQueue", "CreateOn <= '" + DateTime.Now.AddDays(-365).ToString(BaseSystemInfo.DateTimeFormat) + "'", 100);
+            var batchSize = new XmlConfigUtil().GetValue("BatchSize", defaultValue: "1000", "Global").ToInt();
+            var dataStoredDays = new XmlConfigUtil().GetValue("DataStoredDays", defaultValue: "90", "Global").ToInt();
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ConsumeDetail] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkFee] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkingFee] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_PayToken] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkRecord] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            //SELECT COUNT(*) FROM[Business_WeLinkPark].[dbo].[WeLinkPark_ParkSpace] WHERE DATEDIFF(d, CreateOn, GETDATE()) > 90;
+            var dbHelper = DbHelperFactory.Create(CurrentDbType.SqlServer, BaseSystemInfo.BusinessDbConnection);
+            dbHelper.BatchDelete("WeLinkPark_ConsumeDetail", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkFee", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkingFee", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_PayToken", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkRecord", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
+            dbHelper.BatchDelete("WeLinkPark_ParkSpace", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
         }
     }
 }

@@ -74,16 +74,16 @@ namespace DotNet.Util
         public static void BatchDelete(this IDbHelper dbHelper, string tableName, string condition, int batchSize = 100)
         {
             var minId = dbHelper.AggregateInt(tableName, BaseUtil.FieldId, condition: condition, function: "MIN");
-            if (minId > 0)
+            if (minId > 0 && batchSize >= 1)
             {
                 var maxId = minId + batchSize;
-                var result = dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " <=" + maxId);
-                Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total line: " + result);
+                var result = dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " <" + maxId);
+                Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total deleted: " + result);
                 BatchDelete(dbHelper, tableName, condition, batchSize: batchSize);
             }
             else
             {
-                Console.WriteLine("tableName: " + tableName + " has no data matched to delete");
+                Console.WriteLine("tableName: " + tableName + " has no matched data to delete");
             }
         }
         #endregion
