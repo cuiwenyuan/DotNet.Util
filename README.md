@@ -2,6 +2,9 @@
 DotNet.Util is a set of .NET6 + .NET5 + Standard 2.0/2.1 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8).  
 DotNet.Util是一系列.NET6 + .NET5 + Standard 2.0/2.1组件工具，绝大部分支持.NET Framework 4.52/4.6/4.7/4.8平台，各项目默认支持netstandard2.1/netstandard2.0/net4.8/net4.7/net4.6/net4.52。
 
+## 最低支持4.5.2
+因为VS2022不再支持.NET版本：4.0、4.5、4.5.1，2022年9月9日起最低支持从NET452起。请根据VS2022的提示，自行下载NET452开发包。
+
 ## Nuget
 因为DotNet.被占用，目前NuGet的包以WangCaiSoft.开头。 
 https://www.nuget.org/packages?q=wangcaisoft
