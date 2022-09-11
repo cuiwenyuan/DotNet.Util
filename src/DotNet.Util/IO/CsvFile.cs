@@ -199,7 +199,7 @@ namespace DotNet.Util
         private StreamWriter _writer;
         private void EnsureWriter()
         {
-//#if NET4
+//#if NET452
             if (_writer == null) _writer = new StreamWriter(_stream, Encoding);
 //#else
 //            if (_writer == null) _writer = new StreamWriter(_stream, Encoding, 1024, true);

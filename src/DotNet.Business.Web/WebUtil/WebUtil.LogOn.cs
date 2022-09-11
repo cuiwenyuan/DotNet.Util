@@ -9,7 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Net;
 using System.Text;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web;
 using System.Web.Security;
 #endif
@@ -69,7 +69,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 
         #region public static bool CheckIsLogon(string accessDenyUrl = null) 检查是否已登录
         /// <summary>

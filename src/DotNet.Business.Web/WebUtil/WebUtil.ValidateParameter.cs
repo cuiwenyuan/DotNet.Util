@@ -2,7 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web;
 #endif
 
@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         /// <summary>
         /// 验证参数
         /// </summary>

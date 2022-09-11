@@ -44,7 +44,7 @@ namespace DotNet.Util
         /// <returns>值</returns>
         public static string GetValue(string key)
         {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
             return (string)registryKey.GetValue(key);
 #elif NETSTANDARD2_0_OR_GREATER
@@ -68,7 +68,7 @@ namespace DotNet.Util
         /// <param name="keyValue">值</param>
         public static void SetValue(string key, string keyValue)
         {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
             registryKey.SetValue(key, keyValue);
 #elif NETSTANDARD2_0_OR_GREATER
@@ -103,7 +103,7 @@ namespace DotNet.Util
         public static bool Exists(string subKey, string key)
         {
             var result = false;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
             var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
             var subKeyNames = registryKey.GetSubKeyNames();
             for (var i = 0; i < subKeyNames.Length; i++)

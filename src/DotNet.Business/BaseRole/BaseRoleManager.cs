@@ -699,13 +699,13 @@ namespace DotNet.Business
             return result;
         }
 
-        #region public int Delete(string id) 删除
+        #region public override int Delete(string id) 删除
         /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns>影响行数</returns>
-        public int Delete(string id)
+        public override int Delete(string id)
         {
             var result = 0;
 

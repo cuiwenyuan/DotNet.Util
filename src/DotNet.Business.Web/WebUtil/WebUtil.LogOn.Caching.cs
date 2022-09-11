@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web;
 #endif
 
@@ -30,7 +30,7 @@ namespace DotNet.Business
         /// </summary>
         public static string Url = "redis.wangcaisoft.com:6379";
 
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         /// <summary>
         /// 验证OpenId
         /// </summary>

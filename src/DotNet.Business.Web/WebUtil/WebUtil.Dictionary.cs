@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 namespace DotNet.Business
@@ -16,7 +16,7 @@ namespace DotNet.Business
 
     public partial class WebUtil
     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         #region 绑定字典到下拉列表
         /// <summary>
         /// 绑定下拉列表

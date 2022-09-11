@@ -33,7 +33,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static bool RemoveCache(string key)
+        public override bool RemoveCache(string key)
         {
             var result = false;
 

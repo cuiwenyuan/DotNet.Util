@@ -290,16 +290,10 @@ namespace DotNet.Business
             }
             userEntity.Signature = dataReader["EMPLOYEE_TYPE"].ToString();
             userEntity.SortCode = int.Parse(dataReader["ID"].ToString());
-            if (userEntity.UpdateTime == null)
+
+            if (userEntity.UpdateTime < DateTime.Parse(dataReader["UPDATETIME"].ToString()))
             {
                 userEntity.UpdateTime = DateTime.Parse(dataReader["UPDATETIME"].ToString());
-            }
-            else
-            {
-                if (userEntity.UpdateTime < DateTime.Parse(dataReader["UPDATETIME"].ToString()))
-                {
-                    userEntity.UpdateTime = DateTime.Parse(dataReader["UPDATETIME"].ToString());
-                }
             }
             // 修改日期需要同步
             // result = userManager.UpdateEntity(userEntity);
