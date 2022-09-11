@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
 using System.Web;
 #endif
 using NPOI.XSSF.UserModel;
@@ -36,7 +36,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
         #region ExcelToTable
         /// <summary>
         /// Excel导入成Datable

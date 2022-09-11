@@ -799,7 +799,7 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
             }
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
             if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
             {
                 if (System.Web.Hosting.HostingEnvironment.ApplicationID != null)

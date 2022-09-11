@@ -46,7 +46,7 @@ namespace DotNet.Util
                 {
                     if(BaseSystemInfo.MailServerSslEnabled && BaseSystemInfo.MailServerPort == 465)
                     {
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
                         var message = new System.Web.Mail.MailMessage();
                         //接收人邮箱地址
                         message.To = to;
@@ -180,7 +180,7 @@ namespace DotNet.Util
                     
                     result = true;
                 }
-#if NET40_OR_GREATER
+#if NET452_OR_GREATER
                 catch (System.Web.HttpException ex)
                 {
                     LogUtil.WriteException(ex);
