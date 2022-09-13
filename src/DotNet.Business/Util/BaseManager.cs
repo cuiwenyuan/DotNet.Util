@@ -192,6 +192,8 @@ namespace DotNet.Business
             CurrentTableName = tableName;
         }
 
+        #region public void SetConnection(IDbHelper dbHelper)
+
         /// <summary>
         /// 设置数据库连接
         /// </summary>
@@ -201,6 +203,9 @@ namespace DotNet.Business
             DbHelper = dbHelper;
         }
 
+        #endregion
+
+        #region public void SetConnection(BaseUserInfo userInfo)
         /// <summary>
         /// 设置当前用户
         /// </summary>
@@ -209,7 +214,9 @@ namespace DotNet.Business
         {
             UserInfo = userInfo;
         }
+        #endregion
 
+        #region public void SetConnection(IDbHelper dbHelper, BaseUserInfo userInfo)
         /// <summary>
         /// 设置数据库连接、当前用户
         /// </summary>
@@ -220,7 +227,9 @@ namespace DotNet.Business
             SetConnection(dbHelper);
             UserInfo = userInfo;
         }
+        #endregion
 
+        #region public virtual void SetParameter(IDbHelper dbHelper)
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -229,7 +238,9 @@ namespace DotNet.Business
         {
             DbHelper = dbHelper;
         }
+        #endregion
 
+        #region public virtual void SetParameter(BaseUserInfo userInfo)
         /// <summary>
         /// 设置参数
         /// </summary>
@@ -238,7 +249,9 @@ namespace DotNet.Business
         {
             UserInfo = userInfo;
         }
+        #endregion
 
+        #region public virtual void SetParameter(IDbHelper dbHelper, BaseUserInfo userInfo)
         /// <summary>
         /// 设置参数
         /// </summary>
@@ -249,8 +262,7 @@ namespace DotNet.Business
             DbHelper = dbHelper;
             UserInfo = userInfo;
         }
-
-        #region 类对应的数据库最终操作
+        #endregion
 
         #region public virtual string AddEntity(object entity)
 
@@ -314,9 +326,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #endregion
-
-        #region 删除实体（可以override这些方法）
+        #region public virtual int Delete(int id)
 
         /// <summary>
         /// 删除实体
@@ -335,7 +345,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 删除实体（可以override这些方法）
+        #region public virtual int Delete(string id)
 
         /// <summary>
         /// 删除实体
