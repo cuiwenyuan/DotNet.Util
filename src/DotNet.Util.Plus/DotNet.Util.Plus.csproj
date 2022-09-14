@@ -27,11 +27,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="logo.128.png" Pack="true" PackagePath="\" />
+	  <Compile Remove="XmlUtil.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="XmlUtil.cs" />
+		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>

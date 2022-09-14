@@ -235,7 +235,10 @@ namespace DotNet.Util
             //string path = "~/XML/CreditCard/" + DateTime.Today.ToString("yyyy-MM-dd") + "-" + DateTime.Now.Hour.ToString() + ".xml";
             if (!string.IsNullOrEmpty(filePath))
             {
-                filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+                if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
+                {
+                    filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+                }
 
                 if (File.Exists(filePath))
                 {
