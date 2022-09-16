@@ -25,7 +25,6 @@ namespace DotNet.Util
             FileStream fs = null;
             try
             {
-                // open the stream...
                 fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var serializer = new XmlSerializer(type);
                 return serializer.Deserialize(fs);
@@ -37,7 +36,9 @@ namespace DotNet.Util
             finally
             {
                 if (fs != null)
+                {
                     fs.Close();
+                }                    
             }
         }
 
