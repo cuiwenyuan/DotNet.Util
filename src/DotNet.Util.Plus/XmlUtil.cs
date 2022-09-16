@@ -215,7 +215,6 @@ namespace DotNet.Util
         /// <returns>模版内容</returns>
         public static string GetTemplate(string filePath)
         {
-            //string path = "~/Template/CreditCard/Authorization.xml";
             var result = string.Empty;
             if (!string.IsNullOrEmpty(filePath))
             {
@@ -260,7 +259,6 @@ namespace DotNet.Util
         public static bool CreateXmlFile(string filePath, string fileContent, string templatePath, bool overwrite = true)
         {
             var result = overwrite;
-            //string path = "~/XML/CreditCard/" + DateTime.Today.ToString("yyyy-MM-dd") + "-" + DateTime.Now.Hour.ToString() + ".xml";
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
@@ -312,8 +310,8 @@ namespace DotNet.Util
         /// <returns>string</returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Read(path, "/Node", "")
-         * XmlHelper.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
+         * XmlUtil.Read(path, "/Node", "")
+         * XmlUtil.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
          ************************************************/
         public static string Read(string filePath, string node, string attribute, string nameSpace = "")
         {
@@ -369,9 +367,9 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Insert(path, "/Node", "Element", "", "Value")
-         * XmlHelper.Insert(path, "/Node", "Element", "Attribute", "Value")
-         * XmlHelper.Insert(path, "/Node", "", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "Element", "", "Value")
+         * XmlUtil.Insert(path, "/Node", "Element", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "", "Attribute", "Value")
          ************************************************/
         public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         {
@@ -451,8 +449,8 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Insert(path, "/Node", "", "Value")
-         * XmlHelper.Insert(path, "/Node", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "", "Value")
+         * XmlUtil.Insert(path, "/Node", "Attribute", "Value")
          ************************************************/
         public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
         {
@@ -520,8 +518,8 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Delete(path, "/Node", "")
-         * XmlHelper.Delete(path, "/Node", "Attribute")
+         * XmlUtil.Delete(path, "/Node", "")
+         * XmlUtil.Delete(path, "/Node", "Attribute")
          ************************************************/
         public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
         {
@@ -578,7 +576,7 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.BatchUpdateNodeValue(path, parameters, nameSpace)
+         * XmlUtil.BatchUpdateNodeValue(path, parameters, nameSpace)
          ************************************************/
         public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         {
