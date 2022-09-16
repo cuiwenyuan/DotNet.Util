@@ -212,7 +212,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public string AddPermission(string resourceCategory, string resourceId, string targetCategory, string targetId)
         {
-            var resourcePermissionScope = new BasePermissionScopeEntity
+            var entity = new BasePermissionScopeEntity
             {
                 ResourceCategory = resourceCategory,
                 ResourceId = resourceId.ToInt(),
@@ -221,22 +221,22 @@ namespace DotNet.Business
                 Enabled = 1,
                 Deleted = 0
             };
-            return AddPermission(resourcePermissionScope);
+            return AddPermission(entity);
         }
 
-        #region public string AddPermission(BasePermissionScopeEntity resourcePermissionScope)
+        #region public string AddPermission(BasePermissionScopeEntity entity)
         /// <summary>
         /// 添加
         /// </summary>
-        /// <param name="resourcePermissionScope">对象</param>
+        /// <param name="entity">对象</param>
         /// <returns>主键</returns>
-        public string AddPermission(BasePermissionScopeEntity resourcePermissionScope)
+        public string AddPermission(BasePermissionScopeEntity entity)
         {
             var result = string.Empty;
             // 检查记录是否重复
-            if (!PermissionScopeExists(resourcePermissionScope.PermissionId.ToString(), resourcePermissionScope.ResourceCategory, resourcePermissionScope.ResourceId.ToString(), resourcePermissionScope.TargetCategory, resourcePermissionScope.TargetId.ToString()))
+            if (!PermissionScopeExists(entity.PermissionId.ToString(), entity.ResourceCategory, entity.ResourceId.ToString(), entity.TargetCategory, entity.TargetId.ToString()))
             {
-                result = AddEntity(resourcePermissionScope);
+                result = AddEntity(entity);
             }
             return result;
         }
@@ -1178,7 +1178,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            var resourcePermissionScope = new BasePermissionScopeEntity
+            var entity = new BasePermissionScopeEntity
             {
                 ResourceCategory = resourceCategory,
                 ResourceId = resourceId.ToInt(),
@@ -1202,10 +1202,10 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)
                 };
 
-                resourcePermissionScope.TargetId = grantTargetIds[i].ToInt();
+                entity.TargetId = grantTargetIds[i].ToInt();
                 if (!Exists(parameters))
                 {
-                    Add(resourcePermissionScope);
+                    Add(entity);
                     result++;
                 }
             }
@@ -1226,10 +1226,10 @@ namespace DotNet.Business
             var result = 0;
 
             List<KeyValuePair<string, object>> parameters = null;
-            var resourcePermissionScope = new BasePermissionScopeEntity
+            var entity = new BasePermissionScopeEntity
             {
                 ResourceCategory = resourceCategory,
-                // resourcePermissionScope.ResourceId = resourceId;
+                // entity.ResourceId = resourceId;
                 TargetCategory = targetCategory,
                 PermissionId = permissionId.ToInt(),
                 TargetId = grantTargetId.ToInt(),
@@ -1249,11 +1249,11 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)
                 };
 
-                resourcePermissionScope.ResourceId = resourceIds[i].ToInt();
+                entity.ResourceId = resourceIds[i].ToInt();
                 if (!Exists(parameters))
                 {
-                    //resourcePermissionScope.Id = Guid.NewGuid().ToString("N");
-                    Add(resourcePermissionScope, false, false);
+                    //entity.Id = Guid.NewGuid().ToString("N");
+                    Add(entity, false, false);
                     result++;
                 }
             }

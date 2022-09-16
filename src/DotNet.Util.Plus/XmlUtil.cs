@@ -232,7 +232,6 @@ namespace DotNet.Util
         public static bool CreateXmlFile(string filePath, string fileContent, string templatePath, bool overwrite = true)
         {
             var result = overwrite;
-            //string path = "~/XML/CreditCard/" + DateTime.Today.ToString("yyyy-MM-dd") + "-" + DateTime.Now.Hour.ToString() + ".xml";
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
