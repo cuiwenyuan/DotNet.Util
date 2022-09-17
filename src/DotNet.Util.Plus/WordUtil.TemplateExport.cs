@@ -41,20 +41,20 @@ namespace DotNet.Util
         /// <summary>
         /// 从模板文件读取
         /// </summary>
-        /// <param name="fileUrl"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        public static XWPFDocument GetXWPFDocument(string fileUrl)
+        public static XWPFDocument GetXWPFDocument(string filePath)
         {
             XWPFDocument word;
 
-            if (!File.Exists(fileUrl))
+            if (!File.Exists(filePath))
             {
                 throw new Exception("找不到模板文件");
             }
 
             try
             {
-                using (FileStream fs = File.OpenRead(fileUrl))
+                using (FileStream fs = File.OpenRead(filePath))
                 {
                     word = new XWPFDocument(fs);
                 }
@@ -70,20 +70,20 @@ namespace DotNet.Util
         /// <summary>
         /// 保存文件
         /// </summary>
-        /// <param name="savePath"></param>
+        /// <param name="filePath"></param>
         /// <param name="doc"></param>
-        public static void SaveXWPFDocument(string savePath, XWPFDocument doc)
+        public static void SaveXWPFDocument(string filePath, XWPFDocument doc)
         {
-            FileStream file = null;
+            FileStream fs = null;
             try
             {
-                var dir = Path.GetDirectoryName(savePath);
+                var dir = Path.GetDirectoryName(filePath);
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
-                file = new FileStream(savePath, FileMode.Create, FileAccess.Write);
-                doc.Write(file);
+                fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+                doc.Write(fs);
             }
             catch (Exception)
             {
@@ -91,7 +91,7 @@ namespace DotNet.Util
             }
             finally
             {
-                file.Close();
+                fs.Close();
             }
         }
 

@@ -18,7 +18,7 @@ namespace DotNet.Util
         /// <summary>文件编码</summary>
         public Encoding Encoding { get; set; } = Encoding.UTF8;
 
-        private readonly Stream _stream;
+        private readonly Stream _fs;
         private readonly Boolean _leaveOpen;
 
         /// <summary>分隔符。默认逗号</summary>
@@ -28,14 +28,14 @@ namespace DotNet.Util
         #region 构造
         /// <summary>数据流实例化</summary>
         /// <param name="stream"></param>
-        public CsvFile(Stream stream) => _stream = stream;
+        public CsvFile(Stream stream) => _fs = stream;
 
         /// <summary>数据流实例化</summary>
         /// <param name="stream"></param>
         /// <param name="leaveOpen">保留打开</param>
         public CsvFile(Stream stream, Boolean leaveOpen)
         {
-            _stream = stream;
+            _fs = stream;
             _leaveOpen = leaveOpen;
         }
 
@@ -46,9 +46,9 @@ namespace DotNet.Util
         {
             file = file.GetFullPath();
             if (write)
-                _stream = new FileStream(file.EnsureDirectory(true), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                _fs = new FileStream(file.EnsureDirectory(true), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             else
-                _stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                _fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         /// <summary>销毁</summary>
@@ -58,15 +58,15 @@ namespace DotNet.Util
             base.Dispose(disposing);
 
             // 必须刷新写入器，否则可能丢失一截数据
-            _writer?.Flush();
+            _sw?.Flush();
 
-            if (!_leaveOpen && _stream != null)
+            if (!_leaveOpen && _fs != null)
             {
-                _reader.TryDispose();
+                _sr.TryDispose();
 
-                _writer.TryDispose();
+                _sw.TryDispose();
 
-                _stream.Close();
+                _fs.Close();
             }
         }
         #endregion
@@ -78,7 +78,7 @@ namespace DotNet.Util
         {
             EnsureReader();
 
-            var line = _reader.ReadLine();
+            var line = _sr.ReadLine();
             if (line == null) return null;
 
             var list = new List<String>();
@@ -137,10 +137,10 @@ namespace DotNet.Util
             return list.ToArray();
         }
 
-        private StreamReader _reader;
+        private StreamReader _sr;
         private void EnsureReader()
         {
-            if (_reader == null) _reader = new StreamReader(_stream, Encoding);
+            if (_sr == null) _sr = new StreamReader(_fs, Encoding);
         }
         #endregion
 
@@ -163,7 +163,7 @@ namespace DotNet.Util
 
             var str = BuildLine(line);
 
-            _writer.WriteLine(str);
+            _sw.WriteLine(str);
         }
 
         /// <summary>构建一行</summary>
@@ -196,13 +196,13 @@ namespace DotNet.Util
             return sb.Put();
         }
 
-        private StreamWriter _writer;
+        private StreamWriter _sw;
         private void EnsureWriter()
         {
 //#if NET452
-            if (_writer == null) _writer = new StreamWriter(_stream, Encoding);
+            if (_sw == null) _sw = new StreamWriter(_fs, Encoding);
 //#else
-//            if (_writer == null) _writer = new StreamWriter(_stream, Encoding, 1024, true);
+//            if (_sw == null) _sw = new StreamWriter(_stream, Encoding, 1024, true);
 //#endif
         }
         #endregion

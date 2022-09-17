@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using System.Threading;
 
@@ -27,6 +28,7 @@ namespace DotNet.Util
 
     public partial class MailUtil
     {
+        #region
         /// <summary>
         /// 同步发送邮件
         /// </summary>
@@ -44,7 +46,7 @@ namespace DotNet.Util
             {
                 try
                 {
-                    if(BaseSystemInfo.MailServerSslEnabled && BaseSystemInfo.MailServerPort == 465)
+                    if (BaseSystemInfo.MailServerSslEnabled && BaseSystemInfo.MailServerPort == 465)
                     {
 #if NET452_OR_GREATER
                         var message = new System.Web.Mail.MailMessage();
@@ -198,6 +200,58 @@ namespace DotNet.Util
 
             return result;
         }
+        #endregion
+
+        #region public static void AddAttachments(MailMessage mailMessage, string attachmentPaths)
+        /// <summary>
+        /// 添加附件
+        /// </summary>
+        /// <param name="mailMessage"></param>
+        /// <param name="attachmentPaths">附件的路径集合，以分号;分隔</param>
+        public static void AddAttachments(MailMessage mailMessage, string attachmentPaths)
+        {
+            try
+            {
+                string[] path = attachmentPaths.Split(';'); //分隔符号可以自定义
+                Attachment attachment;
+                ContentDisposition disposition;
+                for (int i = 0; i < path.Length; i++)
+                {
+                    attachment = new Attachment(path[i], MediaTypeNames.Application.Octet);
+                    disposition = attachment.ContentDisposition;
+                    disposition.CreationDate = File.GetCreationTime(path[i]);
+                    disposition.ModificationDate = File.GetLastWriteTime(path[i]);
+                    disposition.ReadDate = File.GetLastAccessTime(path[i]);
+                    mailMessage.Attachments.Add(attachment);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.WriteException(ex);
+            }
+        }
+        #endregion
+
+        #region public static void AddAttachments(MailMessage mailMessage, Stream stream, string name)
+        /// <summary>
+        /// 网络附件，上传Stream流
+        /// </summary>
+        /// <param name="mailMessage"></param>
+        /// <param name="stream"></param>
+        /// <param name="name"></param>
+        public static void AddAttachments(MailMessage mailMessage, Stream stream, string name)
+        {
+            try
+            {
+                var attachment = new Attachment(stream, name);
+                mailMessage.Attachments.Add(attachment);
+            }
+            catch (Exception ex)
+            {
+                LogUtil.WriteException(ex);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// 异步发送邮件 独立线程

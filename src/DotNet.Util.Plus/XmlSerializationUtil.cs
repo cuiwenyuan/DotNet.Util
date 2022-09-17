@@ -22,24 +22,26 @@ namespace DotNet.Util
         /// <returns></returns>
         public static object Load(Type type, string filePath)
         {
+            object result = null;
             FileStream fs = null;
             try
             {
                 fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var serializer = new XmlSerializer(type);
-                return serializer.Deserialize(fs);
+                result = serializer.Deserialize(fs);
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogUtil.WriteException(ex);
             }
             finally
             {
                 if (fs != null)
                 {
                     fs.Close();
-                }                    
+                }
             }
+            return result;
         }
 
 
@@ -68,7 +70,7 @@ namespace DotNet.Util
                 {
                     fs.Close();
                 }
-                    
+
             }
 
         }

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Net;
 using System.Xml;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace DotNet.Util
 {
@@ -16,7 +16,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WeChatMiniProgramUtil
     {
-#region GetQrCode
+        #region GetQrCode
         /// <summary>
         /// 获取带参数小程序码并保存到服务器上，返回小程序码图片路径
         /// </summary>
@@ -160,7 +160,6 @@ namespace DotNet.Util
         public static string DownloadBufferImage(string requestUri, string jsonString)
         {
             var result = string.Empty;
-
             try
             {
                 HttpContent httpContent = new StringContent(jsonString);
@@ -173,56 +172,58 @@ namespace DotNet.Util
                     //var httpClient = HttpClientFactory2.GetHttpClient();
 
                     httpClient.PostAsync(requestUri, httpContent).ContinueWith(
-                   (requestTask) =>
-                   {
-                       var response = requestTask.Result;
-
-                       response.EnsureSuccessStatusCode();
-
-                       var contentType = response.Content.Headers.ContentType;
-                       if (string.IsNullOrEmpty(contentType.CharSet))
+                       (requestTask) =>
                        {
-                           contentType.CharSet = "utf-8";
-                       }
-                       LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().Result.LongLength.ToString(), "QRCode");
+                           var response = requestTask.Result;
 
-                       var data = response.Content.ReadAsByteArrayAsync().Result;
+                           response.EnsureSuccessStatusCode();
 
-                       var fileName = string.Empty;
-
-                       //会出现113个字节的内容，所以放大十倍
-                       if (data.Length > 1130)
-                       {
-                           fileName = Guid.NewGuid().ToString("D") + ".jpg";
-                           var filePath = string.Format(@"{0}\QRCode\" + fileName, AppDomain.CurrentDomain.BaseDirectory);
-
-                           var folder = Path.GetDirectoryName(filePath);
-                           if (!Directory.Exists(folder))
+                           var contentType = response.Content.Headers.ContentType;
+                           if (string.IsNullOrEmpty(contentType.CharSet))
                            {
-                               Directory.CreateDirectory(folder);
+                               contentType.CharSet = "utf-8";
+                           }
+                           LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().Result.LongLength.ToString(), "QRCode");
+
+                           var data = response.Content.ReadAsByteArrayAsync().Result;
+
+                           var fileName = string.Empty;
+
+                           //会出现113个字节的内容，所以放大十倍
+                           if (data.Length > 1130)
+                           {
+                               fileName = Guid.NewGuid().ToString("D") + ".jpg";
+                               var filePath = string.Format(@"{0}\QRCode\" + fileName, AppDomain.CurrentDomain.BaseDirectory);
+                               //var filePath = string.Format(@"{0}\QRCode\" + fileName, AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
+
+                               var folder = Path.GetDirectoryName(filePath);
+                               if (!Directory.Exists(folder))
+                               {
+                                   Directory.CreateDirectory(folder);
+                               }
+
+                               using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                               {
+                                   fs.Write(data, 0, data.Length);
+                                   fs.Flush();
+                                   fs.Close();
+                               }
+
+                               result = "/QRCode/" + fileName;
+                           }
+                           else
+                           {
+                               LogUtil.WriteLog(Encoding.Default.GetString(data), "QRCode");
                            }
 
-                           using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                           {
-                               fs.Write(data, 0, data.Length);
-                               fs.Flush();
-                               fs.Close();
-                           }
-
-                           result = "/QRCode/" + fileName;
-                       }
-                       else
-                       {
-                           LogUtil.WriteLog(Encoding.Default.GetString(data), "QRCode");
-                       }
-
-                   }).Wait(5000);
+                       }).Wait(5000);
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
             }
+
             return result;
         }
 
@@ -241,7 +242,7 @@ namespace DotNet.Util
             /// </summary>  
             public string expires_in { get; set; }
         }
-#endregion
+        #endregion
 
     }
 }

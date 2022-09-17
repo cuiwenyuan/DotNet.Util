@@ -17,7 +17,7 @@ namespace DotNet.Util
     /// </summary>
     public static class XmlUtil
     {
-#region 增、删、改操作==============================================
+        #region 增、删、改操作==============================================
 
         /// <summary>
         /// 追加节点
@@ -174,9 +174,9 @@ namespace DotNet.Util
             }
             return null;
         }
-#endregion 增、删、改操作
+        #endregion 增、删、改操作
 
-#region 扩展方法===================================================
+        #region 扩展方法===================================================
         /// <summary>
         /// 读取XML的所有子节点
         /// </summary>
@@ -203,11 +203,11 @@ namespace DotNet.Util
             }
         }
 
-#endregion 扩展方法
+        #endregion 扩展方法
 
-#region Troy扩展，参考http://www.cnblogs.com/wangchuang/p/3152687.html
+        #region Troy扩展，参考http://www.cnblogs.com/wangchuang/p/3152687.html
 
-#region 读取模版
+        #region 读取模版
         /// <summary>
         /// 读取模板
         /// </summary>
@@ -229,10 +229,10 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (var streamReader = new StreamReader(fileStream, Encoding.Default))
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (var sr = new StreamReader(fs, Encoding.Default))
                     {
-                        result = streamReader.ReadToEnd();
+                        result = sr.ReadToEnd();
                     }
                 }
                 catch (Exception)
@@ -244,9 +244,9 @@ namespace DotNet.Util
             }
             return result;
         }
-#endregion
+        #endregion
 
-#region 创建XML文件
+        #region 创建XML文件
 
         /// <summary>
         /// 写入主键
@@ -285,20 +285,20 @@ namespace DotNet.Util
                     {
                         Directory.CreateDirectory(path);
                     }
-                    var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    fileStream.Close();
+                    using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 }
-                var streamWriter = new StreamWriter(filePath, false, Encoding.UTF8);
+                using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
                 if (string.IsNullOrEmpty(fileContent))
                 {
                     fileContent = GetTemplate(templatePath);
                 }
-                streamWriter.WriteLine(fileContent);
-                streamWriter.Close();
+                sw.WriteLine(fileContent);
             }
             return result;
         }
-#endregion
+        #endregion
+
+        #region public static string Read(string filePath, string node, string attribute, string nameSpace = "")
 
         /// <summary>
         /// 读取数据
@@ -355,6 +355,9 @@ namespace DotNet.Util
             return value;
         }
 
+        #endregion
+
+        #region public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         /// <summary>
         /// 插入数据
         /// </summary>
@@ -438,6 +441,10 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
+
         /// <summary>
         /// 修改数据
         /// </summary>
@@ -508,6 +515,10 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
+
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -567,6 +578,9 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         /// <summary>
         /// 批量修改节点值
         /// </summary>
@@ -638,6 +652,8 @@ namespace DotNet.Util
                 }
             }
         }
-#endregion
+        #endregion
+
+        #endregion
     }
 }

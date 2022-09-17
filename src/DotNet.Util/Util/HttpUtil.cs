@@ -48,22 +48,22 @@ namespace DotNet.Util
 
 
 
-            StreamWriter requestStream = null;
+            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                requestStream = new StreamWriter(request.GetRequestStream());
-                requestStream.Write(param);
-                requestStream.Close();
+                sw = new StreamWriter(request.GetRequestStream());
+                sw.Write(param);
+                sw.Close();
 
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -73,7 +73,7 @@ namespace DotNet.Util
             finally
             {
                 request = null;
-                requestStream = null;
+                sw = null;
                 response = null;
             }
 
@@ -96,9 +96,9 @@ namespace DotNet.Util
         {
             var contentType = "image/jpeg";
             //待请求参数数组
-            var Pic = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var PicByte = new byte[Pic.Length];
-            Pic.Read(PicByte, 0, PicByte.Length);
+            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var PicByte = new byte[fs.Length];
+            fs.Read(PicByte, 0, PicByte.Length);
             var lengthFile = PicByte.Length;
 
             //构造请求地址
@@ -132,16 +132,16 @@ namespace DotNet.Util
             request.ContentLength = length;
 
             //请求远程HTTP
-            var requestStream = request.GetRequestStream();
-            Stream myStream = null;
+            var rs = request.GetRequestStream();
+            Stream s = null;
             try
             {
                 //发送数据请求服务器
-                requestStream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
-                requestStream.Write(PicByte, 0, lengthFile);
-                requestStream.Write(boundayBytes, 0, boundayBytes.Length);
+                rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+                rs.Write(PicByte, 0, lengthFile);
+                rs.Write(boundayBytes, 0, boundayBytes.Length);
                 var HttpWResp = (HttpWebResponse)request.GetResponse();
-                myStream = HttpWResp.GetResponseStream();
+                s = HttpWResp.GetResponseStream();
             }
             catch //(WebException e)
             {
@@ -150,23 +150,23 @@ namespace DotNet.Util
             }
             finally
             {
-                if (requestStream != null)
+                if (rs != null)
                 {
-                    requestStream.Close();
+                    rs.Close();
                 }
             }
 
             //读取处理结果
-            var reader = new StreamReader(myStream, code);
+            var sr = new StreamReader(s, code);
             var responseData = Pool.StringBuilder.Get();
 
             String line;
-            while ((line = reader.ReadLine()) != null)
+            while ((line = sr.ReadLine()) != null)
             {
                 responseData.Append(line);
             }
-            myStream.Close();
-            Pic.Close();
+            s.Close();
+            fs.Close();
 
             return responseData.Put();
         }
@@ -200,22 +200,22 @@ namespace DotNet.Util
             request.Timeout = 15000;
             request.AllowAutoRedirect = false;
 
-            StreamWriter requestStream = null;
+            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                requestStream = new StreamWriter(request.GetRequestStream());
-                requestStream.Write(param);
-                requestStream.Close();
+                sw = new StreamWriter(request.GetRequestStream());
+                sw.Write(param);
+                sw.Close();
 
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -225,7 +225,7 @@ namespace DotNet.Util
             finally
             {
                 request = null;
-                requestStream = null;
+                sw = null;
                 response = null;
             }
 
@@ -261,22 +261,22 @@ namespace DotNet.Util
             request.Timeout = 15000;
             request.AllowAutoRedirect = false;
 
-            StreamWriter requestStream = null;
+            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                requestStream = new StreamWriter(request.GetRequestStream());
-                requestStream.Write(param);
-                requestStream.Close();
+                sw = new StreamWriter(request.GetRequestStream());
+                sw.Write(param);
+                sw.Close();
 
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -330,9 +330,9 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -384,9 +384,9 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), encodeing);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), encodeing);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -445,8 +445,8 @@ namespace DotNet.Util
             {
                 wresp = wr.GetResponse();
                 var stream2 = wresp.GetResponseStream();
-                var reader2 = new StreamReader(stream2);
-                responseStr = reader2.ReadToEnd();
+                var sr = new StreamReader(stream2);
+                responseStr = sr.ReadToEnd();
                 // logger.Error(string.Format("File uploaded, server response is: {0}", responseStr));
             }
             catch //(Exception ex)
@@ -462,6 +462,7 @@ namespace DotNet.Util
             return responseStr;
         }
         #endregion
+
         #region 下载图片 DownloadPicture
         
         /// <summary>
@@ -573,8 +574,8 @@ namespace DotNet.Util
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     var responseStream = response.GetResponseStream();
-                    var streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                    return streamReader.ReadToEndAsync();
+                    var sr = new StreamReader(responseStream, Encoding.UTF8);
+                    return sr.ReadToEndAsync();
                 }
             }
             catch (Exception ex)
@@ -602,8 +603,8 @@ namespace DotNet.Util
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     var responseStream = response.GetResponseStream();
-                    var streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                    return streamReader.ReadToEndAsync();
+                    var sr = new StreamReader(responseStream, Encoding.UTF8);
+                    return sr.ReadToEndAsync();
                 }
             }
             catch (Exception ex)

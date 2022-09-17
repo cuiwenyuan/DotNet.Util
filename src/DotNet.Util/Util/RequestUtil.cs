@@ -448,16 +448,15 @@ namespace DotNet.Util
         public static string GetResponse(string url)
         {
             string result = null;
-            // string url = "http://www.MengGuRen.com";
             WebResponse webResponse = null;
-            StreamReader streamReader = null;
+            StreamReader sr = null;
             try
             {
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.Method = "GET";
                 webResponse = httpWebRequest.GetResponse();
-                streamReader = new StreamReader(webResponse.GetResponseStream(), Encoding.UTF8);
-                result = streamReader.ReadToEnd();
+                sr = new StreamReader(webResponse.GetResponseStream(), Encoding.UTF8);
+                result = sr.ReadToEnd();
             }
             catch
             {
@@ -465,9 +464,9 @@ namespace DotNet.Util
             }
             finally
             {
-                if (streamReader != null)
+                if (sr != null)
                 {
-                    streamReader.Close();
+                    sr.Close();
                 }
                 if (webResponse != null)
                 {
