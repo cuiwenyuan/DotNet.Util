@@ -45,23 +45,25 @@ namespace DotNet.Util
         /// <returns></returns>
         public static XWPFDocument GetXWPFDocument(string filePath)
         {
-            XWPFDocument word;
+            XWPFDocument word = null;
 
             if (!File.Exists(filePath))
             {
-                throw new Exception("找不到模板文件");
+                LogUtil.WriteLog("找不到模板文件");
             }
-
-            try
+            else
             {
-                using (FileStream fs = File.OpenRead(filePath))
+                try
                 {
-                    word = new XWPFDocument(fs);
+                    using (FileStream fs = File.OpenRead(filePath))
+                    {
+                        word = new XWPFDocument(fs);
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw new Exception("打开模板文件失败");
+                catch (Exception ex)
+                {
+                    LogUtil.WriteException(ex, "打开模板文件失败");
+                }
             }
 
             return word;
@@ -85,9 +87,10 @@ namespace DotNet.Util
                 fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
                 doc.Write(fs);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogUtil.WriteException(ex);
+                throw;                
             }
             finally
             {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
 using DotNet.Business;
@@ -20,7 +22,33 @@ namespace DotNet.Test._452
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
 
-            BatchDelete();
+            // 通过Word模板替换生成Word文档，用于合同模板生成合同
+            var baesPath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+            var templatePath = Path.Combine(baesPath, @"Contract\", "Template.docx");
+            var templateDocument = WordUtil.GetXWPFDocument(templatePath);
+            if (templateDocument != null)
+            {
+                var basicReplacements = new List<WordUtil.ReplacementBasic>();
+                basicReplacements.Add(new WordUtil.ReplacementBasic
+                {
+                    Type = WordUtil.PlaceholderTypeEnum.Text,
+                    Placeholder = "{姓名}",
+                    Text = "Troy"
+                });
+                basicReplacements.Add(new WordUtil.ReplacementBasic
+                {
+                    Type = WordUtil.PlaceholderTypeEnum.Text,
+                    Placeholder = "{性别}",
+                    Text = "男"
+                });
+                WordUtil.ReplaceInWord(templateDocument, basicReplacements, null);
+                var filePath = Path.Combine(baesPath, @"Contract\" + DateTime.Now.ToString("yyyyMM") + @"\", DateTime.Now.ToString(BaseSystemInfo.DateFormat) + ".docx");
+                WordUtil.SaveXWPFDocument(filePath, templateDocument);
+            }
+            
+
+            //批量删除数据库表记录
+            //BatchDelete();
 
             //for (var i = 0; i < 100; i++)
             //{
