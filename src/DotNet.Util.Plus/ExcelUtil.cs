@@ -194,12 +194,12 @@ namespace DotNet.Util
             if (!string.IsNullOrEmpty(excelFilePath))
             {
                 IWorkbook wb;
-                using (var file = new FileStream(Utils.GetMapPath(excelFilePath), FileMode.Open, FileAccess.Read))
+                using (var fs = new FileStream(Utils.GetMapPath(excelFilePath), FileMode.Open, FileAccess.Read))
                 {
                     // 只支持2007及以下低版本
                     //wb = new HSSFWorkbook(file);
                     // 通过接口的方式实现从xls到xlsx 2003、2007以上版本的全部支持
-                    wb = WorkbookFactory.Create(file);
+                    wb = WorkbookFactory.Create(fs);
 
                 }
                 var excelToHtmlConverter = new ExcelToHtmlConverter();
@@ -459,9 +459,9 @@ namespace DotNet.Util
                 }
 
                 // 4.生成文件
-                var file = new FileStream(filePath, FileMode.Create);
-                workbook.Write(file);
-                file.Close();
+                var fs = new FileStream(filePath, FileMode.Create);
+                workbook.Write(fs);
+                fs.Close();
 
                 // 5.返回下载路径
                 return urlPath;

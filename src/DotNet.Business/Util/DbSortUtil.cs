@@ -32,27 +32,27 @@ namespace DotNet.Business
         /// <summary>
         /// 置顶排方法令命名定义
         /// </summary>
-        public const string CommandSetTop       = "SetTop";
+        public const string CommandSetTop = "SetTop";
 
         /// <summary>
         /// 上移排序方法命名定义
         /// </summary>
-        public const string CommandSetUp        = "SetUp";
+        public const string CommandSetUp = "SetUp";
 
         /// <summary>
         /// 下移排序方法命名定义
         /// </summary>
-        public const string CommandSetDown      = "SetDown";
+        public const string CommandSetDown = "SetDown";
 
         /// <summary>
         /// 置底排序方法命名定义
         /// </summary>
-        public const string CommandSetBottom    = "SetBottom";
+        public const string CommandSetBottom = "SetBottom";
 
         /// <summary>
         /// 交换排序方法命名定义
         /// </summary>
-        public const string CommandSwap         = "Swap";
+        public const string CommandSwap = "Swap";
 
         //
         // 排序操作针对数据库的运算方式定义（好用高效的排序顺序设定方法）
@@ -342,7 +342,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUtil.FieldId, upId)
                 };
             var upSortCode = dbHelper.GetProperty(tableName, parameters, BaseUtil.FieldSortCode);
-            
+
             //把upId的SortCode更新为当前SortCode
             var whereParameters =
                 new List<KeyValuePair<string, object>>
@@ -437,7 +437,7 @@ namespace DotNet.Business
                                            + " ORDER BY " + BaseUtil.FieldSortCode + " )) "
                                            + " ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
-            
+
             return dbHelper.ExecuteScalar(sb.Put()).ToString();
         }
         #endregion

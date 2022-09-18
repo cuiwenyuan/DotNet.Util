@@ -240,8 +240,8 @@ namespace System.IO
         {
             using var fs = file.OpenRead();
             if (encoding == null) encoding = fs.Detect() ?? Encoding.UTF8;
-            using var reader = new StreamReader(fs, encoding);
-            return reader.ReadToEnd();
+            using var sr = new StreamReader(fs, encoding);
+            return sr.ReadToEnd();
         }
 
         /// <summary>把文本写入文件，自动检测编码</summary>
@@ -253,8 +253,8 @@ namespace System.IO
         {
             using var fs = file.OpenWrite();
             if (encoding == null) encoding = fs.Detect() ?? Encoding.UTF8;
-            using var writer = new StreamWriter(fs, encoding);
-            writer.Write(text);
+            using var sw = new StreamWriter(fs, encoding);
+            sw.Write(text);
 
             return file;
         }

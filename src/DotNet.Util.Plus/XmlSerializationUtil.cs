@@ -18,27 +18,30 @@ namespace DotNet.Util
         /// 反序列化
         /// </summary>
         /// <param name="type">对象类型</param>
-        /// <param name="filename">文件路径</param>
+        /// <param name="filePath">文件路径</param>
         /// <returns></returns>
-        public static object Load(Type type, string filename)
+        public static object Load(Type type, string filePath)
         {
+            object result = null;
             FileStream fs = null;
             try
             {
-                // open the stream...
-                fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var serializer = new XmlSerializer(type);
-                return serializer.Deserialize(fs);
+                result = serializer.Deserialize(fs);
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogUtil.WriteException(ex);
             }
             finally
             {
                 if (fs != null)
+                {
                     fs.Close();
+                }
             }
+            return result;
         }
 
 
@@ -46,14 +49,14 @@ namespace DotNet.Util
         /// 序列化
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="filename">文件路径</param>
-        public static void Save(object obj, string filename)
+        /// <param name="filePath">文件路径</param>
+        public static void Save(object obj, string filePath)
         {
             FileStream fs = null;
             // serialize it...
             try
             {
-                fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                 var serializer = new XmlSerializer(obj.GetType());
                 serializer.Serialize(fs, obj);
             }
@@ -67,7 +70,7 @@ namespace DotNet.Util
                 {
                     fs.Close();
                 }
-                    
+
             }
 
         }

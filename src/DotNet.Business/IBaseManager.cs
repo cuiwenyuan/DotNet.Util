@@ -117,22 +117,15 @@ namespace DotNet.Business
 
         #endregion
 
-        //
-        // 添加逻辑编写
-        //
-        // string Add();
-
-        //
-        // 更新逻辑编写
-        //
-        // int Update();
-
+        #region BatchSave
         /// <summary>
         /// 批量保存
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
         int BatchSave(DataTable dt);
+
+        #endregion
 
         #region GetDataTable获取DataTable
 
@@ -546,12 +539,15 @@ namespace DotNet.Business
 
         #endregion
 
+        #region Exists是否存在
+
         /// <summary>
         /// 是否存在
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(object id);
+
         /// <summary>
         /// 是否存在
         /// </summary>
@@ -590,10 +586,10 @@ namespace DotNet.Business
         /// <returns></returns>
         bool Exists(List<KeyValuePair<string, object>> parameters, object id);
 
-        //
-        // 删除数据部分
-        // force 是否强制删除关联数据
-        //
+        #endregion
+
+        #region Delete删除数据部分
+
         /// <summary>
         /// 删除
         /// </summary>
@@ -624,14 +620,18 @@ namespace DotNet.Business
         /// <param name="parameters"></param>
         /// <returns></returns>
         int Delete(List<KeyValuePair<string, object>> parameters);
+
+        #endregion
+
+        #region Truncate
         /// <summary>
         /// Truncate
         /// </summary>
         /// <returns></returns>
         int Truncate();
+        #endregion
 
-
-        /// 直接执行一些SQL语句的方法
+        #region ExecuteNonQuery直接执行一些SQL语句的方法
 
         /// <summary>
         /// 执行查询语句
@@ -648,6 +648,9 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters);
 
+        #endregion
+
+        #region ExecuteScalar
         /// <summary>
         /// 执行查询语句
         /// </summary>
@@ -662,7 +665,9 @@ namespace DotNet.Business
         /// <param name="dbParameters">参数集</param>
         /// <returns>Object</returns>
         object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
+        #endregion
 
+        #region Fill
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -677,6 +682,8 @@ namespace DotNet.Business
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据表</returns>
         DataTable Fill(string commandText, IDbDataParameter[] dbParameters);
+
+        #endregion
 
         #region Extend
 

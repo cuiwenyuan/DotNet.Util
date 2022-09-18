@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2019, DotNet.
+// All Rights Reserved. Copyright (C) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -110,12 +110,12 @@ namespace DotNet.Util
             var dt = new DataTable();
             //HSSFWorkbook wb;
             IWorkbook wb;
-            using (var file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 //只支持2007及以下低版本
                 //wb = new HSSFWorkbook(file);
                 //通过接口的方式实现从xls到xlsx 2003、2007以上版本的全部支持
-                wb = WorkbookFactory.Create(file);
+                wb = WorkbookFactory.Create(fs);
 
             }
             var sheet = wb.GetSheetAt(sheetIndex);
