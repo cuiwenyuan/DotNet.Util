@@ -4,7 +4,7 @@
 		<TargetFrameworks>net452;net46;net47;net48;net5.0;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET 6/5/Standard 2.1/Standard 2.0 Memory/Redis Cache utilities(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.13</Version>
+		<Version>1.0.14</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>

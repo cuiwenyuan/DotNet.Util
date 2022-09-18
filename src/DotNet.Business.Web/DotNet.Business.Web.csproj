@@ -5,7 +5,7 @@
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 		<Description>DotNet.Business.Web is WebForm/WebApi/MVC client sample for User,Role,Menu,Module,Permission etc Management. Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.7</Version>
+		<Version>1.0.8</Version>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Business Web</PackageTags>
