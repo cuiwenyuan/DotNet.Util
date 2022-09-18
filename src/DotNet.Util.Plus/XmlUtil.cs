@@ -4,8 +4,11 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+#if NET452_OR_GREATER
+#else
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+#endif
 
 namespace DotNet.Util
 {
@@ -29,9 +32,13 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-                    //filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#if NET452_OR_GREATER
+
+                    filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
                     IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -59,13 +66,18 @@ namespace DotNet.Util
         /// <param name="toFilePath">被追加节点的XML文档绝对路径</param>
         /// <param name="toXPath">范例: @"Skill/First/SkillItem"</param>
         /// <returns></returns>
-        public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath, IFileProvider fileProvider)
+        public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -100,13 +112,18 @@ namespace DotNet.Util
         /// <param name="xPath">范例: @"Skill/First/SkillItem"</param>
         /// <param name="value">节点的值</param>
         /// <returns></returns>
-        public static bool UpdateNodeInnerText(string filePath, string xPath, string value, IFileProvider fileProvider)
+        public static bool UpdateNodeInnerText(string filePath, string xPath, string value)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    //IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -131,13 +148,18 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="filePath">XML文件绝对路径</param>
         /// <returns></returns>
-        public static XmlDocument LoadXmlDoc(string filePath, IFileProvider fileProvider)
+        public static XmlDocument LoadXmlDoc(string filePath)
         {
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -193,19 +215,24 @@ namespace DotNet.Util
         /// <returns>模版内容</returns>
         public static string GetTemplate(string filePath)
         {
-            //string path = "~/Template/CreditCard/Authorization.xml";
             var result = string.Empty;
             if (!string.IsNullOrEmpty(filePath))
             {
-                //filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
-                IPathProvider iPathProvider;
-                filePath = iPathProvider.MapPath(filePath);
+                if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
+                {
+#if NET452_OR_GREATER
+                    filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
+                }
                 try
                 {
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (var streamReader = new StreamReader(fileStream, Encoding.Default))
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (var sr = new StreamReader(fs, Encoding.Default))
                     {
-                        result = streamReader.ReadToEnd();
+                        result = sr.ReadToEnd();
                     }
                 }
                 catch (Exception)
@@ -232,10 +259,17 @@ namespace DotNet.Util
         public static bool CreateXmlFile(string filePath, string fileContent, string templatePath, bool overwrite = true)
         {
             var result = overwrite;
-            //string path = "~/XML/CreditCard/" + DateTime.Today.ToString("yyyy-MM-dd") + "-" + DateTime.Now.Hour.ToString() + ".xml";
             if (!string.IsNullOrEmpty(filePath))
             {
-                filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+                if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
+                {
+#if NET452_OR_GREATER
+                    filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
+                }
 
                 if (File.Exists(filePath))
                 {
@@ -251,20 +285,20 @@ namespace DotNet.Util
                     {
                         Directory.CreateDirectory(path);
                     }
-                    var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    fileStream.Close();
+                    using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 }
-                var streamWriter = new StreamWriter(filePath, false, Encoding.UTF8);
+                using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
                 if (string.IsNullOrEmpty(fileContent))
                 {
                     fileContent = GetTemplate(templatePath);
                 }
-                streamWriter.WriteLine(fileContent);
-                streamWriter.Close();
+                sw.WriteLine(fileContent);
             }
             return result;
         }
         #endregion
+
+        #region public static string Read(string filePath, string node, string attribute, string nameSpace = "")
 
         /// <summary>
         /// 读取数据
@@ -276,17 +310,22 @@ namespace DotNet.Util
         /// <returns>string</returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Read(path, "/Node", "")
-         * XmlHelper.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
+         * XmlUtil.Read(path, "/Node", "")
+         * XmlUtil.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
          ************************************************/
-        public static string Read(string filePath, string node, string attribute, string nameSpace = "", IFileProvider fileProvider)
+        public static string Read(string filePath, string node, string attribute, string nameSpace = "")
         {
             var value = string.Empty;
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -316,6 +355,9 @@ namespace DotNet.Util
             return value;
         }
 
+        #endregion
+
+        #region public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         /// <summary>
         /// 插入数据
         /// </summary>
@@ -328,9 +370,9 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Insert(path, "/Node", "Element", "", "Value")
-         * XmlHelper.Insert(path, "/Node", "Element", "Attribute", "Value")
-         * XmlHelper.Insert(path, "/Node", "", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "Element", "", "Value")
+         * XmlUtil.Insert(path, "/Node", "Element", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "", "Attribute", "Value")
          ************************************************/
         public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         {
@@ -338,7 +380,12 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -394,6 +441,10 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
+
         /// <summary>
         /// 修改数据
         /// </summary>
@@ -405,8 +456,8 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Insert(path, "/Node", "", "Value")
-         * XmlHelper.Insert(path, "/Node", "Attribute", "Value")
+         * XmlUtil.Insert(path, "/Node", "", "Value")
+         * XmlUtil.Insert(path, "/Node", "Attribute", "Value")
          ************************************************/
         public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
         {
@@ -414,7 +465,12 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -459,6 +515,10 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
+
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -469,8 +529,8 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.Delete(path, "/Node", "")
-         * XmlHelper.Delete(path, "/Node", "Attribute")
+         * XmlUtil.Delete(path, "/Node", "")
+         * XmlUtil.Delete(path, "/Node", "Attribute")
          ************************************************/
         public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
         {
@@ -478,7 +538,12 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -513,6 +578,9 @@ namespace DotNet.Util
             }
         }
 
+        #endregion
+
+        #region public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         /// <summary>
         /// 批量修改节点值
         /// </summary>
@@ -522,7 +590,7 @@ namespace DotNet.Util
         /// <returns></returns>
         /**************************************************
          * 使用示列:
-         * XmlHelper.BatchUpdateNodeValue(path, parameters, nameSpace)
+         * XmlUtil.BatchUpdateNodeValue(path, parameters, nameSpace)
          ************************************************/
         public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         {
@@ -530,7 +598,12 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
+#if NET452_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
+#else
+                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
+#endif
                 }
                 try
                 {
@@ -579,6 +652,8 @@ namespace DotNet.Util
                 }
             }
         }
+        #endregion
+
         #endregion
     }
 }

@@ -49,6 +49,16 @@ namespace DotNet.Util
             return DbUtil.GetDbHelper(currentDbType, connectionString);
         }
 
+        /// <summary>
+        /// 获取指定的数据库连接
+        /// </summary>
+        /// <param name="dbOption">数据库选项</param>
+        /// <returns>数据库访问类</returns>
+        public static IDbHelper Create(DbOption dbOption)
+        {
+            return DbUtil.GetDbHelper(dbOption.CurrentDbType, dbOption.ConnectionString);
+        }
+
         #endregion
 
         #region 获取实例 GetHelper

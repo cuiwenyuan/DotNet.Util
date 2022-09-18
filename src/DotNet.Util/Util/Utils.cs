@@ -2287,15 +2287,15 @@ namespace DotNet.Util
             request.Timeout = 15000;
             request.AllowAutoRedirect = false;
 
-            StreamWriter requestStream = null;
+            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                requestStream = new StreamWriter(request.GetRequestStream());
-                requestStream.Write(param);
-                requestStream.Close();
+                sw = new StreamWriter(request.GetRequestStream());
+                sw.Write(param);
+                sw.Close();
 
                 response = request.GetResponse();
                 if (response != null)
@@ -2312,7 +2312,7 @@ namespace DotNet.Util
             finally
             {
                 request = null;
-                requestStream = null;
+                sw = null;
                 response = null;
             }
 

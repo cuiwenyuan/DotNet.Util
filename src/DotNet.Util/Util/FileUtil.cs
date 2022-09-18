@@ -136,11 +136,11 @@ namespace DotNet.Util
         /// <returns>字节</returns>
         public static byte[] GetFile(string fileName)
         {
-            var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var binaryReader = new BinaryReader(fileStream);
-            var file = binaryReader.ReadBytes(((int)fileStream.Length));
-            binaryReader.Close();
-            fileStream.Close();
+            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            var br = new BinaryReader(fs);
+            var file = br.ReadBytes(((int)fs.Length));
+            br.Close();
+            fs.Close();
             return file;
         }
 
@@ -156,9 +156,9 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(directoryName);
             }
-            var fileStream = new FileStream(fileName, FileMode.Create);
-            fileStream.Write(file, 0, file.Length);
-            fileStream.Close();
+            var fs = new FileStream(fileName, FileMode.Create);
+            fs.Write(file, 0, file.Length);
+            fs.Close();
         }
         /// <summary>
         /// 图片转字节
@@ -167,10 +167,10 @@ namespace DotNet.Util
         /// <returns></returns>
         public static byte[] ImageToByte(Image image)
         {
-            var memoryStream = new MemoryStream();
-            image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Gif);
-            var file = memoryStream.GetBuffer();
-            memoryStream.Close();
+            var ms = new MemoryStream();
+            image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+            var file = ms.GetBuffer();
+            ms.Close();
             return file;
         }
         /// <summary>
@@ -181,10 +181,10 @@ namespace DotNet.Util
         public static Image ByteToImage(byte[] buffer)
         {
             Image image;
-            using (var memoryStream = new MemoryStream(buffer))
+            using (var ms = new MemoryStream(buffer))
             {
-                image = Image.FromStream(memoryStream);
-                memoryStream.Close();
+                image = Image.FromStream(ms);
+                ms.Close();
             }
             return image;
         }
@@ -197,8 +197,8 @@ namespace DotNet.Util
         public static void WriteBinaryFile(string fileName, string message)
         {
             Console.WriteLine(@"写入二进制文件信息开始。");
-            FileStream fileStream = null;
-            BinaryWriter binaryWriter = null;
+            FileStream fs = null;
+            BinaryWriter bw = null;
             try
             {
                 // 首先判断，文件是否已经存在
@@ -209,8 +209,8 @@ namespace DotNet.Util
                 }
                 // 注意第2个参数：
                 // FileMode.Create 指定操作系统应创建新文件。如果文件已存在，它将被覆盖。
-                fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-                binaryWriter = new BinaryWriter(fileStream);
+                fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+                bw = new BinaryWriter(fs);
 
                 // 写入测试数据.
                 // bw.Write(0x20);
@@ -225,14 +225,14 @@ namespace DotNet.Util
                 // bw.Write("abcdefg");
                 var binaryBytes = Encoding.UTF8.GetBytes(message);
                 // binaryWriter.Write(binaryBytes);
-                binaryWriter.Write(binaryBytes);
+                bw.Write(binaryBytes);
 
                 // 关闭文件.
-                binaryWriter.Close();
-                fileStream.Close();
+                bw.Close();
+                fs.Close();
 
-                binaryWriter = null;
-                fileStream = null;
+                bw = null;
+                fs = null;
             }
             catch
             {
@@ -243,22 +243,22 @@ namespace DotNet.Util
             }
             finally
             {
-                if (binaryWriter != null)
+                if (bw != null)
                 {
                     try
                     {
-                        binaryWriter.Close();
+                        bw.Close();
                     }
                     catch
                     {
                         // 最后关闭文件，无视 关闭是否会发生错误了.
                     }
                 }
-                if (fileStream != null)
+                if (fs != null)
                 {
                     try
                     {
-                        fileStream.Close();
+                        fs.Close();
                     }
                     catch
                     {
@@ -470,8 +470,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName)
         {
-            var streamReader = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
-            return streamReader.ReadToEnd();
+            var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
+            return sr.ReadToEnd();
         }
 
         /// <summary>
@@ -652,7 +652,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName, string encoding = "gb2312")
         {
-            //StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
+            //var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
             var sr = new StreamReader(fileName, Encoding.GetEncoding(encoding));
             var message = sr.ReadToEnd();
             // 及时关闭

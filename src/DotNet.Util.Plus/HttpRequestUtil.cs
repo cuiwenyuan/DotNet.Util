@@ -86,8 +86,8 @@ namespace DotNet.Util
             {
                 if (res != null && res.StatusCode == HttpStatusCode.OK)
                 {
-                    var reader = new StreamReader(res.GetResponseStream() ?? throw new InvalidOperationException(), Encoding.UTF8);
-                    result = reader.ReadToEnd();
+                    var sr = new StreamReader(res.GetResponseStream() ?? throw new InvalidOperationException(), Encoding.UTF8);
+                    result = sr.ReadToEnd();
                 }
             }
             return result;
@@ -123,8 +123,8 @@ namespace DotNet.Util
                 {
                     if (res != null && res.StatusCode == HttpStatusCode.OK)
                     {
-                        var reader = new StreamReader(res.GetResponseStream() ?? throw new InvalidOperationException(), Encoding.UTF8);
-                        result = reader.ReadToEnd();
+                        var sr = new StreamReader(res.GetResponseStream() ?? throw new InvalidOperationException(), Encoding.UTF8);
+                        result = sr.ReadToEnd();
                     }
                 }
             }
@@ -162,8 +162,8 @@ namespace DotNet.Util
                 {
                     if (res.StatusCode == HttpStatusCode.OK)
                     {
-                        var reader = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
-                        result = reader.ReadToEnd();
+                        var sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+                        result = sr.ReadToEnd();
                     }
                 }
             }
