@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using DotNet.Business;
 using DotNet.Model;
 using DotNet.Util;
+using NPOI.XWPF.UserModel;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.Formula;
+using Spire.Doc;
 
 namespace DotNet.Test._452
 {
@@ -24,7 +28,7 @@ namespace DotNet.Test._452
 
             // 通过Word模板替换生成Word文档，用于合同模板生成合同
             var baesPath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
-            var templatePath = Path.Combine(baesPath, @"Contract\", "Template.docx");
+            var templatePath = Path.Combine(baesPath, @"Contract\", "Template2.docx");
             var templateDocument = WordUtil.GetXWPFDocument(templatePath);
             if (templateDocument != null)
             {
@@ -42,10 +46,24 @@ namespace DotNet.Test._452
                     Text = "男"
                 });
                 WordUtil.ReplaceInWord(templateDocument, basicReplacements, null);
-                var filePath = Path.Combine(baesPath, @"Contract\" + DateTime.Now.ToString("yyyyMM") + @"\", DateTime.Now.ToString(BaseSystemInfo.DateFormat) + ".docx");
+                var filePath = Path.Combine(baesPath, @"Contract\" + DateTime.Now.ToString("yyyyMMHHmm") + @"\", DateTime.Now.ToString(BaseSystemInfo.DateFormat) + ".docx");
                 WordUtil.SaveXWPFDocument(filePath, templateDocument);
+
+                // WordGlue 生成的格式不好看
+                //using (Doc doc = new Doc(filePath))
+                //{
+                //    doc.SaveAs(filePath.Replace(".docx", "WordGlue.pdf"));
+                //}
+
+                // FreeSpire.Word
+                using (var document = new Spire.Doc.Document())
+                {
+                    document.LoadFromFile(filePath);
+                    document.SaveToFile(filePath.Replace(".docx", "FreeSpire.Word.pdf"), Spire.Doc.FileFormat.PDF);
+                }
+
             }
-            
+
 
             //批量删除数据库表记录
             //BatchDelete();

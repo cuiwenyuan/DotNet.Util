@@ -155,7 +155,7 @@ namespace DotNet.Util
                 var cells = row.GetTableCells();
                 var cell = cells[0];
                 var _gridPlaceholderName = cell.GetText();
-                var gridReplacement = gridReplacements.FirstOrDefault(p => p.Placeholder == _gridPlaceholderName);
+                var gridReplacement = gridReplacements?.FirstOrDefault(p => p.Placeholder == _gridPlaceholderName);
                 if (gridReplacement != null)
                 {
                     gridPlaceholderRowList.Add(new GridPlaceholderRow
