@@ -28,6 +28,20 @@ namespace DotNet.Test._452
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
 
+            for (int i = 0; i < 1000; i++)
+            {
+                LogUtil.WriteLog(i.ToString());
+            }
+            for (int i = 0; i < 10000000; i++)
+            {
+                LogUtil.WriteLog(i.ToString(), prefix: "D", logFileNamePattern: "yyyy-MM-dd");
+            }
+
+            //for (int i = 0; i < 100000; i++)
+            //{
+            //    LogUtil.WriteLog(i.ToString(), prefix: "H", logFileNamePattern: "yyyy-MM-dd'_'HH'_'mm'_'ss");
+            //}
+
             // 通过Word模板替换生成Word文档，用于合同模板生成合同
             var baesPath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
             var templatePath = Path.Combine(baesPath, @"Contract\", "Template2.docx");
@@ -170,7 +184,7 @@ namespace DotNet.Test._452
             dbHelper.BatchDelete("WeLinkPark_ParkSpace", "CreateOn <= '" + DateTime.Now.AddDays(-dataStoredDays).ToString(BaseSystemInfo.DateTimeFormat) + "'", batchSize: batchSize);
         }
 
-        
+
 
         /// <summary>
         /// 激活Aspose

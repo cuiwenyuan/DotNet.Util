@@ -242,6 +242,15 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.EventLog = ConfigurationManager.AppSettings["EventLog"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
+            if (ConfigurationManager.AppSettings["LogFileNamePattern"] != null)
+            {
+                BaseSystemInfo.LogFileNamePattern = ConfigurationManager.AppSettings["LogFileNamePattern"];
+            }
+            if (ConfigurationManager.AppSettings["LogFileMaxSize"] != null)
+            {
+                BaseSystemInfo.LogFileMaxSize = ConfigurationManager.AppSettings["LogFileMaxSize"].ToInt();
+            }
+
 
             if (ConfigurationManager.AppSettings["UseOrganizationPermission"] != null)
             {
