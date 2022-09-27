@@ -24,10 +24,11 @@ namespace DotNet.Util
     /// </summary>    
     public static partial class EnumExtensions
     {
+        #region ToDescription 获取枚举描述
         /// <summary>
-        /// ToDescription
+        /// 获取枚举描述
         /// </summary>
-        /// <param name="enumeration"></param>
+        /// <param name="enumeration">枚举</param>
         /// <returns></returns>
         public static string ToDescription(this Enum enumeration) 
         {
@@ -36,12 +37,13 @@ namespace DotNet.Util
             if (null != memInfo && memInfo.Length > 0)
             {
                 var attrs = memInfo[0].GetCustomAttributes(typeof(EnumDescription), false);
-                if (null != attrs && attrs.Length > 0)
+                if (attrs != null && attrs.Length > 0)
                 {
                     return ((EnumDescription)attrs[0]).Text;
                 }
             }
-            return enumeration.ToString(); 
+            return enumeration.ToString();
         }
+        #endregion
     }
 }

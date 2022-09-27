@@ -202,7 +202,7 @@ namespace DotNet.Util
 //#if NET452
             if (_sw == null) _sw = new StreamWriter(_fs, Encoding);
 //#else
-//            if (_sw == null) _sw = new StreamWriter(_stream, Encoding, 1024, true);
+//            if (_sw == null) _sw = new StreamWriter(_fs, Encoding, 1024, true);
 //#endif
         }
         #endregion
