@@ -28,14 +28,20 @@ namespace DotNet.Test._452
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
 
-            for (int i = 0; i < 1000; i++)
-            {
-                LogUtil.WriteLog(i.ToString());
-            }
-            for (int i = 0; i < 10000000; i++)
-            {
-                LogUtil.WriteLog(i.ToString(), prefix: "D", logFileNamePattern: "yyyy-MM-dd");
-            }
+            var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
+            BaiduOcrUtil.GeneralBasic(imagePath);
+
+            imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR01.jpeg");
+            BaiduOcrUtil.AccurateBasic(imagePath);
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    LogUtil.WriteLog(i.ToString());
+            //}
+            //for (int i = 0; i < 10000000; i++)
+            //{
+            //    LogUtil.WriteLog(i.ToString(), prefix: "D", logFileNamePattern: "yyyy-MM-dd");
+            //}
 
             //for (int i = 0; i < 100000; i++)
             //{
@@ -43,47 +49,47 @@ namespace DotNet.Test._452
             //}
 
             // 通过Word模板替换生成Word文档，用于合同模板生成合同
-            var baesPath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
-            var templatePath = Path.Combine(baesPath, @"Contract\", "Template2.docx");
-            var templateDocument = WordUtil.GetXWPFDocument(templatePath);
-            if (templateDocument != null)
-            {
-                var basicReplacements = new List<WordUtil.ReplacementBasic>();
-                basicReplacements.Add(new WordUtil.ReplacementBasic
-                {
-                    Type = WordUtil.PlaceholderTypeEnum.Text,
-                    Placeholder = "{姓名}",
-                    Text = "Troy"
-                });
-                basicReplacements.Add(new WordUtil.ReplacementBasic
-                {
-                    Type = WordUtil.PlaceholderTypeEnum.Text,
-                    Placeholder = "{性别}",
-                    Text = "男"
-                });
-                WordUtil.ReplaceInWord(templateDocument, basicReplacements, null);
-                var filePath = Path.Combine(baesPath, @"Contract\" + DateTime.Now.ToString("yyyyMMHH") + @"\", DateTime.Now.ToString(BaseSystemInfo.DateFormat) + ".docx");
-                WordUtil.SaveXWPFDocument(filePath, templateDocument);
+            //var baesPath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+            //var templatePath = Path.Combine(baesPath, @"Contract\", "Template2.docx");
+            //var templateDocument = WordUtil.GetXWPFDocument(templatePath);
+            //if (templateDocument != null)
+            //{
+            //    var basicReplacements = new List<WordUtil.ReplacementBasic>();
+            //    basicReplacements.Add(new WordUtil.ReplacementBasic
+            //    {
+            //        Type = WordUtil.PlaceholderTypeEnum.Text,
+            //        Placeholder = "{姓名}",
+            //        Text = "Troy"
+            //    });
+            //    basicReplacements.Add(new WordUtil.ReplacementBasic
+            //    {
+            //        Type = WordUtil.PlaceholderTypeEnum.Text,
+            //        Placeholder = "{性别}",
+            //        Text = "男"
+            //    });
+            //    WordUtil.ReplaceInWord(templateDocument, basicReplacements, null);
+            //    var filePath = Path.Combine(baesPath, @"Contract\" + DateTime.Now.ToString("yyyyMMHH") + @"\", DateTime.Now.ToString(BaseSystemInfo.DateFormat) + ".docx");
+            //    WordUtil.SaveXWPFDocument(filePath, templateDocument);
 
-                // WordGlue 生成的格式不好看
-                //using (var doc = new Doc(filePath))
-                //{
-                //    doc.SaveAs(filePath.Replace(".docx", "WordGlue.pdf"));
-                //}
+            //    // WordGlue 生成的格式不好看
+            //    //using (var doc = new Doc(filePath))
+            //    //{
+            //    //    doc.SaveAs(filePath.Replace(".docx", "WordGlue.pdf"));
+            //    //}
 
-                // FreeSpire.Word 最多生成3页，500个段落
-                //using (var doc = new Spire.Doc.Document())
-                //{
-                //    doc.LoadFromFile(filePath);
-                //    doc.SaveToFile(filePath.Replace(".docx", "FreeSpire.Word.pdf"), Spire.Doc.FileFormat.PDF);
-                //}
-                //激活Aspose
-                ActiveAspose();
-                // Aspose
-                var doc = new Aspose.Words.Document(filePath);
-                doc.Save(filePath.Replace(".docx", "Aspose.Words.pdf"), Aspose.Words.SaveFormat.Pdf);
-                doc.TryDispose();
-            }
+            //    // FreeSpire.Word 最多生成3页，500个段落
+            //    //using (var doc = new Spire.Doc.Document())
+            //    //{
+            //    //    doc.LoadFromFile(filePath);
+            //    //    doc.SaveToFile(filePath.Replace(".docx", "FreeSpire.Word.pdf"), Spire.Doc.FileFormat.PDF);
+            //    //}
+            //    //激活Aspose
+            //    ActiveAspose();
+            //    // Aspose
+            //    var doc = new Aspose.Words.Document(filePath);
+            //    doc.Save(filePath.Replace(".docx", "Aspose.Words.pdf"), Aspose.Words.SaveFormat.Pdf);
+            //    doc.TryDispose();
+            //}
 
 
             //批量删除数据库表记录
