@@ -116,37 +116,44 @@ namespace DotNet.Util
 
             var appid = "";
             var secret = "";
-
+            // 路径需要修改下
             var filePath = Utils.GetMapPath("~/xmlconfig/WeChatMiniProgram.config");
             var doc = new XmlDocument();
-            doc.Load(filePath);
-            appid = doc.SelectSingleNode(@"Root/appid")?.InnerText;
-            secret = doc.SelectSingleNode(@"Root/secret")?.InnerText;
-
-            token = doc.SelectSingleNode(@"Root/Access_Token")?.InnerText;
-            var expirationTimeString = doc.SelectSingleNode(@"Root/Access_ExpirationTime")?.InnerText;
-            if (ValidateUtil.IsDateTime(expirationTimeString))
+            try
             {
-                expirationTime = Convert.ToDateTime(expirationTimeString);
+                doc.Load(filePath);
+                appid = doc.SelectSingleNode(@"Root/appid")?.InnerText;
+                secret = doc.SelectSingleNode(@"Root/secret")?.InnerText;
+
+                token = doc.SelectSingleNode(@"Root/Access_Token")?.InnerText;
+                var expirationTimeString = doc.SelectSingleNode(@"Root/Access_ExpirationTime")?.InnerText;
+                if (ValidateUtil.IsDateTime(expirationTimeString))
+                {
+                    expirationTime = Convert.ToDateTime(expirationTimeString);
+                }
+
+                if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+                {
+                    expirationTime = DateTime.Now;
+                    var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
+                    var model = new AccessToken();
+
+                    var returnContent = HttpRequestUtil.HwGet(strUrl);
+
+                    var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
+                    model.access_token = accessToken.access_token;
+                    model.expires_in = accessToken.expires_in;
+
+                    doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
+                    expirationTime = expirationTime.AddSeconds(int.Parse(model.expires_in));
+                    doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                    doc.Save(filePath);
+                    token = model.access_token;
+                }
             }
-
-            if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+            catch (Exception ex)
             {
-                expirationTime = DateTime.Now;
-                var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
-                var model = new AccessToken();
-
-                var returnContent = HttpRequestUtil.HwGet(strUrl);
-
-                var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
-                model.access_token = accessToken.access_token;
-                model.expires_in = accessToken.expires_in;
-
-                doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
-                expirationTime = expirationTime.AddSeconds(int.Parse(model.expires_in));
-                doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                doc.Save(filePath);
-                token = model.access_token;
+                LogUtil.WriteException(ex);
             }
             return token;
         }
