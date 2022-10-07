@@ -27,6 +27,7 @@ namespace DotNet.Test._452
 
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
+            LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection);
 
             var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
             BaiduOcrUtil.GeneralBasic(imagePath);
