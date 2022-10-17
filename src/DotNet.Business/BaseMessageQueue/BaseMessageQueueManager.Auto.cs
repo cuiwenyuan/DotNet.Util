@@ -248,25 +248,9 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateBy, UserInfo.RealName);
             }
-            else
-            {
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateUserName, entity.CreateUserName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageQueueEntity.FieldCreateTime);
-            sqlBuilder.SetValue(BaseMessageQueueEntity.FieldCreateIp, Utils.GetIp());
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageQueueEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityCreate(sqlBuilder, entity);
+            SetEntityUpdate(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -295,16 +279,8 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageQueueEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseMessageQueueEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {

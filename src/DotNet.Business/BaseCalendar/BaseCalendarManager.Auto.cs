@@ -241,25 +241,9 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseCalendarEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateBy, UserInfo.RealName);
             }
-            else
-            {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateUserName, entity.CreateUserName);
-            }
-            sqlBuilder.SetDbNow(BaseCalendarEntity.FieldCreateTime);
-            sqlBuilder.SetValue(BaseCalendarEntity.FieldCreateIp, Utils.GetIp());
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseCalendarEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityCreate(sqlBuilder, entity);
+            SetEntityUpdate(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -288,16 +272,8 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseCalendarEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseCalendarEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {

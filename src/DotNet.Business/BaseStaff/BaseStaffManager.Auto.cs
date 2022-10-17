@@ -237,27 +237,8 @@ namespace DotNet.Business
                 }
             }
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateBy, UserInfo.RealName);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldCreateUserName, entity.CreateUserName);
-            }
-            sqlBuilder.SetDbNow(BaseStaffEntity.FieldCreateTime);
-            sqlBuilder.SetValue(BaseStaffEntity.FieldCreateIp, Utils.GetIp());
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseStaffEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityCreate(sqlBuilder, entity);
+            SetEntityUpdate(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -286,16 +267,8 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseStaffEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseStaffEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {

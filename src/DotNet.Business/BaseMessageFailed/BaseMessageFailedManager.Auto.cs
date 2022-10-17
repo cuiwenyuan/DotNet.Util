@@ -241,25 +241,9 @@ namespace DotNet.Business
             {
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserCompanyId, UserInfo.CompanyId);
                 sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUserSubCompanyId, UserInfo.SubCompanyId);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateBy, UserInfo.RealName);
             }
-            else
-            {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateUserName, entity.CreateUserName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldCreateTime);
-            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldCreateIp, Utils.GetIp());
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityCreate(sqlBuilder, entity);
+            SetEntityUpdate(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -288,16 +272,8 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseMessageFailedEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseMessageFailedEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {

@@ -237,27 +237,8 @@ namespace DotNet.Business
                 }
             }
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateBy, UserInfo.RealName);
-            }
-            else
-            {
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateBy, entity.CreateBy);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateUserName, entity.CreateUserName);
-            }
-            sqlBuilder.SetDbNow(BaseUserOAuthEntity.FieldCreateTime);
-            sqlBuilder.SetValue(BaseUserOAuthEntity.FieldCreateIp, Utils.GetIp());
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseUserOAuthEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityCreate(sqlBuilder, entity);
+            SetEntityUpdate(sqlBuilder, entity);
             if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
             {
                 key = sqlBuilder.EndInsert().ToString();
@@ -286,16 +267,8 @@ namespace DotNet.Business
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
-            if (UserInfo != null)
-            {
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateUserId, UserInfo.UserId);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateUserName, UserInfo.UserName);
-                sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateBy, UserInfo.RealName);
-            }
-            sqlBuilder.SetDbNow(BaseUserOAuthEntity.FieldUpdateTime);
-            sqlBuilder.SetValue(BaseUserOAuthEntity.FieldUpdateIp, Utils.GetIp());
+            SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {

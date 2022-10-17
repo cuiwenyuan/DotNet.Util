@@ -749,6 +749,51 @@ namespace DotNet.Business
         {
             if (t is BaseEntity entity)
             {
+                if (entity.SortCode == 0)
+                {
+                    var key = string.Empty;
+                    var managerSequence = new BaseSequenceManager(DbHelper, Identity);
+                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
+                    {
+                        key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
+                    }
+                    else
+                    {
+                        key = managerSequence.Increment(CurrentTableName);
+                    }
+                    entity.SortCode = key.ToInt();
+                }
+
+                if (!Identity)
+                {
+                    // 这里已经是指定了主键了，所以不需要返回主键了
+                    sqlBuilder.ReturnId = false;
+                    sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                }
+                else
+                {
+                    if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                    {
+                        if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+                        {
+                            sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName}_SEQ.NEXTVAL");
+                        }
+                        if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+                        {
+                            sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName}_SEQ");
+                        }
+                    }
+                    else
+                    {
+                        if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                        {
+                            var managerSequence = new BaseSequenceManager(DbHelper);
+                            entity.Id = managerSequence.Increment($"{CurrentTableName}_SEQ").ToInt();
+                            sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                        }
+                    }
+                }
+
                 if (UserInfo != null)
                 {
                     entity.CreateUserId = UserInfo.UserId;
@@ -802,7 +847,62 @@ namespace DotNet.Business
                 entity.UpdateIp = Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
                 sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, Utils.GetIp());
+
+                // 不论新增还是更新都会调用到此处代码
+                sqlBuilder.SetValue(BaseEntity.FieldSortCode, entity.SortCode);
+                sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
+                sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
             }
+        }
+        #endregion
+
+        #region public virtual string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
+        /// <summary>
+        /// 新增实体返回主键
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public virtual string AddEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var result = string.Empty;
+            if (t is BaseEntity entity)
+            {
+                if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
+                {
+                    result = sqlBuilder.EndInsert().ToString();
+                }
+                else
+                {
+                    sqlBuilder.EndInsert();
+                }
+                if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                {
+                    result = entity.Id.ToString();
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region public virtual int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
+        /// <summary>
+        /// 更新实体返回影响行数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public virtual int UpdateEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var result = 0;
+            if (t is BaseEntity entity)
+            {
+                sqlBuilder.SetWhere(PrimaryKey, entity.Id);
+                result = sqlBuilder.EndUpdate();
+            }
+            return result;
         }
         #endregion
     }

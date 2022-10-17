@@ -269,7 +269,6 @@ namespace DotNet.Business
             SetEntity(sqlBuilder, entity);
             SetEntityUpdate(sqlBuilder, entity);
             sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            //return sqlBuilder.EndUpdate();
             var result = sqlBuilder.EndUpdate();
             if (result > 0)
             {
