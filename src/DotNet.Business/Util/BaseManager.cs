@@ -8,6 +8,7 @@ using System.Data;
 
 namespace DotNet.Business
 {
+    using DotNet.Model;
     using Util;
 
     /// <summary>
@@ -734,6 +735,74 @@ namespace DotNet.Business
             values[0] = id;
             result = DbHelper.ExecuteNonQuery(sb.Put(), DbHelper.MakeParameters(names, values));
             return result;
+        }
+        #endregion
+
+        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        /// <summary>
+        /// 设置创建信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t)
+        {
+            if (t is BaseEntity entity)
+            {
+                if (UserInfo != null)
+                {
+                    entity.CreateUserId = UserInfo.UserId;
+                    entity.CreateUserName = UserInfo.UserName;
+                    entity.CreateBy = UserInfo.RealName;
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserId, UserInfo.UserId);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserName, UserInfo.UserName);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
+                }
+                else
+                {
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateBy, entity.CreateBy);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserName, entity.CreateUserName);
+                }
+                // 取数据库时间，还是UTC时间，还是本机时间？
+                entity.CreateTime = DateTime.Now;
+                entity.CreateIp = Utils.GetIp();
+                sqlBuilder.SetDbNow(BaseEntity.FieldCreateTime);
+                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, Utils.GetIp());
+            }
+        }
+        #endregion
+
+        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        /// <summary>
+        /// 设置更新信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t)
+        {
+            if (t is BaseEntity entity)
+            {
+                if (UserInfo != null)
+                {
+                    entity.UpdateUserId = UserInfo.UserId;
+                    entity.UpdateUserName = UserInfo.UserName;
+                    entity.UpdateBy = UserInfo.RealName;
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserId, UserInfo.UserId);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserName, UserInfo.UserName);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateBy, UserInfo.RealName);
+                }
+                else
+                {
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateBy, entity.CreateBy);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserName, entity.CreateUserName);
+                }
+                // 取数据库时间，还是UTC时间，还是本机时间？
+                entity.UpdateTime = DateTime.Now;
+                entity.UpdateIp = Utils.GetIp();
+                sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
+                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, Utils.GetIp());
+            }
         }
         #endregion
     }

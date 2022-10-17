@@ -2,6 +2,7 @@
 // All Rights Reserved. Copyright (C) 2021, DotNet.
 //-----------------------------------------------------------------
 
+using DotNet.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +18,7 @@ namespace DotNet.Model
     /// 
     /// 修改记录
     /// 
+    ///	版本：5.0 2022.10.17  Troy.Cui    基类的公共字段、属性、赋值等完善。
     ///	版本：5.0 2022.01.12  Troy.Cui    参数完善。
     ///	版本：1.0 2015.07.08  JiRiGaLa    IDataReader 进行完善。
     ///	
@@ -34,6 +36,168 @@ namespace DotNet.Model
         protected BaseEntity()
         {
         }
+
+        #region 公共属性
+
+        /// <summary>
+        /// 编号
+        /// </summary>
+        [FieldDescription("编号")]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 排序编号
+        /// </summary>
+        [FieldDescription("排序编号")]
+        public int SortCode { get; set; } = 0;
+
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        [FieldDescription("是否删除")]
+        public int Deleted { get; set; } = 0;
+
+        /// <summary>
+        /// 是否有效
+        /// </summary>
+        [FieldDescription("是否有效")]
+        public int Enabled { get; set; } = 1;
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [FieldDescription("创建时间")]
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// 创建人编号
+        /// </summary>
+        [FieldDescription("创建人编号")]
+        public int CreateUserId { get; set; } = 0;
+
+        /// <summary>
+        /// 创建人用户名
+        /// </summary>
+        [FieldDescription("创建人用户名")]
+        public string CreateUserName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 创建人姓名
+        /// </summary>
+        [FieldDescription("创建人姓名")]
+        public string CreateBy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [FieldDescription("创建IP")]
+        public string CreateIp { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        [FieldDescription("修改时间")]
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// 修改人编号
+        /// </summary>
+        [FieldDescription("修改人编号")]
+        public int UpdateUserId { get; set; } = 0;
+
+        /// <summary>
+        /// 修改人姓名
+        /// </summary>
+        [FieldDescription("修改人姓名")]
+        public string UpdateBy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 修改人用户名
+        /// </summary>
+        [FieldDescription("修改人用户名")]
+        public string UpdateUserName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 修改IP
+        /// </summary>
+        [FieldDescription("修改IP")]
+        public string UpdateIp { get; set; } = string.Empty;
+
+        #endregion
+
+        #region 公共字段
+
+        ///<summary>
+        /// 编号
+        ///</summary>
+        public const string FieldId = "Id";
+
+        ///<summary>
+        /// 排序编号
+        ///</summary>
+        public const string FieldSortCode = "SortCode";
+
+        ///<summary>
+        /// 是否删除
+        ///</summary>
+        public const string FieldDeleted = "Deleted";
+
+        ///<summary>
+        /// 是否有效
+        ///</summary>
+        public const string FieldEnabled = "Enabled";
+
+        ///<summary>
+        /// 创建时间
+        ///</summary>
+        public const string FieldCreateTime = "CreateTime";
+
+        ///<summary>
+        /// 创建人编号
+        ///</summary>
+        public const string FieldCreateUserId = "CreateUserId";
+
+        ///<summary>
+        /// 创建人用户名
+        ///</summary>
+        public const string FieldCreateUserName = "CreateUserName";
+
+        ///<summary>
+        /// 创建人姓名
+        ///</summary>
+        public const string FieldCreateBy = "CreateBy";
+
+        ///<summary>
+        /// 创建IP
+        ///</summary>
+        public const string FieldCreateIp = "CreateIp";
+
+        ///<summary>
+        /// 修改时间
+        ///</summary>
+        public const string FieldUpdateTime = "UpdateTime";
+
+        ///<summary>
+        /// 修改人编号
+        ///</summary>
+        public const string FieldUpdateUserId = "UpdateUserId";
+
+        ///<summary>
+        /// 修改人姓名
+        ///</summary>
+        public const string FieldUpdateBy = "UpdateBy";
+
+        ///<summary>
+        /// 修改人用户名
+        ///</summary>
+        public const string FieldUpdateUserName = "UpdateUserName";
+
+        ///<summary>
+        /// 修改IP
+        ///</summary>
+        public const string FieldUpdateIp = "UpdateIp";
+
+        #endregion
 
         #region IBaseEntity 成员
         /// <summary>
@@ -82,6 +246,7 @@ namespace DotNet.Model
 
         #endregion
 
+        #region public virtual void GetFromExtend(DataRow dr) 从数据行读取
         /// <summary>
         /// 从数据行读取
         /// </summary>
@@ -90,7 +255,9 @@ namespace DotNet.Model
         {
             GetFromExtend(new DrDataRow(dr));
         }
+        #endregion
 
+        #region public virtual void GetFromExtend(IDataReader dataReader) 从数据流读取
         /// <summary>
         /// 从数据流读取
         /// </summary>
@@ -100,14 +267,86 @@ namespace DotNet.Model
             GetFromExtend(new DrDataReader(dataReader));
         }
 
+        #endregion
+
+        #region public virtual void GetFromExtend(IDataRow dr) 从自定义数据流读取
         /// <summary>
         /// 从自定义数据流读取
         /// </summary>
         /// <param name="dr">数据流</param>
         public virtual void GetFromExtend(IDataRow dr)
         {
-
         }
+        #endregion
+
+        #region public virtual void GetBase(IDataRow dr) 标准字段赋值
+        /// <summary>
+        /// 标准字段赋值
+        /// </summary>
+        /// <param name="dr">数据流</param>
+        public virtual void GetBase(IDataRow dr)
+        {
+            if (dr.ContainsColumn(FieldId))
+            {
+                Id = BaseUtil.ConvertToInt(dr[FieldId]);
+            }
+            if (dr.ContainsColumn(FieldSortCode))
+            {
+                SortCode = BaseUtil.ConvertToInt(dr[FieldSortCode]);
+            }
+            if (dr.ContainsColumn(FieldDeleted))
+            {
+                Deleted = BaseUtil.ConvertToInt(dr[FieldDeleted]);
+            }
+            if (dr.ContainsColumn(FieldEnabled))
+            {
+                Enabled = BaseUtil.ConvertToInt(dr[FieldEnabled]);
+            }
+            if (dr.ContainsColumn(FieldCreateTime))
+            {
+                CreateTime = BaseUtil.ConvertToDateTime(dr[FieldCreateTime]);
+            }
+            if (dr.ContainsColumn(FieldCreateUserId))
+            {
+                CreateUserId = BaseUtil.ConvertToInt(dr[FieldCreateUserId]);
+            }
+            if (dr.ContainsColumn(FieldCreateUserName))
+            {
+                CreateUserName = BaseUtil.ConvertToString(dr[FieldCreateUserName]);
+            }
+            if (dr.ContainsColumn(FieldCreateBy))
+            {
+                CreateBy = BaseUtil.ConvertToString(dr[FieldCreateBy]);
+            }
+            if (dr.ContainsColumn(FieldCreateIp))
+            {
+                CreateIp = BaseUtil.ConvertToString(dr[FieldCreateIp]);
+            }
+            if (dr.ContainsColumn(FieldUpdateTime))
+            {
+                UpdateTime = BaseUtil.ConvertToDateTime(dr[FieldUpdateTime]);
+            }
+            if (dr.ContainsColumn(FieldUpdateUserId))
+            {
+                UpdateUserId = BaseUtil.ConvertToInt(dr[FieldUpdateUserId]);
+            }
+            if (dr.ContainsColumn(FieldUpdateBy))
+            {
+                UpdateBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
+            }
+            if (dr.ContainsColumn(FieldUpdateUserName))
+            {
+                UpdateUserName = BaseUtil.ConvertToString(dr[FieldUpdateUserName]);
+            }
+            if (dr.ContainsColumn(FieldUpdateIp))
+            {
+                UpdateIp = BaseUtil.ConvertToString(dr[FieldUpdateIp]);
+            }
+        }
+
+        #endregion
+
+        #region private int GetLength(string text, string encoding = "gb2312")
 
         /// <summary>
         /// 可以按各种特殊需要获取字符串的长度
@@ -119,6 +358,8 @@ namespace DotNet.Model
         {
             return Encoding.GetEncoding(encoding).GetBytes(text).Length;
         }
+
+        #endregion
 
         #region public virtual bool IsValid(out string message)
         /// <summary>
@@ -236,7 +477,7 @@ namespace DotNet.Model
         }
         #endregion
 
-        #region GetList public static List<T> GetList<T>(DataTable dt)
+        #region public static List<T> GetList<T>(DataTable dt)
         /// <summary>
         /// 获取List
         /// </summary>

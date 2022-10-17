@@ -868,5 +868,24 @@ namespace DotNet.Business
 
         #endregion
 
+        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        /// <summary>
+        /// 设置创建信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        /// <summary>
+        /// 设置更新信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
     }
 }
