@@ -157,7 +157,7 @@ namespace DotNet.Model
         /// </summary>
         [FieldDescription("MAC地址")]
         public string MacAddress { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// 从数据行读取
         /// </summary>

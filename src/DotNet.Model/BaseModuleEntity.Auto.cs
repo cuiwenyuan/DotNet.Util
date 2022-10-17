@@ -114,7 +114,7 @@ namespace DotNet.Model
         /// 是否公开
         /// </summary>
         [FieldDescription("是否公开")]
-        public int IsPublic { get; set; } = 1;
+        public int IsPublic { get; set; } = 0;
 
         /// <summary>
         /// 是否展开

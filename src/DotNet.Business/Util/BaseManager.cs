@@ -749,19 +749,19 @@ namespace DotNet.Business
         {
             if (t is BaseEntity entity)
             {
-                if (entity.SortCode == 0)
+                if (entity.SortCode == 0 && !CurrentTableName.Equals("BaseSequence", StringComparison.OrdinalIgnoreCase) && !CurrentTableName.Equals("Base_Sequence", StringComparison.OrdinalIgnoreCase))
                 {
-                    var key = string.Empty;
+                    var sortCode = string.Empty;
                     var managerSequence = new BaseSequenceManager(DbHelper, Identity);
                     if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
                     {
-                        key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
+                        sortCode = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
                     }
                     else
                     {
-                        key = managerSequence.Increment(CurrentTableName);
+                        sortCode = managerSequence.Increment(CurrentTableName);
                     }
-                    entity.SortCode = key.ToInt();
+                    entity.SortCode = sortCode.ToInt();
                 }
 
                 if (!Identity)
@@ -828,6 +828,10 @@ namespace DotNet.Business
         {
             if (t is BaseEntity entity)
             {
+                sqlBuilder.SetValue(BaseEntity.FieldSortCode, entity.SortCode);
+                sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
+                sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
+
                 if (UserInfo != null)
                 {
                     entity.UpdateUserId = UserInfo.UserId;

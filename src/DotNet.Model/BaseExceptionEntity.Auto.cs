@@ -25,7 +25,6 @@ namespace DotNet.Model
     /// </summary>
     public partial class BaseExceptionEntity : BaseEntity
     {
-
         /// <summary>
         /// 子系统编码
         /// </summary>
@@ -281,6 +280,6 @@ namespace DotNet.Model
         ///<summary>
         /// 格式化消息
         ///</summary>
-        public const string FieldFormattedMessage = "FormattedMessage";        
+        public const string FieldFormattedMessage = "FormattedMessage";
     }
 }

@@ -69,7 +69,7 @@ namespace DotNet.Model
         /// </summary>
         [FieldDescription("描述")]
         public string Description { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// 从数据行读取
         /// </summary>
@@ -105,7 +105,7 @@ namespace DotNet.Model
             if (dr.ContainsColumn(FieldDescription))
             {
                 Description = BaseUtil.ConvertToString(dr[FieldDescription]);
-            }            
+            }
             return this;
         }
 

@@ -192,65 +192,12 @@ namespace DotNet.Business
         public string AddEntity(BaseRoleEntity entity)
         {
             var key = string.Empty;
-            if (entity.SortCode == 0)
-            {
-                var managerSequence = new BaseSequenceManager(DbHelper, Identity);
-                if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
-                {
-                    key = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
-                }
-                else
-                {
-                    key = managerSequence.Increment(CurrentTableName);
-                }
-                entity.SortCode = key.ToInt();
-            }
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
             sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            if (!Identity)
-            {
-                // 这里已经是指定了主键了，所以不需要返回主键了
-                sqlBuilder.ReturnId = false;
-                sqlBuilder.SetValue(PrimaryKey, entity.Id);
-            }
-            else
-            {
-                if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
-                {
-                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
-                    {
-                        sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName}_SEQ.NEXTVAL");
-                    }
-                    if (DbHelper.CurrentDbType == CurrentDbType.Db2)
-                    {
-                        sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName}_SEQ");
-                    }
-                }
-                else
-                {
-                    if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
-                    {
-                        var managerSequence = new BaseSequenceManager(DbHelper);
-                        entity.Id = managerSequence.Increment($"{CurrentTableName}_SEQ").ToInt();
-                        sqlBuilder.SetValue(PrimaryKey, entity.Id);
-                    }
-                }
-            }
             SetEntity(sqlBuilder, entity);
             SetEntityCreate(sqlBuilder, entity);
             SetEntityUpdate(sqlBuilder, entity);
-            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
-            {
-                key = sqlBuilder.EndInsert().ToString();
-            }
-            else
-            {
-                sqlBuilder.EndInsert();
-            }
-            if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
-            {
-                key = entity.Id.ToString();
-            }
+            key = AddEntity(sqlBuilder, entity);
             if (!string.IsNullOrWhiteSpace(key))
             {
                 RemoveCache();
@@ -268,8 +215,7 @@ namespace DotNet.Business
             sqlBuilder.BeginUpdate(CurrentTableName);
             SetEntity(sqlBuilder, entity);
             SetEntityUpdate(sqlBuilder, entity);
-            sqlBuilder.SetWhere(PrimaryKey, entity.Id);
-            var result = sqlBuilder.EndUpdate();
+            var result = UpdateEntity(sqlBuilder, entity);
             if (result > 0)
             {
                 RemoveCache(entity.Id);
@@ -293,9 +239,6 @@ namespace DotNet.Business
             sqlBuilder.SetValue(BaseRoleEntity.FieldAllowDelete, entity.AllowDelete);
             sqlBuilder.SetValue(BaseRoleEntity.FieldIsVisible, entity.IsVisible);
             sqlBuilder.SetValue(BaseRoleEntity.FieldDescription, entity.Description);
-            sqlBuilder.SetValue(BaseRoleEntity.FieldSortCode, entity.SortCode);
-            sqlBuilder.SetValue(BaseRoleEntity.FieldDeleted, entity.Deleted);
-            sqlBuilder.SetValue(BaseRoleEntity.FieldEnabled, entity.Enabled);
         }
 
     }

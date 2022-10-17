@@ -157,7 +157,7 @@ namespace DotNet.Model
         /// </summary>
         [FieldDescription("紧急联系电话")]
         public string EmergencyTelephone { get; set; } = string.Empty;
-                
+
         /// <summary>
         /// 从数据行读取
         /// </summary>

@@ -131,6 +131,6 @@ namespace DotNet.Model
         ///<summary>
         /// 操作日期
         ///</summary>
-        public const string FieldTransactionDate = "TransactionDate";        
+        public const string FieldTransactionDate = "TransactionDate";
     }
 }

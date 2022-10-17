@@ -12,7 +12,7 @@ namespace DotNet.Model
     using Util;
 
     /// <summary>
-    /// organizeScopeEntity
+    /// BaseOrganizationScopeEntity
     /// 组织机构权限范围
     /// 
     /// 修改记录
