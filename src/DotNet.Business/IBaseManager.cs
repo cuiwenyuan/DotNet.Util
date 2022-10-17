@@ -10,6 +10,7 @@ using DotNet.Util;
 namespace DotNet.Business
 {
     using Model;
+    using System.Security.Principal;
 
     /// <summary>
     ///	IBaseManager
@@ -667,7 +668,7 @@ namespace DotNet.Business
         object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
         #endregion
 
-        #region Fill
+        #region Fill填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -886,6 +887,28 @@ namespace DotNet.Business
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
         public void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region public string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
+        /// <summary>
+        /// 新增实体返回主键
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public string AddEntity<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region public int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
+        /// <summary>
+        /// 更新实体返回影响行数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
     }
 }

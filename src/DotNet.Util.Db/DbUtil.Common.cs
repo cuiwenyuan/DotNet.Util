@@ -54,6 +54,25 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
+        #region
+        /// <summary>
+        /// 转换为表名，特别针对临时表、视图类
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static string ToTableName(this string tableName)
+        {
+            var result = tableName;
+            if (!string.IsNullOrEmpty(result))
+            {
+                if (!result.StartsWith("(") && !result.EndsWith(")") && result.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    result = "(" + result + ")";
+                }
+            }
+            return result;
+        }
+        #endregion
         #region public static string SqlSafe(string value) 检查参数的安全性
         /// <summary>
         /// 检查参数的安全性
@@ -281,16 +300,16 @@ namespace DotNet.Util
         }
         #endregion
 
-		/// <summary>
-		/// 构造个List
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="param"></param>
-		/// <returns></returns>
-		public static List<T> GetList<T>(T param)
-		{
-			var result = new List<T> { param };
+        /// <summary>
+        /// 构造个List
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public static List<T> GetList<T>(T param)
+        {
+            var result = new List<T> { param };
             return result;
-		}
+        }
     }
 }

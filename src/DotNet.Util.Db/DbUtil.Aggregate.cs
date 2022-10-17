@@ -28,7 +28,7 @@ namespace DotNet.Util
         /// 获取聚合函数值
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
@@ -37,7 +37,26 @@ namespace DotNet.Util
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+            switch (dbHelper.CurrentDbType)
+            {
+                case CurrentDbType.SqlServer:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.MySql:
+                case CurrentDbType.SqLite:
+                    sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.Oracle:
+                    sb.Append("SELECT NVL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                default:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+
+            }
+
+
+
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
@@ -56,7 +75,7 @@ namespace DotNet.Util
         /// 获取聚合函数值
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
@@ -65,7 +84,23 @@ namespace DotNet.Util
         {
             var result = 0M;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+            switch (dbHelper.CurrentDbType)
+            {
+                case CurrentDbType.SqlServer:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.MySql:
+                case CurrentDbType.SqLite:
+                    sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.Oracle:
+                    sb.Append("SELECT NVL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                default:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+            }
+
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);

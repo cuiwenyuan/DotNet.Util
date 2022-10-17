@@ -90,7 +90,7 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
-                throw;                
+                throw;
             }
             finally
             {

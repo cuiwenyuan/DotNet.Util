@@ -48,7 +48,7 @@ namespace DotNet.Util
         /// 获取数据表
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="parameters">字段名,字段值</param>
         /// <param name="topLimit">前几个记录</param>
         /// <param name="targetField">目标字段</param>

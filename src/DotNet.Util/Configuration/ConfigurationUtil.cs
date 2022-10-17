@@ -251,7 +251,6 @@ namespace DotNet.Util
                 BaseSystemInfo.LogFileMaxSize = ConfigurationManager.AppSettings["LogFileMaxSize"].ToInt();
             }
 
-
             if (ConfigurationManager.AppSettings["UseOrganizationPermission"] != null)
             {
                 BaseSystemInfo.UseOrganizationPermission = ConfigurationManager.AppSettings["UseOrganizationPermission"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);

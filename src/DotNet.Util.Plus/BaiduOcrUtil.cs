@@ -164,9 +164,10 @@ namespace DotNet.Util
         public static string GetFileBase64(string filePath)
         {
             var fs = new FileStream(filePath, FileMode.Open);
-            var arr = new byte[fs.Length];
-            fs.Read(arr, 0, (int)fs.Length);
-            var baser64 = Convert.ToBase64String(arr);
+            var bytes = new byte[fs.Length];
+            fs.Read(bytes, 0, (int)fs.Length);
+            // 转Base64
+            var baser64 = Convert.ToBase64String(bytes);
             fs.Close();
             return baser64;
         }

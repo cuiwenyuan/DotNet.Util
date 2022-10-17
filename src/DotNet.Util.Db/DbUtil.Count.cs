@@ -28,7 +28,7 @@ namespace DotNet.Util
         /// 获取记录数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>数据表</returns>
         public static int Count(this IDbHelper dbHelper, string tableName, string condition = null)
@@ -54,7 +54,7 @@ namespace DotNet.Util
         /// 获取唯一值记录数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>数据表</returns>

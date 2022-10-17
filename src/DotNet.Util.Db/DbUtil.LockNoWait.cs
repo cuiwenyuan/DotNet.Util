@@ -23,9 +23,9 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        //
-        // 锁定表记录
-        //
+        #region Oracle锁定表记录
+
+        #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         /// <summary>
         /// 锁定表
         /// </summary>
@@ -42,7 +42,7 @@ namespace DotNet.Util
             }
             return LockNoWait(dbHelper, tableName, parametersList);
         }
-
+        #endregion
 
         #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters) 记录是否存在
         /// <summary>
@@ -70,6 +70,8 @@ namespace DotNet.Util
             }
             return result;
         }
+        #endregion
+
         #endregion
     }
 }
