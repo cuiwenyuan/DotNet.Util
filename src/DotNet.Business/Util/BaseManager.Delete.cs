@@ -123,6 +123,7 @@ namespace DotNet.Business
 
         #endregion
 
+        #region public virtual int Truncate() Truncate
         /// <summary>
         /// Truncate
         /// </summary>
@@ -131,6 +132,8 @@ namespace DotNet.Business
         {
             return DbHelper.Truncate(CurrentTableName);
         }
+
+        #endregion
 
         /// <summary>
         /// 添加删除的附加条件
