@@ -869,27 +869,27 @@ namespace DotNet.Business
 
         #endregion
 
-        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        #region virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
         /// <summary>
         /// 设置创建信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        public void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
+        void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        #region virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
         /// <summary>
         /// 设置更新信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        public void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
+        void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region public string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
+        #region string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
         /// <summary>
         /// 新增实体返回主键
         /// </summary>
@@ -897,10 +897,10 @@ namespace DotNet.Business
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        public string AddEntity<T>(SqlBuilder sqlBuilder, T t);
+        string AddEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region public int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
+        #region int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
         /// <summary>
         /// 更新实体返回影响行数
         /// </summary>
@@ -908,7 +908,7 @@ namespace DotNet.Business
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        public int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
+        int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
     }
 }
