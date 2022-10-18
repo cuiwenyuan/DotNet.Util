@@ -11,6 +11,9 @@ using System.Xml;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 百度OCR Util
+    /// </summary>
     public class BaiduOcrUtil
     {
 
