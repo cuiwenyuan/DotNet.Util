@@ -828,6 +828,7 @@ namespace DotNet.Business
         {
             if (t is BaseEntity entity)
             {
+                // 不论新增还是更新都会调用到此处代码
                 sqlBuilder.SetValue(BaseEntity.FieldSortCode, entity.SortCode);
                 sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
                 sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
@@ -851,11 +852,6 @@ namespace DotNet.Business
                 entity.UpdateIp = Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
                 sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, Utils.GetIp());
-
-                // 不论新增还是更新都会调用到此处代码
-                sqlBuilder.SetValue(BaseEntity.FieldSortCode, entity.SortCode);
-                sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
-                sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
             }
         }
         #endregion

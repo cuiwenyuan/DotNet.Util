@@ -10,7 +10,6 @@ using DotNet.Util;
 namespace DotNet.Business
 {
     using Model;
-    using System.Security.Principal;
 
     /// <summary>
     ///	IBaseManager
