@@ -246,7 +246,6 @@ namespace DotNet.Util
         /// <summary>
         /// 构建一个object数据转换成一维数组数据的委托
         /// </summary>
-        /// <param name="objType"></param>
         /// <param name="propertyInfos"></param>
         /// <returns></returns>
         public static Func<T, object[]> BuildObjectGetValuesDelegate<T>(List<PropertyInfo> propertyInfos) where T : class
@@ -272,7 +271,7 @@ namespace DotNet.Util
             return convertExpression;
         }
 
-        public static DataTable ToDataTable<T>(this IEnumerable<T> source, List<PropertyInfo> propertyInfos = null,bool useColumnAttribute=false) where T : class
+        public static DataTable ToDataTable<T>(this IEnumerable<T> source, List<PropertyInfo> propertyInfos = null, bool useColumnAttribute = false) where T : class
         {
             var table = new DataTable("template");
             if (propertyInfos == null || propertyInfos.Count == 0)
@@ -281,7 +280,7 @@ namespace DotNet.Util
             }
             foreach (var propertyInfo in propertyInfos)
             {
-                var columnName=useColumnAttribute?(propertyInfo.GetCustomAttribute<ColumnAttribute>()?.Name?? propertyInfo.Name) : propertyInfo.Name;
+                var columnName = useColumnAttribute ? (propertyInfo.GetCustomAttribute<ColumnAttribute>()?.Name ?? propertyInfo.Name) : propertyInfo.Name;
                 table.Columns.Add(columnName, ChangeType(propertyInfo.PropertyType));
             }
 
@@ -333,11 +332,12 @@ namespace DotNet.Util
         /// 替换dataTable里的列类型
         /// </summary>
         /// <param name="dt"></param>
-        public  static void ReplaceDataTableColumnType<OldType,NewType>(DataTable dt,Func<OldType, NewType> replaceFunc)
+        /// <param name="replaceFunc"></param>
+        public static void ReplaceDataTableColumnType<OldType, NewType>(DataTable dt, Func<OldType, NewType> replaceFunc)
         {
             var needUpdateColumnIndexList = new List<int>();
             var needUpdateColumnNameList = new List<string>();
-            
+
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 var column = dt.Columns[i];
@@ -345,7 +345,7 @@ namespace DotNet.Util
                 {
                     needUpdateColumnIndexList.Add(i);
                     needUpdateColumnNameList.Add(column.ColumnName);
-                  
+
                 }
             }
 
@@ -360,7 +360,7 @@ namespace DotNet.Util
                 var oldColumnName = needUpdateColumnNameList[i];
                 var newColumnName = Guid.NewGuid().ToString("N");
                 nameMapping.Add(newColumnName, oldColumnName);
-              
+
                 dt.Columns.Add(newColumnName, typeof(byte[])).SetOrdinal(needUpdateColumnIndexList[i]);
                 for (int j = 0; j < dt.Rows.Count; j++)
                 {
@@ -369,7 +369,7 @@ namespace DotNet.Util
                 }
                 dt.Columns.Remove(oldColumnName);
             }
-            
+
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 var columnName = dt.Columns[i].ColumnName;

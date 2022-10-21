@@ -739,6 +739,44 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
+
+        /// <summary>
+        /// 给实体赋值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var table = EntityUtil.GetTableExpression(t);
+            //var columns = table.Columns.Where(it => !it.IsKey).ToList();
+            foreach (var column in table.Columns)
+            {
+                // 跳过BaseEntity必备字段
+                if (column.MemberInfo.Name.Equals(BaseEntity.FieldId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldSortCode, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldEnabled, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldDeleted, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateUserId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateUserName, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateBy, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateTime, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateIp, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateUserId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateUserName, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateBy, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateTime, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateIp, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                var columnName = column.ColumnName;
+                sqlBuilder.SetValue(column.ColumnName, t.GetPropertyValue(column.MemberInfo.Name));
+            }
+        }
+        #endregion
+
         #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
         /// <summary>
         /// 设置创建信息
@@ -884,6 +922,7 @@ namespace DotNet.Business
                 {
                     result = entity.Id.ToString();
                 }
+                entity.Id = result.ToInt();
             }
             return result;
         }
@@ -907,27 +946,7 @@ namespace DotNet.Business
             }
             return result;
         }
-        #endregion
+        #endregion        
 
-        /// <summary>
-        /// 给实体赋值
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sqlBuilder"></param>
-        /// <param name="t"></param>
-        public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t)
-        {
-            var table = EntityUtil.GetTableExpression(t);
-
-            var columns = table.Columns.Where(it => !it.IsKey).ToList();
-
-            var middleList = new List<string>();
-            foreach (var column in columns)
-            {
-                // 跳过BaseEntity必备字段
-                var columnName = column.ColumnName;
-                sqlBuilder.SetValue(column.ColumnName, column.MemberInfo.Name);
-            }
-        }
     }
 }

@@ -31,6 +31,9 @@ namespace DotNet.Test._452
 
             var entity = new BaseUserRoleEntity();
             new BaseUserRoleManager().Add(entity);
+            LogUtil.WriteLog(JsonUtil.ObjectToJson(entity));
+            entity.RoleId = 10;
+            new BaseUserRoleManager().Update(entity);
 
             var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
             BaiduOcrUtil.GeneralBasic(imagePath);
