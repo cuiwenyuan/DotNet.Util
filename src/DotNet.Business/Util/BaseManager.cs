@@ -9,6 +9,7 @@ using System.Data;
 namespace DotNet.Business
 {
     using DotNet.Model;
+    using System.Linq;
     using Util;
 
     /// <summary>
@@ -833,6 +834,8 @@ namespace DotNet.Business
                 sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
                 sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
 
+                // 更改时不能、不允许更新任何Create开头的5个字段
+
                 if (UserInfo != null)
                 {
                     entity.UpdateUserId = UserInfo.UserId;
@@ -905,5 +908,26 @@ namespace DotNet.Business
             return result;
         }
         #endregion
+
+        /// <summary>
+        /// 给实体赋值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var table = EntityUtil.GetTableExpression(t);
+
+            var columns = table.Columns.Where(it => !it.IsKey).ToList();
+
+            var middleList = new List<string>();
+            foreach (var column in columns)
+            {
+                // 跳过BaseEntity必备字段
+                var columnName = column.ColumnName;
+                sqlBuilder.SetValue(column.ColumnName, column.MemberInfo.Name);
+            }
+        }
     }
 }

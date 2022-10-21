@@ -194,7 +194,7 @@ namespace DotNet.Business
             var key = string.Empty;
             var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
             sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            SetEntity(sqlBuilder, entity);
+            base.SetEntity(sqlBuilder, entity);
             SetEntityCreate(sqlBuilder, entity);
             SetEntityUpdate(sqlBuilder, entity);
             key = AddEntity(sqlBuilder, entity);
