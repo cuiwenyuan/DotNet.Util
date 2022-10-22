@@ -243,7 +243,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseUserEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseUserEntity entity)
         {
             sqlBuilder.SetValue(BaseUserEntity.FieldUserFrom, entity.UserFrom);
             sqlBuilder.SetValue(BaseUserEntity.FieldUserName, entity.UserName);

@@ -6,6 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
 namespace DotNet.Model
@@ -25,36 +28,47 @@ namespace DotNet.Model
     ///     <date>2021-11-08</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseOperationLogEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 表名
         /// </summary>
         [FieldDescription("表名")]
+        [Description("表名")]
+        [Column(FieldTableName)]
         public string TableName { get; set; } = string.Empty;
 
         /// <summary>
         /// 表备注
         /// </summary>
         [FieldDescription("表备注")]
+        [Description("表备注")]
+        [Column(FieldTableDescription)]
         public string TableDescription { get; set; } = string.Empty;
 
         /// <summary>
         /// 操作类型
         /// </summary>
         [FieldDescription("操作类型")]
+        [Description("操作类型")]
+        [Column(FieldOperation)]
         public string Operation { get; set; } = string.Empty;
 
         /// <summary>
         /// 记录主键
         /// </summary>
         [FieldDescription("记录主键")]
+        [Description("记录主键")]
+        [Column(FieldRecordKey)]
         public string RecordKey { get; set; } = string.Empty;
 
         /// <summary>

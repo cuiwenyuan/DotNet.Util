@@ -1,11 +1,14 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseDictionaryEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
 namespace DotNet.Model
@@ -26,48 +29,63 @@ namespace DotNet.Model
     ///     <date>2021-10-26</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseDictionaryEntity : BaseEntity
     {
         /// <summary>
         /// 租户号
         /// </summary>
         [FieldDescription("租户号")]
+        [Description("租户号")]
+        [Column(FieldTenantId)]
         public int TenantId { get; set; } = 0;
 
         /// <summary>
         /// 编码
         /// </summary>
         [FieldDescription("编码")]
+        [Description("编码")]
+        [Column(FieldCode)]
         public string Code { get; set; } = string.Empty;
 
         /// <summary>
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
+        [Description("名称")]
+        [Column(FieldName)]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 树型结构
         /// </summary>
         [FieldDescription("树型结构")]
+        [Description("树型结构")]
+        [Column(FieldIsTree)]
         public int IsTree { get; set; } = 0;
 
         /// <summary>
         /// 允许编辑
         /// </summary>
         [FieldDescription("允许编辑")]
+        [Description("允许编辑")]
+        [Column(FieldAllowEdit)]
         public int AllowEdit { get; set; } = 1;
 
         /// <summary>
         /// 允许删除
         /// </summary>
         [FieldDescription("允许删除")]
+        [Description("允许删除")]
+        [Column(FieldAllowDelete)]
         public int AllowDelete { get; set; } = 1;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

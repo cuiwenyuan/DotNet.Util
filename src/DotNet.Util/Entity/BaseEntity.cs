@@ -5,7 +5,9 @@
 using DotNet.Util;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
 using System.Text;
@@ -42,85 +44,114 @@ namespace DotNet.Model
         /// <summary>
         /// 编号
         /// </summary>
+        [Key]
         [FieldDescription("编号")]
+        [Description("编号")]
+        [Column(FieldId)]
         public int Id { get; set; }
 
         /// <summary>
         /// 排序编号
         /// </summary>
         [FieldDescription("排序编号")]
+        [Description("排序编号")]
+        [Column(FieldSortCode)]
         public int SortCode { get; set; } = 0;
 
         /// <summary>
         /// 是否删除
         /// </summary>
         [FieldDescription("是否删除")]
+        [Description("是否删除")]
+        [Column(FieldDeleted)]
         public int Deleted { get; set; } = 0;
 
         /// <summary>
         /// 是否有效
         /// </summary>
         [FieldDescription("是否有效")]
+        [Description("是否有效")]
+        [Column(FieldEnabled)]
         public int Enabled { get; set; } = 1;
 
         /// <summary>
         /// 创建时间
         /// </summary>
         [FieldDescription("创建时间")]
+        [Description("创建时间")]
+        [Column(FieldCreateTime)]
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 创建人编号
         /// </summary>
         [FieldDescription("创建人编号")]
+        [Description("创建人编号")]
+        [Column(FieldCreateUserId)]
         public int CreateUserId { get; set; } = 0;
 
         /// <summary>
         /// 创建人用户名
         /// </summary>
         [FieldDescription("创建人用户名")]
+        [Description("创建人用户名")]
+        [Column(FieldCreateUserName)]
         public string CreateUserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 创建人姓名
         /// </summary>
         [FieldDescription("创建人姓名")]
+        [Description("创建人姓名")]
+        [Column(FieldCreateBy)]
         public string CreateBy { get; set; } = string.Empty;
 
         /// <summary>
         /// 创建IP
         /// </summary>
         [FieldDescription("创建IP")]
+        [Description("创建IP")]
+        [Column(FieldCreateIp)]
         public string CreateIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 修改时间
         /// </summary>
         [FieldDescription("修改时间")]
+        [Description("修改时间")]
+        [Column(FieldUpdateTime)]
         public DateTime UpdateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 修改人编号
         /// </summary>
         [FieldDescription("修改人编号")]
+        [Description("修改人编号")]
+        [Column(FieldUpdateUserId)]
         public int UpdateUserId { get; set; } = 0;
 
         /// <summary>
         /// 修改人姓名
         /// </summary>
         [FieldDescription("修改人姓名")]
+        [Description("修改人姓名")]
+        [Column(FieldUpdateBy)]
         public string UpdateBy { get; set; } = string.Empty;
 
         /// <summary>
         /// 修改人用户名
         /// </summary>
         [FieldDescription("修改人用户名")]
+        [Description("修改人用户名")]
+        [Column(FieldUpdateUserName)]
         public string UpdateUserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 修改IP
         /// </summary>
         [FieldDescription("修改IP")]
+        [Description("修改IP")]
+        [Column(FieldUpdateIp)]
         public string UpdateIp { get; set; } = string.Empty;
 
         #endregion

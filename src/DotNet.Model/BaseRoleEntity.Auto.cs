@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -13,8 +17,8 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseRoleEntity
-    /// 系统角色
-    ///
+    /// 角色
+    /// 
     /// 修改记录
     /// 
     /// 2021-09-29 版本：1.0 Troy.Cui 创建文件。
@@ -24,60 +28,79 @@ namespace DotNet.Model
     ///     <date>2021-09-29</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseRoleEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 组织机构主键
         /// </summary>
         [FieldDescription("组织机构主键")]
+        [Description("组织机构主键")]
+        [Column(FieldOrganizationId)]
         public int OrganizationId { get; set; } = 0;
 
         /// <summary>
         /// 角色编号
         /// </summary>
         [FieldDescription("角色编号")]
+        [Description("角色编号")]
+        [Column(FieldCode)]
         public string Code { get; set; } = string.Empty;
 
         /// <summary>
         /// 角色名称
         /// </summary>
         [FieldDescription("角色名称")]
+        [Description("角色名称")]
+        [Column(FieldName)]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 角色分类
         /// </summary>
         [FieldDescription("角色分类")]
+        [Description("角色分类")]
+        [Column(FieldCategoryCode)]
         public string CategoryCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 允许编辑
         /// </summary>
         [FieldDescription("允许编辑")]
+        [Description("允许编辑")]
+        [Column(FieldAllowEdit)]
         public int AllowEdit { get; set; } = 1;
 
         /// <summary>
         /// 允许删除
         /// </summary>
         [FieldDescription("允许删除")]
+        [Description("允许删除")]
+        [Column(FieldAllowDelete)]
         public int AllowDelete { get; set; } = 1;
 
         /// <summary>
         /// 是否显示
         /// </summary>
         [FieldDescription("是否显示")]
+        [Description("是否显示")]
+        [Column(FieldIsVisible)]
         public int IsVisible { get; set; } = 1;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

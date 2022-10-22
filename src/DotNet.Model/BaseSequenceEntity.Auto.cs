@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,54 +28,71 @@ namespace DotNet.Model
     ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseSequenceEntity : BaseEntity
     {
         /// <summary>
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
+        [Description("名称")]
+        [Column(FieldName)]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 前缀
         /// </summary>
         [FieldDescription("前缀")]
+        [Description("前缀")]
+        [Column(FieldPrefix)]
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
         /// 分隔符
         /// </summary>
         [FieldDescription("分隔符")]
+        [Description("分隔符")]
+        [Column(FieldDelimiter)]
         public string Delimiter { get; set; } = string.Empty;
 
         /// <summary>
         /// 升序序列
         /// </summary>
         [FieldDescription("升序序列")]
+        [Description("升序序列")]
+        [Column(FieldSequence)]
         public int Sequence { get; set; } = 10000000;
 
         /// <summary>
         /// 倒序序列
         /// </summary>
         [FieldDescription("倒序序列")]
+        [Description("倒序序列")]
+        [Column(FieldReduction)]
         public int Reduction { get; set; } = 9999999;
 
         /// <summary>
         /// 步长
         /// </summary>
         [FieldDescription("步长")]
+        [Description("步长")]
+        [Column(FieldStep)]
         public int Step { get; set; } = 1;
 
         /// <summary>
         /// 是否显示
         /// </summary>
         [FieldDescription("是否显示")]
+        [Description("是否显示")]
+        [Column(FieldIsVisible)]
         public int IsVisible { get; set; } = 1;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

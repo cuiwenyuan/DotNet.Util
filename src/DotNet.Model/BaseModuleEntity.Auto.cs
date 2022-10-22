@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,150 +28,199 @@ namespace DotNet.Model
     ///     <date>2021-09-26</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseModuleEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 父节点主键
         /// </summary>
         [FieldDescription("父节点主键")]
+        [Description("父节点主键")]
+        [Column(FieldParentId)]
         public int ParentId { get; set; } = 0;
 
         /// <summary>
         /// 编号
         /// </summary>
         [FieldDescription("编号")]
+        [Description("编号")]
+        [Column(FieldCode)]
         public string Code { get; set; } = string.Empty;
 
         /// <summary>
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
+        [Description("名称")]
+        [Column(FieldName)]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 菜单分类
         /// </summary>
         [FieldDescription("菜单分类")]
+        [Description("菜单分类")]
+        [Column(FieldCategoryCode)]
         public string CategoryCode { get; set; } = "Application";
 
         /// <summary>
         /// 图标位置
         /// </summary>
         [FieldDescription("图标位置")]
+        [Description("图标位置")]
+        [Column(FieldImageUrl)]
         public string ImageUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// 图标编号
         /// </summary>
         [FieldDescription("图标编号")]
+        [Description("图标编号")]
+        [Column(FieldImageIndex)]
         public string ImageIndex { get; set; } = string.Empty;
 
         /// <summary>
         /// 选中状态图标编号
         /// </summary>
         [FieldDescription("选中状态图标编号")]
+        [Description("选中状态图标编号")]
+        [Column(FieldSelectedImageIndex)]
         public string SelectedImageIndex { get; set; } = string.Empty;
 
         /// <summary>
         /// Web网址
         /// </summary>
         [FieldDescription("Web网址")]
+        [Description("Web网址")]
+        [Column(FieldNavigateUrl)]
         public string NavigateUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// 目标窗体中打开BS
         /// </summary>
         [FieldDescription("目标窗体中打开BS")]
+        [Description("目标窗体中打开BS")]
+        [Column(FieldTarget)]
         public string Target { get; set; } = "fraContent";
 
         /// <summary>
         ///  窗体名CS
         /// </summary>
         [FieldDescription(" 窗体名CS")]
+        [Description(" 窗体名CS")]
+        [Column(FieldFormName)]
         public string FormName { get; set; } = string.Empty;
 
         /// <summary>
         /// 动态连接库CS
         /// </summary>
         [FieldDescription("动态连接库CS")]
+        [Description("动态连接库CS")]
+        [Column(FieldAssemblyName)]
         public string AssemblyName { get; set; } = string.Empty;
 
         /// <summary>
         /// 需要数据权限过滤的表(,符号分割)
         /// </summary>
         [FieldDescription("需要数据权限过滤的表(,符号分割)")]
+        [Description("需要数据权限过滤的表(,符号分割)")]
+        [Column(FieldPermissionScopeTables)]
         public string PermissionScopeTables { get; set; } = string.Empty;
 
         /// <summary>
         /// 是菜单项
         /// </summary>
         [FieldDescription("是菜单项")]
+        [Description("是菜单项")]
+        [Column(FieldIsMenu)]
         public int IsMenu { get; set; } = 1;
 
         /// <summary>
         /// 是否公开
         /// </summary>
         [FieldDescription("是否公开")]
+        [Description("是否公开")]
+        [Column(FieldIsPublic)]
         public int IsPublic { get; set; } = 0;
 
         /// <summary>
         /// 是否展开
         /// </summary>
         [FieldDescription("是否展开")]
+        [Description("是否展开")]
+        [Column(FieldIsExpand)]
         public int IsExpand { get; set; } = 1;
 
         /// <summary>
         /// 权限域
         /// </summary>
         [FieldDescription("权限域")]
+        [Description("权限域")]
+        [Column(FieldIsScope)]
         public int IsScope { get; set; } = 0;
 
         /// <summary>
         /// 是否可见
         /// </summary>
         [FieldDescription("是否可见")]
+        [Description("是否可见")]
+        [Column(FieldIsVisible)]
         public int IsVisible { get; set; } = 1;
 
         /// <summary>
         /// 允许编辑
         /// </summary>
         [FieldDescription("允许编辑")]
+        [Description("允许编辑")]
+        [Column(FieldAllowEdit)]
         public int AllowEdit { get; set; } = 1;
 
         /// <summary>
         /// 允许删除
         /// </summary>
         [FieldDescription("允许删除")]
+        [Description("允许删除")]
+        [Column(FieldAllowDelete)]
         public int AllowDelete { get; set; } = 1;
 
         /// <summary>
         /// 最后呼叫时间
         /// </summary>
         [FieldDescription("最后呼叫时间")]
+        [Description("最后呼叫时间")]
+        [Column(FieldLastCall)]
         public DateTime? LastCall { get; set; } = null;
 
         /// <summary>
         /// 浏览器
         /// </summary>
         [FieldDescription("浏览器")]
+        [Description("浏览器")]
+        [Column(FieldWebBrowser)]
         public string WebBrowser { get; set; } = string.Empty;
 
         /// <summary>
         /// 认证天数
         /// </summary>
         [FieldDescription("认证天数")]
+        [Description("认证天数")]
+        [Column(FieldAuthorizedDays)]
         public int AuthorizedDays { get; set; } = 0;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

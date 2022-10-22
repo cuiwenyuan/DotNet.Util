@@ -56,11 +56,6 @@ namespace DotNet.Business
         public bool ReturnId = true;
 
         /// <summary>
-        /// 通过远程接口调用
-        /// </summary>
-        public bool RemoteInterface = false;
-
-        /// <summary>
         /// 选取的字段
         /// </summary>
         public string SelectFields { get; set; } = "*";
@@ -266,31 +261,146 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public virtual string AddEntity(object entity)
+        #region 新增和更新
 
         /// <summary>
-        /// 添加对象
+        /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
-        /// <param name="entity">实体</param>
-        /// <returns></returns>
-        public virtual string AddEntity(object entity)
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
         {
-            return string.Empty;
+            Identity = identity;
+            ReturnId = returnId;
+            if (t is BaseEntity entity)
+            {
+                entity.Id = AddEntity(t).ToInt();
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (t is BaseEntity entity)
+            {
+                if (entity.Id == 0)
+                {
+                    entity.Id = AddEntity(t).ToInt();
+                    return entity.Id.ToString();
+                }
+                else
+                {
+                    return UpdateEntity(t) > 0 ? entity.Id.ToString() : string.Empty;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual int Update<T>(T t)
+        {
+            return UpdateEntity(t);
+        }
+
+        /// <summary>
+        /// 添加实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual string AddEntity<T>(T t)
+        {
+            var key = string.Empty;
+            if (t is BaseEntity)
+            {
+                var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
+                sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
+                SetEntity(sqlBuilder, t);
+                SetEntityCreate(sqlBuilder, t);
+                SetEntityUpdate(sqlBuilder, t);
+                key = AddEntity(sqlBuilder, t);
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    RemoveCache();
+                }
+            }
+            return key;
+        }
+
+        /// <summary>
+        /// 更新实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual int UpdateEntity<T>(T t)
+        {
+            var result = 0;
+            if (t is BaseEntity entity)
+            {
+                var sqlBuilder = new SqlBuilder(DbHelper);
+                sqlBuilder.BeginUpdate(CurrentTableName);
+                SetEntity(sqlBuilder, t);
+                SetEntityUpdate(sqlBuilder, t);
+                result = UpdateEntity(sqlBuilder, t);
+                if (result > 0)
+                {
+                    RemoveCache(entity.Id);
+                }
+            }
+            return result;
         }
 
         #endregion
 
-        #region public virtual int UpdateEntity(object entity)
+        #region 获取实体
 
-        /// <summary>
-        /// 更新对象
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <returns></returns>
-        public virtual int UpdateEntity(object entity)
-        {
-            return 0;
-        }
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="id">主键</param>
+        //public virtual T GetEntity(string id)
+        //{
+        //    return ValidateUtil.IsInt(id) ? GetEntity(id.ToInt()) : null;
+        //}
+
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="id">主键</param>
+        //public virtual T GetEntity(int id)
+        //{
+        //    return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+        //    //var cacheKey = CurrentTableName + ".Entity." + id;
+        //    //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+        //    //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        //}
+
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="parameters">参数</param>
+        //public virtual T GetEntity(List<KeyValuePair<string, object>> parameters)
+        //{
+        //    return BaseEntity.Create<T>(GetDataTable(parameters));
+        //}
 
         #endregion
 

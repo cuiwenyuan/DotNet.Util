@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,42 +28,55 @@ namespace DotNet.Model
     ///     <date>2022-03-25</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseParameterEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 分类编号
         /// </summary>
         [FieldDescription("分类编号")]
+        [Description("分类编号")]
+        [Column(FieldCategoryCode)]
         public string CategoryCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 参数主键
         /// </summary>
         [FieldDescription("参数主键")]
+        [Description("参数主键")]
+        [Column(FieldParameterId)]
         public string ParameterId { get; set; } = string.Empty;
 
         /// <summary>
         /// 参数编码
         /// </summary>
         [FieldDescription("参数编码")]
+        [Description("参数编码")]
+        [Column(FieldParameterCode)]
         public string ParameterCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 参数内容
         /// </summary>
         [FieldDescription("参数内容")]
+        [Description("参数内容")]
+        [Column(FieldParameterContent)]
         public string ParameterContent { get; set; } = string.Empty;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

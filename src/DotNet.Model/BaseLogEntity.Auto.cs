@@ -1,11 +1,15 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseLogEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,90 +28,119 @@ namespace DotNet.Model
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseLogEntity : BaseEntity
     {
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
+        [Description("公司主键")]
+        [Column(FieldCompanyId)]
         public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 用户主键
         /// </summary>
         [FieldDescription("用户主键")]
+        [Description("用户主键")]
+        [Column(FieldUserId)]
         public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 用户名
         /// </summary>
         [FieldDescription("用户名")]
+        [Description("用户名")]
+        [Column(FieldUserName)]
         public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户姓名
         /// </summary>
         [FieldDescription("用户姓名")]
+        [Description("用户姓名")]
+        [Column(FieldRealName)]
         public string RealName { get; set; } = string.Empty;
 
         /// <summary>
         /// 服务
         /// </summary>
         [FieldDescription("服务")]
+        [Description("服务")]
+        [Column(FieldService)]
         public string Service { get; set; } = string.Empty;
 
         /// <summary>
         /// 任务
         /// </summary>
         [FieldDescription("任务")]
+        [Description("任务")]
+        [Column(FieldTaskId)]
         public string TaskId { get; set; } = string.Empty;
 
         /// <summary>
         /// 操作记录,添加,编辑,删除参数
         /// </summary>
         [FieldDescription("操作记录,添加,编辑,删除参数")]
+        [Description("操作记录,添加,编辑,删除参数")]
+        [Column(FieldParameters)]
         public string Parameters { get; set; } = string.Empty;
 
         /// <summary>
         /// IP地址
         /// </summary>
         [FieldDescription("IP地址")]
+        [Description("IP地址")]
+        [Column(FieldClientIp)]
         public string ClientIp { get; set; } = string.Empty;
 
         /// <summary>
         /// IP地址
         /// </summary>
         [FieldDescription("IP地址")]
+        [Description("IP地址")]
+        [Column(FieldServerIp)]
         public string ServerIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 上一网络地址
         /// </summary>
         [FieldDescription("上一网络地址")]
+        [Description("上一网络地址")]
+        [Column(FieldUrlReferrer)]
         public string UrlReferrer { get; set; } = string.Empty;
 
         /// <summary>
         /// 网络地址
         /// </summary>
         [FieldDescription("网络地址")]
+        [Description("网络地址")]
+        [Column(FieldWebUrl)]
         public string WebUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// 耗时
         /// </summary>
         [FieldDescription("耗时")]
+        [Description("耗时")]
+        [Column(FieldElapsedTicks)]
         public decimal? ElapsedTicks { get; set; } = 0;
 
         /// <summary>
         /// 开始时间
         /// </summary>
         [FieldDescription("开始时间")]
+        [Description("开始时间")]
+        [Column(FieldStartTime)]
         public DateTime? StartTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

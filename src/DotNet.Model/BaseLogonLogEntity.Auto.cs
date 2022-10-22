@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,138 +28,183 @@ namespace DotNet.Model
     ///     <date>2021-10-04</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseLogonLogEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 发起请求的终端应用类型
         /// </summary>
         [FieldDescription("发起请求的终端应用类型")]
+        [Description("发起请求的终端应用类型")]
+        [Column(FieldSourceType)]
         public string SourceType { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户主键
         /// </summary>
         [FieldDescription("用户主键")]
+        [Description("用户主键")]
+        [Column(FieldUserId)]
         public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 用户名
         /// </summary>
         [FieldDescription("用户名")]
+        [Description("用户名")]
+        [Column(FieldUserName)]
         public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 昵称
         /// </summary>
         [FieldDescription("昵称")]
+        [Description("昵称")]
+        [Column(FieldNickName)]
         public string NickName { get; set; } = string.Empty;
 
         /// <summary>
         /// 真实姓名
         /// </summary>
         [FieldDescription("真实姓名")]
+        [Description("真实姓名")]
+        [Column(FieldRealName)]
         public string RealName { get; set; } = string.Empty;
 
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
+        [Description("公司主键")]
+        [Column(FieldCompanyId)]
         public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 公司名称
         /// </summary>
         [FieldDescription("公司名称")]
+        [Description("公司名称")]
+        [Column(FieldCompanyName)]
         public string CompanyName { get; set; } = string.Empty;
 
         /// <summary>
         /// 公司编码
         /// </summary>
         [FieldDescription("公司编码")]
+        [Description("公司编码")]
+        [Column(FieldCompanyCode)]
         public string CompanyCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 省份
         /// </summary>
         [FieldDescription("省份")]
+        [Description("省份")]
+        [Column(FieldProvince)]
         public string Province { get; set; } = string.Empty;
 
         /// <summary>
         /// 城市
         /// </summary>
         [FieldDescription("城市")]
+        [Description("城市")]
+        [Column(FieldCity)]
         public string City { get; set; } = string.Empty;
 
         /// <summary>
         /// 服务
         /// </summary>
         [FieldDescription("服务")]
+        [Description("服务")]
+        [Column(FieldService)]
         public string Service { get; set; } = string.Empty;
 
         /// <summary>
         /// 耗时
         /// </summary>
         [FieldDescription("耗时")]
+        [Description("耗时")]
+        [Column(FieldElapsedTicks)]
         public int ElapsedTicks { get; set; } = 0;
 
         /// <summary>
         /// 登录的目标应用
         /// </summary>
         [FieldDescription("登录的目标应用")]
+        [Description("登录的目标应用")]
+        [Column(FieldTargetApplication)]
         public string TargetApplication { get; set; } = string.Empty;
 
         /// <summary>
         /// 登录的目标服务器端IP
         /// </summary>
         [FieldDescription("登录的目标服务器端IP")]
+        [Description("登录的目标服务器端IP")]
+        [Column(FieldTargetIp)]
         public string TargetIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 操作结果（Success 1/Fail 0）
         /// </summary>
         [FieldDescription("操作结果（Success 1/Fail 0）")]
+        [Description("操作结果（Success 1/Fail 0）")]
+        [Column(FieldResult)]
         public int Result { get; set; } = 0;
 
         /// <summary>
         /// 操作类型（Login 1/Logout 0）
         /// </summary>
         [FieldDescription("操作类型（Login 1/Logout 0）")]
+        [Description("操作类型（Login 1/Logout 0）")]
+        [Column(FieldOperationType)]
         public int OperationType { get; set; } = 1;
 
         /// <summary>
         /// 登录状态
         /// </summary>
         [FieldDescription("登录状态")]
+        [Description("登录状态")]
+        [Column(FieldLogonStatus)]
         public string LogonStatus { get; set; } = string.Empty;
 
         /// <summary>
         /// 登录级别（0，正常；1、注意；2，危险；3、攻击）
         /// </summary>
         [FieldDescription("登录级别（0，正常；1、注意；2，危险；3、攻击）")]
+        [Description("登录级别（0，正常；1、注意；2，危险；3、攻击）")]
+        [Column(FieldLogLevel)]
         public int LogLevel { get; set; } = 0;
 
         /// <summary>
         /// IP地址
         /// </summary>
         [FieldDescription("IP地址")]
+        [Description("IP地址")]
+        [Column(FieldIpAddress)]
         public string IpAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// IP地址位置名称
         /// </summary>
         [FieldDescription("IP地址位置名称")]
+        [Description("IP地址位置名称")]
+        [Column(FieldIpAddressName)]
         public string IpAddressName { get; set; } = string.Empty;
 
         /// <summary>
         /// MAC地址
         /// </summary>
         [FieldDescription("MAC地址")]
+        [Description("MAC地址")]
+        [Column(FieldMacAddress)]
         public string MacAddress { get; set; } = string.Empty;
 
         /// <summary>

@@ -1,11 +1,15 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserContactEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,138 +28,183 @@ namespace DotNet.Model
     ///     <date>2021-09-28</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseUserContactEntity : BaseEntity
     {
         /// <summary>
         /// 用户编号
         /// </summary>
         [FieldDescription("用户编号")]
+        [Description("用户编号")]
+        [Column(FieldUserId)]
         public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 显示邮箱
         /// </summary>
         [FieldDescription("显示邮箱")]
+        [Description("显示邮箱")]
+        [Column(FieldShowEmail)]
         public int ShowEmail { get; set; } = 1;
 
         /// <summary>
         /// 邮箱
         /// </summary>
         [FieldDescription("邮箱")]
+        [Description("邮箱")]
+        [Column(FieldEmail)]
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// 邮箱是否验证
         /// </summary>
         [FieldDescription("邮箱是否验证")]
+        [Description("邮箱是否验证")]
+        [Column(FieldEmailValidated)]
         public int EmailValidated { get; set; } = 0;
 
         /// <summary>
         /// 显示手机
         /// </summary>
         [FieldDescription("显示手机")]
+        [Description("显示手机")]
+        [Column(FieldShowMobile)]
         public int? ShowMobile { get; set; } = 1;
 
         /// <summary>
         /// 手机
         /// </summary>
         [FieldDescription("手机")]
+        [Description("手机")]
+        [Column(FieldMobile)]
         public string Mobile { get; set; } = string.Empty;
 
         /// <summary>
         /// 手机是否验证
         /// </summary>
         [FieldDescription("手机是否验证")]
+        [Description("手机是否验证")]
+        [Column(FieldMobileValidated)]
         public int MobileValidated { get; set; } = 0;
 
         /// <summary>
         /// 手机验证时间
         /// </summary>
         [FieldDescription("手机验证时间")]
+        [Description("手机验证时间")]
+        [Column(FieldMobileValidatedTime)]
         public DateTime? MobileValidatedTime { get; set; } = null;
 
         /// <summary>
         /// 短号
         /// </summary>
         [FieldDescription("短号")]
+        [Description("短号")]
+        [Column(FieldShortNumber)]
         public string ShortNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// 电话
         /// </summary>
         [FieldDescription("电话")]
+        [Description("电话")]
+        [Column(FieldTelephone)]
         public string Telephone { get; set; } = string.Empty;
 
         /// <summary>
         /// 分机
         /// </summary>
         [FieldDescription("分机")]
+        [Description("分机")]
+        [Column(FieldExtension)]
         public string Extension { get; set; } = string.Empty;
 
         /// <summary>
         /// QQ
         /// </summary>
         [FieldDescription("QQ")]
+        [Description("QQ")]
+        [Column(FieldQq)]
         public string Qq { get; set; } = string.Empty;
 
         /// <summary>
         /// 旺旺
         /// </summary>
         [FieldDescription("旺旺")]
+        [Description("旺旺")]
+        [Column(FieldWw)]
         public string Ww { get; set; } = string.Empty;
 
         /// <summary>
         /// 即时通讯
         /// </summary>
         [FieldDescription("即时通讯")]
+        [Description("即时通讯")]
+        [Column(FieldIm)]
         public string Im { get; set; } = string.Empty;
 
         /// <summary>
         /// 微信
         /// </summary>
         [FieldDescription("微信")]
+        [Description("微信")]
+        [Column(FieldWeChat)]
         public string WeChat { get; set; } = string.Empty;
 
         /// <summary>
         /// 微信是否验证
         /// </summary>
         [FieldDescription("微信是否验证")]
+        [Description("微信是否验证")]
+        [Column(FieldWeChatValidated)]
         public int WeChatValidated { get; set; } = 0;
 
         /// <summary>
         /// 微信OpenId
         /// </summary>
         [FieldDescription("微信OpenId")]
+        [Description("微信OpenId")]
+        [Column(FieldWeChatOpenId)]
         public string WeChatOpenId { get; set; } = string.Empty;
 
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
+        [Description("公司主键")]
+        [Column(FieldCompanyId)]
         public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 公司邮箱
         /// </summary>
         [FieldDescription("公司邮箱")]
+        [Description("公司邮箱")]
+        [Column(FieldCompanyEmail)]
         public string CompanyEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 紧急联系人
         /// </summary>
         [FieldDescription("紧急联系人")]
+        [Description("紧急联系人")]
+        [Column(FieldEmergencyContact)]
         public string EmergencyContact { get; set; } = string.Empty;
 
         /// <summary>
         /// 紧急联系手机
         /// </summary>
         [FieldDescription("紧急联系手机")]
+        [Description("紧急联系手机")]
+        [Column(FieldEmergencyMobile)]
         public string EmergencyMobile { get; set; } = string.Empty;
 
         /// <summary>
         /// 紧急联系电话
         /// </summary>
         [FieldDescription("紧急联系电话")]
+        [Description("紧急联系电话")]
+        [Column(FieldEmergencyTelephone)]
         public string EmergencyTelephone { get; set; } = string.Empty;
 
         /// <summary>

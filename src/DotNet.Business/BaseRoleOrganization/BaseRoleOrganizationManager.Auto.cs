@@ -229,7 +229,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseRoleOrganizationEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseRoleOrganizationEntity entity)
         {
             sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseRoleOrganizationEntity.FieldRoleId, entity.RoleId);

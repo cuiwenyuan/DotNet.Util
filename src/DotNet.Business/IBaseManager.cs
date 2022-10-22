@@ -43,30 +43,7 @@ namespace DotNet.Business
         /// <summary>
         /// 当前表描述
         /// </summary>
-        string CurrentTableDescription { get; set; }
-
-        #region 增删改
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        string AddEntity(object entity);
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        int UpdateEntity(object entity);
-        /// <summary>
-        /// 删除
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        int DeleteEntity(object id);
-
-        #endregion
+        string CurrentTableDescription { get; set; }        
 
         #region 对象事件触发器（编写程序的人员，可以不实现这些方法）
 
@@ -866,6 +843,17 @@ namespace DotNet.Business
         /// <param name="systemCode">子系统编码</param>
         void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null);
 
+        #endregion
+
+        #region virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
+
+        /// <summary>
+        /// 给实体赋值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        void SetEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
         #region virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息

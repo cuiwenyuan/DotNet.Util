@@ -1,10 +1,15 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,54 +29,71 @@ namespace DotNet.Model
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseMessageQueueEntity : BaseEntity
     {
         /// <summary>
         /// 公司编号
         /// </summary>
         [FieldDescription("公司编号")]
+        [Description("公司编号")]
+        [Column(FieldUserCompanyId)]
         public int UserCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 子公司编号
         /// </summary>
         [FieldDescription("子公司编号")]
+        [Description("子公司编号")]
+        [Column(FieldUserSubCompanyId)]
         public int UserSubCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 来源
         /// </summary>
         [FieldDescription("来源")]
+        [Description("来源")]
+        [Column(FieldSource)]
         public string Source { get; set; } = string.Empty;
 
         /// <summary>
         /// 消息类型
         /// </summary>
         [FieldDescription("消息类型")]
+        [Description("消息类型")]
+        [Column(FieldMessageType)]
         public string MessageType { get; set; } = "Email";
 
         /// <summary>
         /// 接收人
         /// </summary>
         [FieldDescription("接收人")]
+        [Description("接收人")]
+        [Column(FieldRecipient)]
         public string Recipient { get; set; } = string.Empty;
 
         /// <summary>
         /// 主题
         /// </summary>
         [FieldDescription("主题")]
+        [Description("主题")]
+        [Column(FieldSubject)]
         public string Subject { get; set; } = string.Empty;
 
         /// <summary>
         /// 正文内容
         /// </summary>
         [FieldDescription("正文内容")]
+        [Description("正文内容")]
+        [Column(FieldBody)]
         public string Body { get; set; } = string.Empty;
 
         /// <summary>
         /// 失败次数
         /// </summary>
         [FieldDescription("失败次数")]
+        [Description("失败次数")]
+        [Column(FieldFailCount)]
         public int? FailCount { get; set; } = 0;
 
         /// <summary>

@@ -5,6 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -23,54 +28,71 @@ namespace DotNet.Model
     ///     <date>2020-02-13</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseUserOAuthEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户编号
         /// </summary>
         [FieldDescription("用户编号")]
+        [Description("用户编号")]
+        [Column(FieldUserId)]
         public int UserId { get; set; }
 
         /// <summary>
         /// OAuth Name
         /// </summary>
         [FieldDescription("OAuth Name")]
+        [Description("OAuth Name")]
+        [Column(FieldName)]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// OAuth Access Token
         /// </summary>
         [FieldDescription("OAuth Access Token")]
+        [Description("OAuth Access Token")]
+        [Column(FieldAccessToken)]
         public string AccessToken { get; set; } = string.Empty;
 
         /// <summary>
         /// OAuth Refresh Token
         /// </summary>
         [FieldDescription("OAuth Refresh Token")]
+        [Description("OAuth Refresh Token")]
+        [Column(FieldRefreshToken)]
         public string RefreshToken { get; set; } = string.Empty;
 
         /// <summary>
         /// OAuth OpenId
         /// </summary>
         [FieldDescription("OAuth OpenId")]
+        [Description("OAuth OpenId")]
+        [Column(FieldOpenId)]
         public string OpenId { get; set; } = string.Empty;
 
         /// <summary>
         /// OAuth UnionId
         /// </summary>
         [FieldDescription("OAuth UnionId")]
+        [Description("OAuth UnionId")]
+        [Column(FieldUnionId)]
         public string UnionId { get; set; } = string.Empty;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

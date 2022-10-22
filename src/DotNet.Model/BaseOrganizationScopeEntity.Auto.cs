@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,114 +28,151 @@ namespace DotNet.Model
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseOrganizationScopeEntity : BaseEntity
     {
         /// <summary>
         /// 什么类型的
         /// </summary>
         [FieldDescription("什么类型的")]
+        [Description("什么类型的")]
+        [Column(FieldResourceCategory)]
         public string ResourceCategory { get; set; } = string.Empty;
 
         /// <summary>
         /// 什么资源主键
         /// </summary>
         [FieldDescription("什么资源主键")]
+        [Description("什么资源主键")]
+        [Column(FieldResourceId)]
         public string ResourceId { get; set; } = string.Empty;
 
         /// <summary>
         /// 有什么权限（模块菜单）主键
         /// </summary>
         [FieldDescription("有什么权限（模块菜单）主键")]
+        [Description("有什么权限（模块菜单）主键")]
+        [Column(FieldPermissionId)]
         public int? PermissionId { get; set; } = null;
 
         /// <summary>
         /// 全部数据
         /// </summary>
         [FieldDescription("全部数据")]
+        [Description("全部数据")]
+        [Column(FieldAllData)]
         public int? AllData { get; set; } = null;
 
         /// <summary>
         /// 所在的省
         /// </summary>
         [FieldDescription("所在的省")]
+        [Description("所在的省")]
+        [Column(FieldProvince)]
         public int? Province { get; set; } = null;
 
         /// <summary>
         /// 所在的市
         /// </summary>
         [FieldDescription("所在的市")]
+        [Description("所在的市")]
+        [Column(FieldCity)]
         public int? City { get; set; } = null;
 
         /// <summary>
         /// 所在的县/区
         /// </summary>
         [FieldDescription("所在的县/区")]
+        [Description("所在的县/区")]
+        [Column(FieldDistrict)]
         public int? District { get; set; } = null;
 
         /// <summary>
         /// 街道
         /// </summary>
         [FieldDescription("街道")]
+        [Description("街道")]
+        [Column(FieldStreet)]
         public int? Street { get; set; } = null;
 
         /// <summary>
         /// 用户所在公司的数据
         /// </summary>
         [FieldDescription("用户所在公司的数据")]
+        [Description("用户所在公司的数据")]
+        [Column(FieldUserCompany)]
         public int? UserCompany { get; set; } = null;
 
         /// <summary>
         /// 用户所在分公司的数据
         /// </summary>
         [FieldDescription("用户所在分公司的数据")]
+        [Description("用户所在分公司的数据")]
+        [Column(FieldUserSubCompany)]
         public int? UserSubCompany { get; set; } = null;
 
         /// <summary>
         /// 用户所在部门的数据
         /// </summary>
         [FieldDescription("用户所在部门的数据")]
+        [Description("用户所在部门的数据")]
+        [Column(FieldUserDepartment)]
         public int? UserDepartment { get; set; } = null;
 
         /// <summary>
         /// 用户所在子部门的数据
         /// </summary>
         [FieldDescription("用户所在子部门的数据")]
+        [Description("用户所在子部门的数据")]
+        [Column(FieldUserSubDepartment)]
         public int? UserSubDepartment { get; set; } = null;
 
         /// <summary>
         /// 用户所在工作组的数据
         /// </summary>
         [FieldDescription("用户所在工作组的数据")]
+        [Description("用户所在工作组的数据")]
+        [Column(FieldUserWorkgroup)]
         public int? UserWorkgroup { get; set; } = null;
 
         /// <summary>
         /// 仅仅用户自己的数据
         /// </summary>
         [FieldDescription("仅仅用户自己的数据")]
+        [Description("仅仅用户自己的数据")]
+        [Column(FieldOnlyOwnData)]
         public int OnlyOwnData { get; set; } = 1;
 
         /// <summary>
         /// 不允许查看数据
         /// </summary>
         [FieldDescription("不允许查看数据")]
+        [Description("不允许查看数据")]
+        [Column(FieldNotAllowed)]
         public int? NotAllowed { get; set; } = 0;
 
         /// <summary>
         /// 按详细设置
         /// </summary>
         [FieldDescription("按详细设置")]
+        [Description("按详细设置")]
+        [Column(FieldByDetails)]
         public int? ByDetails { get; set; } = 0;
 
         /// <summary>
         /// 包含子节点的数据
         /// </summary>
         [FieldDescription("包含子节点的数据")]
+        [Description("包含子节点的数据")]
+        [Column(FieldContainChild)]
         public int ContainChild { get; set; }
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

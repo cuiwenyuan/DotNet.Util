@@ -62,9 +62,9 @@ namespace DotNet.Util
                 {
                     int i = 0;
                     _columns = new List<ColumnExpression>();
-                 
+                    var properties = Type.GetProperties().ToList();
                     //排除掉不映射的列
-                    var properties = Type.GetProperties().Where(it => !it.GetCustomAttributes().OfType<NotMappedAttribute>().Any()).ToList();
+                    //var properties = Type.GetProperties().Where(it => !it.GetCustomAttributes().OfType<NotMappedAttribute>().Any()).ToList();
 
                     foreach (var propertyInfo in properties)
                     {

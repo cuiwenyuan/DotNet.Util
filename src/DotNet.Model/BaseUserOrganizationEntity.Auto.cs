@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,48 +28,63 @@ namespace DotNet.Model
     ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseUserOrganizationEntity : BaseEntity
     {
         /// <summary>
         /// 用户账户主键
         /// </summary>
         [FieldDescription("用户账户主键")]
+        [Description("用户账户主键")]
+        [Column(FieldUserId)]
         public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
+        [Description("公司主键")]
+        [Column(FieldCompanyId)]
         public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 分支机构主键
         /// </summary>
         [FieldDescription("分支机构主键")]
+        [Description("分支机构主键")]
+        [Column(FieldSubCompanyId)]
         public int SubCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 部门主键
         /// </summary>
         [FieldDescription("部门主键")]
+        [Description("部门主键")]
+        [Column(FieldDepartmentId)]
         public int DepartmentId { get; set; } = 0;
 
         /// <summary>
         /// 子部门主键
         /// </summary>
         [FieldDescription("子部门主键")]
+        [Description("子部门主键")]
+        [Column(FieldSubDepartmentId)]
         public int SubDepartmentId { get; set; } = 0;
 
         /// <summary>
         /// 工作组主键
         /// </summary>
         [FieldDescription("工作组主键")]
+        [Description("工作组主键")]
+        [Column(FieldWorkgroupId)]
         public int WorkgroupId { get; set; } = 0;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

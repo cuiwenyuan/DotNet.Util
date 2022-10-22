@@ -1,11 +1,14 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseDictionaryItemEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
 namespace DotNet.Model
@@ -26,60 +29,79 @@ namespace DotNet.Model
     ///     <date>2021-10-26</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseDictionaryItemEntity : BaseEntity
     {
         /// <summary>
         /// 字典编号
         /// </summary>
         [FieldDescription("字典编号")]
+        [Description("字典编号")]
+        [Column(FieldDictionaryId)]
         public int DictionaryId { get; set; }
 
         /// <summary>
         /// 父节点主键
         /// </summary>
         [FieldDescription("父节点主键")]
+        [Description("父节点主键")]
+        [Column(FieldParentId)]
         public int ParentId { get; set; } = 0;
 
         /// <summary>
         /// 键
         /// </summary>
         [FieldDescription("键")]
+        [Description("键")]
+        [Column(FieldItemKey)]
         public string ItemKey { get; set; } = string.Empty;
 
         /// <summary>
         /// 名称
         /// </summary>
         [FieldDescription("名称")]
+        [Description("名称")]
+        [Column(FieldItemName)]
         public string ItemName { get; set; } = string.Empty;
 
         /// <summary>
         /// 值
         /// </summary>
         [FieldDescription("值")]
+        [Description("值")]
+        [Column(FieldItemValue)]
         public string ItemValue { get; set; } = string.Empty;
 
         /// <summary>
         /// 语言(i18n)
         /// </summary>
         [FieldDescription("语言(i18n)")]
+        [Description("语言(i18n)")]
+        [Column(FieldLanguage)]
         public string Language { get; set; } = "global";
 
         /// <summary>
         /// 允许编辑
         /// </summary>
         [FieldDescription("允许编辑")]
+        [Description("允许编辑")]
+        [Column(FieldAllowEdit)]
         public int AllowEdit { get; set; } = 1;
 
         /// <summary>
         /// 允许删除
         /// </summary>
         [FieldDescription("允许删除")]
+        [Description("允许删除")]
+        [Column(FieldAllowDelete)]
         public int AllowDelete { get; set; } = 1;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

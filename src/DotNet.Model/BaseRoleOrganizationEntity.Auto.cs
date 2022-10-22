@@ -5,6 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -23,30 +28,39 @@ namespace DotNet.Model
     ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseRoleOrganizationEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 角色主键
         /// </summary>
         [FieldDescription("角色主键")]
+        [Description("角色主键")]
+        [Column(FieldRoleId)]
         public int RoleId { get; set; } = 0;
 
         /// <summary>
         /// 组织机构主键
         /// </summary>
         [FieldDescription("组织机构主键")]
+        [Description("组织机构主键")]
+        [Column(FieldOrganizationId)]
         public int OrganizationId { get; set; } = 0;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

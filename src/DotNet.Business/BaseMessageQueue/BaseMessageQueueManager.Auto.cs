@@ -234,7 +234,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseMessageQueueEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseMessageQueueEntity entity)
         {
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldSource, entity.Source);
             sqlBuilder.SetValue(BaseMessageQueueEntity.FieldMessageType, entity.MessageType);

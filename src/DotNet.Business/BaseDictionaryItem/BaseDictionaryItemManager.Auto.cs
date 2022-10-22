@@ -229,7 +229,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseDictionaryItemEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseDictionaryItemEntity entity)
         {
             sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldDictionaryId, entity.DictionaryId);
             sqlBuilder.SetValue(BaseDictionaryItemEntity.FieldParentId, entity.ParentId);

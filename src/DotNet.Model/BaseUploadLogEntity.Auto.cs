@@ -5,6 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -25,54 +30,71 @@ namespace DotNet.Model
     ///     <date>2022-02-07</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseUploadLogEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 公司编号
         /// </summary>
         [FieldDescription("公司编号")]
+        [Description("公司编号")]
+        [Column(FieldUserCompanyId)]
         public int UserCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 子公司编号
         /// </summary>
         [FieldDescription("子公司编号")]
+        [Description("子公司编号")]
+        [Column(FieldUserSubCompanyId)]
         public int UserSubCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 文件名
         /// </summary>
         [FieldDescription("文件名")]
+        [Description("文件名")]
+        [Column(FieldFileName)]
         public string FileName { get; set; } = string.Empty;
 
         /// <summary>
         /// 文件扩展名
         /// </summary>
         [FieldDescription("文件扩展名")]
+        [Description("文件扩展名")]
+        [Column(FieldFileExtension)]
         public string FileExtension { get; set; } = string.Empty;
 
         /// <summary>
         /// 文件名
         /// </summary>
         [FieldDescription("文件名")]
+        [Description("文件名")]
+        [Column(FieldFilePath)]
         public string FilePath { get; set; } = string.Empty;
 
         /// <summary>
         /// 文件大小
         /// </summary>
         [FieldDescription("文件大小")]
+        [Description("文件大小")]
+        [Column(FieldFileSize)]
         public int? FileSize { get; set; } = null;
 
         /// <summary>
         /// 备注
         /// </summary>
         [FieldDescription("备注")]
+        [Description("备注")]
+        [Column(FieldRemark)]
         public string Remark { get; set; } = string.Empty;
 
         /// <summary>

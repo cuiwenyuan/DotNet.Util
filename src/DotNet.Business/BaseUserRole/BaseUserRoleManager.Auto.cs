@@ -11,6 +11,7 @@ using System.Data;
 namespace DotNet.Business
 {
     using Model;
+    using System.Security.Principal;
     using Util;
 
     /// <summary>
@@ -109,51 +110,38 @@ namespace DotNet.Business
             CurrentTableName = tableName;
         }
 
-        /// <summary>
-        /// 添加, 这里可以人工干预，提高程序的性能
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string Add(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            entity.Id = AddEntity(entity).ToInt();
-            return entity.Id.ToString();
-        }
+        ///// <summary>
+        ///// 添加, 这里可以人工干预，提高程序的性能
+        ///// </summary>
+        ///// <param name="entity">实体</param>
+        ///// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        ///// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        ///// <returns>主键</returns>
+        //public string Add(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
+        //{
+        //    return base.Add(entity, identity, returnId);
+        //}
 
-        /// <summary>
-        /// 添加或更新(主键是否为0)
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string AddOrUpdate(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            if (entity.Id == 0)
-            {
-                entity.Id = AddEntity(entity).ToInt();
-                return entity.Id.ToString();
-            }
-            else
-            {
-                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
-            }
-        }
+        ///// <summary>
+        ///// 添加或更新(主键是否为0)
+        ///// </summary>
+        ///// <param name="entity">实体</param>
+        ///// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        ///// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        ///// <returns>主键</returns>
+        //public string AddOrUpdate(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
+        //{
+        //    return base.AddOrUpdate(entity, identity, returnId);
+        //}
 
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int Update(BaseUserRoleEntity entity)
-        {
-            return UpdateEntity(entity);
-        }
+        ///// <summary>
+        ///// 更新
+        ///// </summary>
+        ///// <param name="entity">实体</param>
+        //public int Update(BaseUserRoleEntity entity)
+        //{
+        //    return base.Update(entity);
+        //}
 
         /// <summary>
         /// 获取实体
@@ -185,50 +173,30 @@ namespace DotNet.Business
             return BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(parameters));
         }
 
-        /// <summary>
-        /// 添加实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public string AddEntity(BaseUserRoleEntity entity)
-        {
-            var key = string.Empty;
-            var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            base.SetEntity(sqlBuilder, entity);
-            SetEntityCreate(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            key = AddEntity(sqlBuilder, entity);
-            if (!string.IsNullOrWhiteSpace(key))
-            {
-                RemoveCache();
-            }
-            return key;
-        }
+        ///// <summary>
+        ///// 添加实体
+        ///// </summary>
+        ///// <param name="entity">实体</param>
+        //public string AddEntity(BaseUserRoleEntity entity)
+        //{
+        //    return base.AddEntity(entity);
+        //}
 
-        /// <summary>
-        /// 更新实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseUserRoleEntity entity)
-        {
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(CurrentTableName);
-            SetEntity(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            var result = UpdateEntity(sqlBuilder, entity);
-            if (result > 0)
-            {
-                RemoveCache(entity.Id);
-            }
-            return result;
-        }
+        ///// <summary>
+        ///// 更新实体
+        ///// </summary>
+        ///// <param name="entity">实体</param>
+        //public int UpdateEntity(BaseUserRoleEntity entity)
+        //{
+        //    return base.UpdateEntity(entity);
+        //}
 
         /// <summary>
         /// 设置实体
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
         {
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseUserRoleEntity.FieldUserId, entity.UserId);

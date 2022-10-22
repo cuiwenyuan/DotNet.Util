@@ -5,6 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,42 +29,55 @@ namespace DotNet.Model
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseCalendarEntity : BaseEntity
     {
         /// <summary>
         /// 公司编号
         /// </summary>
         [FieldDescription("公司编号")]
+        [Description("公司编号")]
+        [Column(FieldUserCompanyId)]
         public int UserCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 子公司编号
         /// </summary>
         [FieldDescription("子公司编号")]
+        [Description("子公司编号")]
+        [Column(FieldUserSubCompanyId)]
         public int UserSubCompanyId { get; set; } = 0;
 
         /// <summary>
         /// 年度
         /// </summary>
         [FieldDescription("年度")]
+        [Description("年度")]
+        [Column(FieldFiscalYear)]
         public int? FiscalYear { get; set; } = null;
 
         /// <summary>
         /// 月份
         /// </summary>
         [FieldDescription("月份")]
+        [Description("月份")]
+        [Column(FieldFiscalMonth)]
         public int? FiscalMonth { get; set; } = null;
 
         /// <summary>
         /// 日
         /// </summary>
         [FieldDescription("日")]
+        [Description("日")]
+        [Column(FieldFiscalDay)]
         public int? FiscalDay { get; set; } = null;
 
         /// <summary>
         /// 操作日期
         /// </summary>
         [FieldDescription("操作日期")]
+        [Description("操作日期")]
+        [Column(FieldTransactionDate)]
         public DateTime? TransactionDate { get; set; } = DateTime.Now;
 
         /// <summary>

@@ -5,7 +5,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace DotNet.Model
 {
@@ -24,54 +28,71 @@ namespace DotNet.Model
     ///     <date>2021-09-27</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BasePermissionEntity : BaseEntity
     {
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = "Base";
 
         /// <summary>
         /// 资料类别
         /// </summary>
         [FieldDescription("资料类别")]
+        [Description("资料类别")]
+        [Column(FieldResourceCategory)]
         public string ResourceCategory { get; set; } = string.Empty;
 
         /// <summary>
         /// 资源主键
         /// </summary>
         [FieldDescription("资源主键")]
+        [Description("资源主键")]
+        [Column(FieldResourceId)]
         public string ResourceId { get; set; } = string.Empty;
 
         /// <summary>
         /// 权限（菜单模块）主键
         /// </summary>
         [FieldDescription("权限（菜单模块）主键")]
+        [Description("权限（菜单模块）主键")]
+        [Column(FieldPermissionId)]
         public string PermissionId { get; set; } = string.Empty;
 
         /// <summary>
         /// 公司主键
         /// </summary>
         [FieldDescription("公司主键")]
+        [Description("公司主键")]
+        [Column(FieldCompanyId)]
         public int CompanyId { get; set; } = 0;
 
         /// <summary>
         /// 公司名称
         /// </summary>
         [FieldDescription("公司名称")]
+        [Description("公司名称")]
+        [Column(FieldCompanyName)]
         public string CompanyName { get; set; } = string.Empty;
 
         /// <summary>
         /// 权限条件限制
         /// </summary>
         [FieldDescription("权限条件限制")]
+        [Description("权限条件限制")]
+        [Column(FieldPermissionConstraint)]
         public string PermissionConstraint { get; set; } = string.Empty;
 
         /// <summary>
         /// 描述
         /// </summary>
         [FieldDescription("描述")]
+        [Description("描述")]
+        [Column(FieldDescription)]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>

@@ -228,7 +228,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="sqlBuilder">Sql语句生成器</param>
         /// <param name="entity">实体</param>
-        private void SetEntity(SqlBuilder sqlBuilder, BaseParameterEntity entity)
+        public void SetEntity(SqlBuilder sqlBuilder, BaseParameterEntity entity)
         {
             sqlBuilder.SetValue(BaseParameterEntity.FieldSystemCode, entity.SystemCode);
             sqlBuilder.SetValue(BaseParameterEntity.FieldCategoryCode, entity.CategoryCode);
