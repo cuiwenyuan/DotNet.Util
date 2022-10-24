@@ -25,16 +25,16 @@ namespace DotNet.Util
             return type.IsNullable();
         }
 
-        ///// <summary>
-        ///// 判断一个类型是否为可空类型
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <param name="type"></param>
-        ///// <returns></returns>
-        //public static bool IsNullable(this Type type)
-        //{
-        //    return Nullable.GetUnderlyingType(type) != null;
-        //}
+        /// <summary>
+        /// 判断一个类型是否为可空类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsNullable(this Type type)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+            //return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
         /// <summary>
         /// 判断type是否为集合类型
         /// </summary>
