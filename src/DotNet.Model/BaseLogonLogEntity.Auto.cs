@@ -5,11 +5,8 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 
 namespace DotNet.Model
 {
@@ -17,15 +14,15 @@ namespace DotNet.Model
 
     /// <summary>
     /// BaseLogonLogEntity
-    /// 登录日志表
+    /// 登录日志
     /// 
     /// 修改记录
     /// 
-    /// 2021-10-04 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-10-23 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-10-04</date>
+    ///     <date>2022-10-23</date>
     /// </author>
     /// </summary>
     [Table(CurrentTableName)]

@@ -965,30 +965,40 @@ namespace DotNet.Business
                     sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
                     // 5个非必备，但要自动新增的字段
                     var table = EntityUtil.GetTableExpression(t);
-                    //var columns = table.Columns.Where(it => !it.IsKey).ToList();
-                    foreach (var column in table.Columns)
+                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    it.ColumnName.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))).ToList();
+                    foreach (var column in columns)
                     {
+                        //var fi = entity.GetType().GetProperty(column.MemberInfo.Name);
                         switch (column.ColumnName)
                         {
                             case BaseUtil.FieldUserCompanyId:
-                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.CompanyId);
-                                sqlBuilder.SetValue(BaseUtil.FieldUserCompanyId, UserInfo.CompanyId);
+                                //fi.SetValue(entity, UserInfo.CompanyId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.CompanyId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserCompanyId, UserInfo.CompanyId.ToInt());
                                 break;
                             case BaseUtil.FieldUserSubCompanyId:
-                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubCompanyId);
-                                sqlBuilder.SetValue(BaseUtil.FieldUserSubCompanyId, UserInfo.SubCompanyId);
+                                //fi.SetValue(entity, UserInfo.SubCompanyId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubCompanyId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubCompanyId, UserInfo.SubCompanyId.ToInt());
                                 break;
                             case BaseUtil.FieldUserDepartmentId:
-                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.DepartmentId);
-                                sqlBuilder.SetValue(BaseUtil.FieldUserDepartmentId, UserInfo.DepartmentId);
+                                //fi.SetValue(entity, UserInfo.DepartmentId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.DepartmentId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserDepartmentId, UserInfo.DepartmentId.ToInt());
                                 break;
                             case BaseUtil.FieldUserSubDepartmentId:
-                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubDepartmentId);
-                                sqlBuilder.SetValue(BaseUtil.FieldUserSubDepartmentId, UserInfo.SubDepartmentId);
+                                //fi.SetValue(entity, UserInfo.SubDepartmentId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubDepartmentId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubDepartmentId, UserInfo.SubDepartmentId.ToInt());
                                 break;
                             case BaseUtil.FieldUserWorkgroupId:
-                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.WorkgroupId);
-                                sqlBuilder.SetValue(BaseUtil.FieldUserWorkgroupId, UserInfo.WorkgroupId);
+                                //fi.SetValue(entity, UserInfo.WorkgroupId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.WorkgroupId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserWorkgroupId, UserInfo.WorkgroupId.ToInt());
                                 break;
                         }
                     }

@@ -10,6 +10,7 @@ using DotNet.Util;
 namespace DotNet.Business
 {
     using Model;
+    using System.Security.Principal;
 
     /// <summary>
     ///	IBaseManager
@@ -842,6 +843,46 @@ namespace DotNet.Business
         /// <param name="tableName">表名称</param>
         /// <param name="systemCode">子系统编码</param>
         void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null);
+
+        #endregion
+
+        #region 新增和更新
+
+        /// <summary>
+        /// 添加, 这里可以人工干预，提高程序的性能
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+         string Add<T>(T t, bool identity = true, bool returnId = true);
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true);
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        int Update<T>(T t);
+
+        /// <summary>
+        /// 添加实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        string AddEntity<T>(T t);
+
+        /// <summary>
+        /// 更新实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        int UpdateEntity<T>(T t);
 
         #endregion
 

@@ -5,11 +5,8 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 
 namespace DotNet.Model
 {
@@ -21,13 +18,11 @@ namespace DotNet.Model
     /// 
     /// 修改记录
     /// 
-    /// 2022-02-07 版本：1.0 Troy.Cui 增加SystemCode。
-    /// 2021-09-28 版本：2.0 Troy.Cui 创建文件。
-    /// 2020-03-22 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-10-23 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2022-02-07</date>
+    ///     <date>2022-10-23</date>
     /// </author>
     /// </summary>
     [Table(CurrentTableName)]

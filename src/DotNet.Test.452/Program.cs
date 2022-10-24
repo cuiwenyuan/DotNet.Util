@@ -29,6 +29,14 @@ namespace DotNet.Test._452
             BaseSystemInfo.LogException = true;
             LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection);
 
+
+            var dog = new Dog()
+            {
+                Name = "sb"
+            };
+            dog.SetPropertyValue("Name", "sb2");
+            dog.SetPropertyValue("Active", 1);
+
             var entity = new BaseUserRoleEntity();
             new BaseUserRoleManager().Add(entity);
             LogUtil.WriteLog(JsonUtil.ObjectToJson(entity));
@@ -218,6 +226,13 @@ namespace DotNet.Test._452
             //Aspose.Pdf.License license3 = new Aspose.Pdf.License();
             //stream3.Seek(0, SeekOrigin.Begin);
             //license3.SetLicense(stream3);
+        }
+
+        public class Dog
+        {
+            public string Name { get; set; }
+            public int? Active { get; set; }
+
         }
     }
 }
