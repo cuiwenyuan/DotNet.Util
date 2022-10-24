@@ -10,6 +10,7 @@ namespace DotNet.Business
 {
     using DotNet.Model;
     using System.Linq;
+    using System.Reflection;
     using Util;
 
     /// <summary>
@@ -866,7 +867,7 @@ namespace DotNet.Business
             //var columns = table.Columns.Where(it => !it.IsKey).ToList();
             foreach (var column in table.Columns)
             {
-                // 跳过BaseEntity必备字段
+                // 跳过14个BaseEntity必备字段
                 if (column.MemberInfo.Name.Equals(BaseEntity.FieldId, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseEntity.FieldSortCode, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseEntity.FieldEnabled, StringComparison.OrdinalIgnoreCase) ||
@@ -881,6 +882,15 @@ namespace DotNet.Business
                     column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateBy, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateTime, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateIp, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                // 跳过5个非必备，但要自动新增的字段
+                if (column.MemberInfo.Name.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -953,6 +963,35 @@ namespace DotNet.Business
                     sqlBuilder.SetValue(BaseEntity.FieldCreateUserId, UserInfo.UserId);
                     sqlBuilder.SetValue(BaseEntity.FieldCreateUserName, UserInfo.UserName);
                     sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
+                    // 5个非必备，但要自动新增的字段
+                    var table = EntityUtil.GetTableExpression(t);
+                    //var columns = table.Columns.Where(it => !it.IsKey).ToList();
+                    foreach (var column in table.Columns)
+                    {
+                        switch (column.ColumnName)
+                        {
+                            case BaseUtil.FieldUserCompanyId:
+                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.CompanyId);
+                                sqlBuilder.SetValue(BaseUtil.FieldUserCompanyId, UserInfo.CompanyId);
+                                break;
+                            case BaseUtil.FieldUserSubCompanyId:
+                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubCompanyId);
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubCompanyId, UserInfo.SubCompanyId);
+                                break;
+                            case BaseUtil.FieldUserDepartmentId:
+                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.DepartmentId);
+                                sqlBuilder.SetValue(BaseUtil.FieldUserDepartmentId, UserInfo.DepartmentId);
+                                break;
+                            case BaseUtil.FieldUserSubDepartmentId:
+                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubDepartmentId);
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubDepartmentId, UserInfo.SubDepartmentId);
+                                break;
+                            case BaseUtil.FieldUserWorkgroupId:
+                                t.SetPropertyValue(column.MemberInfo.Name, UserInfo.WorkgroupId);
+                                sqlBuilder.SetValue(BaseUtil.FieldUserWorkgroupId, UserInfo.WorkgroupId);
+                                break;
+                        }
+                    }
                 }
                 else
                 {
