@@ -565,6 +565,7 @@ namespace DotNet.Business
 
         #endregion
 
+        #region 状态
         /// <summary>
         /// 状态码的获取
         /// </summary>
@@ -625,6 +626,8 @@ namespace DotNet.Business
             var status = (Status)Enum.Parse(typeof(Status), statusCode, true);
             return GetStateMessage(status);
         }
+
+        #endregion
 
         #region public string GetStateMessage(StatusCode statusCode) 获得状态的信息
         /// <summary>
@@ -839,7 +842,7 @@ namespace DotNet.Business
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
+            sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
             var names = new string[1];
             var values = new Object[1];
             names[0] = BaseUtil.FieldId;
@@ -881,7 +884,6 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var columnName = column.ColumnName;
                 sqlBuilder.SetValue(column.ColumnName, t.GetPropertyValue(column.MemberInfo.Name));
             }
         }
