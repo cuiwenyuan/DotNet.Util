@@ -1,16 +1,16 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserLogonManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace DotNet.Business
 {
     using Model;
+    using Business;
     using Util;
 
     /// <summary>
@@ -18,12 +18,12 @@ namespace DotNet.Business
     /// 用户登录信息
     /// 
     /// 修改记录
-    ///
-    /// 2021-09-26 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-10-24 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-26</date>
+    ///     <date>2022-10-24</date>
     /// </author>
     /// </summary>
     public partial class BaseUserLogonManager : BaseManager
@@ -110,52 +110,6 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 添加, 这里可以人工干预，提高程序的性能
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string Add(BaseUserLogonEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            entity.Id = AddEntity(entity).ToInt();
-            return entity.Id.ToString();
-        }
-
-        /// <summary>
-        /// 添加或更新(主键是否为0)
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string AddOrUpdate(BaseUserLogonEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            if (entity.Id == 0)
-            {
-                entity.Id = AddEntity(entity).ToInt();
-                return entity.Id.ToString();
-            }
-            else
-            {
-                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int Update(BaseUserLogonEntity entity)
-        {
-            return UpdateEntity(entity);
-        }
-
-        /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
@@ -183,82 +137,6 @@ namespace DotNet.Business
         public BaseUserLogonEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
             return BaseEntity.Create<BaseUserLogonEntity>(GetDataTable(parameters));
-        }
-
-        /// <summary>
-        /// 添加实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public string AddEntity(BaseUserLogonEntity entity)
-        {
-            var key = string.Empty;
-            var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            SetEntity(sqlBuilder, entity);
-            SetEntityCreate(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            key = AddEntity(sqlBuilder, entity);
-            if (!string.IsNullOrWhiteSpace(key))
-            {
-                RemoveCache();
-            }
-            return key;
-        }
-
-        /// <summary>
-        /// 更新实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseUserLogonEntity entity)
-        {
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(CurrentTableName);
-            SetEntity(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            var result = UpdateEntity(sqlBuilder, entity);
-            if (result > 0)
-            {
-                RemoveCache(entity.Id);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 设置实体
-        /// </summary>
-        /// <param name="sqlBuilder">Sql语句生成器</param>
-        /// <param name="entity">实体</param>
-        public void SetEntity(SqlBuilder sqlBuilder, BaseUserLogonEntity entity)
-        {
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserId, entity.UserId);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserPassword, entity.UserPassword);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldOpenId, entity.OpenId);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldAllowStartTime, entity.AllowStartTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldAllowEndTime, entity.AllowEndTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLockStartTime, entity.LockStartTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLockEndTime, entity.LockEndTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldFirstVisitTime, entity.FirstVisitTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldPreviousVisitTime, entity.PreviousVisitTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLastVisitTime, entity.LastVisitTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldChangePasswordTime, entity.ChangePasswordTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldLogonCount, entity.LogonCount);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldConcurrentUser, entity.ConcurrentUser);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldShowCount, entity.ShowCount);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordErrorCount, entity.PasswordErrorCount);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldUserOnline, entity.UserOnline);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldCheckIpAddress, entity.CheckIpAddress);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldVerificationCode, entity.VerificationCode);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldIpAddress, entity.IpAddress);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldMacAddress, entity.MacAddress);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldQuestion, entity.Question);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldAnswerQuestion, entity.AnswerQuestion);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, entity.Salt);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldOpenIdTimeoutTime, entity.OpenIdTimeoutTime);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldSystemCode, entity.SystemCode);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldIpAddressName, entity.IpAddressName);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordStrength, entity.PasswordStrength);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldComputerName, entity.ComputerName);
-            sqlBuilder.SetValue(BaseUserLogonEntity.FieldNeedModifyPassword, entity.NeedModifyPassword);
         }
 
     }

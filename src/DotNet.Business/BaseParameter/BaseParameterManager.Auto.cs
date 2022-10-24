@@ -6,11 +6,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace DotNet.Business
 {
     using Model;
+    using Business;
     using Util;
 
     /// <summary>
@@ -19,11 +19,11 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    /// 2022-03-25 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-10-24 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2022-03-25</date>
+    ///     <date>2022-10-24</date>
     /// </author>
     /// </summary>
     public partial class BaseParameterManager : BaseManager
@@ -110,52 +110,6 @@ namespace DotNet.Business
         }
 
         /// <summary>
-        /// 添加, 这里可以人工干预，提高程序的性能
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string Add(BaseParameterEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            entity.Id = AddEntity(entity).ToInt();
-            return entity.Id.ToString();
-        }
-
-        /// <summary>
-        /// 添加或更新(主键是否为0)
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        /// <returns>主键</returns>
-        public string AddOrUpdate(BaseParameterEntity entity, bool identity = true, bool returnId = true)
-        {
-            Identity = identity;
-            ReturnId = returnId;
-            if (entity.Id == 0)
-            {
-                entity.Id = AddEntity(entity).ToInt();
-                return entity.Id.ToString();
-            }
-            else
-            {
-                return UpdateEntity(entity) > 0 ? entity.Id.ToString() : string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int Update(BaseParameterEntity entity)
-        {
-            return UpdateEntity(entity);
-        }
-
-        /// <summary>
         /// 获取实体
         /// </summary>
         /// <param name="id">主键</param>
@@ -183,59 +137,6 @@ namespace DotNet.Business
         public BaseParameterEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
             return BaseEntity.Create<BaseParameterEntity>(GetDataTable(parameters));
-        }
-
-        /// <summary>
-        /// 添加实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public string AddEntity(BaseParameterEntity entity)
-        {
-            var key = string.Empty;
-            var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
-            sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
-            SetEntity(sqlBuilder, entity);
-            SetEntityCreate(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            key = AddEntity(sqlBuilder, entity);
-            if (!string.IsNullOrWhiteSpace(key))
-            {
-                RemoveCache();
-            }
-            return key;
-        }
-
-        /// <summary>
-        /// 更新实体
-        /// </summary>
-        /// <param name="entity">实体</param>
-        public int UpdateEntity(BaseParameterEntity entity)
-        {
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginUpdate(CurrentTableName);
-            SetEntity(sqlBuilder, entity);
-            SetEntityUpdate(sqlBuilder, entity);
-            var result = UpdateEntity(sqlBuilder, entity);
-            if (result > 0)
-            {
-                RemoveCache(entity.Id);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 设置实体
-        /// </summary>
-        /// <param name="sqlBuilder">Sql语句生成器</param>
-        /// <param name="entity">实体</param>
-        public void SetEntity(SqlBuilder sqlBuilder, BaseParameterEntity entity)
-        {
-            sqlBuilder.SetValue(BaseParameterEntity.FieldSystemCode, entity.SystemCode);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldCategoryCode, entity.CategoryCode);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldParameterId, entity.ParameterId);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldParameterCode, entity.ParameterCode);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldParameterContent, entity.ParameterContent);
-            sqlBuilder.SetValue(BaseParameterEntity.FieldDescription, entity.Description);
         }
 
     }

@@ -1,17 +1,16 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserRoleManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace DotNet.Business
 {
     using Model;
-    using System.Security.Principal;
+    using Business;
     using Util;
 
     /// <summary>
@@ -19,12 +18,12 @@ namespace DotNet.Business
     /// 用户角色
     /// 
     /// 修改记录
-    ///
-    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-10-24 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-28</date>
+    ///     <date>2022-10-24</date>
     /// </author>
     /// </summary>
     public partial class BaseUserRoleManager : BaseManager
@@ -110,39 +109,6 @@ namespace DotNet.Business
             CurrentTableName = tableName;
         }
 
-        ///// <summary>
-        ///// 添加, 这里可以人工干预，提高程序的性能
-        ///// </summary>
-        ///// <param name="entity">实体</param>
-        ///// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        ///// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        ///// <returns>主键</returns>
-        //public string Add(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
-        //{
-        //    return base.Add(entity, identity, returnId);
-        //}
-
-        ///// <summary>
-        ///// 添加或更新(主键是否为0)
-        ///// </summary>
-        ///// <param name="entity">实体</param>
-        ///// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
-        ///// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
-        ///// <returns>主键</returns>
-        //public string AddOrUpdate(BaseUserRoleEntity entity, bool identity = true, bool returnId = true)
-        //{
-        //    return base.AddOrUpdate(entity, identity, returnId);
-        //}
-
-        ///// <summary>
-        ///// 更新
-        ///// </summary>
-        ///// <param name="entity">实体</param>
-        //public int Update(BaseUserRoleEntity entity)
-        //{
-        //    return base.Update(entity);
-        //}
-
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -171,37 +137,6 @@ namespace DotNet.Business
         public BaseUserRoleEntity GetEntity(List<KeyValuePair<string, object>> parameters)
         {
             return BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(parameters));
-        }
-
-        ///// <summary>
-        ///// 添加实体
-        ///// </summary>
-        ///// <param name="entity">实体</param>
-        //public string AddEntity(BaseUserRoleEntity entity)
-        //{
-        //    return base.AddEntity(entity);
-        //}
-
-        ///// <summary>
-        ///// 更新实体
-        ///// </summary>
-        ///// <param name="entity">实体</param>
-        //public int UpdateEntity(BaseUserRoleEntity entity)
-        //{
-        //    return base.UpdateEntity(entity);
-        //}
-
-        /// <summary>
-        /// 设置实体
-        /// </summary>
-        /// <param name="sqlBuilder">Sql语句生成器</param>
-        /// <param name="entity">实体</param>
-        public void SetEntity(SqlBuilder sqlBuilder, BaseUserRoleEntity entity)
-        {
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldSystemCode, entity.SystemCode);
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldUserId, entity.UserId);
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldRoleId, entity.RoleId);
-            sqlBuilder.SetValue(BaseUserRoleEntity.FieldDescription, entity.Description);
         }
 
     }
