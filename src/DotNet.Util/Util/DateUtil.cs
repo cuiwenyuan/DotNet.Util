@@ -567,12 +567,12 @@ namespace DotNet.Util
         /// <summary>
         /// 获取结束时间
         /// </summary>
-        /// <param name="TimeType">Week、Month、Season、Year</param>
         /// <param name="now"></param>
+        /// <param name="timeType">Week、Month、Season、Year</param>
         /// <returns></returns>
-        public static DateTime GetEndTime(DateTime now, string TimeType)
+        public static DateTime GetEndTime(DateTime now, string timeType)
         {
-            switch (TimeType)
+            switch (timeType)
             {
                 case "Week":
                     return now.AddDays(7 - (int)now.DayOfWeek);
@@ -602,7 +602,7 @@ namespace DotNet.Util
             var currentTicks = DateTime.Now.ToUniversalTime().Ticks;
             if (ValidateUtil.IsDateTime(dt))
             {
-                currentTicks = DateTime.Parse(dt).ToUniversalTime().Ticks;
+                currentTicks = dt.ToDateTime().ToUniversalTime().Ticks;
             }
             if (precision.Equals("ms", StringComparison.OrdinalIgnoreCase))
             {

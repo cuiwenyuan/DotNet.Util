@@ -23,9 +23,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        //直接执行一些SQL语句的方法
-
-        #region public virtual int ExecuteNonQuery(string commandText)
+        #region public virtual int ExecuteNonQuery(string commandText) 执行查询语句
         /// <summary>
         /// 执行查询语句
         /// </summary>

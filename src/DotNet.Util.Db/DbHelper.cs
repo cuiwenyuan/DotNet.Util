@@ -45,7 +45,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region private DbConnection DbConnection 数据库连接必要条件参数
+        #region public virtual DbConnection DbConnection 数据库连接必要条件参数
         /// <summary>
         /// 数据库连接
         /// </summary>

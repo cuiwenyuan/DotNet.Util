@@ -37,7 +37,7 @@ namespace DotNet.Util
             var result = string.Empty;
             if (!dr.IsNull(name))
             {
-                var dateTime = DateTime.Parse(dr[name].ToString());
+                var dateTime = dr[name].ToDateTime();
                 result = dateTime.ToString(BaseSystemInfo.DateFormat);
             }
             return result;

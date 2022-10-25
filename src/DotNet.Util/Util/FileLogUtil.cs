@@ -79,13 +79,14 @@ namespace DotNet.Util
             var fileNameKey = fileName.Substring(0, fileName.LastIndexOf("_") + 1);
             var fileNamePattern = "*." + extension;
             //var filePaths = Directory.GetFiles(logDir, fileNamePattern, SearchOption.TopDirectoryOnly).Where(s => s.Contains(fileNameKey)).ToList();
-            var filePaths = Directory.GetFiles(logDir, fileNameKey+fileNamePattern, SearchOption.TopDirectoryOnly).ToList();
+            var filePaths = Directory.GetFiles(logDir, fileNameKey + fileNamePattern, SearchOption.TopDirectoryOnly).ToList();
 
             if (filePaths.Count > 0)
             {
                 var fileMaxLen = filePaths.Max(d => d.Length);
                 var lastFilePath = filePaths.Where(d => d.Length == fileMaxLen).OrderByDescending(d => d).FirstOrDefault();
-                if (lastFilePath != null && new FileInfo(lastFilePath).Length > 100 * 1024 * 1024)
+
+                if (lastFilePath != null && new FileInfo(lastFilePath).Length > BaseSystemInfo.LogFileMaxSize)
                 {
                     var lastFileName = Path.GetFileName(lastFilePath);
                     var no = lastFileName.Substring(lastFileName.LastIndexOf("_") + 1, lastFileName.Length - lastFileName.LastIndexOf("_") - 1 - extension.Length - 1);

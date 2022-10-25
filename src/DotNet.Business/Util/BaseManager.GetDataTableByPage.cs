@@ -26,6 +26,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
+        #region public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         /// <summary>
         /// 获取分页DataTable
         /// </summary>
@@ -42,7 +43,9 @@ namespace DotNet.Business
             return DbHelper.GetDataTableByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
         }
 
-        #region GetDataTableByPage
+        #endregion
+
+        #region public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         /// <summary>
         /// 分页读取数据
         /// </summary>
@@ -100,7 +103,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region GetDataTableByPage
+        #region public virtual DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
 
         /// <summary>
         /// 分页读取数据

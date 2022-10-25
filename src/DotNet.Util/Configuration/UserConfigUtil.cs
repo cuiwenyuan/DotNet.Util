@@ -815,6 +815,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ZbwmsDbConnectionString = GetValue(_xmlDocument, "ZBWMSDbConnection");
             }
+            if (Exists("SPWMSDbConnection"))
+            {
+                BaseSystemInfo.SpwmsDbConnectionString = GetValue(_xmlDocument, "SPWMSDbConnection");
+            }
             if (Exists("MESDbConnection"))
             {
                 BaseSystemInfo.MesDbConnectionString = GetValue(_xmlDocument, "MESDbConnection");
@@ -895,6 +899,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.CardTicketDbConnectionString = GetValue(_xmlDocument, "CardTicketDbConnection");
             }
+            if (Exists("MDMDbConnection"))
+            {
+                BaseSystemInfo.MdmDbConnectionString = GetValue(_xmlDocument, "MDMDbConnection");
+            }
             BaseSystemInfo.UserCenterDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
             BaseSystemInfo.LogonLogDbConnection = BaseSystemInfo.LogonLogDbConnectionString;
             BaseSystemInfo.MessageDbConnection = BaseSystemInfo.MessageDbConnectionString;
@@ -905,6 +913,7 @@ namespace DotNet.Util
             BaseSystemInfo.ErpDbConnection = BaseSystemInfo.ErpDbConnectionString;
             BaseSystemInfo.WmsDbConnection = BaseSystemInfo.WmsDbConnectionString;
             BaseSystemInfo.ZbwmsDbConnection = BaseSystemInfo.ZbwmsDbConnectionString;
+            BaseSystemInfo.SpwmsDbConnection = BaseSystemInfo.SpwmsDbConnectionString;
             BaseSystemInfo.MesDbConnection = BaseSystemInfo.MesDbConnectionString;
             BaseSystemInfo.HrmDbConnection = BaseSystemInfo.HrmDbConnectionString;
             BaseSystemInfo.CrmDbConnection = BaseSystemInfo.CrmDbConnectionString;
@@ -925,6 +934,7 @@ namespace DotNet.Util
             BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
             BaseSystemInfo.ItamsDbConnection = BaseSystemInfo.ItamsDbConnectionString;
             BaseSystemInfo.CardTicketDbConnection = BaseSystemInfo.CardTicketDbConnectionString;
+            BaseSystemInfo.MdmDbConnection = BaseSystemInfo.MdmDbConnectionString;
 
             if (Exists("EncryptDbConnection"))
             {
@@ -942,6 +952,7 @@ namespace DotNet.Util
                     BaseSystemInfo.ErpDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ErpDbConnectionString);
                     BaseSystemInfo.WmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WmsDbConnectionString);
                     BaseSystemInfo.ZbwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ZbwmsDbConnectionString);
+                    BaseSystemInfo.SpwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.SpwmsDbConnectionString);
                     BaseSystemInfo.MesDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MesDbConnectionString);
                     BaseSystemInfo.HrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.HrmDbConnectionString);
                     BaseSystemInfo.CrmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CrmDbConnectionString);
@@ -1393,6 +1404,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "ErpDbConnection", BaseSystemInfo.ErpDbConnectionString);
             SetValue(xmlDocument, "WmsDbConnection", BaseSystemInfo.WmsDbConnectionString);
             SetValue(xmlDocument, "ZbwmsDbConnection", BaseSystemInfo.ZbwmsDbConnectionString);
+            SetValue(xmlDocument, "SpwmsDbConnection", BaseSystemInfo.SpwmsDbConnectionString);
             SetValue(xmlDocument, "MesDbConnection", BaseSystemInfo.MesDbConnectionString);
             SetValue(xmlDocument, "HrmDbConnection", BaseSystemInfo.HrmDbConnectionString);
             SetValue(xmlDocument, "CrmDbConnection", BaseSystemInfo.CrmDbConnectionString);
@@ -1412,6 +1424,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "BudgetDbConnection", BaseSystemInfo.BudgetDbConnectionString);
             SetValue(xmlDocument, "ItamsDbConnection", BaseSystemInfo.ItamsDbConnectionString);
             SetValue(xmlDocument, "CardTicketDbConnection", BaseSystemInfo.CardTicketDbConnectionString);
+            SetValue(xmlDocument, "MdmDbConnection", BaseSystemInfo.MdmDbConnectionString);
             SetValue(xmlDocument, "DatabaseTableVersion", BaseSystemInfo.DatabaseTableVersion.ToString());
 
             SetValue(xmlDocument, "RegisterKey", BaseSystemInfo.RegisterKey);

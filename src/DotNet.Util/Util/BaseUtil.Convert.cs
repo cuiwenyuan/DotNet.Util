@@ -305,7 +305,7 @@ namespace DotNet.Util
         public static string ConvertToDateToString(Object targetValue)
         {
             var returnValue = string.Empty;
-            returnValue = targetValue != DBNull.Value ? DateTime.Parse(targetValue.ToString()).ToString(BaseSystemInfo.DateFormat) : null;
+            returnValue = targetValue != DBNull.Value ? targetValue.ToDateTime().ToString(BaseSystemInfo.DateFormat) : null;
             return returnValue;
         }
         /// <summary>

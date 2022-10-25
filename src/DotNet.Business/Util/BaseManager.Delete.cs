@@ -92,9 +92,9 @@ namespace DotNet.Business
         public virtual int Delete(params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
-            foreach (var t in parameters)
+            foreach (var p in parameters)
             {
-                parametersList.Add(t);
+                parametersList.Add(p);
             }
             return MyDelete(parametersList);
             //return DbUtil.Delete(DbHelper, this.CurrentTableName, parametersList);
@@ -123,6 +123,7 @@ namespace DotNet.Business
 
         #endregion
 
+        #region public virtual int Truncate() Truncate
         /// <summary>
         /// Truncate
         /// </summary>
@@ -131,6 +132,8 @@ namespace DotNet.Business
         {
             return DbHelper.Truncate(CurrentTableName);
         }
+
+        #endregion
 
         /// <summary>
         /// 添加删除的附加条件

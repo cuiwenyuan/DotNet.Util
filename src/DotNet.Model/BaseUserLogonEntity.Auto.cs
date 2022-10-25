@@ -5,7 +5,8 @@
 //-----------------------------------------------------------------------
 
 using System;
-
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DotNet.Model
 {
@@ -14,275 +15,250 @@ namespace DotNet.Model
     /// <summary>
     /// BaseUserLogonEntity
     /// 用户登录信息
-    ///
+    /// 
     /// 修改记录
-    ///
-    /// 2021-09-28 版本：1.0 Troy.Cui 创建文件。
-    ///
+    /// 
+    /// 2022-10-23 版本：1.0 Troy.Cui 创建文件。
+    /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2021-09-28</date>
+    ///     <date>2022-10-23</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseUserLogonEntity : BaseEntity
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [FieldDescription("主键")]
-        public int Id { get; set; }
-
         /// <summary>
         /// 用户编号
         /// </summary>
         [FieldDescription("用户编号")]
+        [Description("用户编号")]
+        [Column(FieldUserId)]
         public int UserId { get; set; } = 0;
 
         /// <summary>
         /// 用户密码
         /// </summary>
         [FieldDescription("用户密码")]
+        [Description("用户密码")]
+        [Column(FieldUserPassword)]
         public string UserPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// 当点登录标识
         /// </summary>
         [FieldDescription("当点登录标识")]
+        [Description("当点登录标识")]
+        [Column(FieldOpenId)]
         public string OpenId { get; set; } = Guid.NewGuid().ToString("N");
 
         /// <summary>
         /// 允许登录时间开始
         /// </summary>
         [FieldDescription("允许登录时间开始")]
+        [Description("允许登录时间开始")]
+        [Column(FieldAllowStartTime)]
         public DateTime? AllowStartTime { get; set; } = null;
 
         /// <summary>
         /// 允许登录时间结束
         /// </summary>
         [FieldDescription("允许登录时间结束")]
+        [Description("允许登录时间结束")]
+        [Column(FieldAllowEndTime)]
         public DateTime? AllowEndTime { get; set; } = null;
 
         /// <summary>
         /// 暂停用户开始日期
         /// </summary>
         [FieldDescription("暂停用户开始日期")]
+        [Description("暂停用户开始日期")]
+        [Column(FieldLockStartTime)]
         public DateTime? LockStartTime { get; set; } = null;
 
         /// <summary>
         /// 暂停用户结束日期
         /// </summary>
         [FieldDescription("暂停用户结束日期")]
+        [Description("暂停用户结束日期")]
+        [Column(FieldLockEndTime)]
         public DateTime? LockEndTime { get; set; } = null;
 
         /// <summary>
         /// 第一次访问时间
         /// </summary>
         [FieldDescription("第一次访问时间")]
+        [Description("第一次访问时间")]
+        [Column(FieldFirstVisitTime)]
         public DateTime? FirstVisitTime { get; set; } = null;
 
         /// <summary>
         /// 上一次访问时间
         /// </summary>
         [FieldDescription("上一次访问时间")]
+        [Description("上一次访问时间")]
+        [Column(FieldPreviousVisitTime)]
         public DateTime? PreviousVisitTime { get; set; } = null;
 
         /// <summary>
         /// 最后访问时间
         /// </summary>
         [FieldDescription("最后访问时间")]
+        [Description("最后访问时间")]
+        [Column(FieldLastVisitTime)]
         public DateTime? LastVisitTime { get; set; } = null;
 
         /// <summary>
         /// 最后修改密码日期
         /// </summary>
         [FieldDescription("最后修改密码日期")]
+        [Description("最后修改密码日期")]
+        [Column(FieldChangePasswordTime)]
         public DateTime? ChangePasswordTime { get; set; } = null;
 
         /// <summary>
         /// 登录次数
         /// </summary>
         [FieldDescription("登录次数")]
+        [Description("登录次数")]
+        [Column(FieldLogonCount)]
         public int LogonCount { get; set; } = 0;
 
         /// <summary>
         /// 是否并发用户
         /// </summary>
         [FieldDescription("是否并发用户")]
+        [Description("是否并发用户")]
+        [Column(FieldConcurrentUser)]
         public int ConcurrentUser { get; set; } = 0;
 
         /// <summary>
         /// 展示次数
         /// </summary>
         [FieldDescription("展示次数")]
+        [Description("展示次数")]
+        [Column(FieldShowCount)]
         public int ShowCount { get; set; } = 0;
 
         /// <summary>
         /// 密码连续错误次数
         /// </summary>
         [FieldDescription("密码连续错误次数")]
+        [Description("密码连续错误次数")]
+        [Column(FieldPasswordErrorCount)]
         public int PasswordErrorCount { get; set; } = 0;
 
         /// <summary>
         /// 在线状态
         /// </summary>
         [FieldDescription("在线状态")]
+        [Description("在线状态")]
+        [Column(FieldUserOnline)]
         public int UserOnline { get; set; } = 0;
 
         /// <summary>
         /// IP访问限制
         /// </summary>
         [FieldDescription("IP访问限制")]
+        [Description("IP访问限制")]
+        [Column(FieldCheckIpAddress)]
         public int CheckIpAddress { get; set; } = 0;
 
         /// <summary>
         /// 验证码
         /// </summary>
         [FieldDescription("验证码")]
+        [Description("验证码")]
+        [Column(FieldVerificationCode)]
         public string VerificationCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 登录IP地址
         /// </summary>
         [FieldDescription("登录IP地址")]
+        [Description("登录IP地址")]
+        [Column(FieldIpAddress)]
         public string IpAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// 登录MAC地址
         /// </summary>
         [FieldDescription("登录MAC地址")]
+        [Description("登录MAC地址")]
+        [Column(FieldMacAddress)]
         public string MacAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// 密码提示问题
         /// </summary>
         [FieldDescription("密码提示问题")]
+        [Description("密码提示问题")]
+        [Column(FieldQuestion)]
         public string Question { get; set; } = string.Empty;
 
         /// <summary>
         /// 密码提示答案
         /// </summary>
         [FieldDescription("密码提示答案")]
+        [Description("密码提示答案")]
+        [Column(FieldAnswerQuestion)]
         public string AnswerQuestion { get; set; } = string.Empty;
 
         /// <summary>
         /// 密码加盐
         /// </summary>
         [FieldDescription("密码加盐")]
+        [Description("密码加盐")]
+        [Column(FieldSalt)]
         public string Salt { get; set; } = string.Empty;
 
         /// <summary>
         /// OpenId过期时间
         /// </summary>
         [FieldDescription("OpenId过期时间")]
+        [Description("OpenId过期时间")]
+        [Column(FieldOpenIdTimeoutTime)]
         public DateTime? OpenIdTimeoutTime { get; set; } = null;
 
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = string.Empty;
 
         /// <summary>
         /// IP地址所在位置名称
         /// </summary>
         [FieldDescription("IP地址所在位置名称")]
+        [Description("IP地址所在位置名称")]
+        [Column(FieldIpAddressName)]
         public string IpAddressName { get; set; } = string.Empty;
 
         /// <summary>
         /// 密码强度
         /// </summary>
         [FieldDescription("密码强度")]
+        [Description("密码强度")]
+        [Column(FieldPasswordStrength)]
         public int? PasswordStrength { get; set; } = null;
 
         /// <summary>
         /// 电脑名
         /// </summary>
         [FieldDescription("电脑名")]
+        [Description("电脑名")]
+        [Column(FieldComputerName)]
         public string ComputerName { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否需要修改密码
         /// </summary>
         [FieldDescription("是否需要修改密码")]
+        [Description("是否需要修改密码")]
+        [Column(FieldNeedModifyPassword)]
         public int NeedModifyPassword { get; set; } = 0;
-
-        /// <summary>
-        /// 排序编号
-        /// </summary>
-        [FieldDescription("排序编号")]
-        public int SortCode { get; set; } = 0;
-
-        /// <summary>
-        /// 是否删除
-        /// </summary>
-        [FieldDescription("是否删除")]
-        public int Deleted { get; set; } = 0;
-
-        /// <summary>
-        /// 是否有效
-        /// </summary>
-        [FieldDescription("是否有效")]
-        public int Enabled { get; set; } = 1;
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        [FieldDescription("创建时间")]
-        public DateTime CreateTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// 创建人编号
-        /// </summary>
-        [FieldDescription("创建人编号")]
-        public int CreateUserId { get; set; } = 0;
-
-        /// <summary>
-        /// 创建人用户名
-        /// </summary>
-        [FieldDescription("创建人用户名")]
-        public string CreateUserName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 创建人姓名
-        /// </summary>
-        [FieldDescription("创建人姓名")]
-        public string CreateBy { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [FieldDescription("创建IP")]
-        public string CreateIp { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改时间
-        /// </summary>
-        [FieldDescription("修改时间")]
-        public DateTime UpdateTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// 修改人编号
-        /// </summary>
-        [FieldDescription("修改人编号")]
-        public int UpdateUserId { get; set; } = 0;
-
-        /// <summary>
-        /// 修改人用户名
-        /// </summary>
-        [FieldDescription("修改人用户名")]
-        public string UpdateUserName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改人姓名
-        /// </summary>
-        [FieldDescription("修改人姓名")]
-        public string UpdateBy { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改IP
-        /// </summary>
-        [FieldDescription("修改IP")]
-        public string UpdateIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 从数据行读取
@@ -291,10 +267,7 @@ namespace DotNet.Model
         protected override BaseEntity GetFrom(IDataRow dr)
         {
             GetFromExtend(dr);
-            if (dr.ContainsColumn(FieldId))
-            {
-                Id = BaseUtil.ConvertToInt(dr[FieldId]);
-            }
+            GetBase(dr);
             if (dr.ContainsColumn(FieldUserId))
             {
                 UserId = BaseUtil.ConvertToInt(dr[FieldUserId]);
@@ -411,58 +384,6 @@ namespace DotNet.Model
             {
                 NeedModifyPassword = BaseUtil.ConvertToInt(dr[FieldNeedModifyPassword]);
             }
-            if (dr.ContainsColumn(FieldSortCode))
-            {
-                SortCode = BaseUtil.ConvertToInt(dr[FieldSortCode]);
-            }
-            if (dr.ContainsColumn(FieldDeleted))
-            {
-                Deleted = BaseUtil.ConvertToInt(dr[FieldDeleted]);
-            }
-            if (dr.ContainsColumn(FieldEnabled))
-            {
-                Enabled = BaseUtil.ConvertToInt(dr[FieldEnabled]);
-            }
-            if (dr.ContainsColumn(FieldCreateTime))
-            {
-                CreateTime = BaseUtil.ConvertToDateTime(dr[FieldCreateTime]);
-            }
-            if (dr.ContainsColumn(FieldCreateUserId))
-            {
-                CreateUserId = BaseUtil.ConvertToInt(dr[FieldCreateUserId]);
-            }
-            if (dr.ContainsColumn(FieldCreateUserName))
-            {
-                CreateUserName = BaseUtil.ConvertToString(dr[FieldCreateUserName]);
-            }
-            if (dr.ContainsColumn(FieldCreateBy))
-            {
-                CreateBy = BaseUtil.ConvertToString(dr[FieldCreateBy]);
-            }
-            if (dr.ContainsColumn(FieldCreateIp))
-            {
-                CreateIp = BaseUtil.ConvertToString(dr[FieldCreateIp]);
-            }
-            if (dr.ContainsColumn(FieldUpdateTime))
-            {
-                UpdateTime = BaseUtil.ConvertToDateTime(dr[FieldUpdateTime]);
-            }
-            if (dr.ContainsColumn(FieldUpdateUserId))
-            {
-                UpdateUserId = BaseUtil.ConvertToInt(dr[FieldUpdateUserId]);
-            }
-            if (dr.ContainsColumn(FieldUpdateUserName))
-            {
-                UpdateUserName = BaseUtil.ConvertToString(dr[FieldUpdateUserName]);
-            }
-            if (dr.ContainsColumn(FieldUpdateBy))
-            {
-                UpdateBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
-            }
-            if (dr.ContainsColumn(FieldUpdateIp))
-            {
-                UpdateIp = BaseUtil.ConvertToString(dr[FieldUpdateIp]);
-            }
             return this;
         }
 
@@ -471,11 +392,6 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("用户登录信息")]
         public const string CurrentTableName = "BaseUserLogon";
-
-        ///<summary>
-        /// 主键
-        ///</summary>
-        public const string FieldId = "Id";
 
         ///<summary>
         /// 用户编号
@@ -621,70 +537,5 @@ namespace DotNet.Model
         /// 是否需要修改密码
         ///</summary>
         public const string FieldNeedModifyPassword = "NeedModifyPassword";
-
-        ///<summary>
-        /// 排序编号
-        ///</summary>
-        public const string FieldSortCode = "SortCode";
-
-        ///<summary>
-        /// 是否删除
-        ///</summary>
-        public const string FieldDeleted = "Deleted";
-
-        ///<summary>
-        /// 是否有效
-        ///</summary>
-        public const string FieldEnabled = "Enabled";
-
-        ///<summary>
-        /// 创建时间
-        ///</summary>
-        public const string FieldCreateTime = "CreateTime";
-
-        ///<summary>
-        /// 创建人编号
-        ///</summary>
-        public const string FieldCreateUserId = "CreateUserId";
-
-        ///<summary>
-        /// 创建人用户名
-        ///</summary>
-        public const string FieldCreateUserName = "CreateUserName";
-
-        ///<summary>
-        /// 创建人姓名
-        ///</summary>
-        public const string FieldCreateBy = "CreateBy";
-
-        ///<summary>
-        /// 创建IP
-        ///</summary>
-        public const string FieldCreateIp = "CreateIp";
-
-        ///<summary>
-        /// 修改时间
-        ///</summary>
-        public const string FieldUpdateTime = "UpdateTime";
-
-        ///<summary>
-        /// 修改人编号
-        ///</summary>
-        public const string FieldUpdateUserId = "UpdateUserId";
-
-        ///<summary>
-        /// 修改人用户名
-        ///</summary>
-        public const string FieldUpdateUserName = "UpdateUserName";
-
-        ///<summary>
-        /// 修改人姓名
-        ///</summary>
-        public const string FieldUpdateBy = "UpdateBy";
-
-        ///<summary>
-        /// 修改IP
-        ///</summary>
-        public const string FieldUpdateIp = "UpdateIp";
     }
 }
