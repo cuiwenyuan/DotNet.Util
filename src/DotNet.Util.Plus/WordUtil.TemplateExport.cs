@@ -90,7 +90,7 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
-                throw;                
+                throw;
             }
             finally
             {
@@ -155,7 +155,7 @@ namespace DotNet.Util
                 var cells = row.GetTableCells();
                 var cell = cells[0];
                 var _gridPlaceholderName = cell.GetText();
-                var gridReplacement = gridReplacements.FirstOrDefault(p => p.Placeholder == _gridPlaceholderName);
+                var gridReplacement = gridReplacements?.FirstOrDefault(p => p.Placeholder == _gridPlaceholderName);
                 if (gridReplacement != null)
                 {
                     gridPlaceholderRowList.Add(new GridPlaceholderRow
@@ -556,6 +556,9 @@ namespace DotNet.Util
         #endregion
 
         #region Picture
+        /// <summary>
+        /// Picture
+        /// </summary>
         public class Picture
         {
             /// <summary>
@@ -596,8 +599,17 @@ namespace DotNet.Util
         /// </summary>
         public enum PlaceholderTypeEnum
         {
+            /// <summary>
+            /// Text
+            /// </summary>
             Text,
+            /// <summary>
+            /// Picture
+            /// </summary>
             Picture,
+            /// <summary>
+            /// Grid
+            /// </summary>
             Grid,
         }
         /// <summary>
@@ -605,16 +617,49 @@ namespace DotNet.Util
         /// </summary>
         public enum PictureTypeEnum
         {
+            /// <summary>
+            /// EMF
+            /// </summary>
             EMF = 2,
+            /// <summary>
+            /// WMF
+            /// </summary>
             WMF,
+            /// <summary>
+            /// PICT
+            /// </summary>
             PICT,
+            /// <summary>
+            /// JPEG
+            /// </summary>
             JPEG,
+            /// <summary>
+            /// PNG
+            /// </summary>
             PNG,
+            /// <summary>
+            /// DIB
+            /// </summary>
             DIB,
+            /// <summary>
+            /// GIF
+            /// </summary>
             GIF,
+            /// <summary>
+            /// TIFF
+            /// </summary>
             TIFF,
+            /// <summary>
+            /// EPS
+            /// </summary>
             EPS,
+            /// <summary>
+            /// BMP
+            /// </summary>
             BMP,
+            /// <summary>
+            /// WPG
+            /// </summary>
             WPG
         }
         #endregion

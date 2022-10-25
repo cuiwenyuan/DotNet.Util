@@ -179,7 +179,7 @@ namespace DotNet.Util
 
                         smtpClient.Send(message);
                     }
-                    
+
                     result = true;
                 }
 #if NET452_OR_GREATER

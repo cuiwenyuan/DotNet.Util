@@ -14,21 +14,32 @@ namespace DotNet.Util
         /// <summary> 
         /// 对象转JSON 
         /// </summary> 
-        /// <param name="obj">对象</param> 
+        /// <param name="obj">对象</param>
+        /// <param name="jsonSerializerSettings">序列化设置</param> 
         /// <returns>JSON格式的字符串</returns> 
-        public static string ObjectToJson(object obj)
+        public static string ObjectToJson(object obj, object jsonSerializerSettings = null)
         {
+            var result = string.Empty;
             try
             {
-                var b = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
-                return Encoding.UTF8.GetString(b);
+
+                if (jsonSerializerSettings == null)
+                {
+                    result = JsonConvert.SerializeObject(obj);
+                }
+                else
+                {
+                    result = JsonConvert.SerializeObject(obj, (JsonSerializerSettings)jsonSerializerSettings);
+                }
+
+                result = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(result));
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
-                return string.Empty;
                 //throw new Exception("JsonUtil.ObjectToJson(): " + ex.Message);
             }
+            return result;
         }
 
         /// <summary> 

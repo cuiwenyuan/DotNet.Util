@@ -121,7 +121,7 @@ namespace DotNet.IService
         /// </summary>
         /// <param name="userInfo"></param>
         /// <param name="recordCount">记录条数</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>

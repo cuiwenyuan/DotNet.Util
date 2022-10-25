@@ -5,6 +5,8 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DotNet.Model
 {
@@ -16,194 +18,143 @@ namespace DotNet.Model
     /// 
     /// 修改记录
     /// 
-    /// 2021-09-27 版本：1.0 Troy.Cui 创建文件。
+    /// 2022-10-23 版本：1.0 Troy.Cui 创建文件。
     /// 
     /// <author>
     ///     <name>Troy.Cui</name>
-    ///     <date>2016-12-21</date>
+    ///     <date>2022-10-23</date>
     /// </author>
     /// </summary>
+    [Table(CurrentTableName)]
     public partial class BaseExceptionEntity : BaseEntity
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [FieldDescription("主键")]
-        public int Id { get; set; }
-
         /// <summary>
         /// 子系统编码
         /// </summary>
         [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
         public string SystemCode { get; set; } = string.Empty;
 
         /// <summary>
         /// 事件编号
         /// </summary>
         [FieldDescription("事件编号")]
+        [Description("事件编号")]
+        [Column(FieldEventId)]
         public int? EventId { get; set; } = null;
 
         /// <summary>
         /// 类别
         /// </summary>
         [FieldDescription("类别")]
+        [Description("类别")]
+        [Column(FieldCategory)]
         public string Category { get; set; } = string.Empty;
 
         /// <summary>
         /// 优先级
         /// </summary>
         [FieldDescription("优先级")]
+        [Description("优先级")]
+        [Column(FieldPriority)]
         public int? Priority { get; set; } = null;
 
         /// <summary>
         /// 严重级别
         /// </summary>
         [FieldDescription("严重级别")]
+        [Description("严重级别")]
+        [Column(FieldSeverity)]
         public string Severity { get; set; } = string.Empty;
 
         /// <summary>
         /// 标题
         /// </summary>
         [FieldDescription("标题")]
+        [Description("标题")]
+        [Column(FieldTitle)]
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
         /// 时间戳
         /// </summary>
         [FieldDescription("时间戳")]
+        [Description("时间戳")]
+        [Column(FieldTimestamp)]
         public DateTime? Timestamp { get; set; } = null;
 
         /// <summary>
         /// 机器名
         /// </summary>
         [FieldDescription("机器名")]
+        [Description("机器名")]
+        [Column(FieldMachineName)]
         public string MachineName { get; set; } = string.Empty;
 
         /// <summary>
         /// IP地址
         /// </summary>
         [FieldDescription("IP地址")]
+        [Description("IP地址")]
+        [Column(FieldIpAddress)]
         public string IpAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// 应用域
         /// </summary>
         [FieldDescription("应用域")]
+        [Description("应用域")]
+        [Column(FieldAppDomainName)]
         public string AppDomainName { get; set; } = string.Empty;
 
         /// <summary>
         /// 进程编号
         /// </summary>
         [FieldDescription("进程编号")]
+        [Description("进程编号")]
+        [Column(FieldProcessId)]
         public string ProcessId { get; set; } = string.Empty;
 
         /// <summary>
         /// 进程名
         /// </summary>
         [FieldDescription("进程名")]
+        [Description("进程名")]
+        [Column(FieldProcessName)]
         public string ProcessName { get; set; } = string.Empty;
 
         /// <summary>
         /// 线程名
         /// </summary>
         [FieldDescription("线程名")]
+        [Description("线程名")]
+        [Column(FieldThreadName)]
         public string ThreadName { get; set; } = string.Empty;
 
         /// <summary>
         /// 线程编号
         /// </summary>
         [FieldDescription("线程编号")]
+        [Description("线程编号")]
+        [Column(FieldWin32ThreadId)]
         public string Win32ThreadId { get; set; } = string.Empty;
 
         /// <summary>
         /// 消息
         /// </summary>
         [FieldDescription("消息")]
+        [Description("消息")]
+        [Column(FieldMessage)]
         public string Message { get; set; } = string.Empty;
 
         /// <summary>
         /// 格式化消息
         /// </summary>
         [FieldDescription("格式化消息")]
+        [Description("格式化消息")]
+        [Column(FieldFormattedMessage)]
         public string FormattedMessage { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 排序编号
-        /// </summary>
-        [FieldDescription("排序编号")]
-        public int SortCode { get; set; } = 0;
-
-        /// <summary>
-        /// 是否删除
-        /// </summary>
-        [FieldDescription("是否删除")]
-        public int Deleted { get; set; } = 0;
-
-        /// <summary>
-        /// 是否有效
-        /// </summary>
-        [FieldDescription("是否有效")]
-        public int Enabled { get; set; } = 1;
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        [FieldDescription("创建时间")]
-        public DateTime CreateTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// 创建人编号
-        /// </summary>
-        [FieldDescription("创建人编号")]
-        public int CreateUserId { get; set; } = 0;
-
-        /// <summary>
-        /// 创建人用户名
-        /// </summary>
-        [FieldDescription("创建人用户名")]
-        public string CreateUserName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 创建人姓名
-        /// </summary>
-        [FieldDescription("创建人姓名")]
-        public string CreateBy { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [FieldDescription("创建IP")]
-        public string CreateIp { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改时间
-        /// </summary>
-        [FieldDescription("修改时间")]
-        public DateTime UpdateTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// 修改人编号
-        /// </summary>
-        [FieldDescription("修改人编号")]
-        public int UpdateUserId { get; set; } = 0;
-
-        /// <summary>
-        /// 修改人用户名
-        /// </summary>
-        [FieldDescription("修改人用户名")]
-        public string UpdateUserName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改人姓名
-        /// </summary>
-        [FieldDescription("修改人姓名")]
-        public string UpdateBy { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 修改IP
-        /// </summary>
-        [FieldDescription("修改IP")]
-        public string UpdateIp { get; set; } = string.Empty;
 
         /// <summary>
         /// 从数据行读取
@@ -212,10 +163,7 @@ namespace DotNet.Model
         protected override BaseEntity GetFrom(IDataRow dr)
         {
             GetFromExtend(dr);
-            if (dr.ContainsColumn(FieldId))
-            {
-                Id = BaseUtil.ConvertToInt(dr[FieldId]);
-            }
+            GetBase(dr);
             if (dr.ContainsColumn(FieldSystemCode))
             {
                 SystemCode = BaseUtil.ConvertToString(dr[FieldSystemCode]);
@@ -280,58 +228,6 @@ namespace DotNet.Model
             {
                 FormattedMessage = BaseUtil.ConvertToString(dr[FieldFormattedMessage]);
             }
-            if (dr.ContainsColumn(FieldSortCode))
-            {
-                SortCode = BaseUtil.ConvertToInt(dr[FieldSortCode]);
-            }
-            if (dr.ContainsColumn(FieldDeleted))
-            {
-                Deleted = BaseUtil.ConvertToInt(dr[FieldDeleted]);
-            }
-            if (dr.ContainsColumn(FieldEnabled))
-            {
-                Enabled = BaseUtil.ConvertToInt(dr[FieldEnabled]);
-            }
-            if (dr.ContainsColumn(FieldCreateTime))
-            {
-                CreateTime = BaseUtil.ConvertToDateTime(dr[FieldCreateTime]);
-            }
-            if (dr.ContainsColumn(FieldCreateUserId))
-            {
-                CreateUserId = BaseUtil.ConvertToInt(dr[FieldCreateUserId]);
-            }
-            if (dr.ContainsColumn(FieldCreateUserName))
-            {
-                CreateUserName = BaseUtil.ConvertToString(dr[FieldCreateUserName]);
-            }
-            if (dr.ContainsColumn(FieldCreateBy))
-            {
-                CreateBy = BaseUtil.ConvertToString(dr[FieldCreateBy]);
-            }
-            if (dr.ContainsColumn(FieldCreateIp))
-            {
-                CreateIp = BaseUtil.ConvertToString(dr[FieldCreateIp]);
-            }
-            if (dr.ContainsColumn(FieldUpdateTime))
-            {
-                UpdateTime = BaseUtil.ConvertToDateTime(dr[FieldUpdateTime]);
-            }
-            if (dr.ContainsColumn(FieldUpdateUserId))
-            {
-                UpdateUserId = BaseUtil.ConvertToInt(dr[FieldUpdateUserId]);
-            }
-            if (dr.ContainsColumn(FieldUpdateUserName))
-            {
-                UpdateUserName = BaseUtil.ConvertToString(dr[FieldUpdateUserName]);
-            }
-            if (dr.ContainsColumn(FieldUpdateBy))
-            {
-                UpdateBy = BaseUtil.ConvertToString(dr[FieldUpdateBy]);
-            }
-            if (dr.ContainsColumn(FieldUpdateIp))
-            {
-                UpdateIp = BaseUtil.ConvertToString(dr[FieldUpdateIp]);
-            }
             return this;
         }
 
@@ -340,11 +236,6 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("系统异常")]
         public const string CurrentTableName = "BaseException";
-
-        ///<summary>
-        /// 主键
-        ///</summary>
-        public const string FieldId = "Id";
 
         ///<summary>
         /// 子系统编码
@@ -425,70 +316,5 @@ namespace DotNet.Model
         /// 格式化消息
         ///</summary>
         public const string FieldFormattedMessage = "FormattedMessage";
-
-        ///<summary>
-        /// 排序编号
-        ///</summary>
-        public const string FieldSortCode = "SortCode";
-
-        ///<summary>
-        /// 是否删除
-        ///</summary>
-        public const string FieldDeleted = "Deleted";
-
-        ///<summary>
-        /// 是否有效
-        ///</summary>
-        public const string FieldEnabled = "Enabled";
-
-        ///<summary>
-        /// 创建时间
-        ///</summary>
-        public const string FieldCreateTime = "CreateTime";
-
-        ///<summary>
-        /// 创建人编号
-        ///</summary>
-        public const string FieldCreateUserId = "CreateUserId";
-
-        ///<summary>
-        /// 创建人用户名
-        ///</summary>
-        public const string FieldCreateUserName = "CreateUserName";
-
-        ///<summary>
-        /// 创建人姓名
-        ///</summary>
-        public const string FieldCreateBy = "CreateBy";
-
-        ///<summary>
-        /// 创建IP
-        ///</summary>
-        public const string FieldCreateIp = "CreateIp";
-
-        ///<summary>
-        /// 修改时间
-        ///</summary>
-        public const string FieldUpdateTime = "UpdateTime";
-
-        ///<summary>
-        /// 修改人编号
-        ///</summary>
-        public const string FieldUpdateUserId = "UpdateUserId";
-
-        ///<summary>
-        /// 修改人用户名
-        ///</summary>
-        public const string FieldUpdateUserName = "UpdateUserName";
-
-        ///<summary>
-        /// 修改人姓名
-        ///</summary>
-        public const string FieldUpdateBy = "UpdateBy";
-
-        ///<summary>
-        /// 修改IP
-        ///</summary>
-        public const string FieldUpdateIp = "UpdateIp";
     }
 }

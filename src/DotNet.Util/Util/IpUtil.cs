@@ -82,9 +82,9 @@ namespace DotNet.Util
 
                 var file = new FileInfo(_ipBinaryFilePath);
                 _dataBuffer = new byte[file.Length];
-                using (var fin = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
                 {
-                    fin.Read(_dataBuffer, 0, _dataBuffer.Length);
+                    fs.Read(_dataBuffer, 0, _dataBuffer.Length);
                 }
 
                 var indexLength = BytesToLong(_dataBuffer[0], _dataBuffer[1], _dataBuffer[2], _dataBuffer[3]);

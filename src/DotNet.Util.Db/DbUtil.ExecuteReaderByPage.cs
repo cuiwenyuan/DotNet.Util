@@ -27,9 +27,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        // SqlServer By StoredProcedure
-
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
         /// <summary>
         /// 使用存储过程获取分页数据
         /// </summary>
@@ -43,7 +41,7 @@ namespace DotNet.Util
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
         {
             IDataReader dataReader = null;
             recordCount = 0;
@@ -85,7 +83,7 @@ namespace DotNet.Util
         /// <param name="selectField">查询字段</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
-            string condition = null, string selectField = null) where TModel : new()
+            string condition = null, string selectField = " * ") where TModel : new()
         {
             return
                 ExecuteReaderByPage(dbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName,
@@ -119,8 +117,6 @@ namespace DotNet.Util
                 sortDirection = " DESC";
             }
             var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
-            // string sqlStart = (pageNo * pageSize).ToString();
-            // string sqlEnd = ((pageNo + 1) * pageSize).ToString();
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
 
@@ -177,14 +173,12 @@ namespace DotNet.Util
 
         #endregion
 
-        // Oracle GetDataTableByPage
-
         #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
         /// <summary>
-        /// Oracle 获取分页数据
+        /// 获取分页数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
@@ -197,10 +191,10 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Oracle 获取分页数据
+        /// 获取分页数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
@@ -216,10 +210,10 @@ namespace DotNet.Util
 
         #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         /// <summary>
-        /// Oracle 获取分页数据（防注入功能的）
+        /// 获取分页数据（防注入功能的）
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
@@ -249,7 +243,7 @@ namespace DotNet.Util
                     orderBy = " ORDER BY " + orderBy;
                 }
                 //宋彪修改 2014.8.8
-                sb.Append(string.Format("SELECT * FROM (SELECT ROWNUM RN, H.* FROM ((SELECT " + currentIndex + " " + selectField + " FROM {0} {1} {2} )H)) Z WHERE Z.RN <={3} AND Z.RN >{4} ", tableName, conditions, orderBy, sqlEnd, sqlStart));
+                sb.Append(string.Format("SELECT * FROM (SELECT ROWNUM RN, TT.* FROM ((SELECT " + currentIndex + " " + selectField + " FROM {0} {1} {2} )TT)) ZZ WHERE ZZ.RN <={3} AND ZZ.RN >{4} ", tableName, conditions, orderBy, sqlEnd, sqlStart));
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
             {
@@ -272,10 +266,10 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Oracle 获取分页数据（防注入功能的）
+        /// 获取分页数据（防注入功能的）
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
@@ -294,9 +288,9 @@ namespace DotNet.Util
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
-        /// <param name="recordCount">记录条数</param>
         /// <param name="dbHelper">dbHelper</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="recordCount">记录条数</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>
@@ -321,7 +315,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="recordCount">记录条数</param>
         /// <param name="dbHelper">dbHelper</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>
         /// <param name="pageNo">当前页</param>
         /// <param name="pageSize">每页显示多少条</param>

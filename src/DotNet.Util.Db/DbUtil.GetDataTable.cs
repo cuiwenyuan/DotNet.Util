@@ -28,13 +28,14 @@ namespace DotNet.Util
         /// 获取数据表 一参 参数为数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="name">字段名</param>
-        /// <param name="values">字段值</param>
+        /// <param name="values">IN查询字段值</param>
         /// <param name="order">排序</param>
         /// <returns>数据表</returns>
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
+            tableName = tableName.ToTableName();
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
             if (values == null || values.Length == 0)
@@ -58,16 +59,16 @@ namespace DotNet.Util
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="dbHelper"></param>
-        /// <param name="tableName"></param>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
-        /// <param name="sqlLogicConditional"></param>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序（ORDER BY之后内容）</param>
+        /// <param name="sqlLogicConditional">SQL查询的逻辑条件AND/OR</param>
         /// <returns></returns>
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
         {
-            // 这里是需要完善的功能，完善了这个，是一次重大突破
+            tableName = tableName.ToTableName();
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
             var whereSql = string.Empty;
@@ -146,16 +147,17 @@ namespace DotNet.Util
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="dbHelper"></param>
-        /// <param name="tableName"></param>
-        /// <param name="dbParameters"></param>
-        /// <param name="conditions"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
-        /// <param name="selectField"></param>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="dbParameters">参数</param>
+        /// <param name="conditions">查询条件</param>
+        /// <param name="topLimit">TOP记录数</param>
+        /// <param name="order">排序（ORDER BY之后内容）</param>
+        /// <param name="selectField">所选字段</param>
         /// <returns></returns>
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
         {
+            tableName = tableName.ToTableName();
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
             var whereSql = string.Empty;

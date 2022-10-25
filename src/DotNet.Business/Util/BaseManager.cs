@@ -8,6 +8,9 @@ using System.Data;
 
 namespace DotNet.Business
 {
+    using DotNet.Model;
+    using System.Linq;
+    using System.Reflection;
     using Util;
 
     /// <summary>
@@ -52,11 +55,6 @@ namespace DotNet.Business
         /// 默认都是需要插入操作时都要返回主键的
         /// </summary>
         public bool ReturnId = true;
-
-        /// <summary>
-        /// 通过远程接口调用
-        /// </summary>
-        public bool RemoteInterface = false;
 
         /// <summary>
         /// 选取的字段
@@ -264,31 +262,146 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public virtual string AddEntity(object entity)
+        #region 新增和更新
 
         /// <summary>
-        /// 添加对象
+        /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
-        /// <param name="entity">实体</param>
-        /// <returns></returns>
-        public virtual string AddEntity(object entity)
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
         {
-            return string.Empty;
+            Identity = identity;
+            ReturnId = returnId;
+            if (t is BaseEntity entity)
+            {
+                entity.Id = AddEntity(t).ToInt();
+                return entity.Id.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
+        {
+            Identity = identity;
+            ReturnId = returnId;
+            if (t is BaseEntity entity)
+            {
+                if (entity.Id == 0)
+                {
+                    entity.Id = AddEntity(t).ToInt();
+                    return entity.Id.ToString();
+                }
+                else
+                {
+                    return UpdateEntity(t) > 0 ? entity.Id.ToString() : string.Empty;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual int Update<T>(T t)
+        {
+            return UpdateEntity(t);
+        }
+
+        /// <summary>
+        /// 添加实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual string AddEntity<T>(T t)
+        {
+            var key = string.Empty;
+            if (t is BaseEntity)
+            {
+                var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
+                sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
+                SetEntity(sqlBuilder, t);
+                SetEntityCreate(sqlBuilder, t);
+                SetEntityUpdate(sqlBuilder, t);
+                key = AddEntity(sqlBuilder, t);
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    RemoveCache();
+                }
+            }
+            return key;
+        }
+
+        /// <summary>
+        /// 更新实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        public virtual int UpdateEntity<T>(T t)
+        {
+            var result = 0;
+            if (t is BaseEntity entity)
+            {
+                var sqlBuilder = new SqlBuilder(DbHelper);
+                sqlBuilder.BeginUpdate(CurrentTableName);
+                SetEntity(sqlBuilder, t);
+                SetEntityUpdate(sqlBuilder, t);
+                result = UpdateEntity(sqlBuilder, t);
+                if (result > 0)
+                {
+                    RemoveCache(entity.Id);
+                }
+            }
+            return result;
         }
 
         #endregion
 
-        #region public virtual int UpdateEntity(object entity)
+        #region 获取实体
 
-        /// <summary>
-        /// 更新对象
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <returns></returns>
-        public virtual int UpdateEntity(object entity)
-        {
-            return 0;
-        }
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="id">主键</param>
+        //public virtual T GetEntity(string id)
+        //{
+        //    return ValidateUtil.IsInt(id) ? GetEntity(id.ToInt()) : null;
+        //}
+
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="id">主键</param>
+        //public virtual T GetEntity(int id)
+        //{
+        //    return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+        //    //var cacheKey = CurrentTableName + ".Entity." + id;
+        //    //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+        //    //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        //}
+
+        ///// <summary>
+        ///// 获取实体
+        ///// </summary>
+        ///// <param name="parameters">参数</param>
+        //public virtual T GetEntity(List<KeyValuePair<string, object>> parameters)
+        //{
+        //    return BaseEntity.Create<T>(GetDataTable(parameters));
+        //}
 
         #endregion
 
@@ -453,6 +566,7 @@ namespace DotNet.Business
 
         #endregion
 
+        #region 状态
         /// <summary>
         /// 状态码的获取
         /// </summary>
@@ -513,6 +627,8 @@ namespace DotNet.Business
             var status = (Status)Enum.Parse(typeof(Status), statusCode, true);
             return GetStateMessage(status);
         }
+
+        #endregion
 
         #region public string GetStateMessage(StatusCode statusCode) 获得状态的信息
         /// <summary>
@@ -727,7 +843,7 @@ namespace DotNet.Business
         {
             var result = 0;
             var sb = Pool.StringBuilder.Get();
-            sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
+            sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
             var names = new string[1];
             var values = new Object[1];
             names[0] = BaseUtil.FieldId;
@@ -736,5 +852,262 @@ namespace DotNet.Business
             return result;
         }
         #endregion
+
+        #region public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
+
+        /// <summary>
+        /// 给实体赋值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var table = EntityUtil.GetTableExpression(t);
+            //var columns = table.Columns.Where(it => !it.IsKey).ToList();
+            foreach (var column in table.Columns)
+            {
+                // 跳过14个BaseEntity必备字段
+                if (column.MemberInfo.Name.Equals(BaseEntity.FieldId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldSortCode, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldEnabled, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldDeleted, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateUserId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateUserName, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateBy, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateTime, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldCreateIp, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateUserId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateUserName, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateBy, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateTime, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseEntity.FieldUpdateIp, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                // 跳过5个非必备，但要自动新增的字段
+                if (column.MemberInfo.Name.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    column.MemberInfo.Name.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                sqlBuilder.SetValue(column.ColumnName, t.GetPropertyValue(column.MemberInfo.Name));
+            }
+        }
+        #endregion
+
+        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        /// <summary>
+        /// 设置创建信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t)
+        {
+            if (t is BaseEntity entity)
+            {
+                if (entity.SortCode == 0 && !CurrentTableName.Equals("BaseSequence", StringComparison.OrdinalIgnoreCase) && !CurrentTableName.Equals("Base_Sequence", StringComparison.OrdinalIgnoreCase))
+                {
+                    var sortCode = string.Empty;
+                    var managerSequence = new BaseSequenceManager(DbHelper, Identity);
+                    if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2)
+                    {
+                        sortCode = managerSequence.Increment($"SC_{CurrentTableName}_SEQ");
+                    }
+                    else
+                    {
+                        sortCode = managerSequence.Increment(CurrentTableName);
+                    }
+                    entity.SortCode = sortCode.ToInt();
+                }
+
+                if (!Identity)
+                {
+                    // 这里已经是指定了主键了，所以不需要返回主键了
+                    sqlBuilder.ReturnId = false;
+                    sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                }
+                else
+                {
+                    if (!ReturnId && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                    {
+                        if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+                        {
+                            sqlBuilder.SetFormula(PrimaryKey, $"{CurrentTableName}_SEQ.NEXTVAL");
+                        }
+                        if (DbHelper.CurrentDbType == CurrentDbType.Db2)
+                        {
+                            sqlBuilder.SetFormula(PrimaryKey, $"NEXT VALUE FOR {CurrentTableName}_SEQ");
+                        }
+                    }
+                    else
+                    {
+                        if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                        {
+                            var managerSequence = new BaseSequenceManager(DbHelper);
+                            entity.Id = managerSequence.Increment($"{CurrentTableName}_SEQ").ToInt();
+                            sqlBuilder.SetValue(PrimaryKey, entity.Id);
+                        }
+                    }
+                }
+
+                if (UserInfo != null)
+                {
+                    entity.CreateUserId = UserInfo.UserId;
+                    entity.CreateUserName = UserInfo.UserName;
+                    entity.CreateBy = UserInfo.RealName;
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserId, UserInfo.UserId);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserName, UserInfo.UserName);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
+                    // 5个非必备，但要自动新增的字段
+                    var table = EntityUtil.GetTableExpression(t);
+                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    it.ColumnName.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))).ToList();
+                    foreach (var column in columns)
+                    {
+                        //var fi = entity.GetType().GetProperty(column.MemberInfo.Name);
+                        switch (column.ColumnName)
+                        {
+                            case BaseUtil.FieldUserCompanyId:
+                                //fi.SetValue(entity, UserInfo.CompanyId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.CompanyId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserCompanyId, UserInfo.CompanyId.ToInt());
+                                break;
+                            case BaseUtil.FieldUserSubCompanyId:
+                                //fi.SetValue(entity, UserInfo.SubCompanyId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubCompanyId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubCompanyId, UserInfo.SubCompanyId.ToInt());
+                                break;
+                            case BaseUtil.FieldUserDepartmentId:
+                                //fi.SetValue(entity, UserInfo.DepartmentId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.DepartmentId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserDepartmentId, UserInfo.DepartmentId.ToInt());
+                                break;
+                            case BaseUtil.FieldUserSubDepartmentId:
+                                //fi.SetValue(entity, UserInfo.SubDepartmentId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.SubDepartmentId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserSubDepartmentId, UserInfo.SubDepartmentId.ToInt());
+                                break;
+                            case BaseUtil.FieldUserWorkgroupId:
+                                //fi.SetValue(entity, UserInfo.WorkgroupId.ToInt());
+                                entity.SetPropertyValue(column.MemberInfo.Name, UserInfo.WorkgroupId.ToInt());
+                                sqlBuilder.SetValue(BaseUtil.FieldUserWorkgroupId, UserInfo.WorkgroupId.ToInt());
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateBy, entity.CreateBy);
+                    sqlBuilder.SetValue(BaseEntity.FieldCreateUserName, entity.CreateUserName);
+                }
+                // 取数据库时间，还是UTC时间，还是本机时间？
+                entity.CreateTime = DateTime.Now;
+                entity.CreateIp = Utils.GetIp();
+                sqlBuilder.SetDbNow(BaseEntity.FieldCreateTime);
+                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, Utils.GetIp());
+            }
+        }
+        #endregion
+
+        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        /// <summary>
+        /// 设置更新信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t)
+        {
+            if (t is BaseEntity entity)
+            {
+                // 不论新增还是更新都会调用到此处代码
+                sqlBuilder.SetValue(BaseEntity.FieldSortCode, entity.SortCode);
+                sqlBuilder.SetValue(BaseEntity.FieldDeleted, entity.Deleted);
+                sqlBuilder.SetValue(BaseEntity.FieldEnabled, entity.Enabled);
+
+                // 更改时不能、不允许更新任何Create开头的5个字段
+
+                if (UserInfo != null)
+                {
+                    entity.UpdateUserId = UserInfo.UserId;
+                    entity.UpdateUserName = UserInfo.UserName;
+                    entity.UpdateBy = UserInfo.RealName;
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserId, UserInfo.UserId);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserName, UserInfo.UserName);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateBy, UserInfo.RealName);
+                }
+                else
+                {
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateBy, entity.CreateBy);
+                    sqlBuilder.SetValue(BaseEntity.FieldUpdateUserName, entity.CreateUserName);
+                }
+                // 取数据库时间，还是UTC时间，还是本机时间？
+                entity.UpdateTime = DateTime.Now;
+                entity.UpdateIp = Utils.GetIp();
+                sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
+                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, Utils.GetIp());
+            }
+        }
+        #endregion
+
+        #region public virtual string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
+        /// <summary>
+        /// 新增实体返回主键
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public virtual string AddEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var result = string.Empty;
+            if (t is BaseEntity entity)
+            {
+                if (Identity && (DbHelper.CurrentDbType == CurrentDbType.SqlServer || DbHelper.CurrentDbType == CurrentDbType.Access))
+                {
+                    result = sqlBuilder.EndInsert().ToString();
+                }
+                else
+                {
+                    sqlBuilder.EndInsert();
+                }
+                if (Identity && (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.Db2))
+                {
+                    result = entity.Id.ToString();
+                }
+                entity.Id = result.ToInt();
+            }
+            return result;
+        }
+        #endregion
+
+        #region public virtual int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
+        /// <summary>
+        /// 更新实体返回影响行数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public virtual int UpdateEntity<T>(SqlBuilder sqlBuilder, T t)
+        {
+            var result = 0;
+            if (t is BaseEntity entity)
+            {
+                sqlBuilder.SetWhere(PrimaryKey, entity.Id);
+                result = sqlBuilder.EndUpdate();
+            }
+            return result;
+        }
+        #endregion        
+
     }
 }

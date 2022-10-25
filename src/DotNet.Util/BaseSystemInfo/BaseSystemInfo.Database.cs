@@ -498,6 +498,45 @@ namespace DotNet.Util
         public static string ZbwmsDbConnectionString = string.Empty;
         #endregion
 
+        #region SPWMS
+        /// <summary>
+        /// SPWMS数据库类别
+        /// </summary>
+        public static CurrentDbType SpwmsDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// SPWMS数据库
+        /// </summary>
+        private static string _spwmsDbConnection = string.Empty;
+        /// <summary>
+        /// SPWMS数据库连接
+        /// </summary>
+        public static string SpwmsDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_spwmsDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["SPWMSDbConnection"]))
+                    {
+                        _spwmsDbConnection = ConfigurationManager.AppSettings["SPWMSDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_spwmsDbConnection))
+                    {
+                        _spwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_SPWMS;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _spwmsDbConnection;
+            }
+            // 默认的数据库连接
+            set => _spwmsDbConnection = value;
+        }
+        /// <summary>
+        /// SPWMS数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string SpwmsDbConnectionString = string.Empty;
+        #endregion
+
         #region MES
         /// <summary>
         /// MES数据库类别
@@ -1279,9 +1318,52 @@ namespace DotNet.Util
         public static string CardTicketDbConnectionString = string.Empty;
         #endregion
 
+        #region MDM
+        /// <summary>
+        /// MDM数据库类别
+        /// </summary>
+        public static CurrentDbType MdmDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// MDM数据库
+        /// </summary>
+        private static string _mdmDbConnection = string.Empty;
+        /// <summary>
+        /// MDM数据库连接
+        /// </summary>
+        public static string MdmDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_mdmDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["MDMDbConnection"]))
+                    {
+                        _mdmDbConnection = ConfigurationManager.AppSettings["MDMDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_mdmDbConnection))
+                    {
+                        _mdmDbConnection = "Data Source=localhost;Initial Catalog=Business_MDM;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _mdmDbConnection;
+            }
+            // 默认的数据库连接
+            set => _mdmDbConnection = value;
+        }
+        /// <summary>
+        /// MDM数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string MdmDbConnectionString = string.Empty;
+        #endregion
+
+        #region 杂项
+
         /// <summary>
         /// 数据库表版本(默认为5版本)
         /// </summary>
         public static int DatabaseTableVersion = 5;
+
+        #endregion
     }
 }

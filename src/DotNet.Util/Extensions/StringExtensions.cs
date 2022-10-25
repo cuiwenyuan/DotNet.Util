@@ -696,15 +696,15 @@ namespace DotNet.Util
             return false;
         }
 
-        /// <summary>
-        /// 判断是否可空类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsNullable(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
+        ///// <summary>
+        ///// 判断是否可空类型
+        ///// </summary>
+        ///// <param name="type"></param>
+        ///// <returns></returns>
+        //public static bool IsNullable(this Type type)
+        //{
+        //    return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        //}
 
         /// <summary>
         /// 判断是否是String类型

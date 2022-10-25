@@ -43,30 +43,7 @@ namespace DotNet.Business
         /// <summary>
         /// 当前表描述
         /// </summary>
-        string CurrentTableDescription { get; set; }
-
-        #region 增删改
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        string AddEntity(object entity);
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        int UpdateEntity(object entity);
-        /// <summary>
-        /// 删除
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        int DeleteEntity(object id);
-
-        #endregion
+        string CurrentTableDescription { get; set; }        
 
         #region 对象事件触发器（编写程序的人员，可以不实现这些方法）
 
@@ -667,7 +644,7 @@ namespace DotNet.Business
         object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
         #endregion
 
-        #region Fill
+        #region Fill填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -868,5 +845,97 @@ namespace DotNet.Business
 
         #endregion
 
+        #region 新增和更新
+
+        /// <summary>
+        /// 添加, 这里可以人工干预，提高程序的性能
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+         string Add<T>(T t, bool identity = true, bool returnId = true);
+
+        /// <summary>
+        /// 添加或更新(主键是否为0)
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
+        /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <returns>主键</returns>
+        string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true);
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        int Update<T>(T t);
+
+        /// <summary>
+        /// 添加实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        string AddEntity<T>(T t);
+
+        /// <summary>
+        /// 更新实体
+        /// </summary>
+        /// <param name="t">泛型实体</param>
+        int UpdateEntity<T>(T t);
+
+        #endregion
+
+        #region virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
+
+        /// <summary>
+        /// 给实体赋值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        void SetEntity<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        /// <summary>
+        /// 设置创建信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        /// <summary>
+        /// 设置更新信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体
+        /// <summary>
+        /// 新增实体返回主键
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        string AddEntity<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
+
+        #region int UpdateEntity<T>(SqlBuilder sqlBuilder, T t) 更新实体返回影响行数
+        /// <summary>
+        /// 更新实体返回影响行数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlBuilder"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
+        #endregion
     }
 }

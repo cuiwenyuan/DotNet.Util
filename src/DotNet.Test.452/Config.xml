@@ -3,11 +3,11 @@
 	<appSettings>
 		<!-- UserCenter数据库-->
 		<add key="UserCenterDbType" value="SqlServer" Options="SqlServer,Oracle,MySql,DB2,SQLite,Access"/>
-		<add key="UserCenterDbConnection" value="Data Source=127.0.0.1;Initial Catalog=UserCenter5_WangCaiMa;User Id = sa ; Password = 123456;"  />
+		<add key="UserCenterDbConnection" value="Data Source=127.0.0.1;Initial Catalog=UserCenter5_WangCaiMa;User Id = sa ; Password = 1234.com;"  />
 
 		<!-- Business数据库SqlServer-->
 		<add key="BusinessDbType" value="SqlServer" Options="SqlServer,Oracle,MySql,DB2,SQLite,Access"/>
-		<add key="BusinessDbConnection" value="Data Source=127.0.0.1;Initial Catalog=Business_WangCaiMa;User Id = sa;Password =123456;" />		
+		<add key="BusinessDbConnection" value="Data Source=127.0.0.1;Initial Catalog=Business_WangCaiMa;User Id = sa;Password =1234.com;" />		
 
 		<!-- 是否加密数据库连接字符串-->
 		<add key="EncryptDbConnection" value="False" />

@@ -19,6 +19,7 @@ namespace DotNet.Model
     ///		<date>2014.12.01</date>
     /// </author> 
     /// </summary>    
+    [AttributeUsage(AttributeTargets.Property|AttributeTargets.Field, Inherited = true)]
     public class FieldDescription : Attribute
     {
         /// <summary>

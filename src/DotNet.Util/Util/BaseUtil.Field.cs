@@ -370,6 +370,26 @@ namespace DotNet.Util
         /// </summary>
         public const string FieldUserCompanyId = "UserCompanyId";
 
+        /// <summary>
+        /// 用户子公司主键
+        /// </summary>
+        public const string FieldUserSubCompanyId = "UserSubCompanyId";
+
+        /// <summary>
+        /// 用户部门主键
+        /// </summary>
+        public const string FieldUserDepartmentId = "UserDepartmentId";
+
+        /// <summary>
+        /// 用户子部门主键
+        /// </summary>
+        public const string FieldUserSubDepartmentId = "UserSubDepartmentId";
+
+        /// <summary>
+        /// 用户工作组主键
+        /// </summary>
+        public const string FieldUserWorkgroupId = "UserWorkgroupId";
+
         #endregion
     }
 }

@@ -28,7 +28,7 @@ namespace DotNet.Util
         /// 获取数据表 一参 参数为数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="name">字段名</param>
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
@@ -269,7 +269,7 @@ namespace DotNet.Util
         /// 获取数据表 一参 参数为数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
-        /// <param name="tableName">数据来源表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="selectField"></param>
         /// <param name="name">字段名</param>
         /// <param name="values">字段值</param>
