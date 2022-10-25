@@ -1322,7 +1322,7 @@ namespace DotNet.Util
         /// <summary>
         /// MDM数据库类别
         /// </summary>
-        public static CurrentDbType MDMDbType = CurrentDbType.SqlServer;
+        public static CurrentDbType MdmDbType = CurrentDbType.SqlServer;
         /// <summary>
         /// MDM数据库
         /// </summary>
@@ -1330,7 +1330,7 @@ namespace DotNet.Util
         /// <summary>
         /// MDM数据库连接
         /// </summary>
-        public static string MDMDbConnection
+        public static string MdmDbConnection
         {
             get
             {
@@ -1354,7 +1354,7 @@ namespace DotNet.Util
         /// <summary>
         /// MDM数据库（连接串，可能是加密的）
         /// </summary>
-        public static string MDMDbConnectionString = string.Empty;
+        public static string MdmDbConnectionString = string.Empty;
         #endregion
 
         #region 杂项

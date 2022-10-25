@@ -510,7 +510,7 @@ namespace DotNet.Util
             }
             if (ConfigurationManager.AppSettings["MDMDbConnection"] != null)
             {
-                BaseSystemInfo.MDMDbConnectionString = ConfigurationManager.AppSettings["MDMDbConnection"];
+                BaseSystemInfo.MdmDbConnectionString = ConfigurationManager.AppSettings["MDMDbConnection"];
             }
             // 对加密的数据库连接进行解密操作
             if (BaseSystemInfo.EncryptDbConnection)
@@ -547,7 +547,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BudgetDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BudgetDbConnectionString);
                 BaseSystemInfo.ItamsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ItamsDbConnectionString);
                 BaseSystemInfo.CardTicketDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CardTicketDbConnectionString);
-                BaseSystemInfo.MDMDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MDMDbConnectionString);
+                BaseSystemInfo.MdmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MdmDbConnectionString);
             }
             else
             {
@@ -583,7 +583,7 @@ namespace DotNet.Util
                 BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
                 BaseSystemInfo.ItamsDbConnection = BaseSystemInfo.ItamsDbConnectionString;
                 BaseSystemInfo.CardTicketDbConnection = BaseSystemInfo.CardTicketDbConnectionString;
-                BaseSystemInfo.MDMDbConnection = BaseSystemInfo.MDMDbConnectionString;
+                BaseSystemInfo.MdmDbConnection = BaseSystemInfo.MdmDbConnectionString;
             }
 
             BaseSystemInfo.UserCenterReadDbConnection = BaseSystemInfo.UserCenterDbConnection;

@@ -901,7 +901,7 @@ namespace DotNet.Util
             }
             if (Exists("MDMDbConnection"))
             {
-                BaseSystemInfo.MDMDbConnectionString = GetValue(_xmlDocument, "MDMDbConnection");
+                BaseSystemInfo.MdmDbConnectionString = GetValue(_xmlDocument, "MDMDbConnection");
             }
             BaseSystemInfo.UserCenterDbConnection = BaseSystemInfo.UserCenterDbConnectionString;
             BaseSystemInfo.LogonLogDbConnection = BaseSystemInfo.LogonLogDbConnectionString;
@@ -934,7 +934,7 @@ namespace DotNet.Util
             BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
             BaseSystemInfo.ItamsDbConnection = BaseSystemInfo.ItamsDbConnectionString;
             BaseSystemInfo.CardTicketDbConnection = BaseSystemInfo.CardTicketDbConnectionString;
-            BaseSystemInfo.MDMDbConnection = BaseSystemInfo.MDMDbConnectionString;
+            BaseSystemInfo.MdmDbConnection = BaseSystemInfo.MdmDbConnectionString;
 
             if (Exists("EncryptDbConnection"))
             {
@@ -1424,7 +1424,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "BudgetDbConnection", BaseSystemInfo.BudgetDbConnectionString);
             SetValue(xmlDocument, "ItamsDbConnection", BaseSystemInfo.ItamsDbConnectionString);
             SetValue(xmlDocument, "CardTicketDbConnection", BaseSystemInfo.CardTicketDbConnectionString);
-            SetValue(xmlDocument, "MDMDbConnection", BaseSystemInfo.MDMDbConnectionString);
+            SetValue(xmlDocument, "MdmDbConnection", BaseSystemInfo.MdmDbConnectionString);
             SetValue(xmlDocument, "DatabaseTableVersion", BaseSystemInfo.DatabaseTableVersion.ToString());
 
             SetValue(xmlDocument, "RegisterKey", BaseSystemInfo.RegisterKey);
