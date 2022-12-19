@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -271,40 +271,6 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string searchKey, string auditStates, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null) 查询用户
-        /// <summary>
-        /// 查询用户
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode">权限编码</param>
-        /// <param name="companyId"></param>
-        /// <param name="condition">查询</param>
-        /// <param name="auditStates">有效</param>
-        /// <param name="enabled"></param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <returns>数据表</returns>
-        public DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string companyId, string condition, string auditStates, bool? enabled, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null)
-        {
-            recordCount = 0;
-            var myRecordCount = 0;
-            var result = new DataTable();
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
-            {
-                var staffManager = new BaseStaffManager(dbHelper, userInfo);
-                // result = staffManager.GetDataTable(100, BaseStaffEntity.FieldSortCode);
-                result = staffManager.SearchByPage(permissionCode, condition, enabled, auditStates, companyId, null, out myRecordCount, pageNo, pageSize, sort);
-                result.TableName = BaseStaffEntity.CurrentTableName;
-            });
-            recordCount = myRecordCount;
-            return result;
-        }
-        #endregion
-
         #region public DataTable GetDataTableByCompany(BaseUserInfo userInfo, string companyId, bool containChildren) 按公司获取部门员工
         /// <summary>
         /// 按公司获取部门员工
@@ -484,7 +450,7 @@ namespace DotNet.Business
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 if (ValidateUtil.IsInt(userId))
                 {
-                    result = manager.SetProperty(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId));
+                    result = manager.Update(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId));
                 }
                 else
                 {
@@ -492,10 +458,10 @@ namespace DotNet.Business
                     var staffIds = manager.GetIds(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0));
                     if (staffIds == null || staffIds.Length == 0)
                     {
-                        result = manager.SetProperty(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId));
+                        result = manager.Update(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, userId));
                         var userManager = new BaseUserManager(dbHelper, userInfo);
                         var userEntity = userManager.GetEntity(userId);
-                        result = manager.SetProperty(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, userEntity.UserName));
+                        result = manager.Update(staffId, new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, userEntity.UserName));
                     }
                 }
             });
@@ -636,7 +602,7 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 var manager = new BaseStaffManager(dbHelper, userInfo);
-                result = manager.SetProperty(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
+                result = manager.Update(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
             });
 
             return result;
@@ -661,7 +627,7 @@ namespace DotNet.Business
                 var manager = new BaseStaffManager(dbHelper, userInfo);
                 for (var i = 0; i < ids.Length; i++)
                 {
-                    result += manager.SetProperty(ids[i], new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
+                    result += manager.Update(ids[i], new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, organizationId));
                 }
             });
             return result;
@@ -690,7 +656,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseStaffEntity.FieldCompanyId, companyId),
                     new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, departmentId)
                 };
-                result = manager.SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id), parameters);
+                result = manager.Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id), parameters);
             });
 
             return result;

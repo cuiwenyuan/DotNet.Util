@@ -205,12 +205,12 @@ namespace DotNet.Business
                         var entityParent = GetEntity(parentId);
                         if (entityParent != null && entityParent.DictionaryId == entity.DictionaryId)
                         {
-                            result = UpdateProperty(id, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldParentId, parentId));
+                            result = Update(id, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldParentId, parentId));
                         }
                     }
                     else if (parentId.ToInt() == 0)
                     {
-                        result = UpdateProperty(id, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldParentId, parentId));
+                        result = Update(id, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldParentId, parentId));
                     }
                 }
             }

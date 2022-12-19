@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -64,7 +64,7 @@ namespace DotNet.Business
 
             //未审核
             whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldIsAudited, 0));
-            var result = SetProperty(whereParameters, parameters);
+            var result = Update(whereParameters, parameters);
             if (result > 0)
             {
                 RemoveCache();

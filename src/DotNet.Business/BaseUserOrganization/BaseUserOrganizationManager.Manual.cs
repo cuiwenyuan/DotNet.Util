@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOrganizationManager.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ namespace DotNet.Business
 
     /// <summary>
     /// BaseUserOrganizationManager
-    /// 用户-组织结构关系管理
+    /// 用户兼任管理层
     /// 
     /// 修改记录
     /// 

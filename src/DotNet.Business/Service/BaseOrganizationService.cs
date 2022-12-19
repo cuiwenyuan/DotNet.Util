@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -574,7 +574,7 @@ namespace DotNet.Business
                 if (manager.StatusCode.Equals(Status.OkUpdate.ToString()))
                 {
                     // var folderManager = new BaseFolderManager(dbHelper, userInfo);
-                    // result = folderManager.SetProperty(entity.Id.ToString(), new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name));
+                    // result = folderManager.Update(entity.Id.ToString(), new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name));
                 }
                 returnCode = manager.Status;
                 returnMessage = manager.StatusMessage;
@@ -683,31 +683,31 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, null),
                         new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, null)
                     };
-                    userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, ids[i]), parameters);
+                    userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, ids[i]), parameters);
                     parameters = new List<KeyValuePair<string, object>>
                     {
                         new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, null),
                         new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, null)
                     };
-                    userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, ids[i]), parameters);
+                    userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, ids[i]), parameters);
                     parameters = new List<KeyValuePair<string, object>>
                     {
                         new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, null),
                         new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, null)
                     };
-                    userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, ids[i]), parameters);
+                    userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, ids[i]), parameters);
                     parameters = new List<KeyValuePair<string, object>>
                     {
                         new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, null),
                         new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, null)
                     };
-                    userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, ids[i]), parameters);
+                    userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, ids[i]), parameters);
                     // 相应的员工也需要处理
                     var staffManager = new BaseStaffManager(dbHelper, userInfo);
-                    staffManager.SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldCompanyId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldCompanyId, null));
-                    staffManager.SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldSubCompanyId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldSubCompanyId, null));
-                    staffManager.SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, null));
-                    staffManager.SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldWorkgroupId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldWorkgroupId, null));
+                    staffManager.Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldCompanyId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldCompanyId, null));
+                    staffManager.Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldSubCompanyId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldSubCompanyId, null));
+                    staffManager.Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldDepartmentId, null));
+                    staffManager.Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldWorkgroupId, ids[i]), new KeyValuePair<string, object>(BaseStaffEntity.FieldWorkgroupId, null));
                 }
                 //var folderManager = new BaseFolderManager(dbHelper, userInfo);
                 //folderManager.SetDeleted(ids);

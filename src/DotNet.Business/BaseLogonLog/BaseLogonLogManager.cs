@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseLogonLogManager.Auto.cs" company="DotNet">
-//     Copyright (C) 2021, All rights reserved.
+//     Copyright (c) 2022,, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

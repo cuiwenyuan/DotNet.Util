@@ -110,22 +110,6 @@ namespace DotNet.IService
         DataTable GetDataTableByIds(BaseUserInfo userInfo, string[] ids);
 
         /// <summary>
-        /// 查询职员列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode"></param>
-        /// <param name="companyId"></param>
-        /// <param name="whereClause"></param>
-        /// <param name="auditStates"></param>
-        /// <param name="enabled">有效</param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo">当前页</param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <returns></returns>
-        DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string companyId, string whereClause, string auditStates, bool? enabled, out int recordCount, int pageNo = 1, int pageSize = 20, string sort = null);
-
-        /// <summary>
         /// 按公司获取部门员工
         /// </summary>
         /// <param name="userInfo">用户</param>

@@ -1,5 +1,5 @@
 ﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //--------------------------------------------------------------------
 
 using System;
@@ -98,8 +98,10 @@ namespace DotNet.Business
         {
             List<T> result;
 
-            var parameters = new List<KeyValuePair<string, object>>();
-            parameters.Add(parameter);
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                parameter
+            };
 
             var dr = DbHelper.ExecuteReader(CurrentTableName, parameters, 0, order);
             result = GetList<T>(dr);
@@ -205,7 +207,7 @@ namespace DotNet.Business
             var dr = DbHelper.ExecuteReader(CurrentTableName, parametersList);
             result = GetList<T>(dr);
 
-                return result;
+            return result;
         }
 
         /// <summary>
@@ -248,7 +250,7 @@ namespace DotNet.Business
         /// <typeparam name="T">泛型实体</typeparam>
         /// <param name="dataReader"></param>
         /// <returns></returns>
-        public List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
+        public virtual List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
         {
             // 还能继承 IBaseEntity<T>
             var result = new List<T>();

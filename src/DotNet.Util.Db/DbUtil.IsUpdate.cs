@@ -102,9 +102,10 @@ namespace DotNet.Util
             if ((dr[BaseUtil.FieldUpdateUserId] != DBNull.Value) &&
                 ((dr[BaseUtil.FieldUpdateTime] != DBNull.Value)))
             {
-                var newUpdateTime =dr[BaseUtil.FieldUpdateTime].ToDateTime();
-                if (!dr[BaseUtil.FieldUpdateUserId].ToString()
-                    .Equals(oldUpdateUserId) || newUpdateTime != oldUpdateTime)
+                var newUpdateTime = dr[BaseUtil.FieldUpdateTime].ToDateTime();
+                var newUpdateUserId = dr[BaseUtil.FieldUpdateUserId].ToString();
+                var diff = DateTime.Compare(newUpdateTime, oldUpdateTime.ToDateTime());
+                if (!newUpdateUserId.Equals(oldUpdateUserId))
                 {
                     result = true;
                 }

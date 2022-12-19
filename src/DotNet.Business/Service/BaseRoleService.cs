@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -613,11 +613,11 @@ namespace DotNet.Business
                     keyValuePairs.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleEntity.Id));
                     if (roleEntity.Enabled == 0)
                     {
-                        new BaseUserRoleManager(dbHelper, userInfo, tableName).SetProperty(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "0"));
+                        new BaseUserRoleManager(dbHelper, userInfo, tableName).Update(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "0"));
                     }
                     else
                     {
-                        new BaseUserRoleManager(dbHelper, userInfo, tableName).SetProperty(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "1"));
+                        new BaseUserRoleManager(dbHelper, userInfo, tableName).Update(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "1"));
                     }
                 }
             });

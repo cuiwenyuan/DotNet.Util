@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -522,34 +522,6 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable Search(BaseUserInfo userInfo, string searchKey, string auditStates, string[] roleIds) 查询用户
-        /// <summary>
-        /// 查询用户
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="searchKey">查询</param>
-        /// <param name="auditStates">有效</param>
-        /// <param name="roleIds">用户角色</param>
-        /// <returns>数据表</returns>
-        public DataTable Search(BaseUserInfo userInfo, string searchKey, string auditStates, string[] roleIds)
-        {
-            var result = new DataTable(BaseUserEntity.CurrentTableName);
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
-            {
-                var userManager = new BaseUserManager(dbHelper, userInfo)
-                {
-                    ShowUserLogonInfo = false
-                };
-                result = userManager.Search(userInfo.SystemCode, string.Empty, searchKey, roleIds, null, auditStates, string.Empty);
-                result.TableName = BaseUserEntity.CurrentTableName;
-            });
-
-            return result;
-        }
-        #endregion
-
         private void GetUserRoles(BaseUserInfo userInfo, IDbHelper dbHelper, DataTable dt)
         {
             string[] roleIds = null;
@@ -572,7 +544,7 @@ namespace DotNet.Business
                 {
                     for (var i = 0; i < roleIds.Length; i++)
                     {
-                        roleName = roleName + BaseRoleManager.GetNameByCache(userInfo.SystemCode, roleIds[i]) + ", ";
+                        roleName = roleName + BaseRoleManager.GetNameByCache(roleIds[i]) + ", ";
                     }
                 }
                 // 设置角色的名称
@@ -584,99 +556,6 @@ namespace DotNet.Business
             }
             dt.AcceptChanges();
         }
-
-
-        #region public DataTable SearchByPageByDepartment(BaseUserInfo userInfo, string permissionCode, string searchKey, string auditStates, string[] roleIds, bool showRole, bool userAllInformation, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null, string departmentId = null)
-        /// <summary>
-        /// 根据部门查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode">权限编号</param>
-        /// <param name="searchKey">查询</param>
-        /// <param name="enabled"></param>
-        /// <param name="auditStates">有效</param>
-        /// <param name="roleIds">用户角色</param>
-        /// <param name="showRole"></param>
-        /// <param name="userAllInformation"></param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <param name="departmentId">部门主键</param>
-        /// <returns>数据表</returns>
-        public DataTable SearchByPageByDepartment(BaseUserInfo userInfo, string permissionCode, string searchKey, bool? enabled, string auditStates, string[] roleIds, bool showRole, bool userAllInformation, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null, string departmentId = null)
-        {
-            var result = new DataTable(BaseUserEntity.CurrentTableName);
-
-            if (departmentId == null)
-            {
-                departmentId = string.Empty;
-            }
-            var myRecordCount = 0;
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
-            {
-                var userManager = new BaseUserManager(dbHelper, userInfo)
-                {
-                    ShowUserLogonInfo = false
-                };
-                result = userManager.SearchByPage(userInfo.SystemCode, permissionCode, searchKey, roleIds, enabled, auditStates, null, departmentId, showRole, userAllInformation, false, out myRecordCount, pageNo, pageSize, sort);
-                result.TableName = BaseUserEntity.CurrentTableName;
-                // 是否显示角色信息
-                if (showRole)
-                {
-                    GetUserRoles(userInfo, dbHelper, result);
-                }
-            });
-            recordCount = myRecordCount;
-
-            return result;
-        }
-        #endregion
-
-        #region public DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string searchKey, string auditStates, string[] roleIds, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null) 查询用户
-        /// <summary>
-        /// 查询用户
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode">权限编码</param>
-        /// <param name="companyId"></param>
-        /// <param name="condition">查询</param>
-        /// <param name="auditStates">有效</param>
-        /// <param name="roleIds">用户角色</param>
-        /// <param name="enabled"></param>
-        /// <param name="showRole"></param>
-        /// <param name="userAllInformation"></param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <returns>数据表</returns>
-        public DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string companyId, string condition, string auditStates, string[] roleIds, bool? enabled, bool showRole, bool userAllInformation, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null)
-        {
-            var result = new DataTable();
-
-            recordCount = 0;
-            var myRecordCount = 0;
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
-            {
-                var userManager = new BaseUserManager(dbHelper, userInfo);
-                result = userManager.SearchByPage(userInfo.SystemCode, permissionCode, condition, roleIds, enabled, auditStates, companyId, null, showRole, userAllInformation, false, out myRecordCount, pageNo, pageSize, sort);
-                result.TableName = BaseUserEntity.CurrentTableName;
-                // 是否显示角色信息
-                if (showRole)
-                {
-                    GetUserRoles(userInfo, dbHelper, result);
-                }
-            });
-            recordCount = myRecordCount;
-
-            return result;
-        }
-        #endregion
 
         #region public int UpdateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
 
@@ -795,7 +674,7 @@ namespace DotNet.Business
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldAuditStatus, auditStates.ToString()));
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
-                    result = userManager.SetProperty(ids, parameters);
+                    result = userManager.Update(ids, parameters);
 
                     // 锁定时间需要去掉
                     // 密码错误次数需要修改掉
@@ -807,11 +686,11 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0),
                         new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0)
                     };
-                    result = userLogonManager.SetProperty(ids, parameters);
+                    result = userLogonManager.Update(ids, parameters);
 
                     // var staffManager = new BaseStaffManager(dbHelper, result);
                     // string[] staffIds = staffManager.GetIds(BaseStaffEntity.FieldUserId, ids);
-                    // staffManager.SetProperty(staffIds, new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1));
+                    // staffManager.Update(staffIds, new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1));
                 }
                 // 被退回
                 if (auditStates == AuditStatus.AuditReject)
@@ -819,7 +698,7 @@ namespace DotNet.Business
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldAuditStatus, auditStates.ToString()));
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 0));
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldAuditStatus, Status.UserLocked.ToString()));
-                    result = userManager.SetProperty(ids, parameters);
+                    result = userManager.Update(ids, parameters);
                 }
             });
 
@@ -848,7 +727,7 @@ namespace DotNet.Business
                 if (auditStates == AuditStatus.AuditPass)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
-                    result = userManager.SetProperty(ids, parameters);
+                    result = userManager.Update(ids, parameters);
 
                     // 锁定时间需要去掉
                     // 密码错误次数需要修改掉
@@ -860,18 +739,18 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0),
                         new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0)
                     };
-                    result = userLogonManager.SetProperty(ids, parameters);
+                    result = userLogonManager.Update(ids, parameters);
 
                     // var staffManager = new BaseStaffManager(dbHelper, result);
                     // string[] staffIds = staffManager.GetIds(BaseStaffEntity.FieldUserId, ids);
-                    // staffManager.SetProperty(staffIds, new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1));
+                    // staffManager.Update(staffIds, new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1));
                 }
                 // 被退回
                 if (auditStates == AuditStatus.AuditReject)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 0));
                     parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldAuditStatus, auditStates.ToString()));
-                    result = userManager.SetProperty(ids, parameters);
+                    result = userManager.Update(ids, parameters);
                 }
             });
 

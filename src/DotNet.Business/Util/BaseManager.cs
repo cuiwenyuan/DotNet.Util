@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -787,7 +787,7 @@ namespace DotNet.Business
             var result = 0;
             for (var i = 0; i < ids.Length; i++)
             {
-                result += SetProperty(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldCode, codes[i]));
+                result += Update(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldCode, codes[i]));
             }
             return result;
         }
@@ -806,7 +806,7 @@ namespace DotNet.Business
             var sortCodes = managerSequence.GetBatchSequence(CurrentTableName, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
-                result += SetProperty(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCodes[i]));
+                result += Update(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCodes[i]));
             }
             return result;
         }
@@ -826,7 +826,7 @@ namespace DotNet.Business
             var i = 0;
             foreach (DataRow dr in dt.Rows)
             {
-                result += SetProperty(dr[BaseUtil.FieldId].ToString(), new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode[i]));
+                result += Update(dr[BaseUtil.FieldId].ToString(), new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode[i]));
                 i++;
             }
             return result;

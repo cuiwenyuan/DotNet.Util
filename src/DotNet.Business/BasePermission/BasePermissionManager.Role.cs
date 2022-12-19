@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -81,6 +81,7 @@ namespace DotNet.Business
             CurrentTableName = systemCode + "Permission";
             var parameters = new List<KeyValuePair<string, object>>();
             var resourceCategory = systemCode + "Role";
+            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode));
             parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory));
             parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId));
             parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1));
@@ -117,6 +118,7 @@ namespace DotNet.Business
             {
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, tableName),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
@@ -130,7 +132,7 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0),
                     };
                     // 更新状态，设置为有效、并取消删除，权限也不是天天变动的，所以可以更新一下
-                    UpdateProperty(currentId, parameters);
+                    Update(currentId, parameters);
                 }
             }
 
@@ -253,6 +255,7 @@ namespace DotNet.Business
             tableName = systemCode + "Role";
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, tableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
@@ -358,6 +361,7 @@ namespace DotNet.Business
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
             var whereParameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, systemCode + "Role"),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId)
             };
@@ -366,7 +370,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 0),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 1)
             };
-            return UpdateProperty(whereParameters, parameters);
+            return Update(whereParameters, parameters);
         }
         #endregion
 

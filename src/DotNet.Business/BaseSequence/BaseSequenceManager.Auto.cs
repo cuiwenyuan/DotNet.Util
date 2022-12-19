@@ -134,9 +134,9 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="parameters">参数</param>
-        public BaseSequenceEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        public BaseSequenceEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
-            return BaseEntity.Create<BaseSequenceEntity>(GetDataTable(parameters));
+            return BaseEntity.Create<BaseSequenceEntity>(GetDataTable(parameters, topLimit, order));
         }
 
     }

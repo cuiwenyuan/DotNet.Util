@@ -55,16 +55,6 @@ namespace DotNet.IService
         string[] GetResourcePermissionIds(BaseUserInfo userInfo, string resourceCategory, string resourceId);
 
         /// <summary>
-        /// 授予资源的权限
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="resourceCategory">资源分类</param>
-        /// <param name="resourceId">资源主键</param>
-        /// <param name="grantPermissionIds">权限主键</param>
-        /// <returns>影响的行数</returns>
-        int GrantResourcePermission(BaseUserInfo userInfo, string resourceCategory, string resourceId, string[] grantPermissionIds);
-
-        /// <summary>
         /// 撤消资源的权限
         /// </summary>
         /// <param name="userInfo">用户</param>

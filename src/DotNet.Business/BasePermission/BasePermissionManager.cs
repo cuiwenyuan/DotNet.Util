@@ -131,12 +131,13 @@ namespace DotNet.Business
         /// <param name="resourceCategory">资源分类</param>
         /// <param name="resourceId">资源主键</param>
         /// <returns>是否存在</returns>      
-        public bool PermissionExists(string permissionId, string resourceCategory, string resourceId)
+        public bool PermissionExists(string systemCode, string permissionId, string resourceCategory, string resourceId)
         {
             var result = false;
 
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, resourceId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
@@ -158,18 +159,13 @@ namespace DotNet.Business
         {
             var result = string.Empty;
             // 检查记录是否重复
-            if (!PermissionExists(permissionEntity.PermissionId, permissionEntity.ResourceCategory, permissionEntity.ResourceId))
+            if (!PermissionExists(permissionEntity.SystemCode, permissionEntity.PermissionId, permissionEntity.ResourceCategory, permissionEntity.ResourceId))
             {
                 result = AddEntity(permissionEntity);
             }
             return result;
         }
         #endregion
-
-
-        //
-        // ResourcePermission 权限判断
-        // 
 
         #region public bool IsAuthorized(string systemCode, string userId, string permissionCode, string permissionName = null, bool ignoreAdministrator = false, bool useBaseRole = true) 是否有相应的权限
         /// <summary>
@@ -292,6 +288,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region private bool CheckUserOrganizationPermission(string systemCode, string userId, string permissionId, string[] organizationIds)
         private bool CheckUserOrganizationPermission(string systemCode, string userId, string permissionId, string[] organizationIds)
         {
             var result = false;
@@ -325,14 +322,16 @@ namespace DotNet.Business
             var sql = "SELECT COUNT(*) "
                              + " FROM " + tableName
                              + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
-                             + "        AND " + BasePermissionEntity.FieldResourceId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
+                             + "        AND " + BasePermissionEntity.FieldResourceId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
                              + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
+                             + "        AND " + BasePermissionEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldSystemCode)
                              + "        AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled)
                              + "        AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted);
 
             var rowCount = 0;
             var dbParameters = new List<IDbDataParameter>
             {
+                DbHelper.MakeParameter(BasePermissionEntity.FieldSystemCode, systemCode),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.CurrentTableName),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId),
                 DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
@@ -346,7 +345,7 @@ namespace DotNet.Business
 
                 if (returnObject != null)
                 {
-                    rowCount = int.Parse(returnObject.ToString());
+                    rowCount = returnObject.ToInt();
                 }
                 result = rowCount > 0;
             }
@@ -365,6 +364,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public bool CheckPermissionByUser(string systemCode, string userId, string permissionCode)
         /// <summary>
@@ -386,36 +387,16 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region private bool CheckResourcePermission(string systemCode, string resourceCategory, string resourceId, string permissionId)
         private bool CheckResourcePermission(string systemCode, string resourceCategory, string resourceId, string permissionId)
         {
             var result = false;
 
             var errorMark = 0;
 
-            /*
-            string tableName = systemCode + "Permission";
-            string sql = "SELECT COUNT(*) "
-                             + " FROM " + tableName
-                             + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
-                             + "        AND " + BasePermissionEntity.FieldResourceId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceId)
-                             + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
-                             + "        AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled)
-                             + "        AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted);
-
-            // 2016-02-26 吉日嘎拉 若是 mysql 等数据库，可以限制只获取一条就可以了，这个语句有优化的潜力，不需要获取所有，只要存在就可以了，判断是否存在就可以了
-
-            int rowCount = 0;
-            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
-            dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, resourceCategory));
-            dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldResourceId, resourceId));
-            dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId));
-            dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1));
-            dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldDeleted, 0));
-            errorMark = 1;
-            */
-
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, resourceId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId),
@@ -429,13 +410,6 @@ namespace DotNet.Business
                 CurrentTableName = systemCode + "Permission";
                 var id = GetProperty(parameters, BasePermissionEntity.FieldId);
                 result = !string.IsNullOrEmpty(id);
-
-                //object returnObject = this.DbHelper.ExecuteScalar(sql, dbParameters.ToArray());
-                //if (returnObject != null && returnObject != DBNull.Value)
-                //{
-                //    rowCount = int.Parse(returnObject.ToString());
-                //}
-                //result = rowCount > 0;
             }
             catch (Exception ex)
             {
@@ -452,6 +426,7 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
         #region private bool CheckUserRolePermission(string systemCode, string userId, string permissionId, bool useBaseRole = true)
         /// <summary>
@@ -548,6 +523,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public List<BaseModuleEntity> GetPermissionListByUser(string systemCode, string userId, string companyId = null, bool fromCache = false)
         //
         // 从数据库获取权限
         //
@@ -610,6 +586,8 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
         #region public string[] GetPermissionIds(BaseUserInfo userInfo)
         /// <summary>
         /// 获得一个员工的某一模块的权限
@@ -622,6 +600,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public string[] GetPermissionIdsByUser(string systemCode, string userId, string companyId = null, bool containPublic = true, bool useBaseRole = false)
         /// <summary>
         /// 获取用户的权限主键数组
         /// </summary>
@@ -706,21 +685,6 @@ namespace DotNet.Business
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
                 }
 
-                /*
-                // 角色与部门是否进行关联？
-                // 2015-12-02 吉日嘎拉 这里基本上没在用的，心里有个数。
-                if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
-                {
-                    string roleOrganizationTableName = systemCode + "RoleOrganization";
-                    sql.Append(" UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId);
-                    sql.Append(" FROM " + roleOrganizationTableName);
-                    sql.Append(" WHERE ( " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId));
-                    sql.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 ");
-                    sql.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 )");
-                    dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
-                }
-                */
-
                 sb.Append(") B ");
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseRoleEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory));
                 sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldResourceId + " = B." + BaseUserRoleEntity.FieldRoleId);
@@ -755,6 +719,7 @@ namespace DotNet.Business
                         sb.Append(" FROM " + CurrentTableName);
                         sb.Append(" WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory));
                         sb.Append(" AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId));
+                        sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldSystemCode));
                         sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled));
                         sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted));
                         // dt = DbHelper.Fill(sql);
@@ -762,6 +727,7 @@ namespace DotNet.Business
                         // 2015-12-02 吉日嘎拉 优化参数，用ExecuteReader，提高效率节约内存。
                         dbParameters = new List<IDbDataParameter>
                         {
+                            DbHelper.MakeParameter(BasePermissionEntity.FieldSystemCode, systemCode),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldResourceCategory, BaseOrganizationEntity.CurrentTableName),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, companyId),
                             DbHelper.MakeParameter(BasePermissionEntity.FieldEnabled, 1),
@@ -800,6 +766,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public bool CheckPermissionByRole(string systemCode, string roleId, string permissionCode)
         /// <summary>

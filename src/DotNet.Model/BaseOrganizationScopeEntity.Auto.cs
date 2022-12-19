@@ -29,6 +29,14 @@ namespace DotNet.Model
     public partial class BaseOrganizationScopeEntity : BaseEntity
     {
         /// <summary>
+        /// 子系统编码
+        /// </summary>
+        [FieldDescription("子系统编码")]
+        [Description("子系统编码")]
+        [Column(FieldSystemCode)]
+        public string SystemCode { get; set; } = "Base";
+
+        /// <summary>
         /// 什么类型的
         /// </summary>
         [FieldDescription("什么类型的")]
@@ -180,6 +188,10 @@ namespace DotNet.Model
         {
             GetFromExtend(dr);
             GetBase(dr);
+            if (dr.ContainsColumn(FieldSystemCode))
+            {
+                SystemCode = BaseUtil.ConvertToString(dr[FieldSystemCode]);
+            }
             if (dr.ContainsColumn(FieldResourceCategory))
             {
                 ResourceCategory = BaseUtil.ConvertToString(dr[FieldResourceCategory]);
@@ -260,6 +272,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("组织机构权限范围")]
         public const string CurrentTableName = "BaseOrganizationScope";
+
+        ///<summary>
+        /// 子系统编码
+        ///</summary>
+        public const string FieldSystemCode = "SystemCode";
 
         ///<summary>
         /// 什么类型的

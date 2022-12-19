@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -28,6 +28,7 @@ namespace DotNet.Business
     /// </remarks>
     public partial class BaseModuleManager
     {
+        #region public override bool RemoveCache(string key) 删除缓存
         /// <summary>
         /// 删除缓存
         /// </summary>
@@ -45,6 +46,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public static BaseModuleEntity GetCacheByKey(string key) 根据Key获取缓存
         /// <summary>
         /// 根据Key获取缓存
         /// </summary>
@@ -62,6 +66,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region private static void SetCache(string systemCode, BaseModuleEntity entity) 设置缓存
         /// <summary>
         /// 设置缓存
         /// </summary>
@@ -84,6 +91,9 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region private static void SetListCache(string key, List<BaseModuleEntity> list) 设置List缓存
         /// <summary>
         /// 设置List缓存
         /// </summary>
@@ -96,6 +106,9 @@ namespace DotNet.Business
                 CacheUtil.Set<List<BaseModuleEntity>>(key, list);
             }
         }
+        #endregion
+
+        #region private static List<BaseModuleEntity> GetListCache(string key) 获取List缓存
 
         /// <summary>
         /// 获取List缓存
@@ -113,5 +126,7 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
     }
 }

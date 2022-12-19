@@ -797,7 +797,7 @@ namespace DotNet.Business
                     {
                         // 4.成功激活用户
                         StatusCode = Status.Ok.ToString();
-                        manager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
+                        manager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
                         return userInfo;
                     }
                 }

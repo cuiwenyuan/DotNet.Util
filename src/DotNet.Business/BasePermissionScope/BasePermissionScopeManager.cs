@@ -972,7 +972,7 @@ namespace DotNet.Business
                            BaseOrganizationEntity.CurrentTableName + "') "
                            + "        AND (ResourceId = '" + userEntity.CompanyId + "' OR "
                            + "              ResourceId = '" + userEntity.DepartmentId + "' OR "
-                           + "              ResourceId = '" + userEntity.SubCompanyId + "' OR"
+                           + "              ResourceId = '" + userEntity.SubCompanyId + "' OR "
                            + "              ResourceId = '" + userEntity.WorkgroupId + "') "
                            + "        AND (TargetCategory = '" + targetCategory + "') "
                            + "        AND (PermissionId = '" + permissionId + "') "

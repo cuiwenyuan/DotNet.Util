@@ -38,7 +38,6 @@ namespace DotNet.Business
     /// </author>
     public partial class BaseModuleManager : BaseManager
     {
-
         #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseModuleEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
         /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
@@ -460,7 +459,7 @@ namespace DotNet.Business
             foreach (DataRow dr in dt.Rows)
             {
                 id = dr[BaseModuleEntity.FieldId].ToString();
-                result += SetProperty(id, new KeyValuePair<string, object>(BaseModuleEntity.FieldSortCode, sortCode[i]));
+                result += Update(id, new KeyValuePair<string, object>(BaseModuleEntity.FieldSortCode, sortCode[i]));
                 i++;
             }
             return result;

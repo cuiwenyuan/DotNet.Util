@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="BaseUserOpenAuthManager.cs" company="DotNet">
-//     Copyright (c) 2020, All rights reserved.
+// <copyright file="BaseUserOAuthManager.cs" company="DotNet">
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ namespace DotNet.Business
         /// <param name="openId"></param>
         /// <param name="unionId"></param>
         /// <returns></returns>
-        public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId)
+        public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId, string systemCode)
         {
             BaseUserOAuthEntity result = null;
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(openId))
@@ -131,11 +131,6 @@ namespace DotNet.Business
             }
             return result;
         }
-        #endregion
-
-        #region 获取实体
-
-
         #endregion
     }
 }

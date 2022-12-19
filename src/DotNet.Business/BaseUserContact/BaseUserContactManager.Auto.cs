@@ -134,9 +134,9 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="parameters">参数</param>
-        public BaseUserContactEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        public BaseUserContactEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
-            return BaseEntity.Create<BaseUserContactEntity>(GetDataTable(parameters));
+            return BaseEntity.Create<BaseUserContactEntity>(GetDataTable(parameters, topLimit, order));
         }
 
     }

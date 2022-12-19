@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -583,7 +583,7 @@ namespace DotNet.Business
                             + " FROM " + BaseStaffEntity.CurrentTableName
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "A ON " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId;
-                            //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
+            //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
             if (string.IsNullOrEmpty(organizationId))
             {
                 sql += " WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ";
@@ -663,6 +663,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public DataTable GetChildrenStaffs(string organizationId) 获取下属员工
         /// <summary>
         /// 获取下属员工
         /// </summary>
@@ -686,6 +687,9 @@ namespace DotNet.Business
             return GetDataTableByOrganizations(organizationIds);
         }
 
+        #endregion
+
+        #region public DataTable GetParentChildrenStaffs(string organizationId) 获取上级下的所有下属
         /// <summary>
         /// 获取上级下的所有下属
         /// </summary>
@@ -698,8 +702,9 @@ namespace DotNet.Business
             var organizationIds = organizationManager.GetChildrensIdByCode(BaseOrganizationEntity.FieldCode, organizationCode);
             return GetDataTableByOrganizations(organizationIds);
         }
+        #endregion
 
-        #region public DataTable GetDataTable()
+        #region public DataTable GetDataTable() 获取员工列表
         /// <summary>
         /// 获取员工列表
         /// </summary>
@@ -743,23 +748,22 @@ namespace DotNet.Business
         public DataTable GetDataTable(string fieldName, string fieldValue)
         {
             var sql = "SELECT A.* "
+                    + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyCode"
+                    + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
 
-                            + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyCode"
-                            + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
+                    + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentCode"
+                    + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentName "
 
-                            + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentCode"
-                            + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.DepartmentId) AS DepartmentName "
+                    + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupCode"
+                    + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
 
-                            + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupCode"
-                            + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = A.WorkgroupId) AS WorkgroupName "
+                    + " ,(SELECT ItemName FROM ItemsDuty WHERE ItemsDuty.Id = A.DutyId) AS DutyName "
 
-                            + " ,(SELECT ItemName FROM ItemsDuty WHERE ItemsDuty.Id = A.DutyId) AS DutyName "
+                    + " ,(SELECT ItemName FROM ItemsTitle WHERE ItemsTitle.Id = A.TitleId) AS TitleName "
 
-                            + " ,(SELECT ItemName FROM ItemsTitle WHERE ItemsTitle.Id = A.TitleId) AS TitleName "
-
-                            + " FROM " + BaseStaffEntity.CurrentTableName + " A "
-                            + " WHERE " + fieldName + " = " + DbHelper.GetParameter(fieldName)
-                            + " ORDER BY A.SortCode";
+                    + " FROM " + BaseStaffEntity.CurrentTableName + " A "
+                    + " WHERE " + fieldName + " = " + DbHelper.GetParameter(fieldName)
+                    + " ORDER BY A.SortCode";
             return DbHelper.Fill(sql, new IDbDataParameter[] { DbHelper.MakeParameter(fieldName, fieldValue) });
         }
         #endregion
@@ -866,7 +870,7 @@ namespace DotNet.Business
                 result += userManager.SetDeleted(userId);
             }
             // 将员工的用户设置为空
-            result += SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, staffId), new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, 0));
+            result += Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, staffId), new KeyValuePair<string, object>(BaseStaffEntity.FieldUserId, 0));
             return result;
         }
         #endregion
@@ -888,7 +892,7 @@ namespace DotNet.Business
                 userManager.SetDeleted(userId);
             }
             // 再把员工设置为是否删除
-            return SetProperty(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 1));
+            return Update(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 1));
         }
         #endregion
 
@@ -907,7 +911,7 @@ namespace DotNet.Business
                 id = dr[BaseStaffEntity.FieldId].ToString();
                 var managerSequence = new BaseSequenceManager(DbHelper);
                 sortCode = managerSequence.Increment(CurrentTableName);
-                result += SetProperty(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldSortCode, sortCode));
+                result += Update(id, new KeyValuePair<string, object>(BaseStaffEntity.FieldSortCode, sortCode));
             }
             return result;
         }

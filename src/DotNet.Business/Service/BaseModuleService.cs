@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -423,7 +423,7 @@ namespace DotNet.Business
             {
                 var tableName = userInfo.SystemCode + "Module";
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
-                result = manager.SetProperty(moduleId, new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, parentId));
+                result = manager.Update(moduleId, new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, parentId));
             });
 
             return result;
@@ -447,7 +447,7 @@ namespace DotNet.Business
                 var manager = new BaseModuleManager(dbHelper, userInfo, tableName);
                 for (var i = 0; i < moduleIds.Length; i++)
                 {
-                    result += manager.SetProperty(moduleIds[i], new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, parentId));
+                    result += manager.Update(moduleIds[i], new KeyValuePair<string, object>(BaseModuleEntity.FieldParentId, parentId));
                 }
             });
 
