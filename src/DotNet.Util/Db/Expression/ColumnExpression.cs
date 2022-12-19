@@ -11,36 +11,81 @@ namespace DotNet.Util
     /// </summary>
      public class ColumnExpression : DbBaseExpression
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index) : base((ExpressionType)DbExpressionType.Column, type)
         {
             TableAlias = tableAlias;
             Index = index;
             this.MemberInfo = memberInfo;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        /// <param name="functionName"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, object value, string functionName) : this(type, tableAlias, memberInfo, index)
         {
             this.Value = value;
             this.FunctionName = functionName;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, object value) : this(type, tableAlias, memberInfo, index)
         {
             this.Value = value;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
+        /// <param name="columnAlias"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, string columnAlias) : this(type, tableAlias, memberInfo, index)
         {
             this.ColumnAlias = columnAlias;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
+        /// <param name="columnAlias"></param>
+        /// <param name="functionName"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, string columnAlias, string functionName) : this(type, tableAlias, memberInfo, index)
         {
             this.ColumnAlias = columnAlias;
             this.FunctionName = functionName;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="tableAlias"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="index"></param>
+        /// <param name="columnAlias"></param>
+        /// <param name="functionName"></param>
+        /// <param name="value"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, string columnAlias, string functionName,object value) : this(type, tableAlias, memberInfo, index, columnAlias, functionName)
         {
             this.ColumnAlias = columnAlias;

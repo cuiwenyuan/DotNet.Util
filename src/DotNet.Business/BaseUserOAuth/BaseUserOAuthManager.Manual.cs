@@ -97,6 +97,7 @@ namespace DotNet.Business
         /// <param name="name"></param>
         /// <param name="openId"></param>
         /// <param name="unionId"></param>
+        /// <param name="systemCode"></param>
         /// <returns></returns>
         public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId, string systemCode)
         {

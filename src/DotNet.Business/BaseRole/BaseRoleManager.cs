@@ -187,6 +187,7 @@ namespace DotNet.Business
         /// <summary>
         /// 根据子系统、编码获取主键
         /// </summary>
+        /// <param name="systemCode"></param>
         /// <param name="code">编码</param>
         /// <returns>主键</returns>
         public string GetIdByCode(string systemCode, string code)

@@ -134,6 +134,8 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="parameters">参数</param>
+        /// <param name="topLimit"></param>
+        /// <param name="order"></param>
         public BaseDictionaryEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
             return BaseEntity.Create<BaseDictionaryEntity>(GetDataTable(parameters, topLimit, order));
