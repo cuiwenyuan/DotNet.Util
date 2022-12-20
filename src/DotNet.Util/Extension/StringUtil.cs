@@ -481,7 +481,7 @@ namespace DotNet.Util
         /// <remarks>
         /// 算法代码由@Aimeast 独立完成。http://www.cnblogs.com/Aimeast/archive/2011/09/05/2167844.html
         /// </remarks>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="words"></param>
         /// <returns></returns>
         public static String[] LCSSearch(String key, String[] words)
@@ -666,7 +666,7 @@ namespace DotNet.Util
 
         /// <summary>模糊匹配</summary>
         /// <param name="str"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="maxError"></param>
         /// <returns></returns>
         public static KeyValuePair<Int32, Int32> Match(String str, String key, Int32 maxError = 0)

@@ -30,7 +30,7 @@ namespace DotNet.Util
         /// <summary>
         /// AppSettting
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="encrypt"></param>
         /// <returns></returns>
         public static string AppSettings(string key, bool encrypt)

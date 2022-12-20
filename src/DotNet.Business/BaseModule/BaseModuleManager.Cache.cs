@@ -32,7 +32,7 @@ namespace DotNet.Business
         /// <summary>
         /// 删除缓存
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public override bool RemoveCache(string key)
         {
@@ -52,7 +52,7 @@ namespace DotNet.Business
         /// <summary>
         /// 根据Key获取缓存
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static BaseModuleEntity GetCacheByKey(string key)
         {
@@ -97,7 +97,7 @@ namespace DotNet.Business
         /// <summary>
         /// 设置List缓存
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="list"></param>
         private static void SetListCache(string key, List<BaseModuleEntity> list)
         {
@@ -113,7 +113,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取List缓存
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         private static List<BaseModuleEntity> GetListCache(string key)
         {

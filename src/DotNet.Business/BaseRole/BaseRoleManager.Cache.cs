@@ -29,7 +29,7 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存中获取
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static BaseRoleEntity GetCacheByKey(string key)
         {

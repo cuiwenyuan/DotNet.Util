@@ -37,7 +37,7 @@ namespace DotNet.Business
         /// <summary>
         /// 删除缓存
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public override bool RemoveCache(string key)
         {
@@ -54,7 +54,7 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存获取
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static BaseOrganizationEntity GetCacheByKey(string key)
         {

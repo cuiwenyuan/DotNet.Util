@@ -87,7 +87,7 @@ namespace DotNet.Util
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static bool Exists(string key)
         {
@@ -96,7 +96,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取选项值
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static string[] GetOptions(string key)
         {
@@ -1168,7 +1168,7 @@ namespace DotNet.Util
         /// <summary>
         /// 设置值
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="keyValue"></param>
         /// <param name="checkExists"></param>
         public static void SetValue(string key, string keyValue, bool checkExists = false)
@@ -1186,7 +1186,7 @@ namespace DotNet.Util
         /// 设置值
         /// </summary>
         /// <param name="xmlDocument"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="keyValue"></param>
         /// <param name="checkExists"></param>
         /// <returns></returns>
@@ -1200,7 +1200,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="xmlDocument"></param>
         /// <param name="selectPath"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="keyValue"></param>
         /// <param name="checkExists"></param>
         /// <returns></returns>

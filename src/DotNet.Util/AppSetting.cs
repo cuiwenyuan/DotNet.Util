@@ -87,7 +87,7 @@ namespace DotNet.Util
         /// <summary>
         /// GetSettingString 多个节点name格式 ：["key:key1"]
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static string GetSettingString(string key)
         {
@@ -97,7 +97,7 @@ namespace DotNet.Util
         /// <summary>
         /// GetSection多个节点,通过.GetSection("key")["key1"]获取
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static IConfigurationSection GetSection(string key)
         {

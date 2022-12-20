@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// BaseParameterManager
     /// 参数管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2016.03.11 版本：1.1 JiRiGaLa	设置系统参数的方法进行改进。
     ///		2016.03.01 版本：1.0 JiRiGaLa	分离代码。

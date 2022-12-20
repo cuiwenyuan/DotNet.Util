@@ -56,7 +56,7 @@ namespace DotNet.Util
         /// 混淆id为字符串
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static string Mixup(long id, string key = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
         {
@@ -89,7 +89,7 @@ namespace DotNet.Util
         /// 解开混淆字符串
         /// </summary>
         /// <param name="code"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static long UnMixup(string code, string key = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
         {
@@ -117,7 +117,7 @@ namespace DotNet.Util
         /// 10进制转换为62进制
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         private static string Convert(long id, string key)
         {
@@ -135,7 +135,7 @@ namespace DotNet.Util
         /// 将62进制转为10进制
         /// </summary>
         /// <param name="code"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         private static long UnConvert(string code, string key)
         {

@@ -358,7 +358,7 @@ namespace DotNet.Util
         /// 20140219 吉日嘎拉 就是出错了，也不能让程序崩溃
         /// </summary>
         /// <param name="targetValue"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static string DesDecrypt(string targetValue, string key)
         {

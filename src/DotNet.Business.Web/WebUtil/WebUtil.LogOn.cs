@@ -1098,7 +1098,7 @@ namespace DotNet.Business
         /// DES数据解密
         /// </summary>
         /// <param name="targetValue"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         private static string Decrypt(string targetValue, string key)
         {

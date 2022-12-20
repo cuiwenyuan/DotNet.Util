@@ -1518,7 +1518,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="newHash"></param>
         /// <param name="ruleType"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static bool IsRuleTip(Hashtable newHash, string ruleType, out string key)
         {
