@@ -39,7 +39,7 @@ namespace DotNet.Util
         /// SetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name"></param>
+        /// <param name="name">Ãû³Æ</param>
         /// <param name="value"></param>
         public static void SetField(object obj, string name, object value)
         {
@@ -51,7 +51,7 @@ namespace DotNet.Util
         /// GetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name"></param>
+        /// <param name="name">Ãû³Æ</param>
         /// <returns></returns>
         public static object GetField(object obj, string name)
         {

@@ -31,7 +31,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dbHelper"></param>
         /// <param name="tableName"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         {

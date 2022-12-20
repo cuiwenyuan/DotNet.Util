@@ -146,8 +146,8 @@ namespace DotNet.Business
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(int topLimit = 0, string order = null)
         {
@@ -174,9 +174,9 @@ namespace DotNet.Business
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(string name, Object[] values, string order = null)
         {
@@ -186,7 +186,7 @@ namespace DotNet.Business
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="order"></param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, string order)
         {
@@ -196,9 +196,9 @@ namespace DotNet.Business
         /// <summary>
         /// GetDataTable
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order)
         {
@@ -209,8 +209,8 @@ namespace DotNet.Business
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters">查询条件</param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, int topLimit = 0, string order = null)
         {
@@ -235,7 +235,7 @@ namespace DotNet.Business
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="topLimit"></param>
+        /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, int topLimit = 0, string order = null)

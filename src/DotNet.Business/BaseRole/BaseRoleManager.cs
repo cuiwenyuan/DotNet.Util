@@ -124,7 +124,7 @@ namespace DotNet.Business
         /// <summary>
         /// 添加删除的附加条件
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
 		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
         {
@@ -500,7 +500,7 @@ namespace DotNet.Business
         /// <param name="recordCount"></param>
         /// <param name="pageNo"></param>
         /// <param name="pageSize"></param>
-        /// <param name="orderBy"></param>
+        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
         public DataTable GetUserDataTable(string systemCode, string roleId, string companyId, string userId, string searchKey, out int recordCount, int pageNo, int pageSize, string orderBy)
         {

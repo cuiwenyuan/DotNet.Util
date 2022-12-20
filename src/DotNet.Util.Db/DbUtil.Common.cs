@@ -92,7 +92,7 @@ namespace DotNet.Util
         /// 获得条件语句
         /// </summary>
         /// <param name="dbHelper"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="relation"></param>
         /// <returns></returns>
         public static string GetWhereString(this IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation)

@@ -165,7 +165,7 @@ namespace DotNet.Business
         /// 获取数据表
         /// </summary>
         /// <param name="userIds"></param>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <param name="beginDate"></param>
         /// <param name="endDate"></param>
@@ -181,7 +181,7 @@ namespace DotNet.Business
         /// 获取数据表
         /// </summary>
         /// <param name="userIds"></param>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <param name="beginDate"></param>
         /// <param name="endDate"></param>
@@ -250,7 +250,7 @@ namespace DotNet.Business
         /// <summary>
         /// 按日期查询
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <param name="beginDate">开始时间</param>
         /// <param name="endDate">结束时间</param>

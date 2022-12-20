@@ -27,7 +27,7 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(KeyValuePair<string, object> parameter)

@@ -17,7 +17,7 @@ namespace DotNet.Model
         /// <summary>
         /// DbParameter
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         public DbParameter(string name, object value)
             : this(name, value, ParameterDirection.Input)
@@ -26,7 +26,7 @@ namespace DotNet.Model
         /// <summary>
         /// DbParameter
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <param name="parameterDirection"></param>
         public DbParameter(string name, object value, ParameterDirection parameterDirection)

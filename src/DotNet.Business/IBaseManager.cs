@@ -101,16 +101,16 @@ namespace DotNet.Business
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(string name, Object[] values, string order);
         /// <summary>
@@ -122,31 +122,31 @@ namespace DotNet.Business
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, int topLimit, string order);
 
@@ -166,16 +166,16 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="condition">查询条件(不包含WHERE)</param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -196,59 +196,59 @@ namespace DotNet.Business
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(string name, Object[] values, string order = null) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         List<T> GetList<T>(params KeyValuePair<string, object>[] parameters) where T : BaseEntity, new();
 
@@ -260,23 +260,23 @@ namespace DotNet.Business
         /// 读取属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string GetProperty(object id, string targetField);
         /// <summary>
         /// 读取属性
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string GetProperty(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField);
         /// <summary>
         /// 读取属性
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
-        /// <param name="orderBy"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
+        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
         string GetProperty(List<KeyValuePair<string, object>> parameters, string targetField, string orderBy);
 
@@ -287,26 +287,26 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         string GetId(KeyValuePair<string, object> parameter);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         string GetId(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string GetId(List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string GetId(params KeyValuePair<string, object>[] parameters);
 
@@ -321,27 +321,27 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         string[] GetIds(KeyValuePair<string, object> parameter);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         string[] GetIds(string name, Object[] values);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         string[] GetIds(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string[] GetIds(List<KeyValuePair<string, object>> parameters);
         #endregion
@@ -351,61 +351,61 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="order"></param>
+        /// <param name="order">排序字段</param>
         /// <returns></returns>
         string[] GetProperties(string order);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter, int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(List<KeyValuePair<string, object>> parameters, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(List<KeyValuePair<string, object>> parameters, int topLimit, string targetField);
 
@@ -416,7 +416,7 @@ namespace DotNet.Business
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> parameter);
@@ -424,7 +424,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object id, KeyValuePair<string, object> parameter);
@@ -432,7 +432,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object id, List<KeyValuePair<string, object>> parameters);
@@ -440,7 +440,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object[] ids, KeyValuePair<string, object> parameter);
@@ -448,25 +448,25 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameter"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameters"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters);
@@ -475,7 +475,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="whereParameter1"></param>
         /// <param name="whereParameter2"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter);
@@ -483,7 +483,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter);
@@ -491,7 +491,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter);
@@ -499,7 +499,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters);
@@ -507,7 +507,7 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters);
@@ -526,37 +526,37 @@ namespace DotNet.Business
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter, object id);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, object id);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(List<KeyValuePair<string, object>> parameters, object id);
@@ -585,14 +585,14 @@ namespace DotNet.Business
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         int Delete(string name, object[] values);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         int Delete(List<KeyValuePair<string, object>> parameters);
 

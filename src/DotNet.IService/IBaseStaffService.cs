@@ -231,7 +231,7 @@ namespace DotNet.IService
         /// 获取主键
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <returns></returns>
         string GetId(BaseUserInfo userInfo, string name, object value);

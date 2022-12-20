@@ -628,8 +628,8 @@ namespace DotNet.Business
         /// 获取属性
         /// </summary>
         /// <param name="userInfo"></param>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public string GetProperty(BaseUserInfo userInfo, List<KeyValuePair<string, object>> parameters, string targetField)
         {

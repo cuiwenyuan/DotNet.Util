@@ -94,7 +94,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取实体
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="openId"></param>
         /// <param name="unionId"></param>
         /// <param name="systemCode"></param>

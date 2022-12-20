@@ -43,7 +43,7 @@ namespace DotNet.Model
         /// SqlExecute
         /// </summary>
         /// <param name="commandText"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="commandType"></param>
         public SqlExecute(string commandText, object parameters, CommandType commandType)
         {
@@ -68,7 +68,7 @@ namespace DotNet.Model
         /// <summary>
         /// AddParameter
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <param name="value"></param>
         /// <param name="parameterDirection"></param>
         /// <returns></returns>

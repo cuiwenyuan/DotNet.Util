@@ -134,8 +134,8 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="parameters">参数</param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序字段</param>
         public BaseMessageQueueEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
             return BaseEntity.Create<BaseMessageQueueEntity>(GetDataTable(parameters, topLimit, order));

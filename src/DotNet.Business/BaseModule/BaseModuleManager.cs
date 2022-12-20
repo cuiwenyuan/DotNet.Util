@@ -132,7 +132,7 @@ namespace DotNet.Business
         /// <summary>
         /// 添加删除的附加条件
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
 		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
         {

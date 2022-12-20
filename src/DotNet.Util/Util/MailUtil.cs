@@ -238,7 +238,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="mailMessage"></param>
         /// <param name="stream"></param>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         public static void AddAttachments(MailMessage mailMessage, Stream stream, string name)
         {
             try

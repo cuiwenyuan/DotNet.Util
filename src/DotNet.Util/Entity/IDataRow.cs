@@ -12,7 +12,7 @@ namespace DotNet.Model
         /// <summary>
         /// this
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         object this[string name] { get; }
         /// <summary>

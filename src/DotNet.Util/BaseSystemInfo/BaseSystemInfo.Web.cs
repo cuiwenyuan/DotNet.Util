@@ -46,7 +46,7 @@ namespace DotNet.Util
         /// <summary>
         /// 上传附件文件后缀
         /// </summary>
-        public static string UploadFileExtension = "doc,docx,xls,xlsx,ppt,pptx,txt,csv,pdf,gif,jpg,jpeg,png,bmp,rar,7z,zip,wma,mp4,msg,apk,ipa";
+        public static string UploadFileExtension = "doc,docx,xls,xlsx,ppt,pptx,txt,csv,pdf,gif,jpg,jpeg,png,bmp,rar,7z,zip,wma,mp4,msg,apk,ipa,mrt";
         /// <summary>
         /// 上传视频文件后缀
         /// </summary>

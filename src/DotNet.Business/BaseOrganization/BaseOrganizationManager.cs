@@ -774,7 +774,7 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存获取
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         public static string GetIdByNameByCache(string name)
         {
