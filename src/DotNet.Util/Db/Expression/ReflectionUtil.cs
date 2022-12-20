@@ -216,7 +216,7 @@ namespace DotNet.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="model"></param>
         /// <param name="propertyName"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <exception cref="ArgumentNullException"></exception>
         public static void SetPropertyValue<T>(this T model, string propertyName, object value)
         {

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -382,7 +382,7 @@ namespace DotNet.Util
         /// <summary>
         /// 镜像数据
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         public void CloneData(BaseUserInfo userInfo)
         {
             _systemCode = userInfo.SystemCode;

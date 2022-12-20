@@ -831,7 +831,7 @@ namespace DotNet.Business
         /// 近用于LDAP集成登录或其它特殊用途
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userName">用户名</param>
         /// <returns></returns>
         public UserLogonResult LogonByUserNameOnly(string systemCode, BaseUserInfo userInfo, string userName)

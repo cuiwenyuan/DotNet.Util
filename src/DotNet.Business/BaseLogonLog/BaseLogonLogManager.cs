@@ -137,7 +137,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取切割的表名
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <returns></returns>
         public static string GetSplitTableName(BaseUserEntity userInfo)
         {
@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// 增加日志
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="ipAddress"></param>
         /// <param name="ipAddressName"></param>
         /// <param name="macAddress"></param>

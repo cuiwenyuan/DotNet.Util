@@ -627,7 +627,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameters">参数</param>
         /// <param name="targetField">目标字段</param>
         /// <returns></returns>

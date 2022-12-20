@@ -95,9 +95,9 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="openId"></param>
-        /// <param name="unionId"></param>
-        /// <param name="systemCode"></param>
+        /// <param name="openId">OpenId</param>
+        /// <param name="unionId">UnionId</param>
+        /// <param name="systemCode">子系统编码</param>
         /// <returns></returns>
         public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId, string systemCode)
         {

@@ -127,7 +127,7 @@ namespace DotNet.Business
         /// <summary>
         /// 检查是否存在
         /// </summary>
-        /// <param name="systemCode"></param>
+        /// <param name="systemCode">子系统编码</param>
         /// <param name="permissionId">权限主键</param>
         /// <param name="resourceCategory">资源分类</param>
         /// <param name="resourceId">资源主键</param>

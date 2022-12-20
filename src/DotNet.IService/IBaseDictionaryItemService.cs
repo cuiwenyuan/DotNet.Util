@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -37,7 +37,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取列表
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="tableName"></param>
         /// <returns></returns>
         List<BaseDictionaryItemEntity> GetList(BaseUserInfo userInfo, string tableName);
@@ -53,7 +53,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取下拉框数据
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="code"></param>
         /// <returns></returns>
         DataTable GetDataTableByCode(BaseUserInfo userInfo, string code);
@@ -61,7 +61,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取列表
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="code"></param>
         /// <returns></returns>
         List<BaseDictionaryItemEntity> GetListByCode(BaseUserInfo userInfo, string code);
@@ -69,7 +69,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取批量下拉框数据
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="codes"></param>
         /// <returns></returns>
         DataSet GetDataSetByCodes(BaseUserInfo userInfo, string[] codes);

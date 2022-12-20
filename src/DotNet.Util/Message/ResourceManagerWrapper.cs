@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -92,7 +92,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="key"></param>
         /// <returns></returns>
         public string Get(BaseUserInfo userInfo, string key)
@@ -133,7 +133,7 @@ namespace DotNet.Util
         /// <param name="path"></param>
         /// <param name="language"></param>
         /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public void Serialize(string path, string language, string key, string value)
         {
             var resources = GetResources(path, language);

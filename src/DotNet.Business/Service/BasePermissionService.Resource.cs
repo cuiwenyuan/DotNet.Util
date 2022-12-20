@@ -308,7 +308,7 @@ namespace DotNet.Business
         /// <summary>
         /// GrantPermissionScopeTarget
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="resourceCategory"></param>
         /// <param name="resourceIds"></param>
         /// <param name="targetCategory"></param>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -101,7 +101,7 @@ namespace DotNet.Util
         /// Set
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public bool Set(string key, string value)
         {

@@ -187,7 +187,7 @@ namespace DotNet.Business
         /// <summary>
         /// 根据子系统、编码获取主键
         /// </summary>
-        /// <param name="systemCode"></param>
+        /// <param name="systemCode">子系统编码</param>
         /// <param name="code">编码</param>
         /// <returns>主键</returns>
         public string GetIdByCode(string systemCode, string code)
@@ -460,7 +460,7 @@ namespace DotNet.Business
         /// <summary>
         /// 分页查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="categoryCode">分类编码</param>
         /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -194,7 +194,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterReadDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterReadDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -207,7 +207,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterWriteDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -220,7 +220,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -233,7 +233,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterWriteDbWithLock
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="locker"></param>
         /// <param name="fun"></param>
@@ -272,7 +272,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterWriteDbWithLock
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="locker"></param>
         /// <param name="fun"></param>
@@ -291,7 +291,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessUserCenterWriteDbWithTransaction
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessUserCenterWriteDbWithTransaction(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -304,7 +304,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessBusinessDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessBusinessDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -317,7 +317,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessLogonLogDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessLogonLogDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -330,7 +330,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessMessageDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessMessageDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -344,7 +344,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessWorkFlowDb
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessWorkFlowDb(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -358,7 +358,7 @@ namespace DotNet.Business
         /// <summary>
         /// ProcessWorkFlowDbWithTransaction
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="parameter">参数</param>
         /// <param name="fun"></param>
         public static void ProcessWorkFlowDbWithTransaction(BaseUserInfo userInfo, ServiceInfo parameter, ProcessFun fun)
@@ -512,7 +512,7 @@ namespace DotNet.Business
         /// <summary>
         /// 开始
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="currentMethod"></param>
         /// <returns></returns>
 		private static int Begin(BaseUserInfo userInfo, MethodBase currentMethod)
@@ -531,7 +531,7 @@ namespace DotNet.Business
         /// <summary>
         /// 结束
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="milliStart"></param>
         /// <param name="currentMethod"></param>
         private static void End(BaseUserInfo userInfo, int milliStart, MethodBase currentMethod)
@@ -544,7 +544,7 @@ namespace DotNet.Business
         /// <summary>
         /// 结束
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="milliStart"></param>
         /// <param name="currentMethod"></param>
         /// <param name="getOnline"></param>

@@ -162,7 +162,7 @@ namespace DotNet.Business
         /// <summary>
         /// 转换为UserInfo用户信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userEntity"></param>
         /// <param name="userLogonEntity"></param>
         /// <param name="validateUserOnly"></param>

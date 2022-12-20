@@ -69,7 +69,7 @@ namespace DotNet.Util
         }
 
         /// <summary>归还</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public virtual Boolean Put(T value)
         {

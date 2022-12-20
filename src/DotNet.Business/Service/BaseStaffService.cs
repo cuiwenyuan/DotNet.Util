@@ -369,7 +369,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取下属员工
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="organizationId"></param>
         /// <returns></returns>
         public DataTable GetChildrenStaffs(BaseUserInfo userInfo, string organizationId)
@@ -390,7 +390,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取父级下属员工
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="organizationId"></param>
         /// <returns></returns>
         public DataTable GetParentChildrenStaffs(BaseUserInfo userInfo, string organizationId)

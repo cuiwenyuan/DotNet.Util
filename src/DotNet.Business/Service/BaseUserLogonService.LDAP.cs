@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2010, DotNet.
+// All Rights Reserved. Copyright (c) 2010, DotNet.
 //-----------------------------------------------------------------------------
 
 using System.Reflection;

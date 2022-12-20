@@ -117,7 +117,7 @@ namespace DotNet.Util
 
         
         /// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <returns></returns>
         public static String Join(this IEnumerable value, String separator = ",")
@@ -134,7 +134,7 @@ namespace DotNet.Util
         }
 
         /// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <param name="func">把对象转为字符串的委托</param>
         /// <returns></returns>

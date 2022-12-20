@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MessageQueueManager.cs" company="DotNet">
-//     Copyright (c) 2019, All rights reserved.
+// <copyright file="BaseMessageQueueManager.cs" company="DotNet">
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -19,11 +19,11 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    ///	2016-12-18 版本：1.0 Troy.Cui 创建文件。
+    ///	2022-12-16 版本：1.0 Troy.Cui 创建文件。
     ///		
     /// <author>
     ///	<name>Troy.Cui</name>
-    ///	<date>2016-12-18</date>
+    ///	<date>2022-12-16</date>
     /// </author> 
     /// </summary>
     public partial class BaseMessageQueueManager : BaseManager

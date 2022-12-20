@@ -166,7 +166,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userIds"></param>
         /// <param name="name">名称</param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="beginDate"></param>
         /// <param name="endDate"></param>
         /// <param name="processId"></param>
@@ -182,7 +182,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userIds"></param>
         /// <param name="name">名称</param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="beginDate"></param>
         /// <param name="endDate"></param>
         /// <param name="processId"></param>
@@ -251,7 +251,7 @@ namespace DotNet.Business
         /// 按日期查询
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="beginDate">开始时间</param>
         /// <param name="endDate">结束时间</param>
         /// <param name="processId">日志类型</param>

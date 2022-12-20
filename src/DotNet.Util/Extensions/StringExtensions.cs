@@ -405,7 +405,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToSByte
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static sbyte? ToSByte(this string value)
         {
@@ -420,7 +420,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToByte
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static byte? ToByte(this string value)
         {
@@ -435,7 +435,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToUInt16
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static ushort? ToUInt16(this string value)
         {
@@ -449,7 +449,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToInt16
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static short? ToInt16(this string value)
         {
@@ -462,7 +462,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToUInt32
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static uint? ToUInt32(this string value)
         {
@@ -476,7 +476,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToUInt64
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static ulong? ToUInt64(this string value)
         {
@@ -490,7 +490,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToInt64
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static long? ToInt64(this string value)
         {
@@ -504,7 +504,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToSingle
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static float? ToSingle(this string value)
         {
@@ -518,7 +518,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToDouble
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static double? ToDouble(this string value)
         {
@@ -532,7 +532,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToDecimal
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static decimal? ToDecimal(this string value)
         {
@@ -546,7 +546,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToBoolean
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static bool? ToBoolean(this string value)
         {

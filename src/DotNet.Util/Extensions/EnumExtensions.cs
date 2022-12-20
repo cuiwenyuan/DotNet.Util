@@ -26,7 +26,7 @@ namespace DotNet.Util
         /// <summary>
         /// 获取枚举类型的Description说明
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static string ToDesc(this Enum value)
         {
@@ -53,7 +53,7 @@ namespace DotNet.Util
         /// <summary>
         /// ToResult
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="ignoreUnKnown"></param>
         /// <returns></returns>
         public static List<OptionResultModel> ToResult(this Enum value, bool ignoreUnKnown = false)

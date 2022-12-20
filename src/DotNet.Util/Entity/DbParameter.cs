@@ -1,5 +1,5 @@
 ﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //--------------------------------------------------------------------
 
 using System;
@@ -18,7 +18,7 @@ namespace DotNet.Model
         /// DbParameter
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public DbParameter(string name, object value)
             : this(name, value, ParameterDirection.Input)
         {
@@ -27,7 +27,7 @@ namespace DotNet.Model
         /// DbParameter
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="parameterDirection"></param>
         public DbParameter(string name, object value, ParameterDirection parameterDirection)
         {

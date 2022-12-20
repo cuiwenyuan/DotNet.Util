@@ -31,7 +31,7 @@ namespace DotNet.Util
         /// <param name="tableAlias"></param>
         /// <param name="memberInfo"></param>
         /// <param name="index"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="functionName"></param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, object value, string functionName) : this(type, tableAlias, memberInfo, index)
         {
@@ -45,7 +45,7 @@ namespace DotNet.Util
         /// <param name="tableAlias"></param>
         /// <param name="memberInfo"></param>
         /// <param name="index"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, object value) : this(type, tableAlias, memberInfo, index)
         {
             this.Value = value;
@@ -85,7 +85,7 @@ namespace DotNet.Util
         /// <param name="index"></param>
         /// <param name="columnAlias"></param>
         /// <param name="functionName"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public ColumnExpression(Type type, string tableAlias, MemberInfo memberInfo, int index, string columnAlias, string functionName,object value) : this(type, tableAlias, memberInfo, index, columnAlias, functionName)
         {
             this.ColumnAlias = columnAlias;
