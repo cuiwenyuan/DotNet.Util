@@ -264,6 +264,7 @@ namespace DotNet.Business
 
         #region 新增和更新
 
+        #region public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
         /// <summary>
         /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
@@ -286,6 +287,9 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
         /// <summary>
         /// 添加或更新(主键是否为0)
         /// </summary>
@@ -315,6 +319,10 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region public virtual int Update<T>(T t)
+
         /// <summary>
         /// 更新
         /// </summary>
@@ -324,6 +332,9 @@ namespace DotNet.Business
             return UpdateEntity(t);
         }
 
+        #endregion
+
+        #region public virtual string AddEntity<T>(T t)
         /// <summary>
         /// 添加实体
         /// </summary>
@@ -347,6 +358,10 @@ namespace DotNet.Business
             return key;
         }
 
+        #endregion
+
+        #region public virtual int UpdateEntity<T>(T t)
+
         /// <summary>
         /// 更新实体
         /// </summary>
@@ -368,6 +383,8 @@ namespace DotNet.Business
             }
             return result;
         }
+
+        #endregion
 
         #endregion
 
@@ -404,6 +421,8 @@ namespace DotNet.Business
         }
 
         #endregion
+
+        #region 删除
 
         #region public virtual int DeleteEntity(object id)
 
@@ -474,6 +493,8 @@ namespace DotNet.Business
             }
             return result;
         }
+
+        #endregion
 
         #endregion
 
