@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         public BaseCalendarEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
             return BaseEntity.Create<BaseCalendarEntity>(GetDataTable(parameters, topLimit, order));

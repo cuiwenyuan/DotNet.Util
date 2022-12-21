@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace DotNet.Util
 {
+    /// <summary>
+    /// 数据查询
+    /// </summary>
     public static class DbQueryUtil
     {
         /// <summary>

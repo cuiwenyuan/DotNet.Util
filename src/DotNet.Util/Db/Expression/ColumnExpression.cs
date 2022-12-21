@@ -101,6 +101,7 @@ namespace DotNet.Util
         /// 包围列的函数，len
         /// </summary>
         public string FunctionName { get; set; }
+
         #region 属性
         /// <summary>
         /// 固定值

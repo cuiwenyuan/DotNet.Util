@@ -34,7 +34,7 @@ namespace DotNet.Business
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns>数据表</returns>
         public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
@@ -50,7 +50,7 @@ namespace DotNet.Business
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">数据库参数</param>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns>数据表</returns>
         public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order) where TModel : new()
         {

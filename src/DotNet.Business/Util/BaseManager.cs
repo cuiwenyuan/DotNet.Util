@@ -373,35 +373,35 @@ namespace DotNet.Business
 
         #region 获取实体
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="id">主键</param>
-        //public virtual T GetEntity(string id)
-        //{
-        //    return ValidateUtil.IsInt(id) ? GetEntity(id.ToInt()) : null;
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        public virtual T GetEntity<T>(string id) where T : BaseEntity, new()
+        {
+            return ValidateUtil.IsInt(id) ? GetEntity<T>(id.ToInt()) : null;
+        }
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="id">主键</param>
-        //public virtual T GetEntity(int id)
-        //{
-        //    return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
-        //    //var cacheKey = CurrentTableName + ".Entity." + id;
-        //    //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-        //    //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        public virtual T GetEntity<T>(int id) where T : BaseEntity, new()
+        {
+            return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //var cacheKey = CurrentTableName + ".Entity." + id;
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="parameters">参数</param>
-        //public virtual T GetEntity(List<KeyValuePair<string, object>> parameters)
-        //{
-        //    return BaseEntity.Create<T>(GetDataTable(parameters));
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public virtual T GetEntity<T>(List<KeyValuePair<string, object>> parameters) where T : BaseEntity, new()
+        {
+            return BaseEntity.Create<T>(GetDataTable(parameters));
+        }
 
         #endregion
 
@@ -965,8 +965,8 @@ namespace DotNet.Business
                     sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
                     // 5个非必备，但要自动新增的字段
                     var table = EntityUtil.GetTableExpression(t);
-                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) || 
-                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))).ToList();
