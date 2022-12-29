@@ -229,23 +229,23 @@ namespace DotNet.Business
         {
             if (UserInfo != null && addUpdateInfo)
             {
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId)))
+                if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateUserId)).Count == 0)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 }
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName)))
+                if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateUserName)).Count == 0)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 }
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName)))
+                if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateBy)).Count == 0)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 }
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now)))
+                if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateTime)).Count == 0)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
                 }
-                if (!parameters.Contains(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp())))
+                if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateIp)).Count == 0)
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
                 }
