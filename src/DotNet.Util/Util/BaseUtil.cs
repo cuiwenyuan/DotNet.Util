@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -445,7 +445,7 @@ namespace DotNet.Util
         /// <summary>
         /// 开始调试
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="methodBase"></param>
         /// <returns></returns>
         public static int StartDebug(BaseUserInfo userInfo, MethodBase methodBase)
@@ -469,7 +469,7 @@ namespace DotNet.Util
         /// <summary>
         /// 写入结束调试信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="methodBase"></param>
         /// <param name="milliStart"></param>
         /// <param name="consoleColor"></param>
@@ -505,7 +505,7 @@ namespace DotNet.Util
         /// <summary>
         /// 写入结束调试信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="methodBase"></param>
         /// <param name="milliStart"></param>
         /// <returns></returns>
@@ -517,7 +517,7 @@ namespace DotNet.Util
         /// <summary>
         /// 写入调试信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="methodBase"></param>
         public static void WriteDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {

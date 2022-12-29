@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -53,16 +53,6 @@ namespace DotNet.IService
         /// <param name="resourceId">资源主键</param>
         /// <returns>主键数组</returns>
         string[] GetResourcePermissionIds(BaseUserInfo userInfo, string resourceCategory, string resourceId);
-
-        /// <summary>
-        /// 授予资源的权限
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="resourceCategory">资源分类</param>
-        /// <param name="resourceId">资源主键</param>
-        /// <param name="grantPermissionIds">权限主键</param>
-        /// <returns>影响的行数</returns>
-        int GrantResourcePermission(BaseUserInfo userInfo, string resourceCategory, string resourceId, string[] grantPermissionIds);
 
         /// <summary>
         /// 撤消资源的权限

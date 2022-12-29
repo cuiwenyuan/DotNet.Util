@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -18,7 +18,7 @@ namespace DotNet.Util
         /// ToDataTable
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static DataTable ToDataTable<T>(this IEnumerable<T> value) where T : class, new()
         {

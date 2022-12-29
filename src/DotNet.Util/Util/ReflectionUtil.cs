@@ -1,5 +1,5 @@
 //-----------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------
 
 using System;
@@ -39,8 +39,8 @@ namespace DotNet.Util
         /// SetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">名称</param>
+        /// <param name="value">值</param>
         public static void SetField(object obj, string name, object value)
         {
             var fi = obj.GetType().GetField(name, Bf);
@@ -51,7 +51,7 @@ namespace DotNet.Util
         /// GetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         public static object GetField(object obj, string name)
         {
@@ -72,7 +72,7 @@ namespace DotNet.Util
         /// <summary>
         /// ChangeType2
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="conversionType"></param>
         /// <returns></returns>
         public static object ChangeType2(object value, Type conversionType)

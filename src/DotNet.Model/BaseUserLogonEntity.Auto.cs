@@ -45,10 +45,10 @@ namespace DotNet.Model
         public string UserPassword { get; set; } = string.Empty;
 
         /// <summary>
-        /// 当点登录标识
+        /// 单点登录标识
         /// </summary>
-        [FieldDescription("当点登录标识")]
-        [Description("当点登录标识")]
+        [FieldDescription("单点登录标识")]
+        [Description("单点登录标识")]
         [Column(FieldOpenId)]
         public string OpenId { get; set; } = Guid.NewGuid().ToString("N");
 
@@ -404,7 +404,7 @@ namespace DotNet.Model
         public const string FieldUserPassword = "UserPassword";
 
         ///<summary>
-        /// 当点登录标识
+        /// 单点登录标识
         ///</summary>
         public const string FieldOpenId = "OpenId";
 

@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="BaseUserOpenAuthManager.cs" company="DotNet">
-//     Copyright (c) 2020, All rights reserved.
+// <copyright file="BaseUserOAuthManager.cs" company="DotNet">
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -94,11 +94,12 @@ namespace DotNet.Business
         /// <summary>
         /// 获取实体
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="openId"></param>
-        /// <param name="unionId"></param>
+        /// <param name="name">名称</param>
+        /// <param name="openId">OpenId</param>
+        /// <param name="unionId">UnionId</param>
+        /// <param name="systemCode">子系统编码</param>
         /// <returns></returns>
-        public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId)
+        public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId, string systemCode)
         {
             BaseUserOAuthEntity result = null;
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(openId))
@@ -131,11 +132,6 @@ namespace DotNet.Business
             }
             return result;
         }
-        #endregion
-
-        #region 获取实体
-
-
         #endregion
     }
 }

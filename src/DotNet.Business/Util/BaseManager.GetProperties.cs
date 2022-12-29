@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -37,8 +37,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetIds(int topLimit, string targetField)
         {
@@ -47,8 +47,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         public virtual string[] GetIds(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
         {
@@ -62,7 +62,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         public virtual string[] GetIds(KeyValuePair<string, object> parameter)
         {
@@ -75,8 +75,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         public virtual string[] GetIds(string name, Object[] values)
         {
@@ -85,7 +85,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual string[] GetIds(List<KeyValuePair<string, object>> parameters)
         {
@@ -94,7 +94,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual string[] GetIds(params KeyValuePair<string, object>[] parameters)
         {
@@ -112,7 +112,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(string targetField)
         {
@@ -121,8 +121,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(KeyValuePair<string, object> parameter, string targetField)
         {
@@ -135,9 +135,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(KeyValuePair<string, object> parameter, int topLimit, string targetField)
         {
@@ -150,8 +150,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(int topLimit, string targetField)
         {
@@ -160,9 +160,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField)
         {
@@ -176,10 +176,10 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, int topLimit, string targetField)
         {
@@ -193,9 +193,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="targetField"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(string name, Object[] values, string targetField)
         {
@@ -204,8 +204,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(List<KeyValuePair<string, object>> parameters, string targetField)
         {
@@ -214,9 +214,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string[] GetProperties(List<KeyValuePair<string, object>> parameters, int topLimit = 0, string targetField = null)
         {

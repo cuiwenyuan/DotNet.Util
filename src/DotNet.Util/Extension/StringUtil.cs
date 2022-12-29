@@ -117,7 +117,7 @@ namespace DotNet.Util
 
         
         /// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <returns></returns>
         public static String Join(this IEnumerable value, String separator = ",")
@@ -134,7 +134,7 @@ namespace DotNet.Util
         }
 
         /// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <param name="func">把对象转为字符串的委托</param>
         /// <returns></returns>
@@ -481,7 +481,7 @@ namespace DotNet.Util
         /// <remarks>
         /// 算法代码由@Aimeast 独立完成。http://www.cnblogs.com/Aimeast/archive/2011/09/05/2167844.html
         /// </remarks>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="words"></param>
         /// <returns></returns>
         public static String[] LCSSearch(String key, String[] words)
@@ -666,7 +666,7 @@ namespace DotNet.Util
 
         /// <summary>模糊匹配</summary>
         /// <param name="str"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="maxError"></param>
         /// <returns></returns>
         public static KeyValuePair<Int32, Int32> Match(String str, String key, Int32 maxError = 0)

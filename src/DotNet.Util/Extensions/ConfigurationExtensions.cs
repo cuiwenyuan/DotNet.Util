@@ -16,7 +16,7 @@ namespace Microsoft.AspNetCore.Http
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="cfg"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static T Get<T>(this IConfiguration cfg, string key) where T : class, new()
         {

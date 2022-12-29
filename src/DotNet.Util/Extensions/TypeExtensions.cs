@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// 与字符串进行比较，忽略大小写
         /// </summary>
         /// <param name="s"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static bool EqualsIgnoreCase(this string s, string value)
         {

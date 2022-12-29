@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -300,6 +300,7 @@ namespace DotNet.Business
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId + "");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
             }
@@ -310,6 +311,7 @@ namespace DotNet.Business
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userIdExcluded + "");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
             }
@@ -328,6 +330,7 @@ namespace DotNet.Business
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
@@ -339,6 +342,7 @@ namespace DotNet.Business
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleIdExcluded + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
@@ -389,6 +393,7 @@ namespace DotNet.Business
                 sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldUpdateBy);
                 sbView.Append(" FROM " + tableNameRole + " INNER JOIN " + tableNameUserRole);
                 sbView.Append(" ON " + tableNameRole + "." + BaseRoleEntity.FieldId + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldRoleId);
+                sbView.Append(" AND " + tableNameRole + "." + BaseRoleEntity.FieldSystemCode + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldSystemCode);
                 sbView.Append(" WHERE (" + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId + " = " + userId + ")");
             }
             //指定菜单模块，就读取相应的Permission授权日期
@@ -415,6 +420,7 @@ namespace DotNet.Business
                 sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy);
                 sbView.Append(" FROM " + tableNameRole + " INNER JOIN " + tableNamePermission);
                 sbView.Append(" ON " + tableNameRole + "." + BaseRoleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId);
+                sbView.Append(" AND " + tableNameRole + "." + BaseRoleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode);
                 sbView.Append(" WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')");
                 sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + ")");
             }

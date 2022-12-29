@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -237,7 +237,7 @@ namespace DotNet.Business
             else
             {
                 // 检测是否存在
-                result = SetProperty(parameters, new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterContent, parameterContent));
+                result = Update(parameters, new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterContent, parameterContent));
                 if (result == 0)
                 {
                     // 进行增加操作

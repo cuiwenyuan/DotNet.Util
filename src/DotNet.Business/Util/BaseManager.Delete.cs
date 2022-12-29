@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
@@ -69,8 +69,8 @@ namespace DotNet.Business
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         public virtual int Delete(string name, object[] values)
         {
@@ -87,7 +87,7 @@ namespace DotNet.Business
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual int Delete(params KeyValuePair<string, object>[] parameters)
         {
@@ -102,7 +102,7 @@ namespace DotNet.Business
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual int Delete(List<KeyValuePair<string, object>> parameters)
         {
@@ -113,7 +113,7 @@ namespace DotNet.Business
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
 		private int MyDelete(List<KeyValuePair<string, object>> parameters)
         {
@@ -138,7 +138,7 @@ namespace DotNet.Business
         /// <summary>
         /// 添加删除的附加条件
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         protected virtual List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
         {

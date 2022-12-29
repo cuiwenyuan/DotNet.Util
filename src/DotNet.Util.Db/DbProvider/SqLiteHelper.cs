@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved , Copyright (C) 2016 , Hairihan TECH, Ltd.  
+// All Rights Reserved , Copyright (c) 2022, DotNet.  
 //-----------------------------------------------------------------
 
 using System;

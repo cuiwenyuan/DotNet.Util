@@ -54,7 +54,7 @@ namespace DotNet.Util
         /// 添加新缓存
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="t"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
@@ -67,7 +67,7 @@ namespace DotNet.Util
         /// 添加新缓存
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="t"></param>
         /// <param name="timeSpan"></param>
         /// <returns></returns>
@@ -94,7 +94,7 @@ namespace DotNet.Util
         /// 设置缓存
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="t"></param>
         /// <param name="timeSpan"></param>
         /// <returns></returns>
@@ -109,7 +109,7 @@ namespace DotNet.Util
         /// 获取
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static T Get<T>(string key)
         {
@@ -122,7 +122,7 @@ namespace DotNet.Util
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static bool Remove(string key)
         {

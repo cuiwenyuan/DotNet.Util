@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
@@ -81,7 +81,7 @@ namespace DotNet.Business
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <returns>总数</returns>
-        public virtual int GetMin(string fieldName, string condition = null)
+        public virtual int GetMinInt(string fieldName, string condition = null)
         {
             return DbHelper.AggregateInt(CurrentTableName, fieldName, condition: condition, function: "MIN");
         }

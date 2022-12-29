@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -27,6 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseSystemManager : BaseManager
     {
+        #region public static List<BaseDictionaryItemEntity> GetSystemCodes() 获取系统编号清单
         /// <summary>
         /// 获取系统编号清单
         /// </summary>
@@ -38,6 +39,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public static List<BaseDictionaryItemEntity> GetSystemCodesByCache() 通过缓存获取系统编号清单
         /// <summary>
         /// 通过缓存获取系统编号清单
         /// </summary>
@@ -49,6 +53,9 @@ namespace DotNet.Business
             return CacheUtil.Cache<List<BaseDictionaryItemEntity>>(cacheKey, () => GetSystemCodes(), true, false, cacheTime);
         }
 
+        #endregion
+
+        #region public static bool CheckSystemCode(string systemCode) 当前系统是否有效的系统编号
         /// <summary>
         /// 当前系统是否有效的系统编号？
         /// 2016-08-09 吉日嘎拉
@@ -70,5 +77,7 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
     }
 }

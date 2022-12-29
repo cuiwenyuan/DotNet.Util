@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -90,7 +90,7 @@ namespace DotNet.Business
                         result = UpdateEntity(entity);
                         // 02：用户修改时，用户文件夹同步更新
                         // BaseFolderManager manager = new BaseFolderManager(this.DbHelper, this.UserInfo);
-                        // manager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
+                        // manager.Update(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, userEntity.RealName), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, userEntity.Id));
 
                         if (result == 0)
                         {

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -173,25 +173,25 @@ namespace DotNet.Business
                         switch (entity.CategoryCode)
                         {
                             case "Company":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.Name));
+                                userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyName, entity.Name));
                                 break;
                             case "SubCompany":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.Name));
+                                userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyName, entity.Name));
                                 break;
                             case "Department":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.Name));
+                                userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentName, entity.Name));
                                 break;
                             case "SubDepartment":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.Name));
+                                userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldSubDepartmentName, entity.Name));
                                 break;
                             case "Workgroup":
-                                userManager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.Name));
+                                userManager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupName, entity.Name));
                                 break;
 
                         }
                         // 03：组织机构修改时，文件夹同步更新
                         // BaseFolderManager folderManager = new BaseFolderManager(this.DbHelper, this.UserInfo);
-                        // folderManager.SetProperty(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
+                        // folderManager.Update(new KeyValuePair<string, object>(BaseFolderEntity.FieldFolderName, entity.Name), new KeyValuePair<string, object>(BaseFolderEntity.FieldId, entity.Id));
                         if (result == 1)
                         {
                             // AfterUpdate(entity);

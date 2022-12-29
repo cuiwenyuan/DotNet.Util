@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -8,7 +8,7 @@ namespace DotNet.Util
     /// BaseUserInfo
     /// 用户核心基础信息
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///     2014.07.24 JiRiGaLa  版本：1.0 进行分离。
     ///		

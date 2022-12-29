@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="UploadLogManager.cs" company="DotNet">
-//     Copyright (c) 2019, All rights reserved.
+// <copyright file="BaseUploadLogManager.cs" company="DotNet">
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ namespace DotNet.Business
     /// BaseUploadLogManager
     /// 文件上传日志管理层
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///	2016-07-20 版本：1.0 Troy.Cui 创建文件。
     ///		

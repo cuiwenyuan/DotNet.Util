@@ -69,7 +69,7 @@ namespace DotNet.Business
             // 只有管理员才能看到所有的
             //if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
             //{
-                //sb.Append(" AND (" + BaseRoleEntity.FieldUserCompanyId + " = 0 OR " + BaseRoleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //sb.Append(" AND (" + BaseRoleEntity.FieldUserCompanyId + " = 0 OR " + BaseRoleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //}
             if (ValidateUtil.IsInt(departmentId))
             {
@@ -124,7 +124,7 @@ namespace DotNet.Business
         /// <summary>
         /// 添加删除的附加条件
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
 		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
         {
@@ -146,21 +146,20 @@ namespace DotNet.Business
             // 检查名称是否重复
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldName, entity.Name),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
-            {
-                parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
-            }
             //检查角色Code是否重复 Troy.Cui 2016-08-17
             var parametersCode = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, entity.SystemCode),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
             if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
             {
+                parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
             }
 
@@ -184,17 +183,19 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public string GetIdByRealName(string name) 按名称获取主键
+        #region public string GetIdByCode(string systemCode,string code) 根据子系统、编码获取主键
         /// <summary>
-        /// 按名称获取主键
+        /// 根据子系统、编码获取主键
         /// </summary>
-        /// <param name="name">名称</param>
+        /// <param name="systemCode">子系统编码</param>
+        /// <param name="code">编码</param>
         /// <returns>主键</returns>
-        public string GetIdByName(string name)
+        public string GetIdByCode(string systemCode, string code)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, name),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, systemCode),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
             };
@@ -202,20 +203,21 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public static string GetNameByCache(string id) 通过主键获取名称
+
         /// <summary>
         /// 通过主键获取名称
         /// 这里是进行了内存缓存处理，减少数据库的I/O处理，提高程序的运行性能，
         /// 若有数据修改过，重新启动一下程序就可以了，这些基础数据也不是天天修改来修改去的，
         /// 所以没必要过度担忧，当然有需要时也可以写个刷新缓存的程序
         /// </summary>
-        /// <param name="systemCode">系统编号</param>
         /// <param name="id">主键</param>
         /// <returns>显示值</returns>
-        public static string GetNameByCache(string systemCode, string id)
+        public static string GetNameByCache(string id)
         {
             var result = string.Empty;
 
-            var entity = GetEntityByCache("Base", id);
+            var entity = GetEntityByCache(id);
             if (entity != null)
             {
                 result = entity.Name;
@@ -224,6 +226,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public static string GetIdByCodeByCache(string systemCode, string code) 通过编号获取主键
         /// <summary>
         /// 通过编号获取主键
         /// </summary>
@@ -243,6 +248,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public static string GetIdByNameByCache(string systemCode, string name) 通过名称获取主键
         /// <summary>
         /// 通过名称获取主键
         /// </summary>
@@ -262,59 +270,7 @@ namespace DotNet.Business
             return result;
         }
 
-        /// <summary>
-        /// 获取实体
-        /// </summary>
-        /// <param name="code">编号</param>
-        /// <returns>实体</returns>
-        public BaseRoleEntity GetEntityByCode(string code)
-        {
-            BaseRoleEntity result = null;
-
-            var parameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, code),
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
-            };
-            result = BaseEntity.Create<BaseRoleEntity>(GetDataTable(parameters));
-
-            return result;
-        }
-
-        /// <summary>
-        /// 按名称获取实体
-        /// </summary>
-        /// <param name="name">名称</param>
-        public BaseRoleEntity GetEntityByName(string name)
-        {
-            var parameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldName, name),
-                new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
-            };
-            return BaseEntity.Create<BaseRoleEntity>(GetDataTable(parameters));
-        }
-
-        /// <summary>
-        /// 获取角色列表中的角色名称
-        /// </summary>
-        /// <param name="list">角色列表</param>
-        /// <returns>角色名称</returns>
-        public static string GetNames(List<BaseRoleEntity> list)
-        {
-            var result = string.Empty;
-
-            foreach (var entity in list)
-            {
-                result += "," + entity.Name;
-            }
-            if (!string.IsNullOrEmpty(result))
-            {
-                result = result.Substring(1);
-            }
-
-            return result;
-        }
+        #endregion
 
         #region public DataTable GetDataTableByOrganization(string organizationId) 获取列表
         /// <summary>
@@ -398,8 +354,8 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int MoveTo(string id, string targetSystemId)
         {
-            //return this.SetProperty(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemId, targetSystemId));
-            return SetProperty(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, targetSystemId));
+            //return Update(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemId, targetSystemId));
+            return Update(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, targetSystemId));
         }
         #endregion
 
@@ -493,7 +449,7 @@ namespace DotNet.Business
             foreach (DataRow dr in dt.Rows)
             {
                 id = dr[BaseRoleEntity.FieldId].ToString();
-                result += SetProperty(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldSortCode, sortCode[i]));
+                result += Update(id, new KeyValuePair<string, object>(BaseRoleEntity.FieldSortCode, sortCode[i]));
                 i++;
             }
             return result;
@@ -504,7 +460,7 @@ namespace DotNet.Business
         /// <summary>
         /// 分页查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="categoryCode">分类编码</param>
         /// <param name="searchKey">查询关键字</param>
         /// <param name="recordCount">记录数</param>
@@ -544,7 +500,7 @@ namespace DotNet.Business
         /// <param name="recordCount"></param>
         /// <param name="pageNo"></param>
         /// <param name="pageSize"></param>
-        /// <param name="orderBy"></param>
+        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
         public DataTable GetUserDataTable(string systemCode, string roleId, string companyId, string userId, string searchKey, out int recordCount, int pageNo, int pageSize, string orderBy)
         {
@@ -658,47 +614,6 @@ namespace DotNet.Business
             return result;
         }
 
-        /// <summary>
-        /// 获取角色权限范围（组织机构）
-        /// 2015-12-10 吉日嘎拉 整理参数化
-        /// </summary>
-        /// <param name="systemCode">系统编号</param>
-        /// <param name="roleId">角色主键</param>
-        /// <returns>组织机构列表</returns>
-        public List<BaseOrganizationEntity> GetOrganizationList(string systemCode, string roleId)
-        {
-            var result = new List<BaseOrganizationEntity>();
-
-            var tableName = BaseRoleOrganizationEntity.CurrentTableName;
-            if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
-            {
-                tableName = UserInfo.SystemCode + "RoleOrganization";
-            }
-
-            var commandText = @"SELECT *
-     FROM BaseOrganization 
-                                    WHERE BaseOrganization.Enabled = 1 
-                                          AND BaseOrganization." + BaseOrganizationEntity.FieldDeleted + @" = 0  Id IN 
-                                              (SELECT OrganizationId
-                 FROM BaseRoleOrganization
-                                                WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
-                                                  + " AND Enabled = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldEnabled)
-                                                  + " AND Deleted = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + ")";
-
-            commandText = commandText.Replace("BaseRoleOrganization", tableName);
-
-            var dbParameters = new List<IDbDataParameter>
-            {
-                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldRoleId, roleId),
-                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldEnabled, 1),
-                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldDeleted, 0)
-            };
-
-            result = GetList<BaseOrganizationEntity>(DbHelper.ExecuteReader(commandText, dbParameters.ToArray()));
-
-            return result;
-        }
-
         #region public override int Delete(string id) 删除
         /// <summary>
         /// 删除
@@ -750,6 +665,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public static BaseRoleEntity GetEntityByCache(string id)
+
         /// <summary>
         /// 从缓存获取获取实体
         /// </summary>
@@ -758,7 +675,9 @@ namespace DotNet.Business
         {
             return GetEntityByCache("Base", id);
         }
+        #endregion
 
+        #region public static BaseRoleEntity GetEntityByCache(BaseUserInfo userInfo, string id)
         /// <summary>
         /// 从缓存获取获取实体
         /// </summary>
@@ -769,6 +688,9 @@ namespace DotNet.Business
             return GetEntityByCache(userInfo.SystemCode, id);
         }
 
+        #endregion
+
+        #region public static BaseRoleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
         /// <summary>
         /// 从缓存获取获取实体
         /// </summary>
@@ -794,6 +716,7 @@ namespace DotNet.Business
             {
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode,systemCode),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
@@ -805,7 +728,9 @@ namespace DotNet.Business
             //result = manager.GetEntity(id);
             return result;
         }
+        #endregion
 
+        #region public static BaseRoleEntity GetEntityByCacheByCode(string systemCode, string code)
         /// <summary>
         /// 从缓存获取获取实体
         /// </summary>
@@ -831,8 +756,9 @@ namespace DotNet.Business
             {
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode,systemCode),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
                 return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, false, cacheTime);
@@ -844,6 +770,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public static BaseRoleEntity GetEntityByCacheByName(string systemCode, string name)
         /// <summary>
         /// 从缓存获取获取实体
         /// </summary>
@@ -869,8 +798,9 @@ namespace DotNet.Business
             {
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode,systemCode),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
                 return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, false, cacheTime);
@@ -881,6 +811,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public static List<BaseRoleEntity> GetEntitiesByCache(string systemCode = "Base") 获取模块菜单表，从缓存读取
 
@@ -905,12 +837,13 @@ namespace DotNet.Business
                 var roleManager = new BaseRoleManager(tableName);
                 // 读取目标表中的数据
                 var parametersWhere = new List<KeyValuePair<string, object>>
-                    {
-                        // 有效的菜单
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
-                        // 没被删除的菜单
-                        new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
-                    };
+                {
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode,systemCode),
+                    // 有效的菜单
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
+                    // 没被删除的菜单
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
+                };
 
                 // parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldIsVisible, 1));
                 return roleManager.GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldSortCode);
@@ -920,7 +853,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 删除缓存
+        #region public override bool RemoveCache() 删除缓存
 
         /// <summary>
         /// 删除缓存

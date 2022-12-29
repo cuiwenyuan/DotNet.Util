@@ -1,5 +1,5 @@
 ﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //--------------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ namespace DotNet.Model
         /// SqlExecute
         /// </summary>
         /// <param name="commandText"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="commandType"></param>
         public SqlExecute(string commandText, object parameters, CommandType commandType)
         {
@@ -68,8 +68,8 @@ namespace DotNet.Model
         /// <summary>
         /// AddParameter
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">名称</param>
+        /// <param name="value">值</param>
         /// <param name="parameterDirection"></param>
         /// <returns></returns>
         public SqlExecute AddParameter(string name, object value, ParameterDirection parameterDirection)
@@ -81,7 +81,7 @@ namespace DotNet.Model
         /// SetValueAt
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public void SetValueAt(int index, object value)
         {
             _parameters[index].Value = value;

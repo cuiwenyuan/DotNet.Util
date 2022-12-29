@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
@@ -32,7 +32,7 @@ namespace DotNet.Business
         /// <param name="rows">几条记录</param>
         /// <param name="sortField">排序字段</param>
         /// <returns></returns>
-        public virtual DataTable GetDataTableLatest(string condition, string tableName = null, int rows = 1, string sortField = "Id")
+        public virtual DataTable GetDataTableLatest(string condition, string tableName = null, int rows = 1, string sortField = BaseUtil.FieldId)
         {
             if (string.IsNullOrEmpty(tableName))
             {

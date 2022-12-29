@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -193,7 +193,7 @@ namespace DotNet.Business
         /// 获取属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string GetProperty(object id, string targetField)
         {
@@ -207,7 +207,7 @@ namespace DotNet.Business
         /// 获取属性
         /// </summary>
         /// <param name="whereParameter"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string GetProperty(KeyValuePair<string, object> whereParameter, string targetField)
         {
@@ -220,9 +220,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public virtual string GetProperty(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField)
         {
@@ -237,8 +237,8 @@ namespace DotNet.Business
         /// 获取属性
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="targetField"></param>
-        /// <param name="orderBy"></param>
+        /// <param name="targetField">目标字段</param>
+        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
         public virtual string GetProperty(List<KeyValuePair<string, object>> whereParameters, string targetField, string orderBy = null)
         {
@@ -247,7 +247,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         public virtual string GetId(KeyValuePair<string, object> parameter)
         {
@@ -260,8 +260,8 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         public virtual string GetId(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
         {
@@ -275,7 +275,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual string GetId(List<KeyValuePair<string, object>> parameters)
         {
@@ -284,7 +284,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取编号
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual string GetId(params KeyValuePair<string, object>[] parameters)
         {

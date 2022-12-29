@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -28,7 +28,7 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存中获取实体
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static BaseUserContactEntity GetCacheByKey(string key)
         {

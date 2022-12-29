@@ -176,8 +176,16 @@ namespace DotNet.Util
             return (TResult)result;
         }
 
+        /// <summary>
+        /// 缓存字典
+        /// </summary>
         public static ConcurrentDictionary<string, object> CacheDictionary = new ConcurrentDictionary<string, object>();
+
+        /// <summary>
+        /// 缓存代理字典
+        /// </summary>
         public static ConcurrentDictionary<string, Delegate> CacheDelegateDictionary = new ConcurrentDictionary<string, Delegate>();
+
         /// <summary>
         /// 通过表达式树获取实体类的属性值
         /// </summary>
@@ -216,7 +224,7 @@ namespace DotNet.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="model"></param>
         /// <param name="propertyName"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <exception cref="ArgumentNullException"></exception>
         public static void SetPropertyValue<T>(this T model, string propertyName, object value)
         {
@@ -271,6 +279,14 @@ namespace DotNet.Util
             return convertExpression;
         }
 
+        /// <summary>
+        /// 转为数据表
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyInfos"></param>
+        /// <param name="useColumnAttribute"></param>
+        /// <returns></returns>
         public static DataTable ToDataTable<T>(this IEnumerable<T> source, List<PropertyInfo> propertyInfos = null, bool useColumnAttribute = false) where T : class
         {
             var table = new DataTable("template");
@@ -305,6 +321,11 @@ namespace DotNet.Util
             return table;
         }
 
+        /// <summary>
+        /// ChangeType
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private static Type ChangeType(Type type)
         {
             if (type.IsNullable())
@@ -315,6 +336,11 @@ namespace DotNet.Util
             return type;
         }
 
+        /// <summary>
+        /// BuildGenerateObjectDelegate
+        /// </summary>
+        /// <param name="constructorInfo"></param>
+        /// <returns></returns>
         public static Delegate BuildGenerateObjectDelegate(ConstructorInfo constructorInfo)
         {
             var parameterExpressions = new List<ParameterExpression>();
@@ -364,7 +390,7 @@ namespace DotNet.Util
                 dt.Columns.Add(newColumnName, typeof(byte[])).SetOrdinal(needUpdateColumnIndexList[i]);
                 for (int j = 0; j < dt.Rows.Count; j++)
                 {
-                    var c = (dt.Rows[j][oldColumnName]);
+                    //var c = (dt.Rows[j][oldColumnName]);
                     dt.Rows[j][newColumnName] = replaceFunc((OldType)(dt.Rows[j][oldColumnName]));
                 }
                 dt.Columns.Remove(oldColumnName);

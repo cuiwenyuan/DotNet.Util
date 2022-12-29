@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -42,11 +42,22 @@ namespace DotNet.Business
         /// <param name="pageSize">每页记录数</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序规则</param>
+        /// <param name="showDisabled">显示已禁用</param>
+        /// <param name="showDeleted">显示已删除</param>
         /// <returns></returns>
-        public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
+        public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
-
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseLogonLogEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseLogonLogEntity.FieldDeleted + " = 0");
+            }
             //子系统
             if (!string.IsNullOrEmpty(systemCode))
             {

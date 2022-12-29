@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -141,7 +141,6 @@ namespace DotNet.Business
             var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
-                var manager = new BaseRoleScopeManager(dbHelper, userInfo);
                 // 小心异常，检查一下参数的有效性
                 if (grantPermissionIds != null)
                 {
@@ -309,7 +308,7 @@ namespace DotNet.Business
         /// <summary>
         /// GrantPermissionScopeTarget
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="resourceCategory"></param>
         /// <param name="resourceIds"></param>
         /// <param name="targetCategory"></param>

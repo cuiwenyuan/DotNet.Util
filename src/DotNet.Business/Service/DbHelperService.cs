@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 using System;
 using System.Collections.Generic;
@@ -246,7 +246,7 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteNonQuery
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns></returns>
         public int ExecuteNonQuery(BaseUserInfo userInfo, ref SqlExecute sqlExecute)
@@ -269,7 +269,7 @@ namespace DotNet.Business
         /// <summary>
         /// ExecuteScalar
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns></returns>
         public object ExecuteScalar(BaseUserInfo userInfo, ref SqlExecute sqlExecute)
@@ -292,7 +292,7 @@ namespace DotNet.Business
         /// <summary>
         /// Fill
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns></returns>
         public DataTable Fill(BaseUserInfo userInfo, ref SqlExecute sqlExecute)

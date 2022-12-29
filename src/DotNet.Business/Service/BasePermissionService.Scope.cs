@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <summary>
         /// GetUserDTByPermission
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>
@@ -312,7 +312,7 @@ namespace DotNet.Business
         /// <summary>
         /// GetStaffDataTableByPermissionScope
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userId"></param>
         /// <param name="permissionCode">权限编码</param>
         /// <returns></returns>

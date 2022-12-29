@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -80,19 +80,6 @@ namespace DotNet.IService
         /// <param name="endDate">结束时间</param>
         /// <returns>数据表</returns>
         DataTable GetDataTableByUser(BaseUserInfo userInfo, string userId, string beginDate, string endDate);
-
-        /// <summary>
-        /// 查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="recordCount">记录条数</param>
-        /// <param name="pageNo">当前页</param>
-        /// <param name="pageSize">每页显示条数</param>
-        /// <param name="permissionCode">操作权限</param>
-        /// <param name="whereClause">条件</param>
-        /// <param name="sort">排序</param>
-        /// <returns>数据表</returns>
-        DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string permissionCode, string whereClause, string sort = null);
 
         /// <summary>
         /// 清除日志

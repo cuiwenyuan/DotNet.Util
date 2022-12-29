@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2011, DotNet.
+// All Rights Reserved. Copyright (c) 2011, DotNet.
 //-----------------------------------------------------------------
 
 using System;

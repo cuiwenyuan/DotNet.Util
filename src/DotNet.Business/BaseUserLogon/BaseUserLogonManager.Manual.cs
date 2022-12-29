@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2022, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 using System.Data;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace DotNet.Business
             var result = 0;
             if (userIds != null)
             {
-                result = UpdateProperty(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0));
+                result = Update(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserOnline, 0));
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -68,7 +68,7 @@ namespace DotNet.Business
             var result = 0;
             if (userIds != null)
             {
-                result = UpdateProperty(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldConcurrentUser, 1));
+                result = Update(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldConcurrentUser, 1));
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -99,7 +99,7 @@ namespace DotNet.Business
             var result = 0;
             if (userIds != null)
             {
-                result = UpdateProperty(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldConcurrentUser, 0));
+                result = Update(BaseUtil.FieldUserId, userIds, new KeyValuePair<string, object>(BaseUserLogonEntity.FieldConcurrentUser, 0));
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -141,7 +141,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, DateTime.Now.AddMinutes(minutes))
                 };
 
-                result = UpdateProperty(BaseUtil.FieldUserId, userIds, parameters);
+                result = Update(BaseUtil.FieldUserId, userIds, parameters);
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -178,7 +178,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, null)
                 };
 
-                result = UpdateProperty(BaseUtil.FieldUserId, userIds, parameters);
+                result = Update(BaseUtil.FieldUserId, userIds, parameters);
                 //操作日志
                 var entity = new BaseLogEntity
                 {

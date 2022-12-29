@@ -30,7 +30,7 @@ namespace DotNet.Util
         }
 
         /// <summary>创建RSA对象，支持Xml密钥和Pem密钥</summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static RSACryptoServiceProvider Create(String key)
         {

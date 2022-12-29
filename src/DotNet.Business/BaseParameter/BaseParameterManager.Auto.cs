@@ -134,9 +134,11 @@ namespace DotNet.Business
         /// 获取实体
         /// </summary>
         /// <param name="parameters">参数</param>
-        public BaseParameterEntity GetEntity(List<KeyValuePair<string, object>> parameters)
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
+        public BaseParameterEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
-            return BaseEntity.Create<BaseParameterEntity>(GetDataTable(parameters));
+            return BaseEntity.Create<BaseParameterEntity>(GetDataTable(parameters, topLimit, order));
         }
 
     }

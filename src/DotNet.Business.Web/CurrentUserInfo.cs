@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -33,7 +33,7 @@ namespace DotNet.Business
         /// <summary>
         /// 当前用户信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         public CurrentUserInfo(BaseUserInfo userInfo)
         {
             // Troy.Cui 2016-06-25

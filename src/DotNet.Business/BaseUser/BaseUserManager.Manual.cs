@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2022, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 using System.Data;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace DotNet.Business
             var result = 0;
             if (userIds != null)
             {
-                result = UpdateProperty(BaseUserEntity.FieldId, userIds, new KeyValuePair<string, object>(BaseUserEntity.FieldIsAdministrator, 1));
+                result = Update(BaseUserEntity.FieldId, userIds, new KeyValuePair<string, object>(BaseUserEntity.FieldIsAdministrator, 1));
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -67,7 +67,7 @@ namespace DotNet.Business
             var result = 0;
             if (userIds != null)
             {
-                result = UpdateProperty(BaseUtil.FieldId, userIds, new KeyValuePair<string, object>(BaseUserEntity.FieldIsAdministrator, 0));
+                result = Update(BaseUtil.FieldId, userIds, new KeyValuePair<string, object>(BaseUserEntity.FieldIsAdministrator, 0));
                 //操作日志
                 var entity = new BaseLogEntity
                 {
@@ -214,6 +214,39 @@ namespace DotNet.Business
             }
 
             return entity;
+        }
+        #endregion
+
+        #region 根据角色Code获取用户表
+        /// <summary>
+        /// 根据角色Code获取用户表
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="roleCode"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public DataTable GetDataTableByRoleCode(string systemCode, string roleCode, string companyId = null)
+        {
+            if (string.IsNullOrEmpty(systemCode))
+            {
+                systemCode = "Base";
+            }
+            var tableNameUserRole = systemCode + "UserRole";
+            var tableNameRole = systemCode + "Role";
+
+            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
+                            + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
+                            + "       AND " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + "       AND ( " + BaseUserEntity.FieldId + " IN "
+                            + "           (SELECT  " + BaseUserRoleEntity.FieldUserId
+                            + " FROM " + tableNameUserRole
+                            + "             WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (SELECT " + BaseRoleEntity.FieldId + " FROM " + tableNameRole + " WHERE " + BaseRoleEntity.FieldCode + " = N'" + roleCode + "')"
+                            + "               AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + systemCode + "'"
+                            + "               AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                            + "                AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
+                            + " ORDER BY  " + BaseUserEntity.FieldSortCode;
+
+            return DbHelper.Fill(sql);
         }
         #endregion
     }

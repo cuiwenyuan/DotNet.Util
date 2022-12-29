@@ -37,11 +37,18 @@ namespace DotNet.Test._452
             dog.SetPropertyValue("Name", "sb2");
             dog.SetPropertyValue("Active", 1);
 
-            var entity = new BaseUserRoleEntity();
-            new BaseUserRoleManager().Add(entity);
-            LogUtil.WriteLog(JsonUtil.ObjectToJson(entity));
-            entity.RoleId = 10;
-            new BaseUserRoleManager().Update(entity);
+            //var entity = new BaseUserRoleEntity();
+            //new BaseUserRoleManager().Add(entity);
+            //LogUtil.WriteLog(JsonUtil.ObjectToJson(entity));
+            //entity.RoleId = 10;
+            //new BaseUserRoleManager().Update(entity);
+
+            var entity = new BaseUserRoleManager().GetEntity<BaseUserRoleEntity>(1);
+            LogUtil.WriteLog("new:" + JsonUtil.ObjectToJson(entity));
+
+            var entityNew = new BaseUserRoleManager().GetEntity(1);
+            LogUtil.WriteLog("old:" + JsonUtil.ObjectToJson(entityNew));
+            LogUtil.WriteLog("Done");
 
             var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
             BaiduOcrUtil.GeneralBasic(imagePath);
