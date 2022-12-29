@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -264,6 +264,7 @@ namespace DotNet.Business
 
         #region 新增和更新
 
+        #region public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
         /// <summary>
         /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
@@ -286,6 +287,9 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
         /// <summary>
         /// 添加或更新(主键是否为0)
         /// </summary>
@@ -315,6 +319,10 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region public virtual int Update<T>(T t)
+
         /// <summary>
         /// 更新
         /// </summary>
@@ -324,6 +332,9 @@ namespace DotNet.Business
             return UpdateEntity(t);
         }
 
+        #endregion
+
+        #region public virtual string AddEntity<T>(T t)
         /// <summary>
         /// 添加实体
         /// </summary>
@@ -346,6 +357,10 @@ namespace DotNet.Business
             }
             return key;
         }
+
+        #endregion
+
+        #region public virtual int UpdateEntity<T>(T t)
 
         /// <summary>
         /// 更新实体
@@ -371,39 +386,43 @@ namespace DotNet.Business
 
         #endregion
 
+        #endregion
+
         #region 获取实体
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="id">主键</param>
-        //public virtual T GetEntity(string id)
-        //{
-        //    return ValidateUtil.IsInt(id) ? GetEntity(id.ToInt()) : null;
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        public virtual T GetEntity<T>(string id) where T : BaseEntity, new()
+        {
+            return ValidateUtil.IsInt(id) ? GetEntity<T>(id.ToInt()) : null;
+        }
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="id">主键</param>
-        //public virtual T GetEntity(int id)
-        //{
-        //    return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
-        //    //var cacheKey = CurrentTableName + ".Entity." + id;
-        //    //var cacheTime = TimeSpan.FromMilliseconds(86400000);
-        //    //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        public virtual T GetEntity<T>(int id) where T : BaseEntity, new()
+        {
+            return BaseEntity.Create<T>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id)));
+            //var cacheKey = CurrentTableName + ".Entity." + id;
+            //var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            //return CacheUtil.Cache<BaseUserRoleEntity>(cacheKey, () => BaseEntity.Create<BaseUserRoleEntity>(GetDataTable(new KeyValuePair<string, object>(PrimaryKey, id))), true, false, cacheTime);
+        }
 
-        ///// <summary>
-        ///// 获取实体
-        ///// </summary>
-        ///// <param name="parameters">参数</param>
-        //public virtual T GetEntity(List<KeyValuePair<string, object>> parameters)
-        //{
-        //    return BaseEntity.Create<T>(GetDataTable(parameters));
-        //}
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        public virtual T GetEntity<T>(List<KeyValuePair<string, object>> parameters) where T : BaseEntity, new()
+        {
+            return BaseEntity.Create<T>(GetDataTable(parameters));
+        }
 
         #endregion
+
+        #region 删除
 
         #region public virtual int DeleteEntity(object id)
 
@@ -474,6 +493,8 @@ namespace DotNet.Business
             }
             return result;
         }
+
+        #endregion
 
         #endregion
 
@@ -787,7 +808,7 @@ namespace DotNet.Business
             var result = 0;
             for (var i = 0; i < ids.Length; i++)
             {
-                result += SetProperty(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldCode, codes[i]));
+                result += Update(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldCode, codes[i]));
             }
             return result;
         }
@@ -806,7 +827,7 @@ namespace DotNet.Business
             var sortCodes = managerSequence.GetBatchSequence(CurrentTableName, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
-                result += SetProperty(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCodes[i]));
+                result += Update(ids[i], new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCodes[i]));
             }
             return result;
         }
@@ -826,7 +847,7 @@ namespace DotNet.Business
             var i = 0;
             foreach (DataRow dr in dt.Rows)
             {
-                result += SetProperty(dr[BaseUtil.FieldId].ToString(), new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode[i]));
+                result += Update(dr[BaseUtil.FieldId].ToString(), new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode[i]));
                 i++;
             }
             return result;
@@ -965,8 +986,8 @@ namespace DotNet.Business
                     sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
                     // 5个非必备，但要自动新增的字段
                     var table = EntityUtil.GetTableExpression(t);
-                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) || 
-                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) || 
+                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))).ToList();

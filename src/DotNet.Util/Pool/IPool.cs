@@ -17,7 +17,7 @@ namespace DotNet.Util
         T Get();
 
         /// <summary>归还</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         Boolean Put(T value);
 
         /// <summary>清空</summary>

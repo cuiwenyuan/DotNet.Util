@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Business
@@ -331,7 +331,7 @@ namespace DotNet.Business
             {
                 IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 BaseManager manager = new BaseManager(dbHelper, UserInfo, "TAB_USER");
-                result = manager.SetProperty(new KeyValuePair<string, object>("Id", userIds), new KeyValuePair<string, object>("USER_PASSWORD", password));
+                result = manager.Update(new KeyValuePair<string, object>("Id", userIds), new KeyValuePair<string, object>("USER_PASSWORD", password));
             }
             return result;
         }

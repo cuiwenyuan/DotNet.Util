@@ -1,8 +1,9 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
+using System;
 using System.Collections.Generic;
 
 namespace DotNet.Business
@@ -26,8 +27,9 @@ namespace DotNet.Business
         /// <summary>
         /// 设置属性
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(KeyValuePair<string, object> parameter)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
@@ -39,6 +41,7 @@ namespace DotNet.Business
         /// <param name="id">条件参数</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(string id, KeyValuePair<string, object> parameter)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter);
@@ -49,6 +52,7 @@ namespace DotNet.Business
         /// <param name="id">条件参数</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(object id, KeyValuePair<string, object> parameter)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter);
@@ -59,6 +63,7 @@ namespace DotNet.Business
         /// <param name="id">条件参数</param>
         /// <param name="parameters">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(object id, List<KeyValuePair<string, object>> parameters)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameters);
@@ -69,6 +74,7 @@ namespace DotNet.Business
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(object[] ids, KeyValuePair<string, object> parameter)
         {
             return SetProperty(PrimaryKey, ids, parameter);
@@ -79,6 +85,7 @@ namespace DotNet.Business
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameters">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters)
         {
             return SetProperty(PrimaryKey, ids, parameters);
@@ -90,6 +97,7 @@ namespace DotNet.Business
         /// <param name="values">条件参数值</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter)
         {
             var result = 0;
@@ -113,6 +121,7 @@ namespace DotNet.Business
         /// <param name="values">条件参数值</param>
         /// <param name="parameters">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters)
         {
             var result = 0;
@@ -136,6 +145,7 @@ namespace DotNet.Business
         /// <param name="whereParameter2">条件参数2</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
@@ -149,6 +159,7 @@ namespace DotNet.Business
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
@@ -161,6 +172,7 @@ namespace DotNet.Business
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameter">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
@@ -173,6 +185,7 @@ namespace DotNet.Business
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameters">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
@@ -184,6 +197,7 @@ namespace DotNet.Business
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameters">更新参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)]
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
         {
             return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);

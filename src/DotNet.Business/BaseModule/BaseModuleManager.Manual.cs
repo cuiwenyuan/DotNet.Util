@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -284,25 +284,28 @@ namespace DotNet.Business
                 sb.Append(" AND ( " + BasePermissionEntity.FieldId + " IN (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " = " + userId);
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
                 //角色权限,用OR
-                sb.Append(" OR " + BasePermissionEntity.FieldId + " IN  ");
+                sb.Append(" OR " + BasePermissionEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
-                sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " IN ");
+                sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " IN");
                 //用户所拥有的角色
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId);
-                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0) ");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");                
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)");
                 //角色权限
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0) ");
-                sb.Append(" ) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
+                sb.Append(" )");
             }
             //排除指定用户
             if (ValidateUtil.IsNumeric(userIdExcluded))
@@ -312,48 +315,53 @@ namespace DotNet.Business
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " = " + userIdExcluded);
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
                 //角色权限,用AND
-                sb.Append(" AND " + BasePermissionEntity.FieldId + " NOT IN  ");
+                sb.Append(" AND " + BasePermissionEntity.FieldId + " NOT IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
-                sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " IN ");
+                sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " IN");
                 //用户所拥有的角色
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userIdExcluded);
-                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0) ");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)");
                 //角色权限
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0) ");
-                sb.Append(" ) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
+                sb.Append(" )");
 
             }
             //指定角色
             if (ValidateUtil.IsInt(roleId))
             {
-                sb.Append(" AND ( " + BasePermissionEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BasePermissionEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " = " + roleId);
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0))");
             }
             //排除指定角色
             if (ValidateUtil.IsInt(roleIdExcluded))
             {
-                sb.Append(" AND ( " + BasePermissionEntity.FieldId + " NOT IN ");
+                sb.Append(" AND ( " + BasePermissionEntity.FieldId + " NOT IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldPermissionId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceId + " = " + roleIdExcluded);
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0))");
             }
             //父级编号
             if (ValidateUtil.IsInt(parentId))
@@ -365,11 +373,11 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + "  = " + parentId);
                 //下下级
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
                 //下下下级，做个菜单模块实际应用应该足够了
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " IN ");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
                 sb.Append(" ) ");
                 //闭合
                 sb.Append(" ) ");
@@ -422,6 +430,7 @@ namespace DotNet.Business
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy;
                 viewName += " FROM " + tableNameModule + " INNER JOIN " + tableNamePermission;
                 viewName += " ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId;
+                viewName += " AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode;
                 //BaseUser
                 viewName += " WHERE ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "')";
                 viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + userId + "))";
@@ -432,9 +441,10 @@ namespace DotNet.Business
                 viewName += " (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId;
                 viewName += " FROM " + tableNameUserRole;
                 viewName += " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId;
-                viewName += " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ";
-                viewName += " AND " + BaseUserRoleEntity.FieldDeleted + " = 0) ";
-                viewName += "))";
+                viewName += " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'";
+                viewName += " AND " + BaseUserRoleEntity.FieldEnabled + " = 1";
+                viewName += " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)";
+                viewName += " ))";
 
             }
             //指定菜单模块，就读取相应的Permission授权日期
@@ -473,8 +483,10 @@ namespace DotNet.Business
                 viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy;
                 viewName += " FROM " + tableNameModule + " INNER JOIN " + tableNamePermission;
                 viewName += " ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId;
-                viewName += " WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')";
-                viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + roleId + ")";
+                viewName += " AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode;
+                viewName += " WHERE " + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'";
+                viewName += " AND " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'";
+                viewName += " AND " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + roleId + "";
             }
             //从视图读取
             if (!string.IsNullOrEmpty(viewName))
@@ -608,9 +620,9 @@ namespace DotNet.Business
         /// </summary>
         private DataTable _moduleTable = new DataTable(BaseModuleEntity.CurrentTableName);
 
-        #region public DataTable GetModuleTree(DataTable dtModule = null) 绑定下拉筐数据,菜单模块树表
+        #region public DataTable GetModuleTree(DataTable dtModule = null) 绑定下拉框数据,菜单模块树表
         /// <summary>
-        /// 绑定下拉筐数据,组织机构树表
+        /// 绑定下拉框数据,组织机构树表
         /// </summary>
         /// <param name="dt">组织机构表</param>
         /// <returns>组织机构树表</returns>
@@ -688,6 +700,7 @@ namespace DotNet.Business
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldIsMenu, isMenu));
             }
+            parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, systemCode));
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1));
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
             //2017.12.20增加默认的HttpRuntime.Cache缓存

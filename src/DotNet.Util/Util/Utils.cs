@@ -1275,7 +1275,7 @@ namespace DotNet.Util
         /// <summary>
         /// 建立文件夹
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         public static bool CreateDir(string name)
         {
@@ -1518,7 +1518,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="newHash"></param>
         /// <param name="ruleType"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static bool IsRuleTip(Hashtable newHash, string ruleType, out string key)
         {

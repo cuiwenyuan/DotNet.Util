@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -193,7 +193,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="lstT"></param>
         /// <param name="id"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public static string GetPropertyDyn(dynamic lstT, string id, string targetField)
         {
@@ -205,7 +205,7 @@ namespace DotNet.Util
         /// <param name="lstT"></param>
         /// <param name="fieldName"></param>
         /// <param name="fieldValue"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public static string GetPropertyDyn(dynamic lstT, string fieldName, string fieldValue, string targetField)
         {
@@ -306,7 +306,7 @@ namespace DotNet.Util
         /// <param name="lstT"></param>
         /// <param name="fieldName"></param>
         /// <param name="fieldValue"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <param name="targetValue"></param>
         /// <returns></returns>
         public static int SetPropertyDyn(dynamic lstT, string fieldName, string fieldValue, string targetField, object targetValue)

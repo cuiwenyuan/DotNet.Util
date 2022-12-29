@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -57,7 +57,7 @@ namespace DotNet.Business
         /// <summary>
         /// 服务信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="currentMethod"></param>
         private ServiceInfo(BaseUserInfo userInfo, MethodBase currentMethod)
         {
@@ -73,7 +73,7 @@ namespace DotNet.Business
         /// <summary>
         /// 创建
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="currentMethod"></param>
         /// <returns></returns>
         public static ServiceInfo Create(BaseUserInfo userInfo, MethodBase currentMethod)
@@ -96,7 +96,7 @@ namespace DotNet.Business
         /// 创建
         /// </summary>
         /// <param name="taskId"></param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="currentMethod"></param>
         /// <returns></returns>
         public static ServiceInfo Create(string taskId, BaseUserInfo userInfo, MethodBase currentMethod)

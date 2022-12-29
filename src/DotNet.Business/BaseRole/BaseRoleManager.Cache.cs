@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -25,10 +25,11 @@ namespace DotNet.Business
     /// </remarks>
     public partial class BaseRoleManager
     {
+        #region public static BaseRoleEntity GetCacheByKey(string key) 从缓存中获取
         /// <summary>
         /// 从缓存中获取
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static BaseRoleEntity GetCacheByKey(string key)
         {
@@ -42,6 +43,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region private static void SetCache(string systemCode, BaseRoleEntity entity) 设置缓存
         /// <summary>
         /// 设置缓存
         /// </summary>
@@ -64,6 +68,8 @@ namespace DotNet.Business
                 CacheUtil.Set<BaseRoleEntity>(key, entity);
             }
         }
+
+        #endregion
 
         #region public static void ClearCache() 清除缓存
         /// <summary>

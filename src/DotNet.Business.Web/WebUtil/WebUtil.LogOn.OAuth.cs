@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -33,7 +33,7 @@ namespace DotNet.Business
             BaseUserInfo result = null;
             status = Status.Error;
             statusMessage = "登录失败";
-            var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId);
+            var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId, systemCode);
             if (entity != null)
             {
                 var entityUser = new BaseUserManager(UserInfo).GetEntity(entity.UserId);

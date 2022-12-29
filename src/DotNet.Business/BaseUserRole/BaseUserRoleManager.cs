@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserRoleManager.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2022, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -116,70 +116,6 @@ namespace DotNet.Business
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
-        #endregion
-
-        #region 删除缓存
-
-        /// <summary>
-        /// 删除缓存
-        /// </summary>
-        /// <returns></returns>
-        public override bool RemoveCache()
-        {
-            var result = false;
-            var cacheKey = "DataTable." + CurrentTableName;
-            var cacheKeyListBase = "List.Base.UserRole";
-            var cacheKeyListSystemCode = "List.UserBase.Role";
-            var cacheKeySystemCode = "DataTable.Base.UserRole";
-            var cacheKeySystemCodeUserId = "DataTable.";
-            if (UserInfo != null)
-            {
-                //cacheKey += "." + UserInfo.CompanyId;
-                cacheKeyListSystemCode = "List." + UserInfo.SystemCode + ".UserRole";
-                cacheKeySystemCode = "DataTable." + UserInfo.SystemCode + ".UserRole";
-                cacheKeySystemCodeUserId += UserInfo.SystemCode + "." + UserInfo.Id + ".UserRole";
-            }
-            CacheUtil.Remove(cacheKeyListBase);
-            CacheUtil.Remove(cacheKeyListSystemCode);
-            CacheUtil.Remove(cacheKeySystemCode);
-            CacheUtil.Remove(cacheKeySystemCodeUserId);
-            result = CacheUtil.Remove(cacheKey);
-            return result;
-        }
-        #endregion
-
-        /// <summary>
-        /// 添加(判断数据是否重复，防止垃圾数据产生)
-        /// </summary>
-        /// <param name="entity">实体</param>
-        /// <returns>主键</returns>
-        public string Add(BaseUserRoleEntity entity)
-        {
-            var result = string.Empty;
-
-            // 判断是否数据重复
-            var whereParameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, entity.RoleId),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, entity.UserId)
-            };
-            if (!Exists(whereParameters))
-            {
-                result = AddEntity(entity);
-            }
-            else
-            {
-                var parameters = new List<KeyValuePair<string, object>>
-                {
-                    new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
-                    new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)
-                };
-                UpdateProperty(whereParameters, parameters);
-            }
-
-            return result;
-        }
+        #endregion        
     }
 }

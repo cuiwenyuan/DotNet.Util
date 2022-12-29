@@ -388,9 +388,9 @@ namespace DotNet.Model
         //public string UserPassword { get; set; } = string.Empty;
 
         /// <summary>
-        /// 当点登录标识
+        /// 单点登录标识
         /// </summary>
-        [FieldDescription("当点登录标识")]
+        [FieldDescription("单点登录标识")]
         public string OpenId { get; set; } = Guid.NewGuid().ToString("N");
 
         /// <summary>

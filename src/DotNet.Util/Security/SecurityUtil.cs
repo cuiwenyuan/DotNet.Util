@@ -60,25 +60,25 @@ namespace DotNet.Util
 
         /// <summary>SHA128</summary>
         /// <param name="data"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static Byte[] SHA1(this Byte[] data, Byte[] key) => new HMACSHA1(key).ComputeHash(data);
 
         /// <summary>SHA256</summary>
         /// <param name="data"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static Byte[] SHA256(this Byte[] data, Byte[] key) => new HMACSHA256(key).ComputeHash(data);
 
         /// <summary>SHA384</summary>
         /// <param name="data"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static Byte[] SHA384(this Byte[] data, Byte[] key) => new HMACSHA384(key).ComputeHash(data);
 
         /// <summary>SHA512</summary>
         /// <param name="data"></param>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <returns></returns>
         public static Byte[] SHA512(this Byte[] data, Byte[] key) => new HMACSHA512(key).ComputeHash(data);
 

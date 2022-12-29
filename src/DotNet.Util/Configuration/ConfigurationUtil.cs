@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -30,7 +30,7 @@ namespace DotNet.Util
         /// <summary>
         /// AppSettting
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">键</param>
         /// <param name="encrypt"></param>
         /// <returns></returns>
         public static string AppSettings(string key, bool encrypt)

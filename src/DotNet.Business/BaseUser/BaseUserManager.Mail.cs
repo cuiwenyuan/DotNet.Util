@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -26,7 +26,7 @@ namespace DotNet.Business
         /// <summary>
         /// 向管理员发送登录提醒邮件
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="systemCode">系统编码</param>
         public static void SendLoginMailToAdministrator(BaseUserInfo userInfo, string systemCode = "Base")
         {

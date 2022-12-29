@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -831,7 +831,7 @@ namespace DotNet.Business
         /// 近用于LDAP集成登录或其它特殊用途
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userName">用户名</param>
         /// <returns></returns>
         public UserLogonResult LogonByUserNameOnly(string systemCode, BaseUserInfo userInfo, string userName)
@@ -1371,7 +1371,7 @@ namespace DotNet.Business
                                 parameters = new List<KeyValuePair<string, object>>();
                                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                                 errorMark = 13;
-                                userLogonManager.SetProperty(userEntity.Id, parameters);
+                                userLogonManager.Update(userEntity.Id, parameters);
                                 errorMark = 131;
                                 result.StatusCode = Status.ErrorIPAddress.ToString();
                                 errorMark = 132;
@@ -1495,7 +1495,7 @@ namespace DotNet.Business
                                         // 待审核状态
                                         parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldAuditStatus, AuditStatus.WaitForAudit.ToString()));
                                         errorMark = 21;
-                                        SetProperty(userEntity.Id, parameters);
+                                        Update(userEntity.Id, parameters);
                                     }
                                     else
                                     {
@@ -1505,7 +1505,7 @@ namespace DotNet.Business
                                         parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartTime, userLogonEntity.LockStartTime));
                                         parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, userLogonEntity.LockEndTime));
                                         errorMark = 22;
-                                        userLogonManager.SetProperty(userEntity.Id, parameters);
+                                        userLogonManager.Update(userEntity.Id, parameters);
                                     }
                                 }
                                 else
@@ -1515,7 +1515,7 @@ namespace DotNet.Business
                                         new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, userLogonEntity.PasswordErrorCount)
                                     };
                                     errorMark = 23;
-                                    userLogonManager.SetProperty(userEntity.Id, parameters);
+                                    userLogonManager.Update(userEntity.Id, parameters);
                                 }
                                 // 密码错误后 1：应该记录日志
                                 errorMark = 24;
@@ -1568,7 +1568,7 @@ namespace DotNet.Business
                     userLogonEntity.MacAddress = macAddress;
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
                 }
-                // userLogonManager.SetProperty(userEntity.Id, parameters);
+                // userLogonManager.Update(userEntity.Id, parameters);
 
                 // 可以正常登录了
                 result.Status = Status.Ok;

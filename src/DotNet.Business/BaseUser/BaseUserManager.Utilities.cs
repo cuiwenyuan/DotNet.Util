@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// BaseUserManager
     /// 用户管理
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2013.01.05 版本：1.0 JiRiGaLa	创建文件。
     /// 

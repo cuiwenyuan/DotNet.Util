@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -193,7 +193,7 @@ namespace DotNet.IService
         /// <summary>
         /// GetUserDTByPermission
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userId"></param>
         /// <param name="permissionCode"></param>
         /// <returns></returns>
@@ -201,7 +201,7 @@ namespace DotNet.IService
         /// <summary>
         /// GetStaffDataTableByPermissionScope
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userId"></param>
         /// <param name="permissionCode"></param>
         /// <returns></returns>

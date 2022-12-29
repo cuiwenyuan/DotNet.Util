@@ -296,7 +296,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int MoveTo(string id, string parentId)
         {
-            return SetProperty(id, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId));
+            return Update(id, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, parentId));
         }
 
         /// <summary>
@@ -340,9 +340,9 @@ namespace DotNet.Business
         /// </summary>
         private DataTable _organizationTable = new DataTable(BaseOrganizationEntity.CurrentTableName);
 
-        #region public DataTable GetOrganizationTree(DataTable dtOrganization = null) 绑定下拉筐数据,组织机构树表
+        #region public DataTable GetOrganizationTree(DataTable dtOrganization = null) 绑定下拉框数据,组织机构树表
         /// <summary>
-        /// 绑定下拉筐数据,组织机构树表
+        /// 绑定下拉框数据,组织机构树表
         /// </summary>
         /// <param name="dtOrganization">组织机构</param>
         /// <returns>组织机构树表</returns>
@@ -774,7 +774,7 @@ namespace DotNet.Business
         /// <summary>
         /// 从缓存获取
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         public static string GetIdByNameByCache(string name)
         {

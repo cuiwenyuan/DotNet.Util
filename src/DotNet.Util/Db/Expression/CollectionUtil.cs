@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace DotNet.Util
 {
     /// <summary>
-    /// 
+    /// 集合
     /// </summary>
     public static partial class CollectionUtil
     {

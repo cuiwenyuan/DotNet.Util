@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -163,54 +163,6 @@ namespace DotNet.IService
         string[] GetIdsByManager(BaseUserInfo userInfo, string managerUserId);
 
         /// <summary>
-        /// 查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="userName">用户名</param>
-        /// <param name="auditStates">用户状态</param>
-        /// <param name="roleIds">角色主键</param>
-        /// <returns>数据表</returns>
-        DataTable Search(BaseUserInfo userInfo, string userName, string auditStates, string[] roleIds);
-
-        /// <summary>
-        /// 查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode"></param>
-        /// <param name="companyId"></param>
-        /// <param name="userName"></param>
-        /// <param name="auditStates"></param>
-        /// <param name="roleIds"></param>
-        /// <param name="enabled"></param>
-        /// <param name="showRole"></param>
-        /// <param name="userAllInformation"></param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo">当前页</param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <returns></returns>
-        DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string companyId, string userName, string auditStates, string[] roleIds, bool? enabled, bool showRole, bool userAllInformation, out int recordCount, int pageNo = 1, int pageSize = 20, string sort = null);
-
-        /// <summary>
-        /// 根据部门查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode"></param>
-        /// <param name="searchKey"></param>
-        /// <param name="enabled"></param>
-        /// <param name="auditStates">用户状态</param>
-        /// <param name="roleIds">角色主键</param>
-        /// <param name="showRole"></param>
-        /// <param name="userAllInformation"></param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo">当前页</param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <param name="departmentId">部门主键</param>
-        /// <returns>数据表</returns>
-        DataTable SearchByPageByDepartment(BaseUserInfo userInfo, string permissionCode, string searchKey, bool? enabled, string auditStates, string[] roleIds, bool showRole, bool userAllInformation, out int recordCount, int pageNo = 1, int pageSize = 100, string sort = null, string departmentId = null);
-
-        /// <summary>
         /// 更新用户
         /// </summary>
         /// <param name="userInfo">用户信息</param>
@@ -333,7 +285,7 @@ namespace DotNet.IService
         /// <summary>
         /// 用户是否在组织中
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userId"></param>
         /// <param name="organizationName"></param>
         /// <returns></returns>

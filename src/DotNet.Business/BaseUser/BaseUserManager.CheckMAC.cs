@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -121,7 +121,7 @@ namespace DotNet.Business
             //                var parameters = new List<KeyValuePair<string, object>>();
             //                parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMacAddress, macAddress));
             //                var userLogonManager = new BaseUserLogonManager();
-            //                userLogonManager.SetProperty(userId, parameters);
+            //                userLogonManager.Update(userId, parameters);
             //            }
             //        }
             //    }
@@ -243,7 +243,7 @@ namespace DotNet.Business
                     parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
 
                     BaseUserLogonManager userLogonManager = new BaseUserLogonManager(this.DbHelper, this.UserInfo);
-                    userLogonManager.SetProperty(userId, parameters);
+                    userLogonManager.Update(userId, parameters);
 
                     return result;
                 }

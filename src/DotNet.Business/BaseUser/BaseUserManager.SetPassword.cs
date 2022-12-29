@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -125,7 +125,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockEndTime, null));
             }
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
-            result = userLogonManager.SetProperty(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId), parameters);
+            result = userLogonManager.Update(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId), parameters);
             if (result == 0 && autoAdd.HasValue && autoAdd.Value == true)
             {
                 var userLogonEntity = new BaseUserLogonEntity
@@ -233,7 +233,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, Guid.NewGuid().ToString("N")));
             parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordTime, DateTime.Now));
             // 设置密码字段
-            result += new BaseUserLogonManager(this.DbHelper, this.UserInfo).SetProperty(userIds, parameters);
+            result += new BaseUserLogonManager(this.DbHelper, this.UserInfo).Update(userIds, parameters);
 
             if (result > 0)
             {

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// 从缓存中获取角色编号
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="userId"></param>
+        /// <param name="userId">用户编号</param>
         /// <param name="companyId"></param>
         /// <returns></returns>
         public static string[] GetRoleIdsByCache(string systemCode, string userId, string companyId = null)
@@ -98,20 +98,6 @@ namespace DotNet.Business
             }
 
             return result;
-        }
-        #endregion
-
-        #region IsInRole(BaseUserInfo userInfo, string roleName) 用户是否在某个角色里
-        /// <summary>
-        /// 用户是否在某个角色里
-        /// 包括所在公司的角色也进行判断
-        /// </summary>
-        /// <param name="userInfo">当前用户</param>
-        /// <param name="roleName">角色名称</param>
-        /// <returns>是否在角色中</returns>
-        public bool IsInRole(BaseUserInfo userInfo, string roleName)
-        {
-            return IsInRole(userInfo.SystemCode, userInfo.Id.ToString(), roleName);
         }
         #endregion
 
@@ -185,7 +171,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region IsInRoleByCode(BaseUserInfo userInfo, string code)
+        #region IsInRoleByCode(BaseUserInfo userInfo, string code) 用户是否在某个角色里
         /// <summary>
         /// 用户是否在某个角色里
         /// 包括所在公司的角色也进行判断
@@ -199,7 +185,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region IsInRoleByCode(string userId, string code)
+        #region IsInRoleByCode(string userId, string code) 用户是否在某个角色中
         /// <summary>
         /// 用户是否在某个角色中
         /// </summary>
@@ -222,7 +208,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region IsInRoleByCode(string systemCode, string userId, string roleCode, bool useBaseRole = true)
+        #region IsInRoleByCode(string systemCode, string userId, string roleCode, bool useBaseRole = true) 用户是否在某个角色中
         /// <summary>
         /// 用户是否在某个角色中
         /// </summary>
@@ -290,6 +276,7 @@ namespace DotNet.Business
             {
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
+                    new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, systemCode),
                     new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1)
                 };
@@ -300,7 +287,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region IsHasRoleByCodeContains
+        #region public bool IsHasRoleCodeContains(string userId, string searchKey) 用户是否拥有包含指定关键字的角色编码
         /// <summary>
         /// 用户是否拥有包含指定关键字的角色编码
         /// </summary>
@@ -321,6 +308,9 @@ namespace DotNet.Business
 
             return IsHasRoleCodeContains(systemCode, userId, searchKey);
         }
+
+        #region public bool IsHasRoleCodeContains(string systemCode, string userId, string searchKey)
+
         /// <summary>
         /// 用户是否拥有包含指定关键字的角色编码
         /// </summary>
@@ -371,7 +361,9 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region IsHasRoleCodeStartWith
+        #endregion
+
+        #region public bool IsHasRoleCodeStartWith(string userId, string searchKey) 用户是否拥有以指定关键字开始的角色编码
         /// <summary>
         /// 用户是否拥有以指定关键字开始的角色编码
         /// </summary>
@@ -442,6 +434,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public DataTable GetUserRole(string systemCode) 获取所有用户的角色列表
+
         /// <summary>
         /// 获取所有用户的角色列表
         /// </summary>
@@ -476,6 +470,10 @@ namespace DotNet.Business
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Put()), true, false, cacheTime);
             return result;
         }
+        #endregion
+
+        #region public string[] GetRoleIds(string userId) 获取用户的角色主键数组
+
         /// <summary>
         /// 获取用户的角色主键数组
         /// </summary>
@@ -485,6 +483,8 @@ namespace DotNet.Business
         {
             return GetRoleIds(UserInfo.SystemCode, userId);
         }
+
+        #endregion
 
         #region public string[] GetRoleIds(string systemCode, string userId, string companyId = null) 获取用户的角色主键数组
         /// <summary>
@@ -505,6 +505,7 @@ namespace DotNet.Business
             sb.Append("SELECT " + BaseUserRoleEntity.FieldRoleId);
             sb.Append(" FROM " + userRoleTable);
             sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId));
+            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = " + DbHelper.GetParameter(systemCode));
             sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldEnabled));
             sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted));
 
@@ -531,7 +532,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public List<BaseRoleEntity> GetRoleList(string systemCode, string userId, string companyId = null)
+        #region public List<BaseRoleEntity> GetRoleList(string systemCode, string userId, string companyId = null) 一个用户的所有的角色列表
         /// <summary>
         /// 一个用户的所有的角色列表
         /// </summary>
@@ -548,41 +549,10 @@ namespace DotNet.Business
             if (roleIds != null && roleIds.Length > 0)
             {
                 var entities = BaseRoleManager.GetEntitiesByCache(systemCode);
-                result = (entities as List<BaseRoleEntity>).Where(t => roleIds.Contains(t.Id.ToString()) && t.Enabled == 1 && t.Deleted == 0).ToList();
+                result = (entities as List<BaseRoleEntity>).Where(t => roleIds.Contains(t.Id.ToString()) && t.SystemCode == systemCode && t.Enabled == 1 && t.Deleted == 0).ToList();
             }
 
             return result;
-
-            /*
-            string userRoleTable = systemCode + "UserRole";
-            string roleTable = systemCode + "Role";
-            // 被删除的角色不应该显示出来
-            string sql = @"SELECT * FROM " + roleTable + " WHERE Enabled = 1 AND " + BaseUserEntity.FieldDeleted + " = 0 AND Id "
-                + " IN (SELECT RoleId FROM " + userRoleTable
-                + " WHERE UserId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId) + " AND Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ";
-
-            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId));
-
-            if (BaseSystemInfo.UseRoleOrganization && !string.IsNullOrEmpty(companyId))
-            {
-                string roleOrganizationTableName = systemCode + "RoleOrganization";
-                sql += " UNION SELECT " + BaseRoleOrganizationEntity.FieldRoleId
-                                  + " FROM " + roleOrganizationTableName
-                                + "  WHERE " + BaseRoleOrganizationEntity.FieldOrganizationId + " = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldOrganizationId)
-                                  + "        AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1 "
-                                  + "        AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0 ";
-
-                dbParameters.Add(DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldOrganizationId, companyId));
-            }
-
-            sql += ")";
-
-            using (IDataReader dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray()))
-            {
-                result = BaseEntity.GetList<BaseRoleEntity>(dataReader);
-            }
-            */
         }
         #endregion
 
@@ -612,6 +582,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public List<BaseUserEntity> GetListByRole(string systemCode, string[] roleIds, string companyId = null) 根据角色获取清单
+
         /// <summary>
         /// 根据角色获取清单
         /// </summary>
@@ -631,6 +603,7 @@ namespace DotNet.Business
                      + " , (SELECT " + BaseUserRoleEntity.FieldUserId
                           + " FROM " + userRoleTableName
                           + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
+                          + " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'"
                           + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
                           + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0) B "
                           + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = B." + BaseUserRoleEntity.FieldUserId
@@ -650,6 +623,11 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
+
+        #region public DataTable GetDataTableByRole(string systemCode, string[] roleIds, string companyId = null) 根据角色获取数据表
+
         /// <summary>
         /// 根据角色获取数据表
         /// </summary>
@@ -672,14 +650,18 @@ namespace DotNet.Business
                             + " (SELECT  " + BaseUserRoleEntity.FieldUserId
                             + " FROM " + userRoleTableName
                             + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
+                            + " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'"
                             + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
                             + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseUserEntity.FieldSortCode;
 
             return DbHelper.Fill(sql);
         }
+        #endregion
 
         #region 清空
+
+        #region public int ClearUser(string systemCode, string roleId) 清空用户
         /// <summary>
         /// 清空用户
         /// </summary>
@@ -697,6 +679,7 @@ namespace DotNet.Business
             var tableName = systemCode + "UserRole";
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
             var parameters = new List<KeyValuePair<string, object>> {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleId),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)
@@ -705,6 +688,11 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
+
+        #region public int ClearRole(string systemCode, string userId) 清空角色
+
         /// <summary>
         /// 清空角色
         /// </summary>
@@ -731,6 +719,10 @@ namespace DotNet.Business
             return result;
         }
         #endregion
+
+        #endregion
+
+        #region public DataTable GetUserRoleDataTable(string systemCode, string userId)
 
         /// <summary>
         /// 获取用户的角色列表
@@ -767,7 +759,7 @@ namespace DotNet.Business
  FROM BaseRole RIGHT OUTER JOIN
                           (SELECT UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole
                             WHERE UserId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId)
-                                  + " AND Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0 " + @") UserRole 
+                                  + " AND Enabled = 1 AND SystemCode = '" + systemCode + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0 " + @") UserRole 
                             ON BaseRole.Id = UserRole.RoleId WHERE BaseRole." + BaseRoleEntity.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + @" = 0 
                       ORDER BY UserRole." + BaseRoleEntity.FieldCreateTime + " DESC ";
             //替换表名
@@ -784,6 +776,10 @@ namespace DotNet.Business
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(commandText, dbParameters.ToArray()), true, false, cacheTime);
             return result;
         }
+
+        #endregion
+
+        #region public DataTable GetDataTableByCompanyByRole(string systemCode, string companyId, string roleId) 获取某个单位某个角色里的成员
 
         /// <summary>
         /// 获取某个单位某个角色里的成员
@@ -808,8 +804,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
-        #region IsAdministrator
+        #region public static bool IsAdministrator(int userId) 是否为管理员
         /// <summary>
         /// 是否为管理员
         /// </summary>
@@ -853,6 +850,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public string[] GetUserIds(string[] roleIds) 获取用户主键数组
+
         /// <summary>
         /// 获取用户主键数组
         /// </summary>
@@ -862,6 +861,8 @@ namespace DotNet.Business
         {
             return GetUserIds("Base", roleIds);
         }
+
+        #endregion
 
         #region public string[] GetUserIdsByRole(string systemCode, string roleCode, string companyId = null) 按角色编号获得用户主键数组
         /// <summary>
@@ -1027,6 +1028,7 @@ namespace DotNet.Business
             {
                 var entity = new BaseUserRoleEntity
                 {
+                    SystemCode = systemCode,
                     UserId = userId.ToInt(),
                     RoleId = roleId.ToInt(),
                     Enabled = enabled ? 1 : 0
@@ -1061,6 +1063,7 @@ namespace DotNet.Business
             }
             var whereParameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, userId),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleId)
             };
@@ -1070,7 +1073,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 1)
             };
             // 更新删除状态
-            return new BaseUserRoleManager(DbHelper, UserInfo, tableName).UpdateProperty(whereParameters, parameters);
+            return new BaseUserRoleManager(DbHelper, UserInfo, tableName).Update(whereParameters, parameters);
         }
         #endregion
 

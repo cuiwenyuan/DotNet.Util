@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -613,11 +613,11 @@ namespace DotNet.Business
                     keyValuePairs.Add(new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, roleEntity.Id));
                     if (roleEntity.Enabled == 0)
                     {
-                        new BaseUserRoleManager(dbHelper, userInfo, tableName).SetProperty(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "0"));
+                        new BaseUserRoleManager(dbHelper, userInfo, tableName).Update(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "0"));
                     }
                     else
                     {
-                        new BaseUserRoleManager(dbHelper, userInfo, tableName).SetProperty(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "1"));
+                        new BaseUserRoleManager(dbHelper, userInfo, tableName).Update(keyValuePairs, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, "1"));
                     }
                 }
             });
@@ -627,9 +627,9 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性
         /// </summary>
-        /// <param name="userInfo"></param>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
+        /// <param name="userInfo">用户信息</param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         public string GetProperty(BaseUserInfo userInfo, List<KeyValuePair<string, object>> parameters, string targetField)
         {

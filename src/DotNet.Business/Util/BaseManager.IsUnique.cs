@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
@@ -24,7 +24,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        #region 是否唯一的
+        #region public virtual bool IsUnique(string fieldValue, string excludeId, string fieldName, bool checkUserCompany = false) 是否唯一的
 
         /// <summary>
         /// 是否唯一的
@@ -72,7 +72,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 是否唯一的
+        #region public virtual bool IsUnique(string field1Value, string field2Value, string excludeId, string field1Name, string field2Name, bool checkUserCompany = false) 是否唯一的
         /// <summary>
         /// 是否唯一的(两个字段)
         /// </summary>
@@ -129,7 +129,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 是否唯一的
+        #region public virtual bool IsUnique(string field1Value, string field2Value, string field3Value, string excludeId, string field1Name, string field2Name, string field3Name, bool checkUserCompany = false) 是否唯一的
 
         /// <summary>
         /// 是否唯一的(三个字段)
@@ -197,7 +197,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 是否唯一的
+        #region public virtual bool IsUnique(List<KeyValuePair<string, object>> whereParameters, string excludeId = null, bool checkUserCompany = false) 是否唯一的
         /// <summary>
         /// 是否唯一的(条件参数)
         /// </summary>

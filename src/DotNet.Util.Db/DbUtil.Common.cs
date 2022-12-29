@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -32,7 +32,7 @@ namespace DotNet.Util
     ///		2007.07.20 版本：3.6	JiRiGaLa 改进 DataSet 修改为 DataTable 应该能提高一些速度吧。
     ///		2007.05.20 版本：3.6	JiRiGaLa 改进 GetList() 方法整理，这次又应该是一次升华，质的飞跃很不容易啊，身心都有提高了。
     ///		2007.05.20 版本：3.4	JiRiGaLa 改进 Exists() 方法整理。
-    ///		2007.05.13 版本：3.3	JiRiGaLa 改进 GetProperty()，SetProperty()，Delete() 方法整理。
+    ///		2007.05.13 版本：3.3	JiRiGaLa 改进 GetProperty()，Update()，Delete() 方法整理。
     ///		2007.05.10 版本：3.2	JiRiGaLa 改进 GetList() 方法整理。
     ///		2007.04.10 版本：3.1	JiRiGaLa 添加 GetNextId，GetPreviousId 方法整理。
     ///		2007.03.03 版本：3.0	JiRiGaLa 进行了一次彻底的优化工作，方法的位置及功能整理。
@@ -92,7 +92,7 @@ namespace DotNet.Util
         /// 获得条件语句
         /// </summary>
         /// <param name="dbHelper"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="relation"></param>
         /// <returns></returns>
         public static string GetWhereString(this IDbHelper dbHelper, List<KeyValuePair<string, object>> parameters, string relation)

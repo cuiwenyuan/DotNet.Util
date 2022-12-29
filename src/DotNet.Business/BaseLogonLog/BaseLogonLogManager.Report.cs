@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -41,8 +41,8 @@ namespace DotNet.Business
             sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0) AS TotalCount";
             sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 1) AS SuccessCount";
             sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 0) AS FailCount";
-            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B WHERE 1 = 1";
-            sql += " AND B." + BaseCalendarEntity.FieldTransactionDate + " <= GETDATE() AND DATEDIFF(d,B." + BaseCalendarEntity.FieldTransactionDate + ",GETDATE()) < " + days + "";
+            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B ";
+            sql += " WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= GETDATE() AND DATEDIFF(d,B." + BaseCalendarEntity.FieldTransactionDate + ",GETDATE()) < " + days + "";
             if (ValidateUtil.IsDateTime(startDate))
             {
                 sql += " AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + startDate + "'";

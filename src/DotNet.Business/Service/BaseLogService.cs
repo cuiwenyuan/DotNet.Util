@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -193,47 +193,6 @@ namespace DotNet.Business
                 // dt = logManager.GetDataTableByDate(BaseLogEntity.FieldUserId, userId, beginDate, endDate);
                 dt.TableName = BaseLogEntity.CurrentTableName;
             });
-            return dt;
-        }
-        #endregion
-
-        #region public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string permissionCode, string condition, string sort = null);
-        /// <summary>
-        /// 查询用户列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="recordCount">记录条数</param>
-        /// <param name="pageNo">第几页</param>
-        /// <param name="pageSize">每页显示条数</param>
-        /// <param name="permissionCode">操作权限</param>
-        /// <param name="conditions">条件</param>
-        /// <param name="sort">排序</param>
-        /// <returns>数据表</returns>
-        public DataTable SearchUserByPage(BaseUserInfo userInfo, out int recordCount, int pageNo, int pageSize, string permissionCode, string conditions, string sort = null)
-        {
-            var departmentId = string.Empty;
-            var myrecordCount = 0;
-            var dt = new DataTable(BaseUserEntity.CurrentTableName);
-
-            var parameter = ServiceInfo.Create(userInfo, MethodBase.GetCurrentMethod());
-            ServiceUtil.ProcessUserCenterReadDb(userInfo, parameter, (dbHelper) =>
-            {
-                if (SecretUtil.IsSqlSafe(conditions))
-                {
-                    var userManager = new BaseUserManager(dbHelper, userInfo)
-                    {
-                        ShowUserLogonInfo = true
-                    };
-                    dt = userManager.SearchLogByPage(out myrecordCount, pageNo, pageSize, permissionCode, conditions, sort);
-                    dt.TableName = BaseUserEntity.CurrentTableName;
-                }
-                else
-                {
-                    // 记录注入日志
-                    LogUtil.WriteLog("userInfo:" + userInfo.Serialize() + " " + conditions, "SqlSafe");
-                }
-            });
-            recordCount = myrecordCount;
             return dt;
         }
         #endregion

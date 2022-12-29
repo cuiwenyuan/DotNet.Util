@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">查询</param>
         /// <param name="commandType"></param>
         /// <returns>影响行数</returns>
@@ -47,7 +47,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType"></param>
@@ -57,7 +57,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns>影响行数</returns>
         int ExecuteNonQuery(BaseUserInfo userInfo, ref SqlExecute sqlExecute);
@@ -65,7 +65,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">sql查询</param>
         /// <param name="commandType"></param>
         /// <returns>Object</returns>
@@ -74,7 +74,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType"></param>
@@ -84,7 +84,7 @@ namespace DotNet.IService
         /// <summary>
         /// 执行查询
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns>Object</returns>
         object ExecuteScalar(BaseUserInfo userInfo, ref SqlExecute sqlExecute);
@@ -92,7 +92,7 @@ namespace DotNet.IService
         /// <summary>
         /// 填充数据表
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">查询</param>
         /// <param name="commandType"></param>
         /// <returns>数据表</returns>
@@ -101,7 +101,7 @@ namespace DotNet.IService
         /// <summary>
         /// 填充数据表
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType"></param>
@@ -111,7 +111,7 @@ namespace DotNet.IService
         /// <summary>
         /// 填充数据表
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="sqlExecute"></param>
         /// <returns>数据表</returns>
         DataTable Fill(BaseUserInfo userInfo, ref SqlExecute sqlExecute);
@@ -119,7 +119,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="recordCount">记录条数</param>
         /// <param name="tableName">表名</param>
         /// <param name="selectField">选择字段</param>

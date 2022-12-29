@@ -162,7 +162,7 @@ namespace DotNet.Business
         /// <summary>
         /// 转换为UserInfo用户信息
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="userEntity"></param>
         /// <param name="userLogonEntity"></param>
         /// <param name="validateUserOnly"></param>
@@ -797,7 +797,7 @@ namespace DotNet.Business
                     {
                         // 4.成功激活用户
                         StatusCode = Status.Ok.ToString();
-                        manager.SetProperty(new KeyValuePair<string, object>(BaseUserEntity.FieldId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
+                        manager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
                         return userInfo;
                     }
                 }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using DotNet.Util;
@@ -37,7 +37,7 @@ namespace DotNet.Business
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual bool Exists(params KeyValuePair<string, object>[] parameters)
         {
@@ -90,7 +90,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameter1">条件1</param>
         /// <param name="parameter2">条件2</param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter)
         {

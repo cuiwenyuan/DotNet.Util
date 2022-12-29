@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Model
@@ -12,7 +12,7 @@ namespace DotNet.Model
         /// <summary>
         /// this
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         /// <returns></returns>
         object this[string name] { get; }
         /// <summary>

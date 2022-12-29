@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -15,23 +15,9 @@ namespace DotNet.Business
     ///	IBaseManager
     /// 通用接口部分
     /// 
-    /// 总觉得自己写的程序不上档次，这些新技术也玩玩，也许做出来的东西更专业了。
-    /// 修改记录
-    /// 
-    ///		2007.11.01 版本：1.9 JiRiGaLa 改进 BUOperatorInfo 去掉这个变量，可以提高性能，提高速度，基类的又一次飞跃。
-    ///		2007.05.23 版本：1.8 JiRiGaLa 修改完善了 对象事件触发器，完善了GetDataTable, ref 方法部分。
-    ///		2007.05.20 版本：1.7 JiRiGaLa 修改完善了 对象事件触发器，完善了GetDataTable方法部分。
-    ///		2007.05.19 版本：1.6 JiRiGaLa 修改完善了 Delete，Exists方法部分，累了休息一下下，争取周六周日两天内完成。
-    ///		2007.05.18 版本：1.5 JiRiGaLa 规范了一些接口的标准方法，进行了补充。
-    ///		2007.05.17 版本：1.4 JiRiGaLa 重新调整主键的规范化，整体上又上升了一个层次了。
-    ///		2006.02.05 版本：1.3 JiRiGaLa 重新调整主键的规范化。
-    ///		2005.08.19 版本：1.2 JiRiGaLa 参数进行改进
-    ///		2004.07.23 版本：1.1 JiRiGaLa 增加了接口ClearProperty、GetFromDS 的定义。
-    ///		2004.07.21 版本：1.0 JiRiGaLa 提炼了最基础的方法部分、觉得这些是很有必要的方法。
-    ///
     /// <author>
     ///		<name>Troy.Cui</name>
-    ///		<date>2007.05.23</date>
+    ///		<date>2022.12.18</date>
     /// </author> 
     /// </summary>
     public partial interface IBaseManager
@@ -115,16 +101,16 @@ namespace DotNet.Business
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(string name, Object[] values, string order);
         /// <summary>
@@ -136,31 +122,31 @@ namespace DotNet.Business
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, int topLimit, string order);
 
@@ -180,16 +166,16 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="condition">查询条件(不包含WHERE)</param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -210,59 +196,59 @@ namespace DotNet.Business
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="order"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(string name, Object[] values, string order = null) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="order"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
         /// 获取List
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         List<T> GetList<T>(params KeyValuePair<string, object>[] parameters) where T : BaseEntity, new();
 
@@ -274,23 +260,23 @@ namespace DotNet.Business
         /// 读取属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="targetField"></param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string GetProperty(object id, string targetField);
         /// <summary>
         /// 读取属性
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string GetProperty(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField);
         /// <summary>
         /// 读取属性
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
-        /// <param name="orderBy"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
+        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
         string GetProperty(List<KeyValuePair<string, object>> parameters, string targetField, string orderBy);
 
@@ -301,26 +287,26 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         string GetId(KeyValuePair<string, object> parameter);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         string GetId(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string GetId(List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 获取Id
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string GetId(params KeyValuePair<string, object>[] parameters);
 
@@ -335,27 +321,27 @@ namespace DotNet.Business
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         string[] GetIds(KeyValuePair<string, object> parameter);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         string[] GetIds(string name, Object[] values);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <returns></returns>
         string[] GetIds(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2);
         /// <summary>
         /// 获取Id数组
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         string[] GetIds(List<KeyValuePair<string, object>> parameters);
         #endregion
@@ -365,61 +351,61 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="order"></param>
+        /// <param name="order">排序(不包含ORDER BY)</param>
         /// <returns></returns>
         string[] GetProperties(string order);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter, int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, int topLimit, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(List<KeyValuePair<string, object>> parameters, string targetField);
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="topLimit"></param>
-        /// <param name="targetField"></param>
+        /// <param name="parameters">参数</param>
+        /// <param name="topLimit">前多少行</param>
+        /// <param name="targetField">目标字段</param>
         /// <returns></returns>
         string[] GetProperties(List<KeyValuePair<string, object>> parameters, int topLimit, string targetField);
 
@@ -430,91 +416,103 @@ namespace DotNet.Business
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object id, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object id, List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object[] ids, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameter"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
-        /// <param name="parameters"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter1"></param>
         /// <param name="whereParameter2"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
+        [Obsolete("Please use Update method from 2022-12-18", false)] 
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters);
 
-        #endregion
+        #endregion        
 
         #region Exists是否存在
 
@@ -528,37 +526,37 @@ namespace DotNet.Business
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">参数</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter, object id);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, object id);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameter1"></param>
-        /// <param name="parameter2"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameter1">参数1</param>
+        /// <param name="parameter2">参数2</param>
+        /// <param name="parameter">参数</param>
         /// <returns></returns>
         bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <param name="id"></param>
         /// <returns></returns>
         bool Exists(List<KeyValuePair<string, object>> parameters, object id);
@@ -587,14 +585,14 @@ namespace DotNet.Business
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="values"></param>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
         /// <returns></returns>
         int Delete(string name, object[] values);
         /// <summary>
         /// 是否存在
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">参数</param>
         /// <returns></returns>
         int Delete(List<KeyValuePair<string, object>> parameters);
 
@@ -885,7 +883,122 @@ namespace DotNet.Business
 
         #endregion
 
-        #region virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
+        #region 按照指定条件参数进行更新 Update
+
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="id">条件参数</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(object id, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="id">条件参数</param>
+        /// <param name="parameters">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(object id, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="ids">数组条件参数</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(object[] ids, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="ids">数组条件参数</param>
+        /// <param name="parameters">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(object[] ids, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(string name, object[] values, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="values">值</param>
+        /// <param name="parameters">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(string name, object[] values, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="whereParameter1">条件参数1</param>
+        /// <param name="whereParameter2">条件参数2</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="whereParameter">条件参数</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="whereParameters">条件参数</param>
+        /// <param name="parameter">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="whereParameter">条件参数</param>
+        /// <param name="parameters">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="whereParameters">条件参数</param>
+        /// <param name="parameters">更新参数</param>
+        /// <param name="clientIp">客户端IP</param>
+        /// <param name="addUpdateInfo">是否添加更新信息</param>
+        /// <returns></returns>
+        int Update(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+
+        #endregion
+
+        #region void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
 
         /// <summary>
         /// 给实体赋值
@@ -896,7 +1009,7 @@ namespace DotNet.Business
         void SetEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        #region void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
         /// <summary>
         /// 设置创建信息
         /// </summary>
@@ -906,7 +1019,7 @@ namespace DotNet.Business
         void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        #region void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
         /// <summary>
         /// 设置更新信息
         /// </summary>
@@ -937,5 +1050,7 @@ namespace DotNet.Business
         /// <returns></returns>
         int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
+
+        
     }
 }

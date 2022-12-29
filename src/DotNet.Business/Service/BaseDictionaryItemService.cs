@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -199,7 +199,7 @@ namespace DotNet.Business
         /// GetDataTableByCode
         /// </summary>
         /// <param name="dbHelper"></param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="code"></param>
         /// <returns></returns>
         public DataTable GetDataTableByCode(IDbHelper dbHelper, BaseUserInfo userInfo, string code)
@@ -228,7 +228,7 @@ namespace DotNet.Business
         /// GetListByCode
         /// </summary>
         /// <param name="dbHelper"></param>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="code"></param>
         /// <returns></returns>
         public List<BaseDictionaryItemEntity> GetListByCode(IDbHelper dbHelper, BaseUserInfo userInfo, string code)
@@ -255,7 +255,7 @@ namespace DotNet.Business
         /// <summary>
         /// GetListByCode
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="code"></param>
         /// <returns></returns>
         public List<BaseDictionaryItemEntity> GetListByCode(BaseUserInfo userInfo, string code)

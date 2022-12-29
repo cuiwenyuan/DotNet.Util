@@ -460,7 +460,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this UInt16 value, Boolean isLittleEndian = true)
@@ -472,7 +472,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this Int16 value, Boolean isLittleEndian = true)
@@ -484,7 +484,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this UInt32 value, Boolean isLittleEndian = true)
@@ -496,7 +496,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this Int32 value, Boolean isLittleEndian = true)
@@ -508,7 +508,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this UInt64 value, Boolean isLittleEndian = true)
@@ -520,7 +520,7 @@ namespace DotNet.Util
         }
 
         /// <summary>整数转为字节数组，注意大小端字节序</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <param name="isLittleEndian"></param>
         /// <returns></returns>
         public static Byte[] GetBytes(this Int64 value, Boolean isLittleEndian = true)
@@ -583,7 +583,7 @@ namespace DotNet.Util
 
         /// <summary>尝试读取压缩编码整数</summary>
         /// <param name="stream"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         internal static Boolean TryReadEncodedInt(this Stream stream, out UInt32 value)
         {
@@ -634,7 +634,7 @@ namespace DotNet.Util
         }
 
         /// <summary>获取压缩编码整数</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static Byte[] GetEncodedInt(Int64 value)
         {

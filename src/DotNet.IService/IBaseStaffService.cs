@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ namespace DotNet.IService
         /// <summary>
         /// 更新通讯地址
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="dt"></param>
         /// <returns></returns>
         int BatchUpdateAddress(BaseUserInfo userInfo, DataTable dt);
@@ -96,7 +96,7 @@ namespace DotNet.IService
         /// <summary>
         /// 获取实体
         /// </summary>
-        /// <param name="userInfo"></param>
+        /// <param name="userInfo">用户信息</param>
         /// <param name="id"></param>
         /// <returns></returns>
         BaseStaffEntity GetEntity(BaseUserInfo userInfo, string id);
@@ -108,22 +108,6 @@ namespace DotNet.IService
         /// <param name="ids">主键数组</param>
         /// <returns>数据表</returns>
         DataTable GetDataTableByIds(BaseUserInfo userInfo, string[] ids);
-
-        /// <summary>
-        /// 查询职员列表
-        /// </summary>
-        /// <param name="userInfo">用户</param>
-        /// <param name="permissionCode"></param>
-        /// <param name="companyId"></param>
-        /// <param name="whereClause"></param>
-        /// <param name="auditStates"></param>
-        /// <param name="enabled">有效</param>
-        /// <param name="recordCount"></param>
-        /// <param name="pageNo">当前页</param>
-        /// <param name="pageSize"></param>
-        /// <param name="sort"></param>
-        /// <returns></returns>
-        DataTable SearchByPage(BaseUserInfo userInfo, string permissionCode, string companyId, string whereClause, string auditStates, bool? enabled, out int recordCount, int pageNo = 1, int pageSize = 20, string sort = null);
 
         /// <summary>
         /// 按公司获取部门员工
@@ -247,8 +231,8 @@ namespace DotNet.IService
         /// 获取主键
         /// </summary>
         /// <param name="userInfo">用户</param>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">名称</param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         string GetId(BaseUserInfo userInfo, string name, object value);
 

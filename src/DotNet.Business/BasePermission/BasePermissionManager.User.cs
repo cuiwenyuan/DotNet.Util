@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -29,7 +29,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager
     {
-        #region CheckPermission
+        #region CheckPermission 判断用户是否有有相应的权限
         /// <summary>
         /// 判断用户是否有有相应的权限
         /// </summary>
@@ -59,6 +59,7 @@ namespace DotNet.Business
             CurrentTableName = systemCode + "Permission";
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, userId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
@@ -71,10 +72,10 @@ namespace DotNet.Business
 
         #endregion
 
-        #region ResetPermissionByCache
+        #region ResetPermissionByCache 重置权限缓存
 
         /// <summary>
-        /// 重置权限
+        /// 重置权限缓存
         /// </summary>
         /// <param name="systemCode">系统编码</param>
         /// <param name="userId">用户编号</param>
@@ -100,7 +101,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region GetPermissionIdsByCache
+        #region GetPermissionIdsByCache 获取权限编号
 
         /// <summary>
         /// 获取权限编号
@@ -134,6 +135,7 @@ namespace DotNet.Business
             CurrentTableName = systemCode + "Permission";
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, userId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
@@ -172,6 +174,7 @@ namespace DotNet.Business
             {
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, userId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
@@ -188,7 +191,7 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldUpdateTime, DateTime.Now)
                     };
                     // 更新状态，设置为有效、并取消删除，权限也不是天天变动的，所以可以更新一下
-                    SetProperty(currentId, parameters);
+                    Update(currentId, parameters);
 
                     result = currentId;
                 }
@@ -353,6 +356,7 @@ namespace DotNet.Business
 
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, userId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
@@ -485,6 +489,7 @@ namespace DotNet.Business
             CurrentTableName = systemCode + "Permission";
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, userId)
             };
@@ -496,7 +501,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region GetUserIds
+        #region public string[] GetUserIds(string systemCode, string permissionCode) 获得有某个权限的所有用户主键
 
         /// <summary>
         /// 获得有某个权限的所有用户主键
@@ -513,7 +518,7 @@ namespace DotNet.Business
 
         #endregion
 
-        #region GetUserIdsByPermissionId
+        #region public string[] GetUserIdsByPermissionId(string systemCode, string permissionId) 获取用户编号
 
         /// <summary>
         /// 获取用户编号
@@ -531,17 +536,17 @@ namespace DotNet.Business
                 var sql = string.Empty;
 
                 // 1.本人直接就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "User') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "User') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)";
                 dt = Fill(sql);
                 var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Role') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Role') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)";
                 dt = Fill(sql);
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Organization') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1) ";
+                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Organization') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)";
                 dt = Fill(sql);
                 var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 

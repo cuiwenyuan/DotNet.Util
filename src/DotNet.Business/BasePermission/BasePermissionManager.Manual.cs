@@ -72,6 +72,7 @@ namespace DotNet.Business
             var result = string.Empty;
             var whereParameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, entity.SystemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, entity.ResourceCategory),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, entity.ResourceId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, entity.PermissionId)
@@ -124,6 +125,7 @@ namespace DotNet.Business
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, systemCode),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldId, permissionIds),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
@@ -155,6 +157,7 @@ namespace DotNet.Business
             resourceCategory = systemCode + resourceCategory;
             var parameters = new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
@@ -167,5 +170,36 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public string[] GetOrganizationIds(string systemCode, string userId, string permissionCode) 获取用户的权限主键数组
+        /// <summary>
+        /// 获取用户的权限主键数组
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="userId">用户主键</param>
+        /// <param name="permissionId">权限编号</param>
+        /// <returns>主键数组</returns>
+        public string[] GetOrganizationIds(string systemCode, string userId, string permissionId)
+        {
+            string[] result = null;
+
+            if (!string.IsNullOrEmpty(permissionId))
+            {
+                var parameters = new List<KeyValuePair<string, object>>
+                {
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldSystemCode, systemCode),
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName),
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldResourceId, userId),
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldTargetCategory, BaseOrganizationEntity.CurrentTableName),
+                    new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldPermissionId, permissionId)
+                };
+
+                // 20130605 JiRiGaLa 这个运行效率更高一些
+                result = GetProperties(parameters, BasePermissionScopeEntity.FieldTargetId);
+                // var result = this.GetDataTable(parameters);
+                // result = BaseUtil.FieldToArray(result, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            }
+            return result;
+        }
+        #endregion
     }
 }

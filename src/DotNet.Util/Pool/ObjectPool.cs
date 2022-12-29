@@ -178,7 +178,7 @@ namespace DotNet.Util
         }
 
         /// <summary>借出时是否可用</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         protected virtual Boolean OnGet(T value) => true;
 
@@ -191,7 +191,7 @@ namespace DotNet.Util
         #region Put归还
 
         /// <summary>归还</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public virtual Boolean Put(T value)
         {
             if (value == null) return false;
@@ -239,7 +239,7 @@ namespace DotNet.Util
         }
 
         /// <summary>归还时是否可用</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         protected virtual Boolean OnPut(T value) => true;
 
@@ -268,7 +268,7 @@ namespace DotNet.Util
         }
 
         /// <summary>销毁</summary>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         protected virtual void OnDispose(T value) => value.TryDispose();
         #endregion
 
@@ -422,7 +422,7 @@ namespace DotNet.Util
         #region 构造
         /// <summary>包装项</summary>
         /// <param name="pool"></param>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         public PoolItem(IPool<T> pool, T value)
         {
             Pool = pool;

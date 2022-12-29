@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -40,8 +40,8 @@ namespace DotNet.Business
             sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount";
             sql += " ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLogonLogEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0) AS TotalUserLoginCount";
             sql += " ,(SELECT COUNT(*) FROM " + BaseOrganizationEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseOrganizationEntity.FieldDeleted + " = 0 AND ParentId = 0) AS TotalCompanyCount";
-            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B WHERE 1 = 1";
-            sql += " AND B.TransactionDate <= GETDATE() AND DATEDIFF(d,B.TransactionDate,GETDATE()) < " + days + "";
+            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B ";
+            sql += " WHERE B.TransactionDate <= GETDATE() AND DATEDIFF(d,B.TransactionDate,GETDATE()) < " + days + "";
             if (ValidateUtil.IsDateTime(startDate))
             {
                 sql += " AND B.TransactionDate >= '" + startDate + "'";

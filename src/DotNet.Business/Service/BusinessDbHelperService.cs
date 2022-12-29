@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (C) 2021, DotNet.
+// All Rights Reserved. Copyright (c) 2022, DotNet.
 //-----------------------------------------------------------------
 
 
@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// BusinessDbHelperService
     /// 业务数据库服务
     /// 
-    /// 修改纪录
+    /// 修改记录
     /// 
     ///		2011.05.07 版本：1.0 JiRiGaLa 创建。
     ///		
