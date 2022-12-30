@@ -201,6 +201,7 @@ namespace DotNet.Business
             {
                 var permissionEntity = new BasePermissionEntity
                 {
+                    SystemCode = systemCode,
                     ResourceCategory = BaseUserEntity.CurrentTableName,
                     ResourceId = userId.ToString(),
                     PermissionId = permissionId,
