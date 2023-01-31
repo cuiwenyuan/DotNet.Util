@@ -12,8 +12,14 @@ namespace DotNet.Util
     /// <typeparam name="T"></typeparam>
     public abstract class SingletonUtil<T> where T : class, new()
     {
+        /// <summary>
+        /// 
+        /// </summary>
         protected readonly static object obj = new Object();
-        private static T Instance = new T();
+        /// <summary>
+        /// 
+        /// </summary>
+        private static T Instance = null;
 
         /// <summary>
         /// 创建实例

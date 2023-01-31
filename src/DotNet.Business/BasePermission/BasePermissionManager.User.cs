@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2022, DotNet.
+// All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -201,6 +201,7 @@ namespace DotNet.Business
             {
                 var permissionEntity = new BasePermissionEntity
                 {
+                    SystemCode = systemCode,
                     ResourceCategory = BaseUserEntity.CurrentTableName,
                     ResourceId = userId.ToString(),
                     PermissionId = permissionId,
