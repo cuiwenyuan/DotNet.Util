@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2022, DotNet.
+// All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -78,14 +78,16 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            CurrentTableName = systemCode + "Permission";
-            var parameters = new List<KeyValuePair<string, object>>();
+            CurrentTableName = systemCode + "Permission";            
             var resourceCategory = systemCode + "Role";
-            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode));
-            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory));
-            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId));
-            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1));
-            parameters.Add(new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0));
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, resourceCategory),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)
+            };
 
             result = GetProperties(parameters, BasePermissionEntity.FieldResourceId);
             return result;
@@ -140,6 +142,7 @@ namespace DotNet.Business
             {
                 var permissionEntity = new BasePermissionEntity
                 {
+                    SystemCode = systemCode,
                     ResourceCategory = tableName,
                     ResourceId = roleId,
                     PermissionId = permissionId

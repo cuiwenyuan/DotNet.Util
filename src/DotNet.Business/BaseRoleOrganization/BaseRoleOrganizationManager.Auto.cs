@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseRoleOrganizationManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2022, All rights reserved.
+//     Copyright (c) 2023, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2022, DotNet.
+// All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -7,6 +7,7 @@ using System.Data;
 
 namespace DotNet.Business
 {
+    using Model;
     using Util;
     /// <summary>
     ///	BaseManager
@@ -160,6 +161,74 @@ namespace DotNet.Business
             }
             // 这个是调用存储过程的方法
             return dbHelper.GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
+        }
+        #endregion
+
+        #region public virtual DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = InsuranceSalesDetailEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        /// <summary>
+        /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="companyId">查看公司主键</param>
+        /// <param name="departmentId">查看部门主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="startTime">创建开始时间</param>
+        /// <param name="endTime">创建结束时间</param>
+        /// <param name="searchKey">查询关键字</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public virtual DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseEntity.FieldEnabled + " = 1");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseEntity.FieldDeleted + " = 0");
+            }
+
+            if (ValidateUtil.IsInt(companyId))
+            {
+                //sb.Append(" AND " + InsuranceSalesDetailEntity.FieldCompanyId + " = " + companyId);
+            }
+            // 只有管理员才能看到所有的
+            //if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
+            //{
+            //sb.Append(" AND (" + BaseEntity.FieldUserCompanyId + " = 0 OR " + BaseEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //}
+            if (ValidateUtil.IsInt(departmentId))
+            {
+                //sb.Append(" AND " + BaseEntity.FieldDepartmentId + " = " + departmentId);
+            }
+            if (ValidateUtil.IsInt(userId))
+            {
+                //sb.Append(" AND " + BaseEntity.FieldUserId + " = " + userId);
+            }
+            //创建时间
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (Name LIKE N'%" + searchKey + "%' OR Description LIKE N'%" + searchKey + "%')");
+            }
+            sb.Replace(" 1 = 1 AND ", "");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
         }
         #endregion
     }
