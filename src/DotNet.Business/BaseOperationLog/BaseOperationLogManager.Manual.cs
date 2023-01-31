@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOperationLogManager.cs" company="DotNet">
-//     Copyright (c) 2021, All rights reserved.
+//     Copyright (c) 2023, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
