@@ -38,11 +38,11 @@
 		<Compile Remove="AppSetting.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net452' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net47' Or '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
 		<Reference Include="System.Web" />
 	</ItemGroup>
 

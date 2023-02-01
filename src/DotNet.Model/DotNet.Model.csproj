@@ -34,11 +34,11 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net46' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
