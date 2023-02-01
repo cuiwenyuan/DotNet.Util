@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net452;net46;net47;net48;net5.0;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET 7/6/5/Standard 2.1/Standard 2.0 utilities(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Copyright>©2008-2023 Wangcaisoft</Copyright>
@@ -42,7 +42,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="NPOI" Version="2.5.6" />
 		<PackageReference Include="Microsoft.Net.Http.Headers">
 		  <Version>2.2.8</Version>
