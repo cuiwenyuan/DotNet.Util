@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
 		<TargetFrameworks>net452;net46;net47;net48;net5.0;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 		<Description>DotNet.Business.Web is WebForm/WebApi/MVC client sample for User,Role,Menu,Module,Permission etc Management. Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.10</Version>
+		<Copyright>©2008-2023 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Business Web</PackageTags>
@@ -22,9 +21,13 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<AssemblyVersion>5.6.2022.1231</AssemblyVersion>
-		<FileVersion>5.6.2022.1231</FileVersion>
+		<VersionPrefix>1.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
+		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
+		<FileVersion>$(Version)</FileVersion>
+		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 	</PropertyGroup>
 
 	<ItemGroup>
