@@ -307,19 +307,19 @@ namespace DotNet.Business
         public DataTable GetErrorDataTable(string parentId)
         {
             DataTable result = null;
-            var sql = "  SELECT * "
-                        + " FROM " + BaseOrganizationEntity.CurrentTableName
-                        + "       WHERE  (" + BaseOrganizationEntity.FieldProvinceId + " IS NULL OR "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("  SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
+                        + " WHERE  (" + BaseOrganizationEntity.FieldProvinceId + " IS NULL OR "
                         + BaseOrganizationEntity.FieldCityId + " IS NULL OR "
                         + BaseOrganizationEntity.FieldDistrictId + " IS NULL ) AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                        + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ";
+                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ");
             if (!string.IsNullOrWhiteSpace(parentId))
             {
-                sql += "  START WITH Id = " + parentId + " "
-                   + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId;
+                sb.Append(" START WITH Id = " + parentId + " "
+                   + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
             }
-            sql += "    ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-            result = DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+            result = DbHelper.Fill(sb.Put());
             result.TableName = BaseOrganizationEntity.CurrentTableName;
             return result;
         }
@@ -439,14 +439,15 @@ namespace DotNet.Business
         public string[] GetChildrenProperties(string parentId, string field)
         {
             string[] result = null;
-            var sql = "  SELECT " + field
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("  SELECT " + field
                         + " FROM " + BaseOrganizationEntity.CurrentTableName
-                        + "       WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                        + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
-                        + "  START WITH Id = " + parentId + " "
-                        + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
-                        + "    ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-            var dt = DbHelper.Fill(sql);
+                        + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                        + " START WITH Id = " + parentId + " "
+                        + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
+                        + " ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+            var dt = DbHelper.Fill(sb.Put());
             result = BaseUtil.FieldToArray(dt, field);
             return result;
         }
@@ -463,18 +464,17 @@ namespace DotNet.Business
             DataTable result = null;
             if (ValidateUtil.IsInt(parentId) && childrens)
             {
-                var sql = string.Empty;
+                var sb = Pool.StringBuilder.Get();
                 if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
-                    sql = "     SELECT * "
-                               + " FROM " + BaseOrganizationEntity.CurrentTableName
+                    sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                                + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
                                + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                                + " AND (" + BaseOrganizationEntity.FieldCategoryCode + "= '" + categoryCode + "' OR " + BaseOrganizationEntity.FieldCategoryCode + "= 'Sub" + categoryCode + "')"
                                + " START WITH Id = " + parentId + " "
                                + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
-                               + " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-                    result = DbHelper.Fill(sql);
+                               + " ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+                    result = DbHelper.Fill(sb.Put());
                 }
                 //此处递归查询需要完善 Troy.Cui 2018.07.21
                 else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
@@ -540,53 +540,50 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(string searchKey, string parentId = null, bool? isInnerOrganization = null, bool? childrens = null)
         {
-            var sql = string.Empty;
+            var sb = Pool.StringBuilder.Get();
             List<IDbDataParameter> dbParameters;
             if (!childrens.HasValue || (childrens.HasValue && childrens.Value == false))
             {
-                sql = "SELECT * "
-                        + " FROM " + CurrentTableName
-                        + " WHERE " + BaseOrganizationEntity.FieldDeleted + " =  0 ";
+                sb.Append("SELECT * FROM " + CurrentTableName + " WHERE " + BaseOrganizationEntity.FieldDeleted + " =  0 ");
                 if (isInnerOrganization.HasValue)
                 {
                     var innerOrganization = isInnerOrganization.Value == true ? "1" : "0";
-                    sql += string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldIsInnerOrganization, innerOrganization);
+                    sb.Append(string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldIsInnerOrganization, innerOrganization));
                 }
                 if (!string.IsNullOrEmpty(parentId))
                 {
-                    sql += string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldParentId, parentId);
+                    sb.Append(string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldParentId, parentId));
                 }
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim().ToLower();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sb.Append(string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
+                    sb.Append(string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
+                    sb.Append(string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
                     }
                     dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldName, searchKey));
                 }
-                sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-                return DbHelper.Fill(sql, dbParameters.ToArray());
+                sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+                return DbHelper.Fill(sb.Put(), dbParameters.ToArray());
             }
             else
             {
-                sql = "     SELECT * "
-                         + " FROM " + BaseOrganizationEntity.CurrentTableName
-                         + "       WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                         + "             AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ";
+                sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
+                         + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                         + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ");
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim();
                 if (!string.IsNullOrEmpty(searchKey))
                 {
-                    sql += string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
-                    sql += string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
-                    sql += string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName));
+                    sb.Append(string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
+                    sb.Append(string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
+                    sb.Append(string.Format(" OR {0} LIKE {1} )", BaseOrganizationEntity.FieldQuickQuery, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
                     if (searchKey.IndexOf("%") < 0)
                     {
                         searchKey = string.Format("%{0}%", searchKey);
@@ -596,152 +593,13 @@ namespace DotNet.Business
 
                 if (!string.IsNullOrEmpty(parentId))
                 {
-                    sql += "  START WITH Id = " + parentId + " "
-                             + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId;
+                    sb.Append("  START WITH Id = " + parentId + " "
+                             + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
                 }
 
-                sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-                return DbHelper.Fill(sql, dbParameters.ToArray());
+                sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+                return DbHelper.Fill(sb.Put(), dbParameters.ToArray());
             }
-        }
-        #endregion
-
-        #region 根据城市Id获取外网展示网点 public DataTable GetWebOrganizationByDistrictId(string districtId)
-        /// <summary>
-        /// 根据城市Id获取外网展示网点
-        /// </summary>
-        /// <param name="cityId">城市Id</param>
-        /// <returns></returns>
-        public DataTable GetWebOrganizationList(string cityId)
-        {
-            var commandText = @"SELECT o.Id
-                                         ,o.Code
-                                         ,o.OuterPhone
-                                         ,o.Manager
-                                         ,b.WebEnabled AS Enabled
-                                         ,b.WebsiteName
-                                         ,c.Longitude
-                                         ,c.Latitude
-   FROM BASEORGANIZE o 
-                              LEFT JOIN BASEORGANIZE_EXPRESS b ON o.id = b.id 
-                              LEFT JOIN BaseArea a ON o.ProvinceId = a.id 
-                              LEFT JOIN BASEORGANIZEGIS c ON o.id = c.id
-                                  WHERE c.WebShowEnable = 1 
-                                        AND o." + BaseOrganizationEntity.FieldDeleted + @" = 0 
-                                        AND o.CityId=" + dbHelper.GetParameter("CityId");
-            var dbParameters = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("CityId", cityId)
-            }; //查询条件参数集合
-            return dbHelper.Fill(commandText, dbHelper.MakeParameters(dbParameters));
-        }
-        #endregion
-
-        #region 根据网点Id获取外网展示网点 public DataTable GetWebOrganizationById(string Id)
-
-        /// <summary>
-        /// 根据网点Id获取外网展示网点
-        /// </summary>
-        /// <param name="id">网点Id</param>
-        /// <param name="code">网点编号</param>
-        /// <returns></returns>
-        public DataTable GetWebOrganization(string id, string code)
-        {
-            // id可以是多个网点Id
-            var ids = DbUtil.SqlSafe(id).Split(',');
-            var codes = DbUtil.SqlSafe(code).Split(',');
-            var dbParameters = new List<KeyValuePair<string, object>>(); //查询条件参数集合
-            var listCondition = new List<string>();
-
-            // 网点Id查询条件
-            var idCondition = string.Empty;
-            if (!string.IsNullOrEmpty(id))
-            {
-                idCondition += string.Format(" o.ID IN (");
-                for (var i = 0; i < ids.Length; i++)
-                {
-                    if (i == 0)
-                    {
-                        idCondition += dbHelper.GetParameter("I" + i);
-                    }
-                    else
-                    {
-                        idCondition += ",";
-                        idCondition += dbHelper.GetParameter("I" + i);
-                    }
-                    dbParameters.Add(new KeyValuePair<string, object>("I" + i, ids[i]));
-                }
-                idCondition += string.Format(")");
-                listCondition.Add(idCondition);
-            }
-
-            // 网点编号查询条件
-            var codeCondition = string.Empty;
-            if (!string.IsNullOrEmpty(code))
-            {
-                codeCondition += string.Format(" o.Code IN (");
-                for (var i = 0; i < codes.Length; i++)
-                {
-                    if (i == 0)
-                    {
-                        codeCondition += dbHelper.GetParameter("C" + i);
-                    }
-                    else
-                    {
-                        codeCondition += ",";
-                        codeCondition += dbHelper.GetParameter("C" + i);
-                    }
-                    dbParameters.Add(new KeyValuePair<string, object>("C" + i, codes[i]));
-                }
-                codeCondition += string.Format(")");
-                listCondition.Add(codeCondition);
-            }
-            var conditions = string.Empty;
-            if (listCondition.Count > 0)
-            {
-                // 构建查询条件
-                conditions = string.Join(" AND ", listCondition);
-            }
-            var commandText = @"SELECT o.Id
-                                         ,o.Code
-                                         ,o.ParentName
-                                         ,o.CategoryCode
-                                         ,o.OuterPhone
-                                         ,o.Manager
-                                         ,o.ProvinceId
-                                         ,o.Province
-                                         ,a.FullName ProvinceFullName
-                                         ,o.City
-                                         ,o.District
-                                         ,o.Area
-                                         ,o.Fax
-                                         ,o.Description
-                                         ,o.MasterMobile
-                                         ,o.SortCode
-                                         ,b.WebEnabled AS Enabled
-                                         ,o.SendFee
-                                         ,o.LevelTwoTransferFee
-                                         ,o.Name
-                                         ,o.Updateon
-                                         ,b.WebsiteName
-                                         ,b.Allow_Topayment
-                                         ,b.Not_Dispatch_Range
-                                         ,b.Dispatch_Time_Limit
-                                         ,b.Allow_Agent_Money
-                                         ,b.Public_Remark
-                                         ,b.Private_Remark
-                                         ,b.Dispatch_Range
-                                         ,c.Longitude
-                                         ,c.Latitude
-                                         ,o.Address
-   FROM BASEORGANIZE o 
-                              LEFT JOIN BASEORGANIZE_EXPRESS b ON o.id = b.id 
-                              LEFT JOIN BaseArea a ON o.ProvinceId = a.id 
-                              LEFT JOIN BASEORGANIZEGIS c ON o.id = c.id
-                                  WHERE c.WebShowEnable = 1 
-                                        AND o." + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND "
-                                        + conditions;
-            return dbHelper.Fill(commandText, dbHelper.MakeParameters(dbParameters));
         }
         #endregion
 

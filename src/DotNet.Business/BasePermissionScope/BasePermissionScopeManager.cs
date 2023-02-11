@@ -274,30 +274,30 @@ namespace DotNet.Business
         public string GetOrganizationIdsSql(string systemCode, string managerUserId, string permissionCode)
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-
-            var sql = "SELECT " + BasePermissionScopeEntity.FieldTargetId
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BasePermissionScopeEntity.FieldTargetId
                      + " FROM " + BasePermissionScopeEntity.CurrentTableName
                      // 有效的，并且不为空的组织机构主键
-                     + "  WHERE (" + BasePermissionScopeEntity.FieldTargetCategory + " = '" + BaseOrganizationEntity.CurrentTableName + "') "
-                     + "        AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldDeleted + " = 0) "
-                     + "        AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldEnabled + " = 1) "
-                     + "        AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldTargetId + " IS NOT NULL) "
+                     + " WHERE (" + BasePermissionScopeEntity.FieldTargetCategory + " = '" + BaseOrganizationEntity.CurrentTableName + "') "
+                     + " AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldDeleted + " = 0) "
+                     + " AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldEnabled + " = 1) "
+                     + " AND ( " + BasePermissionScopeEntity.CurrentTableName + "." + BasePermissionScopeEntity.FieldTargetId + " IS NOT NULL) "
                      // 自己直接由相应权限的组织机构
-                     + "        AND ((" + BasePermissionScopeEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' "
-                     + "        AND " + BasePermissionScopeEntity.FieldResourceId + " = '" + managerUserId + "')"
+                     + " AND ((" + BasePermissionScopeEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' "
+                     + " AND " + BasePermissionScopeEntity.FieldResourceId + " = '" + managerUserId + "')"
                      + " OR (" + BasePermissionScopeEntity.FieldResourceCategory + " = '" + BaseRoleEntity.CurrentTableName + "' "
-                     + "       AND " + BasePermissionScopeEntity.FieldResourceId + " IN ( "
+                     + " AND " + BasePermissionScopeEntity.FieldResourceId + " IN ( "
                      // 获得属于那些角色有相应权限的组织机构
                      + "SELECT " + BaseUserRoleEntity.FieldRoleId
                      + " FROM " + BaseUserRoleEntity.CurrentTableName
-                     + "  WHERE " + BaseUserRoleEntity.FieldUserId + " = '" + managerUserId + "'"
-                     + "        AND " + BaseUserRoleEntity.FieldDeleted + " = 0 "
-                     + "        AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                     + " WHERE " + BaseUserRoleEntity.FieldUserId + " = '" + managerUserId + "'"
+                     + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 "
+                     + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
                      // 修正不会读取用户默认角色权限域范围BUG
                      + "))) "
                      // 并且是指定的本权限
-                     + " AND (" + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "') ";
-            return sql;
+                     + " AND (" + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "') ");
+            return sb.Put();
         }
         #endregion
 
@@ -311,13 +311,13 @@ namespace DotNet.Business
         /// <returns>Sql</returns>
         public string GetOrganizationIdsSqlByParentId(string systemCode, string managerUserId, string permissionCode)
         {
-            var sql = "SELECT Id "
-                     + " FROM " + BaseOrganizationEntity.CurrentTableName
-                     + "  WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                     + "        AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0 "
-                     + "  START WITH Id IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ") "
-                     + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId;
-            return sql;
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName
+                     + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                     + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                     + " START WITH Id IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ") "
+                     + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
+            return sb.Put();
         }
         #endregion
 
@@ -331,15 +331,16 @@ namespace DotNet.Business
         /// <returns>Sql</returns>
         public string GetOrganizationIdsSqlByCode(string systemCode, string managerUserId, string permissionCode)
         {
-            var sql = "SELECT " + BaseOrganizationEntity.FieldId + " AS " + BaseUtil.FieldId
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseOrganizationEntity.FieldId + " AS " + BaseUtil.FieldId
                      + " FROM " + BaseOrganizationEntity.CurrentTableName
-                     + "         , ( SELECT " + DbHelper.PlusSign(BaseOrganizationEntity.FieldCode, "'%'") + " AS " + BaseOrganizationEntity.FieldCode
+                     + " , ( SELECT " + DbHelper.PlusSign(BaseOrganizationEntity.FieldCode, "'%'") + " AS " + BaseOrganizationEntity.FieldCode
                      + " FROM " + BaseOrganizationEntity.CurrentTableName
-                     + "     WHERE " + BaseOrganizationEntity.FieldId + " IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ")) ManageOrganization "
+                     + " WHERE " + BaseOrganizationEntity.FieldId + " IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ")) ManageOrganization "
                      + " WHERE (" + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
                      // 编号相似的所有组织机构获取出来
-                     + "       AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCode + " LIKE ManageOrganization." + BaseOrganizationEntity.FieldCode + ")";
-            return sql;
+                     + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCode + " LIKE ManageOrganization." + BaseOrganizationEntity.FieldCode + ")");
+            return sb.Put();
         }
         #endregion
 
@@ -356,16 +357,16 @@ namespace DotNet.Business
         public string[] GetOrganizationIds(string systemCode, string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizationIdOnly = true)
         {
             // 这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
-            var sql = string.Empty;
+            var sb = Pool.StringBuilder.Get();
             if (UseGetChildrensByCode)
             {
-                sql = GetOrganizationIdsSqlByCode(systemCode, managerUserId, permissionCode);
+                sb.Append(GetOrganizationIdsSqlByCode(systemCode, managerUserId, permissionCode));
             }
             else
             {
                 if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
-                    sql = GetOrganizationIdsSqlByParentId(systemCode, managerUserId, permissionCode);
+                    sb.Append(GetOrganizationIdsSqlByParentId(systemCode, managerUserId, permissionCode));
                 }
                 else
                 {
@@ -395,7 +396,7 @@ namespace DotNet.Business
                     return ids;
                 }
             }
-            var dt = DbHelper.Fill(sql);
+            var dt = DbHelper.Fill(sb.Put());
             return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
@@ -436,16 +437,17 @@ namespace DotNet.Business
             {
                 whereQuery = " NULL ";
             }
-            var sql = "SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                      + " WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
-                     + "   AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                     + "   AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 ";
+                     + " AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                     + " AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 ");
             if (permissionScope != PermissionOrganizationScope.AllData)
             {
-                sql += " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " IN (" + whereQuery + ") ";
+                sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " IN (" + whereQuery + ") ");
             }
-            sql += " ORDER BY " + BaseOrganizationEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -469,43 +471,42 @@ namespace DotNet.Business
             var roleTableName = systemCode + "Role";
             var userRoleTableName = systemCode + "UserRole";
             var permissionScopeTableName = systemCode + "PermissionScope";
-            var sql = string.Empty;
+            var sb = Pool.StringBuilder.Get();
             // 被管理的角色 
-            sql += "SELECT " + permissionScopeTableName + ".TargetId AS " + BaseUtil.FieldId
+            sb.Append("SELECT " + permissionScopeTableName + ".TargetId AS " + BaseUtil.FieldId
                       + " FROM " + permissionScopeTableName
-                      + "  WHERE " + permissionScopeTableName + ".TargetId IS NOT NULL "
-                      + "        AND " + permissionScopeTableName + ".TargetCategory = '" + roleTableName + "' "
-                      + "        AND ((" + permissionScopeTableName + ".ResourceCategory = '" + BaseUserEntity.CurrentTableName + "' "
-                      + "             AND " + permissionScopeTableName + ".ResourceId = '" + managerUserId + "')"
+                      + " WHERE " + permissionScopeTableName + ".TargetId IS NOT NULL "
+                      + " AND " + permissionScopeTableName + ".TargetCategory = '" + roleTableName + "' "
+                      + " AND ((" + permissionScopeTableName + ".ResourceCategory = '" + BaseUserEntity.CurrentTableName + "' "
+                      + " AND " + permissionScopeTableName + ".ResourceId = '" + managerUserId + "')"
                       // 以及 他所在的角色在管理的角色
-                      + "        OR (" + permissionScopeTableName + ".ResourceCategory = '" + roleTableName + "'"
-                      + "            AND " + permissionScopeTableName + ".ResourceId IN ( "
-                      + " SELECT RoleId "
-                                                 + " FROM " + userRoleTableName
-                      + "  WHERE (" + BaseUserRoleEntity.FieldUserId + " = '" + managerUserId + "' "
-                      + "        AND " + BaseUserRoleEntity.FieldEnabled + " = 1) ";
+                      + " OR (" + permissionScopeTableName + ".ResourceCategory = '" + roleTableName + "'"
+                      + " AND " + permissionScopeTableName + ".ResourceId IN ( "
+                      + " SELECT RoleId FROM " + userRoleTableName
+                      + " WHERE (" + BaseUserRoleEntity.FieldUserId + " = '" + managerUserId + "' "
+                      + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1) ");
 
             if (useBaseRole)
             {
-                sql += " UNION SELECT RoleId FROM BaseUserRole WHERE (UserId = '" + managerUserId + "' AND " + BaseUtil.FieldEnabled + " = 1  ) ";
+                sb.Append(" UNION SELECT RoleId FROM BaseUserRole WHERE (UserId = '" + managerUserId + "' AND " + BaseUtil.FieldEnabled + " = 1  ) ");
             }
 
             // 并且是指定的本权限
-            sql += ")) " + " AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "')";
+            sb.Append(")) " + " AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "')");
 
             // 被管理部门的列表
             var organizationIds = GetOrganizationIds(systemCode, managerUserId, permissionCode);
             if (organizationIds.Length > 0)
             {
                 // 被管理的组织机构包含的角色
-                sql += "  UNION "
+                sb.Append("  UNION "
                           + " SELECT " + roleTableName + "." + BaseRoleEntity.FieldId + " AS " + BaseUtil.FieldId
                           + " FROM " + roleTableName
-                          + "  WHERE " + roleTableName + "." + BaseRoleEntity.FieldEnabled + " = 1 "
-                          + "    AND " + roleTableName + "." + BaseRoleEntity.FieldDeleted + " = 0 "
-                          + "    AND " + roleTableName + "." + BaseRoleEntity.FieldOrganizationId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ";
+                          + " WHERE " + roleTableName + "." + BaseRoleEntity.FieldEnabled + " = 1 "
+                          + " AND " + roleTableName + "." + BaseRoleEntity.FieldDeleted + " = 0 "
+                          + " AND " + roleTableName + "." + BaseRoleEntity.FieldOrganizationId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
             }
-            return sql;
+            return sb.Put();
         }
         #endregion
 
@@ -574,7 +575,7 @@ namespace DotNet.Business
 
             var userEntity = BaseUserManager.GetEntityByCache(userId);
 
-            var userManager = new BaseUserManager(DbHelper, UserInfo);
+            var userManager = new BaseUserManager(UserInfo);
             // 用户管理员,这里需要判断,是业务权限？
             isAdmin = userManager.IsAdministrator(userEntity);
             /*
@@ -599,17 +600,17 @@ namespace DotNet.Business
                 result.TableName = CurrentTableName;
                 return result;
             }
-
-            var sql = "SELECT * "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * "
                       + " FROM " + tableName
                       + " WHERE " + BaseRoleEntity.FieldCreateUserId + " = '" + userId + "'"
-                      + "    OR " + tableName + "." + BaseRoleEntity.FieldId + " IN ("
+                      + " OR " + tableName + "." + BaseRoleEntity.FieldId + " IN ("
                                 + GetRoleIdsSql(systemCode, userId, permissionCode, useBaseRole)
                                 + " ) AND (" + BaseRoleEntity.FieldDeleted + " = 0) "
                                 + " AND (" + BaseRoleEntity.FieldIsVisible + " = 1) "
-                   + " ORDER BY " + BaseRoleEntity.FieldSortCode;
+                   + " ORDER BY " + BaseRoleEntity.FieldSortCode);
 
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -628,14 +629,15 @@ namespace DotNet.Business
         public string GetUserIdsSql(string systemCode, string managerUserId, string permissionCode)
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
+            var sb = Pool.StringBuilder.Get();
             // 直接管理的用户
-            var sql = "SELECT BasePermissionScope.TargetId AS " + BaseUtil.FieldId
+            sb.Append("SELECT BasePermissionScope.TargetId AS " + BaseUtil.FieldId
                      + " FROM BasePermissionScope "
-                     + "  WHERE (BasePermissionScope.TargetCategory = '" + BaseUserEntity.CurrentTableName + "'"
-                     + "        AND BasePermissionScope.ResourceId = '" + managerUserId + "'"
-                     + "        AND BasePermissionScope.ResourceCategory = '" + BaseUserEntity.CurrentTableName + "'"
-                     + "        AND BasePermissionScope.PermissionId = '" + permissionId + "'"
-                     + "        AND BasePermissionScope.TargetId IS NOT NULL) ";
+                     + " WHERE (BasePermissionScope.TargetCategory = '" + BaseUserEntity.CurrentTableName + "'"
+                     + " AND BasePermissionScope.ResourceId = '" + managerUserId + "'"
+                     + " AND BasePermissionScope.ResourceCategory = '" + BaseUserEntity.CurrentTableName + "'"
+                     + " AND BasePermissionScope.PermissionId = '" + permissionId + "'"
+                     + " AND BasePermissionScope.TargetId IS NOT NULL) ");
 
             // 被管理部门的列表
             var organizationIds = GetOrganizationIds(systemCode, managerUserId, permissionCode, false);
@@ -644,7 +646,7 @@ namespace DotNet.Business
                 // 是否仅仅是自己的还有点儿问题
                 if (StringUtil.Exists(organizationIds, ((int)PermissionOrganizationScope.OnlyOwnData).ToString()))
                 {
-                    sql += " UNION SELECT '" + UserInfo.Id + "' AS Id ";
+                    sb.Append(" UNION SELECT '" + UserInfo.Id + "' AS Id ");
                 }
                 else
                 {
@@ -656,7 +658,7 @@ namespace DotNet.Business
                     //         + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + organizations + ") "
                     //         + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN (" + organizations + ")) ";
 
-                    sql += " UNION "
+                    sb.Append(" UNION "
                              + "SELECT " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " AS " + BaseUtil.FieldId
                              + " FROM " + BaseUserEntity.CurrentTableName
                              + " WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ) "
@@ -664,7 +666,7 @@ namespace DotNet.Business
                              + " AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                              + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                              + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
-                             + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) ";
+                             + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) ");
                 }
             }
 
@@ -673,15 +675,15 @@ namespace DotNet.Business
             if (roleIds.Length > 0)
             {
                 // 被管理的角色包含的员工
-                sql += " UNION "
+                sb.Append(" UNION "
                          + "SELECT " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldUserId + " AS " + BaseUtil.FieldId
                          + " FROM " + BaseUserRoleEntity.CurrentTableName
                          + "  WHERE (" + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldEnabled + " = 1 "
                          + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldDeleted + " = 0 "
-                         + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")) ";
+                         + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")) ");
             }
 
-            return sql;
+            return sb.Put();
         }
         #endregion
 
@@ -722,7 +724,7 @@ namespace DotNet.Business
             // 这里列出只是有效地，没被删除的角色主键
             if (ids != null && ids.Length > 0)
             {
-                var userManager = new BaseUserManager(DbHelper, UserInfo);
+                var userManager = new BaseUserManager(UserInfo);
 
                 var parameters = new List<KeyValuePair<string, object>>
                 {
@@ -755,7 +757,7 @@ namespace DotNet.Business
             //object[] values = null;
             // 这里需要判断,是系统权限？
             var isRole = false;
-            var userManager = new BaseUserManager(DbHelper, UserInfo);
+            var userManager = new BaseUserManager(UserInfo);
             // 用户管理员,这里需要判断,是业务权限？
             isRole = userManager.IsInRoleByCode(userId, "UserAdmin") || userManager.IsInRoleByCode(userId, "Admin");
             if (isRole)
@@ -768,16 +770,16 @@ namespace DotNet.Business
                 };
                 return userManager.GetList<BaseUserEntity>(parameters, BaseModuleEntity.FieldSortCode);
             }
-
-            var sql = "SELECT * FROM " + BaseUserEntity.CurrentTableName;
-            sql += " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
+            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " IN ("
                      + GetUserIdsSql(systemCode, userId, permissionCode)
                      + " ) "
-                     + " ORDER BY " + BaseUserEntity.FieldSortCode;
-            using (var dr = userManager.DbHelper.ExecuteReader(sql))
+                     + " ORDER BY " + BaseUserEntity.FieldSortCode);
+            using (var dr = userManager.DbHelper.ExecuteReader(sb.Put()))
             {
                 result = userManager.GetList<BaseUserEntity>(dr);
             }
@@ -799,7 +801,7 @@ namespace DotNet.Business
             //object[] values = null;
             // 这里需要判断,是系统权限？
             var isRole = false;
-            var userManager = new BaseUserManager(DbHelper, UserInfo);
+            var userManager = new BaseUserManager(UserInfo);
             // 用户管理员,这里需要判断,是业务权限？
             isRole = userManager.IsInRoleByCode(userId, "UserAdmin") || userManager.IsInRoleByCode(userId, "Admin");
             if (isRole)
@@ -812,17 +814,17 @@ namespace DotNet.Business
                 };
                 return userManager.GetDataTable(parameters, BaseModuleEntity.FieldSortCode);
             }
-
-            var sql = "SELECT * FROM " + BaseUserEntity.CurrentTableName;
-            sql += " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
+            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " IN ("
                      + GetUserIdsSql(systemCode, userId, permissionCode)
                      + " ) "
-                     + " ORDER BY " + BaseUserEntity.FieldSortCode;
+                     + " ORDER BY " + BaseUserEntity.FieldSortCode);
 
-            return userManager.Fill(sql);
+            return userManager.Fill(sb.Put());
         }
         #endregion
 
@@ -871,7 +873,7 @@ namespace DotNet.Business
             {
                 if (userManager == null)
                 {
-                    userManager = new BaseUserManager(DbHelper, UserInfo);
+                    userManager = new BaseUserManager(UserInfo);
                 }
                 var userEntity = userManager.GetEntity(userId);
 
@@ -926,11 +928,9 @@ namespace DotNet.Business
             var tableName = systemCode + "UserRole";
 
             CurrentTableName = systemCode + "PermissionScope";
-
-            var sql = string.Empty;
-            sql =
-                          // 用户的权限
-                          "SELECT TargetId "
+            var sb = Pool.StringBuilder.Get();
+            // 用户的权限
+            sb.Append("SELECT TargetId "
                         + " FROM " + CurrentTableName
                         + "  WHERE (" + CurrentTableName + ".ResourceCategory = '" + BaseUserEntity.CurrentTableName + "') "
                         + "        AND (ResourceId = '" + userId + "') "
@@ -954,31 +954,31 @@ namespace DotNet.Business
                         + " FROM " + tableName
                         + "              WHERE (UserId  = '" + userId + "') "
                         + "                  AND (" + BasePermissionScopeEntity.FieldEnabled + " = 1) "
-                        + "                  AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) ) ";
-            sql += " ) "
-            + " ) ";
+                        + "                  AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0) ) ");
+            sb.Append(" ) "
+            + " ) ");
 
-            var dt = DbHelper.Fill(sql);
+            var dt = DbHelper.Fill(sb.ToString());
             var resourceIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
             // 按部门获取权限
             if (BaseSystemInfo.UseOrganizationPermission)
             {
-                sql = string.Empty;
+                sb.Clear();
                 var userEntity = new BaseUserManager(DbHelper).GetEntity(userId);
-                sql = "SELECT TargetId "
+                sb.Append("SELECT TargetId "
                            + " FROM " + CurrentTableName
-                           + "  WHERE (" + CurrentTableName + ".ResourceCategory = '" +
+                           + " WHERE (" + CurrentTableName + ".ResourceCategory = '" +
                            BaseOrganizationEntity.CurrentTableName + "') "
-                           + "        AND (ResourceId = '" + userEntity.CompanyId + "' OR "
-                           + "              ResourceId = '" + userEntity.DepartmentId + "' OR "
-                           + "              ResourceId = '" + userEntity.SubCompanyId + "' OR "
-                           + "              ResourceId = '" + userEntity.WorkgroupId + "') "
-                           + "        AND (TargetCategory = '" + targetCategory + "') "
-                           + "        AND (PermissionId = '" + permissionId + "') "
-                           + "        AND (" + BasePermissionScopeEntity.FieldEnabled + " = 1) "
-                           + "        AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0)";
-                dt = DbHelper.Fill(sql);
+                           + " AND (ResourceId = '" + userEntity.CompanyId + "' OR "
+                           + " ResourceId = '" + userEntity.DepartmentId + "' OR "
+                           + " ResourceId = '" + userEntity.SubCompanyId + "' OR "
+                           + " ResourceId = '" + userEntity.WorkgroupId + "') "
+                           + " AND (TargetCategory = '" + targetCategory + "') "
+                           + " AND (PermissionId = '" + permissionId + "') "
+                           + " AND (" + BasePermissionScopeEntity.FieldEnabled + " = 1) "
+                           + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0)");
+                dt = DbHelper.Fill(sb.Put());
                 var resourceIdsByOrganization = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                 resourceIds = StringUtil.Concat(resourceIds, resourceIdsByOrganization);
             }
@@ -1013,29 +1013,22 @@ namespace DotNet.Business
             // 若本来就没管理部门啥的，那就没必要进行递归操作了
             if (!string.IsNullOrEmpty(idList))
             {
-                var sql = string.Empty;
-
+                var sb = Pool.StringBuilder.Get();
                 if (DbHelper.CurrentDbType == CurrentDbType.SqlServer)
                 {
-                    sql = @" WITH PermissionScopeTree AS (SELECT ID 
-                             FROM " + tableName + @"
-                                                            WHERE (Id IN (" + idList + @") )
-                                                            UNION ALL
-                                                           SELECT ResourceTree.Id
-                             FROM " + tableName + @" AS ResourceTree INNER JOIN
-                                                                  PermissionScopeTree AS A ON A.Id = ResourceTree.ParentId)
-                                                   SELECT Id
-                     FROM PermissionScopeTree ";
+                    sb.Append(@" WITH PermissionScopeTree AS (SELECT ID FROM " + tableName + @" WHERE (Id IN (" + idList + @") ) UNION ALL SELECT ResourceTree.Id
+                             FROM " + tableName + @" AS ResourceTree INNER JOIN PermissionScopeTree AS A ON A.Id = ResourceTree.ParentId)
+                             SELECT Id FROM PermissionScopeTree ");
                 }
                 else if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
-                    sql = "     SELECT Id "
+                    sb.Append("     SELECT Id "
                              + " FROM " + tableName
                              + " START WITH Id = ParentId "
-                             + " CONNECT BY PRIOR Id Id IN (" + idList + ")";
+                             + " CONNECT BY PRIOR Id Id IN (" + idList + ")");
                 }
 
-                var dt = DbHelper.Fill(sql);
+                var dt = DbHelper.Fill(sb.Put());
                 var resourceIds = BaseUtil.FieldToArray(dt, "Id").Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                 return StringUtil.Concat(resourceScopeIds, resourceIds);
             }
@@ -1104,23 +1097,23 @@ namespace DotNet.Business
 
         private bool CheckResourcePermissionScope(string resourceCategory, string resourceId, string targetCategory, string targetId, string permissionId)
         {
-            var sql = "SELECT COUNT(*) "
-                             + " FROM BasePermissionScope "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM BasePermissionScope "
                              + " WHERE (BasePermissionScope.ResourceCategory = '" + resourceCategory + "')"
-                             + "       AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1) "
-                             + "       AND (BasePermissionScope." + BasePermissionScopeEntity.FieldDeleted + " = 0 )"
-                             + "       AND (BasePermissionScope.ResourceId = '" + resourceId + "')"
-                             + "       AND (BasePermissionScope.TargetCategory = '" + targetCategory + "')"
-                             + "       AND (BasePermissionScope.TargetId = '" + targetId + "')"
-                             + "       AND (BasePermissionScope.PermissionId = " + permissionId + "))";
-            var rowCount = 0;
+                             + " AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1) "
+                             + " AND (BasePermissionScope." + BasePermissionScopeEntity.FieldDeleted + " = 0 )"
+                             + " AND (BasePermissionScope.ResourceId = '" + resourceId + "')"
+                             + " AND (BasePermissionScope.TargetCategory = '" + targetCategory + "')"
+                             + " AND (BasePermissionScope.TargetId = '" + targetId + "')"
+                             + " AND (BasePermissionScope.PermissionId = " + permissionId + "))");
+            var result = 0;
 
-            var returnObject = DbHelper.ExecuteScalar(sql);
-            if (returnObject != null)
+            var obj = DbHelper.ExecuteScalar(sb.Put());
+            if (obj != null)
             {
-                rowCount = int.Parse(returnObject.ToString());
+                result = obj.ToInt();
             }
-            return rowCount > 0;
+            return result > 0;
         }
 
         #region private bool CheckRoleModulePermission(string userId, string moduleId, string result)
@@ -1139,7 +1132,8 @@ namespace DotNet.Business
 
         private bool CheckRolePermissionScope(string userId, string targetCategory, string targetId, string permissionId)
         {
-            var sql = "SELECT COUNT(*) "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) "
                             + " FROM BasePermissionScope "
                             + "  WHERE (BasePermissionScope.ResourceCategory = '" + BaseRoleEntity.CurrentTableName + "') "
                             + "        AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1 "
@@ -1152,13 +1146,13 @@ namespace DotNet.Business
                                              + " )) "
                             + " AND (BasePermissionScope.TargetCategory = '" + targetCategory + "') "
                             + " AND (BasePermissionScope.TargetId = '" + targetId + "') "
-                            + " AND (BasePermissionScope.PermissionId = " + permissionId + ")) ";
+                            + " AND (BasePermissionScope.PermissionId = " + permissionId + ")) ");
             var rowCount = 0;
 
-            var returnObject = DbHelper.ExecuteScalar(sql);
-            if (returnObject != null)
+            var obj = DbHelper.ExecuteScalar(sb.Put());
+            if (obj != null)
             {
-                rowCount = int.Parse(returnObject.ToString());
+                rowCount = obj.ToInt();
             }
             return rowCount > 0;
         }
@@ -1430,24 +1424,25 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable Search(string resourceId, string resourceCategory, string targetCategory)
         {
-            var sql = "SELECT * FROM " + CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + CurrentTableName
                             + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " =0 "
-                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " =1 ";
+                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " =1 ");
             var dbParameters = new List<IDbDataParameter>();
             if (!string.IsNullOrEmpty(resourceId))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldResourceId + " = '" + resourceId + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceId + " = '" + resourceId + "'");
             }
             if (!string.IsNullOrEmpty(resourceCategory))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'");
             }
             if (!string.IsNullOrEmpty(targetCategory))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'");
             }
-            sql += " ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ";
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ");
+            return DbHelper.Fill(sb.Put());
 
             //for (int i = 0; i < result.Rows.Count; i++)
             //{
@@ -1473,36 +1468,37 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetAuthoriedList(string resourceCategory, string permissionId, string targetCategory, string targetId)
         {
-            var sql = "SELECT * FROM " + CurrentTableName
-                            + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " =0 "
-                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " =1 ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + CurrentTableName
+                            + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " = 0 "
+                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 ");
             if (!string.IsNullOrEmpty(resourceCategory))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'");
             }
             if (!string.IsNullOrEmpty(permissionId))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "'");
             }
             if (!string.IsNullOrEmpty(targetCategory))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'");
             }
             if (!string.IsNullOrEmpty(targetId))
             {
-                sql += " AND " + BasePermissionScopeEntity.FieldTargetId + " = '" + targetId + "'";
+                sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetId + " = '" + targetId + "'");
             }
             // 时间在startDate或者endDate之间为有效
             if (BaseSystemInfo.UserCenterDbType.Equals(CurrentDbType.SqlServer))
             {
-                sql += " AND ((SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldStartTime + ", GETDATE()))>=0"
-                         + " OR (SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldStartTime + ", GETDATE())) IS NULL)";
-                sql += " AND ((SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE()))<=0"
-                         + " OR (SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE())) IS NULL)";
+                sb.Append(" AND ((SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldStartTime + ", GETDATE()))>=0"
+                         + " OR (SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldStartTime + ", GETDATE())) IS NULL)");
+                sb.Append(" AND ((SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE()))<=0"
+                         + " OR (SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE())) IS NULL)");
             }
             // TODO:其他数据库的兼容
-            sql += " ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ";
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ");
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
     }

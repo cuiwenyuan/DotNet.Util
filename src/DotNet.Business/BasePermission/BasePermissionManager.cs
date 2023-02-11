@@ -320,14 +320,14 @@ namespace DotNet.Business
             }
 
             var tableName = systemCode + "Permission";
-            var sql = "SELECT COUNT(*) "
-                             + " FROM " + tableName
-                             + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
-                             + "        AND " + BasePermissionEntity.FieldResourceId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
-                             + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
-                             + "        AND " + BasePermissionEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldSystemCode)
-                             + "        AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled)
-                             + "        AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted);
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + tableName
+                             + " WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
+                             + " AND " + BasePermissionEntity.FieldResourceId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")"
+                             + " AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
+                             + " AND " + BasePermissionEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldSystemCode)
+                             + " AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled)
+                             + " AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted));
 
             var rowCount = 0;
             var dbParameters = new List<IDbDataParameter>
@@ -342,11 +342,11 @@ namespace DotNet.Business
             try
             {
                 errorMark = 1;
-                var returnObject = DbHelper.ExecuteScalar(sql, dbParameters.ToArray());
+                var obj = DbHelper.ExecuteScalar(sb.Put(), dbParameters.ToArray());
 
-                if (returnObject != null)
+                if (obj != null)
                 {
-                    rowCount = returnObject.ToInt();
+                    rowCount = obj.ToInt();
                 }
                 result = rowCount > 0;
             }
@@ -466,44 +466,43 @@ namespace DotNet.Business
             roleTableName = systemCode + "Role";
 
             var dbParameters = new List<IDbDataParameter>();
-
-            var sql = "SELECT COUNT(*) "
-                            + " FROM " + permissionTableName
-                            + "  WHERE " + BasePermissionEntity.FieldResourceCategory + " = '" + roleTableName + "'"
-                            + "        AND " + BasePermissionEntity.FieldResourceId + " IN ( "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + permissionTableName
+                            + " WHERE " + BasePermissionEntity.FieldResourceCategory + " = '" + roleTableName + "'"
+                            + " AND " + BasePermissionEntity.FieldResourceId + " IN ( "
                                                 + " SELECT " + BaseUserRoleEntity.FieldRoleId
                                                 + " FROM " + userRoleTableName
-                                                + "  WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(userRoleTableName + "_" + BaseUserRoleEntity.FieldUserId)
-                                                + "        AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                                                + "        AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ";
+                                                + " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(userRoleTableName + "_" + BaseUserRoleEntity.FieldUserId)
+                                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
+                                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ");
 
             dbParameters.Add(DbHelper.MakeParameter(userRoleTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
             if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
-                sql += " UNION SELECT " + BaseUserRoleEntity.FieldRoleId
+                sb.Append(" UNION SELECT " + BaseUserRoleEntity.FieldRoleId
                                 + " FROM " + BaseUserRoleEntity.CurrentTableName
-                                + "  WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId)
-                                + "        AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                                + "        AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ";
+                                + " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId)
+                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
+                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ");
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
             }
-            sql += " ) "
-                + "        AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
-                + "        AND " + BasePermissionEntity.FieldEnabled + " = 1 "
-                + "        AND " + BasePermissionEntity.FieldDeleted + " = 0 ";
+            sb.Append(" ) "
+                + " AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
+                + " AND " + BasePermissionEntity.FieldEnabled + " = 1 "
+                + " AND " + BasePermissionEntity.FieldDeleted + " = 0 ");
             dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId));
 
             var rowCount = 0;
 
-            LogUtil.WriteLog("sql:" + sql, "Log");
+            LogUtil.WriteLog("sql:" + sb.ToString(), "Log");
             try
             {
                 errorMark = 1;
-                var returnObject = DbHelper.ExecuteScalar(sql, dbParameters.ToArray());
-                if (returnObject != null)
+                var obj = DbHelper.ExecuteScalar(sb.Put(), dbParameters.ToArray());
+                if (obj != null)
                 {
-                    rowCount = int.Parse(returnObject.ToString());
+                    rowCount = obj.ToInt();
                 }
                 result = rowCount > 0;
             }

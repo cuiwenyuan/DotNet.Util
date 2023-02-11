@@ -146,6 +146,7 @@ namespace DotNet.Business
         /// </summary>
         public bool ShowUserLogonInfo = false;
 
+        #region public BaseUserInfo ConvertToUserInfo(BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity = null, bool validateUserOnly = false)
         /// <summary>
         /// 转换为UserInfo用户信息
         /// </summary>
@@ -158,7 +159,9 @@ namespace DotNet.Business
             var userInfo = new BaseUserInfo();
             return ConvertToUserInfo(userInfo, userEntity, userLogonEntity, validateUserOnly);
         }
+        #endregion
 
+        #region public BaseUserInfo ConvertToUserInfo(BaseUserInfo userInfo, BaseUserEntity userEntity, BaseUserLogonEntity userLogonEntity = null, bool validateUserOnly = false)
         /// <summary>
         /// 转换为UserInfo用户信息
         /// </summary>
@@ -266,6 +269,9 @@ namespace DotNet.Business
             return userInfo;
         }
 
+        #endregion
+
+        #region public BaseUserEntity GetEntityByCode(string userCode)
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -288,6 +294,9 @@ namespace DotNet.Business
             return entity;
         }
 
+        #endregion
+
+        #region public BaseUserEntity GetEntityByCompanyIdByCode(string companyId, string userCode)
         /// <summary>
         /// 获取用户实体
         /// </summary>
@@ -312,6 +321,9 @@ namespace DotNet.Business
             return entity;
         }
 
+        #endregion
+
+        #region public BaseUserEntity GetEntityByCompanyCodeByCode(string companyCode, string userCode)
         /// <summary>
         /// 根据公司编码和用户编码获取用户实体
         /// </summary>
@@ -341,6 +353,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
+
+        #region public BaseUserEntity GetEntityByUserName(string userName)
 
         /// <summary>
         /// 获取实体
@@ -372,6 +387,9 @@ namespace DotNet.Business
             }
             return entity;
         }
+        #endregion
+
+        #region public BaseUserEntity GetEntityByRealName(string realName)
 
         /// <summary>
         /// 获取实体
@@ -395,6 +413,9 @@ namespace DotNet.Business
             return entity;
         }
 
+        #endregion
+
+        #region public BaseUserEntity GetEntityByNickName(string nickName)
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -422,6 +443,9 @@ namespace DotNet.Business
             }
             return entity;
         }
+        #endregion
+
+        #region public BaseUserEntity GetEntityByOpenId(string openId)
         /// <summary>
         /// 根据OpenId获取用户实体
         /// </summary>
@@ -462,6 +486,9 @@ namespace DotNet.Business
             return userEntity;
         }
 
+        #endregion
+
+        #region public BaseUserEntity GetEntityByEmail(string email)
         /// <summary>
         /// 根据邮箱获取用户实体
         /// </summary>
@@ -501,7 +528,9 @@ namespace DotNet.Business
 
             return userEntity;
         }
+        #endregion
 
+        #region public override string GetIdByCode(string userCode)
         /// <summary>
         /// 获取实体
         /// </summary>
@@ -517,7 +546,9 @@ namespace DotNet.Business
             };
             return GetId(parameters);
         }
+        #endregion
 
+        #region public string GetIdByUserName(string userName)
         /// <summary>
         /// 按用户名获取用户主键
         /// </summary>
@@ -533,6 +564,7 @@ namespace DotNet.Business
             };
             return GetId(parameters);
         }
+        #endregion
 
         #region public static string GetRealNameByCache(string id) 通过主键获取姓名
         /// <summary>
@@ -640,6 +672,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public bool IsAdministrator(BaseUserEntity entity)
         /// <summary>
         /// 是否为管理员
         /// </summary>
@@ -700,6 +733,10 @@ namespace DotNet.Business
             return false;
         }
 
+        #endregion
+
+        #region public bool IsAdministratorById(string userId)
+
         /// <summary>
         /// 指定编号用户是否为管理员
         /// </summary>
@@ -710,6 +747,9 @@ namespace DotNet.Business
             var entity = GetEntity(userId);
             return IsAdministrator(entity);
         }
+        #endregion
+
+        #region public string GetUsersName(string userIdList)
         /// <summary>
         /// 获取用户名
         /// </summary>
@@ -734,7 +774,9 @@ namespace DotNet.Business
             }
             return userRealNames;
         }
+        #endregion
 
+        #region public List<BaseUserEntity> GetListByManager(string managerUserId)
         /// <summary>
         /// 按上级主管获取下属用户列表
         /// </summary>
@@ -745,6 +787,9 @@ namespace DotNet.Business
             var dt = GetChildrens(BaseUserEntity.FieldId, managerUserId, BaseUserEntity.FieldManagerUserId, BaseUserEntity.FieldSortCode);
             return BaseEntity.GetList<BaseUserEntity>(dt);
         }
+        #endregion
+
+        #region public string[] GetIdsByManager(string managerUserId)
 
         /// <summary>
         /// 按上级主管获取下属用户主键数组
@@ -755,6 +800,7 @@ namespace DotNet.Business
         {
             return GetChildrensId(BaseUserEntity.FieldId, managerUserId, BaseUserEntity.FieldManagerUserId);
         }
+        #endregion
 
         #region public BaseUserInfo AccountActivation(string openId)
         /// <summary>
@@ -860,15 +906,17 @@ namespace DotNet.Business
         {
             // 删除不存在的数据，进行数据同步
             var result = 0;
-            var sql = "DELETE FROM " + BaseUserEntity.CurrentTableName
-                            + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.CurrentTableName + ") ";
-            result += ExecuteNonQuery(sql);
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("DELETE FROM " + BaseUserEntity.CurrentTableName
+                            + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.CurrentTableName + ")");
+            result += ExecuteNonQuery(sb.ToString());
             // 更新排序顺序情况
-            sql = "UPDATE " + BaseUserEntity.CurrentTableName
+            sb.Clear();
+            sb.Append("UPDATE " + BaseUserEntity.CurrentTableName
                      + " SET SortCode = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode
                      + " FROM " + BaseStaffEntity.CurrentTableName
-                     + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId;
-            result += ExecuteNonQuery(sql);
+                     + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId);
+            result += ExecuteNonQuery(sb.Put());
             return result;
         }
         #endregion
@@ -895,25 +943,31 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int CheckUserStaff()
         {
-            var sql = "UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ";
-            return ExecuteNonQuery(sql);
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ");
+            return ExecuteNonQuery(sb.Put());
         }
         #endregion
+
+        #region public string GetCount(string companyId = null)
 
         /// <summary>
         /// 获取人数
         /// </summary>
         public string GetCount(string companyId = null)
         {
-            var sql = "SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 ");
 
             if (ValidateUtil.IsInt(companyId))
             {
-                sql += " AND " + BaseUserEntity.FieldCompanyId + " = " + companyId;
+                sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + companyId);
             }
 
-            return DbHelper.ExecuteScalar(sql).ToString();
+            return DbHelper.ExecuteScalar(sb.Put()).ToString();
         }
+
+        #endregion
 
         #region GetRegistrationCount
 
@@ -1015,6 +1069,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public int GetSortNum(string userId)
         /// <summary>
         /// 取得排名
         /// </summary>
@@ -1023,16 +1078,19 @@ namespace DotNet.Business
         public int GetSortNum(string userId)
         {
             var entity = GetEntity(userId);
-            var sql = "SELECT COUNT(*) AS UserCount "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS UserCount "
                             + " FROM " + CurrentTableName
                             + " INNER JOIN " + BaseStaffEntity.CurrentTableName + " ON " + BaseStaffEntity.CurrentTableName + ".Id = " + CurrentTableName + ".Id"
-                            + "  WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + ".Enabled = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
+                            + " WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + ".Enabled = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " > " + entity.Score + " OR (" + CurrentTableName + "."
                             + BaseUserEntity.FieldSortCode + " < " + entity.SortCode + " AND " + CurrentTableName + "." + BaseUserEntity.FieldScore
-                            + " = " + entity.Score + "))";
-            var result = DbHelper.ExecuteScalar(sql) ?? 0;
-            return BaseUtil.ConvertToInt(result) + 1;
+                            + " = " + entity.Score + "))");
+            return DbHelper.ExecuteScalar(sb.Put()).ToInt() + 1;
         }
+        #endregion
+
+        #region public int GetPinYin()
         /// <summary>
         /// 获取拼音
         /// </summary>
@@ -1057,7 +1115,9 @@ namespace DotNet.Business
             }
             return result;
         }
+        #endregion
 
+        #region public static string GetNames(List<BaseUserEntity> list)
         /// <summary>
         /// 获取名字
         /// </summary>
@@ -1078,7 +1138,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public static BaseUserEntity SetCache(string id)
         /// <summary>
         /// 重新设置缓存（重新强制设置缓存）可以提供外部调用的
         /// </summary>
@@ -1098,7 +1160,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public static int CachePreheating()
         /// <summary>
         /// 缓存预热,强制重新缓存
         /// </summary>
@@ -1124,5 +1188,6 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
     }
 }

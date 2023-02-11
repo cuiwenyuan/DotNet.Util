@@ -189,14 +189,15 @@ namespace DotNet.Business
         /// <returns></returns>
         private string GetDataTableSql(string[] userIds, string name, string value, string beginDate, string endDate, string processId = null)
         {
-            var sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1=1 ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1 = 1 ");
             if (!string.IsNullOrEmpty(value))
             {
-                sql += string.Format(" AND {0} = '{1}' ", name, value);
+                sb.Append(string.Format(" AND {0} = '{1}' ", name, value));
             }
             if (!string.IsNullOrEmpty(processId))
             {
-                // sql += string.Format(" AND {0} = '{1}' ", BaseLogEntity.FieldProcessId, processId);
+                // sb.Append(string.Format(" AND {0} = '{1}' ", BaseLogEntity.FieldProcessId, processId));
             }
             if (!string.IsNullOrEmpty(beginDate) && !string.IsNullOrEmpty(endDate))
             {
@@ -206,7 +207,7 @@ namespace DotNet.Business
             // 注意安全问题
             if (userIds != null)
             {
-                sql += string.Format(" AND {0} IN ({1}) ", BaseLogEntity.FieldUserId, StringUtil.ArrayToList(userIds));
+                sb.Append(string.Format(" AND {0} IN ({1}) ", BaseLogEntity.FieldUserId, StringUtil.ArrayToList(userIds)));
             }
             switch (DbHelper.CurrentDbType)
             {
@@ -214,36 +215,36 @@ namespace DotNet.Business
                     // Access 中的时间分隔符 是 “#”
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime >= #{0}#", beginDate);
+                        sb.Append(string.Format(" AND CreateTime >= #{0}#", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime <= #{0}#", endDate);
+                        sb.Append(string.Format(" AND CreateTime <= #{0}#", endDate));
                     }
                     break;
                 case CurrentDbType.SqlServer:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime >= '{0}'", beginDate);
+                        sb.Append(string.Format(" AND CreateTime >= '{0}'", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime <= '{0}'", endDate);
+                        sb.Append(string.Format(" AND CreateTime <= '{0}'", endDate));
                     }
                     break;
                 case CurrentDbType.Oracle:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate);
+                        sb.Append(string.Format(" AND CreateTime >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sql += string.Format(" AND CreateTime <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate);
+                        sb.Append(string.Format(" AND CreateTime <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate));
                     }
                     break;
             }
-            sql += " ORDER BY CreateTime DESC ";
-            return sql;
+            sb.Append(" ORDER BY CreateTime DESC ");
+            return sb.Put();
         }
 
         #region public DataTable GetDataTableByDate(string name, string value, string beginDate, string endDate, string processId=null) 按日期查询
@@ -273,10 +274,11 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByDate(string createOn, string processName, string createUserId)
         {
-            var sql = "SELECT * FROM " + BaseLogEntity.CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName
                     + " WHERE CONVERT(NVARCHAR, " + BaseLogEntity.FieldStartTime + ", 111) = " + dbHelper.GetParameter(BaseLogEntity.FieldStartTime)
-                    + " AND " + BaseLogEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseLogEntity.FieldUserId);
-            sql += " ORDER BY " + BaseLogEntity.FieldStartTime;
+                    + " AND " + BaseLogEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseLogEntity.FieldUserId));
+            sb.Append(" ORDER BY " + BaseLogEntity.FieldStartTime);
             var names = new string[2];
             names[0] = BaseLogEntity.FieldStartTime;
             names[1] = BaseLogEntity.FieldUserId;
@@ -284,7 +286,7 @@ namespace DotNet.Business
             values[0] = createOn;
             values[1] = createUserId;
             var dt = new DataTable(BaseLogEntity.CurrentTableName);
-            dbHelper.Fill(dt, sql, DbHelper.MakeParameters(names, values));
+            dbHelper.Fill(dt, sb.Put(), DbHelper.MakeParameters(names, values));
             return dt;
         }
         #endregion
@@ -301,20 +303,21 @@ namespace DotNet.Business
         {
             //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
-            var sql = "SELECT " + BaseUserEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                             + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldDeleted + "= 0 "
-                            + " AND " + BaseUserEntity.FieldIsVisible + "= 1 ";
+                            + " AND " + BaseUserEntity.FieldIsVisible + "= 1 ");
 
-            sql += " AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"
+            sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"
                         + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldRealName + " LIKE '%" + search + "%'"
                         + " OR " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldIpAddress + " LIKE '%" + search + "%'"
                         + " OR " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldMacAddress + " LIKE '%" + search + "%'"
-                        + ")";
+                        + ")");
 
-            sql += " ORDER BY " + BaseUserEntity.FieldSortCode;
+            sb.Append(" ORDER BY " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(sb.Put());
         }
     }
 }

@@ -43,10 +43,10 @@ namespace DotNet.Business
             {
                 var id = 0;
                 var commandText = "SELECT MAX(id) FROM BaseOrganization WHERE id < 1000000";
-                var maxObject = DbHelper.ExecuteScalar(commandText);
-                if (maxObject != null)
+                var obj = DbHelper.ExecuteScalar(commandText);
+                if (obj != null)
                 {
-                    id = int.Parse(maxObject.ToString());
+                    id = obj.ToInt();
                 }
                 conditional = " AND ID > " + id.ToString();
             }
@@ -74,17 +74,18 @@ namespace DotNet.Business
                 var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 var organizationManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
                 // 不不存在的组织机构删除掉TAB_SITE是远程试图
-                var commandText = "DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)";
-                organizationManager.ExecuteNonQuery(commandText);
-
+                var sb = Pool.StringBuilder.Get();
+                sb.Append("DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)");
+                organizationManager.ExecuteNonQuery(sb.ToString());
+                sb.Clear();
                 // 同步数据
-                commandText = "SELECT * FROM TAB_SITE WHERE BL_NOT_INPUT IS NULL OR BL_NOT_INPUT = 0 ";
+                sb.Append("SELECT * FROM TAB_SITE WHERE BL_NOT_INPUT IS NULL OR BL_NOT_INPUT = 0 ");
                 if (!string.IsNullOrEmpty(conditional))
                 {
-                    commandText += conditional;
+                    sb.Append(conditional);
                 }
 
-                var dataReader = dbHelper.ExecuteReader(commandText);
+                var dataReader = dbHelper.ExecuteReader(sb.Put());
                 if (dataReader != null && !dataReader.IsClosed)
                 {
                     while (dataReader.Read())
@@ -120,7 +121,7 @@ namespace DotNet.Business
 
                         if (!string.IsNullOrEmpty(dataReader["ORDER_BY"].ToString()))
                         {
-                            entity.SortCode = int.Parse(dataReader["ORDER_BY"].ToString());
+                            entity.SortCode = dataReader["ORDER_BY"].ToInt();
                         }
 
                         // 02：可以把读取到的数据能写入到用户中心的。
@@ -135,21 +136,19 @@ namespace DotNet.Business
                 }
 
                 // 填充 parentname
+                sb.Clear();
                 // select * from baseorganization where parentname is null
-                commandText = @"update baseorganization set parentname = (select fullname from baseorganization t where t.id = baseorganization.parentId) where parentname is null";
-                ExecuteNonQuery(commandText);
+                sb.Append(@"UPDATE baseorganization SET parentname = (SELECT fullname FROM baseorganization t where t.id = baseorganization.parentId) WHERE parentname IS NULL");
                 // 填充 parentId
                 // select * from baseorganization where parentId is null
-                commandText = @"UPDATE baseorganization SET parentId = (SELECT Id FROM baseorganization t WHERE t.fullname = baseorganization.parentname) WHERE parentId IS NULL";
+                sb.Append(@"UPDATE baseorganization SET parentId = (SELECT Id FROM baseorganization t WHERE t.fullname = baseorganization.parentname) WHERE parentId IS NULL");
                 // 100000 以下是基础数据的，100000 以上是通用权限管理系统的
                 // UPDATE baseorganization SET parentId = (SELECT Id FROM baseorganization t WHERE t.fullname = baseorganization.parentname) WHERE parentId < 100000
-                ExecuteNonQuery(commandText);
                 // 更新错误数据
-                commandText = @"UPDATE baseorganization SET parentId = null WHERE id = parentId";
-                ExecuteNonQuery(commandText);
+                sb.Append(@"UPDATE baseorganization SET parentId = null WHERE id = parentId");
                 // 设置员工的公司主键
-                commandText = @"UPDATE baseuser SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = baseuser.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''";
-                ExecuteNonQuery(commandText);
+                sb.Append(@"UPDATE baseuser SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = baseuser.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''");
+                ExecuteNonQuery(sb.Put());
             }
             return result;
         }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 namespace DotNet.Business
 {
     using Model;
+    using System;
     using Util;
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace DotNet.Business
         /// <param name="userId">主键</param>
         public BaseUserContactEntity GetEntityByUserId(string userId)
         {
-            return ValidateUtil.IsInt(userId) ? GetEntityByUserId(int.Parse(userId)) : null;
+            return ValidateUtil.IsInt(userId) ? GetEntityByUserId(userId.ToInt()) : null;
         }
 
         /// <summary>

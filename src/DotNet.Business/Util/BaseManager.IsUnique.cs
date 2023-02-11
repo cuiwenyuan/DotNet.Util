@@ -63,7 +63,7 @@ namespace DotNet.Business
             }
             //需要显示未被删除的记录
             var obj = ExecuteScalar(sb.Put());
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
             }
@@ -121,7 +121,7 @@ namespace DotNet.Business
             }
             //需要显示未被删除的记录
             var obj = ExecuteScalar(sb.Put());
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
             }
@@ -189,7 +189,7 @@ namespace DotNet.Business
             }
             //需要显示未被删除的记录
             var obj = ExecuteScalar(sb.Put());
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
             }

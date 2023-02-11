@@ -253,17 +253,16 @@ namespace DotNet.Business
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
-
-                var sql = string.Empty;
+                var sb = Pool.StringBuilder.Get();
                 var dbParameters = new List<IDbDataParameter>();
-                sql = "SELECT * "
+                sb.Append("SELECT * "
                           + " FROM " + BaseUserEntity.CurrentTableName
                          + " WHERE " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName)
-                                 + " AND " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted);
+                                 + " AND " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldNickName, nickName));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
                 //errorMark = 2;
-                var dt = DbHelper.Fill(sql, dbParameters.ToArray());
+                var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
                 // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
                 if (dt != null && dt.Rows.Count > 1)
                 {
@@ -465,20 +464,19 @@ namespace DotNet.Business
                     result.StatusMessage = GetStateMessage(result.StatusCode);
                     return result;
                 }
-
-                var sql = string.Empty;
+                var sb = Pool.StringBuilder.Get();
                 var dbParameters = new List<IDbDataParameter>();
-                sql = "SELECT * FROM " + BaseUserEntity.CurrentTableName
+                sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName
                          + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted)
                          + " AND " + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId)
-                         + " AND " + BaseUserEntity.FieldCode + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCode);
+                         + " AND " + BaseUserEntity.FieldCode + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCode));
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCode, userCode));
 
                 errorMark = 2;
-                var dt = DbHelper.Fill(sql, dbParameters.ToArray());
+                var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
                 // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
                 if (dt != null && dt.Rows.Count > 1)
                 {
@@ -585,16 +583,17 @@ namespace DotNet.Business
             result.StatusMessage = GetStateMessage(result.StatusCode);
 
             var dbParameters = new List<IDbDataParameter>();
-            var sql = "SELECT * FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted);
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted));
 
             dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
             if (!string.IsNullOrEmpty(companyName))
             {
-                sql += " AND " + BaseUserEntity.FieldCompanyName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyName);
+                sb.Append(" AND " + BaseUserEntity.FieldCompanyName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyName));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyName, companyName));
                 if (!string.IsNullOrEmpty(userName))
                 {
-                    sql += " AND " + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName);
+                    sb.Append(" AND " + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName));
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldUserName, userName));
                 }
             }
@@ -602,12 +601,12 @@ namespace DotNet.Business
             {
                 if (!string.IsNullOrEmpty(userName))
                 {
-                    sql += " AND " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName);
+                    sb.Append(" AND " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName));
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldNickName, userName));
                 }
             }
 
-            var dt = DbHelper.Fill(sql, dbParameters.ToArray());
+            var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
             // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
             if (dt != null && dt.Rows.Count > 1)
             {
@@ -628,8 +627,9 @@ namespace DotNet.Business
             }
             else
             {
+                sb = Pool.StringBuilder.Get();
                 // 若不能正常登录、看这个人是否有超级管理员的权限？若是超级管理员，可以登录任何一个网点
-                sql = "SELECT * "
+                sb.Append("SELECT * "
                           + " FROM " + BaseUserEntity.CurrentTableName
                          + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 "
                                  + " AND " + BaseUserEntity.FieldEnabled + " = 1 "
@@ -638,13 +638,13 @@ namespace DotNet.Business
                                  //+ " AND id IN (SELECT resourceid FROM basepermission WHERE resourcecategory = 'BaseUser' AND permissionid IN (SELECT id FROM basemodule WHERE code = 'LogonAllCompany' AND enabled = 1 AND deletionstatecode = 0)) "
                                  //Troy 20160520一句话判断管理员 end
                                  + " AND (" + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName)
-                                            + " OR " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName) + ")";
+                                            + " OR " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName) + ")");
                 dbParameters = new List<IDbDataParameter>
                 {
                     DbHelper.MakeParameter(BaseUserEntity.FieldUserName, userName),
                     DbHelper.MakeParameter(BaseUserEntity.FieldNickName, userName)
                 };
-                dt = DbHelper.Fill(sql, dbParameters.ToArray());
+                dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
                 if (dt != null && dt.Rows.Count > 1)
                 {
                     result.Status = Status.UserDuplicate;
@@ -1800,7 +1800,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region UserIsLogon
+        #region public bool UserIsLogon(BaseUserInfo userInfo) 判断用户是否已经登录了？
         /// <summary>
         /// 判断用户是否已经登录了？
         /// </summary>
@@ -1811,10 +1811,11 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userInfo.UserId),
-                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, userInfo.OpenId)
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, userInfo.OpenId),
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseUserLogonEntity.FieldEnabled, 1)
             };
-            var manager = new BaseManager(userInfo, BaseUserLogonEntity.CurrentTableName);
-            return manager.Exists(parameters);
+            return new BaseUserLogonManager(userInfo).Exists(parameters);
         }
         #endregion
     }

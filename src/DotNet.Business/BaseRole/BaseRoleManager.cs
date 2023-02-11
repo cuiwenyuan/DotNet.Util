@@ -324,24 +324,24 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(string organizationId, string searchKey, string categoryCode = null)
         {
-            string sql = null;
-            sql += "SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0 ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0 ");
 
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetSearchString(searchKey);
-                sql += string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldName, searchKey, BaseRoleEntity.FieldDescription, searchKey);
+                sb.Append(string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldName, searchKey, BaseRoleEntity.FieldDescription, searchKey));
             }
             if (!string.IsNullOrEmpty(organizationId))
             {
-                sql += string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldOrganizationId, organizationId);
+                sb.Append(string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldOrganizationId, organizationId));
             }
             if (!string.IsNullOrEmpty(categoryCode))
             {
-                sql += string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldCategoryCode, categoryCode);
+                sb.Append(string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldCategoryCode, categoryCode));
             }
-            sql += " ORDER BY " + BaseRoleEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseRoleEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 

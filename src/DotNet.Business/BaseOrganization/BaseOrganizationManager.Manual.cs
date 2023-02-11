@@ -169,7 +169,7 @@ namespace DotNet.Business
                         result = UpdateEntity(entity);
 
                         // 2:组织机构修改时，用户表的公司，部门，工作组数据给同步更新。
-                        var userManager = new BaseUserManager(DbHelper, UserInfo);
+                        var userManager = new BaseUserManager(UserInfo);
                         switch (entity.CategoryCode)
                         {
                             case "Company":
@@ -469,7 +469,7 @@ namespace DotNet.Business
             }
             else if (ValidateUtil.IsNumeric(parentId))
             {
-                GetChilds(dtOld, dt, int.Parse(parentId), 0);
+                GetChilds(dtOld, dt, parentId.ToInt(), 0);
             }
             return dt;
         }
@@ -496,21 +496,21 @@ namespace DotNet.Business
             {
                 //添加一行数据
                 var row = dtNew.NewRow();
-                row["Id"] = int.Parse(dr[i]["Id"].ToString());
+                row["Id"] = dr[i]["Id"].ToInt();
                 if (string.IsNullOrEmpty(dr[i]["ParentId"].ToString()))
                 {
                     row["ParentId"] = 0;
                 }
                 else
                 {
-                    row["ParentId"] = int.Parse(dr[i]["ParentId"].ToString());
+                    row["ParentId"] = dr[i]["ParentId"].ToInt();
                 }
                 row["Code"] = dr[i]["Code"].ToString();
                 row["Name"] = dr[i]["Name"].ToString();
                 row["CategoryCode"] = dr[i]["CategoryCode"].ToString();
                 row["Description"] = dr[i]["Description"].ToString();
-                row["Enabled"] = int.Parse(dr[i]["Enabled"].ToString());
-                row["Deleted"] = int.Parse(dr[i]["Deleted"].ToString());
+                row["Enabled"] = dr[i]["Enabled"].ToInt();
+                row["Deleted"] = dr[i]["Deleted"].ToInt();
                 if (!string.IsNullOrEmpty(dr[i]["CreateTime"].ToString()))
                 {
                     row["CreateTime"] = DateTime.Parse(dr[i]["CreateTime"].ToString());

@@ -251,7 +251,7 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>>();
             // 这里需要判断,是系统权限？
             var isRole = false;
-            var userManager = new BaseUserManager(DbHelper, UserInfo);
+            var userManager = new BaseUserManager(UserInfo);
             // 用户管理员
             isRole = userManager.IsInRoleByCode(userId, "UserAdmin");
             if (isRole)
@@ -340,7 +340,7 @@ namespace DotNet.Business
 
             // 这里需要判断,是系统权限？
             var isRole = false;
-            var userManager = new BaseUserManager(DbHelper, UserInfo);
+            var userManager = new BaseUserManager(UserInfo);
             // 用户管理员
             isRole = userManager.IsInRoleByCode(userId, "UserAdmin");
             var parameters = new List<KeyValuePair<string, object>>();
@@ -497,7 +497,8 @@ namespace DotNet.Business
             }
 
             tableName = systemCode + "Permission";
-            var commandText = @"SELECT BaseUser.Id
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(@"SELECT BaseUser.Id
                                     , BaseUser.UserName
                                     , BaseUser.CompanyName
                                     , BaseUser.DepartmentName
@@ -515,7 +516,7 @@ namespace DotNet.Business
                               + " AND ResourceCategory = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
                               + " AND PermissionId = " + DbHelper.GetParameter(BaseModuleEntity.FieldId) + @") Permission 
                             ON BaseUser.Id = Permission.UserId AND BaseUser." + BaseUserEntity.FieldDeleted + @" = 0 AND BaseUser.Enabled = 1 
-                         WHERE BaseUser.Id IS NOT NULL ";
+                         WHERE BaseUser.Id IS NOT NULL ");
 
             var dbParameters = new List<IDbDataParameter>
             {
@@ -525,17 +526,17 @@ namespace DotNet.Business
 
             if (!string.IsNullOrEmpty(companyId))
             {
-                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
 
             if (ValidateUtil.IsInt(userId))
             {
-                commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + userId;
+                sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + userId);
             }
-            commandText += " ORDER BY Permission.CreateTime DESC ";
+            sb.Append(" ORDER BY Permission.CreateTime DESC ");
 
-            result = Fill(commandText, dbParameters.ToArray());
+            result = Fill(sb.Put(), dbParameters.ToArray());
 
             return result;
         }
@@ -575,7 +576,8 @@ namespace DotNet.Business
             {
                 roleTableName = systemCode + "Role";
             }
-            var commandText = @"SELECT Role.Id
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(@"SELECT Role.Id
                                     , Role.Code
                                     , Role.Name 
                                     , Role.Description 
@@ -584,14 +586,14 @@ namespace DotNet.Business
                                     , Permission.CreateBy
                                     , Permission.UpdateTime
                                     , Permission.UpdateBy
- FROM (SELECT Id, Code, Name, Description FROM BaseRole ";
+ FROM (SELECT Id, Code, Name, Description FROM BaseRole ");
 
             if (!systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
             {
-                commandText += " UNION SELECT Id, Code, Name, Description FROM " + roleTableName;
+                sb.Append(" UNION SELECT Id, Code, Name, Description FROM " + roleTableName);
             }
 
-            commandText += @") Role RIGHT OUTER JOIN
+            sb.Append(@") Role RIGHT OUTER JOIN
                           (SELECT ResourceId AS RoleId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BasePermission Permission
                             WHERE " + BasePermissionEntity.FieldDeleted + " = 0 "
@@ -599,7 +601,7 @@ namespace DotNet.Business
                               + " AND PermissionId = " + DbHelper.GetParameter(BaseModuleEntity.FieldId) + @") Permission 
                             ON Role.Id = Permission.RoleId
                          WHERE Role.Id IS NOT NULL
-                      ORDER BY Permission.CreateTime DESC";
+                      ORDER BY Permission.CreateTime DESC");
 
             var dbParameters = new List<IDbDataParameter>
             {
@@ -607,10 +609,9 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseModuleEntity.FieldId, moduleId)
             };
 
-            commandText = commandText.Replace("BasePermission", tableName);
-            commandText = commandText.Replace("roleTableName", roleTableName);
-            // commandText = commandText.Replace("BaseRole", roleTableName);
-            result = Fill(commandText, dbParameters.ToArray());
+            sb.Replace("BasePermission", tableName);
+            sb.Replace("roleTableName", roleTableName);
+            result = Fill(sb.Put(), dbParameters.ToArray());
 
             return result;
         }

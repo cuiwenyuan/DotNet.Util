@@ -346,8 +346,9 @@ namespace DotNet.Business
             ServiceUtil.ProcessUserCenterWriteDb(userInfo, parameter, (dbHelper) =>
             {
                 // 用户已经不存在的需要整理干净，防止数据不完整。
-                var sql = "UPDATE BaseStaff SET UserId = NULL WHERE (UserId NOT IN (SELECT Id FROM BaseUser))";
-                dbHelper.ExecuteNonQuery(sql);
+                var sb = Pool.StringBuilder.Get();
+                sb.Append("UPDATE " + BaseStaffEntity.CurrentTableName + " SET UserId = NULL WHERE (UserId NOT IN (SELECT Id FROM " + BaseUserEntity.CurrentTableName + "))");
+                dbHelper.ExecuteNonQuery(sb.Put());
                 dbHelper.Close();
                 // 这里是读取的服务器连接
                 dbHelper.Open(BaseSystemInfo.UserCenterReadDbConnection);

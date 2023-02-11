@@ -7,6 +7,7 @@ using System.Collections.Generic;
 namespace DotNet.Business
 {
     using Model;
+    using System;
     using Util;
 
     /// <summary>
@@ -24,6 +25,410 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region 高级查询
+
+        /// <summary>
+        /// 按条件分页高级查询(带记录状态Enabled和删除状态Deleted)
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="organizationId">查看公司主键</param>
+        /// <param name="userId">查看用户主键</param>
+        /// <param name="roleId">角色编号</param>
+        /// <param name="roleIdExcluded">排除角色编号</param>
+        /// <param name="moduleId">模块菜单编号</param>
+        /// <param name="moduleIdExcluded">排除模块菜单编号</param>
+        /// <param name="showInvisible">是否显示隐藏</param>
+        /// <param name="disabledUserOnly">仅显示禁用</param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <param name="searchKey">查询关键字</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="sortDirection">排序方向</param>
+        /// <param name="showDisabled">是否显示无效记录</param>
+        /// <param name="showDeleted">是否显示已删除记录</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        {
+            //用户表名
+            var tableNameUser = BaseUserEntity.CurrentTableName;
+            //用户登录表名
+            var tableNameUserLogon = BaseUserLogonEntity.CurrentTableName;
+
+            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            //只显示已锁定用户
+            if (disabledUserOnly)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldEnabled + "  = 0 ");
+                //已锁定
+                showDisabled = true;
+                //未删除
+                showDeleted = false;
+            }
+
+            //是否显示无效记录
+            if (!showDisabled)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldEnabled + "  = 1 ");
+            }
+            //是否显示已删除记录
+            if (!showDeleted)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldDeleted + "  = 0 ");
+            }
+
+            if (ValidateUtil.IsInt(organizationId) && organizationId.ToInt() > 0)
+            {
+                //只选择当前
+                //sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " = " + organizationId + ")";
+                //只选择当前和下一级
+                //sb.Append(" AND " + BaseUserEntity.FieldDepartmentId 
+                //    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
+                //    + " FROM " + BaseOrganizationEntity.CurrentTableName 
+                //    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + organizationId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + organizationId + ")";
+
+                //所有下级的都列出来
+                var organizationManager = new BaseOrganizationManager(UserInfo);
+                var ids = organizationManager.GetChildrensId(BaseOrganizationEntity.FieldId, organizationId, BaseOrganizationEntity.FieldParentId);
+                if (ids != null && ids.Length > 0)
+                {
+                    sb.Append(" AND (" + BaseUserEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseUserEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseUserEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseUserEntity.FieldSubDepartmentId + " IN (" + StringUtil.ArrayToList(ids) + ")"
+                     + " OR " + BaseUserEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(ids) + "))");
+                }
+
+            }
+            //if (ValidateUtil.IsInt(departmentId))
+            //{
+            //    sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = " + departmentId;
+            //}
+            if (ValidateUtil.IsInt(userId))
+            {
+                // sb.Append(" AND UserId = " + userId);
+            }
+            //是否显示已隐藏记录
+            if (!showInvisible)
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldIsVisible + "  = 1 ");
+            }
+            //角色
+            var tableNameUserRole = UserInfo.SystemCode + "UserRole";
+            if (!string.IsNullOrEmpty(systemCode))
+            {
+                tableNameUserRole = systemCode + "UserRole";
+            }
+            //指定角色
+            if (ValidateUtil.IsInt(roleId))
+            {
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN ");
+                sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldUserId);
+                sb.Append(" FROM " + tableNameUserRole);
+                sb.Append(" WHERE " + BaseUserRoleEntity.FieldRoleId + " = '" + roleId + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
+            }
+            //排除指定角色
+            if (ValidateUtil.IsInt(roleIdExcluded))
+            {
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " NOT IN ");
+                sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldUserId);
+                sb.Append(" FROM " + tableNameUserRole);
+                sb.Append(" WHERE " + BaseUserRoleEntity.FieldRoleId + " = '" + roleIdExcluded + "'");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
+            }
+            //用户菜单模块表
+            var tableNamePermission = UserInfo.SystemCode + "Permission";
+            if (!string.IsNullOrEmpty(systemCode))
+            {
+                tableNamePermission = systemCode + "Permission";
+            }
+            //指定的菜单模块
+            if (ValidateUtil.IsInt(moduleId))
+            {
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN ");
+                sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
+                sb.Append(" FROM " + tableNamePermission);
+                sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+            }
+            //排除指定菜单模块
+            if (ValidateUtil.IsInt(moduleIdExcluded))
+            {
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " NOT IN ");
+                sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
+                sb.Append(" FROM " + tableNamePermission);
+                sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleIdExcluded + "'");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+            }
+            //关键词
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
+                sb.Append(" AND (" + BaseUserEntity.FieldRealName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldUserName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldNickName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldSubCompanyName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldDepartmentName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldSubDepartmentName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldWorkgroupName + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
+                sb.Append(" OR " + BaseUserEntity.FieldSimpleSpelling + " LIKE N'%" + searchKey + "%')");
+            }
+
+            if (ValidateUtil.IsDateTime(startTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " >= " + dbHelper.ToDbTime(startTime));
+            }
+            if (ValidateUtil.IsDateTime(endTime))
+            {
+                sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
+            }
+
+            sb.Replace(" 1 = 1 AND ", "");
+            //重新构造viewName
+            var sbView = Pool.StringBuilder.Get();
+
+            sbView.Append("SELECT DISTINCT " + tableNameUser + "." + BaseUserEntity.FieldId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserFrom);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldRealName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldNickName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCode);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIdCard);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldQuickQuery);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSimpleSpelling);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupName);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkCategory);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSecurityLevel);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTitle);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDuty);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldLang);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldGender);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldBirthday);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldScore);
+            //sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldFans);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldHomeAddress);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSignature);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTheme);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsStaff);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsVisible);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldProvince);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCity);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDistrict);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldAuditStatus);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldEnabled);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDeleted);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSortCode);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDescription);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance);
+            //用户表
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCreateTime);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCreateUserId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCreateBy);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUpdateTime);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUpdateUserId);
+            sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUpdateBy);
+
+            //用户登录表
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser);
+            sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline);
+            //不从用户登录表读取这些字段，从用户表读取即可
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateTime);
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateUserId);
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldCreateBy);
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateTime);
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateUserId);
+            //sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUpdateBy);
+
+            sbView.Append(" FROM " + tableNameUser + " INNER JOIN " + tableNameUserLogon);
+            sbView.Append(" ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId);
+
+            //指定角色，就读取相应的UserRole授权日期
+            if (ValidateUtil.IsInt(roleId))
+            {
+                sbView.Clear();
+                sbView.Append("SELECT DISTINCT " + tableNameUser + "." + BaseUserEntity.FieldId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserFrom);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldRealName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldNickName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCode);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIdCard);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldQuickQuery);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSimpleSpelling);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkCategory);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSecurityLevel);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTitle);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDuty);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldLang);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldGender);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldBirthday);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldScore);
+                //sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldFans);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldHomeAddress);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSignature);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTheme);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsStaff);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsVisible);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldProvince);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCity);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDistrict);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldAuditStatus);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldEnabled);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDeleted);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSortCode);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDescription);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance);
+                //用户登录表
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline);
+                //授权日期
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateTime);
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateUserId);
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldCreateBy);
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldUpdateTime);
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldUpdateUserId);
+                sbView.Append("," + tableNameUserRole + "." + BaseUserRoleEntity.FieldUpdateBy);
+                sbView.Append(" FROM " + tableNameUser + " INNER JOIN " + tableNameUserRole);
+                sbView.Append(" ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId);
+                sbView.Append(" INNER JOIN " + tableNameUserLogon);
+                sbView.Append(" ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId);
+                sbView.Append(" WHERE (" + tableNameUserRole + "." + BaseUserRoleEntity.FieldRoleId + " = " + roleId + ")");
+            }
+            //指定菜单模块，就读取相应的Permission授权日期
+            else if (ValidateUtil.IsInt(moduleId))
+            {
+                sbView.Clear();
+                sbView.Append("SELECT DISTINCT " + tableNameUser + "." + BaseUserEntity.FieldId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserFrom);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldRealName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldNickName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCode);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIdCard);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldQuickQuery);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSimpleSpelling);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCompanyName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubCompanyName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDepartmentName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSubDepartmentName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupId);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkgroupName);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldWorkCategory);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSecurityLevel);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTitle);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDuty);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldLang);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldGender);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldBirthday);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldScore);
+                //sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldFans);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldHomeAddress);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSignature);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldTheme);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsStaff);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsVisible);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldProvince);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldCity);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDistrict);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldAuditStatus);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldEnabled);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDeleted);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldSortCode);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldDescription);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsAdministrator);
+                sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldIsCheckBalance);
+                //用户登录表
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowStartTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldAllowEndTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockStartTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLockEndTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldFirstVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldPreviousVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLastVisitTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldChangePasswordTime);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldLogonCount);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldConcurrentUser);
+                sbView.Append("," + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserOnline);
+                //授权日期
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateBy);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy);
+                sbView.Append(" FROM " + tableNameUser + " INNER JOIN " + tableNamePermission);
+                sbView.Append(" ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId);
+                sbView.Append(" INNER JOIN " + tableNameUserLogon);
+                sbView.Append(" ON " + tableNameUser + "." + BaseUserEntity.FieldId + " = " + tableNameUserLogon + "." + BaseUserLogonEntity.FieldUserId);
+                sbView.Append(" WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameUser + "')");
+                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + ")");
+            }
+            //从视图读取
+            if (sbView.Length > 0)
+            {
+                tableNameUser = sbView.Put();
+            }
+
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put(), null, "*");
+        }
+        #endregion
+
         #region SetAdministrator设置超级管理员
 
         /// <summary>
@@ -45,7 +450,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -76,7 +481,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -233,20 +638,20 @@ namespace DotNet.Business
             }
             var tableNameUserRole = systemCode + "UserRole";
             var tableNameRole = systemCode + "Role";
-
-            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
-                            + "       AND " + BaseUserEntity.FieldDeleted + "= 0 "
-                            + "       AND ( " + BaseUserEntity.FieldId + " IN "
-                            + "           (SELECT  " + BaseUserRoleEntity.FieldUserId
+                            + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + " AND ( " + BaseUserEntity.FieldId + " IN "
+                            + " (SELECT  " + BaseUserRoleEntity.FieldUserId
                             + " FROM " + tableNameUserRole
-                            + "             WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (SELECT " + BaseRoleEntity.FieldId + " FROM " + tableNameRole + " WHERE " + BaseRoleEntity.FieldCode + " = N'" + roleCode + "')"
-                            + "               AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + systemCode + "'"
-                            + "               AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
-                            + "                AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
-                            + " ORDER BY  " + BaseUserEntity.FieldSortCode;
+                            + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (SELECT " + BaseRoleEntity.FieldId + " FROM " + tableNameRole + " WHERE " + BaseRoleEntity.FieldCode + " = N'" + roleCode + "')"
+                            + " AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + systemCode + "'"
+                            + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
+                            + " ORDER BY  " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
     }

@@ -251,7 +251,7 @@ namespace DotNet.Business
         {
             if (BaseSystemInfo.RecordLogonLog)
             {
-                // 吉日嘎拉 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
+                // 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
                 new Thread(AddLogTaskByBaseUserInfo).Start(new Tuple<string, BaseUserInfo, string, string, string, string>(systemCode, userInfo, ipAddress, ipAddressName, macAddress, loginStatus));
             }
         }
@@ -448,7 +448,7 @@ namespace DotNet.Business
         {
             if (BaseSystemInfo.RecordLogonLog)
             {
-                //抛出一个线程
+                // 抛出一个线程
                 new Thread(AddLogTask).Start(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(systemCode, userId, userName, nickName, ipAddress, ipAddressName, macAddress, new Tuple<string>(loginStatus)));
             }
         }

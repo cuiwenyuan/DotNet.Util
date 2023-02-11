@@ -63,7 +63,7 @@ namespace DotNet.Business
             {
                 entity.CreateBy = entity.CreateBy;
             }
-            
+
             return AddEntity(entity);
         }
         #endregion
@@ -124,18 +124,17 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(string searchKey)
         {
-            var sql = "SELECT * "
-                    + " FROM " + BaseExceptionEntity.CurrentTableName
-                    + " WHERE 1 = 1 ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1 ");
 
             var dbParameters = new List<IDbDataParameter>();
             if (!string.IsNullOrEmpty(searchKey))
             {
-                sql += string.Format(" AND ({0} LIKE {1}", BaseExceptionEntity.FieldIpAddress, DbHelper.GetParameter(BaseExceptionEntity.FieldIpAddress));
-                sql += string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldFormattedMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldFormattedMessage));
-                sql += string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldProcessName, DbHelper.GetParameter(BaseExceptionEntity.FieldProcessName));
-                sql += string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldMachineName, DbHelper.GetParameter(BaseExceptionEntity.FieldMachineName));
-                sql += string.Format(" OR {0} LIKE {1})", BaseExceptionEntity.FieldMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldMessage));
+                sb.Append(string.Format(" AND ({0} LIKE {1}", BaseExceptionEntity.FieldIpAddress, DbHelper.GetParameter(BaseExceptionEntity.FieldIpAddress)));
+                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldFormattedMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldFormattedMessage)));
+                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldProcessName, DbHelper.GetParameter(BaseExceptionEntity.FieldProcessName)));
+                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldMachineName, DbHelper.GetParameter(BaseExceptionEntity.FieldMachineName)));
+                sb.Append(string.Format(" OR {0} LIKE {1})", BaseExceptionEntity.FieldMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldMessage)));
                 searchKey = searchKey.Trim();
                 if (searchKey.IndexOf("%") < 0)
                 {
@@ -148,7 +147,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMessage, searchKey));
             }
             var dt = new DataTable(BaseExceptionEntity.CurrentTableName);
-            DbHelper.Fill(dt, sql, dbParameters.ToArray());
+            DbHelper.Fill(dt, sb.Put(), dbParameters.ToArray());
             return dt;
         }
         #endregion
@@ -169,7 +168,7 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
             var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
-            
+
             ////子系统
             //if (!string.IsNullOrEmpty(processId))
             //{
@@ -212,10 +211,9 @@ namespace DotNet.Business
         /// <returns></returns>
         public string GetTotalCount(int days)
         {
-            var sql = "SELECT COUNT(*) AS TotalCount "
-                            + " FROM " + CurrentTableName
-                            + "  WHERE (DATEADD(d, " + days + ", " + BaseExceptionEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")";
-            return DbHelper.ExecuteScalar(sql).ToString();
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS TotalCount FROM " + CurrentTableName + " WHERE (DATEADD(d, " + days + ", " + BaseExceptionEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")");
+            return DbHelper.ExecuteScalar(sb.Put()).ToString();
         }
 
         #region 上一个下一个
@@ -231,24 +229,25 @@ namespace DotNet.Business
             previousId = currentId;
             nextId = currentId;
             var result = false;
-            var sql = "WITH T1 AS( ";
-            sql += "SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id < " + currentId + " ORDER BY Id DESC ";
-            sql += ") ";
-            sql += ",T2 AS ( ";
-            sql += "SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id > " + currentId + " ORDER BY Id ASC ";
-            sql += ") ";
-            sql += "SELECT ISNULL(T1.PreviousId," + currentId + ") AS PreviousId,ISNULL(T1.CurrentId,T2.CurrentId) AS CurrentId,ISNULL(T2.NextId," + currentId + ") AS NextId FROM T1 FULL JOIN T2 ON T1.CurrentId = T2.CurrentId ";
-            var dt = DbHelper.Fill(sql);
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("WITH T1 AS (");
+            sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id < " + currentId + " ORDER BY Id DESC ");
+            sb.Append(") ");
+            sb.Append(",T2 AS (");
+            sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id > " + currentId + " ORDER BY Id ASC ");
+            sb.Append(") ");
+            sb.Append("SELECT ISNULL(T1.PreviousId," + currentId + ") AS PreviousId,ISNULL(T1.CurrentId,T2.CurrentId) AS CurrentId,ISNULL(T2.NextId," + currentId + ") AS NextId FROM T1 FULL JOIN T2 ON T1.CurrentId = T2.CurrentId");
+            var dt = DbHelper.Fill(sb.Put());
             if (dt != null && dt.Rows.Count == 0)
             {
                 previousId = currentId;
                 nextId = currentId;
                 result = false;
             }
-            else if (dt != null && (int.Parse(dt.Rows[0]["PreviousId"].ToString()) != currentId || int.Parse(dt.Rows[0]["NextId"].ToString()) != currentId))
+            else if (dt != null && (dt.Rows[0]["PreviousId"].ToInt() != currentId || dt.Rows[0]["NextId"].ToInt() != currentId))
             {
-                previousId = int.Parse(dt.Rows[0]["PreviousId"].ToString());
-                nextId = int.Parse(dt.Rows[0]["NextId"].ToString());
+                previousId = dt.Rows[0]["PreviousId"].ToInt();
+                nextId = dt.Rows[0]["NextId"].ToInt();
                 result = true;
             }
             return result;

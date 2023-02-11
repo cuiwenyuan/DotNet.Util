@@ -298,7 +298,7 @@ namespace DotNet.Business
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId);
                 sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
-                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");                
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)");
                 //角色权限
                 sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
@@ -393,105 +393,107 @@ namespace DotNet.Business
 
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var viewName = string.Empty;
+            var sbView = Pool.StringBuilder.Get();
             //指定用户，就读取相应的Permission授权日期
             if (ValidateUtil.IsInt(userId))
             {
-                viewName = "SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldParentId;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldSelectedImageIndex;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldNavigateUrl;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldTarget;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldFormName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAssemblyName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldSortCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldEnabled;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDeleted;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsScope;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldLastCall;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAllowEdit;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAllowDelete;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDescription;
+                sbView.Clear();
+                sbView.Append("SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldParentId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSelectedImageIndex);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldNavigateUrl);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldTarget);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldFormName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAssemblyName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSortCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldEnabled);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldDeleted);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsScope);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldLastCall);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAllowEdit);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAllowDelete);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldDescription);
                 //授权日期
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateBy;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateTime;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateUserId;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy;
-                viewName += " FROM " + tableNameModule + " INNER JOIN " + tableNamePermission;
-                viewName += " ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId;
-                viewName += " AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode;
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateBy);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy);
+                sbView.Append(" FROM " + tableNameModule + " INNER JOIN " + tableNamePermission);
+                sbView.Append(" ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId);
+                sbView.Append(" AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode);
                 //BaseUser
-                viewName += " WHERE ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "')";
-                viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + userId + "))";
+                sbView.Append(" WHERE ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "')");
+                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + userId + "))");
                 //UserRole
-                viewName += " OR ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')";
-                viewName += " AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " IN ";
+                sbView.Append(" OR ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')");
+                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " IN ");
                 //用户所拥有的角色
-                viewName += " (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId;
-                viewName += " FROM " + tableNameUserRole;
-                viewName += " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId;
-                viewName += " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'";
-                viewName += " AND " + BaseUserRoleEntity.FieldEnabled + " = 1";
-                viewName += " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)";
-                viewName += " ))";
+                sbView.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
+                sbView.Append(" FROM " + tableNameUserRole);
+                sbView.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId);
+                sbView.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sbView.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
+                sbView.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)");
+                sbView.Append(" ))");
 
             }
             //指定菜单模块，就读取相应的Permission授权日期
             else if (ValidateUtil.IsInt(roleId))
             {
-                viewName = "SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldParentId;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldSelectedImageIndex;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldNavigateUrl;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldTarget;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldFormName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAssemblyName;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldSortCode;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldEnabled;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDeleted;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsScope;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldLastCall;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAllowEdit;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldAllowDelete;
-                viewName += "," + tableNameModule + "." + BaseModuleEntity.FieldDescription;
+                sbView.Clear();
+                sbView.Append("SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldParentId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCategoryCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldImageUrl);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldImageIndex);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSelectedImageIndex);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldNavigateUrl);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldTarget);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldFormName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAssemblyName);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSortCode);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldEnabled);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldDeleted);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsMenu);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsPublic);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsExpand);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsScope);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldIsVisible);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldLastCall);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAllowEdit);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldAllowDelete);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldDescription);
                 //授权日期
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldCreateBy;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateTime;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateUserId;
-                viewName += "," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy;
-                viewName += " FROM " + tableNameModule + " INNER JOIN " + tableNamePermission;
-                viewName += " ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId;
-                viewName += " AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode;
-                viewName += " WHERE " + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'";
-                viewName += " AND " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'";
-                viewName += " AND " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + roleId + "";
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldCreateBy);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateTime);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateUserId);
+                sbView.Append("," + tableNamePermission + "." + BasePermissionEntity.FieldUpdateBy);
+                sbView.Append(" FROM " + tableNameModule + " INNER JOIN " + tableNamePermission);
+                sbView.Append(" ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId);
+                sbView.Append(" AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode);
+                sbView.Append(" WHERE " + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sbView.Append(" AND " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sbView.Append(" AND " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + roleId + "");
             }
             //从视图读取
-            if (!string.IsNullOrEmpty(viewName))
+            if (sbView.Length > 0)
             {
-                tableNameModule = viewName;
+                tableNameModule = sbView.Put();
             }
 
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameModule, sb.Put(), null, "*");
@@ -537,7 +539,7 @@ namespace DotNet.Business
             }
             else if (ValidateUtil.IsNumeric(parentId))
             {
-                GetChildren(dtOld, dt, int.Parse(parentId), 0);
+                GetChildren(dtOld, dt, parentId.ToInt(), 0);
             }
             return dt;
         }
@@ -564,23 +566,23 @@ namespace DotNet.Business
             {
                 //添加一行数据
                 var row = dtNew.NewRow();
-                row["Id"] = int.Parse(t["Id"].ToString());
+                row["Id"] = t["Id"].ToInt();
                 if (string.IsNullOrEmpty(t["ParentId"].ToString()))
                 {
                     row["ParentId"] = 0;
                 }
                 else
                 {
-                    row["ParentId"] = int.Parse(t["ParentId"].ToString());
+                    row["ParentId"] = t["ParentId"].ToInt();
                 }
                 row["Code"] = t["Code"].ToString();
                 row["Name"] = t["Name"].ToString();
                 row["CategoryCode"] = t["CategoryCode"].ToString();
-                row["Enabled"] = int.Parse(t["Enabled"].ToString());
-                row["Deleted"] = int.Parse(t["Deleted"].ToString());
-                row["IsMenu"] = int.Parse(t["IsMenu"].ToString());
-                row["IsPublic"] = int.Parse(t["IsPublic"].ToString());
-                row["IsExpand"] = int.Parse(t["IsExpand"].ToString());
+                row["Enabled"] = t["Enabled"].ToInt();
+                row["Deleted"] = t["Deleted"].ToInt();
+                row["IsMenu"] = t["IsMenu"].ToInt();
+                row["IsPublic"] = t["IsPublic"].ToInt();
+                row["IsExpand"] = t["IsExpand"].ToInt();
                 if (!string.IsNullOrEmpty(t["CreateTime"].ToString()))
                 {
                     row["CreateTime"] = DateTime.Parse(t["CreateTime"].ToString());
@@ -597,7 +599,7 @@ namespace DotNet.Business
                 if (layerId <= 10)
                 {
                     //调用自身迭代
-                    GetChildren(dtOld, dtNew, int.Parse(t["Id"].ToString()), layerId);
+                    GetChildren(dtOld, dtNew, t["Id"].ToInt(), layerId);
                 }
             }
         }

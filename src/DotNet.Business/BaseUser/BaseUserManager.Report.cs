@@ -35,24 +35,24 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable DailyUserReport(int days, string startDate, string endDate)
         {
-            var sql = string.Empty;
-            sql += "SELECT CONVERT(NVARCHAR(4),B.FiscalYear) + '-' + CONVERT(NVARCHAR(2),B.FiscalMonth) + '-' + CONVERT(NVARCHAR(2),B.FiscalDay) AS TransactionDate";
-            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount";
-            sql += " ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLogonLogEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0) AS TotalUserLoginCount";
-            sql += " ,(SELECT COUNT(*) FROM " + BaseOrganizationEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseOrganizationEntity.FieldDeleted + " = 0 AND ParentId = 0) AS TotalCompanyCount";
-            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B ";
-            sql += " WHERE B.TransactionDate <= GETDATE() AND DATEDIFF(d,B.TransactionDate,GETDATE()) < " + days + "";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT CONVERT(NVARCHAR(4),B.FiscalYear) + '-' + CONVERT(NVARCHAR(2),B.FiscalMonth) + '-' + CONVERT(NVARCHAR(2),B.FiscalDay) AS TransactionDate");
+            sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount");
+            sb.Append(" ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLogonLogEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0) AS TotalUserLoginCount");
+            sb.Append(" ,(SELECT COUNT(*) FROM " + BaseOrganizationEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseOrganizationEntity.FieldDeleted + " = 0 AND ParentId = 0) AS TotalCompanyCount");
+            sb.Append(" FROM " + BaseCalendarEntity.CurrentTableName + " B ");
+            sb.Append(" WHERE B.TransactionDate <= GETDATE() AND DATEDIFF(d,B.TransactionDate,GETDATE()) < " + days + "");
             if (ValidateUtil.IsDateTime(startDate))
             {
-                sql += " AND B.TransactionDate >= '" + startDate + "'";
+                sb.Append(" AND B.TransactionDate >= '" + startDate + "'");
             }
             if (ValidateUtil.IsDateTime(endDate))
             {
-                sql += " AND B.TransactionDate <= '" + endDate + "'";
+                sb.Append(" AND B.TransactionDate <= '" + endDate + "'");
             }
-            sql += " ORDER BY B.TransactionDate ASC";
+            sb.Append(" ORDER BY B.TransactionDate ASC");
 
-            return Fill(sql);
+            return Fill(sb.Put());
         }
         #endregion
     }
