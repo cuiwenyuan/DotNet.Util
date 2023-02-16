@@ -137,7 +137,7 @@ namespace DotNet.Business
             }
             //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
-            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)), true, false, cacheTime);
         }

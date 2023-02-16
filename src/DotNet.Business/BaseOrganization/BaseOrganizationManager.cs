@@ -129,7 +129,7 @@ namespace DotNet.Business
             }
             //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
-            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
@@ -355,7 +355,7 @@ namespace DotNet.Business
             else
             {
                 //2017.12.20增加默认的HttpRuntime.Cache缓存
-                var cacheKey = "DataTable.BaseOrganization";
+                var cacheKey = "Dt.BaseOrganization";
                 //var cacheTime = default(TimeSpan);
                 var cacheTime = TimeSpan.FromMilliseconds(86400000);
                 _dtOrganization = CacheUtil.Cache<DataTable>(cacheKey, () =>
@@ -803,13 +803,13 @@ namespace DotNet.Business
         public override bool RemoveCache()
         {
             var result = false;
-            //var cacheKey = "DataTable." + CurrentTableName;
+            //var cacheKey = "Dt." + CurrentTableName;
             //if (UserInfo != null)
             //{
-            //    cacheKey += "DataTable." + UserInfo.SystemCode + ".ModuleTree";
+            //    cacheKey += "Dt." + UserInfo.SystemCode + ".ModuleTree";
             //}
-            var cacheKey = "DataTable.BaseOrganization";
-            var cacheKeyTree = "DataTable.BaseOrganizationTree";
+            var cacheKey = "Dt.BaseOrganization";
+            var cacheKeyTree = "Dt.BaseOrganizationTree";
             CacheUtil.Remove(cacheKeyTree);
             result = CacheUtil.Remove(cacheKey);
             return result;
