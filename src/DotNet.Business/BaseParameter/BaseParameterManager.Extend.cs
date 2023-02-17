@@ -164,7 +164,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterCode + " = '" + parameterCode + "'");
             }
 
-            var cacheKey = "DataTable." + CurrentTableName;
+            var cacheKey = "Dt." + CurrentTableName;
             //万一系统里开的公司多了，还是不要按公司来分
             //if (UserInfo != null)
             //{
@@ -403,12 +403,12 @@ namespace DotNet.Business
         public override bool RemoveCache()
         {
             var result = false;
-            var cacheKey = "DataTable." + CurrentTableName;
-            var cacheKeyTree = "DataTable." + CurrentTableName + ".List";
+            var cacheKey = "Dt." + CurrentTableName;
+            var cacheKeyTree = "Dt." + CurrentTableName + ".List";
             if (UserInfo != null)
             {
                 //cacheKey += "." + UserInfo.CompanyId;
-                //cacheKeyTree = "DataTable." + UserInfo.SystemCode + ".ModuleTree";
+                //cacheKeyTree = "Dt." + UserInfo.SystemCode + ".ModuleTree";
             }
 
             CacheUtil.Remove(cacheKeyTree);

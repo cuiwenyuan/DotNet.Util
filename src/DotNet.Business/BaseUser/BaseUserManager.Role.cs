@@ -464,7 +464,7 @@ namespace DotNet.Business
             sb = sb.Replace("BaseUserRole", userRoleTableName);
             sb = sb.Replace("BaseRole", roleTableName);
 
-            var cacheKey = "DataTable." + systemCode + ".UserRole";
+            var cacheKey = "Dt." + systemCode + ".UserRole";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Put()), true, false, cacheTime);
@@ -770,7 +770,7 @@ namespace DotNet.Business
                 new List<IDbDataParameter> { DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId) };
 
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "DataTable." + systemCode + "." + userId + ".UserRole";
+            var cacheKey = "Dt." + systemCode + "." + userId + ".UserRole";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(commandText, dbParameters.ToArray()), true, false, cacheTime);

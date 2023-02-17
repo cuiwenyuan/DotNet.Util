@@ -706,7 +706,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1));
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "DataTable." + systemCode + ".ModuleTree." + isMenu;
+            var cacheKey = "Dt." + systemCode + ".ModuleTree." + isMenu;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => manager.GetModuleTree(manager.GetDataTable(parameters, BaseModuleEntity.FieldSortCode)), true, false, cacheTime);
