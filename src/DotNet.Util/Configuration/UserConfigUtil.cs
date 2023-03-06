@@ -929,6 +929,7 @@ namespace DotNet.Util
             BaseSystemInfo.ReportDbConnection = BaseSystemInfo.ReportDbConnectionString;
             BaseSystemInfo.ScmDbConnection = BaseSystemInfo.ScmDbConnectionString;
             BaseSystemInfo.ImsDbConnection = BaseSystemInfo.ImsDbConnectionString;
+            BaseSystemInfo.IcsDbConnection = BaseSystemInfo.IcsDbConnectionString;
             BaseSystemInfo.OmsDbConnection = BaseSystemInfo.OmsDbConnectionString;
             BaseSystemInfo.MemberDbConnection = BaseSystemInfo.MemberDbConnectionString;
             BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;
