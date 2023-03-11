@@ -526,6 +526,7 @@ namespace DotNet.Business
             dt.Columns.Add("IsMenu", typeof(int));
             dt.Columns.Add("IsPublic", typeof(int));
             dt.Columns.Add("IsExpand", typeof(int));
+            dt.Columns.Add("SortCode", typeof(int));
             dt.Columns.Add("CreateTime", typeof(DateTime));
             dt.Columns.Add("CreateBy", typeof(string));
             dt.Columns.Add("UpdateTime", typeof(DateTime));
@@ -583,6 +584,7 @@ namespace DotNet.Business
                 row["IsMenu"] = t["IsMenu"].ToInt();
                 row["IsPublic"] = t["IsPublic"].ToInt();
                 row["IsExpand"] = t["IsExpand"].ToInt();
+                row["SortCode"] = t["SortCode"].ToInt();
                 if (!string.IsNullOrEmpty(t["CreateTime"].ToString()))
                 {
                     row["CreateTime"] = DateTime.Parse(t["CreateTime"].ToString());
