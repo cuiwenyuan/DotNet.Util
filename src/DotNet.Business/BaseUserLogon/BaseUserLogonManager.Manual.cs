@@ -46,7 +46,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -77,7 +77,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -108,7 +108,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -150,7 +150,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);
@@ -187,7 +187,7 @@ namespace DotNet.Business
                 };
                 if (UserInfo != null)
                 {
-                    entity.UserId = int.Parse(UserInfo.Id);
+                    entity.UserId = UserInfo.Id.ToInt();
                     entity.RealName = UserInfo.RealName;
                 }
                 new BaseLogManager(UserInfo).Add(entity);

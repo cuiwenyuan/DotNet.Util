@@ -1123,6 +1123,45 @@ namespace DotNet.Util
         public static string ImsDbConnectionString = string.Empty;
         #endregion
 
+        #region ICS
+        /// <summary>
+        /// ICS数据库类别
+        /// </summary>
+        public static CurrentDbType IcsDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// ICS数据库
+        /// </summary>
+        private static string _icsDbConnection = string.Empty;
+        /// <summary>
+        /// ICS数据库连接
+        /// </summary>
+        public static string IcsDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_icsDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["IcsDbConnection"]))
+                    {
+                        _icsDbConnection = ConfigurationManager.AppSettings["IcsDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_icsDbConnection))
+                    {
+                        _icsDbConnection = "Data Source=localhost;Initial Catalog=Business_ICS;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _icsDbConnection;
+            }
+            // 默认的数据库连接
+            set => _icsDbConnection = value;
+        }
+        /// <summary>
+        /// Ics数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string IcsDbConnectionString = string.Empty;
+        #endregion
+
         #region OMS
         /// <summary>
         /// OMS数据库类别

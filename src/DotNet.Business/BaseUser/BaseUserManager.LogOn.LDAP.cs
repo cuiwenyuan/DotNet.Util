@@ -31,7 +31,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public BaseUserEntity GetByOpenId(string openId)
         {
-            BaseUserEntity userEntity = null;
+            BaseUserEntity entity = null;
             // 用户没有找到状态
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
@@ -54,11 +54,11 @@ namespace DotNet.Business
                     var dt = GetDataTable(parameters);
                     if (dt != null && dt.Rows.Count == 1)
                     {
-                        userEntity = BaseEntity.Create<BaseUserEntity>(dt);
+                        entity = BaseEntity.Create<BaseUserEntity>(dt);
                     }
                 }
             }
-            return userEntity;
+            return entity;
         }
         /// <summary>
         /// 根据用户名获取用户实体
@@ -67,7 +67,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public BaseUserEntity GetByUserName(string userName)
         {
-            BaseUserEntity userEntity = null;
+            BaseUserEntity entity = null;
             // 用户没有找到状态
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
@@ -82,10 +82,10 @@ namespace DotNet.Business
                 var dt = GetDataTable(parameters);
                 if (dt != null && dt.Rows.Count == 1)
                 {
-                    userEntity = BaseEntity.Create<BaseUserEntity>(dt);
+                    entity = BaseEntity.Create<BaseUserEntity>(dt);
                 }
             }
-            return userEntity;
+            return entity;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public BaseUserEntity GetByEmail(string email)
         {
-            BaseUserEntity userEntity = null;
+            BaseUserEntity entity = null;
             // 用户没有找到状态
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
@@ -118,11 +118,11 @@ namespace DotNet.Business
                     var dt = GetDataTable(parameters);
                     if (dt != null && dt.Rows.Count == 1)
                     {
-                        userEntity = BaseEntity.Create<BaseUserEntity>(dt);
+                        entity = BaseEntity.Create<BaseUserEntity>(dt);
                     }
                 }
             }
-            return userEntity;
+            return entity;
         }
     }
 }

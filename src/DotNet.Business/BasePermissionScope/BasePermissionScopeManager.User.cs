@@ -80,25 +80,26 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(permissionId))
             {
                 var tableName = systemCode + "PermissionScope";
-                var sql = string.Empty;
+                var sb = Pool.StringBuilder.Get();
 
                 // 1.本人直接就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "User') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'";
-                dt = Fill(sql);
+                sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "User') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
+                dt = Fill(sb.ToString());
                 var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
-                sql = "SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Role') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'";
-                dt = Fill(sql);
+                sb.Clear();
+                sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Role') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
+                dt = Fill(sb.Put());
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。
-                // sql = "SELECT ResourceId FROM " + tableName + " WHERE ResourceCategory = '" + systemCode + "Organization' AND PermissionId = " + result + " AND " + BaseContactEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'";
-                // result = this.Fill(sql);
+                // sb.Append("SELECT ResourceId FROM " + tableName + " WHERE ResourceCategory = '" + systemCode + "Organization' AND PermissionId = " + result + " AND " + BaseContactEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
+                // result = this.Fill(sb.Put());
                 // string[] ids = StringUtil.Concat(result, BaseUtil.FieldToArray(result, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 4.获取所有有这个操作权限的用户Id，而且这些用户是有效的。
-                var userManager = new BaseUserManager(DbHelper, UserInfo);
+                var userManager = new BaseUserManager(UserInfo);
                 result = userManager.GetUserIds(userIds, null, roleIds);
             }
             return result;

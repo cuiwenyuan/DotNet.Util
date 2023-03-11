@@ -38,7 +38,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            var cacheKey = "DataTable." + BaseSystemInfo.ApplicationId + "." + CurrentTableName;
+            var cacheKey = "Dt." + BaseSystemInfo.ApplicationId + "." + CurrentTableName;
             var cacheKeyList = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName;
             var cacheKeyListEmail = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName + ".Email";
             var cacheKeyListSms = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName + ".Sms";

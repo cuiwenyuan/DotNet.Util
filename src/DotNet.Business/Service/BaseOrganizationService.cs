@@ -11,6 +11,7 @@ namespace DotNet.Business
 {
     using IService;
     using Model;
+    using System;
     using Util;
 
     /// <summary>
@@ -84,7 +85,7 @@ namespace DotNet.Business
                 //returnMessage = manager.GetStateMessage(returnCode);
                 if (returnCode.Equals(Status.OkAdd.ToString()))
                 {
-                    entity.Id = int.Parse(result);
+                    entity.Id = result.ToInt();
                     //Troy.Cui 2018-10-18去掉这里的Folder检查
                     //var folderManager = new BaseFolderManager(dbHelper, userInfo);
                     //folderManager.FolderCheck(entity.Id.ToString(), entity.Name);

@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using DotNet.Util;
+using System;
 
 namespace DotNet.Business
 {
@@ -68,10 +69,10 @@ namespace DotNet.Business
                 nextId = currentId;
                 result = false;
             }
-            else if (dt != null && (int.Parse(dt.Rows[0]["PreviousId"].ToString()) != currentId || int.Parse(dt.Rows[0]["NextId"].ToString()) != currentId))
+            else if (dt != null && (dt.Rows[0]["PreviousId"].ToInt() != currentId || dt.Rows[0]["NextId"].ToInt() != currentId))
             {
-                previousId = int.Parse(dt.Rows[0]["PreviousId"].ToString());
-                nextId = int.Parse(dt.Rows[0]["NextId"].ToString());
+                previousId = dt.Rows[0]["PreviousId"].ToInt();
+                nextId = dt.Rows[0]["NextId"].ToInt();
                 result = true;
             }
             return result;

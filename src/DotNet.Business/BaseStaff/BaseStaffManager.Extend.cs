@@ -276,14 +276,15 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByCompany(string companyId)
         {
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
-                + " FROM " + BaseStaffEntity.CurrentTableName;
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+                + " FROM " + BaseStaffEntity.CurrentTableName);
             if (!string.IsNullOrEmpty(companyId))
             {
-                sql += " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + companyId + "' ";
+                sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + companyId + "' ");
             }
-            sql += " ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -295,15 +296,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByOrganizations(string[] organizationIds)
         {
-            var sql = "    SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(" SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
                                 + " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 "
-                                + "        AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN ( " + StringUtil.ArrayToList(organizationIds) + ") "
-                                + "               OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
-                                + "               OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
-                                + "               OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) "
-                                + " ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+                                + " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN ( " + StringUtil.ArrayToList(organizationIds) + ") "
+                                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
+                                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
+                                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) "
+                                + " ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -328,7 +330,8 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByDepartment(string departmentId)
         {
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyName "
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentCode"
@@ -337,13 +340,13 @@ namespace DotNet.Business
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsTitle WHERE Id = " + BaseStaffEntity.CurrentTableName + ".TitleId) AS TitleName "
                 + " ,(SELECT " + BaseRoleEntity.FieldName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
                 + " FROM " + BaseStaffEntity.CurrentTableName + " LEFT OUTER JOIN " + BaseUserEntity.CurrentTableName
-                + "       ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId;
+                + "       ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId);
             if (!string.IsNullOrEmpty(departmentId))
             {
-                sql += " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + departmentId + "' ";
+                sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + departmentId + "' ");
             }
-            sql += " ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -358,13 +361,14 @@ namespace DotNet.Business
             var staffCount = string.Empty;
             var names = new string[1];
             var values = new object[1];
-            var sql = @"SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName + " WHERE (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(@"SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldEnabled + " = 1 AND " + BaseStaffEntity.FieldIsDimission + " <> 1 AND " + BaseStaffEntity.FieldDeleted + " = 0 AND (" + BaseStaffEntity.FieldDepartmentId + " IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ");
             names[0] = BaseStaffEntity.FieldCompanyId;
             values[0] = organizationCode;
-            var result = DbHelper.ExecuteScalar(sql, DbHelper.MakeParameters(names, values));
-            if (result != null)
+            var obj = DbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            if (obj != null)
             {
-                staffCount = result.ToString();
+                staffCount = obj.ToString();
             }
             return staffCount;
         }
@@ -384,18 +388,19 @@ namespace DotNet.Business
             var staffCount = string.Empty;
             var names = new string[3];
             var values = new object[3];
-            var sql = "SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName
-                            + " WHERE (" + categoryField + " = ?) AND (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName
+                            + " WHERE (" + categoryField + " = ?) AND (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ");
             names[0] = categoryField;
             names[1] = BaseOrganizationEntity.FieldCode;
             names[2] = organizationCode;
             values[0] = categoryId;
             values[1] = organizationCode;
             values[2] = organizationCode;
-            var result = dbHelper.ExecuteScalar(sql, DbHelper.MakeParameters(names, values));
-            if (result != null)
+            var obj = dbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            if (obj != null)
             {
-                staffCount = result.ToString();
+                staffCount = obj.ToString();
             }
             return staffCount;
         }
@@ -412,18 +417,19 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable SearchByOrganizationIds(string[] organizationIds, string userName, string enabled, string role)
         {
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
-                                + " WHERE 1=1 ";
+                                + " WHERE 1 = 1 ");
 
             // 这里要注意系统安全隐患
             if (organizationIds != null)
             {
                 // 可以管理的部门
-                sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ";
-                sql += "     OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ";
-                sql += "     OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ";
-                sql += "     OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) ";
+                sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) ");
             }
 
             if (!string.IsNullOrEmpty(userName))
@@ -437,21 +443,21 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(userName))
             {
                 userName = userName.ToLower();
-                sql += " AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE ('" + userName + "') ";
+                sb.Append(" AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE ('" + userName + "') ");
             }
 
             if (!string.IsNullOrEmpty(enabled))
             {
-                sql += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = '" + enabled + "'";
+                sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = '" + enabled + "'");
             }
 
             if (!string.IsNullOrEmpty(role))
             {
                 // sql += " AND " + BaseUserEntity.FieldRoleId + " = '" + role + "'");
             }
-            sql += " ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode;
+            sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -498,7 +504,8 @@ namespace DotNet.Business
             }
 
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
                             + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " AS CompanyName "
                             + "," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
@@ -509,35 +516,35 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "A ON " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
-                            + "      ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = OT.Id ";
+                            + "      ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = OT.Id ");
             if (string.IsNullOrEmpty(organizationId))
             {
-                sql += " WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ";
+                sb.Append(" WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ");
             }
             else
             {
-                sql += " WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
-                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ";
+                sb.Append(" WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
+                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'";
-                //sql += " OR " + "ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDescription + " LIKE '%" + searchKey + "%'";
-                sql += " OR OT.RoleName LIKE '%" + searchKey + "%')";
+                sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldName + " LIKE '%" + searchKey + "%'");
+                //sb.Append(" OR " + "ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " LIKE '%" + searchKey + "%'";
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDescription + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR OT.RoleName LIKE '%" + searchKey + "%')");
             }
-            sql += " ORDER BY " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldSortCode
-                          + " ," + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+            sb.Append(" ORDER BY " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldSortCode
+                          + " ," + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -576,36 +583,37 @@ namespace DotNet.Business
             }
 
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + " ," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
                             + " ," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
                             //+ " ,ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + " FROM " + BaseStaffEntity.CurrentTableName
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "A ON " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
-                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId;
+                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId);
             //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
             if (string.IsNullOrEmpty(organizationId))
             {
-                sql += " WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ";
+                sb.Append(" WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ");
             }
             else
             {
-                sql += " WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
-                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ";
+                sb.Append(" WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
+                + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "A." + BaseStaffEntity.FieldCompanyName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "B." + BaseStaffEntity.FieldDepartmentName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDescription + " LIKE '%" + searchKey + "%')";
+                sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "A." + BaseStaffEntity.FieldCompanyName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "B." + BaseStaffEntity.FieldDepartmentName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldOfficePhone + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldExtension + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDescription + " LIKE '%" + searchKey + "%')");
             }
             var orderBy = string.Empty;
             switch (DbHelper.CurrentDbType)
@@ -620,7 +628,7 @@ namespace DotNet.Business
                     orderBy = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
                     break;
             }
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, orderBy, "ASC", sql);
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, orderBy, "ASC", sb.Put());
         }
         #endregion
 
@@ -635,31 +643,32 @@ namespace DotNet.Business
         public DataTable Search(string organizationId, string searchKey, bool deletionStateCode)
         {
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + "," + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldName + " AS DepartmentName "
                             //+ ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
                             + " FROM " + BaseStaffEntity.CurrentTableName
-                            + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " ON " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
-                            //+ "      LEFT OUTER JOIN ItemsDuty ON  ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
-                            + " WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")";
+                            + " LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " ON " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
+                            //+ " LEFT OUTER JOIN ItemsDuty ON  ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
+                            + " WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")");
             if (!string.IsNullOrEmpty(organizationId))
             {
-                sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "' OR " + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "')";
+                sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "' OR " + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "')");
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                sql += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldTelephone + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'";
-                sql += " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%')";
+                sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldShortNumber + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldTelephone + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldMobile + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEmail + " LIKE '%" + searchKey + "%'");
+                sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%')");
             }
-            sql += " ORDER BY " // + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
+            sb.Append(" ORDER BY " // + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
                                 // + " ," 
-                          + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+                          + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -711,15 +720,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable()
         {
-            var sql = "SELECT " + BaseStaffEntity.CurrentTableName + ".* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " , " + BaseUserEntity.CurrentTableName + ".UserOnline"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyName "
 
-                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentCode"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DepartmentId) AS DepartmentName "
 
-                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " From " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupCode"
+                + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupCode"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".WorkgroupId) AS WorkgroupName "
 
                 //+ " ,(SELECT " + BaseItemDetailsEntity.FieldItemName + " FROM ItemsDuty WHERE Id = " + BaseStaffEntity.CurrentTableName + ".DutyId) AS DutyName "
@@ -733,8 +743,8 @@ namespace DotNet.Business
                 + "  LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " "
                 + " ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId
                 + " ORDER BY " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
-                + " , " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
-            return DbHelper.Fill(sql);
+                + " , " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -747,7 +757,8 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(string fieldName, string fieldValue)
         {
-            var sql = "SELECT A.* "
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT A.* "
                     + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyCode"
                     + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
 
@@ -763,8 +774,8 @@ namespace DotNet.Business
 
                     + " FROM " + BaseStaffEntity.CurrentTableName + " A "
                     + " WHERE " + fieldName + " = " + DbHelper.GetParameter(fieldName)
-                    + " ORDER BY A.SortCode";
-            return DbHelper.Fill(sql, new IDbDataParameter[] { DbHelper.MakeParameter(fieldName, fieldValue) });
+                    + " ORDER BY A.SortCode");
+            return DbHelper.Fill(sb.Put(), new IDbDataParameter[] { DbHelper.MakeParameter(fieldName, fieldValue) });
         }
         #endregion
 
@@ -831,7 +842,7 @@ namespace DotNet.Business
             //if (staffEntity.UserId > 0)
             //{
             //    // 员工信息改变时，用户信息也跟着改变。
-            //    BaseUserManager userManager = new BaseUserManager(DbHelper, UserInfo);
+            //    BaseUserManager userManager = new BaseUserManager(UserInfo);
             //    BaseUserEntity userEntity = userManager.GetEntity(staffEntity.UserId);
             //    // userEntity.Company = staffEntity.CompanyName;
             //    // userEntity.Department = staffEntity.DepartmentName;
@@ -866,7 +877,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(userId))
             {
                 // 删除用户
-                var userManager = new BaseUserManager(DbHelper, UserInfo);
+                var userManager = new BaseUserManager(UserInfo);
                 result += userManager.SetDeleted(userId);
             }
             // 将员工的用户设置为空
@@ -888,7 +899,7 @@ namespace DotNet.Business
             var userId = GetProperty(id, BaseStaffEntity.FieldUserId);
             if (!string.IsNullOrEmpty(userId))
             {
-                var userManager = new BaseUserManager(DbHelper, UserInfo);
+                var userManager = new BaseUserManager(UserInfo);
                 userManager.SetDeleted(userId);
             }
             // 再把员工设置为是否删除
@@ -931,7 +942,7 @@ namespace DotNet.Business
             {
                 var parameters = new List<KeyValuePair<string, object>>();
                 // 删除相关的用户数据
-                var userManager = new BaseUserManager(DbHelper, UserInfo);
+                var userManager = new BaseUserManager(UserInfo);
                 userManager.DeleteEntity(staffEntity.UserId);
                 // 删除员工本表
                 parameters.Add(new KeyValuePair<string, object>(BaseStaffEntity.FieldId, id));

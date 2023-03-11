@@ -36,16 +36,16 @@ namespace DotNet.Business
         public override bool RemoveCache()
         {
             var result = false;
-            var cacheKey = "DataTable." + CurrentTableName;
+            var cacheKey = "Dt." + CurrentTableName;
             var cacheKeyListBase = "List.Base.UserRole";
             var cacheKeyListSystemCode = "List.UserBase.Role";
-            var cacheKeySystemCode = "DataTable.Base.UserRole";
-            var cacheKeySystemCodeUserId = "DataTable.";
+            var cacheKeySystemCode = "Dt.Base.UserRole";
+            var cacheKeySystemCodeUserId = "Dt.";
             if (UserInfo != null)
             {
                 //cacheKey += "." + UserInfo.CompanyId;
                 cacheKeyListSystemCode = "List." + UserInfo.SystemCode + ".UserRole";
-                cacheKeySystemCode = "DataTable." + UserInfo.SystemCode + ".UserRole";
+                cacheKeySystemCode = "Dt." + UserInfo.SystemCode + ".UserRole";
                 cacheKeySystemCodeUserId += UserInfo.SystemCode + "." + UserInfo.Id + ".UserRole";
             }
             CacheUtil.Remove(cacheKeyListBase);

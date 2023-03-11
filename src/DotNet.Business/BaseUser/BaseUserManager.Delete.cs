@@ -23,6 +23,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region public override int Delete(string id) 删除实体
         /// <summary>
         /// 删除实体
         /// </summary>
@@ -38,6 +39,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
+
+        #region public override int SetDeleted(object[] ids, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         /// <summary>
         /// 删除
         /// </summary>
@@ -62,5 +66,6 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
     }
 }

@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net452;net46;net47;net48;net5.0;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>A set of .NET 7/6/5/Standard 2.1/Standard 2.0 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Version>1.0.42</Version>
+		<Copyright>©2008-2023 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -21,9 +21,14 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<AssemblyVersion>5.6.2023.0131</AssemblyVersion>
-		<FileVersion>5.6.2023.0131</FileVersion>
+		<VersionPrefix>1.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
+		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
+		<FileVersion>$(Version)</FileVersion>
+		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+		
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -47,7 +52,11 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
+		<DefineConstants>$(DefineConstants);__WIN__</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -64,7 +73,7 @@
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net452' Or '$(TargetFramework)'=='net46' Or '$(TargetFramework)'=='net47' Or '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Configuration" />
 		<Reference Include="System.Management" />

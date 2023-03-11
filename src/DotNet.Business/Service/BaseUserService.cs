@@ -92,7 +92,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(result) && status == Status.OkAdd && userContactEntity != null)
             {
                 // 添加联系方式
-                userContactEntity.UserId = int.Parse(result);
+                userContactEntity.UserId = result.ToInt();
                 var userContactManager = new BaseUserContactManager(dbHelper, userInfo);
                 userContactEntity.CompanyId = entity.CompanyId;
                 userContactManager.Add(userContactEntity);

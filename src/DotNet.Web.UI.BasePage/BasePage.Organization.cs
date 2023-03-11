@@ -115,7 +115,7 @@ public partial class BasePage : System.Web.UI.Page
         dropDownList.Items.Clear();
         var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
         //2017.12.20增加默认的HttpRuntime.Cache缓存
-        var cacheKey = "DataTable.BaseOrganizationTree";
+        var cacheKey = "Dt.BaseOrganizationTree";
         //var cacheTime = default(TimeSpan);
         var cacheTime = TimeSpan.FromMilliseconds(86400000);
         var dt = CacheUtil.Cache<DataTable>(cacheKey, () => manager.GetOrganizationTree(), true, false, cacheTime);

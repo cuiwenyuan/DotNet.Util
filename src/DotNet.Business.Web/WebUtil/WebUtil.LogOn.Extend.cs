@@ -44,10 +44,10 @@ namespace DotNet.Business
                 cacheKey = "OnlineUserName." + userInfo.UserName;
                 CacheUtil.Remove(cacheKey);
                 //组织机构
-                cacheKey = "DataTable.BaseOrganizationTree";
+                cacheKey = "Dt.BaseOrganizationTree";
                 CacheUtil.Remove(cacheKey);
                 //菜单
-                cacheKey = "DataTable." + BaseSystemInfo.SystemCode + ".ModuleTree";
+                cacheKey = "Dt." + BaseSystemInfo.SystemCode + ".ModuleTree";
                 CacheUtil.Remove(cacheKey);
                 // 这里要考虑读写分离的处理
                 // IDbHelper dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterWriteDbConnection);

@@ -23,6 +23,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region public int AfterDeleted(object[] ids, bool enabled = false, bool recordUser = false)
         /// <summary>
         /// 删除后
         /// </summary>
@@ -58,5 +59,6 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
     }
 }

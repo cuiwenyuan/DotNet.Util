@@ -36,24 +36,24 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDailyLogin(int days, string startDate, string endDate)
         {
-            var sql = string.Empty;
-            sql += "SELECT CONVERT(NVARCHAR(4),B." + BaseCalendarEntity.FieldFiscalYear + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalMonth + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalDay + ") AS TransactionDate";
-            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0) AS TotalCount";
-            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 1) AS SuccessCount";
-            sql += " ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 0) AS FailCount";
-            sql += " FROM " + BaseCalendarEntity.CurrentTableName + " B ";
-            sql += " WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= GETDATE() AND DATEDIFF(d,B." + BaseCalendarEntity.FieldTransactionDate + ",GETDATE()) < " + days + "";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT CONVERT(NVARCHAR(4),B." + BaseCalendarEntity.FieldFiscalYear + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalMonth + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalDay + ") AS TransactionDate");
+            sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0) AS TotalCount");
+            sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 1) AS SuccessCount");
+            sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 0) AS FailCount");
+            sb.Append(" FROM " + BaseCalendarEntity.CurrentTableName + " B ");
+            sb.Append(" WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= GETDATE() AND DATEDIFF(d,B." + BaseCalendarEntity.FieldTransactionDate + ",GETDATE()) < " + days + "");
             if (ValidateUtil.IsDateTime(startDate))
             {
-                sql += " AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + startDate + "'";
+                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + startDate + "'");
             }
             if (ValidateUtil.IsDateTime(endDate))
             {
-                sql += " AND B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + endDate + "'";
+                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + endDate + "'");
             }
-            sql += " ORDER BY B." + BaseCalendarEntity.FieldTransactionDate + " ASC";
+            sb.Append(" ORDER BY B." + BaseCalendarEntity.FieldTransactionDate + " ASC");
 
-            return Fill(sql);
+            return Fill(sb.Put());
         }
         #endregion
     }

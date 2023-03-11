@@ -118,7 +118,7 @@ namespace DotNet.Business
             }
             //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseLogonLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogonLogEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
-            var cacheKey = "DataTable." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseLogonLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogonLogEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
@@ -251,7 +251,7 @@ namespace DotNet.Business
         {
             if (BaseSystemInfo.RecordLogonLog)
             {
-                // 吉日嘎拉 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
+                // 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
                 new Thread(AddLogTaskByBaseUserInfo).Start(new Tuple<string, BaseUserInfo, string, string, string, string>(systemCode, userInfo, ipAddress, ipAddressName, macAddress, loginStatus));
             }
         }
@@ -448,7 +448,7 @@ namespace DotNet.Business
         {
             if (BaseSystemInfo.RecordLogonLog)
             {
-                //抛出一个线程
+                // 抛出一个线程
                 new Thread(AddLogTask).Start(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(systemCode, userId, userName, nickName, ipAddress, ipAddressName, macAddress, new Tuple<string>(loginStatus)));
             }
         }

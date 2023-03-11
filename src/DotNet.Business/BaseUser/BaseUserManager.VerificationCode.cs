@@ -9,6 +9,7 @@ namespace DotNet.Business
 {
     using DotNet.Util;
     using Model;
+    using System;
 
     /// <summary>
     /// BaseUserManager
@@ -40,15 +41,15 @@ namespace DotNet.Business
             {
                 userId = UserInfo.Id.ToString();
             }
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("UPDATE " + BaseUserLogonEntity.CurrentTableName + " SET " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode) + " WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId));
 
-            var commandText = "UPDATE " + BaseUserLogonEntity.CurrentTableName
-                        + "    SET " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode)
-                        + "  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId);
-
-            var dbParameters = new List<IDbDataParameter>();
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode));
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId));
-            result = ExecuteNonQuery(commandText, dbParameters.ToArray());
+            var dbParameters = new List<IDbDataParameter>
+            {
+                DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode),
+                DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId)
+            };
+            result = ExecuteNonQuery(sb.Put(), dbParameters.ToArray());
 
             return result;
         }
@@ -62,26 +63,18 @@ namespace DotNet.Business
         public bool Verify(string userId, string verificationCode)
         {
             var result = false;
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + BaseUserLogonEntity.CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId) + " AND " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode));
 
-            // 最后一次登录时间
-            var commandText = " SELECT COUNT(*)"
-                     + " FROM " + BaseUserLogonEntity.CurrentTableName
-                     + "  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId)
-                     + "        AND " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode);
-
-            var dbParameters = new List<IDbDataParameter>();
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId));
-            dbParameters.Add(DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode));
-            var exist = DbHelper.ExecuteScalar(commandText, dbParameters.ToArray());
-            if (exist != null)
+            var dbParameters = new List<IDbDataParameter>
             {
-                /*
-                if (BaseSystemInfo.OnlineLimit <= ))
-                {
-                    result = true;
-                }
-                */
-                result = int.Parse(exist.ToString()) > 0;
+                DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId),
+                DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode)
+            };
+            var obj = DbHelper.ExecuteScalar(sb.Put(), dbParameters.ToArray());
+            if (obj != null)
+            {
+                result = obj.ToInt() > 0;
             }
 
             return result;

@@ -30,7 +30,6 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
-
         #region public int GetRateUserPass(string pass) 密码强度级别
         /// <summary>
         /// 密码强度级别 小于3不允许登录

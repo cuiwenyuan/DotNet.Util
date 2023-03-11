@@ -24,6 +24,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region public string[] GetOrganizationIdsByDutyName(string userId, string dutyName = "部门主管") 获取有岗位的组织机构主键
         /// <summary>
         /// 获取有岗位的组织机构主键
         /// </summary>
@@ -46,7 +47,9 @@ namespace DotNet.Business
             // 这里需要返回公司的主键数组
             return GetOrganizationIdsByDuty(userId, dutyCode);
         }
+        #endregion
 
+        #region public string[] GetOrganizationIdsByDuty(string userId, string dutyCode = "Manager") 获取有岗位的组织机构主键
         /// <summary>
         /// 获取有岗位的组织机构主键
         /// </summary>
@@ -77,5 +80,7 @@ namespace DotNet.Business
             // 返回所有的组织机构主键
             return result;
         }
+
+        #endregion
     }
 }

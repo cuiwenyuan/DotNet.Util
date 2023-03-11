@@ -30,7 +30,7 @@ namespace DotNet.Business
         public virtual bool RemoveCache()
         {
             var result = false;
-            var cacheKey = "DataTable." + CurrentTableName;
+            var cacheKey = "Dt." + CurrentTableName;
             if (UserInfo != null)
             {
                 cacheKey += "." + UserInfo.CompanyId;

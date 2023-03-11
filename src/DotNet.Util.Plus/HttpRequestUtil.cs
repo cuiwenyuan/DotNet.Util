@@ -115,10 +115,10 @@ namespace DotNet.Util
                 request.Method = "POST";
                 var data2 = Encoding.UTF8.GetBytes(data);
                 request.ContentLength = data2.Length;
-                var postStream = request.GetRequestStream();
-                postStream.Write(data2, 0, data2.Length);
-                postStream.Close();
-
+                var rs = request.GetRequestStream();
+                rs.Write(data2, 0, data2.Length);
+                rs.Close();
+                
                 using (var res = request.GetResponse() as HttpWebResponse)
                 {
                     if (res != null && res.StatusCode == HttpStatusCode.OK)
@@ -154,10 +154,10 @@ namespace DotNet.Util
                 request.Method = "POST";
                 var data2 = Encoding.UTF8.GetBytes(postData);
                 request.ContentLength = data2.Length;
-                var postStream = request.GetRequestStream();
-                postStream.Write(data2, 0, data2.Length);
-                postStream.Close();
-
+                var rs = request.GetRequestStream();
+                rs.Write(data2, 0, data2.Length);
+                rs.Close();
+                
                 using (var res = request.GetResponse() as HttpWebResponse)
                 {
                     if (res.StatusCode == HttpStatusCode.OK)

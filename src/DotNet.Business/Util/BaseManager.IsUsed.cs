@@ -50,7 +50,7 @@ namespace DotNet.Business
                     sb.Append(" AND (B.UserCompanyId = 0 OR B.UserCompanyId = " + UserInfo.CompanyId + ")");
                 }
                 var obj = ExecuteScalar(sb.Put());
-                if (obj != null && Convert.ToInt32(obj) > 0)
+                if (obj != null && obj.ToInt() > 0)
                 {
                     result = true;
                 }
