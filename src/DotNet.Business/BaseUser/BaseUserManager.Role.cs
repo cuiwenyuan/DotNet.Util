@@ -464,7 +464,7 @@ namespace DotNet.Business
             sb = sb.Replace("BaseUserRole", userRoleTableName);
             sb = sb.Replace("BaseRole", roleTableName);
 
-            var cacheKey = "DataTable." + systemCode + ".UserRole";
+            var cacheKey = "Dt." + systemCode + ".UserRole";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Put()), true, false, cacheTime);
@@ -597,8 +597,8 @@ namespace DotNet.Business
             var dbParameters = new List<IDbDataParameter>();
 
             var userRoleTableName = systemCode + "UserRole";
-
-            var sql = "SELECT " + SelectFields
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + SelectFields
                      + " FROM " + BaseUserEntity.CurrentTableName
                      + " , (SELECT " + BaseUserRoleEntity.FieldUserId
                           + " FROM " + userRoleTableName
@@ -608,15 +608,15 @@ namespace DotNet.Business
                           + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0) B "
                           + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = B." + BaseUserRoleEntity.FieldUserId
                           + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
-                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + "= 0";
+                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + "= 0");
 
             if (!string.IsNullOrWhiteSpace(companyId))
             {
-                sql += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
 
-            using (var dr = DbHelper.ExecuteReader(sql, dbParameters.ToArray()))
+            using (var dr = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
             {
                 result = GetList<BaseUserEntity>(dr);
             }
@@ -642,8 +642,8 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             var userRoleTableName = systemCode + "UserRole";
-
-            var sql = "SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
                             + " AND ( " + BaseUserEntity.FieldId + " IN "
@@ -653,9 +653,9 @@ namespace DotNet.Business
                             + " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'"
                             + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
                             + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
-                            + " ORDER BY  " + BaseUserEntity.FieldSortCode;
+                            + " ORDER BY  " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(sb.Put());
         }
         #endregion
 
@@ -770,7 +770,7 @@ namespace DotNet.Business
                 new List<IDbDataParameter> { DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId) };
 
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "DataTable." + systemCode + "." + userId + ".UserRole";
+            var cacheKey = "Dt." + systemCode + "." + userId + ".UserRole";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(commandText, dbParameters.ToArray()), true, false, cacheTime);
@@ -840,7 +840,7 @@ namespace DotNet.Business
                 };
                 var obj = dbHelper.ExecuteScalar(commandText, dbParameters.ToArray());
 
-                if (obj != null && Convert.ToInt32(obj) > 0)
+                if (obj != null && obj.ToInt() > 0)
                 {
                     result = true;
                 }
@@ -902,12 +902,12 @@ namespace DotNet.Business
             {
                 tableName = systemCode + "UserRole";
             }
-
+            var sb = Pool.StringBuilder.Get();
             // 需要显示未被删除的用户
-            var sql = "SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0 "
+            sb.Append("SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0 "
                               + " AND ( UserId IN (  SELECT " + BaseUserEntity.FieldId
                                                  + " FROM " + BaseUserEntity.CurrentTableName
-                                                 + "  WHERE " + BaseUserEntity.FieldEnabled + " = 1 " + BaseUserEntity.FieldDeleted + " = 0 ";
+                                                 + "  WHERE " + BaseUserEntity.FieldEnabled + " = 1 " + BaseUserEntity.FieldDeleted + " = 0 ");
 
             var dbParameters = new List<IDbDataParameter>
             {
@@ -916,16 +916,16 @@ namespace DotNet.Business
 
             if (!string.IsNullOrWhiteSpace(companyId))
             {
-                sql += " AND " + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
+                sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
-            sql += " ) )";
+            sb.Append(" ) )");
 
             // var dt = DbHelper.Fill(sql);
             // return BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
             var userIds = new List<string>();
-            var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
+            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())

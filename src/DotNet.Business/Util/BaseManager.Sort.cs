@@ -133,40 +133,40 @@ namespace DotNet.Business
         /// <returns>目标主键</returns>
         public string GetUpId(string categoryCode, string id, string whereSubQuery = null)
         {
-            var subQuery = string.Empty;
+            var sbQuery = Pool.StringBuilder.Get();
             if (!string.IsNullOrEmpty(categoryCode))
             {
-                subQuery = BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ";
+                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
             }
             if (!string.IsNullOrEmpty(whereSubQuery))
             {
-                subQuery += whereSubQuery + " AND ";
+                sbQuery.Append(whereSubQuery + " AND ");
             }
 
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
-                + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + "))");
-            if (dbHelper.ExecuteScalar(sb.ToString()).Equals("0"))
+                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + "))");
+            if (dbHelper.ExecuteScalar(sb.ToString()).ToInt() == 0)
             {
                 sb.Clear();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " <= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " <= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
             else
             {
                 sb.Clear();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
-
+            sbQuery.Put(false);
             return dbHelper.ExecuteScalar(sb.Put())?.ToString();
         }
         #endregion
@@ -267,40 +267,40 @@ namespace DotNet.Business
         /// <returns>目标主键</returns>
         public string GetDownId(string categoryCode, string id, string whereSubQuery = null)
         {
-            var subQuery = string.Empty;
+            var sbQuery = Pool.StringBuilder.Get();
             if (!string.IsNullOrEmpty(categoryCode))
             {
-                subQuery = BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ";
+                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
             }
             if (!string.IsNullOrEmpty(whereSubQuery))
             {
-                subQuery += whereSubQuery + " AND ";
+                sbQuery.Append(whereSubQuery + " AND ");
             }
 
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
-                + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " ))");
+                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " ))");
             if (dbHelper.ExecuteScalar(sb.ToString()).Equals("0"))
             {
                 sb.Clear();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " >= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " >= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
             else
             {
                 sb.Clear();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + subQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
-
+            sbQuery.Put(false);
             return dbHelper.ExecuteScalar(sb.Put())?.ToString();
         }
         #endregion

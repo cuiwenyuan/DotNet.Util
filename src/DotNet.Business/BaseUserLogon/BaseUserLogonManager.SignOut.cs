@@ -63,19 +63,20 @@ namespace DotNet.Business
                         return result > 0;
                     }
                     // 最后一次登录时间
-                    var sql = "UPDATE " + BaseUserLogonEntity.CurrentTableName + " SET " + BaseUserLogonEntity.FieldPreviousVisitTime + " = " + BaseUserLogonEntity.FieldLastVisitTime;
+                    var sb = Pool.StringBuilder.Get();
+                    sb.Append("UPDATE " + BaseUserLogonEntity.CurrentTableName + " SET " + BaseUserLogonEntity.FieldPreviousVisitTime + " = " + BaseUserLogonEntity.FieldLastVisitTime);
                     //Troy.Cui 2020-02-29用户退出时也强制OpenId重新生成，和登录时一样强制生成OpenId
-                    sql += " , " + BaseUserLogonEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'";
-                    sql += ", " + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = " + DbHelper.GetDbNow();
-                    sql += " , " + BaseUserLogonEntity.FieldUserOnline + " = 0 "
-                              + " , " + BaseUserLogonEntity.FieldLastVisitTime + " = " + DbHelper.GetDbNow();
-                    sql += "  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
+                    sb.Append(" , " + BaseUserLogonEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'");
+                    sb.Append(" , " + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = " + DbHelper.GetDbNow());
+                    sb.Append(" , " + BaseUserLogonEntity.FieldUserOnline + " = 0 ");
+                    sb.Append(" , " + BaseUserLogonEntity.FieldLastVisitTime + " = " + DbHelper.GetDbNow());
+                    sb.Append("  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId));
 
                     var dbParameters = new List<IDbDataParameter>
                     {
                         DbHelper.MakeParameter(BaseUserEntity.FieldId, userEntity.Id)
                     };
-                    result = ExecuteNonQuery(sql, dbParameters.ToArray());
+                    result = ExecuteNonQuery(sb.Put(), dbParameters.ToArray());
                 }
             }
 

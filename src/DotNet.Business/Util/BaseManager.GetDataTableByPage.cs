@@ -86,10 +86,10 @@ namespace DotNet.Business
                     // commandText = "(" + tableName + ") AS T ";
                 }
                 commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
-                var returnObject = DbHelper.ExecuteScalar(commandText, dbParameters);
-                if (returnObject != null)
+                var obj = DbHelper.ExecuteScalar(commandText, dbParameters);
+                if (obj != null)
                 {
-                    recordCount = int.Parse(returnObject.ToString());
+                    recordCount = obj.ToInt();
                 }
                 else
                 {
@@ -146,10 +146,10 @@ namespace DotNet.Business
                     // commandText = "(" + tableName + ") AS T ";
                 }
                 commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
-                var returnObject = dbHelper.ExecuteScalar(commandText, dbParameters);
-                if (returnObject != null)
+                var obj = dbHelper.ExecuteScalar(commandText, dbParameters);
+                if (obj != null)
                 {
-                    recordCount = int.Parse(returnObject.ToString());
+                    recordCount = obj.ToInt();
                 }
                 else
                 {

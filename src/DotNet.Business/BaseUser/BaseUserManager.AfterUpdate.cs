@@ -22,6 +22,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
+        #region public int AfterUpdate(BaseUserEntity entity)
         /// <summary>
         /// 编辑之后，需要重新刷新缓存，否则其他读取数据的地方会乱了，或者不及时了
         /// </summary>
@@ -39,5 +40,6 @@ namespace DotNet.Business
             // AfterUpdateSynchronous(entity);
             return result;
         }
+        #endregion
     }
 }

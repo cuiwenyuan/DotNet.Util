@@ -41,10 +41,11 @@ namespace DotNet.Business
             var tableName = systemCode + "RoleOrganization";
 
             // 需要显示未被删除的用户
-            var sql = "SELECT OrganizationId FROM " + tableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT OrganizationId FROM " + tableName
                             + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
                                   + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
-                                  + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)";
+                                  + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)");
 
             var dbParameters = new List<IDbDataParameter>
             {
@@ -52,7 +53,7 @@ namespace DotNet.Business
             };
 
             var organizationIds = new List<string>();
-            var dataReader = DbHelper.ExecuteReader(sql, dbParameters.ToArray());
+            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())
@@ -76,8 +77,8 @@ namespace DotNet.Business
         string GetSqlQueryByRole(string systemCode, string[] roleIds)
         {
             var tableNameRoleOrganization = systemCode + "RoleOrganization";
-
-            var sql = "SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                             + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseOrganizationEntity.FieldDeleted + "= 0 "
                             + " AND ( " + BaseOrganizationEntity.FieldId + " IN "
@@ -86,9 +87,9 @@ namespace DotNet.Business
                             + " WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
                             + " AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1"
                             + " AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) "
-                            + " ORDER BY  " + BaseOrganizationEntity.FieldSortCode;
+                            + " ORDER BY  " + BaseOrganizationEntity.FieldSortCode);
 
-            return sql;
+            return sb.Put();
         }
 
         /// <summary>
@@ -99,8 +100,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByRole(string systemCode, string[] roleIds)
         {
-            var sql = GetSqlQueryByRole(systemCode, roleIds);
-            return DbHelper.Fill(sql);
+            return DbHelper.Fill(GetSqlQueryByRole(systemCode, roleIds));
         }
 
         /// <summary>

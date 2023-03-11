@@ -78,7 +78,7 @@ namespace DotNet.Business
                 // userEntity.QQ = dataReader["IM_NAME"].ToString();
             }
 
-            userEntity.Enabled = int.Parse(dataReader["BL_LOCK_FLAG"].ToString());
+            userEntity.Enabled = dataReader["BL_LOCK_FLAG"].ToInt();
             Console.WriteLine("ImportK8User:" + userEntity.Id + ":" + userEntity.RealName);
             // 02：可以把读取到的数据能写入到用户中心的。
             result = UpdateEntity(userEntity);

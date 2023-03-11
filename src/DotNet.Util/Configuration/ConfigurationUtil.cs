@@ -542,6 +542,7 @@ namespace DotNet.Util
                 BaseSystemInfo.ReportDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ReportDbConnectionString);
                 BaseSystemInfo.ScmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ScmDbConnectionString);
                 BaseSystemInfo.ImsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ImsDbConnectionString);
+                BaseSystemInfo.IcsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.IcsDbConnectionString);
                 BaseSystemInfo.OmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.OmsDbConnectionString);
                 BaseSystemInfo.MemberDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MemberDbConnectionString);
                 BaseSystemInfo.BudgetDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BudgetDbConnectionString);
@@ -578,6 +579,7 @@ namespace DotNet.Util
                 BaseSystemInfo.ReportDbConnection = BaseSystemInfo.ReportDbConnectionString;
                 BaseSystemInfo.ScmDbConnection = BaseSystemInfo.ScmDbConnectionString;
                 BaseSystemInfo.ImsDbConnection = BaseSystemInfo.ImsDbConnectionString;
+                BaseSystemInfo.IcsDbConnection = BaseSystemInfo.IcsDbConnectionString;
                 BaseSystemInfo.OmsDbConnection = BaseSystemInfo.OmsDbConnectionString;
                 BaseSystemInfo.MemberDbConnection = BaseSystemInfo.MemberDbConnectionString;
                 BaseSystemInfo.BudgetDbConnection = BaseSystemInfo.BudgetDbConnectionString;

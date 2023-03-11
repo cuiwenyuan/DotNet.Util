@@ -43,20 +43,21 @@ namespace DotNet.Business
             name = dbHelper.SqlSafe(name);
             openId = dbHelper.SqlSafe(openId);
             unionId = dbHelper.SqlSafe(unionId);
-            var sql = "SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'";
-            sql += "" + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'";
-            sql += "" + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'");
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'");
             //未删除
-            sql += " AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ";
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
             //当前用户所在公司或者系统公用数据
-            //sql += " AND (" + BaseUserOAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")";
+            //sb.Append(" AND (" + BaseUserOAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             if (ValidateUtil.IsInt(excludeId))
             {
-                sql += " AND Id <> " + excludeId;
+                sb.Append(" AND Id <> " + excludeId);
             }
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sql);
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            var obj = ExecuteScalar(sb.Put());
+            if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
             }
@@ -74,15 +75,16 @@ namespace DotNet.Business
             var result = false;
             //安全过滤一下
             name = dbHelper.SqlSafe(name);
-            var sql = "SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'";
-            sql += "" + BaseUserOAuthEntity.FieldUserId + " = " + userId + "";
+            var sb = Pool.StringBuilder.Get();
+            sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldUserId + " = " + userId + "");
             //未删除
-            sql += " AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ";
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
             //当前用户所在公司或者系统公用数据
-            //sql += " AND (" + BaseUserOpenAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOpenAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")";
+            //sb.Append(" AND (" + BaseUserOpenAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOpenAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sql);
-            if (obj != null && Convert.ToInt32(obj) == 0)
+            var obj = ExecuteScalar(sb.Put());
+            if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
             }
@@ -105,23 +107,24 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(openId))
             {
                 name = dbHelper.SqlSafe(name);
+                var sb = Pool.StringBuilder.Get();
                 //需要显示未被删除的记录
-                var sql = "SELECT TOP 1 * FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'";
+                sb.Append("SELECT TOP 1 * FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
                 if (!string.IsNullOrEmpty(openId))
                 {
-                    sql += " AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'";
+                    sb.Append(" AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'");
                 }
 
                 if (!string.IsNullOrEmpty(unionId))
                 {
-                    sql += " AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'";
+                    sb.Append(" AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'");
                 }
-                
+
                 //未删除
-                sql += " AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ";
+                sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
                 //排序
-                sql += " ORDER BY " + BaseUserOAuthEntity.FieldId + " DESC";
-                var dt = DbHelper.Fill(sql);
+                sb.Append(" ORDER BY " + BaseUserOAuthEntity.FieldId + " DESC");
+                var dt = DbHelper.Fill(sb.Put());
                 if (dt != null && dt.Rows.Count != 0)
                 {
                     //result = BaseEntity.Create<AppContentEntity>(dt);

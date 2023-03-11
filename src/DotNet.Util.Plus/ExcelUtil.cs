@@ -612,17 +612,19 @@ namespace DotNet.Util
                 case "INT":
                 case "INT16":
                 case "INT32":
-                    rs = (int)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    if (sourceValue != null) rs = (int)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
                 case "FLOAT":
                 case "SINGLE":
-                    rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    if (sourceValue != null) rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
                 case "DECIMAL":
-                    rs = (decimal)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    if (sourceValue != null) rs = (decimal)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
                     break;
+                case "DATE":
                 case "DATETIME":
-                    rs = sourceCell.DateCellValue;
+                    //rs = sourceCell.DateCellValue;
+                    if (sourceValue != null) rs = (DateTime)Convert.ChangeType(sourceCell.ToString(), distanceType);
                     break;
                 case "GUID":
                     rs = (Guid)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
