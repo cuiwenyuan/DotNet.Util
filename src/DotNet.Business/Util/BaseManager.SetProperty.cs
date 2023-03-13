@@ -28,67 +28,73 @@ namespace DotNet.Business
         /// 设置属性
         /// </summary>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
-            return DbHelper.SetProperty(CurrentTableName, null, parameters);
+            return DbHelper.SetProperty(CurrentTableName, null, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="id">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(string id, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(string id, KeyValuePair<string, object> parameter, string whereSql = null)
         {
-            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter);
+            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="id">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(object id, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(object id, KeyValuePair<string, object> parameter, string whereSql = null)
         {
-            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter);
+            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="id">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(object id, List<KeyValuePair<string, object>> parameters)
+        public virtual int SetProperty(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
-            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameters);
+            return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(object[] ids, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null)
         {
-            return SetProperty(PrimaryKey, ids, parameter);
+            return SetProperty(PrimaryKey, ids, parameter, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters)
+        public virtual int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
-            return SetProperty(PrimaryKey, ids, parameters);
+            return SetProperty(PrimaryKey, ids, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
@@ -96,20 +102,21 @@ namespace DotNet.Business
         /// <param name="name">条件参数名</param>
         /// <param name="values">条件参数值</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var result = 0;
             if (values == null)
             {
-                result += SetProperty(new KeyValuePair<string, object>(name, string.Empty), parameter);
+                result += SetProperty(new KeyValuePair<string, object>(name, string.Empty), parameter, whereSql: whereSql);
             }
             else
             {
                 for (var i = 0; i < values.Length; i++)
                 {
-                    result += SetProperty(new KeyValuePair<string, object>(name, values[i]), parameter);
+                    result += SetProperty(new KeyValuePair<string, object>(name, values[i]), parameter, whereSql: whereSql);
                 }
             }
             return result;
@@ -120,20 +127,21 @@ namespace DotNet.Business
         /// <param name="name">条件参数名</param>
         /// <param name="values">条件参数值</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters)
+        public virtual int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             var result = 0;
             if (values == null)
             {
-                result += SetProperty(new KeyValuePair<string, object>(name, string.Empty), parameters);
+                result += SetProperty(new KeyValuePair<string, object>(name, string.Empty), parameters, whereSql: whereSql);
             }
             else
             {
                 for (var i = 0; i < values.Length; i++)
                 {
-                    result += SetProperty(new KeyValuePair<string, object>(name, values[i]), parameters);
+                    result += SetProperty(new KeyValuePair<string, object>(name, values[i]), parameters, whereSql: whereSql);
                 }
             }
             return result;
@@ -144,63 +152,68 @@ namespace DotNet.Business
         /// <param name="whereParameter1">条件参数1</param>
         /// <param name="whereParameter2">条件参数2</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter)
+        public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
 
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters)
+        public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 设置属性
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
         [Obsolete("Please use Update method from 2022-12-18", false)]
-        public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
+        public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
     }
 }

@@ -198,7 +198,7 @@ namespace DotNet.Business
             {
                 foreach (var t in userIds)
                 {
-                    result += SetPassword(Convert.ToInt32(t), password, unlock, autoAdd);
+                    result += SetPassword(t.ToInt(), password, unlock, autoAdd);
                 }
             }
 

@@ -447,22 +447,32 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public string SetWhere(string sqlWhere) 设置条件
+        #region public string SetWhere(string whereSql) 设置条件
         /// <summary>
         /// 设置条件
         /// </summary>
-        /// <param name="sqlWhere">目标字段</param>
+        /// <param name="whereSql">目标字段</param>
         /// <returns>条件语句</returns>
-        public void SetWhere(string sqlWhere)
+        public void SetWhere(string whereSql)
         {
             if (_whereSql == null || _whereSql.Length == 0)
             {
                 _whereSql.Put();
                 _whereSql = Pool.StringBuilder.Get();
                 _whereSql.Append(" WHERE ");
+                if (whereSql.TrimStart().StartsWith("AND", StringComparison.OrdinalIgnoreCase))
+                {
+                    _whereSql.Append(whereSql.CutStart("AND"));
+                }
+                else
+                {
+                    _whereSql.Append(whereSql);
+                }
             }
-            _whereSql.Append(sqlWhere);
-            // return this.WhereSql;
+            else
+            {
+                _whereSql.Append(whereSql);
+            }
         }
         #endregion
 
@@ -499,7 +509,6 @@ namespace DotNet.Util
             }
             if (targetValue is Array)
             {
-                // this.WhereSql.Append(targetFiled + " IN (" + string.Join(",", targetValue) + ")");
                 _whereSql.Append(targetFiled + " IN (" + ObjectUtil.ToList((object[])targetValue, "'") + ")");
                 return;
             }

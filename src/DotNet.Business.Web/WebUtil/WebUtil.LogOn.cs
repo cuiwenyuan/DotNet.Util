@@ -318,7 +318,7 @@ namespace DotNet.Business
                 userInfo.Id = httpCookie.Values["Id"];
                 if (ValidateUtil.IsInt(httpCookie.Values["Id"]))
                 {
-                    userInfo.UserId = Convert.ToInt32(httpCookie.Values["Id"]);
+                    userInfo.UserId = httpCookie.Values["Id"].ToInt();
                 }
                 userInfo.OpenId = httpCookie.Values["OpenId"];
 

@@ -43,7 +43,7 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put());
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString());
+                result = obj.ToInt();
             }
             return result;
         }
@@ -70,7 +70,7 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put());
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString());
+                result = obj.ToInt();
             }
             return result;
         }

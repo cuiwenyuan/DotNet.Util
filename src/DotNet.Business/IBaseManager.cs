@@ -29,7 +29,7 @@ namespace DotNet.Business
         /// <summary>
         /// 当前表描述
         /// </summary>
-        string CurrentTableDescription { get; set; }        
+        string CurrentTableDescription { get; set; }
 
         #region 对象事件触发器（编写程序的人员，可以不实现这些方法）
 
@@ -417,100 +417,112 @@ namespace DotNet.Business
         /// 设置更新属性
         /// </summary>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(object id, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(object id, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="id"></param>
         /// <param name="parameters">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(object id, List<KeyValuePair<string, object>> parameters);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(object[] ids, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="parameters">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="parameters">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter1"></param>
         /// <param name="whereParameter2"></param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
         /// <param name="parameter">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameter"></param>
         /// <param name="parameters">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
         /// </summary>
         /// <param name="whereParameters"></param>
         /// <param name="parameters">参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)] 
-        int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters);
+        [Obsolete("Please use Update method from 2022-12-18", false)]
+        int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null);
 
         #endregion        
 
@@ -852,7 +864,7 @@ namespace DotNet.Business
         /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
         /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
         /// <returns>主键</returns>
-         string Add<T>(T t, bool identity = true, bool returnId = true);
+        string Add<T>(T t, bool identity = true, bool returnId = true);
 
         /// <summary>
         /// 添加或更新(主键是否为0)
@@ -889,112 +901,124 @@ namespace DotNet.Business
         /// 更新属性
         /// </summary>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="id">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(object id, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(object id, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="id">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(object id, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        int Update(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(object[] ids, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(object[] ids, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        int Update(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(string name, object[] values, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(string name, object[] values, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        int Update(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="whereParameter1">条件参数1</param>
         /// <param name="whereParameter2">条件参数2</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true);
+        int Update(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        int Update(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
         /// <summary>
         /// 更新属性
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        int Update(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true);
+        int Update(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true);
 
         #endregion
 
@@ -1051,6 +1075,5 @@ namespace DotNet.Business
         int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        
     }
 }
