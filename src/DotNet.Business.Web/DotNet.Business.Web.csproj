@@ -43,7 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="JWT" Version="9.0.3" />
+	  <PackageReference Include="JWT" Version="10.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
