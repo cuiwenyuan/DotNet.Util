@@ -30,7 +30,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
