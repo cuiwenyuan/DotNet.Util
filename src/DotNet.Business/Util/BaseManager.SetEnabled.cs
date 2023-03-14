@@ -135,9 +135,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += SetEnabled(t, recordUser, baseOperationLog, clientIp);
+                    result += SetEnabled(i, recordUser, baseOperationLog, clientIp);
                 }
             }
             if (result > 0)
@@ -168,9 +168,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += SetEnabled(t, recordUser, baseOperationLog, clientIp);
+                    result += SetEnabled(i, recordUser, baseOperationLog, clientIp);
                 }
             }
             if (result > 0)

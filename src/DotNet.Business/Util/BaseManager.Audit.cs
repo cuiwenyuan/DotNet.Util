@@ -93,9 +93,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += Audit(t, hasIsCancelled, recordUser);
+                    result += Audit(i, hasIsCancelled, recordUser);
                 }
             }
             if (result > 0)
@@ -171,9 +171,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoAudit(t, hasIsCancelled, recordUser);
+                    result += UndoAudit(i, hasIsCancelled, recordUser);
                 }
             }
 

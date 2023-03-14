@@ -163,9 +163,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetEnabled(t, recordUser, baseOperationLog, clientIp);
+                    result += UndoSetEnabled(i, recordUser, baseOperationLog, clientIp);
                 }
             }
             if (result > 0)

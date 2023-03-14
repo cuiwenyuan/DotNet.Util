@@ -148,9 +148,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp);
+                    result += UndoSetDeleted(i, changeEnabled, recordUser, baseOperationLog, clientIp);
                 }
             }
             if (result > 0)
@@ -183,9 +183,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp, checkAllowDelete);
+                    result += UndoSetDeleted(i, changeEnabled, recordUser, baseOperationLog, clientIp, checkAllowDelete);
                 }
             }
             if (result > 0)

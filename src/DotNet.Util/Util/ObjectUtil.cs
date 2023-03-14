@@ -41,16 +41,16 @@ namespace DotNet.Util
 
             if (ids != null)
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
                     if (!string.IsNullOrEmpty(separator))
                     {
-                        stringList += separator + t + separator + ",";
+                        stringList += separator + i + separator + ",";
                     }
                     else
                     {
                         // stringList += ids[i] + "', '";
-                        stringList += t + ",";
+                        stringList += i + ",";
                     }
                 }
             }
