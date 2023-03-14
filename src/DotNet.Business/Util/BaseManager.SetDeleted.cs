@@ -243,7 +243,7 @@ namespace DotNet.Business
             {
                 whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAllowDelete, 1));
             }
-            var result = Update(whereParameters, parameters, whereSql: whereSql);
+            var result = Update(whereParameters, parameters, whereSql: whereSql, clientIp: clientIp, addUpdateInfo: recordUser);
             if (result > 0)
             {
                 RemoveCache();

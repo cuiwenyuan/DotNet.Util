@@ -419,7 +419,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -428,7 +428,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(object id, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -437,7 +437,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -446,7 +446,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -455,7 +455,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -465,7 +465,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -475,7 +475,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -485,7 +485,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -494,7 +494,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -503,7 +503,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -512,7 +512,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null);
         /// <summary>
         /// 设置更新属性
@@ -521,7 +521,7 @@ namespace DotNet.Business
         /// <param name="parameters">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use Update method from 2022-12-18", false)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null);
 
         #endregion        

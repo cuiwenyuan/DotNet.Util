@@ -187,10 +187,11 @@ namespace DotNet.Business
         /// 批量设置删除
         /// </summary>
         /// <param name="whereParameters">条件字段，值</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="clientIp">客户端IP</param>
         /// <returns>影响行数</returns>
-        public virtual int SetEnabled(List<KeyValuePair<string, object>> whereParameters, bool recordUser = true, string clientIp = null)
+        public virtual int SetEnabled(List<KeyValuePair<string, object>> whereParameters, string whereSql = null, bool recordUser = true, string clientIp = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldEnabled, 1));
@@ -202,7 +203,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
             }
-            var result = Update(whereParameters, parameters);
+            var result = Update(whereParameters, parameters, whereSql: whereSql, clientIp: clientIp, addUpdateInfo: recordUser);
             if (result > 0)
             {
                 RemoveCache();
