@@ -150,7 +150,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    sequenceEntity.Sequence = Convert.ToInt32(defaultSequence);
+                    sequenceEntity.Sequence = defaultSequence.ToInt();
                 }
                 if (defaultReduction == null)
                 {
@@ -158,7 +158,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    sequenceEntity.Reduction = Convert.ToInt32(defaultReduction);
+                    sequenceEntity.Reduction = defaultReduction.ToInt();
                 }
                 if (defaultStep == null)
                 {
@@ -166,7 +166,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    sequenceEntity.Step = Convert.ToInt32(defaultStep);
+                    sequenceEntity.Step = defaultStep.ToInt();
                 }
                 if (!string.IsNullOrEmpty(defaultPrefix))
                 {

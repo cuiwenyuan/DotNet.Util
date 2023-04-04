@@ -243,7 +243,7 @@ namespace DotNet.Business
             }
             if (obj != null)
             {
-                result = Convert.ToInt32(obj.ToString()) == 0;
+                result = obj.ToInt() == 0;
             }
 
             return result;

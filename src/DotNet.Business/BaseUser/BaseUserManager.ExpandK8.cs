@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace DotNet.Business
 {
+    using DotNet.Util;
     using Model;
     using System.Data;
 
@@ -42,10 +43,10 @@ namespace DotNet.Business
             {
                 userEntity = new BaseUserEntity
                 {
-                    Id = dataReader["ID"].ToString().ToInt()
+                    Id = dataReader["ID"].ToInt()
                 };
             }
-            userEntity.Id = dataReader["ID"].ToString().ToInt();
+            userEntity.Id = dataReader["ID"].ToInt();
             userEntity.UserFrom = "K8";
             userEntity.UserName = dataReader["USER_NAME"].ToString();
             userEntity.IdCard = dataReader["ID_Card"].ToString();

@@ -148,9 +148,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp);
+                    result += UndoSetDeleted(i, changeEnabled, recordUser, baseOperationLog, clientIp);
                 }
             }
             if (result > 0)
@@ -183,9 +183,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetDeleted(t, changeEnabled, recordUser, baseOperationLog, clientIp, checkAllowDelete);
+                    result += UndoSetDeleted(i, changeEnabled, recordUser, baseOperationLog, clientIp, checkAllowDelete);
                 }
             }
             if (result > 0)
@@ -202,13 +202,14 @@ namespace DotNet.Business
         /// 撤销批量设置删除 Troy Cui 2017.12.01 新增
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="changeEnabled">修改有效状态</param>
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="checkAllowDelete">检查是否允许删除</param>
         /// <returns>影响行数</returns>
-        public virtual int UndoSetDeleted(List<KeyValuePair<string, object>> whereParameters, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
+        public virtual int UndoSetDeleted(List<KeyValuePair<string, object>> whereParameters, string whereSql = null, bool changeEnabled = true, bool recordUser = true, bool baseOperationLog = true, string clientIp = null, bool checkAllowDelete = false)
         {
             var parameters = new List<KeyValuePair<string, object>>();
             parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldDeleted, 0));
@@ -228,7 +229,7 @@ namespace DotNet.Business
             {
                 whereParameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAllowDelete, 1));
             }
-            var result = Update(whereParameters, parameters);
+            var result = Update(whereParameters, parameters, whereSql: whereSql, clientIp: clientIp, addUpdateInfo: recordUser);
             if (result > 0)
             {
                 RemoveCache();

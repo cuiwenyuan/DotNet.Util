@@ -57,9 +57,9 @@ namespace DotNet.Business
         public virtual int Delete(object[] ids)
         {
             var result = 0;
-            foreach (var t in ids)
+            foreach (var i in ids)
             {
-                var parameters = new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, t) };
+                var parameters = new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, i) };
                 result += MyDelete(parameters);
                 //result += DbUtil.Delete(DbHelper, this.CurrentTableName, parameters);
             }

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 
-namespace System
+namespace DotNet.Util
 {
     /// <summary>
     /// 网络结点扩展 - 来自NewLife

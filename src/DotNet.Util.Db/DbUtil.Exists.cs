@@ -61,7 +61,7 @@ namespace DotNet.Util
             }
             if (obj != null)
             {
-                result = Convert.ToInt32(obj.ToString());
+                result = obj.ToInt();
             }
             return result;
         }
@@ -94,7 +94,7 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put(), dbParameters);
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString());
+                result = obj.ToInt();
             }
 
             return result;
@@ -132,7 +132,7 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put());
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString()) > 0;
+                result = obj.ToInt() > 0;
             }
             return result;
         }
@@ -162,7 +162,7 @@ namespace DotNet.Util
             var obj = dbHelper.ExecuteScalar(sb.Put());
             if (obj != null && obj != DBNull.Value)
             {
-                result = Convert.ToInt32(obj.ToString()) > 0;
+                result = obj.ToInt() > 0;
             }
             if (!result && dbHelper.CurrentDbType == CurrentDbType.Oracle && autoCreate)
             {

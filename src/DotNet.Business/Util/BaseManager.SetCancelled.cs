@@ -90,9 +90,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += SetCancelled(t, hasIsAudited, recordUser);
+                    result += SetCancelled(i, hasIsAudited, recordUser);
                 }
             }
             if (result > 0)

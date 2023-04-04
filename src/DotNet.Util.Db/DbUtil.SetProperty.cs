@@ -29,8 +29,9 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="whereParameters">条件字段,条件值</param>
         /// <param name="parameters">更新字段,更新值</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns>影响行数</returns>
-        public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters)
+        public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginUpdate(tableName);
@@ -38,7 +39,13 @@ namespace DotNet.Util
             {
                 sqlBuilder.SetValue(parameter.Key, parameter.Value);
             }
+            // 先设置参数条件
             sqlBuilder.SetWhere(whereParameters);
+            // 后设置手写的SQL条件
+            if (!string.IsNullOrEmpty(whereSql))
+            {
+                sqlBuilder.SetWhere(whereSql);
+            }
             return sqlBuilder.EndUpdate();
         }
         #endregion

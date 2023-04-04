@@ -94,13 +94,14 @@ namespace DotNet.Business
         /// 批量设置删除
         /// </summary>
         /// <param name="whereParameters">条件字段，值</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="recordUser">记录修改用户</param>
         /// <param name="baseOperationLog">集中记录操作日志</param>
         /// <param name="clientIp">客户端IP</param>
         /// <returns>影响行数</returns>
-        public virtual int SetDisabled(List<KeyValuePair<string, object>> whereParameters, bool recordUser = true, bool baseOperationLog = true, string clientIp = null)
+        public virtual int SetDisabled(List<KeyValuePair<string, object>> whereParameters, string whereSql = null, bool recordUser = true, bool baseOperationLog = true, string clientIp = null)
         {
-            return UndoSetEnabled(whereParameters, recordUser, baseOperationLog, clientIp);
+            return UndoSetEnabled(whereParameters, whereSql: whereSql, recordUser: recordUser, baseOperationLog: baseOperationLog, clientIp: clientIp);
         }
         #endregion
     }
