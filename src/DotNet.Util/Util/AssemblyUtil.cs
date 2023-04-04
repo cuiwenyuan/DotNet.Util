@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 
-namespace DotNet.Util.Util
+namespace DotNet.Util
 {
     /// <summary>
     /// 程序集操作帮助类

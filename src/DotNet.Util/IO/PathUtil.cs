@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Text;
 using DotNet.Util;
 
-namespace System.IO
+namespace DotNet.Util
 {
     /// <summary>路径操作帮助 - 来自NewLife</summary>
     /// <remarks>

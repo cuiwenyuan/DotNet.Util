@@ -113,5 +113,59 @@ namespace DotNet.Util
             return result;
         }
         #endregion
+
+        #region public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN")
+        /// <summary>
+        /// 获取DateTime聚合函数值
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="fieldName">字段名</param>
+        /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="function">聚合函数MIN,MAX</param>
+        /// <returns>时间</returns>
+        public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN")
+        {
+            var result = DateTime.Now;
+            switch (function)
+            {
+                case "MIN":
+                default:
+                    result = DateTime.MinValue;
+                    break;
+                case "MAX":
+                    result = DateTime.MaxValue;
+                    break;
+            }
+            var sb = Pool.StringBuilder.Get();
+            switch (dbHelper.CurrentDbType)
+            {
+                case CurrentDbType.SqlServer:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.MySql:
+                case CurrentDbType.SqLite:
+                    sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                case CurrentDbType.Oracle:
+                    sb.Append("SELECT NVL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+                default:
+                    sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(condition))
+            {
+                sb.Append(" WHERE " + condition);
+            }
+            var obj = dbHelper.ExecuteScalar(sb.Put());
+            if (obj != null && obj != DBNull.Value)
+            {
+                result = obj.ToDateTime();
+            }
+            return result;
+        }
+        #endregion
     }
 }

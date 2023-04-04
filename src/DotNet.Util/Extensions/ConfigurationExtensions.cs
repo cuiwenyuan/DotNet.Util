@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DotNet.Util;
 using Microsoft.Extensions.Configuration;
-namespace Microsoft.AspNetCore.Http
+
+namespace DotNet.Util
 {
     /// <summary>
     /// ConfigurationExtensions
