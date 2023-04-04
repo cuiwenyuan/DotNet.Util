@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using DotNet.Util;
 
-namespace System
+namespace DotNet.Util
 {
     /// <summary>工具类 - 来自NewLife</summary>
     /// <remarks>

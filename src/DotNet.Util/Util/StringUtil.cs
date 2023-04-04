@@ -139,9 +139,9 @@ namespace DotNet.Util
 
             if (ids != null && !string.IsNullOrEmpty(targetString))
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    if (t.Equals(targetString))
+                    if (i.Equals(targetString))
                     {
                         result = true;
                         break;
@@ -177,17 +177,17 @@ namespace DotNet.Util
 
             if (ids != null)
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    if (t != null)
+                    if (i != null)
                     {
-                        for (var j = 0; j < t.Length; j++)
+                        for (var j = 0; j < i.Length; j++)
                         {
-                            if (!string.IsNullOrEmpty(t[j]))
+                            if (!string.IsNullOrEmpty(i[j]))
                             {
-                                if (!result.Contains(t[j]))
+                                if (!result.Contains(i[j]))
                                 {
-                                    result.Add(t[j]);
+                                    result.Add(i[j]);
                                 }
                             }
                         }
@@ -211,13 +211,13 @@ namespace DotNet.Util
             var keys = new List<string>();
             if (ids != null)
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    if (t != null)
+                    if (i != null)
                     {
-                        if (!Exists(removeIds, t))
+                        if (!Exists(removeIds, i))
                         {
-                            keys.Add(t);
+                            keys.Add(i);
                         }
                     }
                 }

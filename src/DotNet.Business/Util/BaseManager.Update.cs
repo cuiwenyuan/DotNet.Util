@@ -27,74 +27,80 @@ namespace DotNet.Business
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, null, parameters);
+            return DbHelper.SetProperty(CurrentTableName, null, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="id">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(string id, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(string id, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
-            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameter, clientIp, addUpdateInfo);
+            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql, clientIp, addUpdateInfo);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="id">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(object id, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(object id, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
-            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameter, clientIp, addUpdateInfo);
+            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql, clientIp, addUpdateInfo);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="id">数组条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(object id, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
-            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameters, clientIp, addUpdateInfo);
+            return Update(new KeyValuePair<string, object>(PrimaryKey, id), parameters, whereSql: whereSql, clientIp, addUpdateInfo);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(object[] ids, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
-            return Update(PrimaryKey, ids, parameter, clientIp, addUpdateInfo);
+            return Update(PrimaryKey, ids, parameter, whereSql: whereSql, clientIp, addUpdateInfo);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="ids">数组条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(object[] ids, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
-            return Update(PrimaryKey, ids, parameters, clientIp, addUpdateInfo);
+            return Update(PrimaryKey, ids, parameters, whereSql: whereSql, clientIp, addUpdateInfo);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
@@ -102,21 +108,22 @@ namespace DotNet.Business
         /// <param name="name">条件参数名</param>
         /// <param name="values">条件参数值</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(string name, object[] values, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var result = 0;
             if (values == null)
             {
-                result += Update(new KeyValuePair<string, object>(name, string.Empty), parameter, clientIp, addUpdateInfo);
+                result += Update(new KeyValuePair<string, object>(name, string.Empty), parameter, whereSql: whereSql, clientIp, addUpdateInfo);
             }
             else
             {
                 for (var i = 0; i < values.Length; i++)
                 {
-                    result += Update(new KeyValuePair<string, object>(name, values[i]), parameter, clientIp, addUpdateInfo);
+                    result += Update(new KeyValuePair<string, object>(name, values[i]), parameter, whereSql: whereSql, clientIp, addUpdateInfo);
                 }
             }
             return result;
@@ -127,21 +134,22 @@ namespace DotNet.Business
         /// <param name="name">条件参数名</param>
         /// <param name="values">条件参数值</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(string name, object[] values, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var result = 0;
             if (values == null)
             {
-                result += Update(new KeyValuePair<string, object>(name, string.Empty), parameters, clientIp, addUpdateInfo);
+                result += Update(new KeyValuePair<string, object>(name, string.Empty), parameters, whereSql: whereSql, clientIp, addUpdateInfo);
             }
             else
             {
                 for (var i = 0; i < values.Length; i++)
                 {
-                    result += Update(new KeyValuePair<string, object>(name, values[i]), parameters, clientIp, addUpdateInfo);
+                    result += Update(new KeyValuePair<string, object>(name, values[i]), parameters, whereSql: whereSql, clientIp, addUpdateInfo);
                 }
             }
             return result;
@@ -152,71 +160,76 @@ namespace DotNet.Business
         /// <param name="whereParameter1">条件参数1</param>
         /// <param name="whereParameter2">条件参数2</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameter">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="whereParameter">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
         /// <summary>
         /// 更新（带UserInfo自动更新字段）
         /// </summary>
         /// <param name="whereParameters">条件参数</param>
         /// <param name="parameters">更新参数</param>
+        /// <param name="whereSql">条件Sql</param>
         /// <param name="clientIp">客户端IP</param>
         /// <param name="addUpdateInfo">是否添加更新信息</param>
         /// <returns></returns>
-        public virtual int Update(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string clientIp = null, bool addUpdateInfo = true)
+        public virtual int Update(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null, string clientIp = null, bool addUpdateInfo = true)
         {
             AddUpdateInfo(parameters, clientIp, addUpdateInfo);
-            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
         }
 
         /// <summary>

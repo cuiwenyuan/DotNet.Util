@@ -193,8 +193,9 @@ namespace DotNet.Business
         /// <param name="categoryId">类别主键</param>
         /// <param name="id">当前主键</param>
         /// <param name="whereSubQuery"></param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns>目标主键</returns>
-        public int SetUp(string categoryId, string id, string whereSubQuery = null)
+        public int SetUp(string categoryId, string id, string whereSubQuery = null, string whereSql = null)
         {
             var upId = GetUpId(categoryId, id, whereSubQuery);
 
@@ -225,7 +226,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode)
             };
-            dbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            dbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
 
             //把当前的SortCode更新为upId的upSortCode
             whereParameters = new List<KeyValuePair<string, object>>
@@ -325,8 +326,9 @@ namespace DotNet.Business
         /// <param name="categoryId">类别主键</param>
         /// <param name="id">当前主键</param>
         /// <param name="whereSubQuery"></param>
+        /// <param name="whereSql">条件Sql</param>
         /// <returns>目标主键</returns>
-        public int SetDown(string categoryId, string id, string whereSubQuery = null)
+        public int SetDown(string categoryId, string id, string whereSubQuery = null, string whereSql = null)
         {
             var result = 0;
             var downId = GetDownId(categoryId, id, whereSubQuery);
@@ -355,7 +357,7 @@ namespace DotNet.Business
             {
                 new KeyValuePair<string, object>(BaseUtil.FieldSortCode, sortCode)
             };
-            dbHelper.SetProperty(CurrentTableName, whereParameters, parameters);
+            dbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);
 
             //把当前的SortCode更新为downId的downSortCode
             whereParameters = new List<KeyValuePair<string, object>>

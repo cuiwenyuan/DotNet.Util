@@ -89,9 +89,9 @@ namespace DotNet.Business
             }
             else
             {
-                foreach (var t in ids)
+                foreach (var i in ids)
                 {
-                    result += UndoSetAudited(t, hasIsCancelled, recordUser);
+                    result += UndoSetAudited(i, hasIsCancelled, recordUser);
                 }
             }
 

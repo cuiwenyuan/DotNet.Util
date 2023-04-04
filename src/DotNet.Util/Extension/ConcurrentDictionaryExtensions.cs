@@ -1,6 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 
-namespace System
+namespace DotNet.Util
 {
     /// <summary>并发字典扩展 - 来自NewLife</summary>
     public static class ConcurrentDictionaryExtensions
