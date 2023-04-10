@@ -12,7 +12,7 @@ namespace DotNet.Util
     /// <summary>
     /// 类型扩展
     /// </summary>
-    public static class StringExtensions
+    public static partial class StringExtensions
     {
         /// <summary>
         /// Windows Platform

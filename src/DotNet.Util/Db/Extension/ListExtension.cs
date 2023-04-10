@@ -13,7 +13,7 @@ namespace DotNet.Util
     /// <summary>
     /// List扩展
     /// </summary>
-    public static class ListExtension
+    public static partial class ListExtension
     {
         /// <summary>
         /// ToDataTable

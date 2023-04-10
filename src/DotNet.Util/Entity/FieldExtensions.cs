@@ -19,7 +19,7 @@ namespace DotNet.Model
     ///		<date>2014.12.01</date>
     /// </author> 
     /// </summary>    
-    public static class FieldExtensions
+    public static partial class FieldExtensions
     {
         /// <summary>
         /// 获取描述

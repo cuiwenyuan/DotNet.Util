@@ -9,7 +9,7 @@ namespace DotNet.Util
     /// <summary>
     /// ConfigurationExtensions
     /// </summary>
-    public static class ConfigurationExtensions
+    public static partial class ConfigurationExtensions
     {
         /// <summary>
         /// 获取指定类型的实例

@@ -9,7 +9,7 @@ namespace DotNet.Util
     /// <summary>
     /// 
     /// </summary>
-    public static class TypeExtensions
+    public static partial class TypeExtensions
     {
         /// <summary>
         /// 判断字符串是否为Null、空

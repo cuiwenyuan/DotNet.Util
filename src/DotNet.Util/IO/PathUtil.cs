@@ -11,7 +11,7 @@ namespace DotNet.Util
     /// <remarks>
     /// 文档 https://www.yuque.com/smartstone/nx/path_helper
     /// </remarks>
-    public static class PathUtil
+    public static partial class PathUtil
     {
         #region 属性
         /// <summary>基础目录。GetBasePath依赖于此，默认为当前应用程序域基础目录。用于X组件内部各目录，专门为函数计算而定制</summary>
