@@ -221,7 +221,14 @@ namespace DotNet.Util
             if (_dbConnection != null)
             {
                 _dbConnection.ConnectionString = ConnectionString;
-                _dbConnection.Open();
+                try
+                {
+                    _dbConnection.Open();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "open connection error");
+                }
                 if (_dbConnection.State == ConnectionState.Open)
                 {
                     ServerVersion = _dbConnection.ServerVersion;
@@ -239,6 +246,22 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection GetDbConnection()
         {
+            return _dbConnection;
+        }
+        #endregion
+
+        #region public virtual IDbConnection GetDbConnection(string connectionString) 获取数据库连接
+        /// <summary>
+        /// 获取数据库连接
+        /// </summary>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <returns>数据库连接</returns>
+        public virtual IDbConnection GetDbConnection(string connectionString)
+        {
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                Open(connectionString);
+            }            
             return _dbConnection;
         }
         #endregion
