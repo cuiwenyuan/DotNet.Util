@@ -71,7 +71,7 @@ namespace DotNet.Util
         /// </summary>
         public string CommandText = string.Empty;
 
-        private string _selectSql = string.Empty;
+        private StringBuilder _selectSql = null;
 
         private string _tableName = string.Empty;
 
@@ -116,8 +116,7 @@ namespace DotNet.Util
         /// SqlBuilder
         /// </summary>
         /// <param name="dbHelper"></param>
-        public SqlBuilder(IDbHelper dbHelper)
-            : this(dbHelper.CurrentDbType)
+        public SqlBuilder(IDbHelper dbHelper) : this(dbHelper.CurrentDbType)
         {
             _dbHelper = dbHelper;
         }
@@ -127,8 +126,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dbHelper"></param>
         /// <param name="identity"></param>
-        public SqlBuilder(IDbHelper dbHelper, bool identity)
-            : this(dbHelper)
+        public SqlBuilder(IDbHelper dbHelper, bool identity) : this(dbHelper)
         {
             Identity = identity;
         }
@@ -139,8 +137,7 @@ namespace DotNet.Util
         /// <param name="dbHelper"></param>
         /// <param name="identity"></param>
         /// <param name="returnId"></param>
-        public SqlBuilder(IDbHelper dbHelper, bool identity, bool returnId)
-            : this(dbHelper)
+        public SqlBuilder(IDbHelper dbHelper, bool identity, bool returnId) : this(dbHelper)
         {
             Identity = identity;
             ReturnId = returnId;
