@@ -398,13 +398,13 @@ namespace DotNet.Util
             if (_dbConnection != null)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :DbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
-                    _dbConnection.Close();
-                    _dbConnection.Dispose();
+                    _dbConnection.Close();                    
                 }
+                _dbConnection.Dispose();
                 _dbConnection = null;
             }            
         }

@@ -256,14 +256,12 @@ namespace DotNet.Util
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
-            }
-
-            var result = -1;
+            }            
             if (DbConnection.State == ConnectionState.Closed)
             {
                 DbConnection.Open();
@@ -273,6 +271,7 @@ namespace DotNet.Util
                 DbConnection.Close();
                 DbConnection.Open();
             }
+            var result = -1;
             using (DbCommand = DbConnection.CreateCommand())
             {
                 try
@@ -441,14 +440,12 @@ namespace DotNet.Util
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
-            }
-
-            object result = null;
+            }            
             if (DbConnection.State == ConnectionState.Closed)
             {
                 DbConnection.Open();
@@ -458,6 +455,7 @@ namespace DotNet.Util
                 DbConnection.Close();
                 DbConnection.Open();
             }
+            object result = null;
             using (DbCommand = DbConnection.CreateCommand())
             {
                 try
@@ -653,7 +651,7 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
@@ -830,7 +828,7 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {

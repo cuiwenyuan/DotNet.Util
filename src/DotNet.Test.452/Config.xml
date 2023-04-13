@@ -3,7 +3,7 @@
 	<appSettings>
 		<!-- UserCenter数据库-->
 		<add key="UserCenterDbType" value="SqlServer" Options="SqlServer,Oracle,MySql,DB2,SQLite,Access"/>
-		<add key="UserCenterDbConnection" value="Data Source=127.0.0.1;Initial Catalog=UserCenter5_WangCaiMa;User Id = sa ; Password = 1234.com;"  />
+		<add key="UserCenterDbConnection" value="Data Source=127.0.0.1;Initial Catalog=UserCenter5_HuaFanAuto;User Id = sa ; Password = 1234.com;"  />
 
 		<!-- Business数据库SqlServer-->
 		<add key="BusinessDbType" value="SqlServer" Options="SqlServer,Oracle,MySql,DB2,SQLite,Access"/>
