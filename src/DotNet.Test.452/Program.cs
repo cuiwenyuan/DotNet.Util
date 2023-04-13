@@ -32,7 +32,6 @@ namespace DotNet.Test._452
             BaseSystemInfo.LogException = true;
             LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection, "DbConnection");
 
-
             var dog = new Dog()
             {
                 Name = "sb"
