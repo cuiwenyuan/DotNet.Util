@@ -54,31 +54,41 @@ namespace DotNet.Test._452
             //LogUtil.WriteLog("Done");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            //Parallel.For(1, 10000, (i) =>
-            //{
-            //    Console.WriteLine(i);
-            //    Console.WriteLine("任务" + i + "开始工作……");
-            //    var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
-            //    var entity = new BaseCalendarManager().GetEntity(i);
-            //    var json = JsonUtil.ObjectToJson(entity);
-            //    LogUtil.WriteLog(json);
-            //    Console.WriteLine(json);
-            //});
-            for (var i = 0; i < 10000; i++)
+            var entity1 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(1);
+            stopwatch.Stop();
+            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            Console.WriteLine(statisticsText);
+            stopwatch.Start();
+            var entity2 = new BaseCalendarManager().GetEntity(1);
+            stopwatch.Stop();
+            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            Console.WriteLine(statisticsText);
+            stopwatch.Start();
+            Parallel.For(1, 5000, (i) =>
+            {
+                Console.WriteLine(i);
+                Console.WriteLine("Parallel任务" + i + "开始工作……");
+                //var entity3 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
+                var entity3 = new BaseCalendarManager().GetEntity(i);
+                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity3));
+                LogUtil.WriteLog(sb.ToString());
+                Console.WriteLine(sb.Put());
+            });
+            for (var i = 1; i <= 10000; i++)
             {
                 Console.WriteLine(i);
                 Console.WriteLine("任务" + i + "开始工作……");
                 //var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
                 var entity = new BaseCalendarManager().GetEntity(i);
-                var json = JsonUtil.ObjectToJson(entity);
-                LogUtil.WriteLog(json);
-                Console.WriteLine(json);
+                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity));
+                LogUtil.WriteLog(sb.ToString());
+                Console.WriteLine(sb.Put());
             }
             stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
             Console.WriteLine(statisticsText);
 
-            //for (var i = 0; i < 10000; i++)
+            //for (var i = 1; i <= 10000; i++)
             //{
             //    Console.WriteLine(i);
             //    Task.Run(() =>
