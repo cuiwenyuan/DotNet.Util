@@ -240,7 +240,6 @@ namespace DotNet.Business
             var dr = DbHelper.ExecuteReader2(CurrentTableName, condition, topLimit, order);
             result = GetList<T>(dr);
 
-
             return result;
         }
 
@@ -262,7 +261,6 @@ namespace DotNet.Business
                 }
                 dataReader.Close();
             }
-
 
             return result;
         }

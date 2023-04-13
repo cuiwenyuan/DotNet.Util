@@ -26,7 +26,6 @@ namespace DotNet.Util
     {
         #region 获取实例 Create
 
-        private static readonly ConcurrentDictionary<string, object> DbHelperClasses = new(StringComparer.OrdinalIgnoreCase);
         /// <summary>
         /// 获取指定的数据库连接
         /// </summary>
@@ -41,11 +40,6 @@ namespace DotNet.Util
             }
             var dbHelperClass = GetDbHelperClass(dbType);
             var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
-            // 千万不要用以下代码，不然会经常数据库访问异常！
-            // Dictionary.TryGetValue 在多线程高并发下有可能抛出空异常
-            //var obj = DbHelperClasses.GetOrAdd(key: dbHelperClass, valueFactory: _ => (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true));
-            //var dbHelper = (IDbHelper)obj;
-
             if (dbHelper != null)
             {
                 dbHelper.ConnectionString = connectionString;
