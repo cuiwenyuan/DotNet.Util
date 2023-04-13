@@ -53,7 +53,7 @@ namespace DotNet.Util
             }
             catch (Exception e)
             {
-                LogUtil.WriteException(e, "close connection error");
+                LogUtil.WriteException(e, "reopen connection error");
             }
         }
 

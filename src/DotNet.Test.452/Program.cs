@@ -27,7 +27,7 @@ namespace DotNet.Test._452
 
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
-            LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection);
+            LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection, "DbConnection");
 
 
             var dog = new Dog()

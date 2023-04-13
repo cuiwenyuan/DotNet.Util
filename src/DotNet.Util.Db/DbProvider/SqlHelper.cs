@@ -361,7 +361,7 @@ namespace DotNet.Util
                 {
                     tran.Rollback();
                     sqlBulkCopy.Close();
-                    LogUtil.WriteException(ex);
+                    LogUtil.WriteException(ex, "SqlBulkCopyData");
                 }
                 finally
                 {
