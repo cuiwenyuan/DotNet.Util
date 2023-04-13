@@ -155,7 +155,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region string PlusSign(params string[] values) 获得Sql字符串相加符号
+        #region string virtual PlusSign(params string[] values) 获得Sql字符串相加符号
         /// <summary>
         ///  获得Sql字符串相加符号
         /// </summary>
@@ -288,12 +288,12 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public IDbTransaction BeginTransaction() 事务开始
+        #region public virtual IDbTransaction BeginTransaction() 事务开始
         /// <summary>
         /// 事务开始
         /// </summary>
         /// <returns>事务</returns>
-        public IDbTransaction BeginTransaction()
+        public virtual IDbTransaction BeginTransaction()
         {
             // 写入调试信息
             if (!InTransaction)
@@ -312,11 +312,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void CommitTransaction() 提交事务
+        #region public virtual void CommitTransaction() 提交事务
         /// <summary>
         /// 提交事务
         /// </summary>
-        public void CommitTransaction()
+        public virtual void CommitTransaction()
         {
             if (InTransaction)
             {
@@ -330,11 +330,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void RollbackTransaction() 回滚事务
+        #region public virtual void RollbackTransaction() 回滚事务
         /// <summary>
         /// 回滚事务
         /// </summary>
-        public void RollbackTransaction()
+        public virtual void RollbackTransaction()
         {
             if (InTransaction)
             {
@@ -346,11 +346,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void Close() 关闭数据库连接
+        #region public virtual void Close() 关闭数据库连接
         /// <summary>
         /// 关闭数据库连接
         /// </summary>
-        public void Close()
+        public virtual void Close()
         {
             if (_dbConnection != null)
             {
@@ -403,11 +403,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void Dispose() 内存回收
+        #region public virtual void Dispose() 内存回收
         /// <summary>
         /// 内存回收
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (DbCommand != null)
             {
@@ -447,7 +447,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void SqlBulkCopyData(DataTable dt) 利用Net SqlBulkCopy 批量导入数据库,速度超快
+        #region public virtual void SqlBulkCopyData(DataTable dt) 利用Net SqlBulkCopy 批量导入数据库,速度超快
 
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快

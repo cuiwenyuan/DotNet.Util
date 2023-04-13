@@ -77,7 +77,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetDbHelperClass(CurrentDbType dbType)
+        #region public static string GetDbHelperClass(CurrentDbType dbType) 按数据类型获取数据库访问实现类
         /// <summary>
         /// 按数据类型获取数据库访问实现类
         /// </summary>
@@ -132,11 +132,11 @@ namespace DotNet.Util
 
         #endregion
 
-        #region GetDbNow
+        #region GetDbNow 获得数据库当前日期的SQL
         /// <summary>
-        /// 获得数据库当前日期
+        /// 获得数据库当前日期的SQL
         /// </summary>
-        /// <returns>当前日期</returns>
+        /// <returns>当前日期SQL</returns>
         public static string GetDbNow(CurrentDbType dbType)
         {
             var sb = Pool.StringBuilder.Get();

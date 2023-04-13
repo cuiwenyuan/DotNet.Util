@@ -24,10 +24,6 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        //
-        // 树型结构的算法
-        //
-
         #region public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
@@ -276,7 +272,6 @@ namespace DotNet.Util
         }
         #endregion
 
-        
         #region public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
@@ -341,7 +336,6 @@ namespace DotNet.Util
             return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
-
 
         #region public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code) 获取父节点
         /// <summary>

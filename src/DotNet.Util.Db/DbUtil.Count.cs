@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int Count(this IDbHelper dbHelper, string tableName, string condition = null)
+        #region public static int Count(this IDbHelper dbHelper, string tableName, string condition = null) 获取记录数
         /// <summary>
         /// 获取记录数
         /// </summary>
@@ -49,7 +49,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null)
+        #region public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null) 获取唯一值记录数
         /// <summary>
         /// 获取唯一值记录数
         /// </summary>
