@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -150,7 +151,7 @@ namespace DotNet.Util
                     }
                 }
                 stopwatch.Stop();
-                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
                 //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
@@ -315,7 +316,7 @@ namespace DotNet.Util
                 }
 
                 stopwatch.Stop();
-                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
                 //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
@@ -474,7 +475,7 @@ namespace DotNet.Util
                     }
                 }
                 stopwatch.Stop();
-                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
                 //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
@@ -662,7 +663,7 @@ namespace DotNet.Util
                     WriteSqlLog(commandText, commandType.ToString(), dbParameters);
                 }
                 stopwatch.Stop();
-                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
                 //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
@@ -806,7 +807,7 @@ namespace DotNet.Util
                 }
 
                 stopwatch.Stop();
-                var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+                var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
                 //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
@@ -880,29 +881,32 @@ namespace DotNet.Util
         /// <returns></returns>
         private string GetSql(string commandText, string commandType, IDbDataParameter[] dbParameters = null)
         {
-            foreach (var parameter in dbParameters)
+            if (dbParameters != null && dbParameters.Length > 0)
             {
-                var valueString = "";
-                var name = parameter.ParameterName;
-                var value = parameter.Value;
-                if (value is Byte[] bv)
+                foreach (var parameter in dbParameters)
                 {
-                    valueString = "'" + BitConverter.ToString(bv) + "'";
-                }
-                else if (value is String str)
-                {
-                    valueString = "'" + str + "'";
-                }
-                else if (value is DateTime dt)
-                {
-                    valueString = "'" + dt.ToFullString() + "'";
-                }
-                else
-                {
-                    valueString = (value + "");
-                }
+                    var valueString = "";
+                    var name = parameter.ParameterName;
+                    var value = parameter.Value;
+                    if (value is Byte[] bv)
+                    {
+                        valueString = "'" + BitConverter.ToString(bv) + "'";
+                    }
+                    else if (value is String str)
+                    {
+                        valueString = "'" + str + "'";
+                    }
+                    else if (value is DateTime dt)
+                    {
+                        valueString = "'" + dt.ToFullString() + "'";
+                    }
+                    else
+                    {
+                        valueString = (value + "");
+                    }
 
-                commandText = commandText.Replace(name, valueString);
+                    commandText = commandText.Replace(name, valueString);
+                }
             }
             return $"[{commandType}] {commandText}";
         }

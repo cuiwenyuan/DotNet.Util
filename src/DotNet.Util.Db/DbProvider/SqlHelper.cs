@@ -370,7 +370,7 @@ namespace DotNet.Util
                 }
             }
             stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
             //SqlUtil.WriteLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
             WriteSqlLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
