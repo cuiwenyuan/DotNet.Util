@@ -1,8 +1,7 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="MongoDbHelper.cs" company="STO.Express, Ltd.">
-//     Copyright (c) 2016 , All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------
+// All Rights Reserved , Copyright (c) 2023 , DotNet. 
+//-----------------------------------------------------------------
+
 
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
