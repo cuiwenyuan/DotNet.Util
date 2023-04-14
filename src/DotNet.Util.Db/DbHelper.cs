@@ -35,6 +35,11 @@ namespace DotNet.Util
         /// <summary>
         /// 数据库连接字符串
         /// </summary>
+        public virtual string ConnectionString { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 数据库连接名
+        /// </summary>
         public virtual string ConnectionName { get; set; } = string.Empty;
 
         #region public virtual CurrentDbType CurrentDbType 获取当前数据库类型
@@ -77,11 +82,6 @@ namespace DotNet.Util
         protected DbDataAdapter DbDataAdapter { get; set; } = null;
 
         /// <summary>
-        /// 数据库连接字符串
-        /// </summary>
-        public string ConnectionString { get; set; } = string.Empty;
-
-        /// <summary>
         /// 数据库事务
         /// </summary>
         private DbTransaction _dbTransaction = null;
@@ -89,22 +89,22 @@ namespace DotNet.Util
         /// <summary>
         /// 是否已在事务之中
         /// </summary>
-        public bool InTransaction { get; set; } = false;
+        public virtual bool InTransaction { get; set; } = false;
 
         /// <summary>
         /// 日志文件名
         /// </summary>
-        public string FileName = "DbHelper.txt";
+        public virtual string FileName { get; set; } = "DbHelper.txt";
 
         /// <summary>
         /// 数据库版本
         /// </summary>
-        public string ServerVersion { get; set; } = string.Empty;
+        public virtual string ServerVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// 默认打开关闭数据库连接选项（默认为否）
         /// </summary>
-        public bool MustCloseConnection { get; set; } = false;
+        public virtual bool MustCloseConnection { get; set; } = false;
 
         private DbProviderFactory _dbProviderFactory = null;
         /// <summary>
@@ -155,7 +155,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region string PlusSign(params string[] values) 获得Sql字符串相加符号
+        #region string virtual PlusSign(params string[] values) 获得Sql字符串相加符号
         /// <summary>
         ///  获得Sql字符串相加符号
         /// </summary>
@@ -214,10 +214,9 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection Open(string connectionString)
         {
-            //若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
+            // 若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
             _dbConnection = GetInstance().CreateConnection();
-            //var dbConnection = _dbConnection;
             if (_dbConnection != null)
             {
                 _dbConnection.ConnectionString = ConnectionString;
@@ -261,7 +260,7 @@ namespace DotNet.Util
             if (!string.IsNullOrEmpty(connectionString))
             {
                 Open(connectionString);
-            }            
+            }
             return _dbConnection;
         }
         #endregion
@@ -288,12 +287,12 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public IDbTransaction BeginTransaction() 事务开始
+        #region public virtual IDbTransaction BeginTransaction() 事务开始
         /// <summary>
         /// 事务开始
         /// </summary>
         /// <returns>事务</returns>
-        public IDbTransaction BeginTransaction()
+        public virtual IDbTransaction BeginTransaction()
         {
             // 写入调试信息
             if (!InTransaction)
@@ -312,11 +311,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void CommitTransaction() 提交事务
+        #region public virtual void CommitTransaction() 提交事务
         /// <summary>
         /// 提交事务
         /// </summary>
-        public void CommitTransaction()
+        public virtual void CommitTransaction()
         {
             if (InTransaction)
             {
@@ -330,11 +329,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void RollbackTransaction() 回滚事务
+        #region public virtual void RollbackTransaction() 回滚事务
         /// <summary>
         /// 回滚事务
         /// </summary>
-        public void RollbackTransaction()
+        public virtual void RollbackTransaction()
         {
             if (InTransaction)
             {
@@ -346,11 +345,11 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void Close() 关闭数据库连接
+        #region public virtual void Close() 关闭数据库连接
         /// <summary>
         /// 关闭数据库连接
         /// </summary>
-        public void Close()
+        public virtual void Close()
         {
             if (_dbConnection != null)
             {
@@ -363,51 +362,13 @@ namespace DotNet.Util
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
             Dispose();
         }
-        #endregion
+        #endregion        
 
-        #region public virtual void WriteLog(string commandText, string fileName = null) 写入sql查询句日志
-
-        /// <summary>
-        /// 写入sql查询句日志
-        /// </summary>
-        /// <param name="commandText"></param>
-        public virtual void WriteLog(string commandText)
-        {
-            var fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "_" + DateTime.Now.Hour + "_" + FileName + "_0.log";
-            WriteLog(commandText, fileName);
-        }
-
-        /// <summary>
-        /// 写入sql查询句日志
-        /// </summary>
-        /// <param name="commandText">异常</param>
-        /// <param name="fileName">文件名</param>
-        private void WriteLog(string commandText, string fileName)
-        {
-            // 系统里应该可以配置是否记录异常现象
-            if (!BaseSystemInfo.LogSql)
-            {
-                return;
-            }
-            if (string.IsNullOrEmpty(fileName))
-            {
-                fileName = DateTime.Now.ToString(BaseSystemInfo.DateFormat) + " _ " + FileName;
-            }
-            var logDirectory = BaseSystemInfo.StartupPath + @"\\Log\\Query";
-            if (!Directory.Exists(logDirectory))
-            {
-                Directory.CreateDirectory(logDirectory);
-            }
-            FileLogUtil.WriteLog(logDirectory, fileName, commandText, "log");
-
-        }
-        #endregion
-
-        #region public void Dispose() 内存回收
+        #region public virtual void Dispose() 内存回收
         /// <summary>
         /// 内存回收
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (DbCommand != null)
             {
@@ -415,6 +376,7 @@ namespace DotNet.Util
                 Trace.WriteLine(DateTime.Now + " :DbCommand Dispose: " + DbCommand + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbCommand.Dispose();
+                DbCommand = null;
             }
             if (DbDataAdapter != null)
             {
@@ -422,6 +384,7 @@ namespace DotNet.Util
                 Trace.WriteLine(DateTime.Now + " :DbDataAdapter Dispose: " + DbDataAdapter + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbDataAdapter.Dispose();
+                DbDataAdapter = null;
             }
             if (_dbTransaction != null && !InTransaction)
             {
@@ -429,25 +392,25 @@ namespace DotNet.Util
                 Trace.WriteLine(DateTime.Now + " :_dbTransaction Dispose: " + _dbTransaction + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 _dbTransaction.Dispose();
+                _dbTransaction = null;
             }
             // 关闭数据库连接
             if (_dbConnection != null)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :DbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
-                    _dbConnection.Close();
-                    _dbConnection.Dispose();
+                    _dbConnection.Close();                    
                 }
-
-            }
-            _dbConnection = null;
+                _dbConnection.Dispose();
+                _dbConnection = null;
+            }            
         }
         #endregion
 
-        #region public void SqlBulkCopyData(DataTable dt) 利用Net SqlBulkCopy 批量导入数据库,速度超快
+        #region public virtual void SqlBulkCopyData(DataTable dt) 利用Net SqlBulkCopy 批量导入数据库,速度超快
 
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
@@ -462,6 +425,6 @@ namespace DotNet.Util
             // 各自数据集需要自行覆盖实现此处逻辑
             return result;
         }
-        #endregion
+        #endregion        
     }
 }

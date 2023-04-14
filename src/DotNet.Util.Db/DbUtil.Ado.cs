@@ -28,15 +28,17 @@ namespace DotNet.Util
         /// <param name="dbConnection">数据库连接</param>
         public static void CloseConnection(this IDbConnection dbConnection)
         {
-            if (dbConnection == null) return;
-            try
+            if (dbConnection != null)
             {
-                dbConnection.Close();
-            }
-            catch (Exception e)
-            {
-                LogUtil.WriteException(e, "close connection error");
-            }
+                try
+                {
+                    dbConnection.Close();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "close connection error");
+                }
+            }            
         }
 
         /// <summary>
@@ -45,16 +47,18 @@ namespace DotNet.Util
         /// <param name="dbConnection">数据库连接</param>
         public static void Reopen(this IDbConnection dbConnection)
         {
-            if (dbConnection == null) return;
-            try
+            if (dbConnection != null)
             {
-                dbConnection.Close();
-                dbConnection.Open();
-            }
-            catch (Exception e)
-            {
-                LogUtil.WriteException(e, "close connection error");
-            }
+                try
+                {
+                    dbConnection.Close();
+                    dbConnection.Open();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "reopen connection error");
+                }
+            }            
         }
 
         /// <summary>

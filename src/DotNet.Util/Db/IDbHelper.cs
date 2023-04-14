@@ -75,11 +75,7 @@ namespace DotNet.Util
         /// 是否已在事务之中
         /// </summary>
         /// <returns></returns>
-        bool InTransaction
-        {
-            get;
-            set;
-        }
+        bool InTransaction { get; set; }
 
         /// <summary>
         /// 检查参数的安全性
@@ -371,12 +367,6 @@ namespace DotNet.Util
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
         DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType);
-
-        /// <summary>
-        /// 写入sql查询日志
-        /// </summary>
-        /// <param name="commandText">sql查询</param>
-        void WriteLog(string commandText);
 
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快

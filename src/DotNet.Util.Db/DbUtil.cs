@@ -26,7 +26,6 @@ namespace DotNet.Util
     {
         #region 获取实例 Create
 
-        private static readonly ConcurrentDictionary<string, object> DbHelperClasses = new(StringComparer.OrdinalIgnoreCase);
         /// <summary>
         /// 获取指定的数据库连接
         /// </summary>
@@ -41,11 +40,6 @@ namespace DotNet.Util
             }
             var dbHelperClass = GetDbHelperClass(dbType);
             var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
-            // 千万不要用以下代码，不然会经常数据库访问异常！
-            // Dictionary.TryGetValue 在多线程高并发下有可能抛出空异常
-            //var obj = DbHelperClasses.GetOrAdd(key: dbHelperClass, valueFactory: _ => (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true));
-            //var dbHelper = (IDbHelper)obj;
-
             if (dbHelper != null)
             {
                 dbHelper.ConnectionString = connectionString;
@@ -77,7 +71,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static string GetDbHelperClass(CurrentDbType dbType)
+        #region public static string GetDbHelperClass(CurrentDbType dbType) 按数据类型获取数据库访问实现类
         /// <summary>
         /// 按数据类型获取数据库访问实现类
         /// </summary>
@@ -132,11 +126,11 @@ namespace DotNet.Util
 
         #endregion
 
-        #region GetDbNow
+        #region GetDbNow 获得数据库当前日期的SQL
         /// <summary>
-        /// 获得数据库当前日期
+        /// 获得数据库当前日期的SQL
         /// </summary>
-        /// <returns>当前日期</returns>
+        /// <returns>当前日期SQL</returns>
         public static string GetDbNow(CurrentDbType dbType)
         {
             var sb = Pool.StringBuilder.Get();

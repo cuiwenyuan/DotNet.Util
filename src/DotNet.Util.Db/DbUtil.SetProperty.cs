@@ -12,11 +12,11 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     /// 
-    ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
+    ///		2022.02.05 版本：1.0	Troy.Cui 分离程序。
     ///	
     /// <author>
     ///		<name>Troy.Cui</name>
-    ///		<date>2012.02.05</date>
+    ///		<date>2022.02.05</date>
     /// </author> 
     /// </summary>
     public partial class DbUtil
