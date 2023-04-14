@@ -58,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
-		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.19.0" />
+		<PackageReference Include="Oracle.ManagedDataAccess" Version="21.9.0" />
 		<PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.116.0" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.116.0" />
 		<PackageReference Include="MySql.Data" Version="8.0.30" />
