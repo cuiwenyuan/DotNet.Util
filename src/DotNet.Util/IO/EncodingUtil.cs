@@ -10,7 +10,7 @@ namespace DotNet.Util
     /// <summary>
     /// 文件编码 - 来自NewLife
     /// </summary>
-    public static class EncodingUtil
+    public static partial class EncodingUtil
     {
         #region 编码检测
         /// <summary>检测文件编码</summary>

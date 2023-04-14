@@ -1075,5 +1075,32 @@ namespace DotNet.Business
         int UpdateEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
+        #region T GetEntity<T>(string id) where T : BaseEntity, new() 获取实体
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns></returns>
+        T GetEntity<T>(string id) where T : BaseEntity, new();
+        #endregion
+
+        #region T GetEntity<T>(int id) where T : BaseEntity, new() 获取实体
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns></returns>
+        T GetEntity<T>(int id) where T : BaseEntity, new();
+        #endregion
+
+        #region T GetEntity<T>(List<KeyValuePair<string, object>> parameters) where T : BaseEntity, new() 获取实体
+        /// <summary>
+        /// 获取实体
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        /// <returns></returns>
+        T GetEntity<T>(List<KeyValuePair<string, object>> parameters) where T : BaseEntity, new();
+        #endregion
+
     }
 }

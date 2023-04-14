@@ -63,7 +63,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public void BatchDelete(this IDbHelper dbHelper, string tableName, string condition, int batchSize = 100)
+        #region public void BatchDelete(this IDbHelper dbHelper, string tableName, string condition, int batchSize = 100) 批量删除（针对超过几百万行的表进行批次删除）
         /// <summary>
         /// 批量删除（针对超过几百万行的表进行批次删除）
         /// </summary>

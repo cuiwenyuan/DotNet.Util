@@ -13,7 +13,7 @@ namespace DotNet.Util
     /// <summary>
     /// DataTable扩展
     /// </summary>
-    public static class DataTableExtension
+    public static partial class DataTableExtension
     {
         #region 底层使用DotNet.Business的用法
 

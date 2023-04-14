@@ -54,7 +54,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region
+        #region public static string ToTableName(this string tableName) 转换为表名，特别针对临时表、视图类
         /// <summary>
         /// 转换为表名，特别针对临时表、视图类
         /// </summary>
@@ -73,6 +73,7 @@ namespace DotNet.Util
             return result;
         }
         #endregion
+
         #region public static string SqlSafe(string value) 检查参数的安全性
         /// <summary>
         /// 检查参数的安全性
@@ -300,16 +301,18 @@ namespace DotNet.Util
         }
         #endregion
 
+        #region public static List<T> GetList<T>(T t) 获取List泛型
         /// <summary>
-        /// 构造个List
+        /// 获取List泛型
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="param"></param>
+        /// <param name="t"></param>
         /// <returns></returns>
-        public static List<T> GetList<T>(T param)
+        public static List<T> GetList<T>(T t)
         {
-            var result = new List<T> { param };
+            var result = new List<T> { t };
             return result;
         }
+        #endregion
     }
 }

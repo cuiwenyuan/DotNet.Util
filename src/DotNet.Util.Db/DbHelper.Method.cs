@@ -124,7 +124,8 @@ namespace DotNet.Util
                     }
 
                     // 写入日志
-                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters);
                     if (DbConnection.State != ConnectionState.Open)
                     {
                         DbConnection.Open();
@@ -133,20 +134,7 @@ namespace DotNet.Util
                 }
                 catch (Exception e)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-
-                    LogUtil.WriteException(e, sb.Put());
+                    LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
                 }
                 finally
                 {
@@ -163,27 +151,11 @@ namespace DotNet.Util
                 }
                 stopwatch.Stop();
                 var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(statisticsText);
-                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteReader");
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText, "Slow.DbHelper.ExecuteReader");
                 }
             }
 
@@ -256,14 +228,12 @@ namespace DotNet.Util
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
             }
-
-            var result = -1;
             if (DbConnection.State == ConnectionState.Closed)
             {
                 DbConnection.Open();
@@ -273,6 +243,7 @@ namespace DotNet.Util
                 DbConnection.Close();
                 DbConnection.Open();
             }
+            var result = -1;
             using (DbCommand = DbConnection.CreateCommand())
             {
                 try
@@ -313,7 +284,8 @@ namespace DotNet.Util
                     }
 
                     //写入日志 
-                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters);
                     if (DbConnection.State != ConnectionState.Open)
                     {
                         DbConnection.Open();
@@ -327,23 +299,11 @@ namespace DotNet.Util
                 }
                 catch (Exception e)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    LogUtil.WriteException(e, sb.Put());
+                    LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
                 }
                 finally
                 {
-                    //自动关闭
+                    // 必须关闭
                     if (MustCloseConnection)
                     {
                         Close();
@@ -356,27 +316,11 @@ namespace DotNet.Util
 
                 stopwatch.Stop();
                 var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(statisticsText);
-                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteNonQuery");
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText, "Slow.DbHelper.ExecuteNonQuery");
                 }
             }
 
@@ -441,14 +385,12 @@ namespace DotNet.Util
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
                 Open();
             }
-
-            object result = null;
             if (DbConnection.State == ConnectionState.Closed)
             {
                 DbConnection.Open();
@@ -458,6 +400,7 @@ namespace DotNet.Util
                 DbConnection.Close();
                 DbConnection.Open();
             }
+            object result = null;
             using (DbCommand = DbConnection.CreateCommand())
             {
                 try
@@ -499,7 +442,9 @@ namespace DotNet.Util
                     }
 
                     //写入日志 
-                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters);
+
                     if (DbConnection.State != ConnectionState.Open)
                     {
                         DbConnection.Open();
@@ -514,23 +459,11 @@ namespace DotNet.Util
                 }
                 catch (Exception e)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    LogUtil.WriteException(e, sb.Put());
+                    LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
                 }
                 finally
                 {
-                    //自动关闭
+                    // 必须关闭
                     if (MustCloseConnection)
                     {
                         Close();
@@ -542,27 +475,11 @@ namespace DotNet.Util
                 }
                 stopwatch.Stop();
                 var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(statisticsText);
-                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.ExecuteScalar");
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText, "Slow.DbHelper.ExecuteScalar");
                 }
             }
 
@@ -653,7 +570,7 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
@@ -727,24 +644,11 @@ namespace DotNet.Util
                 {
                     //Troy.Cui 2020.05.13
                     dt = null;
-                    //记录异常
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    LogUtil.WriteException(e, sb.Put());
+                    LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
                 }
                 finally
                 {
-                    //自动关闭
+                    // 必须关闭
                     if (MustCloseConnection)
                     {
                         Close();
@@ -754,31 +658,16 @@ namespace DotNet.Util
                         DbCommand.Parameters.Clear();
                     }
                     //记录日志，任何时候都写跟踪日志，出错了也要写
-                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters);
                 }
                 stopwatch.Stop();
                 var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(statisticsText);
-                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText, "Slow.DbHelper.Fill");
                 }
             }
 
@@ -830,7 +719,7 @@ namespace DotNet.Util
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // 自动打开
+            // 自动关闭，以便返还给连接池
             MustCloseConnection = true;
             if (DbConnection == null)
             {
@@ -852,17 +741,6 @@ namespace DotNet.Util
 #if (DEBUG)
                     Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
-                    //dbCommand.Parameters.Clear();
-                    //if ((dbParameters != null) && (dbParameters.Length > 0))
-                    //{
-                    //    for (int i = 0; i < dbParameters.Length; i++)
-                    //    {
-                    //        if (dbParameters[i] != null)
-                    //        {
-                    //            dbDataAdapter.SelectCommand.Parameters.Add(dbParameters[i]);
-                    //        }
-                    //    }
-                    //}
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
                     DbCommand.CommandText = commandText;
@@ -895,7 +773,8 @@ namespace DotNet.Util
                     }
 
                     //记录日志
-                    SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters);
 
                     DbDataAdapter = GetInstance().CreateDataAdapter();
                     DbDataAdapter.SelectCommand = DbCommand;
@@ -911,26 +790,11 @@ namespace DotNet.Util
                 {
                     //Troy.Cui 2020.05.13
                     dataSet = null;
-                    //记录异常
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(tableName);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-
-                    LogUtil.WriteException(e, sb.Put());
+                    LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
                 }
                 finally
                 {
+                    // 必须关闭
                     if (MustCloseConnection)
                     {
                         Close();
@@ -943,29 +807,11 @@ namespace DotNet.Util
 
                 stopwatch.Stop();
                 var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-                SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters, statisticsText);
+                WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText);
                 if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
                 {
-                    var sb = Pool.StringBuilder.Get();
-                    sb.Append(commandText);
-                    sb.Append(" ");
-                    sb.Append(tableName);
-                    sb.Append(" ");
-                    sb.Append(commandType.ToString());
-                    if (dbParameters != null)
-                    {
-                        sb.Append(" dbParameters: ");
-                        foreach (var parameter in dbParameters)
-                        {
-                            sb.Append(parameter.ParameterName + "=" + parameter.Value + " ");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(statisticsText);
-                    LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.Fill");
+                    WriteSqlLog(commandText, commandType.ToString(), dbParameters, statisticsText, "Slow.DbHelper.Fill");
                 }
             }
             return dataSet;
@@ -1022,6 +868,73 @@ namespace DotNet.Util
         /// <param name="parameterDirection">参数方向</param>
         /// <returns></returns>
         public abstract IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, int parameterSize, ParameterDirection parameterDirection);
+        #endregion
+
+        #region private string GetSql(string commandText, string commandType, IDbDataParameter[] dbParameters = null) 获取Sql语句
+        /// <summary>
+        /// 获取Sql语句
+        /// </summary>
+        /// <param name="commandText">SQL语句</param>
+        /// <param name="commandType">命令类型</param>
+        /// <param name="dbParameters">参数</param>
+        /// <returns></returns>
+        private string GetSql(string commandText, string commandType, IDbDataParameter[] dbParameters = null)
+        {
+            foreach (var parameter in dbParameters)
+            {
+                var valueString = "";
+                var name = parameter.ParameterName;
+                var value = parameter.Value;
+                if (value is Byte[] bv)
+                {
+                    valueString = "'" + BitConverter.ToString(bv) + "'";
+                }
+                else if (value is String str)
+                {
+                    valueString = "'" + str + "'";
+                }
+                else if (value is DateTime dt)
+                {
+                    valueString = "'" + dt.ToFullString() + "'";
+                }
+                else
+                {
+                    valueString = (value + "");
+                }
+
+                commandText = commandText.Replace(name, valueString);
+            }
+            return $"[{commandType}] {commandText}";
+        }
+        #endregion
+
+        #region public void WriteSqlLog(string commandText, string commandType, IDbDataParameter[] dbParameters = null, string statisticsText = null) 写入Sql日志
+
+        /// <summary>
+        /// 写入Sql日志
+        /// </summary>
+        /// <param name="commandText">SQL语句</param>
+        /// <param name="commandType">命令类型</param>
+        /// <param name="dbParameters">参数</param>
+        /// <param name="statisticsText">耗时</param>
+        /// <param name="logFolder">日志文件夹</param>
+        public void WriteSqlLog(string commandText, string commandType, IDbDataParameter[] dbParameters = null, string statisticsText = null, string logFolder = "SqlTrace")
+        {
+            // 系统里应该可以配置是否记录日志
+            if (!BaseSystemInfo.LogSql)
+            {
+                return;
+            }
+            var sb = Pool.StringBuilder.Get();
+            sb.Append(GetSql(commandText, commandType, dbParameters));
+            if (!string.IsNullOrEmpty(statisticsText))
+            {
+                sb.Append($" [{statisticsText}]");
+            }
+            // 将异常信息写入本地文件中
+            LogUtil.WriteLog(sb.Put(), logFolder);
+        }
+
         #endregion
     }
 }

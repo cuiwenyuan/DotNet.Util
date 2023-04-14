@@ -24,7 +24,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int? topLimit = null, string orderBy = null)
+        #region public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int? topLimit = null, string orderBy = null) 读取属性
         /// <summary>
         /// 读取属性
         /// </summary>

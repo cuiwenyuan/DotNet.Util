@@ -9,7 +9,7 @@ namespace DotNet.Util
     /// <summary>
     /// 数组扩展
     /// </summary>
-    public static class ArrayExtensions
+    public static partial class ArrayExtensions
     {
         /// <summary>
         /// 随机获取数组中的一个
