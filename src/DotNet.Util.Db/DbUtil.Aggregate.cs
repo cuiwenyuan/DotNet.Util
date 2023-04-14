@@ -55,8 +55,6 @@ namespace DotNet.Util
 
             }
 
-
-
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);

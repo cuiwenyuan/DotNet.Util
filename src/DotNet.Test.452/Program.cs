@@ -55,12 +55,12 @@ namespace DotNet.Test._452
             stopwatch.Start();
             var entity1 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(1);
             stopwatch.Stop();
-            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
             Console.WriteLine(statisticsText);
             stopwatch.Start();
             var entity2 = new BaseCalendarManager().GetEntity(1);
             stopwatch.Stop();
-            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
             Console.WriteLine(statisticsText);
             stopwatch.Start();
             Parallel.For(1, 5000, (i) =>
@@ -84,7 +84,7 @@ namespace DotNet.Test._452
                 Console.WriteLine(sb.Put());
             }
             stopwatch.Stop();
-            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
             Console.WriteLine(statisticsText);
 
             //for (var i = 1; i <= 10000; i++)
