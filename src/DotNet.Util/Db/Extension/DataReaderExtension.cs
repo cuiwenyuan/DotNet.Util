@@ -12,7 +12,7 @@ namespace DotNet.Util
     /// <summary>
     /// DataReader扩展
     /// </summary>
-    public static class DataReaderExtension
+    public static partial class DataReaderExtension
     {
         #region 底层使用DotNet.Business的用法
 

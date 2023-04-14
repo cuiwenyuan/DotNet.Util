@@ -164,7 +164,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <returns>用户主键数组</returns>
     public string[] GetPermissionUserIds(string permissionItemCode, string permissionItemName = null)
     {
-        var permissionManager = new BasePermissionManager(UserCenterDbHelper, UserInfo);
+        var permissionManager = new BasePermissionManager(UserInfo);
         return permissionManager.GetUserIds(permissionItemCode, permissionItemName);
     }
 
@@ -178,7 +178,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <returns>用户主键数组</returns>
     public string[] GetPermissionScopeUserIds(string organizationId, string permissionItemCode, string permissionItemName = null)
     {
-        var permissionScopeManager = new BasePermissionScopeManager(UserCenterDbHelper, UserInfo);
+        var permissionScopeManager = new BasePermissionScopeManager(UserInfo);
         return permissionScopeManager.GetUserIds(organizationId, permissionItemCode, permissionItemName);
     }
 

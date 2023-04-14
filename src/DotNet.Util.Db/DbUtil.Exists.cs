@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
+        #region public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>()) 获取记录数
         /// <summary>
         /// 获取记录数
         /// </summary>
@@ -67,7 +67,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null)
+        #region public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null) 获取记录个数
 
         /// <summary>
         /// 获取记录个数
@@ -101,7 +101,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool TableExists(this IDbHelper dbHelper, string tableName)
+        #region public static bool TableExists(this IDbHelper dbHelper, string tableName) 表是否存在
 
         /// <summary>
         /// 表是否存在
@@ -138,7 +138,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true)
+        #region public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true) Oracle序列是否存在
 
         /// <summary>
         /// Oracle序列是否存在

@@ -14,6 +14,9 @@ using NPOI.SS.Formula;
 using Spire.Doc;
 using Aspose;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Data;
+using System.Diagnostics;
 
 namespace DotNet.Test._452
 {
@@ -27,8 +30,7 @@ namespace DotNet.Test._452
 
             BaseSystemInfo.LogSql = true;
             BaseSystemInfo.LogException = true;
-            LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection);
-
+            LogUtil.WriteLog(BaseSystemInfo.BusinessDbConnection, "DbConnection");
 
             var dog = new Dog()
             {
@@ -43,18 +45,67 @@ namespace DotNet.Test._452
             //entity.RoleId = 10;
             //new BaseUserRoleManager().Update(entity);
 
-            var entity = new BaseUserRoleManager().GetEntity<BaseUserRoleEntity>(1);
-            LogUtil.WriteLog("new:" + JsonUtil.ObjectToJson(entity));
+            //var entity = new BaseUserRoleManager().GetEntity<BaseUserRoleEntity>(1);
+            //LogUtil.WriteLog("new:" + JsonUtil.ObjectToJson(entity));
 
-            var entityNew = new BaseUserRoleManager().GetEntity(1);
-            LogUtil.WriteLog("old:" + JsonUtil.ObjectToJson(entityNew));
-            LogUtil.WriteLog("Done");
+            //var entityNew = new BaseUserRoleManager().GetEntity(1);
+            //LogUtil.WriteLog("old:" + JsonUtil.ObjectToJson(entityNew));
+            //LogUtil.WriteLog("Done");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var entity1 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(1);
+            stopwatch.Stop();
+            var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            Console.WriteLine(statisticsText);
+            stopwatch.Start();
+            var entity2 = new BaseCalendarManager().GetEntity(1);
+            stopwatch.Stop();
+            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            Console.WriteLine(statisticsText);
+            stopwatch.Start();
+            Parallel.For(1, 5000, (i) =>
+            {
+                Console.WriteLine(i);
+                Console.WriteLine("Parallel任务" + i + "开始工作……");
+                //var entity3 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
+                var entity3 = new BaseCalendarManager().GetEntity(i);
+                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity3));
+                LogUtil.WriteLog(sb.ToString());
+                Console.WriteLine(sb.Put());
+            });
+            for (var i = 1; i <= 10000; i++)
+            {
+                Console.WriteLine(i);
+                Console.WriteLine("任务" + i + "开始工作……");
+                //var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
+                var entity = new BaseCalendarManager().GetEntity(i);
+                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity));
+                LogUtil.WriteLog(sb.ToString());
+                Console.WriteLine(sb.Put());
+            }
+            stopwatch.Stop();
+            statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
+            Console.WriteLine(statisticsText);
 
-            var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
-            BaiduOcrUtil.GeneralBasic(imagePath);
+            //for (var i = 1; i <= 10000; i++)
+            //{
+            //    Console.WriteLine(i);
+            //    Task.Run(() =>
+            //    {
+            //        Console.WriteLine("任务" + i + "开始工作……");
+            //        var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
+            //        //var entity = new BaseCalendarManager().GetEntity(i);
+            //        var json = JsonUtil.ObjectToJson(entity);
+            //        LogUtil.WriteLog(json);
+            //        Console.WriteLine(json);
+            //    });
+            //}
 
-            imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR01.jpeg");
-            BaiduOcrUtil.AccurateBasic(imagePath);
+            //var imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR02.jpeg");
+            //BaiduOcrUtil.GeneralBasic(imagePath);
+
+            //imagePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"OCR\", "OCR01.jpeg");
+            //BaiduOcrUtil.AccurateBasic(imagePath);
 
             //for (int i = 0; i < 1000; i++)
             //{

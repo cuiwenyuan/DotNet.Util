@@ -241,7 +241,7 @@ public partial class BaseUserControl : UserControl
     /// <param name="userDepartmentSelected">默认选中自己的部门</param>
     protected void GetDepartment(DropDownList ddlDepartment, bool insertBlank = true, bool userDepartmentSelected = true)
     {
-        var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
+        var manager = new BaseOrganizationManager(UserInfo);
         var dt = manager.GetOrganizationDataTable();
         ddlDepartment.SelectedValue = null;
         if (dt != null && dt.Rows.Count > 0)
@@ -288,7 +288,7 @@ public partial class BaseUserControl : UserControl
     protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
     {
         DataTable dtDepartment = null;
-        var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
+        var manager = new BaseOrganizationManager(UserInfo);
         if (UserInfo.IsAdministrator)
         {
             dtDepartment = manager.GetOrganizationDataTable();

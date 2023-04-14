@@ -12,7 +12,7 @@ namespace DotNet.Util
     /// <remarks>
     /// 文档 https://www.yuque.com/smartstone/nx/io_helper
     /// </remarks>
-    public static class IOUtil
+    public static partial class IOUtil
     {
         #region 压缩/解压缩 数据
         /// <summary>压缩数据流</summary>

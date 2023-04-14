@@ -60,7 +60,7 @@ public partial class BasePage : System.Web.UI.Page
     protected void GetOrganizationDataTable(DropDownList dropDownList, bool insertBlank = true, string parentId = null, string categoryCode = "Department", bool userCompanySelected = false, bool userSubCompanySelected = false, bool userDepartmentSelected = false, bool userSubDepartmentSelected = false, bool userWorkgroupSelected = false)
     {
         //dropDownList.Items.Clear();
-        var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
+        var manager = new BaseOrganizationManager(UserInfo);
         var dtOrganization = manager.GetOrganizationDataTable(parentId, false, categoryCode);
         dropDownList.SelectedValue = null;
         if (dtOrganization != null && dtOrganization.Rows.Count > 0)
@@ -113,7 +113,7 @@ public partial class BasePage : System.Web.UI.Page
     protected void GetOrganizationTree(DropDownList dropDownList, bool insertBlank = true, bool userCompanySelected = false, bool userSubCompanySelected = false, bool userDepartmentSelected = false, bool userSubDepartmentSelected = false, bool userWorkgroupSelected = false)
     {
         dropDownList.Items.Clear();
-        var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
+        var manager = new BaseOrganizationManager(UserInfo);
         //2017.12.20增加默认的HttpRuntime.Cache缓存
         var cacheKey = "Dt.BaseOrganizationTree";
         //var cacheTime = default(TimeSpan);
@@ -166,7 +166,7 @@ public partial class BasePage : System.Web.UI.Page
     protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
     {
         DataTable dtDepartment = null;
-        var manager = new BaseOrganizationManager(UserCenterDbHelper, UserInfo);
+        var manager = new BaseOrganizationManager(UserInfo);
         if (UserInfo.IsAdministrator)
         {
             dtDepartment = manager.GetOrganizationDataTable();

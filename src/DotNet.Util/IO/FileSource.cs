@@ -8,7 +8,7 @@ using System.Web;
 namespace DotNet.Util
 {
     /// <summary>文件资源 - 来自NewLife</summary>
-    public static class FileSource
+    public static partial class FileSource
     {
         /// <summary>释放文件</summary>
         /// <param name="asm"></param>

@@ -361,7 +361,7 @@ namespace DotNet.Util
                 {
                     tran.Rollback();
                     sqlBulkCopy.Close();
-                    LogUtil.WriteException(ex);
+                    LogUtil.WriteException(ex, "SqlBulkCopyData");
                 }
                 finally
                 {
@@ -371,12 +371,11 @@ namespace DotNet.Util
             }
             stopwatch.Stop();
             var statisticsText = $"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds}ms";
-            SqlUtil.WriteLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
+            //SqlUtil.WriteLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
+            WriteSqlLog(destinationTableName, "SqlBulkCopy", null, statisticsText);
             if (stopwatch.Elapsed.TotalMilliseconds >= BaseSystemInfo.SlowQueryMilliseconds)
             {
-                var sb = Pool.StringBuilder.Get();
-                sb.Append("SqlBulkCopy to Table " + destinationTableName + " , " + statisticsText);
-                LogUtil.WriteLog(sb.Put(), "Slow.DbHelper.SqlBulkCopy");
+                WriteSqlLog(destinationTableName, "SqlBulkCopy", null, statisticsText, "Slow.DbHelper.SqlBulkCopy");
             }
 
             return result;
