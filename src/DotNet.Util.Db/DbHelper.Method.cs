@@ -881,9 +881,12 @@ namespace DotNet.Util
         /// <returns></returns>
         private string GetSql(string commandText, string commandType, IDbDataParameter[] dbParameters = null)
         {
+            var sb = Pool.StringBuilder.Get();
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                foreach (var parameter in dbParameters)
+                // 倒序排列，避免相同前缀的参数被误替换
+                var list = dbParameters.OrderByDescending(t => t.ParameterName);
+                foreach (var parameter in list)
                 {
                     var valueString = "";
                     var name = parameter.ParameterName;
@@ -904,11 +907,14 @@ namespace DotNet.Util
                     {
                         valueString = (value + "");
                     }
-
+                    if (commandText.Equals("StoredProcedure", StringComparison.OrdinalIgnoreCase))
+                    {
+                        sb.Append($"({name} = {value})");
+                    }
                     commandText = commandText.Replace(name, valueString);
                 }
             }
-            return $"[{commandType}] {commandText}";
+            return $"[{commandType}] {commandText}{sb.Put()}";
         }
         #endregion
 
