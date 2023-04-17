@@ -885,8 +885,8 @@ namespace DotNet.Util
             if (dbParameters != null && dbParameters.Length > 0)
             {
                 // 倒序排列，避免相同前缀的参数被误替换
-                dbParameters.OrderByDescending(t => t.ParameterName);
-                foreach (var parameter in dbParameters)
+                var list = dbParameters.OrderByDescending(t => t.ParameterName);
+                foreach (var parameter in list)
                 {
                     var valueString = "";
                     var name = parameter.ParameterName;
