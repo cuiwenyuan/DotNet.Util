@@ -907,7 +907,7 @@ namespace DotNet.Util
                     {
                         valueString = (value + "");
                     }
-                    if (commandText.Equals("StoredProcedure", StringComparison.OrdinalIgnoreCase))
+                    if (commandType.Equals("StoredProcedure", StringComparison.OrdinalIgnoreCase))
                     {
                         sb.Append($"({name} = {value})");
                     }
