@@ -73,7 +73,7 @@ namespace DotNet.Business
             // 只有管理员才能看到所有的
             //if (!(UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled))
             //{
-                //sb.Append(" AND (" + BaseLogonLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogonLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
+            //sb.Append(" AND (" + BaseLogonLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogonLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //}
             if (ValidateUtil.IsInt(departmentId))
             {
@@ -411,7 +411,8 @@ namespace DotNet.Business
                     MacAddress = macAddress,
                     LogonStatus = loginStatus,
                     LogLevel = LogonStatusToLogLevel(loginStatus),
-                    CreateTime = DateTime.Now
+                    CreateTime = DateTime.Now,
+                    SortCode = 1
                 };
 
                 var tableName = GetSplitTableName();
