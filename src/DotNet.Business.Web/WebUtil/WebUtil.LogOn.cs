@@ -877,7 +877,7 @@ namespace DotNet.Business
                 CacheUtil.Remove(cacheKey);
 
                 // 这里要考虑读写分离的处理
-                // IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterWriteDbConnection);
+                // IDbHelper dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterWriteDbConnection);
                 // BaseUserLogonManager userLogonManager = new BaseUserLogonManager(dbHelper, userInfo);
                 // userLogonManager.SignOut(userInfo.Id);
             }
