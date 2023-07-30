@@ -60,7 +60,7 @@ namespace DotNet.Business
         /// <param name="dbParameters">数据参数</param>
         /// <param name="selectField">选择哪些字段</param>
         /// <returns>数据表</returns>
-        public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
+        public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = "*")
         {
             if (string.IsNullOrEmpty(tableName))
             {

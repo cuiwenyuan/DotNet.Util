@@ -122,7 +122,7 @@ namespace DotNet.Util
             }
             var ips = ip.Split('.');
             
-            var ipPrefixValue = int.Parse(ips[0]);
+            var ipPrefixValue = ips[0].ToInt();
             long ip2LongValue = BytesToLong(byte.Parse(ips[0]), byte.Parse(ips[1]), byte.Parse(ips[2]), byte.Parse(ips[3]));
             var start = _index[ipPrefixValue];
             var maxCompLen = _offset - 1028;

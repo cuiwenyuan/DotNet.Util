@@ -65,6 +65,7 @@ namespace DotNet.Business
                 // }
                 //else
                 //{
+                //    Status = Status.AccessDeny;
                 //    StatusCode = Status.AccessDeny.ToString();
                 //    permissionManager.GetStateMessage(StatusCode);
                 //}

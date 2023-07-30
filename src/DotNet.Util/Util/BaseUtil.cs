@@ -120,7 +120,7 @@ namespace DotNet.Util
             {
                 if (!string.IsNullOrEmpty(key))
                 {
-                    keys.Add(int.Parse(key));
+                    keys.Add(key.ToInt());
                 }
             }
             return keys.ToArray();
@@ -222,7 +222,7 @@ namespace DotNet.Util
             // 首字母进行强制大写改进
             field = field.Substring(0, 1).ToUpper() + field.Substring(1);
 
-            var keywords = new string[] { "Id", "SortCode", "DeletionStateCode", "Enabled", "CreateOn", "CreateUserId", "CreateBy", "ModifiedOn", "ModifiedUserId", "ModifiedBy" };
+            var keywords = new string[] { "Id", "SortCode", "Deleted", "DeletionStateCode", "Enabled", "CreateOn", "CreateTime", "CreateUserId", "CreateBy", "ModifiedOn", "UpdateTime", "ModifiedUserId", "UpdateUserId", "ModifiedBy", "UpdateBy" };
 
             foreach (var t in keywords)
             {

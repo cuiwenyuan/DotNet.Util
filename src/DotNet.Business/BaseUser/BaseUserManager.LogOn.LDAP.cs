@@ -33,6 +33,7 @@ namespace DotNet.Business
         {
             BaseUserEntity entity = null;
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(openId))
@@ -69,6 +70,7 @@ namespace DotNet.Business
         {
             BaseUserEntity entity = null;
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(userName))
@@ -97,6 +99,7 @@ namespace DotNet.Business
         {
             BaseUserEntity entity = null;
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(email) && ValidateUtil.IsEmail(email))

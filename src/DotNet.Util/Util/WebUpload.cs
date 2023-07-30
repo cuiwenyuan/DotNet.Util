@@ -6,6 +6,8 @@ using System.IO;
 using System.Drawing;
 using System.Net;
 using System.Configuration;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
 
 namespace DotNet.Util
 {
@@ -32,7 +34,7 @@ namespace DotNet.Util
         private int _thumbnailwidth = 180;
         private int _watermarktype = 0;
         private int _watermarkposition = 9;
-        private int _watermarkimgquality = 90;
+        private int _watermarkimgquality = 100;
         private string _watermarkpic = "";
         private int _watermarktransparency = 10;
         private string _watermarktext = "";
@@ -189,8 +191,9 @@ namespace DotNet.Util
         /// <param name="itemCode">物品编码</param>
         /// <param name="subFolder">子目录</param>
         /// <param name="thumbnailMode">缩略图裁剪模式</param>
+        /// <param name="isAutoRotate">是否自动旋转</param>
         /// <returns>上传后文件信息</returns>
-        public string ItemCodeFileSaveAs(HttpPostedFile postedFile, bool isThumbnail, bool isWater, string itemCode, string subFolder = "ItemCode", string thumbnailMode = "Cut")
+        public string ItemCodeFileSaveAs(HttpPostedFile postedFile, bool isThumbnail, bool isWater, string itemCode, string subFolder = "ItemCode", string thumbnailMode = "Cut", bool isAutoRotate = false)
         {
             try
             {
@@ -228,18 +231,18 @@ namespace DotNet.Util
                 if (IsImage(fileExt) && (_imgmaxheight > 0 || _imgmaxwidth > 0))
                 {
                     ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newFileName,
-                        _imgmaxwidth, _imgmaxheight);
+                        _imgmaxwidth, _imgmaxheight, isAutoRotate: isAutoRotate);
                 }
                 //如果是图片，检查是否需要生成缩略图，是则生成
                 if (IsImage(fileExt) && isThumbnail && _thumbnailwidth > 0 && _thumbnailheight > 0)
                 {
-                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName, _thumbnailwidth, _thumbnailheight, thumbnailMode);
+                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName, _thumbnailwidth, _thumbnailheight, thumbnailMode, isAutoRotate: isAutoRotate);
                     //生成固定尺寸96的小图片
-                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "icon_"), 96, 96, thumbnailMode);
+                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "icon_"), 96, 96, thumbnailMode, isAutoRotate: isAutoRotate);
                     //生成固定尺寸300的小图片
-                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "middle_"), 300, 300, thumbnailMode);
+                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "middle_"), 300, 300, thumbnailMode, isAutoRotate: isAutoRotate);
                     //生成固定尺寸700的大图片
-                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "large_"), 700, 700, thumbnailMode);
+                    ThumbnailUtil.MakeThumbnailImage(fullUpLoadPath + newFileName, fullUpLoadPath + newThumbnailFileName.Replace("thumbnail_", "large_"), 700, 700, thumbnailMode, isAutoRotate: isAutoRotate);
                 }
                 else
                 {
@@ -339,8 +342,14 @@ namespace DotNet.Util
         /// <param name="subFolder">子目录</param>
         /// <param name="isThumbnail">是否生成缩略图</param>
         /// <param name="thumbnailMode"></param>
+        /// <param name="isAutoRotate">是否自动旋转</param>
+        /// <param name="keepExif">保留EXIF信息</param>
+        /// <param name="createThumbnail">生成缩略图</param>
+        /// <param name="createIcon">生成图标</param>
+        /// <param name="createMiddle">生成中图</param>
+        /// <param name="createLarge">生成大图</param>
         /// <returns>保存文件是否成功 </returns>  
-        public string Base64SaveAs(string base64String, out string uploadedFileName, string subFolder = @"ItemPhoto", bool isThumbnail = true, string thumbnailMode = "W")
+        public string Base64SaveAs(string base64String, out string uploadedFileName, string subFolder = @"ItemPhoto", bool isThumbnail = true, string thumbnailMode = "W", bool isAutoRotate = false, bool keepExif = false, bool createThumbnail = true, bool createIcon = true, bool createMiddle = false, bool createLarge = true, int thumbnailWidth = 180, int thumbnailHeight = 180, int iconWidth = 90, int iconHeight = 90, int middleWidth = 500, int middleHeight = 500, int largeWidth = 700, int largeHeight = 700)
         {
             if (string.IsNullOrEmpty(thumbnailMode))
             {
@@ -350,12 +359,10 @@ namespace DotNet.Util
             if (base64String.StartsWith("data:image/png"))
             {
                 fileExt = "png";
-
             }
             if (base64String.StartsWith("data:image/jpeg"))
             {
                 fileExt = "jpeg";
-
             }
             var newFileName = Utils.GetRamCode() + "_original." + fileExt; //随机生成新的文件名
             var uploadPath = GetUpLoadPath(subFolder); //上传目录相对路径
@@ -379,56 +386,127 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(fullPhysicalUpLoadPath);
             }
-            var fileSize = 0;
-            //保存文件
-            var fs = new FileStream(newPhysicalFilePath, FileMode.Create);
-            var bw = new BinaryWriter(fs);
-            if (!string.IsNullOrEmpty(base64String) && File.Exists(newPhysicalFilePath))
+            var fileSize = 0L;
+            // 创建文件
+            if (!string.IsNullOrEmpty(base64String) && !File.Exists(newPhysicalFilePath))
             {
                 try
                 {
-                    bw.Write(Convert.FromBase64String(base64String));
-                    fileSize = int.Parse((fs.Length / 1024).ToString());
-                }
-                catch
-                {
-                    return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";
+                    var buffer = Convert.FromBase64String(base64String);
+                    using (var ms = new MemoryStream(buffer, 0, buffer.Length))
+                    {
+                        // 读取数据
+                        ms.Write(buffer, 0, buffer.Length);
+                        // 从内存中生成图片
+                        var image = Image.FromStream(ms, true);
+                        var imageOriginal = (Image)image.Clone();
 
+                        // 图像编码器和解码器
+                        var encoder = ThumbnailUtil.GetCodecInfo("image/" + ThumbnailUtil.GetFormat(fileExt).ToString().ToLower());
+                        // 编码参数
+                        var parameters = new EncoderParameters(1);
+                        // 设置质量
+                        parameters.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+
+                        // 照片方向旋转
+                        if (isAutoRotate)
+                        {
+                            // 针对IPhone苹果相机横拍的不转向，竖拍的才转向，安卓手机拍照没问题
+                            var exifTemp = ImageUtil.GetExif(image);
+                            LogUtil.WriteLog(newPhysicalFilePath + JsonUtil.ObjectToJson(exifTemp), "Exif");
+                            var orientation = exifTemp.Orientation;
+                            if (orientation == 6)
+                            {
+                                // 保存原始
+                                imageOriginal.Save(newPhysicalFilePath.Replace("original", "original_nochange"), encoder, parameters);
+                                imageOriginal.Dispose();
+
+                                // 这里的尺寸特别容易搞错，有Orientation的时候，宽和高反过来了
+                                if (image.Size.Width > image.Size.Height)
+                                {
+                                    ImageUtil.RotateImage(image);
+                                }
+                                else if (image.Size.Width < image.Size.Height)
+                                {
+                                    // 强制为1，因为要保持横拍图的方向
+                                    image.RemovePropertyItem(274);
+                                }
+                            }
+
+                        }
+                        // 保存图片
+                        image.Save(newPhysicalFilePath, encoder, parameters);
+                        // 获取图片大小
+                        fileSize = new FileInfo(newPhysicalFilePath).Length;
+
+                        // 获取EXIF
+                        var exif = ImageUtil.GetExif(image);
+                        LogUtil.WriteLog(newPhysicalFilePath + JsonUtil.ObjectToJson(exif), "Exif");
+
+                        //处理完毕，返回JOSN格式的文件信息
+                        //如果是图片，检查是否需要生成缩略图，是则生成
+                        if (IsImage(fileExt) && isThumbnail && _thumbnailwidth > 0 && _thumbnailheight > 0)
+                        {
+                            if (createThumbnail)
+                            {
+                                // 生成系统默认尺寸的小图
+                                ThumbnailUtil.MakeThumbnailImage((Image)image.Clone(), newPhysicalThumbnailPath, _thumbnailwidth, _thumbnailheight, thumbnailMode, isAutoRotate: isAutoRotate, keepExif: keepExif);
+                            }
+                            if (createIcon)
+                            {
+                                //生成固定尺寸96的小图片
+                                ThumbnailUtil.MakeThumbnailImage((Image)image.Clone(), newPhysicalIconPath, iconWidth, iconHeight, thumbnailMode, isAutoRotate: isAutoRotate, keepExif: keepExif);
+                            }
+                            if (createMiddle)
+                            {
+                                //生成固定尺寸300的小图片
+                                ThumbnailUtil.MakeThumbnailImage((Image)image.Clone(), newPhysicalMiddlePath, middleWidth, middleHeight, thumbnailMode, isAutoRotate: isAutoRotate, keepExif: keepExif);
+                            }
+                            if (createLarge)
+                            {
+                                //生成固定尺寸700的大图片
+                                ThumbnailUtil.MakeThumbnailImage((Image)image.Clone(), newPhysicalLargePath, largeWidth, largeHeight, thumbnailMode, isAutoRotate: isAutoRotate, keepExif: keepExif);
+                            }
+                        }
+                        else
+                        {
+                            newThumbnailPath = newFilePath; //不生成缩略图则返回原图
+                            newIconPath = newFilePath; //不生成缩略图则返回原图
+                            newMiddlePath = newFilePath; //不生成缩略图则返回原图
+                            newLargePath = newFilePath; //不生成缩略图则返回原图
+                        }
+                        // 释放
+                        image.Dispose();
+
+                        var dic = new Dictionary<string, object>
+                                {
+                                    { "status", 1 },
+                                    { "msg", "上传文件成功！" },
+                                    { "name", "" + newFileName + "" },
+                                    { "path", "" + newFilePath + "" },
+                                    { "thumbnail", "" + newThumbnailPath + "" },
+                                    { "icon", "" + newIconPath + "" },
+                                    { "middle", "" + newMiddlePath + "" },
+                                    { "large", "" + newLargePath + "" },
+                                    { "size", "" + fileSize + "" },
+                                    { "ext", "" + fileExt + "" },
+                                    { "latitude", "" + exif.Latitude + "" },
+                                    { "longitude", "" + exif.Longitude + "" },
+                                    { "createTime", "" + exif.CreateTime + "" },
+                                    { "updateTime", "" + exif.UpdateTime + "" }
+                                };
+                        return JsonUtil.ObjectToJson(dic);
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e);
+                    return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";
                 }
                 finally
                 {
-                    bw.Close();
-                    bw.Dispose();
 
-                    fs.Close();
                 }
-
-                //处理完毕，返回JOSN格式的文件信息
-                //如果是图片，检查是否需要生成缩略图，是则生成
-                if (IsImage(fileExt) && isThumbnail && _thumbnailwidth > 0 && _thumbnailheight > 0)
-                {
-                    //生成系统默认尺寸的小图
-                    ThumbnailUtil.MakeThumbnailImage(newPhysicalFilePath, newPhysicalThumbnailPath, _thumbnailwidth, _thumbnailheight, thumbnailMode);
-                    //生成固定尺寸96的小图片
-                    ThumbnailUtil.MakeThumbnailImage(newPhysicalFilePath, newPhysicalIconPath, 96, 96, thumbnailMode);
-                    //生成固定尺寸300的小图片
-                    ThumbnailUtil.MakeThumbnailImage(newPhysicalFilePath, newPhysicalMiddlePath, 300, 300, thumbnailMode);
-                    //生成固定尺寸700的大图片
-                    ThumbnailUtil.MakeThumbnailImage(newPhysicalFilePath, newPhysicalLargePath, 700, 700, thumbnailMode);
-                }
-                else
-                {
-                    newThumbnailPath = newFilePath; //不生成缩略图则返回原图
-                    newIconPath = newFilePath; //不生成缩略图则返回原图
-                    newMiddlePath = newFilePath; //不生成缩略图则返回原图
-                    newLargePath = newFilePath; //不生成缩略图则返回原图
-                }
-                return "{\"status\": 1, \"msg\": \"上传文件成功！\", \"name\": \""
-                       + newFileName + "\", \"path\": \"" + newFilePath + "\", \"thumbnail\": \""
-                       + newThumbnailPath + "\", \"icon\": \""
-                       + newIconPath + "\", \"middle\": \""
-                       + newMiddlePath + "\", \"large\": \""
-                       + newLargePath + "\", \"size\": " + fileSize + ", \"ext\": \"" + fileExt + "\"}";
             }
 
             return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";

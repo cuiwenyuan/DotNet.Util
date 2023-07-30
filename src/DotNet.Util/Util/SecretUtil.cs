@@ -16,18 +16,6 @@ namespace DotNet.Util
     /// </summary>
     public static partial class SecretUtil
     {
-        #region FilterSql
-
-        /// <summary>
-        /// 替换sql语句中的有问题符号'为''
-        /// </summary>
-        public static string FilterSql(string strInput)
-        {
-            return (strInput == null) ? "" : strInput.Replace("'", "''");
-        }
-
-        #endregion
-
         #region public static string SqlSafe(string inputValue) 检查参数的安全性
         /// <summary>
         /// 检查参数的安全性

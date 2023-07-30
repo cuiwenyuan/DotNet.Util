@@ -292,7 +292,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["SlowQueryMilliseconds"]))
                 {
-                    BaseSystemInfo.SlowQueryMilliseconds = int.Parse(ConfigurationManager.AppSettings["SlowQueryMilliseconds"]);
+                    BaseSystemInfo.SlowQueryMilliseconds = ConfigurationManager.AppSettings["SlowQueryMilliseconds"].ToInt();
                 }
             }
             if (ConfigurationManager.AppSettings["UserCenterDbType"] != null)
@@ -609,7 +609,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["DatabaseTableVersion"]))
                 {
-                    BaseSystemInfo.DatabaseTableVersion = int.Parse(ConfigurationManager.AppSettings["DatabaseTableVersion"]);
+                    BaseSystemInfo.DatabaseTableVersion = ConfigurationManager.AppSettings["DatabaseTableVersion"].ToInt();
                 }
             }
         }
@@ -630,7 +630,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["MailServerPort"]))
                 {
-                    BaseSystemInfo.MailServerPort = int.Parse(ConfigurationManager.AppSettings["MailServerPort"]);
+                    BaseSystemInfo.MailServerPort = ConfigurationManager.AppSettings["MailServerPort"].ToInt();
                 }
             }
             if (ConfigurationManager.AppSettings["MailServerSslEnabled"] != null)
@@ -675,7 +675,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["MqttPort"]))
                 {
-                    BaseSystemInfo.MqttPort = int.Parse(ConfigurationManager.AppSettings["MqttPort"]);
+                    BaseSystemInfo.MqttPort = ConfigurationManager.AppSettings["MqttPort"].ToInt();
                 }
             }
 
@@ -726,7 +726,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["WebApiSlowResponseMilliseconds"]))
                 {
-                    BaseSystemInfo.WebApiSlowResponseMilliseconds = int.Parse(ConfigurationManager.AppSettings["WebApiSlowResponseMilliseconds"]);
+                    BaseSystemInfo.WebApiSlowResponseMilliseconds = ConfigurationManager.AppSettings["WebApiSlowResponseMilliseconds"].ToInt();
                 }
             }
         }
@@ -762,7 +762,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["OnlineTimeout"]))
                 {
-                    BaseSystemInfo.OnlineTimeout = int.Parse(ConfigurationManager.AppSettings["OnlineTimeout"]);
+                    BaseSystemInfo.OnlineTimeout = ConfigurationManager.AppSettings["OnlineTimeout"].ToInt();
                 }
             }
 
@@ -791,7 +791,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["CookieExpires"]))
                 {
-                    BaseSystemInfo.CookieExpires = int.Parse(ConfigurationManager.AppSettings["CookieExpires"]);
+                    BaseSystemInfo.CookieExpires = ConfigurationManager.AppSettings["CookieExpires"].ToInt();
                 }
             }
         }
@@ -870,11 +870,11 @@ namespace DotNet.Util
 
             if (ConfigurationManager.AppSettings["PasswordErrorLockLimit"] != null)
             {
-                BaseSystemInfo.PasswordErrorLockLimit = int.Parse(ConfigurationManager.AppSettings["PasswordErrorLockLimit"]);
+                BaseSystemInfo.PasswordErrorLockLimit = ConfigurationManager.AppSettings["PasswordErrorLockLimit"].ToInt();
             }
             if (ConfigurationManager.AppSettings["PasswordErrorLockCycle"] != null)
             {
-                BaseSystemInfo.PasswordErrorLockCycle = int.Parse(ConfigurationManager.AppSettings["PasswordErrorLockCycle"]);
+                BaseSystemInfo.PasswordErrorLockCycle = ConfigurationManager.AppSettings["PasswordErrorLockCycle"].ToInt();
             }
         }
         #endregion
@@ -894,7 +894,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["FtpPort"]))
                 {
-                    BaseSystemInfo.FtpPort = int.Parse(ConfigurationManager.AppSettings["FtpPort"]);
+                    BaseSystemInfo.FtpPort = ConfigurationManager.AppSettings["FtpPort"].ToInt();
                 }
             }
 
@@ -936,7 +936,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["RedisPort"]))
                 {
-                    BaseSystemInfo.RedisPort = int.Parse(ConfigurationManager.AppSettings["RedisPort"]);
+                    BaseSystemInfo.RedisPort = ConfigurationManager.AppSettings["RedisPort"].ToInt();
                 }
             }
 
@@ -967,7 +967,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["RedisCacheMillisecond"]))
                 {
-                    BaseSystemInfo.RedisCacheMillisecond = int.Parse(ConfigurationManager.AppSettings["RedisCacheMillisecond"]);
+                    BaseSystemInfo.RedisCacheMillisecond = ConfigurationManager.AppSettings["RedisCacheMillisecond"].ToInt();
                 }
             }
 
@@ -975,7 +975,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["MemoryCacheMillisecond"]))
                 {
-                    BaseSystemInfo.MemoryCacheMillisecond = int.Parse(ConfigurationManager.AppSettings["MemoryCacheMillisecond"]);
+                    BaseSystemInfo.MemoryCacheMillisecond = ConfigurationManager.AppSettings["MemoryCacheMillisecond"].ToInt();
                 }
             }
         }

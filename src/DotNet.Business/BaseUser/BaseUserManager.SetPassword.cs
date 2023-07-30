@@ -118,7 +118,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldSalt, salt));
             }
             parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordTime, DateTime.Now));
-            if (unlock.HasValue && unlock.Value == true)
+            if (unlock.HasValue && unlock.Value)
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldEnabled, 1));
                 parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldLockStartTime, null));
@@ -126,7 +126,7 @@ namespace DotNet.Business
             }
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
             result = userLogonManager.Update(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId), parameters);
-            if (result == 0 && autoAdd.HasValue && autoAdd.Value == true)
+            if (result == 0 && autoAdd.HasValue && autoAdd.Value)
             {
                 var userLogonEntity = new BaseUserLogonEntity
                 {
@@ -166,6 +166,7 @@ namespace DotNet.Business
 
             if (result == 1)
             {
+                Status = Status.SetPasswordOk;
                 StatusCode = Status.SetPasswordOk.ToString();
                 // 调用扩展
                 if (BaseSystemInfo.OnInternet && BaseSystemInfo.ServerEncryptPassword)
@@ -176,6 +177,7 @@ namespace DotNet.Business
             else
             {
                 // 数据可能被删除
+                Status = Status.ErrorDeleted;
                 StatusCode = Status.ErrorDeleted.ToString();
             }
 

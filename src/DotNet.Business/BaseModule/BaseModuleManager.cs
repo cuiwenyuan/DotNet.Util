@@ -438,6 +438,7 @@ namespace DotNet.Business
                     continue;
                 }
             }
+            Status = Status.Ok;
             StatusCode = Status.Ok.ToString();
             return result;
         }
