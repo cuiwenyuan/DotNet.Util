@@ -33,12 +33,14 @@ namespace DotNet.Business
         public void BeforeAdd(BaseUserEntity entity)
         {
             // 检测成功，可以添加用户
+            Status = Status.OkAdd;
             StatusCode = Status.OkAdd.ToString();
             if (!string.IsNullOrEmpty(entity.UserName)
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldUserName, entity.UserName)
                 , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
             {
                 // 用户名已重复
+                Status = Status.ErrorNameExist;
                 StatusCode = Status.ErrorNameExist.ToString();
             }
             else
@@ -49,6 +51,7 @@ namespace DotNet.Business
                     , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
                 {
                     // 编号已重复
+                    Status = Status.ErrorCodeExist;
                     StatusCode = Status.ErrorCodeExist.ToString();
                 }
 
@@ -62,6 +65,7 @@ namespace DotNet.Business
                     if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
                     {
                         // 编号已重复
+                        Status = Status.ErrorNameExist;
                         StatusCode = Status.ErrorNameExist.ToString();
                     }
                     if (!string.IsNullOrEmpty(entity.Code))
@@ -74,6 +78,7 @@ namespace DotNet.Business
                         if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
                         {
                             // 编号已重复
+                            Status = Status.ErrorCodeExist;
                             StatusCode = Status.ErrorCodeExist.ToString();
                         }
                     }

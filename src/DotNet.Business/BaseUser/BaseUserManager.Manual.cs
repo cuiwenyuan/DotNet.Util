@@ -425,7 +425,7 @@ namespace DotNet.Business
                 tableNameUser = sbView.Put();
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put());
         }
         #endregion
 

@@ -127,12 +127,14 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(result))
                 {
                     //运行成功
+                    Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
                     StatusMessage = Status.OkAdd.ToDescription();
                 }
                 else
                 {
                     //保存失败
+                    Status = Status.DbError;
                     StatusCode = Status.DbError.ToString();
                     StatusMessage = Status.DbError.ToDescription();
                 }

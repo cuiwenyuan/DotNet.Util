@@ -94,7 +94,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseRoleEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
 
@@ -485,7 +485,7 @@ namespace DotNet.Business
                 condition += string.Format(" OR {0} LIKE {1}", BaseRoleEntity.FieldCategoryCode, searchKey);
                 condition += string.Format(" OR {0} LIKE {1})", BaseRoleEntity.FieldCode, searchKey);
             }
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, condition, null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, condition);
         }
         #endregion
 

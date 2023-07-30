@@ -367,7 +367,7 @@ namespace DotNet.Util
         /// <returns>bool 是否删除成功</returns>
         public static bool DeleteFile(string fileName)
         {
-            if (File.Exists(fileName) == true)
+            if (File.Exists(fileName))
             {
                 if (File.GetAttributes(fileName) == FileAttributes.Normal)
                 {
@@ -395,7 +395,7 @@ namespace DotNet.Util
         /// <returns>返回文件大小</returns>
         public static string GetFileSize(string fileName)
         {
-            if (File.Exists(fileName) == true)
+            if (File.Exists(fileName))
             {
                 var fi = new FileInfo(fileName);
                 var fl = fi.Length;
@@ -425,7 +425,7 @@ namespace DotNet.Util
         /// <returns>返回文件大小</returns>
         public static string GetReadableSize(string fileName)
         {
-            if (File.Exists(fileName) == true)
+            if (File.Exists(fileName))
             {
                 var fi = new FileInfo(fileName);
                 var fl = fi.Length;

@@ -102,7 +102,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseModuleEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
 
@@ -438,6 +438,7 @@ namespace DotNet.Business
                     continue;
                 }
             }
+            Status = Status.Ok;
             StatusCode = Status.Ok.ToString();
             return result;
         }

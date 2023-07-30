@@ -634,11 +634,11 @@ namespace DotNet.Util
                 {
                     if (i % 2 == 0)
                     {
-                        sum += int.Parse(code.Substring(code.Length - 1 - i, 1)) * 3;
+                        sum += (code.Substring(code.Length - 1 - i, 1)).ToInt() * 3;
                     }
                     else
                     {
-                        sum += int.Parse(code.Substring(code.Length - 1 - i, 1));
+                        sum += (code.Substring(code.Length - 1 - i, 1)).ToInt();
                     }
 
                 }
