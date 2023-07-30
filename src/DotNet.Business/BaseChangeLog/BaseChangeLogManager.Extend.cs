@@ -70,7 +70,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseChangeLogEntity.FieldTableName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldTableDescription + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
     }

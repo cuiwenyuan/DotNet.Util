@@ -429,7 +429,7 @@ namespace DotNet.Business
                 sbView.Append(tableNameRole);
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Put(), sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Put(), sb.Put());
         }
         #endregion
     }

@@ -64,7 +64,7 @@ namespace DotNet.Business
 
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Put(), null, null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Put(), null);
         }
         #endregion
     }
