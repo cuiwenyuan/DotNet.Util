@@ -1218,6 +1218,7 @@ namespace DotNet.Business
                     //}
                     //else
                     //{
+                    //    result.Status = Status.Timeout;
                     //    result.StatusCode = Status.Timeout.ToString();
                     //}
                     //Troy 20160520 取消OpenId过期时间判断end

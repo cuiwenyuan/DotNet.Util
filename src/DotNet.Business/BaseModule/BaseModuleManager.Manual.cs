@@ -496,7 +496,7 @@ namespace DotNet.Business
                 tableNameModule = sbView.Put();
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameModule, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameModule, sb.Put());
         }
         #endregion
 

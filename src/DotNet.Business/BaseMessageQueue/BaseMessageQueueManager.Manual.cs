@@ -53,205 +53,6 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region 重新发送邮件
-
-        /// <summary>
-        /// 重新发送消息
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="maxFailCount"></param>
-        /// <returns>是否成功</returns>
-        private bool ResendEmail(BaseMessageQueueEntity entity, int maxFailCount = 5)
-        {
-            var result = false;
-            if (entity.MessageType.Equals("Email", StringComparison.OrdinalIgnoreCase))
-            {
-                if (entity.FailCount >= maxFailCount)
-                {
-                    //发送失败超过5次，移动数据到MessageFailed表
-                    var entityFailed = new BaseMessageFailedEntity
-                    {
-                        Source = entity.Source,
-                        MessageType = entity.MessageType,
-                        Recipient = entity.Recipient,
-                        Subject = entity.Subject,
-                        Body = entity.Body,
-                        FailCount = entity.FailCount,
-                        CreateTime = entity.CreateTime,
-                        SortCode = 1
-                    };
-                    //entityFailed.Error = "";
-                    if (!string.IsNullOrWhiteSpace(new BaseMessageFailedManager(UserInfo).Add(entityFailed)))
-                    {
-                        //删除MessageQueue表中的数据
-                        Delete(entity.Id);
-                        RemoveCache();
-                    }
-                    result = false;
-                }
-                else
-                {
-                    if (MailUtil.Send(entity.Recipient, entity.Subject, entity.Body))
-                    {
-                        //发送成功，移动数据到MessageSucceed表
-                        var entitySucceed = new BaseMessageSucceedEntity
-                        {
-                            Source = entity.Source,
-                            MessageType = entity.MessageType,
-                            Recipient = entity.Recipient,
-                            Subject = entity.Subject,
-                            Body = entity.Body,
-                            CreateTime = entity.CreateTime,
-                            SortCode = 1
-                        };
-                        if (!string.IsNullOrWhiteSpace(new BaseMessageSucceedManager(UserInfo).Add(entitySucceed)))
-                        {
-                            //删除MessageQueue表中的数据
-                            Delete(entity.Id);
-                            RemoveCache();
-                            result = true;
-                        }
-                    }
-                    else
-                    {
-                        //更新MessageQueue表中的失败次数
-                        entity.FailCount = entity.FailCount + 1;
-                        UpdateEntity(entity);
-                    }
-                }
-            }
-            return result;
-        }
-        #endregion
-
-        #region 重新发送所有邮件队列
-        /// <summary>
-        /// 重新发送所有队列
-        /// </summary>
-        /// <returns>发送成功数量</returns>
-        public int ResendEmail(int maxFailCount = 5)
-        {
-            var result = 0;
-
-            //每次发一封，避免超时，任务不停启动而listEntity并未重新获取
-            var cacheKey = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName + ".Email";
-            //var cacheTime = default(TimeSpan);
-            var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            var messageType = "Email";
-            var listEntity = CacheUtil.Cache<List<BaseMessageQueueEntity>>(cacheKey, () => GetList<BaseMessageQueueEntity>(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldMessageType, messageType), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldSource, BaseSystemInfo.ApplicationId) }, 1, BaseMessageQueueEntity.FieldId), true, false, cacheTime);
-
-            foreach (var entity in listEntity)
-            {
-                if (ResendEmail(entity, maxFailCount))
-                {
-                    result++;
-                }
-            }
-
-            return result;
-        }
-        #endregion
-
-        #region 重新发送短信
-
-        /// <summary>
-        /// 重新发送消息
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="maxFailCount"></param>
-        /// <returns>是否成功</returns>
-        private bool ResendSms(BaseMessageQueueEntity entity, int maxFailCount = 5)
-        {
-            var result = false;
-            if (entity.MessageType.Equals("sms", StringComparison.OrdinalIgnoreCase))
-            {
-                if (entity.FailCount >= maxFailCount)
-                {
-                    //发送失败超过5次，移动数据到MessageFailed表
-                    var entityFailed = new BaseMessageFailedEntity
-                    {
-                        Source = entity.Source,
-                        MessageType = entity.MessageType,
-                        Recipient = entity.Recipient,
-                        Subject = entity.Subject,
-                        Body = entity.Body,
-                        FailCount = entity.FailCount,
-                        CreateTime = entity.CreateTime,
-                        SortCode = 1
-                    };
-                    //entityFailed.Error = "";
-                    if (!string.IsNullOrWhiteSpace(new BaseMessageFailedManager(UserInfo).Add(entityFailed)))
-                    {
-                        //删除MessageQueue表中的数据
-                        Delete(entity.Id);
-                        RemoveCache();
-                    }
-                    result = false;
-                }
-                else
-                {
-                    if (MailUtil.Send(entity.Recipient, entity.Subject, entity.Body))
-                    {
-                        //发送成功，移动数据到MessageSucceed表
-                        var entitySucceed = new BaseMessageSucceedEntity
-                        {
-                            Source = entity.Source,
-                            MessageType = entity.MessageType,
-                            Recipient = entity.Recipient,
-                            Subject = entity.Subject,
-                            Body = entity.Body,
-                            CreateTime = entity.CreateTime,
-                            SortCode = 1
-                        };
-                        if (!string.IsNullOrWhiteSpace(new BaseMessageSucceedManager(UserInfo).Add(entitySucceed)))
-                        {
-                            //删除MessageQueue表中的数据
-                            Delete(entity.Id);
-                            RemoveCache();
-                            result = true;
-                        }
-                    }
-                    else
-                    {
-                        //更新MessageQueue表中的失败次数
-                        entity.FailCount = entity.FailCount + 1;
-                        UpdateEntity(entity);
-                    }
-                }
-
-            }
-            return result;
-        }
-        #endregion
-
-        #region 重新发送所有短信队列
-        /// <summary>
-        /// 重新发送所有队列
-        /// </summary>
-        /// <returns>发送成功数量</returns>
-        public int ResendSms(int maxFailCount = 5)
-        {
-            var result = 0;
-
-            //每次发一封，避免超时，任务不停启动而listEntity并未重新获取
-            var cacheKey = "List." + BaseSystemInfo.ApplicationId + "." + CurrentTableName + ".Sms";
-            //var cacheTime = default(TimeSpan);
-            var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            var messageType = "Sms";
-            var listEntity = CacheUtil.Cache<List<BaseMessageQueueEntity>>(cacheKey, () => GetList<BaseMessageQueueEntity>(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldMessageType, messageType), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldSource, BaseSystemInfo.ApplicationId) }, 1, BaseMessageQueueEntity.FieldId), true, false, cacheTime);
-
-            foreach (var entity in listEntity)
-            {
-                if (ResendSms(entity, maxFailCount))
-                {
-                    result++;
-                }
-            }
-
-            return result;
-        }
-        #endregion
-
         #region 高级查询
 
         /// <summary>
@@ -336,11 +137,11 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseMessageSucceedEntity.FieldSubject + " LIKE N'%" + searchKey + "%' OR " + BaseMessageSucceedEntity.FieldBody + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
 
-        #region GetTotalCount
+        #region 获取总记录数
         /// <summary>
         /// 获取总记录数
         /// </summary>
@@ -351,36 +152,6 @@ namespace DotNet.Business
             var sb = Pool.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS TotalCount FROM " + CurrentTableName + " WHERE (DATEADD(d, " + days + ", " + BaseMessageQueueEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")");
             return ExecuteScalar(sb.Put())?.ToString();
-        }
-        #endregion
-
-        #region 应用启动邮件
-
-        /// <summary>
-        /// 应用启动邮件
-        /// </summary>
-        /// <returns>是否成功</returns>
-        public bool ApplicationRestart()
-        {
-            var result = false;
-#if NET452_OR_GREATER
-            //发送邮件，写入数据库
-            var entity = new BaseMessageQueueEntity
-            {
-                Source = BaseSystemInfo.ApplicationId,
-                Recipient = BaseSystemInfo.MailBcc,
-                Subject = "Web服务重新启动了 - " + System.Web.Hosting.HostingEnvironment.SiteName + " - " + BaseSystemInfo.SoftFullName,
-                Body = "主人：<br>运行于<b>" + System.Web.Hosting.HostingEnvironment.SiteName + "</b>的<b>" + BaseSystemInfo.SoftFullName +
-                       "</b>于<b>" + DateTime.Now.AddSeconds(-1) + "</b>重新启动了。" + Environment.NewLine
-                       + "<br>ApplicationID：" + BaseSystemInfo.ApplicationId + "<br>ApplicationPhysicalPath：" + System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath + "<br>ApplicationVirtualPath：" + System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath + "<br><br>" + Environment.NewLine + BaseSystemInfo.SoftFullName + "<br>自动发送" + "<br>" + DateTime.Now,
-                SortCode = 1
-            };
-            if (!string.IsNullOrEmpty(Add(entity)))
-            {
-                result = true;
-            }
-#endif
-            return result;
         }
         #endregion
     }

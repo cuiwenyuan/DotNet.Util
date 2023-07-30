@@ -114,7 +114,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseUserEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
 
@@ -375,6 +375,7 @@ namespace DotNet.Business
             if (dt != null && dt.Rows.Count > 0)
             {
                 // 用户找到状态
+                Status = Status.UserDuplicate;
                 StatusCode = Status.UserDuplicate.ToString();
                 StatusMessage = GetStateMessage(StatusCode);
                 entity = BaseEntity.Create<BaseUserEntity>(dt);
@@ -382,6 +383,7 @@ namespace DotNet.Business
             else
             {
                 // 用户没有找到状态
+                Status = Status.UserNotFound;
                 StatusCode = Status.UserNotFound.ToString();
                 StatusMessage = GetStateMessage(StatusCode);
             }
@@ -438,6 +440,7 @@ namespace DotNet.Business
             else
             {
                 // 用户没有找到状态
+                Status = Status.UserNotFound;
                 StatusCode = Status.UserNotFound.ToString();
                 StatusMessage = GetStateMessage(StatusCode);
             }
@@ -456,6 +459,7 @@ namespace DotNet.Business
             BaseUserEntity userEntity = null;
 
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             StatusMessage = GetStateMessage(StatusCode);
             // 检查是否有效的合法的参数
@@ -499,6 +503,7 @@ namespace DotNet.Business
             BaseUserEntity userEntity = null;
 
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             StatusMessage = GetStateMessage(StatusCode);
             // 检查是否有效的合法的参数
@@ -813,6 +818,7 @@ namespace DotNet.Business
             // 1.用户是否存在？
             BaseUserInfo userInfo = null;
             // 用户没有找到状态
+            Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
             if (!string.IsNullOrEmpty(openId))
@@ -830,18 +836,21 @@ namespace DotNet.Business
                     // 3.用户是否被锁定？
                     if (entity.Enabled == 0)
                     {
+                        Status = Status.UserLocked;
                         StatusCode = Status.UserLocked.ToString();
                         return userInfo;
                     }
                     if (entity.Enabled == 1)
                     {
                         // 2.用户是否已经被激活？
+                        Status = Status.UserIsActivate;
                         StatusCode = Status.UserIsActivate.ToString();
                         return userInfo;
                     }
                     if (entity.Enabled == -1)
                     {
                         // 4.成功激活用户
+                        Status = Status.Ok;
                         StatusCode = Status.Ok.ToString();
                         manager.Update(new KeyValuePair<string, object>(BaseUserEntity.FieldId, entity.Id), new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
                         return userInfo;

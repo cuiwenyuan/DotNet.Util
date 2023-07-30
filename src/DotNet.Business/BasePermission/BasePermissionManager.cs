@@ -97,7 +97,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BasePermissionEntity.FieldPermissionId + " LIKE N'%" + searchKey + "%' OR " + BasePermissionEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put(), null, "*");
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
         }
         #endregion
 

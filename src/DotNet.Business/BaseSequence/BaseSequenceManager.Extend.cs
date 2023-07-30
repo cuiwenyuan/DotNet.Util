@@ -508,10 +508,12 @@ namespace DotNet.Business
                             {
                                 if (UpdateSequence(name) > 0)
                                 {
+                                    Status = Status.LockOk;
                                     StatusCode = Status.LockOk.ToString();
                                 }
                                 else
                                 {
+                                    Status = Status.CanNotLock;
                                     StatusCode = Status.CanNotLock.ToString();
                                 }
                             }
@@ -522,15 +524,18 @@ namespace DotNet.Business
                             var dbTransaction = DbHelper.BeginTransaction();
                             try
                             {
+                                Status = Status.CanNotLock;
                                 StatusCode = Status.CanNotLock.ToString();
                                 entity = GetSequenceByLock(name, defaultSequence);
                                 if (StatusCode == Status.LockOk.ToString())
                                 {
+                                    Status = Status.CanNotLock;
                                     StatusCode = Status.CanNotLock.ToString();
                                     if (UpdateSequence(name) > 0)
                                     {
                                         // 提交事务
                                         dbTransaction.Commit();
+                                        Status = Status.LockOk;
                                         StatusCode = Status.LockOk.ToString();
                                     }
                                     else
@@ -550,6 +555,7 @@ namespace DotNet.Business
                                 Console.WriteLine(ex);
                                 // 回滚事务
                                 dbTransaction.Rollback();
+                                Status = Status.CanNotLock;
                                 StatusCode = Status.CanNotLock.ToString();
                             }
                             //Troy.Cui 2018.07.02
@@ -660,10 +666,12 @@ namespace DotNet.Business
                             {
                                 if (UpdateReduction(name) > 0)
                                 {
+                                    Status = Status.LockOk;
                                     StatusCode = Status.LockOk.ToString();
                                 }
                                 else
                                 {
+                                    Status = Status.CanNotLock;
                                     StatusCode = Status.CanNotLock.ToString();
                                 }
                             }
@@ -675,15 +683,18 @@ namespace DotNet.Business
                             {
                                 // 开始事务
                                 DbHelper.BeginTransaction();
+                                Status = Status.CanNotLock;
                                 StatusCode = Status.CanNotLock.ToString();
                                 sequenceEntity = GetSequenceByLock(name, defaultSequence);
                                 if (StatusCode == Status.LockOk.ToString())
                                 {
+                                    Status = Status.CanNotLock;
                                     StatusCode = Status.CanNotLock.ToString();
                                     if (UpdateReduction(name) > 0)
                                     {
                                         // 提交事务
                                         DbHelper.CommitTransaction();
+                                        Status = Status.LockOk;
                                         StatusCode = Status.LockOk.ToString();
                                     }
                                     else
@@ -702,6 +713,7 @@ namespace DotNet.Business
                             {
                                 // 回滚事务
                                 DbHelper.RollbackTransaction();
+                                Status = Status.CanNotLock;
                                 StatusCode = Status.CanNotLock.ToString();
                             }
                             //Troy.Cui 2018.07.02
@@ -755,6 +767,7 @@ namespace DotNet.Business
             {
                 // 这里添加记录时加锁机制。
                 // 是否已经被锁住
+                Status = Status.CanNotLock;
                 StatusCode = Status.CanNotLock.ToString();
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
@@ -768,7 +781,7 @@ namespace DotNet.Business
                         sequenceEntity.Sequence = defaultSequence;
                         sequenceEntity.Step = DefaultStep;
                         AddEntity(sequenceEntity);
-
+                        Status = Status.LockOk;
                         StatusCode = Status.LockOk.ToString();
                         break;
                     }
@@ -787,6 +800,7 @@ namespace DotNet.Business
             {
                 // 若记录已经存在，加锁，然后读取记录。
                 // 是否已经被锁住
+                Status = Status.CanNotLock;
                 StatusCode = Status.CanNotLock.ToString();
                 for (var i = 0; i < BaseSystemInfo.LockNoWaitCount; i++)
                 {
@@ -795,6 +809,7 @@ namespace DotNet.Business
                     if (lockCount > 0)
                     {
                         sequenceEntity = GetEntityByAdd(name);
+                        Status = Status.LockOk;
                         StatusCode = Status.LockOk.ToString();
                         break;
                     }

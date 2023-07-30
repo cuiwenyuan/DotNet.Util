@@ -286,14 +286,14 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "RedisPort")))
                 {
-                    BaseSystemInfo.RedisPort = int.Parse(GetValue(_xmlDocument, "RedisPort"));
+                    BaseSystemInfo.RedisPort = GetValue(_xmlDocument, "RedisPort").ToInt();
                 }
             }
             if (Exists("RedisInitialDb"))
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "RedisInitialDb")))
                 {
-                    BaseSystemInfo.RedisInitialDb = int.Parse(GetValue(_xmlDocument, "RedisInitialDb"));
+                    BaseSystemInfo.RedisInitialDb = GetValue(_xmlDocument, "RedisInitialDb").ToInt();
                 }
             }
             if (Exists("RedisSslEnabled"))
@@ -312,14 +312,14 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "RedisCacheMillisecond")))
                 {
-                    BaseSystemInfo.RedisCacheMillisecond = int.Parse(GetValue(_xmlDocument, "RedisCacheMillisecond"));
+                    BaseSystemInfo.RedisCacheMillisecond = GetValue(_xmlDocument, "RedisCacheMillisecond").ToInt();
                 }
             }
             if (Exists("MemoryCacheMillisecond"))
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "MemoryCacheMillisecond")))
                 {
-                    BaseSystemInfo.MemoryCacheMillisecond = int.Parse(GetValue(_xmlDocument, "MemoryCacheMillisecond"));
+                    BaseSystemInfo.MemoryCacheMillisecond = GetValue(_xmlDocument, "MemoryCacheMillisecond").ToInt();
                 }
             }
             #endregion
@@ -333,7 +333,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "FtpPort")))
                 {
-                    BaseSystemInfo.FtpPort = int.Parse(GetValue(_xmlDocument, "FtpPort"));
+                    BaseSystemInfo.FtpPort = GetValue(_xmlDocument, "FtpPort").ToInt();
                 }
             }
             if (Exists("FtpSslEnabled"))
@@ -359,7 +359,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "MqttPort")))
                 {
-                    BaseSystemInfo.MqttPort = int.Parse(GetValue(_xmlDocument, "MqttPort"));
+                    BaseSystemInfo.MqttPort = GetValue(_xmlDocument, "MqttPort").ToInt();
                 }
             }
             if (Exists("MqttSslEnabled"))
@@ -397,7 +397,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "WebApiSlowResponseMilliseconds")))
                 {
-                    BaseSystemInfo.WebApiSlowResponseMilliseconds = int.Parse(GetValue(_xmlDocument, "WebApiSlowResponseMilliseconds"));
+                    BaseSystemInfo.WebApiSlowResponseMilliseconds = GetValue(_xmlDocument, "WebApiSlowResponseMilliseconds").ToInt();
                 }
             }
             #endregion
@@ -416,7 +416,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "CookieExpires")))
                 {
-                    BaseSystemInfo.CookieExpires = int.Parse(GetValue(_xmlDocument, "CookieExpires"));
+                    BaseSystemInfo.CookieExpires = GetValue(_xmlDocument, "CookieExpires").ToInt();
                 }
             }
             #endregion
@@ -620,7 +620,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "OnlineTimeout")))
                 {
-                    BaseSystemInfo.OnlineTimeout = int.Parse(GetValue(_xmlDocument, "OnlineTimeout"));
+                    BaseSystemInfo.OnlineTimeout = GetValue(_xmlDocument, "OnlineTimeout").ToInt();
                 }
 
             }
@@ -991,7 +991,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "DatabaseTableVersion")))
                 {
-                    BaseSystemInfo.DatabaseTableVersion = int.Parse(GetValue(_xmlDocument, "DatabaseTableVersion"));
+                    BaseSystemInfo.DatabaseTableVersion = GetValue(_xmlDocument, "DatabaseTableVersion").ToInt();
                 }
             }
 

@@ -48,6 +48,7 @@ namespace DotNet.Business
             if (checkUserExist && Exists(parameters, entity.Id))
             {
                 // 用户名已重复
+                Status = Status.ErrorUserExist;
                 StatusCode = Status.ErrorUserExist.ToString();
             }
             else
