@@ -138,7 +138,7 @@ namespace DotNet.Util
                     var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
                     var model = new AccessToken();
 
-                    var returnContent = HttpRequestUtil.HcGet(strUrl);
+                    var returnContent = HttpRequestUtil.HwGet(strUrl);
 
                     var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
                     model.access_token = accessToken.access_token;
