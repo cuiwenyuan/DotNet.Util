@@ -29,29 +29,30 @@ namespace DotNet.Util
         /// <param name="signName">签名</param>
         /// <param name="param">参数（建议Dictionary<string, object>）</param>
         /// <returns></returns>
-        public static bool Send(out string message, string mobile, string json, string templateCode, string serviceUrl = "http://dysmsapi.aliyuncs.com", string accessKeyId = null, string accessKeySecret = null, string signName = null, object param = null)
+        public static bool Send(out string message, string mobile, string json, string templateCode, string serviceUrl = null, string accessKeyId = null, string accessKeySecret = null, string signName = null, object param = null)
         {
             var result = false;
-            if (ValidateUtil.IsMobile(mobile))
+            if (!ValidateUtil.IsMobile(mobile))
             {
                 message = "手机号码有误！";
                 return false;
             }
+            var xmlConfigUtil = new XmlConfigUtil("XmlConfig\\Sms.config");
             if (serviceUrl.IsNullOrEmpty())
             {
-                serviceUrl = new XmlConfigUtil().GetValue("ServiceUrl", defaultValue: "http://dysmsapi.aliyuncs.com", nodeName: "AliyunSMS");
+                serviceUrl = xmlConfigUtil.GetValue("ServiceUrl", defaultValue: "http://dysmsapi.aliyuncs.com", nodeName: "AliyunSMS");
             }
             if (accessKeyId.IsNullOrEmpty())
             {
-                accessKeyId = new XmlConfigUtil().GetValue("AccessKeyId", nodeName: "AliyunSMS");
+                accessKeyId = xmlConfigUtil.GetValue("AccessKeyId", nodeName: "AliyunSMS");
             }
             if (accessKeySecret.IsNullOrEmpty())
             {
-                accessKeySecret = new XmlConfigUtil().GetValue("AccessKeySecret", nodeName: "AliyunSMS");
+                accessKeySecret = xmlConfigUtil.GetValue("AccessKeySecret", nodeName: "AliyunSMS");
             }
             if (signName.IsNullOrEmpty())
             {
-                signName = new XmlConfigUtil().GetValue("SignName", nodeName: "AliyunSMS");
+                signName = xmlConfigUtil.GetValue("SignName", nodeName: "AliyunSMS");
             }
 
             if (json.IsNullOrEmpty() && param != null)
@@ -69,7 +70,7 @@ namespace DotNet.Util
                 { "AccessKeyId", accessKeyId },
                 { "SignatureVersion", "1.0" },
                 { "Timestamp", timeStamp },
-                { "Format", "Json" },//可换成xml
+                { "Format", "Json" },
 
                 //2.业务api参数
                 { "Action", "SendSms" },
@@ -106,7 +107,7 @@ namespace DotNet.Util
                     sb.Append("&").Append(SpecialUrlEncode("SignName")).Append("=").Append(SpecialUrlEncode(dic["SignName"]));
                 }
             }
-            var sortedQueryString = sb.Put().Substring(1);
+            var sortedQueryString = sb.ToString().Substring(1);
 
             var sbToSign = Pool.StringBuilder.Get();
             sbToSign.Append("GET").Append("&");
@@ -119,7 +120,7 @@ namespace DotNet.Util
 
             //最终打印出合法GET请求的URL
             var url = string.Format("{0}/?Signature={1}{2}", serviceUrl, signature, sb.Put());
-            result = HttpGet(url, out message);
+            result = HttpGet(url, out message);            
             return result;
         }
         #endregion
