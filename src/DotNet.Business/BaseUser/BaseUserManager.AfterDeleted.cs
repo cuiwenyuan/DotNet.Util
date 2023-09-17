@@ -2,11 +2,10 @@
 // All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
 
-using DotNet.Model;
-
 namespace DotNet.Business
 {
     using Util;
+    using Model;
 
     /// <summary>
     /// BaseUserManager

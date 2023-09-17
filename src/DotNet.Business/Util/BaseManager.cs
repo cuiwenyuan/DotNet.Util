@@ -5,12 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 
 namespace DotNet.Business
 {
-    using DotNet.Model;
-    using System.Linq;
-    using System.Reflection;
+    using Model;
     using Util;
 
     /// <summary>
@@ -264,21 +264,22 @@ namespace DotNet.Business
 
         #region 新增和更新
 
-        #region public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
+        #region public virtual string Add<T>(T t, bool identity = true, bool returnId = true, string createIp = null)
         /// <summary>
         /// 添加, 这里可以人工干预，提高程序的性能
         /// </summary>
         /// <param name="t">泛型实体</param>
         /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
         /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <param name="createIp">创建IP</param>
         /// <returns>主键</returns>
-        public virtual string Add<T>(T t, bool identity = true, bool returnId = true)
+        public virtual string Add<T>(T t, bool identity = true, bool returnId = true, string createIp = null)
         {
             Identity = identity;
             ReturnId = returnId;
             if (t is BaseEntity entity)
             {
-                entity.Id = AddEntity(t).ToInt();
+                entity.Id = AddEntity(t, createIp: createIp).ToInt();
                 return entity.Id.ToString();
             }
             else
@@ -289,15 +290,16 @@ namespace DotNet.Business
 
         #endregion
 
-        #region public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
+        #region public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true, string createIp = null)
         /// <summary>
         /// 添加或更新(主键是否为0)
         /// </summary>
         /// <param name="t">泛型实体</param>
         /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
         /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <param name="createIp">创建IP</param>
         /// <returns>主键</returns>
-        public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true)
+        public virtual string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true, string createIp = null)
         {
             Identity = identity;
             ReturnId = returnId;
@@ -305,12 +307,12 @@ namespace DotNet.Business
             {
                 if (entity.Id == 0)
                 {
-                    entity.Id = AddEntity(t).ToInt();
+                    entity.Id = AddEntity(t, createIp: createIp).ToInt();
                     return entity.Id.ToString();
                 }
                 else
                 {
-                    return UpdateEntity(t) > 0 ? entity.Id.ToString() : string.Empty;
+                    return UpdateEntity(t, updateIp: createIp) > 0 ? entity.Id.ToString() : string.Empty;
                 }
             }
             else
@@ -321,25 +323,27 @@ namespace DotNet.Business
 
         #endregion
 
-        #region public virtual int Update<T>(T t)
+        #region public virtual int Update<T>(T t, string updateIp = null)
 
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="t">泛型实体</param>
-        public virtual int Update<T>(T t)
+        /// <param name="updateIp">修改IP</param>
+        public virtual int Update<T>(T t, string updateIp = null)
         {
-            return UpdateEntity(t);
+            return UpdateEntity(t, updateIp: updateIp);
         }
 
         #endregion
 
-        #region public virtual string AddEntity<T>(T t)
+        #region public virtual string AddEntity<T>(T t, string createIp = null)
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="t">泛型实体</param>
-        public virtual string AddEntity<T>(T t)
+        /// <param name="createIp">创建IP</param>
+        public virtual string AddEntity<T>(T t, string createIp = null)
         {
             var key = string.Empty;
             if (t is BaseEntity)
@@ -347,8 +351,8 @@ namespace DotNet.Business
                 var sqlBuilder = new SqlBuilder(DbHelper, Identity, ReturnId);
                 sqlBuilder.BeginInsert(CurrentTableName, PrimaryKey);
                 SetEntity(sqlBuilder, t);
-                SetEntityCreate(sqlBuilder, t);
-                SetEntityUpdate(sqlBuilder, t);
+                SetEntityCreate(sqlBuilder, t, createIp: createIp);
+                SetEntityUpdate(sqlBuilder, t, updateIp: createIp);
                 key = AddEntity(sqlBuilder, t);
                 if (!string.IsNullOrWhiteSpace(key))
                 {
@@ -360,13 +364,14 @@ namespace DotNet.Business
 
         #endregion
 
-        #region public virtual int UpdateEntity<T>(T t)
+        #region public virtual int UpdateEntity<T>(T t, string updateIp = null)
 
         /// <summary>
         /// 更新实体
         /// </summary>
         /// <param name="t">泛型实体</param>
-        public virtual int UpdateEntity<T>(T t)
+        /// <param name="updateIp">修改IP</param>
+        public virtual int UpdateEntity<T>(T t, string updateIp = null)
         {
             var result = 0;
             if (t is BaseEntity entity)
@@ -374,7 +379,7 @@ namespace DotNet.Business
                 var sqlBuilder = new SqlBuilder(DbHelper);
                 sqlBuilder.BeginUpdate(CurrentTableName);
                 SetEntity(sqlBuilder, t);
-                SetEntityUpdate(sqlBuilder, t);
+                SetEntityUpdate(sqlBuilder, t, updateIp: updateIp);
                 result = UpdateEntity(sqlBuilder, t);
                 if (result > 0)
                 {
@@ -907,7 +912,7 @@ namespace DotNet.Business
                     continue;
                 }
                 // 跳过5个非必备，但要自动新增的字段
-                if (column.MemberInfo.Name.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                else if (column.MemberInfo.Name.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     column.MemberInfo.Name.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
@@ -920,14 +925,15 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        #region public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t, string createIp = null) 设置创建信息
         /// <summary>
         /// 设置创建信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t)
+        /// <param name="createIp">创建IP</param>
+        public virtual void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t, string createIp = null)
         {
             if (t is BaseEntity entity)
             {
@@ -1031,21 +1037,22 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.CreateTime = DateTime.Now;
-                entity.CreateIp = Utils.GetIp();
+                entity.CreateIp = !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldCreateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp());
             }
         }
         #endregion
 
-        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        #region public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t, string updateIp = null) 设置更新信息
         /// <summary>
         /// 设置更新信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t)
+        /// <param name="updateIp">修改IP</param>
+        public virtual void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t, string updateIp = null)
         {
             if (t is BaseEntity entity)
             {
@@ -1072,9 +1079,9 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.UpdateTime = DateTime.Now;
-                entity.UpdateIp = Utils.GetIp();
+                entity.UpdateIp = !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp());
             }
         }
         #endregion

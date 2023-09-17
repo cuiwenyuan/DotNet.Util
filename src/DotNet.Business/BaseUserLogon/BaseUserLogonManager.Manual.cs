@@ -1,13 +1,12 @@
 ﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
-using System.Data;
 using System.Collections.Generic;
+using System;
 
 namespace DotNet.Business
 {
     using Model;
-    using System;
     using Util;
 
     /// <summary>

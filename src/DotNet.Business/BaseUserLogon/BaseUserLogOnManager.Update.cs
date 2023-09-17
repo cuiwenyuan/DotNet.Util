@@ -4,11 +4,11 @@
 
 using System;
 using System.Linq;
-using DotNet.Util;
 
 namespace DotNet.Business
 {
     using Model;
+    using Util;
 
     /// <summary>
     /// BaseUserLogonManager

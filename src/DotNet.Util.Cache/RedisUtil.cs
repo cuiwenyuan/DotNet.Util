@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FreeRedis;
-using Newtonsoft.Json;
+using NewLife.Caching;
 
 namespace DotNet.Util
 {
@@ -17,23 +16,16 @@ namespace DotNet.Util
 
         }
 
-        // 单例并只有一个连接，叶老板推荐
-        private static RedisClient redisClient { get; } = GetClient();
+        // 单例并只有一个连接
+        private static FullRedis redisClient { get; } = GetClient();
         // 以下代码每次调用都会有一个实例，千万不要用
         //private static RedisClient redisClient => GetClient();
 
-        private static RedisClient GetClient()
+        private static FullRedis GetClient()
         {
             var sb = Pool.StringBuilder.Get().Append(BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
-            var cli = new RedisClient(sb.Put());
-            cli.Serialize = obj => JsonConvert.SerializeObject(obj);
-            cli.Deserialize = (json, type) => JsonConvert.DeserializeObject(json, type);
-            // Redis命令行日志
-            cli.Notice += (s, e) =>
-            {
-                Console.WriteLine(e.Log);
-                //LogUtil.WriteLog(e.Log, "Cache", null, "Cache");
-            };
+            var cli = new FullRedis();
+            cli.Init(sb.Put());
             return cli;
         }
 
@@ -45,7 +37,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
-            return redisClient.Exists(cacheKey);
+            return redisClient.ContainsKey(cacheKey);
         }
         #endregion
 
@@ -128,7 +120,7 @@ namespace DotNet.Util
         {
             if (!string.IsNullOrWhiteSpace(key))
             {
-                redisClient.Del(key);
+                redisClient.Remove(key);
                 return true;
             }
             return false;
@@ -140,7 +132,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveAll()
         {
-            redisClient.FlushDb();
+            var keys = redisClient.Keys;
+            foreach (var key in keys)
+            {
+                redisClient.Remove(key);
+            }
         }
 
         /// <summary>
@@ -152,10 +148,10 @@ namespace DotNet.Util
         {
             if (!string.IsNullOrWhiteSpace(pattern))
             {
-                var keys = redisClient.Keys(pattern);
+                var keys = redisClient.Keys;
                 foreach (var key in keys)
                 {
-                    redisClient.Del(key);
+                    redisClient.Remove(key);
                 }
             }
         }
@@ -166,7 +162,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string[] GetAllKeys()
         {
-            return redisClient.Keys("*");
+            return redisClient.Keys.ToArray<string>();
         }
 
         #endregion

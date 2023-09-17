@@ -3,12 +3,13 @@
 //-----------------------------------------------------------------
 
 using System;
-using DotNet.Util;
 using System.Data;
 using System.Text;
 
 namespace DotNet.Business
 {
+    using Util;
+
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
