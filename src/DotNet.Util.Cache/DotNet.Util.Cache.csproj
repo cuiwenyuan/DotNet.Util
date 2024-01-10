@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Description>A set of .NET 7/6/5/Standard 2.1/Standard 2.0 Memory/Redis Cache utilities(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Description>A set of .NET 8/7/6/5/Standard 2.1/Standard 2.0 Memory/Redis Cache utilities(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
-		<Copyright>©2008-2023 Wangcaisoft</Copyright>
+		<Copyright>©2008-2024 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -38,7 +38,7 @@
 		<Compile Remove="AppSetting.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
 	</ItemGroup>
 

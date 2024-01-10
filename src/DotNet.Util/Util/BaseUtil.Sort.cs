@@ -259,7 +259,7 @@ namespace DotNet.Util
                 {
                     break;
                 }
-                result = ReflectionUtil.GetProperty(t, field).ToString().ToString();
+                result = ReflectionUtil.GetProperty(t, field).ToString();
             }
             return result;
         }
