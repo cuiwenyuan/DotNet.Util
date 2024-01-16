@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DotNet.Business
 {
-    using DotNet.Util;
+    using Util;
     using Model;
 
     /// <summary>

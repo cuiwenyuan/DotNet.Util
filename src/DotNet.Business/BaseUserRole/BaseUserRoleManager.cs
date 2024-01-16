@@ -3,13 +3,13 @@
 //     Copyright (c) 2023, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Data;
+using System;
 
 namespace DotNet.Business
 {
-    using DotNet.Model;
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
+    using Model;
     using Util;
 
     /// <summary>

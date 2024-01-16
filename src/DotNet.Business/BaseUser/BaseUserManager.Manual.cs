@@ -3,11 +3,11 @@
 //-----------------------------------------------------------------
 using System.Data;
 using System.Collections.Generic;
+using System;
 
 namespace DotNet.Business
 {
-    using Model;
-    using System;
+    using Model;    
     using Util;
 
     /// <summary>

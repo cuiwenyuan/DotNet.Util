@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using DotNet.Model;
-using DotNet.Util;
+
 
 namespace DotNet.Business
 {
+    using Util;
+    using Model;
+
     /// <summary>
     ///	BaseManager
     /// 通用基类部分

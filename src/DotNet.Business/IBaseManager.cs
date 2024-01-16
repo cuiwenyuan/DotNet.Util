@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using DotNet.Util;
 
 namespace DotNet.Business
 {
     using Model;
+    using Util;
 
     /// <summary>
     ///	IBaseManager
@@ -863,8 +863,9 @@ namespace DotNet.Business
         /// <param name="t">泛型实体</param>
         /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
         /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <param name="createIp">创建IP</param>
         /// <returns>主键</returns>
-        string Add<T>(T t, bool identity = true, bool returnId = true);
+        string Add<T>(T t, bool identity = true, bool returnId = true, string createIp = null);
 
         /// <summary>
         /// 添加或更新(主键是否为0)
@@ -872,26 +873,30 @@ namespace DotNet.Business
         /// <param name="t">泛型实体</param>
         /// <param name="identity">自增量方式，表主键是否采用自增的策略</param>
         /// <param name="returnId">返回主键，不返回程序允许速度会快，主要是为了主细表批量插入数据优化用的</param>
+        /// <param name="createIp">创建IP</param>
         /// <returns>主键</returns>
-        string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true);
+        string AddOrUpdate<T>(T t, bool identity = true, bool returnId = true, string createIp = null);
 
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="t">泛型实体</param>
-        int Update<T>(T t);
+        /// <param name="updateIp">修改IP</param>
+        int Update<T>(T t, string updateIp = null);
 
         /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="t">泛型实体</param>
-        string AddEntity<T>(T t);
+        /// <param name="createIp">创建IP</param>
+        string AddEntity<T>(T t, string createIp = null);
 
         /// <summary>
         /// 更新实体
         /// </summary>
         /// <param name="t">泛型实体</param>
-        int UpdateEntity<T>(T t);
+        /// <param name="updateIp">修改IP</param>
+        int UpdateEntity<T>(T t, string updateIp = null);
 
         #endregion
 
@@ -1033,24 +1038,26 @@ namespace DotNet.Business
         void SetEntity<T>(SqlBuilder sqlBuilder, T t);
         #endregion
 
-        #region void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t) 设置创建信息
+        #region void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t, string createIp = null) 设置创建信息
         /// <summary>
         /// 设置创建信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t);
+        /// <param name="createIp">创建IP</param>
+        void SetEntityCreate<T>(SqlBuilder sqlBuilder, T t, string createIp = null);
         #endregion
 
-        #region void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t) 设置更新信息
+        #region void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t, string updateIp = null) 设置更新信息
         /// <summary>
         /// 设置更新信息
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlBuilder"></param>
         /// <param name="t"></param>
-        void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t);
+        /// <param name="updateIp">修改IP</param>
+        void SetEntityUpdate<T>(SqlBuilder sqlBuilder, T t, string updateIp = null);
         #endregion
 
         #region string AddEntity<T>(SqlBuilder sqlBuilder, T t) 新增实体新增实体

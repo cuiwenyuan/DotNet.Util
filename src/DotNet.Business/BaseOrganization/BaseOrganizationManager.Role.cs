@@ -4,12 +4,13 @@
 
 using System.Collections.Generic;
 using System.Data;
+using System;
 
 namespace DotNet.Business
 {
-    using DotNet.Util;
+    using Util;
     using Model;
-    using System;
+
 
     /// <summary>
     /// BaseOrganizationManager（程序OK）
