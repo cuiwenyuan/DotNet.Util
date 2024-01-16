@@ -2,11 +2,11 @@
 // All Rights Reserved. Copyright (c) 2023, DotNet.
 //-----------------------------------------------------------------
 
-using DotNet.Util;
 using System;
 
 namespace DotNet.Business
 {
+    using Util;
     /// <summary>
     ///	BaseManager
     /// 通用基类部分

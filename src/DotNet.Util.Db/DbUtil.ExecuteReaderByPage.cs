@@ -64,7 +64,7 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
             dataReader = dbHelper.ExecuteReader("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure);
-            recordCount = int.Parse(dbDataParameter.Value.ToString());
+            recordCount = dbDataParameter.Value.ToInt();
 
             return dataReader;
         }

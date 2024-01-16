@@ -133,7 +133,28 @@ namespace DotNet.Util
 
                         if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
                         {
-                            message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
+                            //message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
+                            if (!BaseSystemInfo.MailBcc.Contains(",") && !BaseSystemInfo.MailBcc.Contains(";"))
+                            {
+                                message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
+                            }
+                            else if (!string.IsNullOrWhiteSpace(BaseSystemInfo.MailBcc))
+                            {
+                                string[] bccs = null;
+                                if (BaseSystemInfo.MailBcc.Contains(","))
+                                {
+                                    bccs = BaseSystemInfo.MailBcc.Split(",".ToCharArray());
+                                }
+                                else if (BaseSystemInfo.MailBcc.Contains(";"))
+                                {
+                                    bccs = BaseSystemInfo.MailBcc.Split(";".ToCharArray());
+                                }
+
+                                foreach (var t in bccs)
+                                {
+                                    message.Bcc.Add(new MailAddress(t));
+                                }
+                            }
                         }
 
                         if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))

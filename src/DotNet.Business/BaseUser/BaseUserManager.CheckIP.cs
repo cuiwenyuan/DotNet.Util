@@ -5,12 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using DotNet.Util;
 
 namespace DotNet.Business
 {
     using Model;
-
+    using Util;
     /// <summary>
     /// BaseUserManager
     /// 用户管理

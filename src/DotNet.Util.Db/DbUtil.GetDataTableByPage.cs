@@ -338,13 +338,13 @@ namespace DotNet.Util
         /// <param name="maxOutPut">最大输出数量</param>
         /// <param name="showRecordCount">是否显示分页数量</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool? showRecordCount = true)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool showRecordCount = true)
         {
             DataTable result = null;
             recordCount = 0;
             if (dbHelper != null)
             {
-                if (showRecordCount == true)
+                if (showRecordCount)
                 {
                     recordCount = GetCount(dbHelper, tableName, conditions, dbParameters);
                     recordCount = recordCount > maxOutPut ? (int)maxOutPut : recordCount;
