@@ -15,13 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Model", "DotNet.Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business", "DotNet.Business\DotNet.Business.csproj", "{EEFB10F9-33BA-427D-8AF3-6D9B31ED97DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.IService", "DotNet.IService\DotNet.IService.csproj", "{8C000DF4-68CD-4E13-B641-A42744242776}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business.Web", "DotNet.Business.Web\DotNet.Business.Web.csproj", "{D28A7016-B114-4BFD-9BBC-884BCE039DF5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Web.UI.BasePage", "DotNet.Web.UI.BasePage\DotNet.Web.UI.BasePage.csproj", "{8EAEAA97-2B65-4395-960F-38DF35F3741A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test", "DotNet.Test\DotNet.Test.csproj", "{4E145CE2-15B1-4DB4-8E48-B966536F5052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Test", "DotNet.Test\DotNet.Test.csproj", "{4E145CE2-15B1-4DB4-8E48-B966536F5052}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test.452", "DotNet.Test.452\DotNet.Test.452.csproj", "{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}"
 EndProject
@@ -55,10 +53,6 @@ Global
 		{EEFB10F9-33BA-427D-8AF3-6D9B31ED97DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEFB10F9-33BA-427D-8AF3-6D9B31ED97DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEFB10F9-33BA-427D-8AF3-6D9B31ED97DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C000DF4-68CD-4E13-B641-A42744242776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C000DF4-68CD-4E13-B641-A42744242776}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C000DF4-68CD-4E13-B641-A42744242776}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C000DF4-68CD-4E13-B641-A42744242776}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D28A7016-B114-4BFD-9BBC-884BCE039DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU

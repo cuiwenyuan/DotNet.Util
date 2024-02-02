@@ -37,41 +37,38 @@ public partial class BasePage : System.Web.UI.Page
         DataTable dtUser = null;
         var manager = new BaseUserManager(UserInfo);
 
-        var sql = string.Empty;
-        sql = " SELECT * "
-                + "   FROM " + BaseUserEntity.CurrentTableName
-                + "  WHERE (" + BaseUserEntity.FieldDeleted + " = 0 "
-                + "       AND " + BaseUserEntity.FieldEnabled + " = 1 "
-                + "       AND " + BaseUserEntity.FieldIsVisible + " = 1 ";
+        var sb = PoolUtil.StringBuilder.Get();
+        sb.Append(" SELECT * FROM " + BaseUserEntity.CurrentTableName);
+        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1 ");
 
         if (!string.IsNullOrEmpty(organizationId))
         {
-            sql += " AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ";
+            sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ");
         }
         if (securityLevel != null)
         {
-            sql += " AND " + BaseUserEntity.FieldSecurityLevel + " < " + securityLevel + " ";
+            sb.Append(" AND " + BaseUserEntity.FieldSecurityLevel + " < " + securityLevel + " ");
         }
-        sql += " ) ";
+        sb.Append(" )");
         if (containSelf.HasValue)
         {
             if (containSelf == true)
             {
-                sql += " OR ( " + BaseUserEntity.FieldId + " = '" + UserInfo.Id + "'";
-                sql += " AND ( " + BaseUserEntity.FieldCompanyId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldSubCompanyId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldWorkgroupId + " = '" + organizationId + "'))";
+                sb.Append(" OR ( " + BaseUserEntity.FieldId + " = '" + UserInfo.Id + "'");
+                sb.Append(" AND ( " + BaseUserEntity.FieldCompanyId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldSubCompanyId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldWorkgroupId + " = '" + organizationId + "'))");
             }
             else
             {
-                sql += " AND ( " + BaseUserEntity.FieldId + " != '" + UserInfo.Id + "')";
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " != '" + UserInfo.Id + "')");
             }
         }
 
-        sql += " ORDER BY " + BaseUserEntity.FieldSortCode;
+        sb.Append(" ORDER BY " + BaseUserEntity.FieldSortCode);
 
-        dtUser = manager.Fill(sql);
+        dtUser = manager.Fill(sb.Return());
         dtUser.TableName = BaseUserEntity.CurrentTableName;
         dtUser.DefaultView.Sort = BaseUserEntity.FieldSortCode;
         return dtUser;
@@ -114,8 +111,8 @@ public partial class BasePage : System.Web.UI.Page
     /// <param name="ddlUser">用户选项</param>
     /// <param name="organizationId">部门主键</param>
     /// <param name="insertBlank">插入空行</param>
-    /// <param name="permissionItemCode">权限编码</param>
-    protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    /// <param name="permissionCode">权限编码</param>
+    protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
         //ddlUser.Items.Clear();
         var entityList = new List<BaseUserEntity>();
@@ -132,8 +129,7 @@ public partial class BasePage : System.Web.UI.Page
             }
             else
             {
-                var permissionService = new BasePermissionService();
-                entityList = permissionService.GetUserListByPermission(UserInfo, UserInfo.Id.ToString(), permissionItemCode);
+                entityList = new BasePermissionScopeManager(UserInfo).GetUserList(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode);
                 // 至少要把自己显示出来，否则难控制权限了
                 if (entityList.Count == 0)
                 {
@@ -159,13 +155,13 @@ public partial class BasePage : System.Web.UI.Page
     /// 有某个操作权限的所有用户列表
     /// 反向通知有权限的用户
     /// </summary>
-    /// <param name="permissionItemCode">操作权限编号</param>
-    /// <param name="permissionItemName">操作权限名称</param>
+    /// <param name="permissionCode">操作权限编号</param>
+    /// <param name="permissionName">操作权限名称</param>
     /// <returns>用户主键数组</returns>
-    public string[] GetPermissionUserIds(string permissionItemCode, string permissionItemName = null)
+    public string[] GetPermissionUserIds(string permissionCode, string permissionName = null)
     {
-        var permissionManager = new BasePermissionManager(UserInfo);
-        return permissionManager.GetUserIds(permissionItemCode, permissionItemName);
+        var manager = new BasePermissionManager(UserInfo);
+        return manager.GetUserIds(permissionCode, permissionName);
     }
 
     /// <summary>
@@ -173,13 +169,13 @@ public partial class BasePage : System.Web.UI.Page
     /// 反向通知有权限的用户
     /// </summary>
     /// <param name="organizationId">组织机构主键</param>
-    /// <param name="permissionItemCode">操作权限编号</param>
-    /// <param name="permissionItemName">操作权限名称</param>
+    /// <param name="permissionCode">操作权限编号</param>
+    /// <param name="permissionName">操作权限名称</param>
     /// <returns>用户主键数组</returns>
-    public string[] GetPermissionScopeUserIds(string organizationId, string permissionItemCode, string permissionItemName = null)
+    public string[] GetPermissionScopeUserIds(string organizationId, string permissionCode, string permissionName = null)
     {
-        var permissionScopeManager = new BasePermissionScopeManager(UserInfo);
-        return permissionScopeManager.GetUserIds(organizationId, permissionItemCode, permissionItemName);
+        var manager = new BasePermissionScopeManager(UserInfo);
+        return manager.GetUserIds(organizationId, permissionCode, permissionName);
     }
 
     #region GetRoleCategory 角色类型

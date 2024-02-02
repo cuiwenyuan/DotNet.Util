@@ -580,8 +580,6 @@ namespace DotNet.Business
 
             if (useUserCenterHost)
             {
-                // DotNetService dotNetService = new DotNetService();
-                // result = dotNetService.LogonService.LogonByOpenId(GetUserInfo(), openId);
                 var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
                 var webClient = new WebClient();
                 var postValues = new NameValueCollection();
@@ -653,9 +651,6 @@ namespace DotNet.Business
             status = Status.UserNotFound;
             statusMessage = Status.UserNotFound.ToDescription();
 
-            // 统一的登录服务
-            var taskId = Guid.NewGuid().ToString("N");
-            var dotNetService = new DotNetService();
             var userInfo = GetUserInfo();
             if (!string.IsNullOrEmpty(ipAddress))
             {
@@ -678,7 +673,8 @@ namespace DotNet.Business
                 };
             }
             //2020年2月29日，每次登录都强制重新生成OpenId，Troy.Cui
-            var userLogonResult = dotNetService.LogonService.UserLogon(taskId, userInfo, userName, password, openId);
+            var userManager = new BaseUserManager(userInfo) { CheckIsAdministrator = true };
+            var userLogonResult = userManager.LogonByUserName(userName, password, userInfo.SystemCode, openId);
             if (userLogonResult != null)
             {
                 status = userLogonResult.Status;
@@ -693,7 +689,9 @@ namespace DotNet.Business
                 // 用户是否有哪个相应的权限
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
-                    isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogonResult.UserInfo, permissionCode, null);
+                    //isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogonResult.UserInfo, permissionCode, null);
+                    var permissionManager = new BasePermissionManager(userInfo);
+                    isAuthorized = permissionManager.IsAuthorized(userLogonResult.UserInfo.SystemCode, userLogonResult.UserInfo.UserId.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -755,8 +753,8 @@ namespace DotNet.Business
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
-            var dotNetService = new DotNetService();
-            var userLogonResult = dotNetService.LogonService.LogonByCompany(taskId, userInfo, companyName, userName, password, openId);
+            var userManager = new BaseUserManager(userInfo) { CheckIsAdministrator = true };
+            var userLogonResult = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, Utils.GetIp());
             // 检查身份
             if (userLogonResult.Status == Status.Ok)
             {
@@ -764,7 +762,8 @@ namespace DotNet.Business
                 // 用户是否有哪个相应的权限
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
-                    isAuthorized = dotNetService.PermissionService.IsAuthorized(userInfo, permissionCode, null);
+                    var permissionManager = new BasePermissionManager(userInfo);
+                    isAuthorized = permissionManager.IsAuthorized(userInfo.SystemCode, userInfo.Id.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)

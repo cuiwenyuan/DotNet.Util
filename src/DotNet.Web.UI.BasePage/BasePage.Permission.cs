@@ -33,7 +33,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <summary>
     /// 访问权限
     /// </summary>
-    protected bool PermissionAccess = true;
+    protected bool PermissionAccess = false;
 
     /// <summary>
     /// 新增权限
@@ -83,7 +83,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <summary>
     /// 查询权限
     /// </summary>
-    protected bool PermissionSearch = true;
+    protected bool PermissionSearch = false;
 
     /// <summary>
     /// 管理权限
@@ -93,7 +93,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <summary>
     /// 导出权限
     /// </summary>
-    protected bool PermissionExport = true;
+    protected bool PermissionExport = false;
 
     /// <summary>
     /// 导入权限
@@ -103,7 +103,7 @@ public partial class BasePage : System.Web.UI.Page
     /// <summary>
     /// 打印权限
     /// </summary>
-    protected bool PermissionPrint = true;
+    protected bool PermissionPrint = false;
 
     /// <summary>
     /// 启用权限
@@ -146,6 +146,11 @@ public partial class BasePage : System.Web.UI.Page
     protected bool PermissionView = false;
 
     /// <summary>
+    /// 查看权限全部
+    /// </summary>
+    protected bool PermissionViewAll = false;
+
+    /// <summary>
     /// 显示权限
     /// </summary>
     protected bool PermissionDisplay = false;
@@ -153,7 +158,12 @@ public partial class BasePage : System.Web.UI.Page
     /// <summary>
     /// 列表权限
     /// </summary>
-    protected bool PermissionList = true;
+    protected bool PermissionList = false;
+
+    /// <summary>
+    /// 列表权限
+    /// </summary>
+    protected bool PermissionListAll = false;
 
     /// <summary>
     /// 审核权限
@@ -252,8 +262,10 @@ public partial class BasePage : System.Web.UI.Page
         PermissionUpdate = IsAuthorized(module + ".Update");
         PermissionAdmin = IsAuthorized(module + ".Admin");
         PermissionList = IsAuthorized(module + ".List");
+        PermissionListAll = IsAuthorized(module + ".ListAll");
         PermissionShow = IsAuthorized(module + ".Show");
         PermissionView = IsAuthorized(module + ".View");
+        PermissionViewAll = IsAuthorized(module + ".ViewAll");
         PermissionShow = IsAuthorized(module + ".Display");
         PermissionAudit = IsAuthorized(module + ".Audit");
         PermissionUndoAudit = IsAuthorized(module + ".UndoAudit");
@@ -334,16 +346,16 @@ public partial class BasePage : System.Web.UI.Page
 
     // 用户操作权限常用判断函数
 
-    #region public void Authorized(string permissionItemCode, string accessDenyUrl = null) 是否有相应权限，同时若没权限会重新定位到某个页面
+    #region public void Authorized(string permissionCode, string accessDenyUrl = null) 是否有相应权限，同时若没权限会重新定位到某个页面
     /// <summary>
     /// 是否有相应权限，同时若没权限会重新定位到某个页面
     /// </summary>
-    /// <param name="permissionItemCode">权限编号</param>
+    /// <param name="permissionCode">权限编号</param>
     /// <param name="accessDenyUrl">访问被阻止的url</param>
-    public void Authorized(string permissionItemCode, string accessDenyUrl = null)
+    public void Authorized(string permissionCode, string accessDenyUrl = null)
     {
         // 若没有相应的权限，那就跳转到没有权限的页面里
-        if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionItemCode))
+        if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionCode))
         {
             if (!string.IsNullOrEmpty(accessDenyUrl))
             {
@@ -351,13 +363,13 @@ public partial class BasePage : System.Web.UI.Page
             }
             else
             {
-                HttpContext.Current.Response.Redirect(WebUtil.AccessDenyPage + "?PermissionItemCode=" + permissionItemCode);
+                HttpContext.Current.Response.Redirect(WebUtil.AccessDenyPage + "?PermissionItemCode=" + permissionCode);
             }
         }
     }
     #endregion
 
-    #region public bool IsAuthorized(string permissionItemCode, string permissionItemName = null) 是否有相应的权限
+    #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
 
     /// <summary>
     /// 是否有相应的权限

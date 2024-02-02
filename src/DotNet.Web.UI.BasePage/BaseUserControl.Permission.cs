@@ -68,42 +68,42 @@ public partial class BaseUserControl : UserControl
 
     // 操作权限
 
-    #region public bool IsAuthorized(string permissionItemCode, string permissionItemName = null) 是否有相应的权限
+    #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
     /// <summary>
     /// 是否有相应的权限
     /// </summary>
-    /// <param name="permissionItemCode">权限编号</param>
-    /// <param name="permissionItemName">权限名称</param>
+    /// <param name="permissionCode">权限编号</param>
+    /// <param name="permissionName">权限名称</param>
     /// <returns>是否有权限</returns>
-    public bool IsAuthorized(string permissionItemCode, string permissionItemName = null)
+    public bool IsAuthorized(string permissionCode, string permissionName = null)
     {
-        var dotNetService = new DotNetService();
-        return dotNetService.PermissionService.IsAuthorized(UserInfo, UserInfo.Id.ToString(), permissionItemCode, permissionItemName);
+        var permissionManager = new BasePermissionManager(UserInfo);
+        return permissionManager.IsAuthorized(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode, permissionName);
     }
     /// <summary>
     /// 指定用户是否有相应的权限
     /// </summary>
     /// <param name="userId"></param>
-    /// <param name="permissionItemCode"></param>
-    /// <param name="permissionItemName"></param>
+    /// <param name="permissionCode"></param>
+    /// <param name="permissionName"></param>
     /// <returns></returns>
-    public bool IsAuthorized(string userId, string permissionItemCode, string permissionItemName = null)
+    public bool IsAuthorized(string userId, string permissionCode, string permissionName = null)
     {
-        var dotNetService = new DotNetService();
-        return dotNetService.PermissionService.IsAuthorized(UserInfo, userId, permissionItemCode, permissionItemName);
+        var permissionManager = new BasePermissionManager(UserInfo);
+        return permissionManager.IsAuthorized(UserInfo.SystemCode, userId, permissionCode, permissionName);
     }
     #endregion
 
-    #region public void Authorized(string permissionItemCode, string accessDenyUrl = null) 是否有相应权限
+    #region public void Authorized(string permissionCode, string accessDenyUrl = null) 是否有相应权限
     /// <summary>
     /// 是否有相应权限
     /// </summary>
-    /// <param name="permissionItemCode">权限编号</param>
+    /// <param name="permissionCode">权限编号</param>
     /// <param name="accessDenyUrl">访问被阻止的url</param>
-    public void Authorized(string permissionItemCode, string accessDenyUrl = null)
+    public void Authorized(string permissionCode, string accessDenyUrl = null)
     {
         // 若没有相应的权限，那就跳转到没有权限的页面里
-        if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionItemCode))
+        if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionCode))
         {
             if (!string.IsNullOrEmpty(accessDenyUrl))
             {
@@ -111,7 +111,7 @@ public partial class BaseUserControl : UserControl
             }
             else
             {
-                HttpContext.Current.Response.Redirect(WebUtil.AccessDenyPage + "?Code=" + permissionItemCode);
+                HttpContext.Current.Response.Redirect(WebUtil.AccessDenyPage + "?Code=" + permissionCode);
             }
         }
     }
@@ -264,28 +264,28 @@ public partial class BaseUserControl : UserControl
     }
     #endregion
 
-    #region protected void GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门数组
     /// </summary>
-    /// <param name="permissionItemCode">操作权限项</param>
+    /// <param name="permissionCode">操作权限项</param>
     /// <param name="insertBlank">插入空行</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
-    protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionItemCode);
+        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
         return BaseUtil.FieldToArray(dtDepartment, BaseOrganizationEntity.FieldId);
     }
     #endregion
 
-    #region protected void GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门列表
     /// </summary>
-    /// <param name="permissionItemCode">操作权限项</param>
+    /// <param name="permissionCode">操作权限项</param>
     /// <param name="insertBlank">插入空行</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
-    protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
         DataTable dtDepartment = null;
         var manager = new BaseOrganizationManager(UserInfo);
@@ -295,11 +295,8 @@ public partial class BaseUserControl : UserControl
         }
         else
         {
-            var permissionService = new BasePermissionService();
-            dtDepartment = permissionService.GetOrganizationDTByPermission(_userInfo, _userInfo.Id.ToString(), permissionItemCode);
-
-            // BasePermissionScopeManager permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-            // dtDepartment = permissionScopeManager.GetOrganizationDT(userInfo.Id, permissionItemCode, false);
+            var permissionScopeManager = new BasePermissionManager(UserInfo);
+            dtDepartment = permissionScopeManager.GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
         }
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
@@ -317,18 +314,18 @@ public partial class BaseUserControl : UserControl
     }
     #endregion
 
-    #region protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门列表
     /// </summary>
     /// <param name="ddlDepartment">部门选项</param>
-    /// <param name="permissionItemCode">操作权限项</param>
+    /// <param name="permissionCode">操作权限项</param>
     /// <param name="insertBlank">插入空行</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
-    protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
         ddlDepartment.Items.Clear();
-        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionItemCode);
+        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
         ddlDepartment.SelectedValue = null;
         if (dt != null && dt.Rows.Count > 0)
         {
@@ -348,15 +345,15 @@ public partial class BaseUserControl : UserControl
 
     // 获得用户列表(按权限范围)
 
-    #region protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 获取用户列表
     /// </summary>
     /// <param name="ddlUser">用户选项</param>
     /// <param name="organizationId">部门主键</param>
     /// <param name="insertBlank">插入空行</param>
-    /// <param name="permissionItemCode">权限编码</param>
-    protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    /// <param name="permissionCode">权限编码</param>
+    protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
         ddlUser.Items.Clear();
         var entityList = new List<BaseUserEntity>();
@@ -369,8 +366,7 @@ public partial class BaseUserControl : UserControl
             }
             else
             {
-                var permissionService = new BasePermissionService();
-                entityList = permissionService.GetUserListByPermission(_userInfo, _userInfo.Id.ToString(), permissionItemCode);
+                entityList = new BasePermissionScopeManager(UserInfo).GetUserList(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode);
                 // 至少要把自己显示出来，否则难控制权限了
                 if (entityList.Count == 0)
                 {
@@ -440,41 +436,38 @@ public partial class BaseUserControl : UserControl
         DataTable dtUser = null;
         var manager = new BaseUserManager(UserInfo);
 
-        var sql = string.Empty;
-        sql = " SELECT * "
-                + "   FROM " + BaseUserEntity.CurrentTableName
-                + "  WHERE (" + BaseUserEntity.FieldDeleted + " = 0 "
-                + "       AND " + BaseUserEntity.FieldEnabled + " = 1 "
-                + "       AND " + BaseUserEntity.FieldIsVisible + " = 1 ";
+        var sb = PoolUtil.StringBuilder.Get();
+        sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
+        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1 ");
 
         if (!string.IsNullOrEmpty(organizationId))
         {
-            sql += " AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ";
+            sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ");
         }
         if (securityLevel != null)
         {
-            sql += " AND " + BaseUserEntity.FieldSecurityLevel + " < " + securityLevel + " ";
+            sb.Append(" AND " + BaseUserEntity.FieldSecurityLevel + " < " + securityLevel + " ");
         }
-        sql += " ) ";
+        sb.Append(" )");
         if (containSelf.HasValue)
         {
             if (containSelf == true)
             {
-                sql += " OR ( " + BaseUserEntity.FieldId + " = '" + UserInfo.Id + "'";
-                sql += " AND ( " + BaseUserEntity.FieldCompanyId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldSubCompanyId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "'";
-                sql += " OR  " + BaseUserEntity.FieldWorkgroupId + " = '" + organizationId + "'))";
+                sb.Append(" OR ( " + BaseUserEntity.FieldId + " = '" + UserInfo.Id + "'");
+                sb.Append(" AND ( " + BaseUserEntity.FieldCompanyId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldSubCompanyId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "'");
+                sb.Append(" OR  " + BaseUserEntity.FieldWorkgroupId + " = '" + organizationId + "'))");
             }
             else
             {
-                sql += " AND ( " + BaseUserEntity.FieldId + " != '" + UserInfo.Id + "')";
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " != '" + UserInfo.Id + "')");
             }
         }
 
-        sql += " ORDER BY " + BaseUserEntity.FieldSortCode;
+        sb.Append(" ORDER BY " + BaseUserEntity.FieldSortCode);
 
-        dtUser = manager.Fill(sql);
+        dtUser = manager.Fill(sb.Return());
         dtUser.TableName = BaseUserEntity.CurrentTableName;
         dtUser.DefaultView.Sort = BaseUserEntity.FieldSortCode;
         return dtUser;

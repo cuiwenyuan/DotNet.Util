@@ -13,6 +13,7 @@ using System.Text;
 namespace DotNet.Business
 {
     using Model;
+    using System.Reflection;
     using Util;
 
     /// <summary>
@@ -201,6 +202,39 @@ namespace DotNet.Business
                 // result = BaseUtil.FieldToArray(result, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
             }
             return result;
+        }
+        #endregion
+
+        #region public DataTable GetOrganizationDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode, bool childrens = true)
+        /// <summary>
+        /// 按某个权限域获取组织列表
+        /// </summary>
+        /// <param name="userInfo">用户</param>
+        /// <param name="userId">用户主键</param>
+        /// <param name="permissionCode">数据权限编号</param>
+        /// <param name="childrens">获取子节点</param>
+        /// <returns>数据表</returns>
+        public DataTable GetOrganizationDTByPermission(BaseUserInfo userInfo, string userId, string permissionCode = "Resource.ManagePermission", bool childrens = true)
+        {
+            var dt = new DataTable(BaseOrganizationEntity.CurrentTableName);
+
+            // 若权限是空的，直接返回所有数据
+            if (string.IsNullOrEmpty(permissionCode))
+            {
+                var organizationManager = new BaseOrganizationManager(userInfo);
+                dt = organizationManager.GetDataTable();
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+            }
+            else
+            {
+                // 获得组织机构列表
+                var permissionScopeManager = new BasePermissionScopeManager(userInfo);
+                dt = permissionScopeManager.GetOrganizationDt(userInfo.SystemCode, userInfo.Id.ToString(), permissionCode, childrens);
+                dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+            }
+            dt.TableName = BaseOrganizationEntity.CurrentTableName;
+
+            return dt;
         }
         #endregion
     }

@@ -42,7 +42,6 @@
 	<ItemGroup>
 	  <Compile Remove="Db\Expression\ColumnInfo.cs" />
 	  <Compile Remove="Db\Expression\TableInfo.cs" />
-	  <Compile Remove="Util\DrawingUtil.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

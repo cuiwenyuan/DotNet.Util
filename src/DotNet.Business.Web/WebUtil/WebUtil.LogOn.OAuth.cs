@@ -55,9 +55,8 @@ namespace DotNet.Business
                         userInfo.IpAddress = Utils.GetIp();
                     }
 
-                    // 统一的登录服务
-                    var dotNetService = new DotNetService();
-                    var userLogonResult = dotNetService.LogonService.LogonByUserName(taskId, systemCode, GetUserInfo(), entityUser.UserName);
+                    var userManager = new BaseUserManager(userInfo);
+                    var userLogonResult = userManager.LogonByUserNameOnly(systemCode, userInfo, entityUser.UserName);
                     // 检查身份
                     if (userLogonResult.Status == Status.Ok)
                     {
@@ -65,7 +64,8 @@ namespace DotNet.Business
                         // 用户是否有哪个相应的权限
                         if (!string.IsNullOrEmpty(permissionCode))
                         {
-                            isAuthorized = dotNetService.PermissionService.IsAuthorized(userInfo, permissionCode, null);
+                            var permissionManager = new BasePermissionManager(userInfo);
+                            isAuthorized = permissionManager.IsAuthorized(userInfo.SystemCode, userInfo.Id.ToString(), permissionCode, null);
                         }
                         // 有相应的权限才可以登录
                         if (isAuthorized)

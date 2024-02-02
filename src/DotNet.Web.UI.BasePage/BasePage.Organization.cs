@@ -156,14 +156,14 @@ public partial class BasePage : System.Web.UI.Page
 
     // 获得部门列表(按权限范围获取部门列表，例如对哪些部门有某种管理权限的)
 
-    #region protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门列表
     /// </summary>
-    /// <param name="permissionItemCode">操作权限项</param>
+    /// <param name="permissionCode">操作权限项</param>
     /// <param name="insertBlank">插入空行</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
-    protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
         DataTable dtDepartment = null;
         var manager = new BaseOrganizationManager(UserInfo);
@@ -173,11 +173,8 @@ public partial class BasePage : System.Web.UI.Page
         }
         else
         {
-            var permissionService = new BasePermissionService();
-            dtDepartment = permissionService.GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionItemCode);
-
-            // BasePermissionScopeManager permissionScopeManager = new BasePermissionScopeManager(dbHelper, userInfo);
-            // dtDepartment = permissionScopeManager.GetOrganizationDT(userInfo.Id, permissionItemCode, false);
+            var permissionScopeManager = new BasePermissionManager(UserInfo);
+            dtDepartment = permissionScopeManager.GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
         }
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
@@ -195,33 +192,31 @@ public partial class BasePage : System.Web.UI.Page
     }
     #endregion
 
-    #region protected void GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门数组
     /// </summary>
-    /// <param name="permissionItemCode">操作权限项</param>
+    /// <param name="permissionCode">操作权限项</param>
     /// <param name="insertBlank">插入空行</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
-    protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionItemCode);
+        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
         return BaseUtil.FieldToArray(dtDepartment, BaseOrganizationEntity.FieldId);
     }
     #endregion
 
-    #region protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    #region protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     /// <summary>
     /// 按权限范围获取部门列表
     /// </summary>
     /// <param name="ddlDepartment">部门选项</param>
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
     /// <param name="insertBlank">插入空行</param>
-    /// <param name="permissionItemCode">操作权限项(范围权限编号)</param>
-    protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionItemCode = "Resource.ManagePermission")
+    /// <param name="permissionCode">操作权限项(范围权限编号)</param>
+    protected void GetDepartmentByPermissionScope(DropDownList ddlDepartment, bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        //ddlDepartment.Items.Clear();
-        //ddlDepartment.SelectedValue = null;
-        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionItemCode);
+        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
         if (dt != null && dt.Rows.Count > 0)
         {
             dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;

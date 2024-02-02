@@ -621,6 +621,31 @@ public partial class BasePage : System.Web.UI.Page
 
     #endregion
 
+    #region ICS
+
+    /// <summary>
+    /// ICS数据库部分
+    /// </summary>
+    private IDbHelper _icsDbHelper = null;
+
+    /// <summary>
+    /// ICS数据库部分
+    /// </summary>
+    protected IDbHelper IcsDbHelper
+    {
+        get
+        {
+            if (_icsDbHelper == null)
+            {
+                // 获取数据库连接对象
+                _icsDbHelper = DbHelperFactory.Create(BaseSystemInfo.IcsDbType, BaseSystemInfo.IcsDbConnection);
+            }
+            return _icsDbHelper;
+        }
+    }
+
+    #endregion
+
     #region OMS
 
     /// <summary>
