@@ -53,7 +53,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsCompriseStr(string str, string stringarray, string strsplit)
         {
-            if (StrIsNullOrEmpty(stringarray))
+            if (stringarray.IsNullOrEmpty())
                 return false;
 
             str = str.ToLower();
@@ -1725,7 +1725,7 @@ namespace DotNet.Util
             string simplefilename = "", leftstring = "", rightstring = "", filename = "";
             var extname = GetFileExtName(fullName);
 
-            if (StrIsNullOrEmpty(extname))
+            if (extname.IsNullOrEmpty())
                 return fullName;
 
             int filelength = 0, dotindex = 0;
@@ -1755,7 +1755,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool CheckColorValue(string color)
         {
-            if (StrIsNullOrEmpty(color))
+            if (color.IsNullOrEmpty())
                 return false;
 
             color = color.Trim().Trim('#');
@@ -1903,7 +1903,7 @@ namespace DotNet.Util
         /// <returns>并到字符串</returns>
         public static string MergeString(string source, string target, string mergeChar)
         {
-            if (StrIsNullOrEmpty(target))
+            if (target.IsNullOrEmpty())
                 target = source;
             else
                 target += mergeChar + source;
@@ -1944,7 +1944,7 @@ namespace DotNet.Util
         /// <returns>扩展名</returns>
         public static string GetFileExtName(string fileName)
         {
-            if (StrIsNullOrEmpty(fileName) || fileName.IndexOf('.') <= 0)
+            if (fileName.IsNullOrEmpty() || fileName.IndexOf('.') <= 0)
                 return "";
 
             fileName = fileName.ToLower().Trim();
@@ -2532,7 +2532,7 @@ namespace DotNet.Util
         /// </summary>
         public static string[] SplitString(string strContent, string strSplit)
         {
-            if (!StrIsNullOrEmpty(strContent))
+            if (!strContent.IsNullOrEmpty())
             {
                 if (strContent.IndexOf(strSplit) < 0)
                     return new string[] { strContent };
@@ -2606,19 +2606,6 @@ namespace DotNet.Util
                 }
             }
             return result;
-        }
-
-        /// <summary>
-        /// 字段串是否为NULL或为""(空)
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool StrIsNullOrEmpty(string str)
-        {
-            if (str == null || str.Trim() == string.Empty)
-                return true;
-
-            return false;
         }
 
         /// <summary>
