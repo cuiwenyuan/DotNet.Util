@@ -881,7 +881,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private string GetSql(string commandText, string commandType, IDbDataParameter[] dbParameters = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (dbParameters != null && dbParameters.Length > 0)
             {
                 // 倒序排列，避免相同前缀的参数被误替换
@@ -914,7 +914,7 @@ namespace DotNet.Util
                     commandText = commandText.Replace(name, valueString);
                 }
             }
-            return $"[{commandType}] {commandText}{sb.Put()}";
+            return $"[{commandType}] {commandText}{sb.Return()}";
         }
         #endregion
 
@@ -935,14 +935,14 @@ namespace DotNet.Util
             {
                 return;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(GetSql(commandText, commandType, dbParameters));
             if (!string.IsNullOrEmpty(statisticsText))
             {
                 sb.Append($" [{statisticsText}]");
             }
             // 将异常信息写入本地文件中
-            LogUtil.WriteLog(sb.Put(), logFolder);
+            LogUtil.WriteLog(sb.Return(), logFolder);
         }
 
         #endregion

@@ -33,9 +33,9 @@ namespace DotNet.Business
         public string GetMax(string field = "Id")
         {
             var result = string.Empty;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT MAX(" + field + ")" + " FROM " + CurrentTableName);
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null)
             {
                 result = obj.ToString();
@@ -53,9 +53,9 @@ namespace DotNet.Business
         public string GetMin(string field = "Id")
         {
             var result = string.Empty;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT MIN(" + field + ")" + " FROM " + CurrentTableName);
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null)
             {
                 result = obj.ToString();

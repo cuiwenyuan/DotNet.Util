@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
             if (values == null || values.Length == 0)
             {
@@ -49,7 +49,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Put());
+            return dbHelper.ExecuteReader(sb.Return());
         }
         /// <summary>
         /// ExecuteReader
@@ -174,7 +174,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ExecuteReaderQueryString(this IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             // 2015-12-28 吉日嘎拉，简化程序，简化逻辑。
             switch (dbHelper.CurrentDbType)
@@ -258,7 +258,7 @@ namespace DotNet.Util
                     break;
             }
 
-            return sb.Put();
+            return sb.Return();
         }
 
         #endregion
@@ -277,7 +277,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
 
             if (values == null || values.Length == 0)
@@ -292,7 +292,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Put());
+            return dbHelper.ExecuteReader(sb.Return());
         }
         /// <summary>
         /// ExecuteReader
@@ -373,7 +373,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
             var whereSql = string.Empty;
             if (topLimit != 0)
@@ -419,11 +419,11 @@ namespace DotNet.Util
             }
             if (parameters != null && parameters.Count > 0)
             {
-                return dbHelper.ExecuteReader(sb.Put(), dbHelper.MakeParameters(parameters));
+                return dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters));
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Put());
+                return dbHelper.ExecuteReader(sb.Return());
             }
         }
 

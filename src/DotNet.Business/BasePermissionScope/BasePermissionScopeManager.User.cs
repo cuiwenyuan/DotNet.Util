@@ -80,7 +80,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(permissionId))
             {
                 var tableName = systemCode + "PermissionScope";
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
 
                 // 1.本人直接就有某个操作权限的。
                 sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "User') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
@@ -90,12 +90,12 @@ namespace DotNet.Business
                 // 2.角色本身就有某个操作权限的。
                 sb.Clear();
                 sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + systemCode + "Role') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
-                dt = Fill(sb.Put());
+                dt = Fill(sb.Return());
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。
                 // sb.Append("SELECT ResourceId FROM " + tableName + " WHERE ResourceCategory = '" + systemCode + "Organization' AND PermissionId = " + result + " AND " + BaseContactEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
-                // result = this.Fill(sb.Put());
+                // result = this.Fill(sb.Return());
                 // string[] ids = StringUtil.Concat(result, BaseUtil.FieldToArray(result, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 4.获取所有有这个操作权限的用户Id，而且这些用户是有效的。

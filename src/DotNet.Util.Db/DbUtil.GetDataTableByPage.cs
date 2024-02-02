@@ -286,7 +286,7 @@ namespace DotNet.Util
             {
                 conditions = "WHERE " + conditions;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
@@ -311,11 +311,11 @@ namespace DotNet.Util
             var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                dt = dbHelper.Fill(sb.Put(), dbParameters);
+                dt = dbHelper.Fill(sb.Return(), dbParameters);
             }
             else
             {
-                dt = dbHelper.Fill(sb.Put());
+                dt = dbHelper.Fill(sb.Return());
             }
 
             return dt;

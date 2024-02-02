@@ -70,7 +70,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUserEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -114,7 +114,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseUserEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseUserEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -127,16 +127,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (myCompanyOnly)
             {
                 //sb.Append("(" + BaseUserEntity.FieldUserCompanyId + " = 0 OR " + BaseUserEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
-            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0));
+            //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)), true, false, cacheTime);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
         #endregion
@@ -915,7 +915,7 @@ namespace DotNet.Business
         {
             // 删除不存在的数据，进行数据同步
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("DELETE FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE Id NOT IN (SELECT Id FROM " + BaseStaffEntity.CurrentTableName + ")");
             result += ExecuteNonQuery(sb.ToString());
@@ -925,7 +925,7 @@ namespace DotNet.Business
                      + " SET SortCode = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode
                      + " FROM " + BaseStaffEntity.CurrentTableName
                      + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId);
-            result += ExecuteNonQuery(sb.Put());
+            result += ExecuteNonQuery(sb.Return());
             return result;
         }
         #endregion
@@ -952,9 +952,9 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int CheckUserStaff()
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ");
-            return ExecuteNonQuery(sb.Put());
+            return ExecuteNonQuery(sb.Return());
         }
         #endregion
 
@@ -965,7 +965,7 @@ namespace DotNet.Business
         /// </summary>
         public string GetCount(string companyId = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 ");
 
             if (ValidateUtil.IsInt(companyId))
@@ -973,7 +973,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + companyId);
             }
 
-            return DbHelper.ExecuteScalar(sb.Put()).ToString();
+            return DbHelper.ExecuteScalar(sb.Return()).ToString();
         }
 
         #endregion
@@ -993,7 +993,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public int GetRegistrationCount(int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldDeleted + " = 0");
             if (days > 0)
             {
@@ -1023,7 +1023,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " < " + endTime + ")");
             }
-            return DbHelper.ExecuteScalar(sb.Put()).ToInt();
+            return DbHelper.ExecuteScalar(sb.Return()).ToInt();
         }
 
         #endregion
@@ -1087,7 +1087,7 @@ namespace DotNet.Business
         public int GetSortNum(string userId)
         {
             var entity = GetEntity(userId);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS UserCount "
                             + " FROM " + CurrentTableName
                             + " INNER JOIN " + BaseStaffEntity.CurrentTableName + " ON " + BaseStaffEntity.CurrentTableName + ".Id = " + CurrentTableName + ".Id"
@@ -1095,7 +1095,7 @@ namespace DotNet.Business
                             + " > " + entity.Score + " OR (" + CurrentTableName + "."
                             + BaseUserEntity.FieldSortCode + " < " + entity.SortCode + " AND " + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " = " + entity.Score + "))");
-            return DbHelper.ExecuteScalar(sb.Put()).ToInt() + 1;
+            return DbHelper.ExecuteScalar(sb.Return()).ToInt() + 1;
         }
         #endregion
 

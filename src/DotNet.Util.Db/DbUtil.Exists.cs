@@ -35,7 +35,7 @@ namespace DotNet.Util
         public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName + " WHERE " + GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional));
 
             if (!string.IsNullOrEmpty(parameter.Key))
@@ -53,11 +53,11 @@ namespace DotNet.Util
             object obj = null;
             if (parameters != null)
             {
-                obj = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(parameters));
+                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters));
             }
             else
             {
-                obj = dbHelper.ExecuteScalar(sb.Put());
+                obj = dbHelper.ExecuteScalar(sb.Return());
             }
             if (obj != null)
             {
@@ -81,7 +81,7 @@ namespace DotNet.Util
         public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (currentIndex == null)
             {
                 currentIndex = string.Empty;
@@ -91,7 +91,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put(), dbParameters);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -112,7 +112,7 @@ namespace DotNet.Util
         public static bool TableExists(this IDbHelper dbHelper, string tableName)
         {
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM sysobjects WHERE id = object_id(N'[{0}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1", tableName));
@@ -129,7 +129,7 @@ namespace DotNet.Util
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = '{0}'", tableName));
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;
@@ -150,7 +150,7 @@ namespace DotNet.Util
         public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true)
         {
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
                 sb.Append($"SELECT COUNT(*) FROM USER_SEQUENCES WHERE SEQUENCE_NAME = '{sequenceName.ToUpper()}'");
@@ -159,7 +159,7 @@ namespace DotNet.Util
             {
                 // TODO
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;

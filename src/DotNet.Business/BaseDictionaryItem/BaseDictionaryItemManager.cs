@@ -53,7 +53,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseDictionaryItemEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string dictionaryId = null, string dictionaryCode = null, string language = "")
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -111,7 +111,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseDictionaryItemEntity.FieldItemKey + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldItemName + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldItemValue + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -124,16 +124,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (myCompanyOnly)
             {
                 //sb.Append("(" + BaseDictionaryItemEntity.FieldUserCompanyId + " = 0 OR " + BaseDictionaryItemEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
-            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0));
+            //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0)), true, false, cacheTime);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
         #endregion

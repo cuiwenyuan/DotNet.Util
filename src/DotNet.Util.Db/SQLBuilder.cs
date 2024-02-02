@@ -152,10 +152,10 @@ namespace DotNet.Util
             _sqlOperation = DbOperation.Update;
             CommandText = string.Empty;
             _tableName = string.Empty;
-            _insertValue = Pool.StringBuilder.Get();
-            _insertField = Pool.StringBuilder.Get();
-            _updateSql = Pool.StringBuilder.Get();
-            _whereSql = Pool.StringBuilder.Get();
+            _insertValue = PoolUtil.StringBuilder.Get();
+            _insertField = PoolUtil.StringBuilder.Get();
+            _updateSql = PoolUtil.StringBuilder.Get();
+            _whereSql = PoolUtil.StringBuilder.Get();
 
             // 2016-02-23 吉日嘎拉，提高性能，释放数据库连接，需要时再打开数据库连接，判断是否为空，要区别静态方法与动态调用方法
             /*
@@ -336,7 +336,7 @@ namespace DotNet.Util
 
         private string GetDbNow()
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (_dbHelper != null)
             {
                 sb.Append(_dbHelper.GetDbNow());
@@ -345,7 +345,7 @@ namespace DotNet.Util
             {
                 sb.Append(DbUtil.GetDbNow(_dbType));
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         #endregion
@@ -454,8 +454,8 @@ namespace DotNet.Util
         {
             if (_whereSql == null || _whereSql.Length == 0)
             {
-                _whereSql.Put();
-                _whereSql = Pool.StringBuilder.Get();
+                _whereSql.Return();
+                _whereSql = PoolUtil.StringBuilder.Get();
                 _whereSql.Append(" WHERE ");
                 if (whereSql.TrimStart().StartsWith("AND", StringComparison.OrdinalIgnoreCase))
                 {
@@ -497,7 +497,7 @@ namespace DotNet.Util
 
             if (_whereSql.Length == 0)
             {
-                _whereSql = Pool.StringBuilder.Get();
+                _whereSql = PoolUtil.StringBuilder.Get();
                 _whereSql.Append(" WHERE ");
             }
             else
@@ -593,16 +593,16 @@ namespace DotNet.Util
                         break;
                     case CurrentDbType.SqlServer:
                     case CurrentDbType.Access:
-                        CommandText = "SELECT TOP " + _topN + " * FROM " + _tableName + _whereSql.Put() + _orderBy;
+                        CommandText = "SELECT TOP " + _topN + " * FROM " + _tableName + _whereSql.Return() + _orderBy;
                         break;
                     case CurrentDbType.MySql:
-                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Put() + _orderBy + " LIMIT 1 , " + _topN;
+                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT 1 , " + _topN;
                         break;
                 }
             }
             else
             {
-                CommandText = "SELECT * FROM " + _tableName + _whereSql.Put() + _orderBy;
+                CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy;
             }
 
             // 参数进行规范化
@@ -674,21 +674,21 @@ namespace DotNet.Util
             identitySql = string.Empty;
             if (_sqlOperation == DbOperation.Insert || _sqlOperation == DbOperation.ReplaceInto)
             {
-                var sbField = Pool.StringBuilder.Get();
+                var sbField = PoolUtil.StringBuilder.Get();
                 sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
                 //归还
-                _insertField.Put(false);
-                var sbValue = Pool.StringBuilder.Get();
+                _insertField.Return(false);
+                var sbValue = PoolUtil.StringBuilder.Get();
                 sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
                 //归还
-                _insertValue.Put(false);
+                _insertValue.Return(false);
                 if (_sqlOperation == DbOperation.ReplaceInto)
                 {
-                    CommandText = "REPLACE INTO " + _tableName + " (" + sbField.Put() + ") VALUES (" + sbValue.Put() + ") ";
+                    CommandText = "REPLACE INTO " + _tableName + " (" + sbField.Return() + ") VALUES (" + sbValue.Return() + ") ";
                 }
                 else
                 {
-                    CommandText = "INSERT INTO " + _tableName + " (" + sbField.Put() + ") VALUES (" + sbValue.Put() + ") ";
+                    CommandText = "INSERT INTO " + _tableName + " (" + sbField.Return() + ") VALUES (" + sbValue.Return() + ") ";
                 }
                 // 采用了自增量的方式
                 if (Identity)
@@ -738,7 +738,7 @@ namespace DotNet.Util
                                     var sequenceName = m.Groups[1].Value.Cut(30);
                                     // 以BEGIN开始，以END;结尾(END后的分号不能省!)，中间的每个sql语句需要以分号;结尾
                                     //以下代码不好用！！！
-                                    //var sb = Pool.StringBuilder.Get();
+                                    //var sb = PoolUtil.StringBuilder.Get();
                                     //sb.AppendLine("BEGIN");
                                     //if (!string.IsNullOrEmpty(CommandText))
                                     //{
@@ -746,7 +746,7 @@ namespace DotNet.Util
                                     //    sb.AppendLine($"SELECT {sequenceName}.CURRVAL FROM DUAL;");
                                     //    sb.AppendLine("END;");
                                     //}
-                                    //CommandText = sb.Put();
+                                    //CommandText = sb.Return();
                                     // 用这种方式会存在并发获取到的序号不准确的问题
                                     identitySql = $"SELECT {sequenceName}.CURRVAL FROM DUAL";
                                 }
@@ -757,18 +757,18 @@ namespace DotNet.Util
             }
             else if (_sqlOperation == DbOperation.Update)
             {
-                var sbUpdate = Pool.StringBuilder.Get();
+                var sbUpdate = PoolUtil.StringBuilder.Get();
                 sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
-                _updateSql.Put(false);
-                CommandText = "UPDATE " + _tableName + " SET " + sbUpdate.Put() + _whereSql.Put();
+                _updateSql.Return(false);
+                CommandText = "UPDATE " + _tableName + " SET " + sbUpdate.Return() + _whereSql.Return();
             }
             else if (_sqlOperation == DbOperation.Delete)
             {
-                CommandText = "DELETE FROM " + _tableName + _whereSql.Put();
+                CommandText = "DELETE FROM " + _tableName + _whereSql.Return();
             }
             else if (_sqlOperation == DbOperation.Select)
             {
-                CommandText = "SELECT * FROM " + _tableName + _whereSql.Put();
+                CommandText = "SELECT * FROM " + _tableName + _whereSql.Return();
             }
 
             return CommandText;

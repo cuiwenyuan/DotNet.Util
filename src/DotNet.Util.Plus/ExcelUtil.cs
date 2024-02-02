@@ -253,7 +253,7 @@ namespace DotNet.Util
         public static List<T> ExcelToEntityList<T>(Dictionary<string, string> cellHeader, string filePath, out StringBuilder errorMsg, int startIndex = 1) where T : new()
         {
             var enlist = new List<T>();
-            errorMsg = Pool.StringBuilder.Get();
+            errorMsg = PoolUtil.StringBuilder.Get();
             try
             {
                 if (Regex.IsMatch(filePath, ".xls$")) // 2003
@@ -293,7 +293,7 @@ namespace DotNet.Util
                 throw new ArgumentException($"'{nameof(filePath)}' cannot be null or empty.", nameof(filePath));
             }
 
-            errorMsg = Pool.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
+            errorMsg = PoolUtil.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
             var ls = new List<T>(); // 转换后的集合
             try
             {
@@ -334,7 +334,7 @@ namespace DotNet.Util
         /// <returns>转换好的List对象集合</returns>
         private static List<T> Excel2007ToEntityList<T>(Dictionary<string, string> cellHeader, string filePath, out StringBuilder errorMsg, int startIndex = 1) where T : new()
         {
-            errorMsg = Pool.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
+            errorMsg = PoolUtil.StringBuilder.Get(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
             var ls = new List<T>(); // 转换后的集合
             try
             {

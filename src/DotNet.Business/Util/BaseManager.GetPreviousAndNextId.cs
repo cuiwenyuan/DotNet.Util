@@ -42,7 +42,7 @@ namespace DotNet.Business
             previousId = currentId;
             nextId = currentId;
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("WITH T1 AS( ");
             sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1 ");
             if (!string.IsNullOrEmpty(orderTypeId))
@@ -62,7 +62,7 @@ namespace DotNet.Business
             sb.Append(" AND Id > " + currentId + " ORDER BY Id ASC ");
             sb.Append(") ");
             sb.Append("SELECT ISNULL(T1.PreviousId," + currentId + ") AS PreviousId,ISNULL(T1.CurrentId,T2.CurrentId) AS CurrentId,ISNULL(T2.NextId," + currentId + ") AS NextId FROM T1 FULL JOIN T2 ON T1.CurrentId = T2.CurrentId ");
-            var dt = DbHelper.Fill(sb.Put());
+            var dt = DbHelper.Fill(sb.Return());
             if (dt != null && dt.Rows.Count == 0)
             {
                 previousId = currentId;

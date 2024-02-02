@@ -44,7 +44,7 @@ namespace DotNet.Util
                 targetField = BaseUtil.FieldId;
             }
             // 这里是需要完善的功能，完善了这个，是一次重大突破           
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + targetField + " FROM " + tableName);
             var whereSql = string.Empty;
             if (topLimit > 0)
@@ -93,7 +93,7 @@ namespace DotNet.Util
                 }
             }
 
-            var obj = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(parameters));
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters));
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToString();

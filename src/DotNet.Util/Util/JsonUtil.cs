@@ -93,24 +93,25 @@ namespace DotNet.Util
         public static string DataTableToJson(DataTable dt, string dateTimeFormat = "MM-dd-yyyy HH:mm:ss", bool columnNameLowerCase = false)
         {
             //return ObjectToJson(DataTableToList(dt));
-
             var dic = new System.Collections.ArrayList();
-            foreach (DataRow dr in dt.Rows)
+            if (dt != null && dt.Rows.Count > 0)
             {
-                var drow = new Dictionary<string, object>();
-                foreach (DataColumn dc in dt.Columns)
+                foreach (DataRow dr in dt.Rows)
                 {
-                    if (columnNameLowerCase)
+                    var drow = new Dictionary<string, object>();
+                    foreach (DataColumn dc in dt.Columns)
                     {
-                        drow.Add(dc.ColumnName.ToLower(), dr[dc.ColumnName]);
+                        if (columnNameLowerCase)
+                        {
+                            drow.Add(dc.ColumnName.ToLower(), dr[dc.ColumnName]);
+                        }
+                        else
+                        {
+                            drow.Add(dc.ColumnName, dr[dc.ColumnName]);
+                        }
                     }
-                    else
-                    {
-                        drow.Add(dc.ColumnName, dr[dc.ColumnName]);
-                    }
+                    dic.Add(drow);
                 }
-                dic.Add(drow);
-
             }
             //Serialize  
             var result = JsonConvert.SerializeObject(dic);

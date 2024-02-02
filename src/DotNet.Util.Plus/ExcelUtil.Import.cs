@@ -196,7 +196,7 @@ namespace DotNet.Util
         /// <returns>返回提示</returns>
         public static string CheckIsNullOrEmpty(DataTable dt, string[] checkStrings)
         {
-            var result = Pool.StringBuilder.Get();
+            var result = PoolUtil.StringBuilder.Get();
             for (var j = 0; j < dt.Rows.Count; j++)
             {
                 for (var i = 0; i < checkStrings.Length; i++)
@@ -208,7 +208,7 @@ namespace DotNet.Util
                     }
                 }
             }
-            return result.Put();
+            return result.Return();
         }
         #endregion
 
@@ -220,7 +220,7 @@ namespace DotNet.Util
         /// <returns>转换后的字符串</returns>
         public static string DataTableColumn2String(DataTable dt)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             for (var i = 0; i < dt.Columns.Count; i++)
             {
                 if (i > 0)
@@ -229,7 +229,7 @@ namespace DotNet.Util
                 }
                 sb.Append(dt.Columns[i].ColumnName);
             }
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 #endif

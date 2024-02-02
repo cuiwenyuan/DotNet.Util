@@ -41,7 +41,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByPage(string tableCode, string tableDescription, string columnCode, string columnDescription, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             
             //表名
             if (!string.IsNullOrEmpty(tableCode))
@@ -70,7 +70,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseChangeLogEntity.FieldTableName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldTableDescription + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
     }

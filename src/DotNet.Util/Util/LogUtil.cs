@@ -79,7 +79,7 @@ namespace DotNet.Util
         public static void WriteLog(Exception exception, string extraInfo, string folder = "Log", string prefix = null, string suffix = "log", string extension = "log", string logFileNamePattern = "")
         {
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(extraInfo);
             if (exception != null)
             {
@@ -89,7 +89,7 @@ namespace DotNet.Util
                 sb.Append(" Message:" + exception.Message);
                 sb.Append(" StackTrace:" + exception.StackTrace);
             }
-            WriteLog(sb.Put(), folder: folder, prefix: prefix, suffix: suffix, logFileNamePattern: logFileNamePattern);
+            WriteLog(sb.Return(), folder: folder, prefix: prefix, suffix: suffix, logFileNamePattern: logFileNamePattern);
         }
     }
 }

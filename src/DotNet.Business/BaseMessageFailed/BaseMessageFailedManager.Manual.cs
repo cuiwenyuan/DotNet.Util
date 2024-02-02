@@ -50,7 +50,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string source = null, string messageType = null, string recipient = null)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -108,7 +108,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseMessageSucceedEntity.FieldSubject + " LIKE N'%" + searchKey + "%' OR " + BaseMessageSucceedEntity.FieldBody + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
         
@@ -120,9 +120,9 @@ namespace DotNet.Business
         /// <returns></returns>
         public string GetTotalCount(int days)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS TotalCount FROM " + CurrentTableName + " WHERE (DATEADD(d, " + days + ", " + BaseMessageFailedEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")");
-            return ExecuteScalar(sb.Put())?.ToString();
+            return ExecuteScalar(sb.Return())?.ToString();
         }
         #endregion
     }

@@ -42,6 +42,7 @@
 	<ItemGroup>
 	  <Compile Remove="Db\Expression\ColumnInfo.cs" />
 	  <Compile Remove="Db\Expression\TableInfo.cs" />
+	  <Compile Remove="Util\DrawingUtil.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,6 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="NewLife.Core" Version="10.5.2023.801" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 

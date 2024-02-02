@@ -221,7 +221,7 @@ namespace DotNet.Business
                     tableNameModule = UserInfo.SystemCode + "Module";
                 }
             }
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
             if (!showDisabled)
@@ -393,7 +393,7 @@ namespace DotNet.Business
 
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();
+            var sbView = PoolUtil.StringBuilder.Get();
             //指定用户，就读取相应的Permission授权日期
             if (ValidateUtil.IsInt(userId))
             {
@@ -493,10 +493,10 @@ namespace DotNet.Business
             //从视图读取
             if (sbView.Length > 0)
             {
-                tableNameModule = sbView.Put();
+                tableNameModule = sbView.Return();
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameModule, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameModule, sb.Return());
         }
         #endregion
 

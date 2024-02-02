@@ -456,7 +456,7 @@ namespace DotNet.Business
                 roleTableName = systemCode + "Role";
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.AppendLine("SELECT BaseRole.Code, BaseRole.Name, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
             sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
             sb.AppendLine(" WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
@@ -467,7 +467,7 @@ namespace DotNet.Business
             var cacheKey = "Dt." + systemCode + ".UserRole";
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Put()), true, false, cacheTime);
+            result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Return()), true, false, cacheTime);
             return result;
         }
         #endregion
@@ -501,7 +501,7 @@ namespace DotNet.Business
             var userRoleTable = systemCode + "UserRole";
 
             // 被删除的角色不应该显示出来
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserRoleEntity.FieldRoleId);
             sb.Append(" FROM " + userRoleTable);
             sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId));
@@ -516,7 +516,7 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldDeleted, 0)
             };
 
-            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
+            var dataReader = DbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())
@@ -597,7 +597,7 @@ namespace DotNet.Business
             var dbParameters = new List<IDbDataParameter>();
 
             var userRoleTableName = systemCode + "UserRole";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields
                      + " FROM " + BaseUserEntity.CurrentTableName
                      + " , (SELECT " + BaseUserRoleEntity.FieldUserId
@@ -616,7 +616,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
 
-            using (var dr = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray()))
+            using (var dr = DbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray()))
             {
                 result = GetList<BaseUserEntity>(dr);
             }
@@ -642,7 +642,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             var userRoleTableName = systemCode + "UserRole";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
@@ -655,7 +655,7 @@ namespace DotNet.Business
                             + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -902,7 +902,7 @@ namespace DotNet.Business
             {
                 tableName = systemCode + "UserRole";
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 需要显示未被删除的用户
             sb.Append("SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0 "
                               + " AND ( UserId IN (  SELECT " + BaseUserEntity.FieldId
@@ -925,7 +925,7 @@ namespace DotNet.Business
             // return BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
             var userIds = new List<string>();
-            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
+            var dataReader = DbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())

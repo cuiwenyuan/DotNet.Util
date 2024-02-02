@@ -69,9 +69,9 @@ namespace DotNet.Test._452
                 Console.WriteLine("Parallel任务" + i + "开始工作……");
                 //var entity3 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
                 var entity3 = new BaseCalendarManager().GetEntity(i);
-                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity3));
+                var sb = PoolUtil.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity3));
                 LogUtil.WriteLog(sb.ToString());
-                Console.WriteLine(sb.Put());
+                Console.WriteLine(sb.Return());
             });
             for (var i = 1; i <= 10000; i++)
             {
@@ -79,9 +79,9 @@ namespace DotNet.Test._452
                 Console.WriteLine("任务" + i + "开始工作……");
                 //var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
                 var entity = new BaseCalendarManager().GetEntity(i);
-                var sb = Pool.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity));
+                var sb = PoolUtil.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity));
                 LogUtil.WriteLog(sb.ToString());
-                Console.WriteLine(sb.Put());
+                Console.WriteLine(sb.Return());
             }
             stopwatch.Stop();
             statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";

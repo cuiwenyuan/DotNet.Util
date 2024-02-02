@@ -48,7 +48,7 @@ namespace DotNet.Business
                 fieldName = "Name";
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + fieldName + " = N'" + fieldValue + "'");
             //未删除
             sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
@@ -62,7 +62,7 @@ namespace DotNet.Business
                 sb.Append(" AND Id <> " + excludeId);
             }
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
+            var obj = ExecuteScalar(sb.Return());
             if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
@@ -106,7 +106,7 @@ namespace DotNet.Business
                 field2Name = "Name";
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "'");
             //未删除
             sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
@@ -120,7 +120,7 @@ namespace DotNet.Business
                 sb.Append(" AND Id <> " + excludeId);
             }
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
+            var obj = ExecuteScalar(sb.Return());
             if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
@@ -174,7 +174,7 @@ namespace DotNet.Business
                 field3Name = "Name";
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "' AND " + field3Name + " = N'" + field3Value + "'");
             //未删除
             sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
@@ -188,7 +188,7 @@ namespace DotNet.Business
                 sb.Append(" AND Id <> " + excludeId);
             }
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
+            var obj = ExecuteScalar(sb.Return());
             if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
@@ -216,7 +216,7 @@ namespace DotNet.Business
 
             //result = !Exists(whereParameters, excludeId);
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + dbHelper.GetWhereString(whereParameters, BaseUtil.SqlLogicConditional));
 
             if (!string.IsNullOrEmpty(excludeId))
@@ -235,11 +235,11 @@ namespace DotNet.Business
             object obj;
             if (whereParameters != null)
             {
-                obj = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(whereParameters));
+                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(whereParameters));
             }
             else
             {
-                obj = dbHelper.ExecuteScalar(sb.Put());
+                obj = dbHelper.ExecuteScalar(sb.Return());
             }
             if (obj != null)
             {

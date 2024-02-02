@@ -56,7 +56,7 @@ namespace DotNet.Business
         {
             var errorMark = 0;
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             //默认给OpenId 8个小时有效期，每次更新在线状态的时候，再刷新一下OpenId的有效期，Troy.Cui 2020-02-29
             DateTime? openIdTimeout = DateTime.Now.AddHours(8);
             try
@@ -204,7 +204,7 @@ namespace DotNet.Business
                         dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userLogonEntity.UserId));
 
                         errorMark = 40;
-                        dbHelper.ExecuteNonQuery(sb.Put(), dbParameters.ToArray());
+                        dbHelper.ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
 
                     }
                 }

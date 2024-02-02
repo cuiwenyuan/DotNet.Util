@@ -255,7 +255,7 @@ namespace DotNet.Business
                     tableNameRole = UserInfo.SystemCode + "Role";
                 }
             }
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
             if (!showDisabled)
@@ -368,7 +368,7 @@ namespace DotNet.Business
             }
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();
+            var sbView = PoolUtil.StringBuilder.Get();
             //指定用户，就读取相应的UserRole授权日期
             if (ValidateUtil.IsInt(userId))
             {
@@ -429,7 +429,7 @@ namespace DotNet.Business
                 sbView.Append(tableNameRole);
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Put(), sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Return(), sb.Return());
         }
         #endregion
     }

@@ -39,7 +39,7 @@ namespace DotNet.Business
             var result = false;
             if (dbHelper.TableExists(tableName) && ValidateUtil.IsInt(id))
             {
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " A INNER JOIN " + tableName + " B ON B." + tableFieldName + " = A." + currentTableFieldName + " WHERE A.Id = " + id + "");
                 //未删除
                 sb.Append(" AND A." + (BaseUtil.FieldDeleted) + " = 0 AND A." + BaseUtil.FieldEnabled + " = 1 ");
@@ -50,7 +50,7 @@ namespace DotNet.Business
                     sb.Append(" AND (A.UserCompanyId = 0 OR A.UserCompanyId = " + UserInfo.CompanyId + ")");
                     sb.Append(" AND (B.UserCompanyId = 0 OR B.UserCompanyId = " + UserInfo.CompanyId + ")");
                 }
-                var obj = ExecuteScalar(sb.Put());
+                var obj = ExecuteScalar(sb.Return());
                 if (obj != null && obj.ToInt() > 0)
                 {
                     result = true;

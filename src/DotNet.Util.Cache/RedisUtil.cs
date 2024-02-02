@@ -23,9 +23,9 @@ namespace DotNet.Util
 
         private static FullRedis GetClient()
         {
-            var sb = Pool.StringBuilder.Get().Append(BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
+            var sb = PoolUtil.StringBuilder.Get().Append(BaseSystemInfo.RedisServer + ":" + BaseSystemInfo.RedisPort + ",user=" + BaseSystemInfo.RedisUserName + ",password=" + BaseSystemInfo.RedisPassword + ",defaultDatabase=" + BaseSystemInfo.RedisInitialDb);
             var cli = new FullRedis();
-            cli.Init(sb.Put());
+            cli.Init(sb.Return());
             return cli;
         }
 

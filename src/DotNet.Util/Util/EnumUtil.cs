@@ -8,8 +8,31 @@ namespace DotNet.Util
     /// <summary>
     /// 枚举帮助类
     /// </summary>
-    public partial class EnumUtil
+    public static partial class EnumUtil
     {
+        #region public static string ToDescription(this Enum enumeration)
+        /// <summary>
+        /// 获取枚举描述
+        /// </summary>
+        /// <param name="enumeration">枚举</param>
+        /// <returns></returns>
+        public static string ToDescription(this Enum enumeration)
+        {
+            var type = enumeration.GetType();
+            var memInfo = type.GetMember(enumeration.ToString());
+            if (null != memInfo && memInfo.Length > 0)
+            {
+                var attrs = memInfo[0].GetCustomAttributes(typeof(EnumDescription), false);
+                if (attrs != null && attrs.Length > 0)
+                {
+                    return ((EnumDescription)attrs[0]).Text;
+                }
+            }
+            return enumeration.ToString();
+        }
+        #endregion
+
+        #region public static DataTable EnumToDataTable(Type enumType, string nameColumnName = "key", string valueColumnName = "value", string descriptionColumnName = "description")
         /// <summary>
         /// 枚举类型转化为DataTable
         /// var dt = EnumToDataTable(typeof(ProductType), "key", "value");
@@ -36,6 +59,9 @@ namespace DotNet.Util
             return dt;
         }
 
+        #endregion
+
+        #region public static ArrayList GetEnumDescriptions(Type enumType)
         /// <summary>
         /// 从枚举类型和它的特性读出并返回一个数组
         /// </summary>
@@ -68,7 +94,6 @@ namespace DotNet.Util
             }
             return result;
         }
-
-
+        #endregion
     }
 }

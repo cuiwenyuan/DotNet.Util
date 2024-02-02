@@ -177,7 +177,7 @@ namespace DotNet.Util
         {
             if (BaseSystemInfo.LogCache)
             {
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 sb.Append(
                     string.Format("Cache Key: {0} invalid at {1} with reason {2}",
                         new object[]
@@ -185,7 +185,7 @@ namespace DotNet.Util
                             cacheKey, DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat),
                             reasonToRemove.ToString()
                         }));
-                LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
+                LogUtil.WriteLog(sb.Return(), "Cache", null, "Cache");
             }
         }
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
@@ -292,14 +292,14 @@ namespace DotNet.Util
         /// <param name="state"></param>
         private static void MyCallback(object cacheKey, object cacheValue, EvictionReason reason, object state)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(
             string.Format("Cache Key: {0} invalid at {1} with reason {2}",
                 new object[]
                 {
                     cacheKey, DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat), reason.ToString()
                 }));
-            LogUtil.WriteLog(sb.Put(), "Cache", null, "Cache");
+            LogUtil.WriteLog(sb.Return(), "Cache", null, "Cache");
         }
 #endif
         /// <summary>

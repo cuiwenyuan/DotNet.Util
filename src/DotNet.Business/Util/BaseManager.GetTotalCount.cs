@@ -38,7 +38,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             if (!string.IsNullOrEmpty(condition))
             {
@@ -73,7 +73,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return DbHelper.Count(CurrentTableName, condition: sb.Put());
+            return DbHelper.Count(CurrentTableName, condition: sb.Return());
         }
         #endregion
 
@@ -93,7 +93,7 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
@@ -127,7 +127,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return DbHelper.DistinctCount(CurrentTableName, fieldName, condition: sb.Put());
+            return DbHelper.DistinctCount(CurrentTableName, fieldName, condition: sb.Return());
         }
         #endregion
 
@@ -146,13 +146,13 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetActiveTotalCount(string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
             }
-            return GetTotalCount(condition: sb.Put(), days: days, currentWeek: currentWeek, currentMonth: currentMonth, currentQuarter: currentQuarter, currentYear: currentYear, startTime: startTime, endTime: endTime);
+            return GetTotalCount(condition: sb.Return(), days: days, currentWeek: currentWeek, currentMonth: currentMonth, currentQuarter: currentQuarter, currentYear: currentYear, startTime: startTime, endTime: endTime);
         }
         #endregion
 
@@ -172,13 +172,13 @@ namespace DotNet.Business
         /// <returns>总数</returns>
         public virtual int GetActiveTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" AND " + condition);
             }
-            return GetTotalDistinctCount(fieldName, condition: sb.Put(), days: days, currentWeek: currentWeek, currentMonth: currentMonth, currentQuarter: currentQuarter, currentYear: currentYear, startTime: startTime, endTime: endTime);
+            return GetTotalDistinctCount(fieldName, condition: sb.Return(), days: days, currentWeek: currentWeek, currentMonth: currentMonth, currentQuarter: currentQuarter, currentYear: currentYear, startTime: startTime, endTime: endTime);
         }
         #endregion
     }

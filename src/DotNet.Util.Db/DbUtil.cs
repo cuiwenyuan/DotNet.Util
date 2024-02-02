@@ -133,7 +133,7 @@ namespace DotNet.Util
         /// <returns>当前日期SQL</returns>
         public static string GetDbNow(CurrentDbType dbType)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (dbType == CurrentDbType.SqlServer)
             {
                 sb.Append(" GETDATE() ");
@@ -150,7 +150,7 @@ namespace DotNet.Util
             {
                 sb.Append(" datetime(CURRENT_TIMESTAMP, 'localtime') ");
             }
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -191,7 +191,7 @@ namespace DotNet.Util
         /// <returns>当前日期</returns>
         public static string ToDbTime(CurrentDbType dbType, string dateTime)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (ValidateUtil.IsDateTime(dateTime))
             {
                 switch (dbType)
@@ -212,7 +212,7 @@ namespace DotNet.Util
                         break;
                 }
             }
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 

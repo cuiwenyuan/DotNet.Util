@@ -83,7 +83,7 @@ namespace DotNet.Business
                 {
                     tableName = CurrentTableName;
                 }
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 if (!string.IsNullOrEmpty(condition))
                 {
                     sb.Append(" WHERE " + condition);
@@ -94,7 +94,7 @@ namespace DotNet.Business
                     commandText = "(" + tableName + ") T ";
                     // commandText = "(" + tableName + ") AS T ";
                 }
-                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
+                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Return());
                 var obj = DbHelper.ExecuteScalar(commandText, dbParameters);
                 if (obj != null)
                 {

@@ -36,7 +36,7 @@ namespace DotNet.Util
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
             tableName = tableName.ToTableName();
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
             if (values == null || values.Length == 0)
             {
@@ -50,7 +50,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.Fill(sb.Put());
+            return dbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -69,7 +69,7 @@ namespace DotNet.Util
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
         {
             tableName = tableName.ToTableName();
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + tableName);
             var whereSql = string.Empty;
             if (topLimit != 0)
@@ -131,11 +131,11 @@ namespace DotNet.Util
             var dt = new DataTable(tableName);
             if (parameters != null && parameters.Count > 0)
             {
-                dt = dbHelper.Fill(sb.Put(), dbHelper.MakeParameters(parameters));
+                dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
             }
             else
             {
-                dt = dbHelper.Fill(sb.Put());
+                dt = dbHelper.Fill(sb.Return());
             }
             return dt;
         }
@@ -158,7 +158,7 @@ namespace DotNet.Util
         public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
         {
             tableName = tableName.ToTableName();
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
             var whereSql = string.Empty;
             if (topLimit != 0)
@@ -206,11 +206,11 @@ namespace DotNet.Util
             }
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                dt = dbHelper.Fill(sb.Put(), dbParameters);
+                dt = dbHelper.Fill(sb.Return(), dbParameters);
             }
             else
             {
-                dt = dbHelper.Fill(sb.Put());
+                dt = dbHelper.Fill(sb.Return());
             }
             return dt;
         }

@@ -117,7 +117,7 @@ namespace DotNet.Util
 			{
 				if(c.ToString().Equals(code, StringComparison.OrdinalIgnoreCase))
 				{
-					return EnumExtensions.ToDescription(c as Enum);
+					return EnumUtil.ToDescription(c as Enum);
 				}
 			}
 			return string.Empty;

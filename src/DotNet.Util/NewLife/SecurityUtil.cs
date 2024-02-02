@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NewLife.Data;
+using System;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,16 +14,13 @@ namespace DotNet.Util
     public static class SecurityUtil
     {
         #region 哈希
-        [ThreadStatic]
-        private static MD5 _md5;
+
         /// <summary>MD5散列</summary>
         /// <param name="data"></param>
         /// <returns></returns>
         public static Byte[] MD5(this Byte[] data)
         {
-            if (_md5 == null) _md5 = new MD5CryptoServiceProvider();
-
-            return _md5.ComputeHash(data);
+            return NewLife.SecurityHelper.MD5(data);
         }
 
         /// <summary>MD5散列</summary>
@@ -30,10 +29,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static String MD5(this String data, Encoding encoding = null)
         {
-            if (encoding == null) encoding = Encoding.UTF8;
-
-            var buf = MD5(encoding.GetBytes(data + ""));
-            return buf.ToHex();
+            return NewLife.SecurityHelper.MD5(data, encoding);
         }
 
         /// <summary>MD5散列</summary>
@@ -42,45 +38,42 @@ namespace DotNet.Util
         /// <returns></returns>
         public static String MD5_16(this String data, Encoding encoding = null)
         {
-            if (encoding == null) encoding = Encoding.UTF8;
-
-            var buf = MD5(encoding.GetBytes(data + ""));
-            return buf.ToHex(0, 8);
+            return NewLife.SecurityHelper.MD5_16(data, encoding);
         }
 
         /// <summary>Crc散列</summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static UInt32 Crc(this Byte[] data) => new Crc32Util().Update(data).Value;
+        public static UInt32 Crc(this Byte[] data) => NewLife.SecurityHelper.Crc(data);
 
         /// <summary>Crc16散列</summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static UInt16 Crc16(this Byte[] data) => new Crc16Util().Update(data).Value;
+        public static UInt16 Crc16(this Byte[] data) => NewLife.SecurityHelper.Crc16(data);
 
         /// <summary>SHA128</summary>
         /// <param name="data"></param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public static Byte[] SHA1(this Byte[] data, Byte[] key) => new HMACSHA1(key).ComputeHash(data);
+        public static Byte[] SHA1(this Byte[] data, Byte[] key) => NewLife.SecurityHelper.SHA1(data, key);
 
         /// <summary>SHA256</summary>
         /// <param name="data"></param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public static Byte[] SHA256(this Byte[] data, Byte[] key) => new HMACSHA256(key).ComputeHash(data);
+        public static Byte[] SHA256(this Byte[] data, Byte[] key) => NewLife.SecurityHelper.SHA256(data, key);
 
         /// <summary>SHA384</summary>
         /// <param name="data"></param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public static Byte[] SHA384(this Byte[] data, Byte[] key) => new HMACSHA384(key).ComputeHash(data);
+        public static Byte[] SHA384(this Byte[] data, Byte[] key) => NewLife.SecurityHelper.SHA384(data, key);
 
         /// <summary>SHA512</summary>
         /// <param name="data"></param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public static Byte[] SHA512(this Byte[] data, Byte[] key) => new HMACSHA512(key).ComputeHash(data);
+        public static Byte[] SHA512(this Byte[] data, Byte[] key) => NewLife.SecurityHelper.SHA512(data, key);
 
         #endregion
 
@@ -93,13 +86,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static SymmetricAlgorithm Encrypt(this SymmetricAlgorithm sa, Stream instream, Stream outstream)
         {
-            using (var stream = new CryptoStream(outstream, sa.CreateEncryptor(), CryptoStreamMode.Write))
-            {
-                instream.CopyTo(stream);
-                stream.FlushFinalBlock();
-            }
-
-            return sa;
+            return NewLife.SecurityHelper.Encrypt(sa, instream, outstream);
         }
 
         /// <summary>对称加密算法扩展</summary>
@@ -111,38 +98,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Byte[] Encrypt(this SymmetricAlgorithm sa, Byte[] data, Byte[] pass = null, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.PKCS7)
         {
-            if (data == null || data.Length < 1) throw new ArgumentNullException(nameof(data));
-
-            if (pass != null && pass.Length > 0)
-            {
-                var keySize = sa.KeySize / 8;
-                sa.Key = Pad(pass, keySize);
-
-                var ivSize = sa.IV.Length;
-                sa.IV = Pad(pass, ivSize);
-
-                sa.Mode = mode;
-                sa.Padding = padding;
-            }
-
-            var outstream = new MemoryStream();
-            using var stream = new CryptoStream(outstream, sa.CreateEncryptor(), CryptoStreamMode.Write);
-            stream.Write(data, 0, data.Length);
-
-            // 数据长度必须是8的倍数
-            if (sa.Padding == PaddingMode.None)
-            {
-                var len = data.Length % 8;
-                if (len > 0)
-                {
-                    var buf = new Byte[8 - len];
-                    stream.Write(buf, 0, buf.Length);
-                }
-            }
-
-            stream.FlushFinalBlock();
-
-            return outstream.ToArray();
+            return NewLife.SecurityHelper.Encrypt(sa, data, pass: pass, mode: mode, padding: padding);
         }
 
         /// <summary>对称解密算法扩展
@@ -154,12 +110,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static SymmetricAlgorithm Decrypt(this SymmetricAlgorithm sa, Stream instream, Stream outstream)
         {
-            using (var stream = new CryptoStream(instream, sa.CreateDecryptor(), CryptoStreamMode.Read))
-            {
-                stream.CopyTo(outstream);
-            }
-
-            return sa;
+            return NewLife.SecurityHelper.Encrypt(sa, instream, outstream);
         }
 
         /// <summary>对称解密算法扩展</summary>
@@ -171,33 +122,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Byte[] Decrypt(this SymmetricAlgorithm sa, Byte[] data, Byte[] pass = null, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.PKCS7)
         {
-            if (data == null || data.Length < 1) throw new ArgumentNullException(nameof(data));
-
-            if (pass != null && pass.Length > 0)
-            {
-                var keySize = sa.KeySize / 8;
-                sa.Key = Pad(pass, keySize);
-
-                var ivSize = sa.IV.Length;
-                sa.IV = Pad(pass, ivSize);
-
-                sa.Mode = mode;
-                sa.Padding = padding;
-            }
-
-            using var stream = new CryptoStream(new MemoryStream(data), sa.CreateDecryptor(), CryptoStreamMode.Read);
-            return stream.ReadBytes();
+            return NewLife.SecurityHelper.Encrypt(sa, data, pass: pass, mode: mode, padding: padding);
         }
 
-        private static Byte[] Pad(Byte[] buf, Int32 length)
-        {
-            if (buf.Length == length) return buf;
-
-            var buf2 = new Byte[length];
-            buf2.Write(0, buf);
-
-            return buf2;
-        }
         #endregion
 
         #region RC4
@@ -205,7 +132,7 @@ namespace DotNet.Util
         /// <param name="data"></param>
         /// <param name="pass"></param>
         /// <returns></returns>
-        public static Byte[] RC4(this Byte[] data, Byte[] pass) => DotNet.Util.RC4Util.Encrypt(data, pass);
+        public static Byte[] RC4(this Byte[] data, Byte[] pass) => NewLife.SecurityHelper.RC4(data, pass);
         #endregion
     }
 }

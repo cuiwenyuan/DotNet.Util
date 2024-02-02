@@ -57,7 +57,7 @@ namespace DotNet.Business
             //用户登录表名
             var tableNameUserLogon = BaseUserLogonEntity.CurrentTableName;
 
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //只显示已锁定用户
             if (disabledUserOnly)
             {
@@ -198,7 +198,7 @@ namespace DotNet.Business
 
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();
+            var sbView = PoolUtil.StringBuilder.Get();
 
             sbView.Append("SELECT DISTINCT " + tableNameUser + "." + BaseUserEntity.FieldId);
             sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserFrom);
@@ -422,10 +422,10 @@ namespace DotNet.Business
             //从视图读取
             if (sbView.Length > 0)
             {
-                tableNameUser = sbView.Put();
+                tableNameUser = sbView.Return();
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Return());
         }
         #endregion
 
@@ -638,7 +638,7 @@ namespace DotNet.Business
             }
             var tableNameUserRole = systemCode + "UserRole";
             var tableNameRole = systemCode + "Role";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
@@ -651,7 +651,7 @@ namespace DotNet.Business
                             + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
     }

@@ -178,12 +178,12 @@ namespace DotNet.Util
                 #region 方法2
                 //MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider();
                 //byte[] data = md5Hasher.ComputeHash(new UTF8Encoding().GetBytes(password));
-                //var sb = Pool.StringBuilder.Get();
+                //var sb = PoolUtil.StringBuilder.Get();
                 //foreach (var t in data)
                 //{
                 //    sb.Append(t.ToString("x2"));
                 //}
-                //result = sb.Put();
+                //result = sb.Return();
                 #endregion
 
                 #region 方法3
@@ -196,13 +196,13 @@ namespace DotNet.Util
                 //释放资源
                 md5.Clear();
                 //4.将计算后的结果直接显示为字符串
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 foreach (var t in md5Buffer)
                 {
                     //x2:把每个数字转换为16进制，并保留两位数字。
                     sb.Append(t.ToString("x2"));
                 }
-                result = sb.Put();
+                result = sb.Return();
                 #endregion
 
                 //16位MD5加密（取32位加密的9~25字符）
@@ -235,13 +235,13 @@ namespace DotNet.Util
                 sha1.Clear();
                 //sha1.Dispose();//释放当前实例使用的所有资源
                 //4.将计算后的结果直接显示为字符串
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 foreach (var t in sha1Buffer)
                 {
                     //x2:把每个数字转换为16进制，并保留两位数字。
                     sb.Append(t.ToString("x2"));
                 }
-                result = sb.Put();
+                result = sb.Return();
                 #endregion
             }
             return result;
@@ -312,7 +312,7 @@ namespace DotNet.Util
                 return string.Empty;
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var des = new DESCryptoServiceProvider();
             var inputByteArray = Encoding.Default.GetBytes(targetValue);
             //通过两次哈希密码设置对称算法的初始化向量   
@@ -327,7 +327,7 @@ namespace DotNet.Util
             {
                 sb.AppendFormat("{0:X2}", b);
             }
-            return sb.Put();
+            return sb.Return();
         }
 
 

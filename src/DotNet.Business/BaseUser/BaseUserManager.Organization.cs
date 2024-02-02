@@ -189,7 +189,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByDepartment(string departmentId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
@@ -212,7 +212,7 @@ namespace DotNet.Business
 
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace DotNet.Business
         public int UpdateProvinceCity(bool all = true)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE " + BaseUserEntity.CurrentTableName
                               + " SET " + BaseUserEntity.FieldProvince + " = ( SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldProvince
                              + " FROM " + BaseOrganizationEntity.CurrentTableName
@@ -254,7 +254,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseUserEntity.FieldProvince + " IS NULL OR " + BaseUserEntity.FieldDistrict + " IS NULL)");
             }
 
-            result = ExecuteNonQuery(sb.Put());
+            result = ExecuteNonQuery(sb.Return());
 
             return result;
         }
@@ -266,7 +266,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByCompany(string companyId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
@@ -287,7 +287,7 @@ namespace DotNet.Business
                 */
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
 
         #region public List<BaseUserEntity> GetListByDepartment(string departmentId)
@@ -298,7 +298,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public List<BaseUserEntity> GetListByDepartment(string departmentId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
@@ -320,7 +320,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
 
-            using (var dr = DbHelper.ExecuteReader(sb.Put()))
+            using (var dr = DbHelper.ExecuteReader(sb.Return()))
             {
                 return GetList<BaseUserEntity>(dr);
             }
@@ -335,7 +335,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public List<BaseUserEntity> GetListByCompany(string companyId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
@@ -357,7 +357,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
 
-            using (var dr = DbHelper.ExecuteReader(sb.Put()))
+            using (var dr = DbHelper.ExecuteReader(sb.Return()))
             {
                 return GetList<BaseUserEntity>(dr);
             }
@@ -367,7 +367,7 @@ namespace DotNet.Business
         private string GetUserSql(string[] organizationIds, bool idOnly = false)
         {
             var field = idOnly ? BaseUserEntity.FieldId : "*";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + field
                 + " FROM " + BaseUserEntity.CurrentTableName
                 // 从用户表里去找
@@ -389,7 +389,7 @@ namespace DotNet.Business
                         + "             OR " + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + "))) "
                 */
                 + " ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-            return sb.Put();
+            return sb.Return();
         }
 
         #region public List<BaseUserEntity> GetDataTableByOrganizations(string[] ids) 按工作组、部门、公司获用户列表
@@ -482,7 +482,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable SearchByDepartment(string departmentId, string searchKey)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
             sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
@@ -523,7 +523,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDepartmentName, searchKey));
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+            return DbHelper.Fill(sb.Return(), dbParameters.ToArray());
         }
         #endregion
 

@@ -22,7 +22,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetJsonStr(Dictionary<string, string> jsonDict)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("{");
             var i = 0;
             foreach (var jd in jsonDict)
@@ -40,7 +40,7 @@ namespace DotNet.Util
             }
 
             sb.Append("}");
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ToXml(string json, bool isWithAttr)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("<?xml version=\"1.0\"  standalone=\"yes\"?>");
             var dicList = JsonSplit.Split(json);
             if (dicList != null && dicList.Count > 0)
@@ -215,7 +215,7 @@ namespace DotNet.Util
                 }
 
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         private static string GetXmlList(List<Dictionary<string, string>> dicList, bool isWithAttr)
@@ -224,17 +224,17 @@ namespace DotNet.Util
             {
                 return string.Empty;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             for (var i = 0; i < dicList.Count; i++)
             {
                 sb.Append(GetXml(dicList[i], isWithAttr));
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         private static string GetXml(Dictionary<string, string> dic, bool isWithAttr)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var isJson = false;
             foreach (var item in dic)
             {
@@ -274,12 +274,12 @@ namespace DotNet.Util
                     }
                 }
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         private static string GetXmlElement(string parentName, Dictionary<string, string> dic)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var jsonDic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             sb.Append("<" + parentName);
             foreach (var kv in dic)
@@ -309,7 +309,7 @@ namespace DotNet.Util
             }
             sb.Append("</" + parentName + ">");
 
-            return sb.Put();
+            return sb.Return();
         }
         private static string FormatCdata(string text)
         {

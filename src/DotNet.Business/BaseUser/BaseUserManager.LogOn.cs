@@ -253,7 +253,7 @@ namespace DotNet.Business
                     result.StatusCode = Status.UserNotFound.ToString();
                 }
                 result.StatusMessage = GetStateMessage(result.StatusCode);
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 var dbParameters = new List<IDbDataParameter>();
                 sb.Append("SELECT * "
                           + " FROM " + BaseUserEntity.CurrentTableName
@@ -262,7 +262,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldNickName, nickName));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
                 //errorMark = 2;
-                var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+                var dt = DbHelper.Fill(sb.Return(), dbParameters.ToArray());
                 // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
                 if (dt != null && dt.Rows.Count > 1)
                 {
@@ -464,7 +464,7 @@ namespace DotNet.Business
                     result.StatusMessage = GetStateMessage(result.StatusCode);
                     return result;
                 }
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 var dbParameters = new List<IDbDataParameter>();
                 sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName
                          + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted)
@@ -476,7 +476,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCode, userCode));
 
                 errorMark = 2;
-                var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+                var dt = DbHelper.Fill(sb.Return(), dbParameters.ToArray());
                 // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
                 if (dt != null && dt.Rows.Count > 1)
                 {
@@ -583,7 +583,7 @@ namespace DotNet.Business
             result.StatusMessage = GetStateMessage(result.StatusCode);
 
             var dbParameters = new List<IDbDataParameter>();
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted));
 
             dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
@@ -606,7 +606,7 @@ namespace DotNet.Business
                 }
             }
 
-            var dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+            var dt = DbHelper.Fill(sb.Return(), dbParameters.ToArray());
             // 若是有多条数据返回，把设置为无效的数据先过滤掉，防止数据有重复
             if (dt != null && dt.Rows.Count > 1)
             {
@@ -627,7 +627,7 @@ namespace DotNet.Business
             }
             else
             {
-                sb = Pool.StringBuilder.Get();
+                sb = PoolUtil.StringBuilder.Get();
                 // 若不能正常登录、看这个人是否有超级管理员的权限？若是超级管理员，可以登录任何一个网点
                 sb.Append("SELECT * "
                           + " FROM " + BaseUserEntity.CurrentTableName
@@ -644,7 +644,7 @@ namespace DotNet.Business
                     DbHelper.MakeParameter(BaseUserEntity.FieldUserName, userName),
                     DbHelper.MakeParameter(BaseUserEntity.FieldNickName, userName)
                 };
-                dt = DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+                dt = DbHelper.Fill(sb.Return(), dbParameters.ToArray());
                 if (dt != null && dt.Rows.Count > 1)
                 {
                     result.Status = Status.UserDuplicate;

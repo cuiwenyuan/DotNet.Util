@@ -32,14 +32,14 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public static int Delete(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("DELETE FROM " + tableName);
             var condition = GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional);
             if (condition.Length > 0)
             {
                 sb.Append(" WHERE " + condition);
             }
-            return dbHelper.ExecuteNonQuery(sb.Put(), dbHelper.MakeParameters(parameters));
+            return dbHelper.ExecuteNonQuery(sb.Return(), dbHelper.MakeParameters(parameters));
         }
         #endregion
 
@@ -53,13 +53,13 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public static int Delete(this IDbHelper dbHelper, string tableName, string condition)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("DELETE FROM " + tableName);
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
             }
-            return dbHelper.ExecuteNonQuery(sb.Put());
+            return dbHelper.ExecuteNonQuery(sb.Return());
         }
         #endregion
 
@@ -97,14 +97,14 @@ namespace DotNet.Util
         /// <returns>是否成功</returns>
         public static int Truncate(this IDbHelper dbHelper, string tableName)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("TRUNCATE TABLE " + tableName);
             // DB2 V9.7 以后才支持这个语句
             if (dbHelper.CurrentDbType == CurrentDbType.Db2)
             {
                 sb.Append(" ALTER TABLE " + tableName + " ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE ");
             }
-            return dbHelper.ExecuteNonQuery(sb.Put());
+            return dbHelper.ExecuteNonQuery(sb.Return());
         }
         #endregion
     }

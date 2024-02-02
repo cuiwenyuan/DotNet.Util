@@ -124,7 +124,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(string searchKey)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1 ");
 
             var dbParameters = new List<IDbDataParameter>();
@@ -147,7 +147,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMessage, searchKey));
             }
             var dt = new DataTable(BaseExceptionEntity.CurrentTableName);
-            DbHelper.Fill(dt, sb.Put(), dbParameters.ToArray());
+            DbHelper.Fill(dt, sb.Return(), dbParameters.ToArray());
             return dt;
         }
         #endregion
@@ -167,7 +167,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByPage(string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             ////子系统
             //if (!string.IsNullOrEmpty(processId))
@@ -200,7 +200,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldId + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -211,9 +211,9 @@ namespace DotNet.Business
         /// <returns></returns>
         public string GetTotalCount(int days)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS TotalCount FROM " + CurrentTableName + " WHERE (DATEADD(d, " + days + ", " + BaseExceptionEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")");
-            return DbHelper.ExecuteScalar(sb.Put()).ToString();
+            return DbHelper.ExecuteScalar(sb.Return()).ToString();
         }
 
         #region 上一个下一个
@@ -229,7 +229,7 @@ namespace DotNet.Business
             previousId = currentId;
             nextId = currentId;
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("WITH T1 AS (");
             sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id < " + currentId + " ORDER BY Id DESC ");
             sb.Append(") ");
@@ -237,7 +237,7 @@ namespace DotNet.Business
             sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + CurrentTableName + " WHERE Id > " + currentId + " ORDER BY Id ASC ");
             sb.Append(") ");
             sb.Append("SELECT ISNULL(T1.PreviousId," + currentId + ") AS PreviousId,ISNULL(T1.CurrentId,T2.CurrentId) AS CurrentId,ISNULL(T2.NextId," + currentId + ") AS NextId FROM T1 FULL JOIN T2 ON T1.CurrentId = T2.CurrentId");
-            var dt = DbHelper.Fill(sb.Put());
+            var dt = DbHelper.Fill(sb.Return());
             if (dt != null && dt.Rows.Count == 0)
             {
                 previousId = currentId;

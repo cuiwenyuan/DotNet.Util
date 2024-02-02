@@ -33,7 +33,7 @@ namespace DotNet.Business
         public virtual decimal GetDatabaseSize()
         {
             var result = 0M;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
@@ -50,7 +50,7 @@ namespace DotNet.Business
             }
             try
             {
-                var dt = Fill(sb.Put());
+                var dt = Fill(sb.Return());
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     //database_name,database_size

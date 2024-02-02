@@ -42,7 +42,7 @@ namespace DotNet.Util
             {
                 return;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(commandText);
             sb.Append(" ");
             sb.Append(commandType);
@@ -64,7 +64,7 @@ namespace DotNet.Util
             }
             //将异常信息写入本地文件中
             //高并发日志写法+Winform日志目录bug修复 Troy.Cui 2021-08-13
-            LogUtil.WriteLog(sb.Put(), "SqlTrace");
+            LogUtil.WriteLog(sb.Return(), "SqlTrace");
 
         }
 
