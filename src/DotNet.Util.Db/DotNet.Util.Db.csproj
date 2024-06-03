@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Description>A set of .NET 8/7/6/5/Standard 2.1/Standard 2.0 Database Access utilities(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Description>A set of .NET 8/7/6/5/Standard 2.1/Standard 2.0 Database Access utilities for SqlServer/MSSQL(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.com</Company>
 		<Copyright>©2008-2024 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
-		<PackageTags>DotNet DAL Util Utilities DbHelper DbUtil SqlServer MSSQL Oracle MySQL</PackageTags>
+		<PackageTags>DotNet DAL Util Utilities DbHelper DbUtil SqlServer MSSQL</PackageTags>
 		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -51,17 +51,10 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="MySql.Data" Version="8.0.30" />
-		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
-		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.22.0" />
-		<PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.118.0" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118.0" />
-		<PackageReference Include="MySql.Data" Version="8.0.30" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
 

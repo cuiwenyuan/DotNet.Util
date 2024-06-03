@@ -59,8 +59,8 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
-    <Reference Include="NewLife.Core, Version=10.5.2023.801, Culture=neutral, PublicKeyToken=8343210f0b524456, processorArchitecture=MSIL">
-      <HintPath>..\packages\NewLife.Core.10.5.2023.801\lib\net45\NewLife.Core.dll</HintPath>
+    <Reference Include="NewLife.Core, Version=10.10.2024.601, Culture=neutral, PublicKeyToken=8343210f0b524456, processorArchitecture=MSIL">
+      <HintPath>..\packages\NewLife.Core.10.10.2024.601\lib\net45\NewLife.Core.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.5.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.6\lib\net45\NPOI.dll</HintPath>
