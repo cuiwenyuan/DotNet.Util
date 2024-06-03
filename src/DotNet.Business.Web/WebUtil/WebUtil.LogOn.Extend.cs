@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 #if NET452_OR_GREATER
 using System.Web;

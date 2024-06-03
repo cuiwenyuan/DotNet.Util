@@ -1,7 +1,8 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
+using NewLife.Log;
 using System;
 using System.Collections.Concurrent;
 using System.Data;
@@ -39,13 +40,31 @@ namespace DotNet.Util
                 connectionString = BaseSystemInfo.UserCenterDbConnection;
             }
             var dbHelperClass = GetDbHelperClass(dbType);
-            var dbHelper = (IDbHelper)Assembly.Load("DotNet.Util.Db").CreateInstance(dbHelperClass, true);
-            if (dbHelper != null)
+            var dbHelperDll = GetDbHelperDll(dbType);
+            try
             {
-                dbHelper.ConnectionString = connectionString;
+                var dbHelper = (IDbHelper)Assembly.Load(dbHelperDll).CreateInstance(dbHelperClass, true);
+                if (dbHelper != null)
+                {
+                    dbHelper.ConnectionString = connectionString;
+                }
+                else
+                {
+                    // 兼容老版本的DotNet.Util.Db
+                    dbHelperDll = "DotNet.Util.Db";
+                    dbHelper = (IDbHelper)Assembly.Load(dbHelperDll).CreateInstance(dbHelperClass, true);
+                    if (dbHelper != null)
+                    {
+                        dbHelper.ConnectionString = connectionString;
+                    }
+                }
+                return dbHelper;
             }
-
-            return dbHelper;
+            catch (Exception ex)
+            {
+                LogUtil.WriteException(ex, dbHelperDll + " Dll not found or Open Dll error");
+            }
+            return null;
         }
 
         #endregion
@@ -87,7 +106,6 @@ namespace DotNet.Util
                     break;
                 case CurrentDbType.Oracle:
                     result = "DotNet.Util.OracleHelper";
-                    // result = "DotNet.Util.MSOracleHelper";
                     break;
                 case CurrentDbType.Access:
                     result = "DotNet.Util.OleDbHelper";
@@ -101,11 +119,56 @@ namespace DotNet.Util
                 case CurrentDbType.SqLite:
                     result = "DotNet.Util.SqLiteHelper";
                     break;
+                case CurrentDbType.SQLite:
+                    result = "DotNet.Util.SQLiteHelper";
+                    break;
                 case CurrentDbType.Ase:
                     result = "DotNet.Util.AseHelper";
                     break;
                 case CurrentDbType.PostgreSql:
                     result = "DotNet.Util.PostgreSqlHelper";
+                    break;
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region public static string GetDbHelperClass(CurrentDbType dbType) 按数据类型获取数据库访问Dll文件
+        /// <summary>
+        /// 按数据类型获取数据库访问Dll文件
+        /// </summary>
+        /// <param name="dbType">数据库类型</param>
+        /// <returns>数据库访问Dll文件</returns>
+        public static string GetDbHelperDll(CurrentDbType dbType)
+        {
+            var result = "DotNet.Util.Db";
+            switch (dbType)
+            {
+                case CurrentDbType.SqlServer:
+                    result = "DotNet.Util.Db";
+                    break;
+                case CurrentDbType.Oracle:
+                    result = "DotNet.Util.Db.Oracle";
+                    break;
+                case CurrentDbType.Access:
+                    result = "DotNet.Util.Db.OleDb";
+                    break;
+                case CurrentDbType.MySql:
+                    result = "DotNet.Util.Db.MySql";
+                    break;
+                case CurrentDbType.Db2:
+                    result = "DotNet.Util.Db.DB2";
+                    break;
+                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
+                    result = "DotNet.Util.Db.SQLite";
+                    break;
+                case CurrentDbType.Ase:
+                    result = "DotNet.Util.Db.Ase";
+                    break;
+                case CurrentDbType.PostgreSql:
+                    result = "DotNet.Util.Db.PostgreSql";
                     break;
             }
             return result;

@@ -348,6 +348,14 @@ namespace DotNet.Util
         /// <param name="createIcon">生成图标</param>
         /// <param name="createMiddle">生成中图</param>
         /// <param name="createLarge">生成大图</param>
+        /// <param name="thumbnailWidth">缩略图宽度</param>
+        /// <param name="thumbnailHeight">缩略图高度</param>
+        /// <param name="iconWidth">图标宽度</param>
+        /// <param name="iconHeight">图标高度</param>
+        /// <param name="middleWidth">中图宽度</param>
+        /// <param name="middleHeight">中图高度</param>
+        /// <param name="largeWidth">大图宽度</param>
+        /// <param name="largeHeight">大图高度</param>
         /// <returns>保存文件是否成功 </returns>  
         public string Base64SaveAs(string base64String, out string uploadedFileName, string subFolder = @"ItemPhoto", bool isThumbnail = true, string thumbnailMode = "W", bool isAutoRotate = false, bool keepExif = false, bool createThumbnail = true, bool createIcon = true, bool createMiddle = false, bool createLarge = true, int thumbnailWidth = 180, int thumbnailHeight = 180, int iconWidth = 90, int iconHeight = 90, int middleWidth = 500, int middleHeight = 500, int largeWidth = 700, int largeHeight = 700)
         {

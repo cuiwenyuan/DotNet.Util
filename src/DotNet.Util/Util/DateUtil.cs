@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -383,7 +383,7 @@ namespace DotNet.Util
             var firstDay = new DateTime(year, 1, 1);
 
             //当年的第一天是星期几
-            var firstOfWeek = Convert.ToInt32(firstDay.DayOfWeek);
+            var firstOfWeek = firstDay.DayOfWeek.ToInt();
 
             //计算当年第一周的起止日期，可能跨年
             var dayDiff = (-1) * firstOfWeek + 1;

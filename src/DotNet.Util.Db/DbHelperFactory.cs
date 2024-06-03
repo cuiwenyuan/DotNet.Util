@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
-//using DotNet.Util.DbUtil;
-//using DotNet.Util.DbUtil.Syntax;
+//using DotNet.Util.Db;
+//using DotNet.Util.Db.Syntax;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

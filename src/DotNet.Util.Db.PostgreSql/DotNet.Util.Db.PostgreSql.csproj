@@ -1,0 +1,107 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+
+	<PropertyGroup>
+		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Description>A set of .NET 8/7/6/5/Standard 2.1/Standard 2.0 Database Access utilities for PostgreSql(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Company>www.cuiwenyuan.com</Company>
+		<Copyright>©2008-2024 Wangcaisoft</Copyright>
+		<Authors>崔文远Troy Cui</Authors>
+		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
+		<PackageTags>DotNet DAL Util Utilities DbHelper DbUtil PostgreSql</PackageTags>
+		<PackageProjectUrl>https://github.com/cuiwenyuan/DotNet.Util/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cuiwenyuan/DotNet.Util/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageId>Wangcaisoft.DotNet.Util.Db.PostgreSql</PackageId>
+		<PackageIcon>logo.128.png</PackageIcon>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>DotNet.Util.Db.PostgreSql</AssemblyName>
+		<RootNamespace>DotNet.Util</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ApplicationIcon>App.ico</ApplicationIcon>
+		<RepositoryType>git</RepositoryType>
+		<VersionPrefix>1.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
+		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
+		<FileVersion>$(Version)</FileVersion>
+		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
+		<LangVersion>latest</LangVersion>
+		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="logo.128.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+		<PackageReference Include="Npgsql">
+			<Version>4.0.16</Version>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net46'">
+		<PackageReference Include="Npgsql">
+			<Version>4.0.16</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+	  <PackageReference Include="Npgsql">
+	    <Version>8.0.3</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
+	</ItemGroup>
+
+</Project>

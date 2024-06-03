@@ -33,7 +33,7 @@ namespace DotNet.Util
         /// <param name="value">字符串</param>
         /// <param name="strs">待比较字符串数组</param>
         /// <returns></returns>
-        public static bool EqualIgnoreCase(this string? value, params string[] strs)
+        public static bool EqualIgnoreCase(this string value, params string[] strs)
         {
             return NewLife.StringHelper.EqualIgnoreCase(value, strs);
         }
@@ -44,7 +44,7 @@ namespace DotNet.Util
         /// <param name="value">字符串</param>
         /// <param name="strs">待比较字符串数组</param>
         /// <returns></returns>
-        public static bool StartsWithIgnoreCase(this string? value, params string[] strs)
+        public static bool StartsWithIgnoreCase(this string value, params string[] strs)
         {
             return NewLife.StringHelper.StartsWithIgnoreCase(value, strs);
         }
@@ -55,7 +55,7 @@ namespace DotNet.Util
         /// <param name="value">字符串</param>
         /// <param name="strs">待比较字符串数组</param>
         /// <returns></returns>
-        public static bool EndsWithIgnoreCase(this string? value, params string[] strs)
+        public static bool EndsWithIgnoreCase(this string value, params string[] strs)
         {
             return NewLife.StringHelper.EndsWithIgnoreCase(value, strs);
         }
@@ -65,7 +65,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="value">字符串</param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty(this string? value)
+        public static bool IsNullOrEmpty(this string value)
         {
             return NewLife.StringHelper.IsNullOrEmpty(value);
         }
@@ -75,7 +75,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="value">字符串</param>
         /// <returns></returns>
-        public static bool IsNullOrWhiteSpace(this string? value)
+        public static bool IsNullOrWhiteSpace(this string value)
         {
             return NewLife.StringHelper.IsNullOrWhiteSpace(value);
         }
@@ -88,7 +88,7 @@ namespace DotNet.Util
         /// <param name="value">字符串</param>
         /// <param name="separators">分组分隔符，默认逗号分号</param>
         /// <returns></returns>
-        public static string[] Split(this string? value, params string[] separators)
+        public static string[] Split(this string value, params string[] separators)
         {
             return NewLife.StringHelper.Split(value, separators);
         }
@@ -116,7 +116,7 @@ namespace DotNet.Util
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <param name="func">把对象转为字符串的委托</param>
         /// <returns></returns>
-        public static string Join<T>(this IEnumerable<T> value, string separator = ",", Func<T, object?>? func = null)
+        public static string Join<T>(this IEnumerable<T> value, string separator = ",", Func<T, object> func = null)
         {
             return NewLife.StringHelper.Join(value, separator, func);
         }
@@ -141,7 +141,7 @@ namespace DotNet.Util
         /// <param name="maxLength">截取后字符串的最大允许长度，包含后面填充</param>
         /// <param name="pad">需要填充在后面的字符串，比如几个圆点</param>
         /// <returns></returns>
-        public static String Cut(this String str, Int32 maxLength, String? pad = null)
+        public static String Cut(this String str, Int32 maxLength, String pad = null)
         {
             return NewLife.StringHelper.Cut(str, maxLength, pad);
         }

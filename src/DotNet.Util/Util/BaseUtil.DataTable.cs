@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -94,6 +94,29 @@ namespace DotNet.Util
         public static string[] FieldToArray(DataTable dt, string field)
         {
             return dt.Select().Select(n => n[field].ToString()).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+        }
+        #endregion
+
+        #region Filter对数据表进行过滤
+        /// <summary>
+        /// 对数据表进行过滤
+        /// </summary>
+        /// <param name="dt">数据表</param>
+        /// <param name="where">查询条件</param>
+        /// <returns>数据权限</returns>
+        public static DataTable Filter(DataTable dt, string where)
+        {
+            var dtNew = dt.Clone();
+            var filterExpression = string.Empty;
+            if (!string.IsNullOrEmpty(where))
+            {
+                var row = dt.Select(where);
+                for (var i = 0; i < row.Length; i++)
+                {
+                    dtNew.ImportRow(row[i]);
+                }
+            }
+            return dtNew;
         }
         #endregion
 

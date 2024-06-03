@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved , Copyright (c) 2023 , DotNet. 
+// All Rights Reserved , Copyright (c) 2024 , DotNet. 
 //-----------------------------------------------------------------
 
 using System;
@@ -106,7 +106,7 @@ namespace DotNet.Util
 		/// <returns>参数</returns>
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
-			return (IDbDataParameter)NpgsqlParameter(targetFiled, targetValue);
+			return (IDbDataParameter)(new NpgsqlParameter(targetFiled, targetValue));
 		}
 		#endregion
 
@@ -150,15 +150,39 @@ namespace DotNet.Util
 			}
 			return dbParameters.ToArray();
 		}
-		#endregion
+        #endregion
 
-		#region public IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters) 获取参数
-		/// <summary>
-		/// 获取参数
-		/// </summary>
-		/// <param name="parameters">参数</param>
-		/// <returns>参数集</returns>
-		public override IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters)
+        #region public IDbDataParameter[] MakeParameters(Dictionary<string, object> parameters) 获取参数
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        /// <returns>参数集</returns>
+        public override IDbDataParameter[] MakeParameters(Dictionary<string, object> parameters)
+        {
+            // 这里需要用泛型列表，因为有不合法的数组的时候
+            var dbParameters = new List<IDbDataParameter>();
+            if (parameters != null && parameters.Count > 0)
+            {
+                foreach (var parameter in parameters)
+                {
+                    if (parameter.Key != null && parameter.Value != null && (!(parameter.Value is Array)))
+                    {
+                        dbParameters.Add(this.MakeParameter(parameter.Key, parameter.Value));
+                    }
+                }
+            }
+            return dbParameters.ToArray();
+        }
+        #endregion
+
+        #region public IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters) 获取参数
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        /// <returns>参数集</returns>
+        public override IDbDataParameter[] MakeParameters(List<KeyValuePair<string, object>> parameters)
 		{
 			// 这里需要用泛型列表，因为有不合法的数组的时候
 			List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();

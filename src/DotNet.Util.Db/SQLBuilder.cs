@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -71,7 +71,7 @@ namespace DotNet.Util
         /// </summary>
         public string CommandText = string.Empty;
 
-        private StringBuilder _selectSql = null;
+        //private StringBuilder _selectSql = null;
 
         private string _tableName = string.Empty;
 
