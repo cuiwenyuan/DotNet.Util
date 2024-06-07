@@ -661,7 +661,6 @@ namespace DotNet.Business
         /// <summary>
         /// 添加用户
         /// </summary>
-        /// <param name="dbHelper">数据库连接</param>
         /// <param name="userInfo">用户信息</param>
         /// <param name="entity">用户实体</param>
         /// <param name="userLogonEntity">用户登录实体</param>
