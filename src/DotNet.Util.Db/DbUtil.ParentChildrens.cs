@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -37,7 +37,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
             {
                 sb.Append("SELECT " + BaseUtil.FieldId);
@@ -66,7 +66,7 @@ namespace DotNet.Util
             names[0] = fieldCode;
             values[0] = code;
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, sb.Put(), dbHelper.MakeParameters(names, values));
+            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
             return dt;
         }
         #endregion
@@ -85,7 +85,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var dt = new DataTable(tableName);
             if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
@@ -108,7 +108,7 @@ namespace DotNet.Util
                 names[0] = fieldId;
                 var values = new Object[1];
                 values[0] = id;
-                dbHelper.Fill(dt, sb.Put(), dbHelper.MakeParameters(names, values));
+                dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
             {
@@ -136,7 +136,7 @@ namespace DotNet.Util
                              + "SELECT * "
                              + " FROM Tree ");
                 }
-                dbHelper.Fill(dt, sb.Put());
+                dbHelper.Fill(dt, sb.Return());
             }
             return dt;
         }
@@ -156,7 +156,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
             {
                 sb.Append("SELECT " + fieldId);
@@ -172,7 +172,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.Fill(sb.Put());
+            return dbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -189,7 +189,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
             {
                 sb.Append("SELECT " + BaseUtil.FieldId);
@@ -214,7 +214,7 @@ namespace DotNet.Util
                 sb.Append(" ORDER BY " + order);
             }
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, sb.Put());
+            dbHelper.Fill(dt, sb.Return());
             return dt;
         }
         #endregion
@@ -232,7 +232,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
             {
                 sb.Append("SELECT " + BaseUtil.FieldId);
@@ -267,7 +267,7 @@ namespace DotNet.Util
             values[1] = code;
             values[2] = code;
             var dt = new DataTable("DotNet");
-            dbHelper.Fill(dt, sb.Put(), dbHelper.MakeParameters(names, values));
+            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
             return dt;
         }
         #endregion
@@ -349,7 +349,7 @@ namespace DotNet.Util
         public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code)
         {
             var parentId = string.Empty;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT MAX(Id) AS Id "
                       + " FROM " + tableName
                       + "  WHERE (LEFT(" + dbHelper.GetParameter(fieldCode) + ", LEN(" + fieldCode + ")) = " + fieldCode + ") "
@@ -358,7 +358,7 @@ namespace DotNet.Util
             var values = new Object[1];
             names[0] = fieldCode;
             values[0] = code;
-            var returnObject = dbHelper.ExecuteScalar(sb.Put(), dbHelper.MakeParameters(names, values));
+            var returnObject = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values));
             if (returnObject != null)
             {
                 parentId = returnObject.ToString();

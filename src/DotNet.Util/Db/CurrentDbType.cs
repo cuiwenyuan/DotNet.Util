@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -51,6 +51,11 @@ namespace DotNet.Util
         /// 数据库类型：SQLite
         /// </summary>
         SqLite,
+
+        /// <summary>
+        /// 数据库类型：SQLite
+        /// </summary>
+        SQLite,
 
         /// <summary>
         /// 数据库类型：Ase

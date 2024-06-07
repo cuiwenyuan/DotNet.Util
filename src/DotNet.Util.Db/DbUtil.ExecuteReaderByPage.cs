@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -234,7 +234,7 @@ namespace DotNet.Util
             {
                 conditions = "WHERE " + conditions;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
@@ -257,11 +257,11 @@ namespace DotNet.Util
             //var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                return dbHelper.ExecuteReader(sb.Put(), dbParameters);
+                return dbHelper.ExecuteReader(sb.Return(), dbParameters);
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Put());
+                return dbHelper.ExecuteReader(sb.Return());
             }
         }
 

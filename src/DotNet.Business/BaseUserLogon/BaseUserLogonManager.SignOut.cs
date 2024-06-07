@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -63,7 +63,7 @@ namespace DotNet.Business
                         return result > 0;
                     }
                     // 最后一次登录时间
-                    var sb = Pool.StringBuilder.Get();
+                    var sb = PoolUtil.StringBuilder.Get();
                     sb.Append("UPDATE " + BaseUserLogonEntity.CurrentTableName + " SET " + BaseUserLogonEntity.FieldPreviousVisitTime + " = " + BaseUserLogonEntity.FieldLastVisitTime);
                     //Troy.Cui 2020-02-29用户退出时也强制OpenId重新生成，和登录时一样强制生成OpenId
                     sb.Append(" , " + BaseUserLogonEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'");
@@ -76,7 +76,7 @@ namespace DotNet.Business
                     {
                         DbHelper.MakeParameter(BaseUserEntity.FieldId, userEntity.Id)
                     };
-                    result = ExecuteNonQuery(sb.Put(), dbParameters.ToArray());
+                    result = ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
                 }
             }
 

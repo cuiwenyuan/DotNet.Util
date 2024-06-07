@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -34,13 +34,13 @@ namespace DotNet.Util
         public static int Count(this IDbHelper dbHelper, string tableName, string condition = null)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName);
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -61,13 +61,13 @@ namespace DotNet.Util
         public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(DISTINCT " + fieldName + ") FROM " + tableName);
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();

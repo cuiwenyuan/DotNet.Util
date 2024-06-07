@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -868,13 +868,13 @@ namespace DotNet.Business
         public virtual int ChangeEnabled(object id)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUtil.FieldEnabled + " = (CASE " + BaseUtil.FieldEnabled + " WHEN 0 THEN 1 WHEN 1 THEN 0 END) WHERE (" + BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + ")");
             var names = new string[1];
             var values = new Object[1];
             names[0] = BaseUtil.FieldId;
             values[0] = id;
-            result = DbHelper.ExecuteNonQuery(sb.Put(), DbHelper.MakeParameters(names, values));
+            result = DbHelper.ExecuteNonQuery(sb.Return(), DbHelper.MakeParameters(names, values));
             return result;
         }
         #endregion

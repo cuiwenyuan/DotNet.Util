@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved , Copyright (c) 2023, DotNet. 
+// All Rights Reserved , Copyright (c) 2024, DotNet. 
 //-----------------------------------------------------------------
 
 using System;
@@ -75,7 +75,7 @@ namespace DotNet.Business
                 var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 var organizationManager = new Business.BaseOrganizationManager(this.DbHelper, this.UserInfo);
                 // 不不存在的组织机构删除掉TAB_SITE是远程试图
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("DELETE FROM BASEORGANIZE WHERE id < 1000000 AND id NOT IN (SELECT id FROM TAB_SITE)");
                 organizationManager.ExecuteNonQuery(sb.ToString());
                 sb.Clear();
@@ -86,7 +86,7 @@ namespace DotNet.Business
                     sb.Append(conditional);
                 }
 
-                var dataReader = dbHelper.ExecuteReader(sb.Put());
+                var dataReader = dbHelper.ExecuteReader(sb.Return());
                 if (dataReader != null && !dataReader.IsClosed)
                 {
                     while (dataReader.Read())
@@ -149,7 +149,7 @@ namespace DotNet.Business
                 sb.Append(@"UPDATE baseorganization SET parentId = null WHERE id = parentId");
                 // 设置员工的公司主键
                 sb.Append(@"UPDATE baseuser SET companyid = (SELECT MAX(Id) FROM baseorganization WHERE baseorganization.fullname = baseuser.companyname AND baseorganization.Id < 1000000) WHERE companyId IS NULL OR companyId = ''");
-                ExecuteNonQuery(sb.Put());
+                ExecuteNonQuery(sb.Return());
             }
             return result;
         }

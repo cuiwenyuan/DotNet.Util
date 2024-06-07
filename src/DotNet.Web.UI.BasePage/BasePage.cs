@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -17,9 +17,9 @@ using DotNet.Util;
 /// 修改记录
 /// 
 /// 版本：4.1 2017.05.09    Troy Cui    完善代码。
-/// 版本：2.6 2011.06.19    zgl         修改dbHelper，userCenterDbHelper的属性为protected->private
+/// 版本：2.6 2011.06.19    zgl         修改dbHelper，_userCenterDbHelper的属性为protected->private
 ///                                     增加protected  string  GetSequence(string tableName) 根据表名，取得序列号
-///	版本：2.5 2009.11.09    JiRiGaLa    public void Authorized(string permissionItemCode) 函数进行改进。
+///	版本：2.5 2009.11.09    JiRiGaLa    public void Authorized(string permissionCode) 函数进行改进。
 ///	版本：2.4 2008.03.17    JiRiGaLa    登录程序改进为面向服务的登录。
 ///	版本：2.3 2008.03.07    JiRiGaLa    登录时页面重新导向功能改进。
 ///	版本：2.2 2007.12.09    JiRiGaLa    获得页面权限的 GetPermission 函数改进。

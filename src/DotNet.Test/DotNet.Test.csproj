@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj" />
-    <ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj" />
     <ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
     <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
     <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />

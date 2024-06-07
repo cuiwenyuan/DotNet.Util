@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,7 +36,7 @@ namespace DotNet.Util
         public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             switch (dbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
@@ -59,7 +59,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -81,7 +81,7 @@ namespace DotNet.Util
         public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
         {
             var result = 0M;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             switch (dbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
@@ -103,7 +103,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToDecimal();
@@ -135,7 +135,7 @@ namespace DotNet.Util
                     result = DateTime.MaxValue;
                     break;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             switch (dbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
@@ -157,7 +157,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Put());
+            var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToDateTime();

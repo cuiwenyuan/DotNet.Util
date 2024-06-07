@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -17,9 +17,9 @@ using DotNet.Util;
 /// 基础网页类
 /// 
 /// 修改记录
-/// 版本：2.6 2011.06.19    zgl         修改dbHelper，userCenterDbHelper的属性为protected->private
+/// 版本：2.6 2011.06.19    zgl         修改dbHelper，_userCenterDbHelper的属性为protected->private
 ///                                     增加protected  string  GetSequence(string tableName) 根据表名，取得序列号
-///	版本：2.5 2009.11.09    JiRiGaLa    public void Authorized(string permissionItemCode) 函数进行改进。
+///	版本：2.5 2009.11.09    JiRiGaLa    public void Authorized(string permissionCode) 函数进行改进。
 ///	版本：2.4 2008.03.17    JiRiGaLa    登录程序改进为面向服务的登录。
 ///	版本：2.3 2008.03.07    JiRiGaLa    登录时页面重新导向功能改进。
 ///	版本：2.2 2007.12.09    JiRiGaLa    获得页面权限的 GetPermission 函数改进。
@@ -222,21 +222,6 @@ public partial class BaseUserControl : UserControl
     public void LogException(Exception exception)
     {
         BaseExceptionManager.LogException(UserCenterDbHelper, UserInfo, exception);
-    }
-    #endregion
-
-    #region protected string GetSequence(string tableName) 取得序列号,主键为非自增时使用
-    /// <summary>
-    /// 取得序列号,主键为非自增时使用
-    /// </summary>
-    /// <param name="tableName">表名称</param>
-    /// <returns>序列</returns>
-    protected string GetSequence(string tableName)
-    {
-        var sequence = string.Empty;
-        var manager = new BaseSequenceManager(UserCenterDbHelper, true);
-        sequence = manager.Increment(tableName);
-        return sequence;
     }
     #endregion
 

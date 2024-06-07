@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseParameterManager.cs" company="DotNet">
-//     Copyright (c) 2023, All rights reserved.
+//     Copyright (c) 2024, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseParameterEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string systemCode = null, string parameterId = null, string parameterCode = null)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -113,7 +113,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseParameterEntity.FieldParameterCode + " LIKE N'%" + searchKey + "%' OR " + BaseParameterEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 

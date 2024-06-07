@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -119,6 +119,11 @@ namespace DotNet.Util
         /// 启用系统管理员（超级用户）
         /// </summary>
         public static bool AdministratorEnabled = true;
-        
+
+        /// <summary>
+        /// 启用导出权限控制（默认不启用）
+        /// </summary>
+        public static bool PermissionExportEnabled = false;
+
     }
 }

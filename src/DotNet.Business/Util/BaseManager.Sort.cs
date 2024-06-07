@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -133,7 +133,7 @@ namespace DotNet.Business
         /// <returns>目标主键</returns>
         public string GetUpId(string categoryCode, string id, string whereSubQuery = null)
         {
-            var sbQuery = Pool.StringBuilder.Get();
+            var sbQuery = PoolUtil.StringBuilder.Get();
             if (!string.IsNullOrEmpty(categoryCode))
             {
                 sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
@@ -143,7 +143,7 @@ namespace DotNet.Business
                 sbQuery.Append(whereSubQuery + " AND ");
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
@@ -166,8 +166,8 @@ namespace DotNet.Business
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
-            sbQuery.Put(false);
-            return dbHelper.ExecuteScalar(sb.Put())?.ToString();
+            sbQuery.Return(false);
+            return dbHelper.ExecuteScalar(sb.Return())?.ToString();
         }
         #endregion
 
@@ -268,7 +268,7 @@ namespace DotNet.Business
         /// <returns>目标主键</returns>
         public string GetDownId(string categoryCode, string id, string whereSubQuery = null)
         {
-            var sbQuery = Pool.StringBuilder.Get();
+            var sbQuery = PoolUtil.StringBuilder.Get();
             if (!string.IsNullOrEmpty(categoryCode))
             {
                 sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
@@ -278,7 +278,7 @@ namespace DotNet.Business
                 sbQuery.Append(whereSubQuery + " AND ");
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
@@ -301,8 +301,8 @@ namespace DotNet.Business
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
-            sbQuery.Put(false);
-            return dbHelper.ExecuteScalar(sb.Put())?.ToString();
+            sbQuery.Return(false);
+            return dbHelper.ExecuteScalar(sb.Return())?.ToString();
         }
         #endregion
 

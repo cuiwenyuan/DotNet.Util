@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -37,7 +37,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public virtual DataTable GetTableSpaceByPage(string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "Id", string sortDirection = "DESC")
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
@@ -65,7 +65,7 @@ namespace DotNet.Business
 
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Put(), null);
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Return(), null);
         }
         #endregion
     }

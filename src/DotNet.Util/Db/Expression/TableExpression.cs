@@ -16,7 +16,6 @@ namespace DotNet.Util
         /// 代表一张表的表达式
         /// </summary>
         /// <param name="type">表内元素的类型(对应实体类)</param>
-        /// <param name="name">表的名称</param>
         public TableExpression(Type type)
             : base((ExpressionType)DbExpressionType.Table, type)
         {

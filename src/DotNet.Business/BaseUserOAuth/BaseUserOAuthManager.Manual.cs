@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOAuthManager.cs" company="DotNet">
-//     Copyright (c) 2023, All rights reserved.
+//     Copyright (c) 2024, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ namespace DotNet.Business
             name = dbHelper.SqlSafe(name);
             openId = dbHelper.SqlSafe(openId);
             unionId = dbHelper.SqlSafe(unionId);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
             sb.Append(" AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'");
             sb.Append(" AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'");
@@ -56,7 +56,7 @@ namespace DotNet.Business
                 sb.Append(" AND Id <> " + excludeId);
             }
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
+            var obj = ExecuteScalar(sb.Return());
             if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
@@ -75,7 +75,7 @@ namespace DotNet.Business
             var result = false;
             //安全过滤一下
             name = dbHelper.SqlSafe(name);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
             sb.Append(" AND " + BaseUserOAuthEntity.FieldUserId + " = " + userId + "");
             //未删除
@@ -83,7 +83,7 @@ namespace DotNet.Business
             //当前用户所在公司或者系统公用数据
             //sb.Append(" AND (" + BaseUserOpenAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOpenAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //需要显示未被删除的记录
-            var obj = ExecuteScalar(sb.Put());
+            var obj = ExecuteScalar(sb.Return());
             if (obj != null && obj.ToInt() == 0)
             {
                 result = true;
@@ -107,7 +107,7 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(openId))
             {
                 name = dbHelper.SqlSafe(name);
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 //需要显示未被删除的记录
                 sb.Append("SELECT TOP 1 * FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
                 if (!string.IsNullOrEmpty(openId))
@@ -124,7 +124,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
                 //排序
                 sb.Append(" ORDER BY " + BaseUserOAuthEntity.FieldId + " DESC");
-                var dt = DbHelper.Fill(sb.Put());
+                var dt = DbHelper.Fill(sb.Return());
                 if (dt != null && dt.Rows.Count != 0)
                 {
                     //result = BaseEntity.Create<AppContentEntity>(dt);

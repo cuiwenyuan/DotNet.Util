@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -55,13 +55,13 @@ namespace DotNet.Util
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters)
         {
             var result = 0;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUtil.FieldId + " FROM " + tableName + " WHERE " + GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional));
             sb.Append(" FOR UPDATE NOWAIT ");
             try
             {
                 var dt = new DataTable("ForUpdateNoWait");
-                dbHelper.Fill(dt, sb.Put(), dbHelper.MakeParameters(parameters));
+                dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(parameters));
                 result = dt.Rows.Count;
             }
             catch

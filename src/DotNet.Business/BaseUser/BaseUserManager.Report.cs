@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable DailyUserReport(int days, string startDate, string endDate)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT CONVERT(NVARCHAR(4),B.FiscalYear) + '-' + CONVERT(NVARCHAR(2),B.FiscalMonth) + '-' + CONVERT(NVARCHAR(2),B.FiscalDay) AS TransactionDate");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0 AND A.Enabled = 1 AND A." + BaseUserEntity.FieldDeleted + " = 0) AS TotalNewUserCount");
             sb.Append(" ,(SELECT COUNT(DISTINCT UserId) FROM " + BaseLogonLogEntity.CurrentTableName + " A WHERE DATEDIFF(d,A.CreateTime,B.TransactionDate) = 0) AS TotalUserLoginCount");
@@ -52,7 +52,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY B.TransactionDate ASC");
 
-            return Fill(sb.Put());
+            return Fill(sb.Return());
         }
         #endregion
     }

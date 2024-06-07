@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,9 +36,9 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", values) + ")");
-            var dt = dbHelper.Fill(sb.Put());
+            var dt = dbHelper.Fill(sb.Return());
             return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
@@ -62,7 +62,7 @@ namespace DotNet.Util
                 targetField = BaseUtil.FieldId;
             }
             // 这里是需要完善的功能，完善了这个，是一次重大突破           
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT DISTINCT " + targetField + " FROM " + tableName);
             var whereSql = string.Empty;
             if (topLimit != null && topLimit > 0)
@@ -100,7 +100,7 @@ namespace DotNet.Util
             }
 
             // 20151008 吉日嘎拉 优化为 DataReader 读取数据，大量数据读取时，效率高，节约内存，提高处理效率
-            var dataReader = dbHelper.ExecuteReader(sb.Put(), dbHelper.MakeParameters(parameters));
+            var dataReader = dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters));
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())

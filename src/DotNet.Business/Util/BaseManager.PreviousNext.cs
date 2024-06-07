@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -43,7 +43,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetPreviousNextId(bool deletionStateCode, string id, string order)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT Id "
                             + " FROM " + CurrentTableName
                             + " WHERE (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId)
@@ -54,7 +54,7 @@ namespace DotNet.Business
             names[0] = BaseUtil.FieldCreateUserId;
             values[0] = UserInfo.Id;
             var dt = new DataTable(CurrentTableName);
-            DbHelper.Fill(dt, sb.Put(), DbHelper.MakeParameters(names, values));
+            DbHelper.Fill(dt, sb.Return(), DbHelper.MakeParameters(names, values));
             _nextId = GetNextId(dt, id);
             _previousId = GetPreviousId(dt, id);
             return dt;
@@ -84,7 +84,7 @@ namespace DotNet.Business
         private string GetPreviousId(string id)
         {
             var result = string.Empty;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                       + " FROM " + CurrentTableName
                                       + " WHERE " + BaseUtil.FieldCreateTime + " = (SELECT MAX(" + BaseUtil.FieldCreateTime + ")"
@@ -99,7 +99,7 @@ namespace DotNet.Business
             values[0] = id;
             names[1] = BaseUtil.FieldCreateUserId;
             values[1] = UserInfo.Id;
-            var obj = DbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            var obj = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
             if (obj != null)
             {
                 result = obj.ToString();
@@ -141,7 +141,7 @@ namespace DotNet.Business
         private string GetNextId(string id)
         {
             var result = string.Empty;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                       + " FROM " + CurrentTableName
                                       + " WHERE " + BaseUtil.FieldCreateTime + " = (SELECT MIN(" + BaseUtil.FieldCreateTime + ")"
@@ -156,7 +156,7 @@ namespace DotNet.Business
             values[0] = id;
             names[1] = BaseUtil.FieldCreateUserId;
             values[1] = UserInfo.Id;
-            var returnObject = DbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            var returnObject = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
             if (returnObject != null)
             {
                 result = returnObject.ToString();

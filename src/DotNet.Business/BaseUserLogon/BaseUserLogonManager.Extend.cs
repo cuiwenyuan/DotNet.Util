@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -163,13 +163,13 @@ namespace DotNet.Business
         public string[] GetOnlineUserIds(string[] userIds)
         {
             string[] result = null;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserLogonEntity.FieldUserId + " FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " = 1 ");
             if (userIds != null && userIds.Length > 0)
             {
                 sb.Append(" AND " + BaseUserLogonEntity.FieldUserId + " IN (" + ObjectUtil.ToList(userIds) + ") ");
             }
-            var dt = DbHelper.Fill(sb.Put());
+            var dt = DbHelper.Fill(sb.Return());
             result = BaseUtil.FieldToArray(dt, BaseUserLogonEntity.FieldUserId);
 
             return result;
@@ -191,10 +191,10 @@ namespace DotNet.Business
                     DbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeoutTime, openIdTimeout)
                 };
                 result = Guid.NewGuid().ToString("N");
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldOpenId + " = '" + result + "', " + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldOpenIdTimeoutTime) + " WHERE " + BaseUserLogonEntity.FieldOpenId + " = '" + UserInfo.OpenId + "' ");
 
-                if (!(ExecuteNonQuery(sb.Put(), dbParameters.ToArray()) > 0))
+                if (!(ExecuteNonQuery(sb.Return(), dbParameters.ToArray()) > 0))
                 {
                     result = string.Empty;
                 }
@@ -208,9 +208,9 @@ namespace DotNet.Business
         /// </summary>
         public string GetOnlineCount()
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS UserCount " + " FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " = 1");
-            return DbHelper.ExecuteScalar(sb.Put()).ToString();
+            return DbHelper.ExecuteScalar(sb.Return()).ToString();
         }
 
         #region GetLogonCount 获取登录次数
@@ -227,7 +227,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public int GetLogonCount(int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldEnabled + " = 1 AND " + BaseUserLogonEntity.FieldDeleted + " = 0");
             if (days > 0)
             {
@@ -257,7 +257,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUserLogonEntity.FieldLastVisitTime + " < " + endTime + ")");
             }
-            return DbHelper.ExecuteScalar(sb.Put()).ToInt();
+            return DbHelper.ExecuteScalar(sb.Return()).ToInt();
         }
 
         #endregion
@@ -341,7 +341,7 @@ namespace DotNet.Business
 #if (DEBUG)
             var milliStart = Environment.TickCount;
 #endif
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 更新在线状态和最后一次访问时间
             sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = " + onLineState + ", " + BaseUserLogonEntity.FieldLastVisitTime + " = " + DbHelper.GetDbNow());
 
@@ -363,7 +363,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUserLogonEntity.FieldUserOnline + " = 1");
             }
-            result += ExecuteNonQuery(sb.Put());
+            result += ExecuteNonQuery(sb.Return());
 
             // 写入调试信息
 #if (DEBUG)
@@ -394,26 +394,26 @@ namespace DotNet.Business
 #if (DEBUG)
             var milliStart = Environment.TickCount;
 #endif
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             // 最后一次登录时间,用户多了，需要加索引优化
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.SqlServer:
                     sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL OR (DATEADD(s, " + BaseSystemInfo.OnlineTimeout + ", " + BaseUserLogonEntity.FieldLastVisitTime + ") < " + DbHelper.GetDbNow() + "))");
-                    result += ExecuteNonQuery(sb.Put());
+                    result += ExecuteNonQuery(sb.Return());
                     break;
                 case CurrentDbType.Oracle:
                     sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE  " + BaseUserLogonEntity.FieldUserOnline + " > 0 AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL OR " + BaseUserLogonEntity.FieldLastVisitTime + " < (SYSDATE - " + BaseSystemInfo.OnlineTimeout + " / 24 * 60 * 60 ))");
-                    result += ExecuteNonQuery(sb.Put());
+                    result += ExecuteNonQuery(sb.Return());
                     break;
                 case CurrentDbType.MySql:
                     sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NOT NULL) AND (DATE_ADD(" + BaseUserLogonEntity.FieldLastVisitTime + ", Interval " + BaseSystemInfo.OnlineTimeout + " SECOND) < " + DbHelper.GetDbNow() + "))");
-                    result += ExecuteNonQuery(sb.Put());
+                    result += ExecuteNonQuery(sb.Return());
                     break;
                 case CurrentDbType.Db2:
                     sb.Append("UPDATE " + CurrentTableName + " SET " + BaseUserLogonEntity.FieldUserOnline + " = 0 WHERE (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NULL) OR ((" + BaseUserLogonEntity.FieldUserOnline + " > 0) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " IS NOT NULL) AND (" + BaseUserLogonEntity.FieldLastVisitTime + " + " + BaseSystemInfo.OnlineTimeout + " SECONDS < " + DbHelper.GetDbNow() + "))");
-                    result += ExecuteNonQuery(sb.Put());
+                    result += ExecuteNonQuery(sb.Return());
                     break;
                 case CurrentDbType.Access:
                     break;
@@ -442,10 +442,10 @@ namespace DotNet.Business
 #endif
 
             CheckOnline();
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 最后一次登录时间
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " > 0 ");
-            var obj = DbHelper.ExecuteScalar(sb.Put());
+            var obj = DbHelper.ExecuteScalar(sb.Return());
             if (obj != null)
             {
                 if (BaseSystemInfo.OnlineLimit <= obj.ToInt())
@@ -471,7 +471,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetOnlineStateDt()
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldUserId
                               + ", " + BaseUserLogonEntity.CurrentTableName + "." + BaseUserLogonEntity.FieldUserOnline
                               + " FROM " + CurrentTableName
@@ -483,7 +483,7 @@ namespace DotNet.Business
                     sb.Append(" AND (DATEADD (s, " + (BaseSystemInfo.OnlineTimeout + 5) + ", " + BaseUserLogonEntity.FieldLastVisitTime + ") > " + DbHelper.GetDbNow() + ")");
                     break;
             }
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 

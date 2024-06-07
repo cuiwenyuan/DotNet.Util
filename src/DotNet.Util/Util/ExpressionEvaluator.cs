@@ -28,7 +28,7 @@ namespace DotNet.Util
                 paras.GenerateInMemory = true;
 
                 //创建动态代码
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("public class " + className + "\n");
                 sb.Append("{\n");
                 sb.Append(" public object " + methodName + "()\n");
@@ -38,7 +38,7 @@ namespace DotNet.Util
                 sb.Append("}");
 
                 //编译代码
-                var result = new CSharpCodeProvider().CompileAssemblyFromSource(paras, sb.Put());
+                var result = new CSharpCodeProvider().CompileAssemblyFromSource(paras, sb.Return());
 
                 //获取编译后的程序集。 
                 var assembly = result.CompiledAssembly;

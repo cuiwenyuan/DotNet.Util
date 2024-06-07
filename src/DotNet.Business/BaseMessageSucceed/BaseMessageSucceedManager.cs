@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageSucceedManager.cs" company="DotNet">
-//     Copyright (c) 2023, All rights reserved.
+//     Copyright (c) 2024, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -78,7 +78,7 @@ namespace DotNet.Business
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -102,7 +102,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseMessageSucceedEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -146,7 +146,7 @@ namespace DotNet.Business
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -458,16 +458,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (myCompanyOnly)
             {
                 sb.Append("(" + BaseMessageSucceedEntity.FieldUserCompanyId + " = 0 OR " + BaseMessageSucceedEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
-            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldDeleted, 0));
+            //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldDeleted, 0)), true, false, cacheTime);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageSucceedEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
         #endregion
