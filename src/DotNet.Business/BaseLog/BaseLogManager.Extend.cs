@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -43,7 +43,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByPage(string processId, string processName, string methodId, string methodName, string userRealName, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             
             ////子系统
             //if (!string.IsNullOrEmpty(processId))
@@ -68,7 +68,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldService + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
     }

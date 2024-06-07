@@ -59,7 +59,7 @@ namespace DotNet.Util
                 {
                     var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     var key = string.Empty;
-                    var value = Pool.StringBuilder.Get();
+                    var value = PoolUtil.StringBuilder.Get();
                     var cs = new CharState();
                     try
                     {

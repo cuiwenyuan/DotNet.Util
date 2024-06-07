@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 
@@ -41,7 +41,7 @@ namespace DotNet.Business
                 tableName = CurrentTableName;
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             switch (DbHelper.CurrentDbType)
             {
@@ -74,7 +74,7 @@ namespace DotNet.Business
 
             }
 
-            return Fill(sb.Put());
+            return Fill(sb.Return());
         }
         #endregion
     }

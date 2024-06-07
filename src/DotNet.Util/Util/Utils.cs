@@ -12,6 +12,7 @@ using System.Collections;
 #if NET452_OR_GREATER
 using System.Web;
 using System.Web.UI;
+using System.Collections;
 using System.Net;
 using System.Web.Hosting;
 #elif NETSTANDARD2_0_OR_GREATER
@@ -52,7 +53,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsCompriseStr(string str, string stringarray, string strsplit)
         {
-            if (StrIsNullOrEmpty(stringarray))
+            if (stringarray.IsNullOrEmpty())
                 return false;
 
             str = str.ToLower();
@@ -469,12 +470,12 @@ namespace DotNet.Util
         /// </summary>
         public static string GetSpacesString(int spacesCount)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             for (var i = 0; i < spacesCount; i++)
             {
                 sb.Append(" &nbsp;&nbsp;");
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>
@@ -871,7 +872,7 @@ namespace DotNet.Util
                 t2 = "";
             }
 
-            var s = Pool.StringBuilder.Get();
+            var s = PoolUtil.StringBuilder.Get();
 
             s.Append(t1);
             for (var i = startPage; i <= endPage; i++)
@@ -923,7 +924,7 @@ namespace DotNet.Util
             }
             s.Append(t2);
 
-            return s.Put();
+            return s.Return();
         }
 
 
@@ -977,7 +978,7 @@ namespace DotNet.Util
                 t2 = "";
             }
 
-            var s = Pool.StringBuilder.Get();
+            var s = PoolUtil.StringBuilder.Get();
 
             s.Append(t1);
             for (var i = startPage; i <= endPage; i++)
@@ -993,7 +994,7 @@ namespace DotNet.Util
             }
             s.Append(t2);
 
-            return s.Put();
+            return s.Return();
         }
 
 
@@ -1092,7 +1093,7 @@ namespace DotNet.Util
                 t2 = "";
             }
 
-            var s = Pool.StringBuilder.Get();
+            var s = PoolUtil.StringBuilder.Get();
 
             s.Append(t1);
             for (var i = startPage; i <= endPage; i++)
@@ -1121,7 +1122,7 @@ namespace DotNet.Util
             }
             s.Append(t2);
 
-            return s.Put();
+            return s.Return();
         }
 
         /// <summary>
@@ -1172,7 +1173,7 @@ namespace DotNet.Util
         /// <returns>文件名的字符串数组</returns>
         public static string[] FindNoUtf8File(string path)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var folder = new DirectoryInfo(path);
             var subFiles = folder.GetFiles();
 
@@ -1190,7 +1191,7 @@ namespace DotNet.Util
                     }
                 }
             }
-            return SplitString(sb.Put(), "\r\n");
+            return SplitString(sb.Return(), "\r\n");
 
         }
 
@@ -1724,7 +1725,7 @@ namespace DotNet.Util
             string simplefilename = "", leftstring = "", rightstring = "", filename = "";
             var extname = GetFileExtName(fullName);
 
-            if (StrIsNullOrEmpty(extname))
+            if (extname.IsNullOrEmpty())
                 return fullName;
 
             int filelength = 0, dotindex = 0;
@@ -1747,7 +1748,6 @@ namespace DotNet.Util
             return simplefilename;
         }
 
-
         /// <summary>
         /// 检查颜色值是否为3/6位的合法颜色
         /// </summary>
@@ -1755,7 +1755,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool CheckColorValue(string color)
         {
-            if (StrIsNullOrEmpty(color))
+            if (color.IsNullOrEmpty())
                 return false;
 
             color = color.Trim().Trim('#');
@@ -1825,7 +1825,7 @@ namespace DotNet.Util
                 t2 = "";
             }
 
-            var s = Pool.StringBuilder.Get();
+            var s = PoolUtil.StringBuilder.Get();
 
             s.Append(t1);
             for (var i = startPage; i <= endPage; i++)
@@ -1847,7 +1847,7 @@ namespace DotNet.Util
             }
             s.Append(t2);
 
-            return s.Put();
+            return s.Return();
         }
 
         /// <summary>
@@ -1903,7 +1903,7 @@ namespace DotNet.Util
         /// <returns>并到字符串</returns>
         public static string MergeString(string source, string target, string mergeChar)
         {
-            if (StrIsNullOrEmpty(target))
+            if (target.IsNullOrEmpty())
                 target = source;
             else
                 target += mergeChar + source;
@@ -1944,7 +1944,7 @@ namespace DotNet.Util
         /// <returns>扩展名</returns>
         public static string GetFileExtName(string fileName)
         {
-            if (StrIsNullOrEmpty(fileName) || fileName.IndexOf('.') <= 0)
+            if (fileName.IsNullOrEmpty() || fileName.IndexOf('.') <= 0)
                 return "";
 
             fileName = fileName.ToLower().Trim();
@@ -2027,9 +2027,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetRamCode()
         {
-        #region
+            #region
             return DateTime.Now.ToString("yyyyMMddHHmmssffff");
-        #endregion
+            #endregion
         }
         #endregion
 
@@ -2088,9 +2088,10 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dir">目录</param>
         /// <param name="fileExtension">后缀</param>
-        /// <param name="days">天</param>
-        /// <param name="hours">小时</param>
-        public static void EmptyFolder(string dir, string fileExtension = null, int days = 0, int hours = 0)
+        /// <param name="days">保留天数</param>
+        /// <param name="hours">保留小时数</param>
+        /// <param name="skipFileExtensions">跳过文件后缀</param>
+        public static void EmptyFolder(string dir, string fileExtension = null, int days = 0, int hours = 0, string[] skipFileExtensions = null)
         {
             var dt = DateTime.Now;
             if (!string.IsNullOrEmpty(fileExtension))
@@ -2106,46 +2107,63 @@ namespace DotNet.Util
             {
                 var directories = Directory.GetFileSystemEntries(dir, fileExtension, SearchOption.AllDirectories);
 
-                foreach (var d in directories)
+                if (directories != null)
                 {
-                    if (File.Exists(d))
+                    foreach (var d in directories)
                     {
-                        var file = new FileInfo(d);
-                        if (file.Attributes.ToString().IndexOf("ReadOnly", StringComparison.OrdinalIgnoreCase) != -1)
+                        if (File.Exists(d))
                         {
-                            file.Attributes = FileAttributes.Normal;
-                        }
-
-                        //fi.CreationTime;//创建时间
-                        var ts = dt.Subtract(file.LastWriteTime);
-                        //如果超过指定天数、小时则删除
-                        if ((hours == 0 && days == 0) || (days == 0 && hours > 0 && ts.TotalHours > hours) ||
-                            (days > 0 && hours == 0 && ts.TotalDays > days))
-                        {
-                            if (file.Exists)
+                            var skip = false;
+                            var fi = new FileInfo(d);
+                            if (fi.Attributes.ToString().IndexOf("ReadOnly", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                file.Delete();
+                                fi.Attributes = FileAttributes.Normal;
+                            }
+
+                            // 先判断排除的/跳过的文件后缀，优先级最高
+                            if (!skip && skipFileExtensions != null)
+                            {
+                                foreach (var skipFileExtension in skipFileExtensions)
+                                {
+                                    if (fi.Extension.Equals("." + skipFileExtension.Replace(".", ""), StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        skip = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            var ts = dt.Subtract(fi.LastWriteTime);
+                            // 再判断天数、小时数：如果超过指定天数、小时则删除
+                            if (!skip && ((hours > 0 && ts.TotalHours <= hours) || (days > 0 && hours == 0 && ts.TotalDays <= days)))
+                            {
+                                skip = true;
+                            }
+
+                            if (!skip && fi.Exists)
+                            {
+                                fi.Delete();
                             }
                         }
-                    }
-                    else
-                    {
-                        var directoryInfo = new DirectoryInfo(d);
-
-                        if (Directory.Exists(directoryInfo.FullName))
+                        else
                         {
-                            //如果当前文件夹下面没有任何子文件夹或者文件，就把子目录也删除了
-                            if (directoryInfo.GetFiles().Length == 0)
-                            {
-                                //递归删除
-                                directoryInfo.Delete(true);
-                            }
-                            else
-                            {
-                                //递归删除子文件夹下的文件
-                                EmptyFolder(directoryInfo.FullName, fileExtension, days, hours);
-                            }
+                            var di = new DirectoryInfo(d);
 
+                            if (Directory.Exists(di.FullName))
+                            {
+                                //如果当前文件夹下面没有任何子文件夹或者文件，就把子目录也删除了
+                                if (di.GetFiles().Length == 0)
+                                {
+                                    //递归删除
+                                    di.Delete(true);
+                                }
+                                else
+                                {
+                                    //递归删除子文件夹下的文件
+                                    EmptyFolder(di.FullName, fileExtension: fileExtension, days: days, hours: hours, skipFileExtensions: skipFileExtensions);
+                                }
+
+                            }
                         }
                     }
                 }
@@ -2234,7 +2252,7 @@ namespace DotNet.Util
         /// //把TXT代码转换成HTML格式
         public static String ToHtml(string input)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(input);
             sb.Replace("'", "&apos;");
             sb.Replace("&", "&amp;");
@@ -2244,7 +2262,7 @@ namespace DotNet.Util
             sb.Replace("\n", "<br />");
             sb.Replace("\t", " ");
             //sb.Replace(" ", "&nbsp;");
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -2257,7 +2275,7 @@ namespace DotNet.Util
         /// //把HTML代码转换成TXT格式
         public static String ToTxt(String input)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(input);
             sb.Replace("&nbsp;", " ");
             sb.Replace("<br>", "\r\n");
@@ -2267,7 +2285,7 @@ namespace DotNet.Util
             sb.Replace("&lt;", "<");
             sb.Replace("&gt;", ">");
             sb.Replace("&amp;", "&");
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -2300,9 +2318,9 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -2342,9 +2360,9 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
+                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    responseStr = sr.ReadToEnd();
+                    sr.Close();
                 }
             }
             catch (Exception)
@@ -2514,7 +2532,7 @@ namespace DotNet.Util
         /// </summary>
         public static string[] SplitString(string strContent, string strSplit)
         {
-            if (!StrIsNullOrEmpty(strContent))
+            if (!strContent.IsNullOrEmpty())
             {
                 if (strContent.IndexOf(strSplit) < 0)
                     return new string[] { strContent };
@@ -2588,19 +2606,6 @@ namespace DotNet.Util
                 }
             }
             return result;
-        }
-
-        /// <summary>
-        /// 字段串是否为NULL或为""(空)
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool StrIsNullOrEmpty(string str)
-        {
-            if (str == null || str.Trim() == string.Empty)
-                return true;
-
-            return false;
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -55,13 +55,13 @@ namespace DotNet.Util
         public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime)
         {
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUtil.FieldId + "," + BaseUtil.FieldCreateUserId + "," + BaseUtil.FieldCreateTime
                          + "," + BaseUtil.FieldUpdateUserId
                          + "," + BaseUtil.FieldUpdateTime
                          + " FROM " + tableName
                          + " WHERE " + fieldName + " = " + dbHelper.GetParameter(fieldName));
-            var dt = dbHelper.Fill(sb.Put(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) });
+            var dt = dbHelper.Fill(sb.Return(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) });
             result = IsUpdate(dt, oldUpdateUserId, oldUpdateTime);
             return result;
         }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -191,6 +191,10 @@ namespace DotNet.Util
             if (ConfigurationManager.AppSettings["AdministratorEnabled"] != null)
             {
                 BaseSystemInfo.AdministratorEnabled = ConfigurationManager.AppSettings["AdministratorEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (ConfigurationManager.AppSettings["PermissionExportEnabled"] != null)
+            {
+                BaseSystemInfo.PermissionExportEnabled = ConfigurationManager.AppSettings["PermissionExportEnabled"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             // BaseSystemInfo.CurrentLanguage = ConfigurationManager.AppSettings[BaseConfiguration.CURRENT_LANGUAGE];
             // BaseSystemInfo.Version = ConfigurationManager.AppSettings[BaseConfiguration.VERSION];

@@ -1,13 +1,14 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 using System.Data;
 using System.Collections.Generic;
-using System;
 
 namespace DotNet.Business
 {
-    using Model;    
+    using Model;
+    using System;
+    using System.Reflection;
     using Util;
 
     /// <summary>
@@ -57,7 +58,7 @@ namespace DotNet.Business
             //用户登录表名
             var tableNameUserLogon = BaseUserLogonEntity.CurrentTableName;
 
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //只显示已锁定用户
             if (disabledUserOnly)
             {
@@ -198,7 +199,7 @@ namespace DotNet.Business
 
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();
+            var sbView = PoolUtil.StringBuilder.Get();
 
             sbView.Append("SELECT DISTINCT " + tableNameUser + "." + BaseUserEntity.FieldId);
             sbView.Append("," + tableNameUser + "." + BaseUserEntity.FieldUserFrom);
@@ -422,10 +423,10 @@ namespace DotNet.Business
             //从视图读取
             if (sbView.Length > 0)
             {
-                tableNameUser = sbView.Put();
+                tableNameUser = sbView.Return();
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableNameUser, sb.Return());
         }
         #endregion
 
@@ -638,7 +639,7 @@ namespace DotNet.Business
             }
             var tableNameUserRole = systemCode + "UserRole";
             var tableNameRole = systemCode + "Role";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
@@ -651,7 +652,72 @@ namespace DotNet.Business
                             + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
+        }
+        #endregion
+
+        #region public string CreateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
+
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="userInfo">用户信息</param>
+        /// <param name="entity">用户实体</param>
+        /// <param name="userLogonEntity">用户登录实体</param>
+        /// <param name="userContactEntity">用户联系方式</param>
+        /// <param name="status">状态</param>
+        /// <param name="statusMessage">状态信息</param>
+        /// <returns>主键</returns>
+        public string CreateUser(BaseUserInfo userInfo, BaseUserEntity entity, BaseUserLogonEntity userLogonEntity, BaseUserContactEntity userContactEntity, out Status status, out string statusMessage)
+        {
+            var result = string.Empty;
+
+            // 加强安全验证防止未授权匿名调用
+#if (!DEBUG)
+            BaseSystemInfo.IsAuthorized(userInfo);
+#endif
+
+            var userManager = new BaseUserManager(userInfo);
+            result = userManager.AddUser(entity, userLogonEntity);
+            status = userManager.Status;
+            statusMessage = userManager.GetStateMessage();
+
+            // 20140219 JiRiGaLa 添加成功的用户才增加联系方式
+            if (!string.IsNullOrEmpty(result) && status == Status.OkAdd && userContactEntity != null)
+            {
+                // 添加联系方式
+                userContactEntity.UserId = result.ToInt();
+                var userContactManager = new BaseUserContactManager(userInfo);
+                userContactEntity.CompanyId = entity.CompanyId;
+                userContactManager.Add(userContactEntity);
+            }
+
+            // 自己不用给自己发提示信息，这个提示信息是为了提高工作效率的，还是需要审核通过的，否则垃圾信息太多了
+            if (entity.Enabled == 0 && status == Status.OkAdd)
+            {
+                // 不是系统管理员添加
+                if (!BaseUserManager.IsAdministrator(userInfo.Id))
+                {
+                    // 给超级管理员群组发信息
+                    var roleManager = new BaseRoleManager(userInfo);
+                    var roleIds = roleManager.GetIds(new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, "Administrators"));
+                    var userIds = userManager.GetIds(new KeyValuePair<string, object>(BaseUserEntity.FieldCode, "Administrator"));
+                    // 发送请求审核的信息
+                    //var messageEntity = new BaseMessageEntity
+                    //{
+                    //    FunctionCode = MessageFunction.WaitForAudit.ToString(),
+
+                    //    // Pcsky 2012.05.04 显示申请的用户名
+                    //    Contents = userInfo.RealName + "(" + userInfo.IpAddress + ")" + AppMessage.UserServiceApplication + entity.UserName + AppMessage.UserServiceCheck
+                    //};
+                    //messageEntity.Contents = result.RealName + "(" + result.IPAddress + ")" + AppMessage.UserService_Application + userEntity.RealName + AppMessage.UserService_Check;
+
+                    //var messageManager = new BaseMessageManager(dbHelper, userInfo);
+                    //messageManager.BatchSend(userIds, null, roleIds, messageEntity, false);
+                }
+            }
+
+            return result;
         }
         #endregion
     }

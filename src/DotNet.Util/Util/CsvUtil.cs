@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -51,7 +51,7 @@ namespace DotNet.Util
             using (var fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
                 var sw = new StreamWriter(fs, encoding ?? Encoding.UTF8);
-                sw.WriteLine(GetCsvFormatData(dataReader, fieldList: fieldList, separator: separator).Put());
+                sw.WriteLine(GetCsvFormatData(dataReader, fieldList: fieldList, separator: separator).Return());
                 sw.Close();
                 fs.Close();
                 sw.TryDispose();
@@ -72,9 +72,9 @@ namespace DotNet.Util
         {
             //TODO:fieldList的处理
             // 返回总字符串
-            var csvRows = Pool.StringBuilder.Get();
+            var csvRows = PoolUtil.StringBuilder.Get();
             // 表头内容字符串
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 循环输出表头内容
             for (var index = 0; index < dataReader.FieldCount; index++)
             {
@@ -90,11 +90,11 @@ namespace DotNet.Util
                 }
             }
             // 先把表头正行数据加载到StringBuilder对象csvRows中
-            csvRows.AppendLine(sb.Put());
+            csvRows.AppendLine(sb.Return());
             // 循环获取表中的所有内容
             while (dataReader.Read())
             {
-                sb = Pool.StringBuilder.Get();
+                sb = PoolUtil.StringBuilder.Get();
                 for (var index = 0; index < dataReader.FieldCount - 1; index++)
                 {
                     if (sb.Length > 0)
@@ -119,7 +119,7 @@ namespace DotNet.Util
                 {
                     sb.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, ""));
                 }
-                csvRows.AppendLine(sb.Put());
+                csvRows.AppendLine(sb.Return());
             }
             dataReader.Close();
             return csvRows;
@@ -136,7 +136,7 @@ namespace DotNet.Util
         /// <returns>CSV字符串数据</returns>
         private static StringBuilder GetCsvFormatData(DataTable dt, Dictionary<string, string> fieldList = null, string separator = ",")
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
 
             #region 检查字段列表
 
@@ -312,10 +312,10 @@ namespace DotNet.Util
         /// <returns>CSV字符串数据</returns>
         private static StringBuilder GetCsvFormatData(DataSet dataSet, Dictionary<string, string> fieldList = null, string separator = ",")
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             foreach (DataTable dt in dataSet.Tables)
             {
-                sb.Append(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Put());
+                sb.Append(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
             }
             return sb;
         }
@@ -333,7 +333,7 @@ namespace DotNet.Util
         public static void ExportCsv(DataTable dt, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
         {
             var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8);
-            sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Put());
+            sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
             sw.Flush();
             sw.Close();
             sw.TryDispose();
@@ -374,7 +374,7 @@ namespace DotNet.Util
             HttpContext.Current.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
             HttpContext.Current.Response.AppendHeader("Content-disposition", "attachment;filename=" + fileName);
             HttpContext.Current.Response.ContentType = "application/ms-excel";
-            HttpContext.Current.Response.Write(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Put());
+            HttpContext.Current.Response.Write(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
             HttpContext.Current.Response.End();
         }
         #endregion

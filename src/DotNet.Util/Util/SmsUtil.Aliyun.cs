@@ -92,7 +92,7 @@ namespace DotNet.Util
             //4.参数key排序
             var dicAsc = dic.OrderBy(o => o.Key).ToDictionary(o => o.Key, p => p.Value.ToString());
             //5.构造待签名的字符串
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             foreach (var item in dicAsc)
             {
                 if (item.Key == "SignName")
@@ -109,17 +109,17 @@ namespace DotNet.Util
             }
             var sortedQueryString = sb.ToString().Substring(1);
 
-            var sbToSign = Pool.StringBuilder.Get();
+            var sbToSign = PoolUtil.StringBuilder.Get();
             sbToSign.Append("GET").Append("&");
             sbToSign.Append(SpecialUrlEncode("/")).Append("&");
             sbToSign.Append(SpecialUrlEncode(sortedQueryString));
 
-            var sign = MySign(accessKeySecret + "&", sbToSign.Put());
+            var sign = MySign(accessKeySecret + "&", sbToSign.Return());
             //6.签名最后也要做特殊URL编码
             var signature = SpecialUrlEncode(sign);
 
             //最终打印出合法GET请求的URL
-            var url = string.Format("{0}/?Signature={1}{2}", serviceUrl, signature, sb.Put());
+            var url = string.Format("{0}/?Signature={1}{2}", serviceUrl, signature, sb.Return());
             result = HttpGet(url, out message);            
             return result;
         }
@@ -187,7 +187,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private static string SpecialUrlEncode(string value)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             for (var i = 0; i < value.Length; i++)
             {
                 var t = value[i].ToString();
@@ -201,7 +201,7 @@ namespace DotNet.Util
                     sb.Append(k.ToUpper());
                 }
             }
-            return sb.Put().Replace("+", "%20").Replace("*", "%2A").Replace("%7E", "~");
+            return sb.Return().Replace("+", "%20").Replace("*", "%2A").Replace("%7E", "~");
         }
 
         #endregion

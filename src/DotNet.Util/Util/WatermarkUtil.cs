@@ -170,6 +170,7 @@ namespace DotNet.Util
         /// <param name="fontName">字体</param>
         /// <param name="fontSize">字体大小</param>
         /// <param name="fontColor">字体颜色</param>
+        /// <param name="bolderColor">边框颜色</param>
         /// <param name="alpha">透明度(0-255)值越大透明度越低</param>
         /// <param name="isBold">是否粗体</param>
         public static void AddImageSignText(string imgPath, string newPath, string watermarkText, int watermarkPosition, int quality = 100, string fontName = "微软雅黑", int fontSize = 48, string fontColor = "White", string bolderColor = "Black", int alpha = 255, bool isBold = false)

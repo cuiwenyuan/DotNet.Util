@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -1039,6 +1039,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.AdministratorEnabled = GetValue(_xmlDocument, "AdministratorEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
+            if (Exists("PermissionExportEnabled"))
+            {
+                BaseSystemInfo.PermissionExportEnabled = GetValue(_xmlDocument, "PermissionExportEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
             if (Exists("RegisterKey"))
             {
                 BaseSystemInfo.RegisterKey = GetValue(_xmlDocument, "RegisterKey");
@@ -1067,7 +1071,7 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(GetValue(_xmlDocument, "MailServerPort")))
                 {
-                    BaseSystemInfo.MailServerPort = Convert.ToInt32(GetValue(_xmlDocument, "MailServerPort"));
+                    BaseSystemInfo.MailServerPort = GetValue(_xmlDocument, "MailServerPort").ToInt();
                 }
             }
             if (Exists("MailServerSslEnabled"))
@@ -1094,7 +1098,7 @@ namespace DotNet.Util
             }
             if (Exists("UploadBlockSize"))
             {
-                BaseSystemInfo.UploadBlockSize = Convert.ToInt32(GetValue(_xmlDocument, "UploadBlockSize"));
+                BaseSystemInfo.UploadBlockSize = GetValue(_xmlDocument, "UploadBlockSize").ToInt();
             }
             if (Exists("UploadStorageMode"))
             {

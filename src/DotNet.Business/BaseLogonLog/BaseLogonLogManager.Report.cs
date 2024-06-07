@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDailyLogin(int days, string startDate, string endDate)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT CONVERT(NVARCHAR(4),B." + BaseCalendarEntity.FieldFiscalYear + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalMonth + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalDay + ") AS TransactionDate");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0) AS TotalCount");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 1) AS SuccessCount");
@@ -53,7 +53,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY B." + BaseCalendarEntity.FieldTransactionDate + " ASC");
 
-            return Fill(sb.Put());
+            return Fill(sb.Return());
         }
         #endregion
     }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -276,7 +276,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByCompany(string companyId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " FROM " + BaseStaffEntity.CurrentTableName);
             if (!string.IsNullOrEmpty(companyId))
@@ -284,7 +284,7 @@ namespace DotNet.Business
                 sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + companyId + "' ");
             }
             sb.Append(" ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -296,7 +296,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByOrganizations(string[] organizationIds)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(" SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
                                 + " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 "
@@ -305,7 +305,7 @@ namespace DotNet.Business
                                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) "
                                 + " ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -330,7 +330,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByDepartment(string departmentId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldName + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyName "
@@ -346,7 +346,7 @@ namespace DotNet.Business
                 sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + departmentId + "' ");
             }
             sb.Append(" ORDER BY " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -361,11 +361,11 @@ namespace DotNet.Business
             var staffCount = string.Empty;
             var names = new string[1];
             var values = new object[1];
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append(@"SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldEnabled + " = 1 AND " + BaseStaffEntity.FieldIsDimission + " <> 1 AND " + BaseStaffEntity.FieldDeleted + " = 0 AND (" + BaseStaffEntity.FieldDepartmentId + " IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ");
             names[0] = BaseStaffEntity.FieldCompanyId;
             values[0] = organizationCode;
-            var obj = DbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            var obj = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
             if (obj != null)
             {
                 staffCount = obj.ToString();
@@ -388,7 +388,7 @@ namespace DotNet.Business
             var staffCount = string.Empty;
             var names = new string[3];
             var values = new object[3];
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS STAFFCOUNT FROM " + BaseStaffEntity.CurrentTableName
                             + " WHERE (" + categoryField + " = ?) AND (ENABLED = 1) AND (ISDIMISSION <> 1) AND (ISSTAFF = 1) AND (DepartmentId IN (SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE (LEFT(CODE, LEN(?)) = ?))) ");
             names[0] = categoryField;
@@ -397,7 +397,7 @@ namespace DotNet.Business
             values[0] = categoryId;
             values[1] = organizationCode;
             values[2] = organizationCode;
-            var obj = dbHelper.ExecuteScalar(sb.Put(), DbHelper.MakeParameters(names, values));
+            var obj = dbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
             if (obj != null)
             {
                 staffCount = obj.ToString();
@@ -417,7 +417,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable SearchByOrganizationIds(string[] organizationIds, string userName, string enabled, string role)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
                                 + " WHERE 1 = 1 ");
@@ -457,7 +457,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
 
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -504,7 +504,7 @@ namespace DotNet.Business
             }
 
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
                             + "," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldName + " AS CompanyName "
@@ -544,7 +544,7 @@ namespace DotNet.Business
             }
             sb.Append(" ORDER BY " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldSortCode
                           + " ," + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -583,7 +583,7 @@ namespace DotNet.Business
             }
 
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + " ," + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldCode + " AS CompanyCode "
                             + " ," + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldCode + " AS DepartmentCode "
@@ -628,7 +628,7 @@ namespace DotNet.Business
                     orderBy = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode;
                     break;
             }
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, orderBy, "ASC", sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, orderBy, "ASC", sb.Return());
         }
         #endregion
 
@@ -643,7 +643,7 @@ namespace DotNet.Business
         public DataTable Search(string organizationId, string searchKey, bool deletionStateCode)
         {
             searchKey = StringUtil.GetSearchString(searchKey);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                             + "," + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldName + " AS DepartmentName "
                             //+ ",ItemsDuty." + BaseItemDetailsEntity.FieldItemName + " AS DutyName "
@@ -668,7 +668,7 @@ namespace DotNet.Business
             sb.Append(" ORDER BY " // + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
                                 // + " ," 
                           + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -720,7 +720,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable()
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " , " + BaseUserEntity.CurrentTableName + ".UserOnline"
                 + " ,(SELECT " + BaseOrganizationEntity.FieldCode + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE Id = " + BaseStaffEntity.CurrentTableName + ".CompanyId) AS CompanyCode"
@@ -744,7 +744,7 @@ namespace DotNet.Business
                 + " ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId
                 + " ORDER BY " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
                 + " , " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -757,7 +757,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(string fieldName, string fieldValue)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT A.* "
                     + " ,(SELECT Code FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyCode"
                     + " ,(SELECT Name FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + ".ID = A.CompanyId) AS CompanyName "
@@ -775,7 +775,7 @@ namespace DotNet.Business
                     + " FROM " + BaseStaffEntity.CurrentTableName + " A "
                     + " WHERE " + fieldName + " = " + DbHelper.GetParameter(fieldName)
                     + " ORDER BY A.SortCode");
-            return DbHelper.Fill(sb.Put(), new IDbDataParameter[] { DbHelper.MakeParameter(fieldName, fieldValue) });
+            return DbHelper.Fill(sb.Return(), new IDbDataParameter[] { DbHelper.MakeParameter(fieldName, fieldValue) });
         }
         #endregion
 

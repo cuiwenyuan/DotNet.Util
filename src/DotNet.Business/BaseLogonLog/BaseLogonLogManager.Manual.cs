@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 using System;
 using System.Data;
@@ -46,7 +46,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -98,7 +98,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -126,7 +126,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseLogonLogEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string systemCode = null, string userName = null, string companyName = null, string result = null)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -187,7 +187,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
     }

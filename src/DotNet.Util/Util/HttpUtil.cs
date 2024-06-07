@@ -114,7 +114,7 @@ namespace DotNet.Util
             //设置KeepAlive
             request.KeepAlive = true;
             //设置请求数据，拼接成字符串
-            var sbHtml = Pool.StringBuilder.Get();
+            var sbHtml = PoolUtil.StringBuilder.Get();
             foreach (var key in dicPara)
             {
                 sbHtml.Append(boundary + "\r\nContent-Disposition: form-data; name=\"" + key.Key + "\"\r\n\r\n" + key.Value + "\r\n");
@@ -122,7 +122,7 @@ namespace DotNet.Util
             sbHtml.Append(boundary + "\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"");
             sbHtml.Append(fileName);
             sbHtml.Append("\"\r\nContent-Type: " + contentType + "\r\n\r\n");
-            var postHeader = sbHtml.Put();
+            var postHeader = sbHtml.Return();
             //将请求数据字符串类型根据编码格式转换成字节流
             var code = Encoding.GetEncoding("UTF-8");
             var postHeaderBytes = code.GetBytes(postHeader);
@@ -158,7 +158,7 @@ namespace DotNet.Util
 
             //读取处理结果
             var sr = new StreamReader(s, code);
-            var responseData = Pool.StringBuilder.Get();
+            var responseData = PoolUtil.StringBuilder.Get();
 
             String line;
             while ((line = sr.ReadLine()) != null)
@@ -168,7 +168,7 @@ namespace DotNet.Util
             s.Close();
             fs.Close();
 
-            return responseData.Put();
+            return responseData.Return();
         }
         #endregion
 

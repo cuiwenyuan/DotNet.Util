@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOrganizationManager.cs" company="DotNet">
-//     Copyright (c) 2023, All rights reserved.
+//     Copyright (c) 2024, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseOrganizationEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -109,7 +109,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseOrganizationEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -122,16 +122,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (myCompanyOnly)
             {
                 //sb.Append("(" + BaseOrganizationEntity.FieldUserCompanyId + " = 0 OR " + BaseOrganizationEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
-            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
+            //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)), true, false, cacheTime);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
         #endregion
@@ -307,7 +307,7 @@ namespace DotNet.Business
         public DataTable GetErrorDataTable(string parentId)
         {
             DataTable result = null;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("  SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                         + " WHERE  (" + BaseOrganizationEntity.FieldProvinceId + " IS NULL OR "
                         + BaseOrganizationEntity.FieldCityId + " IS NULL OR "
@@ -319,7 +319,7 @@ namespace DotNet.Business
                    + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
             }
             sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-            result = DbHelper.Fill(sb.Put());
+            result = DbHelper.Fill(sb.Return());
             result.TableName = BaseOrganizationEntity.CurrentTableName;
             return result;
         }
@@ -439,7 +439,7 @@ namespace DotNet.Business
         public string[] GetChildrenProperties(string parentId, string field)
         {
             string[] result = null;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("  SELECT " + field
                         + " FROM " + BaseOrganizationEntity.CurrentTableName
                         + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
@@ -447,7 +447,7 @@ namespace DotNet.Business
                         + " START WITH Id = " + parentId + " "
                         + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
                         + " ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-            var dt = DbHelper.Fill(sb.Put());
+            var dt = DbHelper.Fill(sb.Return());
             result = BaseUtil.FieldToArray(dt, field);
             return result;
         }
@@ -464,7 +464,7 @@ namespace DotNet.Business
             DataTable result = null;
             if (ValidateUtil.IsInt(parentId) && childrens)
             {
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
                     sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
@@ -474,7 +474,7 @@ namespace DotNet.Business
                                + " START WITH Id = " + parentId + " "
                                + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
                                + " ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-                    result = DbHelper.Fill(sb.Put());
+                    result = DbHelper.Fill(sb.Return());
                 }
                 //此处递归查询需要完善 Troy.Cui 2018.07.21
                 else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
@@ -540,7 +540,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable Search(string searchKey, string parentId = null, bool? isInnerOrganization = null, bool? childrens = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             List<IDbDataParameter> dbParameters;
             if (!childrens.HasValue || (childrens.HasValue && childrens.Value == false))
             {
@@ -569,7 +569,7 @@ namespace DotNet.Business
                     dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldName, searchKey));
                 }
                 sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-                return DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+                return DbHelper.Fill(sb.Return(), dbParameters.ToArray());
             }
             else
             {
@@ -598,7 +598,7 @@ namespace DotNet.Business
                 }
 
                 sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-                return DbHelper.Fill(sb.Put(), dbParameters.ToArray());
+                return DbHelper.Fill(sb.Return(), dbParameters.ToArray());
             }
         }
         #endregion

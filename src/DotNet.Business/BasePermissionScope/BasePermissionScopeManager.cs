@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BasePermissionScopeManager.cs" company="DotNet">
-//     Copyright (c) 2023, All rights reserved.
+//     Copyright (c) 2024, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BasePermissionScopeEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -117,7 +117,7 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BasePermissionScopeEntity.FieldPermissionId + " LIKE N'%" + searchKey + "%' OR " + BasePermissionScopeEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
@@ -130,16 +130,16 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTable(bool myCompanyOnly = true)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (myCompanyOnly)
             {
                 //sb.Append("(" + BasePermissionScopeEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionScopeEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
-            //return GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0));
+            //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0));
             var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
-            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Put(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)), true, false, cacheTime);
+            return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)), true, false, cacheTime);
         }
 
         #endregion
@@ -274,7 +274,7 @@ namespace DotNet.Business
         public string GetOrganizationIdsSql(string systemCode, string managerUserId, string permissionCode)
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BasePermissionScopeEntity.FieldTargetId
                      + " FROM " + BasePermissionScopeEntity.CurrentTableName
                      // 有效的，并且不为空的组织机构主键
@@ -297,7 +297,7 @@ namespace DotNet.Business
                      + "))) "
                      // 并且是指定的本权限
                      + " AND (" + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "') ");
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -311,13 +311,13 @@ namespace DotNet.Business
         /// <returns>Sql</returns>
         public string GetOrganizationIdsSqlByParentId(string systemCode, string managerUserId, string permissionCode)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName
                      + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
                      + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0 "
                      + " START WITH Id IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ") "
                      + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -331,7 +331,7 @@ namespace DotNet.Business
         /// <returns>Sql</returns>
         public string GetOrganizationIdsSqlByCode(string systemCode, string managerUserId, string permissionCode)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseOrganizationEntity.FieldId + " AS " + BaseUtil.FieldId
                      + " FROM " + BaseOrganizationEntity.CurrentTableName
                      + " , ( SELECT " + DbHelper.PlusSign(BaseOrganizationEntity.FieldCode, "'%'") + " AS " + BaseOrganizationEntity.FieldCode
@@ -340,7 +340,7 @@ namespace DotNet.Business
                      + " WHERE (" + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
                      // 编号相似的所有组织机构获取出来
                      + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCode + " LIKE ManageOrganization." + BaseOrganizationEntity.FieldCode + ")");
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -357,7 +357,7 @@ namespace DotNet.Business
         public string[] GetOrganizationIds(string systemCode, string managerUserId, string permissionCode = "Resource.ManagePermission", bool organizationIdOnly = true)
         {
             // 这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             if (UseGetChildrensByCode)
             {
                 sb.Append(GetOrganizationIdsSqlByCode(systemCode, managerUserId, permissionCode));
@@ -396,7 +396,7 @@ namespace DotNet.Business
                     return ids;
                 }
             }
-            var dt = DbHelper.Fill(sb.Put());
+            var dt = DbHelper.Fill(sb.Return());
             return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
         }
         #endregion
@@ -437,7 +437,7 @@ namespace DotNet.Business
             {
                 whereQuery = " NULL ";
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                      + " WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
                      + " AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
@@ -447,7 +447,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " IN (" + whereQuery + ") ");
             }
             sb.Append(" ORDER BY " + BaseOrganizationEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -471,7 +471,7 @@ namespace DotNet.Business
             var roleTableName = systemCode + "Role";
             var userRoleTableName = systemCode + "UserRole";
             var permissionScopeTableName = systemCode + "PermissionScope";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 被管理的角色 
             sb.Append("SELECT " + permissionScopeTableName + ".TargetId AS " + BaseUtil.FieldId
                       + " FROM " + permissionScopeTableName
@@ -506,7 +506,7 @@ namespace DotNet.Business
                           + " AND " + roleTableName + "." + BaseRoleEntity.FieldDeleted + " = 0 "
                           + " AND " + roleTableName + "." + BaseRoleEntity.FieldOrganizationId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
             }
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -600,7 +600,7 @@ namespace DotNet.Business
                 result.TableName = CurrentTableName;
                 return result;
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * "
                       + " FROM " + tableName
                       + " WHERE " + BaseRoleEntity.FieldCreateUserId + " = '" + userId + "'"
@@ -610,7 +610,7 @@ namespace DotNet.Business
                                 + " AND (" + BaseRoleEntity.FieldIsVisible + " = 1) "
                    + " ORDER BY " + BaseRoleEntity.FieldSortCode);
 
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
 
@@ -629,7 +629,7 @@ namespace DotNet.Business
         public string GetUserIdsSql(string systemCode, string managerUserId, string permissionCode)
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 直接管理的用户
             sb.Append("SELECT BasePermissionScope.TargetId AS " + BaseUtil.FieldId
                      + " FROM BasePermissionScope "
@@ -683,7 +683,7 @@ namespace DotNet.Business
                          + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")) ");
             }
 
-            return sb.Put();
+            return sb.Return();
         }
         #endregion
 
@@ -770,7 +770,7 @@ namespace DotNet.Business
                 };
                 return userManager.GetList<BaseUserEntity>(parameters, BaseModuleEntity.FieldSortCode);
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
             sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
@@ -779,7 +779,7 @@ namespace DotNet.Business
                      + GetUserIdsSql(systemCode, userId, permissionCode)
                      + " ) "
                      + " ORDER BY " + BaseUserEntity.FieldSortCode);
-            using (var dr = userManager.DbHelper.ExecuteReader(sb.Put()))
+            using (var dr = userManager.DbHelper.ExecuteReader(sb.Return()))
             {
                 result = userManager.GetList<BaseUserEntity>(dr);
             }
@@ -814,7 +814,7 @@ namespace DotNet.Business
                 };
                 return userManager.GetDataTable(parameters, BaseModuleEntity.FieldSortCode);
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
             sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
@@ -824,7 +824,7 @@ namespace DotNet.Business
                      + " ) "
                      + " ORDER BY " + BaseUserEntity.FieldSortCode);
 
-            return userManager.Fill(sb.Put());
+            return userManager.Fill(sb.Return());
         }
         #endregion
 
@@ -928,7 +928,7 @@ namespace DotNet.Business
             var tableName = systemCode + "UserRole";
 
             CurrentTableName = systemCode + "PermissionScope";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             // 用户的权限
             sb.Append("SELECT TargetId "
                         + " FROM " + CurrentTableName
@@ -978,7 +978,7 @@ namespace DotNet.Business
                            + " AND (PermissionId = '" + permissionId + "') "
                            + " AND (" + BasePermissionScopeEntity.FieldEnabled + " = 1) "
                            + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0)");
-                dt = DbHelper.Fill(sb.Put());
+                dt = DbHelper.Fill(sb.Return());
                 var resourceIdsByOrganization = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                 resourceIds = StringUtil.Concat(resourceIds, resourceIdsByOrganization);
             }
@@ -1013,7 +1013,7 @@ namespace DotNet.Business
             // 若本来就没管理部门啥的，那就没必要进行递归操作了
             if (!string.IsNullOrEmpty(idList))
             {
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 if (DbHelper.CurrentDbType == CurrentDbType.SqlServer)
                 {
                     sb.Append(@" WITH PermissionScopeTree AS (SELECT ID FROM " + tableName + @" WHERE (Id IN (" + idList + @") ) UNION ALL SELECT ResourceTree.Id
@@ -1028,7 +1028,7 @@ namespace DotNet.Business
                              + " CONNECT BY PRIOR Id Id IN (" + idList + ")");
                 }
 
-                var dt = DbHelper.Fill(sb.Put());
+                var dt = DbHelper.Fill(sb.Return());
                 var resourceIds = BaseUtil.FieldToArray(dt, "Id").Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
                 return StringUtil.Concat(resourceScopeIds, resourceIds);
             }
@@ -1097,7 +1097,7 @@ namespace DotNet.Business
 
         private bool CheckResourcePermissionScope(string resourceCategory, string resourceId, string targetCategory, string targetId, string permissionId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM BasePermissionScope "
                              + " WHERE (BasePermissionScope.ResourceCategory = '" + resourceCategory + "')"
                              + " AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1) "
@@ -1108,7 +1108,7 @@ namespace DotNet.Business
                              + " AND (BasePermissionScope.PermissionId = " + permissionId + "))");
             var result = 0;
 
-            var obj = DbHelper.ExecuteScalar(sb.Put());
+            var obj = DbHelper.ExecuteScalar(sb.Return());
             if (obj != null)
             {
                 result = obj.ToInt();
@@ -1132,7 +1132,7 @@ namespace DotNet.Business
 
         private bool CheckRolePermissionScope(string userId, string targetCategory, string targetId, string permissionId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) "
                             + " FROM BasePermissionScope "
                             + "  WHERE (BasePermissionScope.ResourceCategory = '" + BaseRoleEntity.CurrentTableName + "') "
@@ -1149,7 +1149,7 @@ namespace DotNet.Business
                             + " AND (BasePermissionScope.PermissionId = " + permissionId + ")) ");
             var rowCount = 0;
 
-            var obj = DbHelper.ExecuteScalar(sb.Put());
+            var obj = DbHelper.ExecuteScalar(sb.Return());
             if (obj != null)
             {
                 rowCount = obj.ToInt();
@@ -1424,7 +1424,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable Search(string resourceId, string resourceCategory, string targetCategory)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName
                             + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " =0 "
                             + " AND " + BasePermissionScopeEntity.FieldEnabled + " =1 ");
@@ -1442,7 +1442,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'");
             }
             sb.Append(" ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ");
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
 
             //for (int i = 0; i < result.Rows.Count; i++)
             //{
@@ -1468,7 +1468,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetAuthoriedList(string resourceCategory, string permissionId, string targetCategory, string targetId)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName
                             + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " = 0 "
                             + " AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 ");
@@ -1498,7 +1498,7 @@ namespace DotNet.Business
             }
             // TODO:其他数据库的兼容
             sb.Append(" ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ");
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         #endregion
     }

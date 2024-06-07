@@ -90,7 +90,7 @@ namespace DotNet.Util
             if (Int32.TryParse(str, out rv))
                 return rv;
 
-            return Convert.ToInt32(StrToFloat(str, defValue));
+            return StrToFloat(str, defValue).ToInt();
         }
 
         /// <summary>

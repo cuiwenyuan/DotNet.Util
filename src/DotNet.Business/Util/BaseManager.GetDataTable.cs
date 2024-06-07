@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -49,7 +49,7 @@ namespace DotNet.Business
                 }
             }
 
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName);
             if (!string.IsNullOrEmpty(condition))
             {
@@ -60,7 +60,7 @@ namespace DotNet.Business
                 sb.Append(" ORDER BY " + order);
             }
 
-            return DbHelper.Fill(sb.Put(), dbHelper.MakeParameters(parameters));
+            return DbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
         }
         /// <summary>
         /// GetDataTable
@@ -87,13 +87,13 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTableByWhere(string condition = null)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName);
             if (!string.IsNullOrEmpty(condition))
             {
                 sb.Append(" WHERE " + condition);
             }
-            return DbHelper.Fill(sb.Put());
+            return DbHelper.Fill(sb.Return());
         }
         /// <summary>
         /// GetDataTableById

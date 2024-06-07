@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -74,7 +74,7 @@ namespace DotNet.Business
                 {
                     tableName = CurrentTableName;
                 }
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 if (!string.IsNullOrEmpty(condition))
                 {
                     sb.Append(" WHERE " + condition);
@@ -85,7 +85,7 @@ namespace DotNet.Business
                     commandText = "(" + tableName + ") T ";
                     // commandText = "(" + tableName + ") AS T ";
                 }
-                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
+                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Return());
                 var obj = DbHelper.ExecuteScalar(commandText, dbParameters);
                 if (obj != null)
                 {
@@ -134,7 +134,7 @@ namespace DotNet.Business
                 {
                     tableName = CurrentTableName;
                 }
-                var sb = Pool.StringBuilder.Get();
+                var sb = PoolUtil.StringBuilder.Get();
                 if (!string.IsNullOrEmpty(condition))
                 {
                     sb.Append(" WHERE " + condition);
@@ -145,7 +145,7 @@ namespace DotNet.Business
                     commandText = "(" + tableName + ") T ";
                     // commandText = "(" + tableName + ") AS T ";
                 }
-                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Put());
+                commandText = string.Format("SELECT COUNT(*) AS recordCount FROM {0} {1}", commandText, sb.Return());
                 var obj = dbHelper.ExecuteScalar(commandText, dbParameters);
                 if (obj != null)
                 {
@@ -184,7 +184,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public virtual DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -228,7 +228,7 @@ namespace DotNet.Business
                 sb.Append(" AND (Name LIKE N'%" + searchKey + "%' OR Description LIKE N'%" + searchKey + "%')");
             }
             sb.Replace(" 1 = 1 AND ", "");
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
     }

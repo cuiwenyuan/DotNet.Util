@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -117,7 +117,7 @@ namespace DotNet.Util
 			{
 				if(c.ToString().Equals(code, StringComparison.OrdinalIgnoreCase))
 				{
-					return EnumExtensions.ToDescription(c as Enum);
+					return EnumUtil.ToDescription(c as Enum);
 				}
 			}
 			return string.Empty;

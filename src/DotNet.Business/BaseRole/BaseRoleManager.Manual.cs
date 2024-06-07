@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -10,6 +10,7 @@ using System.Linq;
 namespace DotNet.Business
 {
     using Model;
+    using System.Reflection;
     using Util;
 
     /// <summary>
@@ -255,7 +256,7 @@ namespace DotNet.Business
                     tableNameRole = UserInfo.SystemCode + "Role";
                 }
             }
-            var sb = Pool.StringBuilder.Get().Append(" 1 = 1");
+            var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
             if (!showDisabled)
@@ -368,7 +369,7 @@ namespace DotNet.Business
             }
             sb.Replace(" 1 = 1 AND ", "");
             //重新构造viewName
-            var sbView = Pool.StringBuilder.Get();
+            var sbView = PoolUtil.StringBuilder.Get();
             //指定用户，就读取相应的UserRole授权日期
             if (ValidateUtil.IsInt(userId))
             {
@@ -429,7 +430,32 @@ namespace DotNet.Business
                 sbView.Append(tableNameRole);
             }
 
-            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Put(), sb.Put());
+            return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sbView.Return(), sb.Return());
+        }
+        #endregion
+
+        #region public DataTable GetApplicationRole(BaseUserInfo userInfo)
+        /// <summary>
+        /// 获取应用角色
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
+        public DataTable GetApplicationRole(BaseUserInfo userInfo)
+        {            
+            var tableName = BaseRoleEntity.CurrentTableName;
+            if (!string.IsNullOrEmpty(userInfo.SystemCode))
+            {
+                tableName = userInfo.SystemCode + "Role";
+            }
+            // 获得角色列表
+            var manager = new BaseRoleManager(userInfo, tableName);
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldCategoryCode, "ApplicationRole"),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseRoleEntity.FieldIsVisible, 1)
+            };
+            return manager.GetDataTable(parameters, BaseRoleEntity.FieldSortCode);
         }
         #endregion
     }

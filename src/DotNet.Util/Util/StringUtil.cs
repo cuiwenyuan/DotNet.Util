@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -324,7 +324,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DeleteUnVisibleChar(string sourceString)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             foreach (var t in sourceString)
             {
                 int unicode = t;
@@ -334,7 +334,7 @@ namespace DotNet.Util
                 }
             }
 
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>
@@ -400,14 +400,14 @@ namespace DotNet.Util
             target = string.Equals(target, "N/A", StringComparison.OrdinalIgnoreCase) ? "" : target;
             var charbuffers = target.ToCharArray();
             byte[] buffer;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             foreach (var t in charbuffers)
             {
                 buffer = Encoding.Unicode.GetBytes(t.ToString());
                 sb.Append(string.Format("\\u{0:X2}{1:X2}", buffer[1], buffer[0]));
             }
 
-            return sb.Put();
+            return sb.Return();
         }
 
         #region 截取固定长度字符
@@ -464,13 +464,13 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string BytesToHexString(byte[] input)
         {
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             foreach (var t in input)
             {
                 sb.Append(string.Format("{0:X2}", t));
             }
 
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace DotNet.Util
             {
                 return "";
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             var hiddenCharCount = info.Length - left - right;
             if (hiddenCharCount > 0)
             {
@@ -603,7 +603,7 @@ namespace DotNet.Util
                     }
                 }
             }
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>

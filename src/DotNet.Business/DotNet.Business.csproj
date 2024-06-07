@@ -20,7 +20,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<VersionPrefix>1.1</VersionPrefix>
+		<VersionPrefix>1.2</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
 		<FileVersion>$(Version)</FileVersion>
@@ -42,7 +42,6 @@
 		<ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
 		<ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
 		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
-		<ProjectReference Include="..\DotNet.IService\DotNet.IService.csproj" />
 		<ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
 	</ItemGroup>
 

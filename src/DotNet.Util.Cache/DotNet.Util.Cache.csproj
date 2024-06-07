@@ -21,7 +21,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<VersionPrefix>1.1</VersionPrefix>
+		<VersionPrefix>1.2</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
 		<FileVersion>$(Version)</FileVersion>
@@ -47,7 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NewLife.Redis" Version="5.5.2023.803" />
+	  <PackageReference Include="NewLife.Redis" Version="5.7.2024.602" />
 	</ItemGroup>
 
 	<ItemGroup>

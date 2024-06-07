@@ -21,7 +21,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<RepositoryType>git</RepositoryType>
-		<VersionPrefix>1.1</VersionPrefix>
+		<VersionPrefix>1.2</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
 		<FileVersion>$(Version)</FileVersion>
@@ -43,7 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="JWT" Version="10.0.2" />
+	  <PackageReference Include="JWT" Version="10.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

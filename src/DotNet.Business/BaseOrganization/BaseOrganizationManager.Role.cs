@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ namespace DotNet.Business
             var tableName = systemCode + "RoleOrganization";
 
             // 需要显示未被删除的用户
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT OrganizationId FROM " + tableName
                             + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
                                   + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
@@ -54,7 +54,7 @@ namespace DotNet.Business
             };
 
             var organizationIds = new List<string>();
-            var dataReader = DbHelper.ExecuteReader(sb.Put(), dbParameters.ToArray());
+            var dataReader = DbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())
@@ -78,7 +78,7 @@ namespace DotNet.Business
         string GetSqlQueryByRole(string systemCode, string[] roleIds)
         {
             var tableNameRoleOrganization = systemCode + "RoleOrganization";
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                             + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
                             + " AND " + BaseOrganizationEntity.FieldDeleted + "= 0 "
@@ -90,7 +90,7 @@ namespace DotNet.Business
                             + " AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) "
                             + " ORDER BY  " + BaseOrganizationEntity.FieldSortCode);
 
-            return sb.Put();
+            return sb.Return();
         }
 
         /// <summary>

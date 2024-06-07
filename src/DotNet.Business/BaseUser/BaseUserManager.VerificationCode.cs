@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2023, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace DotNet.Business
             {
                 userId = UserInfo.Id.ToString();
             }
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE " + BaseUserLogonEntity.CurrentTableName + " SET " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode) + " WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId));
 
             var dbParameters = new List<IDbDataParameter>
@@ -49,7 +49,7 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode),
                 DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId)
             };
-            result = ExecuteNonQuery(sb.Put(), dbParameters.ToArray());
+            result = ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
 
             return result;
         }
@@ -63,7 +63,7 @@ namespace DotNet.Business
         public bool Verify(string userId, string verificationCode)
         {
             var result = false;
-            var sb = Pool.StringBuilder.Get();
+            var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + BaseUserLogonEntity.CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldUserId) + " AND " + BaseUserLogonEntity.FieldVerificationCode + " = " + DbHelper.GetParameter(BaseUserLogonEntity.FieldVerificationCode));
 
             var dbParameters = new List<IDbDataParameter>
@@ -71,7 +71,7 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userId),
                 DbHelper.MakeParameter(BaseUserLogonEntity.FieldVerificationCode, verificationCode)
             };
-            var obj = DbHelper.ExecuteScalar(sb.Put(), dbParameters.ToArray());
+            var obj = DbHelper.ExecuteScalar(sb.Return(), dbParameters.ToArray());
             if (obj != null)
             {
                 result = obj.ToInt() > 0;
