@@ -130,6 +130,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseMessageSucceed";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "成功消息";
+
+        ///<summary>
         /// 公司编号
         ///</summary>
         public const string FieldUserCompanyId = "UserCompanyId";

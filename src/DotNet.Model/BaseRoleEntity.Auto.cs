@@ -154,6 +154,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseRole";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "角色";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

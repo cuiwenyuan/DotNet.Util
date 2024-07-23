@@ -142,6 +142,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BasePermission";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "权限";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

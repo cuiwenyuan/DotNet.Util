@@ -310,6 +310,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseUserContact";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "用户联系方式";
+
+        ///<summary>
         /// 用户编号
         ///</summary>
         public const string FieldUserId = "UserId";

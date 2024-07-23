@@ -25,10 +25,6 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        //
-        // 记录导航功能
-        //
-
         private string _previousId = string.Empty; // 上一个记录主键。
         private string _nextId = string.Empty; // 下一个记录主键。
 

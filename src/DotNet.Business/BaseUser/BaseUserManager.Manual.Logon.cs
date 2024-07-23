@@ -280,7 +280,7 @@ namespace DotNet.Business
                 }
                 else if (dt != null && dt.Rows.Count > 1)
                 {
-                    // 用户命重复了
+                    // 用户名重复了
                     //errorMark = 5;
                     BaseLogonLogManager.AddLog(systemCode, string.Empty, string.Empty, nickName, ipAddress, ipAddressName, macAddress, Status.UserDuplicate.ToDescription());
                     result.Status = Status.UserDuplicate;
@@ -991,7 +991,7 @@ namespace DotNet.Business
             }
             else if (dt != null && dt.Rows.Count > 1)
             {
-                // 用户命重复了
+                // 用户名重复了
                 BaseLogonLogManager.AddLog(systemCode, string.Empty, userName, string.Empty, ipAddress, ipAddressName, macAddress, Status.UserDuplicate.ToDescription());
                 result.Status = Status.UserDuplicate;
                 result.StatusCode = Status.UserDuplicate.ToString();

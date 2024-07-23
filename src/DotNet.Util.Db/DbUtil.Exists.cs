@@ -42,11 +42,11 @@ namespace DotNet.Util
             {
                 if (parameter.Value != null)
                 {
-                    sb.Append(BaseUtil.SqlLogicConditional + "( " + parameter.Key + " <> '" + parameter.Value + "' ) ");
+                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " <> '" + parameter.Value + "' ");
                 }
                 else
                 {
-                    sb.Append(BaseUtil.SqlLogicConditional + "( " + parameter.Key + " IS NOT NULL) ");
+                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " IS NOT NULL ");
                 }
             }
 

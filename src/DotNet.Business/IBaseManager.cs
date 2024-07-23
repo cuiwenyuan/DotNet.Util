@@ -102,7 +102,7 @@ namespace DotNet.Business
         /// 获取DataTable
         /// </summary>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(int topLimit, string order);
         /// <summary>
@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(string name, Object[] values, string order);
         /// <summary>
@@ -123,7 +123,7 @@ namespace DotNet.Business
         /// 获取DataTable
         /// </summary>
         /// <param name="parameter">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, string order);
         /// <summary>
@@ -131,14 +131,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
         /// <param name="parameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, string order);
         /// <summary>
@@ -146,7 +146,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, int topLimit, string order);
 
@@ -167,7 +167,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -175,7 +175,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(string name, Object[] values, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -206,7 +206,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, string order) where T : BaseEntity, new();
         /// <summary>
@@ -215,7 +215,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter1">参数1</param>
         /// <param name="parameter2">参数2</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order) where T : BaseEntity, new();
         /// <summary>
@@ -224,7 +224,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
@@ -232,7 +232,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="parameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, string order) where T : BaseEntity, new();
         /// <summary>
@@ -241,7 +241,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
@@ -351,7 +351,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         string[] GetProperties(string order);
         /// <summary>

@@ -1126,6 +1126,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseStaff";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "员工";
+
+        ///<summary>
         /// 用户主键
         ///</summary>
         public const string FieldUserId = "UserId";

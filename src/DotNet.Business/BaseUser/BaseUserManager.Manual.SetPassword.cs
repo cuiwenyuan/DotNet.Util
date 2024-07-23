@@ -150,18 +150,17 @@ namespace DotNet.Business
             // 2015-12-09 吉日嘎拉 增加日志功能、谁什么时候设置了谁的密码？
             if (changeLog)
             {
-                var record = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = BaseUserLogonEntity.CurrentTableName,
-                    TableDescription = typeof(BaseUserLogonEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = BaseUserLogonEntity.FieldUserPassword,
                     ColumnDescription = "用户密码",
                     RecordKey = userId.ToString(),
                     NewValue = "设置密码"
                 };
 
-                var changeLogManager = new BaseChangeLogManager(UserInfo);
-                changeLogManager.Add(record, true, false);
+                new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
             }
 
             if (result == 1)

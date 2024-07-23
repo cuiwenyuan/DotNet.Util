@@ -170,17 +170,18 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var entity = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = typeof(BaseDictionaryItemEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    RecordKey = entityOld.Id.ToString()
+                    RecordKey = entityOld.Id.ToString(),
+                    SortCode = 1 // 不要排序了，加快写入速度
                 };
-                manager.Add(entity, true, false);
+                manager.Add(baseChangeLogEntity, true, false);
             }
         }
         #endregion

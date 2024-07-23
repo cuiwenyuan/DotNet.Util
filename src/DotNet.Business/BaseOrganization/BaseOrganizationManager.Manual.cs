@@ -77,7 +77,6 @@ namespace DotNet.Business
                     result = AddEntity(entity);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        AfterAdd(entity);
                         Status = Status.OkAdd;
                         StatusCode = Status.OkAdd.ToString();
                         StatusMessage = Status.OkAdd.ToDescription();
@@ -240,17 +239,18 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var entity = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = typeof(BaseOrganizationEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     RecordKey = entityOld.Id.ToString(),
                     NewValue = newValue,
-                    OldValue = oldValue
+                    OldValue = oldValue,
+                    SortCode = 1 // 不要排序了，加快写入速度
                 };
-                manager.Add(entity, true, false);
+                manager.Add(baseChangeLogEntity, true, false);
             }
         }
         #endregion
@@ -330,7 +330,7 @@ namespace DotNet.Business
             var tableNameRoleOrganization = UserInfo.SystemCode + "RoleOrganization";
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNameRoleOrganization = systemCode + "RoleOrganization";
+                tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
             }
             //指定角色
             if (!string.IsNullOrEmpty(roleId) && ValidateUtil.IsNumeric(roleId))
@@ -353,10 +353,10 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
             }
             //用户菜单模块表
-            var tableNamePermission = UserInfo.SystemCode + "Permission";
+            var tableNamePermission = GetPermissionTableName(UserInfo.SystemCode);
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNamePermission = systemCode + "Permission";
+                tableNamePermission = GetPermissionTableName(systemCode);
             }
             //指定的菜单模块
             if (!string.IsNullOrEmpty(moduleId) && ValidateUtil.IsNumeric(moduleId))

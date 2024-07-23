@@ -118,6 +118,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseCalendar";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "日历";
+
+        ///<summary>
         /// 公司编号
         ///</summary>
         public const string FieldUserCompanyId = "UserCompanyId";

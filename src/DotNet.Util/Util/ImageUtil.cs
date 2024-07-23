@@ -237,7 +237,11 @@ namespace DotNet.Util
         #endregion
 
         #region 图片获取EXIF中的经纬度等信息
-
+        /// <summary>
+        /// 图片获取EXIF中的经纬度等信息
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
         public static ExifEntity GetExif(Image img)
         {
             var entity = new ExifEntity();
@@ -315,6 +319,9 @@ namespace DotNet.Util
         #endregion
 
         #region Exif实体
+        /// <summary>
+        /// Exif实体
+        /// </summary>
         public class ExifEntity
         {
             #region 属性

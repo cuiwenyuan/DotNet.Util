@@ -131,6 +131,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseDictionary";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "字典";
+
+        ///<summary>
         /// 租户号
         ///</summary>
         public const string FieldTenantId = "TenantId";

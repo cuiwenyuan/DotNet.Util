@@ -59,7 +59,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string name,
             object[] values, string order = null) where TModel : new()
@@ -130,7 +130,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
         {
@@ -151,7 +151,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null) where TModel : new()
         {
@@ -170,7 +170,7 @@ namespace DotNet.Util
         /// <param name="selectFields"></param>
         /// <param name="condition"></param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static string ExecuteReaderQueryString(this IDbHelper dbHelper, string tableName, string selectFields, string condition, int topLimit, string order)
         {
@@ -303,7 +303,7 @@ namespace DotNet.Util
         /// <param name="selectField"></param>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string selectField, string name,
             object[] values, string order = null) where TModel : new()
@@ -322,7 +322,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
         {
@@ -349,7 +349,7 @@ namespace DotNet.Util
         /// <param name="tableName"></param>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
         {
@@ -439,7 +439,7 @@ namespace DotNet.Util
         /// <param name="parameters">参数</param>
         /// <param name="conditions"></param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <param name="selectField"></param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ") where TModel : new()

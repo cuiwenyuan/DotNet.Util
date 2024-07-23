@@ -70,7 +70,7 @@ namespace DotNet.Business
             {
                 useBaseRole = false;
             }
-            tableName = systemCode + "Module";
+            tableName = GetModuleTableName(systemCode);
 
             try
             {

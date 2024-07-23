@@ -319,7 +319,7 @@ namespace DotNet.Business
                 }
             }
 
-            var tableName = systemCode + "Permission";
+            var tableName = GetPermissionTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName
                              + " WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldResourceCategory)
@@ -408,7 +408,7 @@ namespace DotNet.Business
             try
             {
                 // 2016-02-27 吉日嘎拉 提高数据库查询效率，不需要全表扫描，提高判断权限的效率
-                CurrentTableName = systemCode + "Permission";
+                CurrentTableName = GetPermissionTableName(systemCode);
                 var id = GetProperty(parameters, BasePermissionEntity.FieldId);
                 result = !string.IsNullOrEmpty(id);
             }
@@ -461,9 +461,9 @@ namespace DotNet.Business
                 }
             }
 
-            permissionTableName = systemCode + "Permission";
-            userRoleTableName = systemCode + "UserRole";
-            roleTableName = systemCode + "Role";
+            permissionTableName = GetPermissionTableName(systemCode);
+            userRoleTableName = GetUserRoleTableName(systemCode);
+            roleTableName = GetRoleTableName(systemCode);
 
             var dbParameters = new List<IDbDataParameter>();
             var sb = PoolUtil.StringBuilder.Get();
@@ -550,8 +550,8 @@ namespace DotNet.Business
             var tableName = "BaseModule";
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                key = systemCode + "Module";
-                tableName = systemCode + "Module";
+                key = GetModuleTableName(systemCode);
+                tableName = GetModuleTableName(systemCode);
 
                 // 2015-11-19 所有的系统都继承基础角色的权限
                 // 2022-01-04 Troy.Cui 停用集成基础角色
@@ -626,7 +626,7 @@ namespace DotNet.Business
             {
                 useBaseRole = false;
             }
-            tableName = systemCode + "Module";
+            tableName = GetModuleTableName(systemCode);
 
             try
             {
@@ -642,9 +642,9 @@ namespace DotNet.Business
                     }
                 }
 
-                tableName = systemCode + "UserRole";
-                var roleTableName = systemCode + "Role";
-                CurrentTableName = systemCode + "Permission";
+                tableName = GetUserRoleTableName(systemCode);
+                var roleTableName = GetRoleTableName(systemCode);
+                CurrentTableName = GetPermissionTableName(systemCode);
                 var dbParameters = new List<IDbDataParameter>();
 
                 var sb = PoolUtil.StringBuilder.Get();
@@ -820,7 +820,7 @@ namespace DotNet.Business
                 return false;
             }
 
-            var resourceCategory = systemCode + "Role";
+            var resourceCategory = GetRoleTableName(systemCode);
             return CheckResourcePermission(systemCode, resourceCategory, roleId, permissionId);
         }
         #endregion

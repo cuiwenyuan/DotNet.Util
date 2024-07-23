@@ -259,37 +259,6 @@ namespace DotNet.Business
             return result;
         }
 
-        /// <summary>
-        /// 根据公司获取数据表
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <returns></returns>
-        public DataTable GetDataTableByCompany(string companyId)
-        {
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT " + SelectFields
-                + " FROM " + BaseUserEntity.CurrentTableName);
-
-            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
-            sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
-
-            if (!string.IsNullOrEmpty(companyId))
-            {
-                // 从用户表
-                sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = '" + companyId + "') ");
-                // 从兼职表读取用户
-                /*
-                sb.Append(" OR " + BaseUserEntity.FieldId + " IN ("
-                        + "SELECT " + BaseUserOrganizationEntity.FieldUserId
-                        + " FROM " + BaseUserOrganizationEntity.CurrentTableName
-                        + "  WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
-                        + "       AND (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " = '" + companyId + "')) ");
-                */
-            }
-            sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-            return DbHelper.Fill(sb.Return());
-        }
-
         #region public List<BaseUserEntity> GetListByDepartment(string departmentId)
         /// <summary>
         /// 按部门获取用户
@@ -428,32 +397,6 @@ namespace DotNet.Business
         /// <returns></returns>
         public string[] GetUserIds(string[] userIds, string[] organizationIds, string[] roleIds)
         {
-            /*
-            // 要注意不能重复发信息，只能发一次。
-            // 按公司查找用户
-            string[] companyUsers = null;
-            // 按部门查找用户
-            string[] departmentUsers = null; 
-            // 按工作组查找用户
-            string[] workgroupUsers = null; 
-            if (ids != null && ids.Length > 0)
-            {
-                // 这里获得的是用户主键，不是员工主键
-                companyUsers = this.GetIds(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, ids));
-                subCompanyUsers = this.GetIds(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldSubCompanyId, ids));
-                departmentUsers = this.GetIds(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldDepartmentId, ids));
-                workgroupUsers = this.GetIds(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1)
-                    , new KeyValuePair<string, object>(BaseUserEntity.FieldWorkgroupId, ids));
-            }
-            */
-
             string[] companyUsers = null;
 
             if (organizationIds != null && organizationIds.Length > 0)
@@ -489,13 +432,6 @@ namespace DotNet.Business
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
             if (!string.IsNullOrEmpty(departmentId))
             {
-                /*
-                用非递归调用的建议方法
-                sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDepartmentId 
-                    + " IN ( SELECT " + BaseOrganizationEntity.FieldId 
-                    + " FROM " + BaseOrganizationEntity.CurrentTableName 
-                    + " WHERE " + BaseOrganizationEntity.FieldId + " = " + departmentId + " OR " + BaseOrganizationEntity.FieldParentId + " = " + departmentId + ")");
-                */
                 var organizationManager = new BaseOrganizationManager(DbHelper, UserInfo);
                 var organizationIds = organizationManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
                 if (organizationIds != null && organizationIds.Length > 0)

@@ -310,6 +310,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseLogonLog";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "登录日志";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

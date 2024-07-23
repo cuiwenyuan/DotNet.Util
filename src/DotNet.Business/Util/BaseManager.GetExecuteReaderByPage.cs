@@ -26,6 +26,8 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
+        #region public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
+
         /// <summary>
         /// 获取分页DataTable
         /// </summary>
@@ -34,13 +36,17 @@ namespace DotNet.Business
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns>数据表</returns>
         public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
             recordCount = DbHelper.GetCount(CurrentTableName, condition, dbParameters, CurrentIndex);
             return DbHelper.ExecuteReaderByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, dbParameters, order, CurrentIndex);
         }
+
+        #endregion
+
+        #region public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order) where TModel : new()
 
         /// <summary>
         /// 获取分页DataTable
@@ -50,13 +56,16 @@ namespace DotNet.Business
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">数据库参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns>数据表</returns>
         public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order) where TModel : new()
         {
             return ExecuteReaderByPage(out recordCount, pageNo, pageSize, condition, dbParameters, order).ToList<TModel>();
         }
 
+        #endregion
+
+        #region public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         /// <summary>
         /// 分页读取数据
         /// </summary>
@@ -110,6 +119,10 @@ namespace DotNet.Business
             return DbHelper.ExecuteReaderByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField);
         }
 
+        #endregion
+
+        #region public virtual List<TModel> ExecuteReaderByPage<TModel>(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null) where TModel : new()
+
         /// <summary>
         /// 分页读取数据
         /// </summary>
@@ -127,5 +140,7 @@ namespace DotNet.Business
         {
             return ExecuteReaderByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, dbParameters, selectField).ToList<TModel>();
         }
+
+        #endregion
     }
 }

@@ -586,6 +586,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseUser";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "用户账号";
+
+        ///<summary>
         /// 来源
         ///</summary>
         public const string FieldUserFrom = "UserFrom";

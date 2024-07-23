@@ -87,12 +87,44 @@ namespace DotNet.Business
                 entity.Deleted = 0;
                 //激活
                 UpdateEntity(entity);
+
+                #region 记录日志
+
+                var baseChangeLogEntity = new BaseChangeLogEntity
+                {
+                    TableName = GetPermissionTableName(entity.SystemCode),
+                    RecordKey = result,
+                    ColumnName = BaseChangeLogEntity.FieldDeleted,
+                    ColumnDescription = "激活",
+                    OldValue = "1",
+                    NewValue = "0",
+                    SortCode = 1 // 不要排序了，加快写入速度
+                };
+                new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+                #endregion
             }
             else
             {
                 result = AddEntity(entity);
                 if (!string.IsNullOrEmpty(result))
                 {
+                    #region 记录日志
+
+                    var baseChangeLogEntity = new BaseChangeLogEntity
+                    {
+                        SystemCode = entity.SystemCode,
+                        TableName = GetPermissionTableName(entity.SystemCode),
+                        TableDescription = CurrentTableDescription,
+                        RecordKey = result,
+                        OldValue = null,
+                        NewValue = "{" + BasePermissionEntity.FieldResourceId + ":" + entity.ResourceId + "," + BasePermissionEntity.FieldPermissionId + ":" + entity.PermissionId + "}",
+                        SortCode = 1 // 不要排序了，加快写入速度
+                    };
+                    new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+                    #endregion
+
                     //运行成功
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -109,7 +141,7 @@ namespace DotNet.Business
 
             return result;
         }
-        #endregion
+        #endregion        
 
         #region 获取角色拥有的权限列表
         /// <summary>
@@ -134,7 +166,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
                 };
 
-                var tableName = systemCode + "Module";
+                var tableName = GetModuleTableName(systemCode);
                 var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
                 result = moduleManager.GetList<BaseModuleEntity>(parameters);
             }
@@ -156,7 +188,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            CurrentTableName = systemCode + "Permission";
+            CurrentTableName = GetPermissionTableName(systemCode);
             resourceCategory = systemCode + resourceCategory;
             var parameters = new List<KeyValuePair<string, object>>
             {

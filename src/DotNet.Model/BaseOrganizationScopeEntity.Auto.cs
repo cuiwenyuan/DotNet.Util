@@ -274,6 +274,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseOrganizationScope";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "组织机构权限范围";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

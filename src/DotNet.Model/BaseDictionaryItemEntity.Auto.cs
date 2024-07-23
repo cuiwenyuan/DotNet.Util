@@ -154,6 +154,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseDictionaryItem";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "字典项";
+
+        ///<summary>
         /// 字典编号
         ///</summary>
         public const string FieldDictionaryId = "DictionaryId";

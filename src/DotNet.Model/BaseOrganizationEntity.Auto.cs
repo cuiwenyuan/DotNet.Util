@@ -598,6 +598,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseOrganization";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "组织机构";
+
+        ///<summary>
         /// 父级主键
         ///</summary>
         public const string FieldParentId = "ParentId";

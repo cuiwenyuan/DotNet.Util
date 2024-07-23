@@ -267,9 +267,9 @@ namespace DotNet.Business
         /// <returns></returns>
         public List<BaseUserRoleEntity> GetUserRoleEntityList(string systemCode)
         {
-            var tableName = systemCode + "UserRole";
+            var tableName = GetUserRoleTableName(systemCode);
             //2017.12.19增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + systemCode + ".UserRole";
+            var cacheKey = "List." + GetUserRoleTableName(systemCode);
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var result = CacheUtil.Cache<List<BaseUserRoleEntity>>(cacheKey, () =>
@@ -448,12 +448,12 @@ namespace DotNet.Business
             var userRoleTableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                userRoleTableName = systemCode + "UserRole";
+                userRoleTableName = GetUserRoleTableName(systemCode);
             }
             var roleTableName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                roleTableName = systemCode + "Role";
+                roleTableName = GetRoleTableName(systemCode);
             }
 
             var sb = PoolUtil.StringBuilder.Get();
@@ -464,7 +464,7 @@ namespace DotNet.Business
             sb = sb.Replace("BaseUserRole", userRoleTableName);
             sb = sb.Replace("BaseRole", roleTableName);
 
-            var cacheKey = "Dt." + systemCode + ".UserRole";
+            var cacheKey = "Dt." + GetUserRoleTableName(systemCode);
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Return()), true, false, cacheTime);
@@ -498,7 +498,7 @@ namespace DotNet.Business
         {
             var result = new List<string>();
 
-            var userRoleTable = systemCode + "UserRole";
+            var userRoleTable = GetUserRoleTableName(systemCode);
 
             // 被删除的角色不应该显示出来
             var sb = PoolUtil.StringBuilder.Get();
@@ -596,7 +596,7 @@ namespace DotNet.Business
             var result = new List<BaseUserEntity>();
             var dbParameters = new List<IDbDataParameter>();
 
-            var userRoleTableName = systemCode + "UserRole";
+            var userRoleTableName = GetUserRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields
                      + " FROM " + BaseUserEntity.CurrentTableName
@@ -641,7 +641,7 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
-            var userRoleTableName = systemCode + "UserRole";
+            var userRoleTableName = GetUserRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
                             + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
@@ -676,7 +676,7 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
-            var tableName = systemCode + "UserRole";
+            var tableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
             var parameters = new List<KeyValuePair<string, object>> {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, systemCode),
@@ -707,7 +707,7 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
-            var tableName = systemCode + "UserRole";
+            var tableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
             var parameters = new List<KeyValuePair<string, object>> {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, userId),
@@ -737,12 +737,12 @@ namespace DotNet.Business
             var userRoleTableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                userRoleTableName = systemCode + "UserRole";
+                userRoleTableName = GetUserRoleTableName(systemCode);
             }
             var tableRoleName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                tableRoleName = systemCode + "Role";
+                tableRoleName = GetRoleTableName(systemCode);
             }
 
             var commandText = @"SELECT BaseRole.Id
@@ -900,7 +900,7 @@ namespace DotNet.Business
             var tableName = "BaseUserRole";
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableName = systemCode + "UserRole";
+                tableName = GetUserRoleTableName(systemCode);
             }
             var sb = PoolUtil.StringBuilder.Get();
             // 需要显示未被删除的用户
@@ -957,7 +957,7 @@ namespace DotNet.Business
 
             if (roleIds != null && roleIds.Length > 0)
             {
-                var tableName = systemCode + "UserRole";
+                var tableName = GetUserRoleTableName(systemCode);
                 var commandText = "SELECT DISTINCT " + BaseUserRoleEntity.FieldUserId + " FROM " + tableName + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ") "
                                 + "  AND (" + BaseUserRoleEntity.FieldUserId + " IN (SELECT " + BaseUserEntity.FieldId + " FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0)) AND (" + BaseUserRoleEntity.FieldDeleted + " = 0)";
 
@@ -1033,7 +1033,7 @@ namespace DotNet.Business
                     RoleId = roleId.ToInt(),
                     Enabled = enabled ? 1 : 0
                 };
-                var tableName = systemCode + "UserRole";
+                var tableName = GetUserRoleTableName(systemCode);
                 //新增或激活
                 result = new BaseUserRoleManager(DbHelper, UserInfo, tableName).AddOrActive(entity);
             }
@@ -1059,7 +1059,7 @@ namespace DotNet.Business
             var tableName = BaseUserRoleEntity.CurrentTableName;
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
-                tableName = systemCode + "UserRole";
+                tableName = GetUserRoleTableName(systemCode);
             }
             var whereParameters = new List<KeyValuePair<string, object>>
             {
@@ -1141,6 +1141,61 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #endregion
+
+        #region 权限
+
+        #region 复制用户权限
+        /// <summary>
+        /// 复制用户权限
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="referenceUserId">参考源用户编号</param>
+        /// <param name="targetUserId">目标用户编号</param>
+        /// <returns></returns>
+        public int CopyPermission(string systemCode, string[] referenceUserIds, string[] targetUserIds)
+        {
+            var result = 0;
+
+            for (var i = 0; i < referenceUserIds.Length; i++)
+            {
+                for (var j = 0; j < targetUserIds.Length; j++)
+                {
+                    result += CopyPermission(systemCode, referenceUserIds[i].ToInt(), targetUserIds[j].ToInt());
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 复制用户权限
+        /// <summary>
+        /// 复制用户权限
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="referenceUserId">参考源用户编号</param>
+        /// <param name="targetUserId">目标用户编号</param>
+        /// <returns></returns>
+        public int CopyPermission(string systemCode, int referenceUserId, int targetUserId)
+        {
+            var result = 0;
+            if (string.IsNullOrEmpty(systemCode))
+            {
+                systemCode = "Base";
+            }
+            var tableName = GetUserRoleTableName(systemCode);
+            var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
+            result += manager.CopyRole(systemCode, referenceUserId, targetUserId);
+            tableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            result += permissionManager.CopyRolePermission(systemCode, referenceUserId, targetUserId);
+            result += permissionManager.CopyUserPermission(systemCode, referenceUserId, targetUserId);
+
+            return result;
+        }
         #endregion
 
         #endregion

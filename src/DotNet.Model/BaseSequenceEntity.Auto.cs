@@ -142,6 +142,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseSequence";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "序列";
+
+        ///<summary>
         /// 名称
         ///</summary>
         public const string FieldName = "Name";

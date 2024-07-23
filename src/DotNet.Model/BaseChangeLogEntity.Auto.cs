@@ -166,6 +166,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseChangeLog";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "变更日志";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

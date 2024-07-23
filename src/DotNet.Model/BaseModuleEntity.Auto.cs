@@ -334,6 +334,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseModule";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "模块菜单操作";
+
+        ///<summary>
         /// 子系统编码
         ///</summary>
         public const string FieldSystemCode = "SystemCode";

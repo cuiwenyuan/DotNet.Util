@@ -167,17 +167,18 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var entity = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = typeof(BaseModuleEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    RecordKey = entityOld.Id.ToString()
+                    RecordKey = entityOld.Id.ToString(),
+                    SortCode = 1 // 不要排序了，加快写入速度
                 };
-                manager.Add(entity, true, false);
+                manager.Add(baseChangeLogEntity, true, false);
             }
         }
         #endregion
@@ -212,13 +213,13 @@ namespace DotNet.Business
             var tableNameModule = BaseModuleEntity.CurrentTableName;
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNameModule = systemCode + "Module";
+                tableNameModule = GetModuleTableName(systemCode);
             }
             else
             {
                 if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
                 {
-                    tableNameModule = UserInfo.SystemCode + "Module";
+                    tableNameModule = GetModuleTableName(UserInfo.SystemCode);
                 }
             }
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
@@ -260,22 +261,22 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseModuleEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
             //用户菜单模块表
-            var tableNamePermission = UserInfo.SystemCode + "Permission";
+            var tableNamePermission = GetPermissionTableName(UserInfo.SystemCode);
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNamePermission = systemCode + "Permission";
+                tableNamePermission = GetPermissionTableName(systemCode);
             }
             //用户角色
-            var tableNameUserRole = UserInfo.SystemCode + "UserRole";
+            var tableNameUserRole = GetUserRoleTableName(UserInfo.SystemCode);
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNameUserRole = systemCode + "UserRole";
+                tableNameUserRole = GetUserRoleTableName(systemCode);
             }
             //用于ResourceCategory的用户角色
-            var tableNameRole = UserInfo.SystemCode + "Role";
+            var tableNameRole = GetRoleTableName(UserInfo.SystemCode);
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableNameRole = systemCode + "Role";
+                tableNameRole = GetRoleTableName(systemCode);
             }
             //指定用户
             if (ValidateUtil.IsInt(userId))
@@ -697,7 +698,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             //读取选定子系统的菜单模块
-            var manager = new BaseModuleManager(UserInfo, systemCode + "Module");
+            var manager = new BaseModuleManager(UserInfo, GetModuleTableName(systemCode));
             // 获取所有数据
             var parameters = new List<KeyValuePair<string, object>>();
             if (ValidateUtil.IsInt(isMenu))
@@ -708,7 +709,7 @@ namespace DotNet.Business
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1));
             parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "Dt." + systemCode + ".ModuleTree." + isMenu;
+            var cacheKey = "Dt." + GetModuleTableName(systemCode) + "Tree." + isMenu;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => manager.GetModuleTree(manager.GetDataTable(parameters, BaseModuleEntity.FieldSortCode)), true, false, cacheTime);
@@ -717,5 +718,214 @@ namespace DotNet.Business
         }
         #endregion
 
+        /// <summary>
+        /// 添加删除的附加条件
+        /// </summary>
+        /// <param name="parameters">参数</param>
+        /// <returns></returns>
+		protected override List<KeyValuePair<string, object>> GetDeleteExtParam(List<KeyValuePair<string, object>> parameters)
+        {
+            var result = base.GetDeleteExtParam(parameters);
+            result.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldAllowDelete, 1));
+            return result;
+        }
+
+        #region public DataTable GetRootList()
+        /// <summary>
+        /// GetRoot 的主键
+        /// </summary>
+        /// <returns>数据表</returns>
+        public DataTable GetRootList()
+        {
+            return GetDataTableByParent(string.Empty);
+        }
+        #endregion
+
+        #region public override int BatchSave(DataTable dt) 批量进行保存
+        /// <summary>
+        /// 批量进行保存
+        /// </summary>
+        /// <param name="dt">数据表</param>
+        /// <returns>影响行数</returns>
+        public override int BatchSave(DataTable dt)
+        {
+            var result = 0;
+            var entity = new BaseModuleEntity();
+            foreach (DataRow dr in dt.Rows)
+            {
+                // 删除状态
+                if (dr.RowState == DataRowState.Deleted)
+                {
+                    var id = dr[BaseModuleEntity.FieldId, DataRowVersion.Original].ToString();
+                    if (id.Length > 0)
+                    {
+                        if (dr[BaseModuleEntity.FieldAllowDelete, DataRowVersion.Original].ToString().Equals("1"))
+                        {
+                            result += DeleteEntity(id);
+                        }
+                    }
+                }
+                // 被修改过
+                if (dr.RowState == DataRowState.Modified)
+                {
+                    var id = dr[BaseModuleEntity.FieldId, DataRowVersion.Original].ToString();
+                    if (id.Length > 0)
+                    {
+                        entity.GetFrom(dr);
+                        // 判断是否允许编辑
+                        if (BaseUserManager.IsAdministrator(UserInfo.Id.ToString()) || entity.AllowEdit == 1)
+                        {
+                            result += UpdateEntity(entity);
+                        }
+                    }
+                }
+                // 添加状态
+                if (dr.RowState == DataRowState.Added)
+                {
+                    entity.GetFrom(dr);
+                    result += AddEntity(entity).Length > 0 ? 1 : 0;
+                }
+                if (dr.RowState == DataRowState.Unchanged)
+                {
+                    continue;
+                }
+                if (dr.RowState == DataRowState.Detached)
+                {
+                    continue;
+                }
+            }
+            Status = Status.Ok;
+            StatusCode = Status.Ok.ToString();
+            return result;
+        }
+        #endregion
+
+        #region public BaseModuleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
+
+        /// <summary>
+        /// 从缓存获取获取实体
+        /// </summary>
+        /// <param name="systemCode">系统编码</param>
+        /// <param name="id">主键</param>
+        /// <param name="refreshCache">刷新缓存</param>
+        public BaseModuleEntity GetEntityByCache(string systemCode, string id, bool refreshCache = false)
+        {
+            BaseModuleEntity result = null;
+
+            var tableName = GetModuleTableName(systemCode);
+            //2017.12.20增加默认的HttpRuntime.Cache缓存
+            var cacheKey = "List." + GetModuleTableName(systemCode);
+            //var cacheTime = default(TimeSpan);
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            var listModule = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
+            {
+                var parametersWhere = new List<KeyValuePair<string, object>>
+                {
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
+                };
+                CurrentTableName = tableName;
+                return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+            }, true, false, cacheTime);
+            result = listModule.Find(t => t.Id.Equals(id));
+
+            return result;
+        }
+
+        #endregion
+
+        #region public BaseModuleEntity GetEntityByCacheByCode(string systemCode, string code)
+        /// <summary>
+        /// 从缓存获取获取实体
+        /// </summary>
+        /// <param name="systemCode">系统编号</param>
+        /// <param name="code">编号</param>
+        /// <returns>权限实体</returns>
+        public BaseModuleEntity GetEntityByCacheByCode(string systemCode, string code)
+        {
+            BaseModuleEntity result = null;
+
+            var tableName = GetModuleTableName(systemCode);
+            //2017.12.20增加默认的HttpRuntime.Cache缓存
+            var cacheKey = "List." + GetModuleTableName(systemCode);
+            //var cacheTime = default(TimeSpan);
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            var listModule = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
+            {
+                var parametersWhere = new List<KeyValuePair<string, object>>
+                {
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
+                };
+                CurrentTableName = tableName;
+                return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+            }, true, false, cacheTime);
+            result = listModule.Find(t => t.Code == code);
+            return result;
+        }
+
+        #endregion
+
+        #region public static string GetIdByCodeByCache(string systemCode, string code) 通过编号获取主键
+        /// <summary>
+        /// 通过编号获取主键
+        /// </summary>
+        /// <param name="systemCode">系统编号</param>
+        /// <param name="code">编号</param>
+        /// <returns>主键</returns>
+        public string GetIdByCodeByCache(string systemCode, string code)
+        {
+            var result = string.Empty;
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                var moduleEntity = GetEntityByCacheByCode(systemCode, code);
+                if (moduleEntity != null)
+                {
+                    result = moduleEntity.Id.ToString();
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region public static List<BaseModuleEntity> GetEntitiesByCache(string systemCode = "Base") 获取模块菜单表，从缓存读取
+
+        /// <summary>
+        /// 获取模块菜单表，从缓存读取
+        /// 没有缓存也可以用的。
+        /// </summary>
+        /// <param name="systemCode">系统编号</param>
+        /// <param name="refreshCache">是否刷新缓存</param>
+        /// <returns>菜单</returns>
+        public List<BaseModuleEntity> GetEntitiesByCache(string systemCode = "Base", bool refreshCache = false)
+        {
+            List<BaseModuleEntity> result = null;
+
+            var tableName = GetModuleTableName(systemCode);
+            var cacheKey = "List." + GetModuleTableName(systemCode);
+            //var cacheTime = default(TimeSpan);
+            var cacheTime = TimeSpan.FromMilliseconds(86400000);
+            result = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
+            {
+                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
+                // 读取目标表中的数据
+                var parametersWhere = new List<KeyValuePair<string, object>>
+                {
+                    //有效的菜单
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1),
+                    //没被删除的菜单
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
+                };
+
+                // parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldIsVisible, 1));
+                CurrentTableName = tableName;
+                return moduleManager.GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+            }, true, refreshCache, cacheTime);
+
+            return result;
+        }
+        #endregion
     }
 }

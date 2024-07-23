@@ -24,6 +24,8 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
+        #region public virtual bool Exists(object id)
+
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
@@ -34,6 +36,10 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(PrimaryKey, id) };
             return DbHelper.Exists(CurrentTableName, parameters);
         }
+
+        #endregion
+
+        #region public virtual bool Exists(params KeyValuePair<string, object>[] parameters)
 
         /// <summary>
         /// 判断数据是否存在
@@ -50,6 +56,10 @@ namespace DotNet.Business
             return DbHelper.Exists(CurrentTableName, parametersList);
         }
 
+        #endregion
+
+        #region public virtual bool Exists(KeyValuePair<string, object> parameter)
+
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
@@ -60,6 +70,10 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>> { parameter };
             return DbHelper.Exists(CurrentTableName, parameters);
         }
+
+        #endregion
+
+        #region public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
 
         /// <summary>
         /// 判断数据是否存在
@@ -72,6 +86,10 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
             return DbHelper.Exists(CurrentTableName, parameters);
         }
+
+        #endregion
+
+        #region public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, object id)
 
         /// <summary>
         /// 判断数据是否存在
@@ -86,6 +104,10 @@ namespace DotNet.Business
             return DbHelper.Exists(CurrentTableName, parameters, new KeyValuePair<string, object>(PrimaryKey, id));
         }
 
+        #endregion
+
+        #region public virtual bool Exists(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, KeyValuePair<string, object> parameter)
+
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
@@ -98,6 +120,10 @@ namespace DotNet.Business
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
             return DbHelper.Exists(CurrentTableName, parameters, parameter);
         }
+
+        #endregion
+
+        #region public virtual bool Exists(KeyValuePair<string, object> parameter, object id)
 
         /// <summary>
         /// 判断数据是否存在
@@ -120,6 +146,10 @@ namespace DotNet.Business
             }
         }
 
+        #endregion
+
+        #region public virtual bool Exists(List<KeyValuePair<string, object>> parameters, object id = null)
+
         /// <summary>
         /// 判断数据是否存在
         /// </summary>
@@ -138,5 +168,7 @@ namespace DotNet.Business
                 return DbHelper.Exists(CurrentTableName, parameters);
             }
         }
+
+        #endregion
     }
 }

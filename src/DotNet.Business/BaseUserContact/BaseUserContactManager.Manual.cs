@@ -47,8 +47,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        // 当前的锁
-        // private static object locker = new Object();
+        #region public string GetIdByEmail(string email)
 
         /// <summary>
         /// 按电子邮件获取用户主键
@@ -63,6 +62,8 @@ namespace DotNet.Business
             };
             return GetId(parameters);
         }
+
+        #endregion
 
         #region public int RemoveMobileBinding(string mobile) 解除手机认证帮定
 
@@ -100,6 +101,8 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public static BaseUserContactEntity SetCache(int userId)
+
         /// <summary>
         /// 重新设置缓存（重新强制设置缓存）可以提供外部调用的
         /// </summary>
@@ -118,6 +121,8 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
 
         #region public static string GetEmailByCache(string id) 通过编号获取选项的显示内容
         /// <summary>
@@ -142,6 +147,7 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region public static string GetMobileByCache(int id)
         /// <summary>
         /// 提高效率，封装一个方法，让调用的人更方便调用
         /// 2015-11-11 吉日嘎拉 要考虑多个手机号码，问题就更加复杂了，其实简单就是硬道理
@@ -160,6 +166,10 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
+
+        #region public static string GetTelephoneByCache(int id)
         /// <summary>
         /// 从缓存中获取电话号码
         /// </summary>
@@ -177,6 +187,10 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
+
+        #region public static int CachePreheating()
 
         /// <summary>
         /// 缓存预热,强制重新缓存
@@ -204,5 +218,7 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
     }
 }

@@ -130,6 +130,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseUserOrganization";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "用户兼任";
+
+        ///<summary>
         /// 用户账户主键
         ///</summary>
         public const string FieldUserId = "UserId";

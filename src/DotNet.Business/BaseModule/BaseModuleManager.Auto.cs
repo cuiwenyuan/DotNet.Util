@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseModuleEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = typeof(BaseModuleEntity).FieldDescription("CurrentTableName");
+            CurrentTableDescription = BaseModuleEntity.CurrentTableDescription;
             PrimaryKey = "Id";
         }
 
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         public BaseModuleEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
             return BaseEntity.Create<BaseModuleEntity>(GetDataTable(parameters, topLimit, order));

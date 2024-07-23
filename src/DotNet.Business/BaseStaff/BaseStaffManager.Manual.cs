@@ -1,38 +1,31 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseStaffManager.cs" company="DotNet">
+//     Copyright (c) 2024, All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
-using System.Collections.Generic;
+using System;
 using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
 
 namespace DotNet.Business
 {
     using Model;
+    using Business;
     using Util;
 
     /// <summary>
-    ///	BaseStaffManager
-    /// 员工的基类
-    /// 
-    /// 改进了很多次，基本上很好用了。
+    /// BaseStaffManager
+    /// 员工管理层
     /// 
     /// 修改记录
     /// 
-    ///     2011.08.01 版本：1.8 张广梁     修改public DataTable GetAddressPageDT(out int recordCount, string organizationId, string searchKey, int pageSize, int pageNo) 中的错误
-    ///     2009.09.29 版本: 1.7 JiRiGaLa   已删除的进行过滤。
-    ///     2008.05.07 版本: 1.6 JiRiGaLa   主键进行整理。
-    ///     2007.07.19 版本: 1.5 JiRiGaLa   GetListByDepartment 函数改进。
-    ///     2007.07.19 版本: 1.5 JiRiGaLa   增加 GetImpersonationList 方法。
-    ///     2007.07.12 版本: 1.4 JiRiGaLa   增加 SetProperty,GetList 方法。
-    ///		2007.07.02 版本：1.3 JiRiGaLa   添加 GetList。
-    ///     2007.01.06 版本：1.2 JiRiGaLa   添加排序方法(Swap)。    
-    ///		2006.12.07 版本：1.1 JiRiGaLa   增加排序码重置方法(ResetSortCode)。
-    ///		2006.02.05 版本：1.1 JiRiGaLa   重新调整主键的规范化。
-    ///		2004.08.29 版本：1.0 Jirigala   改进了错误提示，变得更友好一些，注意大小写错误取消。
-    /// 
+    ///	2024-07-16 版本：1.0 Troy.Cui 创建文件。
+    ///		
     /// <author>
-    ///		<name>Troy.Cui</name>
-    ///		<date>2008.05.07</date>
+    ///	<name>Troy.Cui</name>
+    ///	<date>2024-07-16</date>
     /// </author> 
     /// </summary>
     public partial class BaseStaffManager : BaseManager
@@ -666,7 +659,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldQq + " LIKE '%" + searchKey + "%')");
             }
             sb.Append(" ORDER BY " // + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldSortCode
-                                // + " ," 
+                                   // + " ," 
                           + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSortCode);
             return DbHelper.Fill(sb.Return());
         }
@@ -985,6 +978,45 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseStaffEntity.FieldEnabled, 1)
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
+        }
+        #endregion
+
+        #region public DataTable GetDataTableByPage(string searchKey, string companyId, string departmentId, string roleId, out int recordCount, int pageNo = 1, int pageSize = 20, string order = null) 分页查询
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="searchKey">查询关键字</param>
+        /// <param name="companyId">公司主键</param>
+        /// <param name="departmentId">部门主键</param>
+        /// <param name="roleId">角色主键</param>
+        /// <param name="recordCount">记录数</param>
+        /// <param name="pageNo">当前页</param>
+        /// <param name="pageSize">每页显示</param>
+        /// <param name="order">排序</param>
+        /// <returns>数据表</returns>
+        public DataTable GetDataTableByPage(string searchKey, string companyId, string departmentId, string roleId, out int recordCount, int pageNo = 1, int pageSize = 20, string order = null)
+        {
+            var condition = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEnabled + " = 1 ";
+
+            if (!string.IsNullOrEmpty(companyId))
+            {
+                condition += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = " + companyId + ")";
+            }
+            if (!string.IsNullOrEmpty(departmentId))
+            {
+                condition += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + departmentId + ")";
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = "'" + StringUtil.GetSearchString(searchKey) + "'";
+                condition += " AND (" + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "'";
+                condition += " OR " + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "'";
+                condition += " OR " + BaseStaffEntity.FieldQuickQuery + " LIKE '%" + searchKey + "')";
+            }
+            recordCount = DbHelper.GetCount(CurrentTableName, condition);
+            CurrentTableName = "BaseStaff";
+
+            return DbHelper.GetDataTableByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, order);
         }
         #endregion
     }

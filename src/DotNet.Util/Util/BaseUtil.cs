@@ -321,7 +321,7 @@ namespace DotNet.Util
             #region BUG修复
             foreach (var permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
             {
-                var scope = Convert.ToInt32(permissionScope);
+                var scope = permissionScope.ToInt();
                 if (StringUtil.Exists(organizationIds, scope.ToString()))
                 {
                     result = permissionScope;

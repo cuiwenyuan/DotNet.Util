@@ -39,7 +39,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var tableName = systemCode + "RoleOrganization";
+            var tableName = GetRoleOrganizationTableName(systemCode);
 
             // 需要显示未被删除的用户
             var sb = PoolUtil.StringBuilder.Get();
@@ -77,7 +77,7 @@ namespace DotNet.Business
 
         string GetSqlQueryByRole(string systemCode, string[] roleIds)
         {
-            var tableNameRoleOrganization = systemCode + "RoleOrganization";
+            var tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                             + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
@@ -122,7 +122,7 @@ namespace DotNet.Business
                 Enabled = 1,
                 Deleted = 0
             };
-            var tableName = systemCode + "RoleOrganization";
+            var tableName = GetRoleOrganizationTableName(systemCode);
             var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
             return manager.Add(entity);
         }
@@ -161,7 +161,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId),
                 new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldOrganizationId, organizationId)
             };
-            var tableName = systemCode + "RoleOrganization";
+            var tableName = GetRoleOrganizationTableName(systemCode);
             var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
             return manager.Delete(parameters);
         }
@@ -195,7 +195,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            var tableName = systemCode + "RoleOrganization";
+            var tableName = GetRoleOrganizationTableName(systemCode);
             var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
             result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId) });
 

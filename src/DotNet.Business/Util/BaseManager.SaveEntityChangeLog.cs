@@ -63,7 +63,7 @@ namespace DotNet.Business
                     {
                         continue;
                     }
-                    var entity = new BaseChangeLogEntity
+                    var baseChangeLogEntity = new BaseChangeLogEntity
                     {
                         SystemCode = systemCode,
                         TableName = CurrentTableName,
@@ -75,7 +75,7 @@ namespace DotNet.Business
                         RecordKey = recordKey,
                         SortCode = 1 // 不要排序了，加快写入速度
                     };
-                    manager.Add(entity, true, false);
+                    manager.Add(baseChangeLogEntity, true, false);
                 }
             }
             else

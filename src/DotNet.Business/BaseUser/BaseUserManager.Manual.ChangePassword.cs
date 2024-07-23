@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// 
     /// 修改记录
     /// 
-    ///		2016.05.20 版本：2.2 JiRiGaLa	修改日期等进行完善。
+    ///		2016.05.20 版本：2.2 JiRiGaLa	修改时间等进行完善。
     ///		2015.12.09 版本：2.1 JiRiGaLa	修改用户密码，多一个userId参数，增加修改日志。
     ///		2015.01.19 版本：2.0 JiRiGaLa	用户修改密码的日志。
     ///		2011.10.17 版本：1.0 JiRiGaLa	主键整理。
@@ -101,7 +101,7 @@ namespace DotNet.Business
                 */
             }
             
-            // 更改密码，同时修改密码的修改日期，这里需要兼容多数据库
+            // 更改密码，同时修改密码的修改时间，这里需要兼容多数据库
             var salt = string.Empty;
             if (BaseSystemInfo.ServerEncryptPassword)
             {
@@ -135,17 +135,16 @@ namespace DotNet.Business
                 // BaseLogonLogManager.AddLog(this.UserInfo, Status.ChangePassword.ToDescription()); 
 
                 // 2015-12-09 吉日嘎拉 增加日志功能、谁什么时候设置了谁的密码？
-                var record = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = BaseUserLogonEntity.CurrentTableName,
-                    TableDescription = typeof(BaseUserLogonEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = BaseUserLogonEntity.FieldUserPassword,
                     ColumnDescription = "用户密码",
                     RecordKey = userId.ToString(),
                     NewValue = "修改密码"
                 };
-                var changeLogManager = new BaseChangeLogManager(UserInfo);
-                changeLogManager.Add(record, true, false);
+                new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
 
                 /*
                 // 若是强类型密码检查，那就保存密码修改历史，防止最近2-3次的密码相同的功能实现。

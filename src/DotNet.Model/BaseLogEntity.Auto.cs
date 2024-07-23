@@ -214,6 +214,11 @@ namespace DotNet.Model
         public const string CurrentTableName = "BaseLog";
 
         ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "系统日志";
+
+        ///<summary>
         /// 公司主键
         ///</summary>
         public const string FieldCompanyId = "CompanyId";

@@ -468,9 +468,9 @@ namespace DotNet.Business
         public string GetRoleIdsSql(string systemCode, string managerUserId, string permissionCode, bool useBaseRole = false)
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            var roleTableName = systemCode + "Role";
-            var userRoleTableName = systemCode + "UserRole";
-            var permissionScopeTableName = systemCode + "PermissionScope";
+            var roleTableName = GetRoleTableName(systemCode);
+            var userRoleTableName = GetUserRoleTableName(systemCode);
+            var permissionScopeTableName = GetPermissionScopeTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             // 被管理的角色 
             sb.Append("SELECT " + permissionScopeTableName + ".TargetId AS " + BaseUtil.FieldId
@@ -585,7 +585,7 @@ namespace DotNet.Business
             var tableName = BaseRoleEntity.CurrentTableName;
             if (!string.IsNullOrEmpty(systemCode))
             {
-                tableName = systemCode + "Role";
+                tableName = GetRoleTableName(systemCode);
             }
             if (isAdmin)
             {
@@ -925,9 +925,9 @@ namespace DotNet.Business
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
 
-            var tableName = systemCode + "UserRole";
+            var tableName = GetUserRoleTableName(systemCode);
 
-            CurrentTableName = systemCode + "PermissionScope";
+            CurrentTableName = GetPermissionScopeTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             // 用户的权限
             sb.Append("SELECT TargetId "

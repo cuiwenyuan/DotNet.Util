@@ -11,12 +11,6 @@ namespace DotNet.Business
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
-    /// 
-    /// 总觉得自己写的程序不上档次，这些新技术也玩玩，也许做出来的东西更专业了。
-    /// 修改记录
-    /// 
-    ///		2012.02.04 版本：1.0 JiRiGaLa 进行提炼，把代码进行分组。
-    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.04</date>
@@ -186,9 +180,8 @@ namespace DotNet.Business
         }
         #endregion
 
-        //
-        // 读取属性
-        //
+        #region public virtual string GetProperty(object id, string targetField)
+
         /// <summary>
         /// 获取属性
         /// </summary>
@@ -203,6 +196,11 @@ namespace DotNet.Business
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
+
+        #endregion
+
+        #region public virtual string GetProperty(KeyValuePair<string, object> whereParameter, string targetField)
+
         /// <summary>
         /// 获取属性
         /// </summary>
@@ -217,6 +215,11 @@ namespace DotNet.Business
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
+
+        #endregion
+
+        #region public virtual string GetProperty(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string targetField)
+
         /// <summary>
         /// 获取属性
         /// </summary>
@@ -233,6 +236,11 @@ namespace DotNet.Business
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, targetField);
         }
+
+        #endregion
+
+        #region public virtual string GetProperty(List<KeyValuePair<string, object>> whereParameters, string targetField, string orderBy = null)
+
         /// <summary>
         /// 获取属性
         /// </summary>
@@ -244,6 +252,10 @@ namespace DotNet.Business
         {
             return DbHelper.GetProperty(CurrentTableName, whereParameters, targetField, 1, orderBy);
         }
+
+        #endregion
+
+        #region public virtual string GetId(KeyValuePair<string, object> parameter)
         /// <summary>
         /// 获取编号
         /// </summary>
@@ -257,6 +269,11 @@ namespace DotNet.Business
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
+
+        #endregion
+
+        #region public virtual string GetId(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2)
+
         /// <summary>
         /// 获取编号
         /// </summary>
@@ -272,6 +289,11 @@ namespace DotNet.Business
             };
             return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
+
+        #endregion
+
+        #region public virtual string GetId(List<KeyValuePair<string, object>> parameters)
+
         /// <summary>
         /// 获取编号
         /// </summary>
@@ -281,6 +303,11 @@ namespace DotNet.Business
         {
             return DbHelper.GetProperty(CurrentTableName, parameters, BaseUtil.FieldId);
         }
+
+        #endregion
+
+        #region public virtual string GetId(params KeyValuePair<string, object>[] parameters)
+
         /// <summary>
         /// 获取编号
         /// </summary>
@@ -295,5 +322,7 @@ namespace DotNet.Business
             }
             return DbHelper.GetProperty(CurrentTableName, parameterList, BaseUtil.FieldId);
         }
+
+        #endregion
     }
 }
