@@ -45,7 +45,6 @@ namespace DotNet.Business
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldCancelledUserId, UserInfo.Id));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldCancelledUserName, UserInfo.UserName));
-                //parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldCancelledDate, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldCancelledDate, DateTime.Now));
             }
             //业务条件

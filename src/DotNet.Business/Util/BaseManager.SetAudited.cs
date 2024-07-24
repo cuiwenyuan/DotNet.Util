@@ -45,7 +45,6 @@ namespace DotNet.Business
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAuditedUserId, UserInfo.Id));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAuditedUserName, UserInfo.UserName));
-                //parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAuditedDate, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldAuditedDate, DateTime.Now));
             }
             //业务条件

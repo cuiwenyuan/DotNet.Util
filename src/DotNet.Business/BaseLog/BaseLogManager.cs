@@ -101,7 +101,7 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
@@ -190,7 +190,7 @@ namespace DotNet.Business
         private string GetDataTableSql(string[] userIds, string name, string value, string beginDate, string endDate, string processId = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1 = 1 ");
+            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1 = 1");
             if (!string.IsNullOrEmpty(value))
             {
                 sb.Append(string.Format(" AND {0} = '{1}' ", name, value));
@@ -244,6 +244,7 @@ namespace DotNet.Business
                     break;
             }
             sb.Append(" ORDER BY CreateTime DESC ");
+            sb.Replace(" 1 = 1 AND ", " ");
             return sb.Return();
         }
 

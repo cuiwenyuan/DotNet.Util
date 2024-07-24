@@ -267,7 +267,7 @@ namespace DotNet.Business
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND " + BaseRoleEntity.FieldDeleted + "  = 0 ");
+                sb.Append(" AND " + BaseRoleEntity.FieldDeleted + " = 0");
             }
             //是否显示已隐藏记录
             if (!showInvisible)
@@ -368,7 +368,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseRoleEntity.FieldCode + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             //重新构造viewName
             var sbView = PoolUtil.StringBuilder.Get();
             //指定用户，就读取相应的UserRole授权日期

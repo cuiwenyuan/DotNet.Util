@@ -63,7 +63,7 @@ namespace DotNet.Business
             //只显示已锁定用户
             if (disabledUserOnly)
             {
-                sb.Append(" AND " + BaseUserEntity.FieldEnabled + "  = 0 ");
+                sb.Append(" AND " + BaseUserEntity.FieldEnabled + " = 0");
                 //已锁定
                 showDisabled = true;
                 //未删除
@@ -78,7 +78,7 @@ namespace DotNet.Business
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND " + BaseUserEntity.FieldDeleted + "  = 0 ");
+                sb.Append(" AND " + BaseUserEntity.FieldDeleted + " = 0");
             }
 
             if (ValidateUtil.IsInt(organizationId) && organizationId.ToInt() > 0)
@@ -198,7 +198,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
 
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             //重新构造viewName
             var sbView = PoolUtil.StringBuilder.Get();
 
@@ -1515,7 +1515,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserEntity.FieldCompanyId + " = " + companyId);
             }
 
-            return DbHelper.ExecuteScalar(sb.Return()).ToString();
+            return DbHelper.ExecuteScalar(sb.Return()).ToInt().ToString();
         }
 
         #endregion

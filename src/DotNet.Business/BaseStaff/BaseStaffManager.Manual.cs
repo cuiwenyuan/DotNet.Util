@@ -413,7 +413,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
-                                + " WHERE 1 = 1 ");
+                                + " WHERE 1 = 1");
 
             // 这里要注意系统安全隐患
             if (organizationIds != null)
@@ -449,7 +449,7 @@ namespace DotNet.Business
                 // sql += " AND " + BaseUserEntity.FieldRoleId + " = '" + role + "'");
             }
             sb.Append(" ORDER BY " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSortCode);
-
+            sb.Replace(" 1 = 1 AND ", " ");
             return DbHelper.Fill(sb.Return());
         }
         #endregion

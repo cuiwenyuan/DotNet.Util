@@ -385,12 +385,12 @@ namespace DotNet.Business
             {
                 sb.Append(" AND ( ");
                 //本级
-                sb.Append(BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + "  = " + parentId);
+                sb.Append(BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " = " + parentId);
                 //下级
-                sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldParentId + "  = " + parentId);
+                sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldParentId + " = " + parentId);
                 //下下级
                 sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
+                sb.Append(" (SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
                 //下下下级
                 sb.Append(" OR " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldParentId + " IN ");
                 sb.Append(" (SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " FROM " + BaseOrganizationEntity.CurrentTableName + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseModuleEntity.FieldParentId + " IN ");
@@ -427,7 +427,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseOrganizationEntity.FieldQuickQuery + " LIKE N'%" + searchKey + "%'");
                 sb.Append(" OR " + BaseOrganizationEntity.FieldSimpleSpelling + " LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion

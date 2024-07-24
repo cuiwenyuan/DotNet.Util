@@ -1152,8 +1152,8 @@ namespace DotNet.Business
         /// 复制用户权限
         /// </summary>
         /// <param name="systemCode">系统编码</param>
-        /// <param name="referenceUserId">参考源用户编号</param>
-        /// <param name="targetUserId">目标用户编号</param>
+        /// <param name="referenceUserIds">参考源用户编号</param>
+        /// <param name="targetUserIds">目标用户编号</param>
         /// <returns></returns>
         public int CopyPermission(string systemCode, string[] referenceUserIds, string[] targetUserIds)
         {

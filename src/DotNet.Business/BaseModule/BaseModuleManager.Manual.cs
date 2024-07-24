@@ -242,7 +242,7 @@ namespace DotNet.Business
             //显示是否为菜单
             if (!string.IsNullOrEmpty(isMenu) && ValidateUtil.IsNumeric(isMenu))
             {
-                sb.Append(" AND " + BaseModuleEntity.FieldIsMenu + "  = " + isMenu);
+                sb.Append(" AND " + BaseModuleEntity.FieldIsMenu + " = " + isMenu);
             }
 
             //创建时间
@@ -369,12 +369,12 @@ namespace DotNet.Business
             {
                 sb.Append(" AND ( ");
                 //本级
-                sb.Append(BaseModuleEntity.FieldId + "  = " + parentId);
+                sb.Append(BaseModuleEntity.FieldId + " = " + parentId);
                 //下级
-                sb.Append(" OR " + BaseModuleEntity.FieldParentId + "  = " + parentId);
+                sb.Append(" OR " + BaseModuleEntity.FieldParentId + " = " + parentId);
                 //下下级
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + "  = " + parentId + ") ");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
                 //下下下级，做个菜单模块实际应用应该足够了
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
                 sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " IN ");
@@ -392,7 +392,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
 
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             //重新构造viewName
             var sbView = PoolUtil.StringBuilder.Get();
             //指定用户，就读取相应的Permission授权日期

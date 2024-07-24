@@ -64,7 +64,7 @@ namespace DotNet.Business
                     break;
 
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Return(), null);
         }
         #endregion

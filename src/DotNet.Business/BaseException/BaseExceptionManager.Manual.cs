@@ -125,7 +125,7 @@ namespace DotNet.Business
         public DataTable Search(string searchKey)
         {
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1 ");
+            sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1");
 
             var dbParameters = new List<IDbDataParameter>();
             if (!string.IsNullOrEmpty(searchKey))
@@ -147,6 +147,7 @@ namespace DotNet.Business
                 dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMessage, searchKey));
             }
             var dt = new DataTable(BaseExceptionEntity.CurrentTableName);
+            sb.Replace(" 1 = 1 AND ", " ");
             DbHelper.Fill(dt, sb.Return(), dbParameters.ToArray());
             return dt;
         }
@@ -199,7 +200,7 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldId + " LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
@@ -213,7 +214,7 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) AS TotalCount FROM " + CurrentTableName + " WHERE (DATEADD(d, " + days + ", " + BaseExceptionEntity.FieldCreateTime + ") >= " + DbHelper.GetDbNow() + ")");
-            return DbHelper.ExecuteScalar(sb.Return()).ToString();
+            return DbHelper.ExecuteScalar(sb.Return()).ToInt().ToString();
         }
 
         #region 上一个下一个

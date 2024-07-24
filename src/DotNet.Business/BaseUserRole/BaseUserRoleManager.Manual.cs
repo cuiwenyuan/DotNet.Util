@@ -117,6 +117,7 @@ namespace DotNet.Business
         /// <summary>
         /// 复制用户角色到新用户
         /// </summary>
+        /// <param name="systemCode">子系统</param>
         /// <param name="referenceUserId">源用户编号</param>
         /// <param name="targetUserId">目标用户编号</param>
         /// <returns></returns>

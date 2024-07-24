@@ -55,8 +55,6 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
-                //宋彪发现这里的错误 文字与格式字符串错误
-                //parameters.Add(new KeyValuePair<string, object>(tableVersion == 4 ? BaseUtil.FieldModifiedOn: BaseUtil.FieldUpdateTime, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
             }
@@ -110,8 +108,6 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserId, UserInfo.UserId));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
-                //宋彪发现这里的错误 文字与格式字符串错误
-                //parameters.Add(new KeyValuePair<string, object>(version == 4 ? BaseUtil.FieldModifiedOn: BaseUtil.FieldUpdateTime, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
             }
