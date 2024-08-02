@@ -246,15 +246,40 @@ public partial class BasePage : System.Web.UI.Page
 
     #endregion
 
+    #region CWMS
+
+    /// <summary>
+    /// CWMS数据库部分
+    /// </summary>
+    private IDbHelper _cwmsDbHelper = null;
+
+    /// <summary>
+    /// CWMS数据库部分
+    /// </summary>
+    protected IDbHelper CwmsDbHelper
+    {
+        get
+        {
+            if (_cwmsDbHelper == null)
+            {
+                // 获取数据库连接对象
+                _cwmsDbHelper = DbHelperFactory.Create(BaseSystemInfo.CwmsDbType, BaseSystemInfo.CwmsDbConnection);
+            }
+            return _cwmsDbHelper;
+        }
+    }
+
+    #endregion
+
     #region ZBWMS
 
     /// <summary>
-    /// WMS数据库部分
+    /// ZBWMS数据库部分
     /// </summary>
     private IDbHelper _zbwmsDbHelper = null;
 
     /// <summary>
-    /// WMS数据库部分
+    /// ZBWMS数据库部分
     /// </summary>
     protected IDbHelper ZbwWmsDbHelper
     {
@@ -266,6 +291,31 @@ public partial class BasePage : System.Web.UI.Page
                 _zbwmsDbHelper = DbHelperFactory.Create(BaseSystemInfo.ZbwmsDbType, BaseSystemInfo.ZbwmsDbConnection);
             }
             return _zbwmsDbHelper;
+        }
+    }
+
+    #endregion
+
+    #region SPWMS
+
+    /// <summary>
+    /// SPWMS数据库部分
+    /// </summary>
+    private IDbHelper _spwmsDbHelper = null;
+
+    /// <summary>
+    /// SPWMS数据库部分
+    /// </summary>
+    protected IDbHelper SpwWmsDbHelper
+    {
+        get
+        {
+            if (_spwmsDbHelper == null)
+            {
+                // 获取数据库连接对象
+                _spwmsDbHelper = DbHelperFactory.Create(BaseSystemInfo.SpwmsDbType, BaseSystemInfo.SpwmsDbConnection);
+            }
+            return _spwmsDbHelper;
         }
     }
 
@@ -591,6 +641,31 @@ public partial class BasePage : System.Web.UI.Page
                 _scmDbHelper = DbHelperFactory.Create(BaseSystemInfo.ScmDbType, BaseSystemInfo.ScmDbConnection);
             }
             return _scmDbHelper;
+        }
+    }
+
+    #endregion
+
+    #region CSCM
+
+    /// <summary>
+    /// CSCM数据库部分
+    /// </summary>
+    private IDbHelper _cscmDbHelper = null;
+
+    /// <summary>
+    /// CSCM数据库部分
+    /// </summary>
+    protected IDbHelper CscmDbHelper
+    {
+        get
+        {
+            if (_cscmDbHelper == null)
+            {
+                // 获取数据库连接对象
+                _cscmDbHelper = DbHelperFactory.Create(BaseSystemInfo.CscmDbType, BaseSystemInfo.CscmDbConnection);
+            }
+            return _cscmDbHelper;
         }
     }
 

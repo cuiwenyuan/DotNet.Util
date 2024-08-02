@@ -297,6 +297,10 @@ public partial class BasePage : System.Web.UI.Page
         PermissionInstall = IsAuthorized(module + ".Install");
         PermissionUninstall = IsAuthorized(module + ".Uninstall");
         PermissionCopy = IsAuthorized(module + ".Copy");
+        if (!BaseSystemInfo.PermissionExportEnabled)
+        {
+            PermissionExport = true;
+        }
     }
 
     #endregion

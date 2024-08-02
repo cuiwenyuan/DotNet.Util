@@ -84,7 +84,6 @@ public partial class BasePage : System.Web.UI.Page
     /// <param name="securityLevel">安全级别</param>
     protected void GetUser(DropDownList ddlUser, string organizationId = null, bool insertBlank = true, bool? containSelf = null, int? securityLevel = null)
     {
-        //ddlUser.Items.Clear();
         ddlUser.SelectedValue = null;
         var dt = GetUser(organizationId, containSelf, securityLevel);
         if (dt != null && dt.Rows.Count > 0)
