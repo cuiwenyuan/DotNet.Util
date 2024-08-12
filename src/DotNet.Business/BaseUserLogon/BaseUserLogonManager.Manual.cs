@@ -346,7 +346,7 @@ namespace DotNet.Business
         {
             string[] result = null;
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT " + BaseUserLogonEntity.FieldUserId + " FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " = 1 ");
+            sb.Append("SELECT " + BaseUserLogonEntity.FieldUserId + " FROM " + CurrentTableName + " WHERE " + BaseUserLogonEntity.FieldUserOnline + " = 1");
             if (userIds != null && userIds.Length > 0)
             {
                 sb.Append(" AND " + BaseUserLogonEntity.FieldUserId + " IN (" + ObjectUtil.ToList(userIds) + ") ");
@@ -815,7 +815,7 @@ namespace DotNet.Business
                         if (mobileNeedValiated)
                         {
                             sb.Append("UPDATE " + BaseUserContactEntity.CurrentTableName
-                                     + " SET " + BaseUserContactEntity.FieldMobileValidated + " = 0 "
+                                     + " SET " + BaseUserContactEntity.FieldMobileValidated + " = 0"
                                      + " WHERE " + BaseUserContactEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserContactEntity.FieldUserId)
                                      + " AND " + BaseUserContactEntity.FieldMobileValidated + " = " + DbHelper.GetParameter(BaseUserContactEntity.FieldMobileValidated));
 
@@ -837,10 +837,10 @@ namespace DotNet.Business
                         {
                             sb.Clear();
                             sb.Append("UPDATE " + CurrentTableName
-                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0 "
-                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1 "
+                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0"
+                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1"
                                         + ", " + BaseUserLogonEntity.FieldFirstVisitTime + " = " + dbHelper.GetDbNow()
-                                        + ", " + BaseUserLogonEntity.FieldLogonCount + " = 1 "
+                                        + ", " + BaseUserLogonEntity.FieldLogonCount + " = 1"
                                         + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode)
                                         + ", " + BaseUserLogonEntity.FieldIpAddress + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddress)
                                         + ", " + BaseUserLogonEntity.FieldIpAddressName + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldIpAddressName)
@@ -876,9 +876,9 @@ namespace DotNet.Business
                             // 最后一次登录时间
                             sb.Clear();
                             sb.Append("UPDATE " + CurrentTableName
-                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0 "
+                                        + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0"
                                         + ", " + BaseUserLogonEntity.FieldPreviousVisitTime + " = " + BaseUserLogonEntity.FieldLastVisitTime
-                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1 "
+                                        + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1"
                                         + ", " + BaseUserLogonEntity.FieldLastVisitTime + " = " + dbHelper.GetDbNow()
                                         + ", " + BaseUserLogonEntity.FieldLogonCount + " = " + BaseUserLogonEntity.FieldLogonCount + " + 1 "
                                         + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode)
@@ -1051,7 +1051,7 @@ namespace DotNet.Business
                     //Troy.Cui 2020-02-29用户退出时也强制OpenId重新生成，和登录时一样强制生成OpenId
                     sb.Append(" ," + BaseUserLogonEntity.FieldOpenId + " = '" + Guid.NewGuid().ToString("N") + "'");
                     sb.Append(" ," + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = GETDATE()");
-                    sb.Append(" ," + BaseUserLogonEntity.FieldUserOnline + " = 0 ");
+                    sb.Append(" ," + BaseUserLogonEntity.FieldUserOnline + " = 0");
                     sb.Append(" ," + BaseUserLogonEntity.FieldLastVisitTime + " = GETDATE()");
                     sb.Append("  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId));
 

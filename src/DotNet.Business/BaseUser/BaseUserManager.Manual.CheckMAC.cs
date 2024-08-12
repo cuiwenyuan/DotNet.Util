@@ -203,8 +203,8 @@ namespace DotNet.Business
 
             //TODO 吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
             var commandText = "UPDATE " + BaseParameterEntity.CurrentTableName
-                        + "   SET " + BaseParameterEntity.FieldDeleted + " = 1 "
-                        + "     , " + BaseParameterEntity.FieldEnabled + " = 0 "
+                        + "   SET " + BaseParameterEntity.FieldDeleted + " = 1"
+                        + "     , " + BaseParameterEntity.FieldEnabled + " = 0"
                         + " WHERE " + BaseParameterEntity.FieldCategoryCode + " =  " + DbHelper.GetParameter(BaseParameterEntity.FieldCategoryCode)
                         + "       AND " + BaseParameterEntity.FieldParameterId + " = " + DbHelper.GetParameter(BaseParameterEntity.FieldParameterId);
 

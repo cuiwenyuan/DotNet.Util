@@ -436,7 +436,7 @@ public partial class BaseUserControl : UserControl
 
         var sb = PoolUtil.StringBuilder.Get();
         sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
-        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1 ");
+        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
         if (!string.IsNullOrEmpty(organizationId))
         {

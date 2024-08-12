@@ -51,7 +51,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + fieldName + " = N'" + fieldValue + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
@@ -109,7 +109,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
@@ -177,7 +177,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "' AND " + field3Name + " = N'" + field3Value + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {

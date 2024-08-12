@@ -307,7 +307,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                             + " FROM " + BaseUserEntity.CurrentTableName
-                            + " WHERE " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + " WHERE " + BaseUserEntity.FieldDeleted + " = 0"
                             + " AND " + BaseUserEntity.FieldIsVisible + "= 1 ");
 
             sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldUserName + " LIKE '%" + search + "%'"

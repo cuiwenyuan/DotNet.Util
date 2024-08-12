@@ -358,10 +358,10 @@ namespace DotNet.Util
             var values = new Object[1];
             names[0] = fieldCode;
             values[0] = code;
-            var returnObject = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values));
-            if (returnObject != null)
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values));
+            if (obj != null)
             {
-                parentId = returnObject.ToString();
+                parentId = obj.ToString();
             }
             return parentId;
         }

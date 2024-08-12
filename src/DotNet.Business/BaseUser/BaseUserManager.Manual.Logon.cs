@@ -631,10 +631,10 @@ namespace DotNet.Business
                 // 若不能正常登录、看这个人是否有超级管理员的权限？若是超级管理员，可以登录任何一个网点
                 sb.Append("SELECT * "
                           + " FROM " + BaseUserEntity.CurrentTableName
-                         + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 "
-                                 + " AND " + BaseUserEntity.FieldEnabled + " = 1 "
+                         + " WHERE " + BaseUserEntity.FieldDeleted + " = 0"
+                                 + " AND " + BaseUserEntity.FieldEnabled + " = 1"
                                  //Troy 20160520一句话判断管理员 start
-                                 + " AND " + BaseUserEntity.FieldIsAdministrator + " = 1 "
+                                 + " AND " + BaseUserEntity.FieldIsAdministrator + " = 1"
                                  //+ " AND id IN (SELECT resourceid FROM basepermission WHERE resourcecategory = 'BaseUser' AND permissionid IN (SELECT id FROM basemodule WHERE code = 'LogonAllCompany' AND enabled = 1 AND deletionstatecode = 0)) "
                                  //Troy 20160520一句话判断管理员 end
                                  + " AND (" + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName)
@@ -928,7 +928,7 @@ namespace DotNet.Business
             // 02. 查询数据库中的用户数据？只查询未被删除的
             // 先按用户名登录
             userName = DbHelper.SqlSafe(userName);
-            var where = BaseUserEntity.FieldUserName + " = N'" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0 ";
+            var where = BaseUserEntity.FieldUserName + " = N'" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0";
             var dt = GetDataTable(where);
 
             // 服务器上、本地都需要能登录才可以
@@ -936,7 +936,7 @@ namespace DotNet.Business
             {
                 if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqLite)
                 {
-                    where = " Id > 0 AND " + BaseUserEntity.FieldUserName + " = '" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0 ";
+                    where = " Id > 0 AND " + BaseUserEntity.FieldUserName + " = '" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0";
                     dt = GetDataTable(where);
                 }
 
@@ -1325,7 +1325,7 @@ namespace DotNet.Business
                                                 + " SET " + BaseUserContactEntity.FieldMobileValidated + " = " + DbHelper.GetParameter(BaseUserContactEntity.FieldMobileValidated)
                                                 + " WHERE " + BaseUserContactEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserContactEntity.FieldUserId)
                                                 + " AND " + BaseUserContactEntity.FieldMobileValidatedTime + " IS NULL "
-                                                + " AND " + BaseUserContactEntity.FieldMobileValidated + " = 1 ";
+                                                + " AND " + BaseUserContactEntity.FieldMobileValidated + " = 1";
                                     errorMark = 11;
                                     var dbParameters = new List<IDbDataParameter>
                                     {

@@ -247,7 +247,6 @@ namespace DotNet.Business
         }
         #endregion
 
-
         #region SetEnabled启用（自己公司的数据）
 
         /// <summary>

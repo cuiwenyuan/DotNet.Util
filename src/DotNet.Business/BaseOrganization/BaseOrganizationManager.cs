@@ -311,8 +311,8 @@ namespace DotNet.Business
             sb.Append("  SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
                         + " WHERE  (" + BaseOrganizationEntity.FieldProvinceId + " IS NULL OR "
                         + BaseOrganizationEntity.FieldCityId + " IS NULL OR "
-                        + BaseOrganizationEntity.FieldDistrictId + " IS NULL ) AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ");
+                        + BaseOrganizationEntity.FieldDistrictId + " IS NULL ) AND " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0");
             if (!string.IsNullOrWhiteSpace(parentId))
             {
                 sb.Append(" START WITH Id = " + parentId + " "
@@ -442,8 +442,8 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("  SELECT " + field
                         + " FROM " + BaseOrganizationEntity.CurrentTableName
-                        + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                        + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                        + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                         + " START WITH Id = " + parentId + " "
                         + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
                         + " ORDER BY " + BaseOrganizationEntity.FieldSortCode);
@@ -468,8 +468,8 @@ namespace DotNet.Business
                 if (dbHelper.CurrentDbType == CurrentDbType.Oracle)
                 {
                     sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
-                               + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                               + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                               + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                               + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                                + " AND (" + BaseOrganizationEntity.FieldCategoryCode + "= '" + categoryCode + "' OR " + BaseOrganizationEntity.FieldCategoryCode + "= 'Sub" + categoryCode + "')"
                                + " START WITH Id = " + parentId + " "
                                + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId
@@ -574,8 +574,8 @@ namespace DotNet.Business
             else
             {
                 sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
-                         + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                         + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 ");
+                         + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                         + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0");
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim();

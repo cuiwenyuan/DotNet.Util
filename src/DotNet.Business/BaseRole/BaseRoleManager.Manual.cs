@@ -668,7 +668,7 @@ namespace DotNet.Business
         public DataTable Search(string organizationId, string searchKey, string categoryCode = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0 ");
+            sb.Append("SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0");
 
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -814,7 +814,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(BaseUserInfo userInfo, string categoryCode, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null)
         {
-            var condition = BaseRoleEntity.FieldDeleted + " = 0 ";
+            var condition = BaseRoleEntity.FieldDeleted + " = 0";
 
             if (!string.IsNullOrEmpty(categoryCode))
             {
@@ -873,7 +873,7 @@ namespace DotNet.Business
  FROM BaseUserRole
                             WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + @" AND " + BaseUserEntity.FieldDeleted + @" = 0) UserRole 
                          WHERE BaseUser.Id = UserRole.UserId 
-                               AND BaseUser." + BaseUserEntity.FieldDeleted + " = 0 ";
+                               AND BaseUser." + BaseUserEntity.FieldDeleted + " = 0";
             if (!string.IsNullOrEmpty(searchKey))
             {
                 // 2016-02-25 吉日嘎拉 增加搜索功能、方便管理

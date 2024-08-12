@@ -642,8 +642,8 @@ namespace DotNet.Business
             var tableNameRole = GetRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
-                            + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
-                            + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + " WHERE " + BaseUserEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseUserEntity.FieldDeleted + " = 0"
                             + " AND ( " + BaseUserEntity.FieldId + " IN "
                             + " (SELECT  " + BaseUserRoleEntity.FieldUserId
                             + " FROM " + tableNameUserRole
@@ -1508,7 +1508,7 @@ namespace DotNet.Business
         public string GetCount(string companyId = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 ");
+            sb.Append("SELECT COUNT(*) AS UserCount FROM " + CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1");
 
             if (ValidateUtil.IsInt(companyId))
             {

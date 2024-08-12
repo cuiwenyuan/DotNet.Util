@@ -604,11 +604,11 @@ namespace DotNet.Business
                           + " FROM " + userRoleTableName
                           + " WHERE " + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")"
                           + " AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'"
-                          + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
+                          + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
                           + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0) B "
                           + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = B." + BaseUserRoleEntity.FieldUserId
-                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
-                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + "= 0");
+                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1"
+                          + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
 
             if (!string.IsNullOrWhiteSpace(companyId))
             {
@@ -644,8 +644,8 @@ namespace DotNet.Business
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
-                            + " WHERE " + BaseUserEntity.FieldEnabled + " = 1 "
-                            + " AND " + BaseUserEntity.FieldDeleted + "= 0 "
+                            + " WHERE " + BaseUserEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseUserEntity.FieldDeleted + " = 0"
                             + " AND ( " + BaseUserEntity.FieldId + " IN "
                             + " (SELECT  " + BaseUserRoleEntity.FieldUserId
                             + " FROM " + userRoleTableName
@@ -759,7 +759,7 @@ namespace DotNet.Business
  FROM BaseRole RIGHT OUTER JOIN
                           (SELECT UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole
                             WHERE UserId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId)
-                                  + " AND Enabled = 1 AND SystemCode = '" + systemCode + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0 " + @") UserRole 
+                                  + " AND Enabled = 1 AND SystemCode = '" + systemCode + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0" + @") UserRole 
                             ON BaseRole.Id = UserRole.RoleId WHERE BaseRole." + BaseRoleEntity.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + @" = 0 
                       ORDER BY UserRole." + BaseRoleEntity.FieldCreateTime + " DESC ";
             //替换表名
@@ -904,10 +904,10 @@ namespace DotNet.Business
             }
             var sb = PoolUtil.StringBuilder.Get();
             // 需要显示未被删除的用户
-            sb.Append("SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0 "
+            sb.Append("SELECT UserId FROM " + tableName + " WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserEntity.FieldDeleted + " = 0"
                               + " AND ( UserId IN (  SELECT " + BaseUserEntity.FieldId
                                                  + " FROM " + BaseUserEntity.CurrentTableName
-                                                 + "  WHERE " + BaseUserEntity.FieldEnabled + " = 1 " + BaseUserEntity.FieldDeleted + " = 0 ");
+                                                 + "  WHERE " + BaseUserEntity.FieldEnabled + " = 1" + BaseUserEntity.FieldDeleted + " = 0");
 
             var dbParameters = new List<IDbDataParameter>
             {

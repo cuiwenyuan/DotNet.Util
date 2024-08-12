@@ -292,7 +292,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(" SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                                 + " FROM " + BaseStaffEntity.CurrentTableName
-                                + " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 "
+                                + " WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0"
                                 + " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldWorkgroupId + " IN ( " + StringUtil.ArrayToList(organizationIds) + ") "
                                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
@@ -996,7 +996,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public DataTable GetDataTableByPage(string searchKey, string companyId, string departmentId, string roleId, out int recordCount, int pageNo = 1, int pageSize = 20, string order = null)
         {
-            var condition = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEnabled + " = 1 ";
+            var condition = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEnabled + " = 1";
 
             if (!string.IsNullOrEmpty(companyId))
             {

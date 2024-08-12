@@ -193,7 +193,7 @@ namespace DotNet.Business
             sb.Append("SELECT " + SelectFields
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
-            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
+            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
             if (!string.IsNullOrEmpty(departmentId))
@@ -271,7 +271,7 @@ namespace DotNet.Business
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
-            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
+            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
             if (!string.IsNullOrEmpty(departmentId))
@@ -308,7 +308,7 @@ namespace DotNet.Business
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
 
-            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
+            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
             if (!string.IsNullOrEmpty(companyId))
@@ -340,8 +340,8 @@ namespace DotNet.Business
             sb.Append("SELECT " + field
                 + " FROM " + BaseUserEntity.CurrentTableName
                 // 从用户表里去找
-                + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
-                + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
+                + " WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0"
+                + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1"
                 + " AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldWorkgroupId + " IN ( " + StringUtil.ArrayToList(organizationIds) + ") "
                 + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                 + " OR " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
@@ -428,7 +428,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "
                 + " FROM " + BaseUserEntity.CurrentTableName);
-            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 ");
+            sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
             if (!string.IsNullOrEmpty(departmentId))
             {

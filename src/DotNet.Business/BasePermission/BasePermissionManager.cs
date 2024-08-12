@@ -473,8 +473,8 @@ namespace DotNet.Business
                                                 + " SELECT " + BaseUserRoleEntity.FieldRoleId
                                                 + " FROM " + userRoleTableName
                                                 + " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(userRoleTableName + "_" + BaseUserRoleEntity.FieldUserId)
-                                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ");
+                                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0");
 
             dbParameters.Add(DbHelper.MakeParameter(userRoleTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
             if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
@@ -482,15 +482,15 @@ namespace DotNet.Business
                 sb.Append(" UNION SELECT " + BaseUserRoleEntity.FieldRoleId
                                 + " FROM " + BaseUserRoleEntity.CurrentTableName
                                 + " WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId)
-                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ");
+                                + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
+                                + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0");
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
             }
             sb.Append(" ) "
                 + " AND " + BasePermissionEntity.FieldPermissionId + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldPermissionId)
-                + " AND " + BasePermissionEntity.FieldEnabled + " = 1 "
-                + " AND " + BasePermissionEntity.FieldDeleted + " = 0 ");
+                + " AND " + BasePermissionEntity.FieldEnabled + " = 1"
+                + " AND " + BasePermissionEntity.FieldDeleted + " = 0");
             dbParameters.Add(DbHelper.MakeParameter(BasePermissionEntity.FieldPermissionId, permissionId));
 
             var rowCount = 0;
@@ -653,7 +653,7 @@ namespace DotNet.Business
                 sb.Append(" FROM " + CurrentTableName);
                 sb.Append(" WHERE (" + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseUserEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory));
                 sb.Append(" AND " + BasePermissionEntity.FieldResourceId + " = " + DbHelper.GetParameter(BaseUserEntity.CurrentTableName + "_" + BaseUserEntity.FieldId));
-                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1 ");
+                sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)");
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory, BaseUserEntity.CurrentTableName));
@@ -667,7 +667,7 @@ namespace DotNet.Business
                 sb.Append(" , ( SELECT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableName);
                 sb.Append(" WHERE (" + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId));
-                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ) ");
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_" + BaseUserRoleEntity.FieldUserId, userId));
@@ -679,7 +679,7 @@ namespace DotNet.Business
                     sb.Append(" UNION SELECT " + BaseUserRoleEntity.FieldRoleId);
                     sb.Append(" FROM " + BaseUserRoleEntity.CurrentTableName);
                     sb.Append(" WHERE ( " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.CurrentTableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId));
-                    sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1 ");
+                    sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
                     sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0 ) ");
 
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserRoleEntity.CurrentTableName + "_USEBASE_" + BaseUserRoleEntity.FieldUserId, userId));
@@ -688,8 +688,8 @@ namespace DotNet.Business
                 sb.Append(") B ");
                 sb.Append(" WHERE " + BasePermissionEntity.FieldResourceCategory + " = " + DbHelper.GetParameter(BaseRoleEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory));
                 sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldResourceId + " = B." + BaseUserRoleEntity.FieldRoleId);
-                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldEnabled + " = 1 ");
-                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldDeleted + " = 0 ");
+                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldEnabled + " = 1");
+                sb.Append(" AND " + CurrentTableName + "." + BasePermissionEntity.FieldDeleted + " = 0");
 
                 dbParameters.Add(DbHelper.MakeParameter(BaseRoleEntity.CurrentTableName + "_" + BasePermissionEntity.FieldResourceCategory, roleTableName));
 

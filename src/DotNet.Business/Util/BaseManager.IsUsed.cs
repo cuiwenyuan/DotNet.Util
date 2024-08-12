@@ -42,8 +42,8 @@ namespace DotNet.Business
                 var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " A INNER JOIN " + tableName + " B ON B." + tableFieldName + " = A." + currentTableFieldName + " WHERE A.Id = " + id + "");
                 //未删除
-                sb.Append(" AND A." + (BaseUtil.FieldDeleted) + " = 0 AND A." + BaseUtil.FieldEnabled + " = 1 ");
-                sb.Append(" AND B." + (BaseUtil.FieldDeleted) + " = 0 AND B." + BaseUtil.FieldEnabled + " = 1 ");
+                sb.Append(" AND A." + (BaseUtil.FieldDeleted) + " = 0 AND A." + BaseUtil.FieldEnabled + " = 1");
+                sb.Append(" AND B." + (BaseUtil.FieldDeleted) + " = 0 AND B." + BaseUtil.FieldEnabled + " = 1");
                 //当前用户所在公司或者系统公用数据
                 if (checkUserCompany)
                 {

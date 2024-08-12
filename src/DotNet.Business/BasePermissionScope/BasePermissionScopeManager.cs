@@ -291,8 +291,8 @@ namespace DotNet.Business
                      + "SELECT " + BaseUserRoleEntity.FieldRoleId
                      + " FROM " + BaseUserRoleEntity.CurrentTableName
                      + " WHERE " + BaseUserRoleEntity.FieldUserId + " = '" + managerUserId + "'"
-                     + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0 "
-                     + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1 "
+                     + " AND " + BaseUserRoleEntity.FieldDeleted + " = 0"
+                     + " AND " + BaseUserRoleEntity.FieldEnabled + " = 1"
                      // 修正不会读取用户默认角色权限域范围BUG
                      + "))) "
                      // 并且是指定的本权限
@@ -313,8 +313,8 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT Id FROM " + BaseOrganizationEntity.CurrentTableName
-                     + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                     + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                     + " WHERE " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1"
+                     + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0"
                      + " START WITH Id IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ") "
                      + " CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
             return sb.Return();
@@ -337,7 +337,7 @@ namespace DotNet.Business
                      + " , ( SELECT " + DbHelper.PlusSign(BaseOrganizationEntity.FieldCode, "'%'") + " AS " + BaseOrganizationEntity.FieldCode
                      + " FROM " + BaseOrganizationEntity.CurrentTableName
                      + " WHERE " + BaseOrganizationEntity.FieldId + " IN (" + GetOrganizationIdsSql(systemCode, managerUserId, permissionCode) + ")) ManageOrganization "
-                     + " WHERE (" + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1 "
+                     + " WHERE (" + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldEnabled + " = 1"
                      // 编号相似的所有组织机构获取出来
                      + " AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCode + " LIKE ManageOrganization." + BaseOrganizationEntity.FieldCode + ")");
             return sb.Return();
@@ -439,9 +439,9 @@ namespace DotNet.Business
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
-                     + " WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0 "
-                     + " AND " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                     + " AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1 ");
+                     + " WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0"
+                     + " AND " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                     + " AND " + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1");
             if (permissionScope != PermissionOrganizationScope.AllData)
             {
                 sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " IN (" + whereQuery + ") ");
@@ -502,8 +502,8 @@ namespace DotNet.Business
                 sb.Append("  UNION "
                           + " SELECT " + roleTableName + "." + BaseRoleEntity.FieldId + " AS " + BaseUtil.FieldId
                           + " FROM " + roleTableName
-                          + " WHERE " + roleTableName + "." + BaseRoleEntity.FieldEnabled + " = 1 "
-                          + " AND " + roleTableName + "." + BaseRoleEntity.FieldDeleted + " = 0 "
+                          + " WHERE " + roleTableName + "." + BaseRoleEntity.FieldEnabled + " = 1"
+                          + " AND " + roleTableName + "." + BaseRoleEntity.FieldDeleted + " = 0"
                           + " AND " + roleTableName + "." + BaseRoleEntity.FieldOrganizationId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") ");
             }
             return sb.Return();
@@ -678,8 +678,8 @@ namespace DotNet.Business
                 sb.Append(" UNION "
                          + "SELECT " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldUserId + " AS " + BaseUtil.FieldId
                          + " FROM " + BaseUserRoleEntity.CurrentTableName
-                         + "  WHERE (" + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldEnabled + " = 1 "
-                         + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldDeleted + " = 0 "
+                         + "  WHERE (" + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldEnabled + " = 1"
+                         + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldDeleted + " = 0"
                          + "        AND " + BaseUserRoleEntity.CurrentTableName + "." + BaseUserRoleEntity.FieldRoleId + " IN (" + StringUtil.ArrayToList(roleIds) + ")) ");
             }
 
@@ -772,9 +772,9 @@ namespace DotNet.Business
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
-            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
-                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
-                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
+            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0"
+                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1"
+                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1"
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " IN ("
                      + GetUserIdsSql(systemCode, userId, permissionCode)
                      + " ) "
@@ -816,9 +816,9 @@ namespace DotNet.Business
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
-            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0 "
-                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1 "
-                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 "
+            sb.Append(" WHERE " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0"
+                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldIsVisible + " = 1"
+                     + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1"
                      + " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " IN ("
                      + GetUserIdsSql(systemCode, userId, permissionCode)
                      + " ) "
@@ -1136,13 +1136,13 @@ namespace DotNet.Business
             sb.Append("SELECT COUNT(*) "
                             + " FROM BasePermissionScope "
                             + "  WHERE (BasePermissionScope.ResourceCategory = '" + BaseRoleEntity.CurrentTableName + "') "
-                            + "        AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1 "
-                            + "        AND (BasePermissionScope." + BasePermissionScopeEntity.FieldDeleted + " = 0 "
+                            + "        AND (BasePermissionScope." + BasePermissionScopeEntity.FieldEnabled + " = 1"
+                            + "        AND (BasePermissionScope." + BasePermissionScopeEntity.FieldDeleted + " = 0"
                             + "        AND (BasePermissionScope.ResourceId IN ( "
                                              + "SELECT BaseUserRole.RoleId "
                                              + " FROM BaseUserRole "
                                              + "  WHERE BaseUserRole.UserId = '" + userId + "'"
-                                             + "        AND BaseUserRole." + BasePermissionScopeEntity.FieldEnabled + " = 1 "
+                                             + "        AND BaseUserRole." + BasePermissionScopeEntity.FieldEnabled + " = 1"
                                              + " )) "
                             + " AND (BasePermissionScope.TargetCategory = '" + targetCategory + "') "
                             + " AND (BasePermissionScope.TargetId = '" + targetId + "') "
@@ -1470,8 +1470,8 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName
-                            + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " = 0 "
-                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 ");
+                            + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " = 0"
+                            + " AND " + BasePermissionScopeEntity.FieldEnabled + " = 1");
             if (!string.IsNullOrEmpty(resourceCategory))
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'");

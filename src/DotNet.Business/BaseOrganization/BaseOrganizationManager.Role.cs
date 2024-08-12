@@ -45,7 +45,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT OrganizationId FROM " + tableName
                             + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
-                                  + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                  + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                                   + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)");
 
             var dbParameters = new List<IDbDataParameter>
@@ -80,8 +80,8 @@ namespace DotNet.Business
             var tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
-                            + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                            + " AND " + BaseOrganizationEntity.FieldDeleted + "= 0 "
+                            + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                             + " AND ( " + BaseOrganizationEntity.FieldId + " IN "
                             + " (SELECT  " + BaseRoleOrganizationEntity.FieldOrganizationId
                             + " FROM " + tableNameRoleOrganization

@@ -152,10 +152,10 @@ namespace DotNet.Business
             values[0] = id;
             names[1] = BaseUtil.FieldCreateUserId;
             values[1] = UserInfo.Id;
-            var returnObject = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
-            if (returnObject != null)
+            var obj = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
+            if (obj != null)
             {
-                result = returnObject.ToString();
+                result = obj.ToString();
             }
             return result;
         }
