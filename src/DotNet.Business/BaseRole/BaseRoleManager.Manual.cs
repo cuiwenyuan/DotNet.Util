@@ -425,6 +425,7 @@ namespace DotNet.Business
         /// 获取应用角色
         /// </summary>
         /// <param name="userInfo"></param>
+        /// <param name="systemCode">子系统</param>
         /// <returns></returns>
         public DataTable GetApplicationRole(BaseUserInfo userInfo, string systemCode = null)
         {

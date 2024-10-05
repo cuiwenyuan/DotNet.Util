@@ -63,6 +63,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo">当前操作员</param>
         /// <param name="userId">用户主键</param>
+        /// <param name="systemCode">子系统</param>
         public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null, string systemCode = null)
         {
             return new BasePermissionManager(userInfo).GetUserPermissionList(userInfo, userId, systemCode);
