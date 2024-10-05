@@ -225,7 +225,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ClientEncryptPassword = ConfigurationManager.AppSettings["ClientEncryptPassword"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
             }
-
+            if (ConfigurationManager.AppSettings["UseBaseTable"] != null)
+            {
+                BaseSystemInfo.UseBaseTable = ConfigurationManager.AppSettings["UseBaseTable"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
             if (ConfigurationManager.AppSettings["CheckIPAddress"] != null)
             {
                 BaseSystemInfo.CheckIpAddress = ConfigurationManager.AppSettings["CheckIPAddress"].Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);

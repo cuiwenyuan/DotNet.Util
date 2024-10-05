@@ -148,9 +148,9 @@ namespace DotNet.Business
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + "))");
-            if (dbHelper.ExecuteScalar(sb.ToString()).ToInt() == 0)
+            if (dbHelper.ExecuteScalar(sb.Return()).ToInt() == 0)
             {
-                sb.Clear();
+                sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " <= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
@@ -159,14 +159,14 @@ namespace DotNet.Business
             }
             else
             {
-                sb.Clear();
+                sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
-            sbQuery.Return(false);
+            sbQuery.Return();
             return dbHelper.ExecuteScalar(sb.Return())?.ToString();
         }
         #endregion
@@ -283,9 +283,9 @@ namespace DotNet.Business
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " ))");
-            if (dbHelper.ExecuteScalar(sb.ToString()).Equals("0"))
+            if (dbHelper.ExecuteScalar(sb.Return()).Equals("0"))
             {
-                sb.Clear();
+                sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " >= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
@@ -294,14 +294,14 @@ namespace DotNet.Business
             }
             else
             {
-                sb.Clear();
+                sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
-            sbQuery.Return(false);
+            sbQuery.Return();
             return dbHelper.ExecuteScalar(sb.Return())?.ToString();
         }
         #endregion

@@ -94,7 +94,7 @@ namespace DotNet.Util
         /// <summary>
         /// 日志文件名
         /// </summary>
-        public virtual string FileName { get; set; } = "DbHelper.txt";
+        public virtual string FileName { get; set; } = "DbHelper.log";
 
         /// <summary>
         /// 数据库版本
@@ -356,7 +356,7 @@ namespace DotNet.Util
                 _dbConnection.Close();
                 _dbConnection.Dispose();
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :DbConnection Close: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
             }
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
@@ -373,7 +373,7 @@ namespace DotNet.Util
             if (DbCommand != null)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :DbCommand Dispose: " + DbCommand + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbCommand Dispose: " + DbCommand + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbCommand.Dispose();
                 DbCommand = null;
@@ -381,7 +381,7 @@ namespace DotNet.Util
             if (DbDataAdapter != null)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :DbDataAdapter Dispose: " + DbDataAdapter + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbDataAdapter Dispose: " + DbDataAdapter + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbDataAdapter.Dispose();
                 DbDataAdapter = null;
@@ -389,7 +389,7 @@ namespace DotNet.Util
             if (_dbTransaction != null && !InTransaction)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :_dbTransaction Dispose: " + _dbTransaction + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :_dbTransaction Dispose: " + _dbTransaction + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 _dbTransaction.Dispose();
                 _dbTransaction = null;
@@ -398,7 +398,7 @@ namespace DotNet.Util
             if (_dbConnection != null)
             {
 #if (DEBUG)
-                Trace.WriteLine(DateTime.Now + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
@@ -416,7 +416,7 @@ namespace DotNet.Util
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
         /// </summary>
         /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
-        /// <param name="destinationTableName">目标表名称</param>
+        /// <param name="destinationTableName">目标表名</param>
         /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
         /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
         public virtual bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0)

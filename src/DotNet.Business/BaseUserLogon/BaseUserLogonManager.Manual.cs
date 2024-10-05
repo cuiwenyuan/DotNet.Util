@@ -300,17 +300,13 @@ namespace DotNet.Business
             using (var dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterReadDbConnection))
             {
                 // 需要能支持多个业务子系统的登录方法、多密码、多终端登录
-                var userLogonEntityTableName = "BaseUserLogon";
-                if (!string.IsNullOrEmpty(cachingSystemCode))
-                {
-                    userLogonEntityTableName = cachingSystemCode + "UserLogon";
-                }
+                var userLogonTableName = BaseUserLogonEntity.CurrentTableName;
 
                 var parameters = new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userInfo.Id)
                 };
-                result = dbHelper.GetProperty(userLogonEntityTableName, parameters, BaseUserLogonEntity.FieldOpenId);
+                result = dbHelper.GetProperty(userLogonTableName, parameters, BaseUserLogonEntity.FieldOpenId);
                 dbHelper.Close();
             }
 
@@ -540,7 +536,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
 #endif
 
             return result;
@@ -595,7 +591,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
 #endif
             return result;
         }
@@ -630,7 +626,7 @@ namespace DotNet.Business
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
 #endif
 
             return result;
@@ -723,7 +719,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseUserLogonEntity entityNew, BaseUserLogonEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -826,7 +822,7 @@ namespace DotNet.Business
                             };
 
                             errorMark = 10;
-                            dbHelper.ExecuteNonQuery(sb.ToString(), dbParameters.ToArray());
+                            dbHelper.ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
                         }
                     }
 
@@ -835,7 +831,7 @@ namespace DotNet.Business
                         // 第一次登录时间
                         if (userLogonEntity.FirstVisitTime == null)
                         {
-                            sb.Clear();
+                            sb = PoolUtil.StringBuilder.Get();
                             sb.Append("UPDATE " + CurrentTableName
                                         + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0"
                                         + ", " + BaseUserLogonEntity.FieldUserOnline + " = 1"
@@ -869,12 +865,12 @@ namespace DotNet.Business
                             dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userLogonEntity.UserId));
 
                             errorMark = 20;
-                            dbHelper.ExecuteNonQuery(sb.ToString(), dbParameters.ToArray());
+                            dbHelper.ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
                         }
                         else
                         {
                             // 最后一次登录时间
-                            sb.Clear();
+                            sb = PoolUtil.StringBuilder.Get();
                             sb.Append("UPDATE " + CurrentTableName
                                         + " SET " + BaseUserLogonEntity.FieldPasswordErrorCount + " = 0"
                                         + ", " + BaseUserLogonEntity.FieldPreviousVisitTime + " = " + BaseUserLogonEntity.FieldLastVisitTime
@@ -904,16 +900,16 @@ namespace DotNet.Business
                                 dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldOpenIdTimeoutTime, openIdTimeout));
                             }
 
-                            sb.Append("  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldUserId));
+                            sb.Append(" WHERE " + BaseUserLogonEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldUserId));
                             dbParameters.Add(dbHelper.MakeParameter(BaseUserLogonEntity.FieldUserId, userLogonEntity.UserId));
 
                             errorMark = 30;
-                            dbHelper.ExecuteNonQuery(sb.ToString(), dbParameters.ToArray());
+                            dbHelper.ExecuteNonQuery(sb.Return(), dbParameters.ToArray());
                         }
                     }
                     else
                     {
-                        sb.Clear();
+                        sb = PoolUtil.StringBuilder.Get();
                         sb.Append("UPDATE " + CurrentTableName
                                      + " SET  " + BaseUserLogonEntity.FieldPasswordErrorCount + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldPasswordErrorCount)
                                      + ", " + BaseUserLogonEntity.FieldSystemCode + " = " + dbHelper.GetParameter(BaseUserLogonEntity.FieldSystemCode));
@@ -943,7 +939,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserLogonManager.UpdateVisitTimeTask:发生时间:" + DateTime.Now
+                var exception = "BaseUserLogonManager.UpdateVisitTimeTask:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "UserInfo:" + UserInfo.Serialize()
                     + Environment.NewLine + "Message:" + ex.Message
@@ -952,7 +948,7 @@ namespace DotNet.Business
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
 
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
             }
         }
 
@@ -1053,7 +1049,7 @@ namespace DotNet.Business
                     sb.Append(" ," + BaseUserLogonEntity.FieldOpenIdTimeoutTime + " = GETDATE()");
                     sb.Append(" ," + BaseUserLogonEntity.FieldUserOnline + " = 0");
                     sb.Append(" ," + BaseUserLogonEntity.FieldLastVisitTime + " = GETDATE()");
-                    sb.Append("  WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId));
+                    sb.Append(" WHERE " + BaseUserLogonEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId));
 
                     var dbParameters = new List<IDbDataParameter>
                     {

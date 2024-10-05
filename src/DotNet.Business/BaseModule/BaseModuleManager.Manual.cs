@@ -148,7 +148,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseModuleEntity entityNew, BaseModuleEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -210,18 +210,7 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string roleId, string roleIdExcluded, bool showInvisible, string isMenu, string parentId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //菜单模块表名
-            var tableNameModule = BaseModuleEntity.CurrentTableName;
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameModule = GetModuleTableName(systemCode);
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
-                {
-                    tableNameModule = GetModuleTableName(UserInfo.SystemCode);
-                }
-            }
+            var tableNameModule = GetModuleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
@@ -260,24 +249,14 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseModuleEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
+            //子系统
+            sb.Append(" AND " + BaseModuleEntity.FieldSystemCode + " = '" + systemCode + "'");
             //用户菜单模块表
-            var tableNamePermission = GetPermissionTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNamePermission = GetPermissionTableName(systemCode);
-            }
+            var tableNamePermission = GetPermissionTableName(systemCode);
             //用户角色
-            var tableNameUserRole = GetUserRoleTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameUserRole = GetUserRoleTableName(systemCode);
-            }
+            var tableNameUserRole = GetUserRoleTableName(systemCode);
             //用于ResourceCategory的用户角色
-            var tableNameRole = GetRoleTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameRole = GetRoleTableName(systemCode);
-            }
+            var tableNameRole = GetRoleTableName(systemCode);
             //指定用户
             if (ValidateUtil.IsInt(userId))
             {
@@ -367,21 +346,21 @@ namespace DotNet.Business
             //父级编号
             if (ValidateUtil.IsInt(parentId))
             {
-                sb.Append(" AND ( ");
+                sb.Append(" AND (");
                 //本级
                 sb.Append(BaseModuleEntity.FieldId + " = " + parentId);
                 //下级
                 sb.Append(" OR " + BaseModuleEntity.FieldParentId + " = " + parentId);
                 //下下级
-                sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
+                sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ")");
                 //下下下级，做个菜单模块实际应用应该足够了
-                sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " IN ");
-                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ") ");
-                sb.Append(" ) ");
+                sb.Append(" OR " + BaseModuleEntity.FieldParentId + " IN");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " IN");
+                sb.Append(" (SELECT " + tableNameModule + "." + BaseModuleEntity.FieldId + " FROM " + tableNameModule + " WHERE " + tableNameModule + "." + BaseModuleEntity.FieldDeleted + "  = 0 AND " + tableNameModule + "." + BaseModuleEntity.FieldEnabled + "  = 1 AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + "  = '" + systemCode + "' AND " + tableNameModule + "." + BaseModuleEntity.FieldParentId + " = " + parentId + ")");
+                sb.Append(" )");
                 //闭合
-                sb.Append(" ) ");
+                sb.Append(" )");
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))
@@ -400,6 +379,7 @@ namespace DotNet.Business
             {
                 sbView.Clear();
                 sbView.Append("SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSystemCode);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldParentId);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCode);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldName);
@@ -434,11 +414,11 @@ namespace DotNet.Business
                 sbView.Append(" ON " + tableNameModule + "." + BaseModuleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId);
                 sbView.Append(" AND " + tableNameModule + "." + BaseModuleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode);
                 //BaseUser
-                sbView.Append(" WHERE ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "')");
-                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + userId + "))");
+                sbView.Append(" WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "'");
+                sbView.Append(" AND " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " = " + userId + ")");
                 //UserRole
-                sbView.Append(" OR ((" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')");
-                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " IN ");
+                sbView.Append(" OR (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceId + " IN");
                 //用户所拥有的角色
                 sbView.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sbView.Append(" FROM " + tableNameUserRole);
@@ -454,6 +434,7 @@ namespace DotNet.Business
             {
                 sbView.Clear();
                 sbView.Append("SELECT DISTINCT " + tableNameModule + "." + BaseModuleEntity.FieldId);
+                sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldSystemCode);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldParentId);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldCode);
                 sbView.Append("," + tableNameModule + "." + BaseModuleEntity.FieldName);
@@ -812,9 +793,9 @@ namespace DotNet.Business
         {
             BaseModuleEntity result = null;
 
-            var tableName = GetModuleTableName(systemCode);
+            var moduleTableName = GetModuleTableName(systemCode);
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetModuleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + moduleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var listModule = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
@@ -824,7 +805,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
                 };
-                CurrentTableName = tableName;
+                CurrentTableName = moduleTableName;
                 return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
             }, true, false, cacheTime);
             result = listModule.Find(t => t.Id.Equals(id));
@@ -845,9 +826,9 @@ namespace DotNet.Business
         {
             BaseModuleEntity result = null;
 
-            var tableName = GetModuleTableName(systemCode);
+            var moduleTableName = GetModuleTableName(systemCode);
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetModuleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + moduleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var listModule = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
@@ -857,7 +838,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1)
                 };
-                CurrentTableName = tableName;
+                CurrentTableName = moduleTableName;
                 return GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
             }, true, false, cacheTime);
             result = listModule.Find(t => t.Code == code);
@@ -903,25 +884,25 @@ namespace DotNet.Business
         {
             List<BaseModuleEntity> result = null;
 
-            var tableName = GetModuleTableName(systemCode);
-            var cacheKey = "List." + GetModuleTableName(systemCode);
+            var moduleTableName = GetModuleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + moduleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<List<BaseModuleEntity>>(cacheKey, () =>
             {
-                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
+                var manager = new BaseModuleManager(DbHelper, UserInfo, moduleTableName);
                 // 读取目标表中的数据
-                var parametersWhere = new List<KeyValuePair<string, object>>
+                var parameters = new List<KeyValuePair<string, object>>
                 {
                     //有效的菜单
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1),
                     //没被删除的菜单
-                    new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0),
+                    //子系统
+                    new KeyValuePair<string, object>(BaseModuleEntity.FieldSystemCode, systemCode)
                 };
-
-                // parameters.Add(new KeyValuePair<string, object>(BaseModuleEntity.FieldIsVisible, 1));
-                CurrentTableName = tableName;
-                return moduleManager.GetList<BaseModuleEntity>(parametersWhere, BaseModuleEntity.FieldSortCode);
+                CurrentTableName = moduleTableName;
+                return manager.GetList<BaseModuleEntity>(parameters, BaseModuleEntity.FieldSortCode);
             }, true, refreshCache, cacheTime);
 
             return result;

@@ -134,10 +134,10 @@ namespace DotNet.Business
             var result = 0;
 
             // 把所有的组织机构都缓存起来的代码
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
             var manager = new BaseRoleManager
             {
-                CurrentTableName = tableName
+                CurrentTableName = roleTableName
             };
             var dataReader = manager.ExecuteReader();
             if (dataReader != null && !dataReader.IsClosed)

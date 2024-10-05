@@ -52,25 +52,14 @@ namespace DotNet.Business
         /// <param name="userId">用户主键</param>
         /// <param name="companyId">公司主键</param>
         /// <param name="containPublic"></param>
-        /// <param name="useBaseRole">使用基础角色权限</param>
         /// <returns>拥有权限数组</returns>
-        public static string[] GetPermissionIdsByUserByCache(string systemCode, string userId, string companyId = null, bool containPublic = true, bool useBaseRole = false)
+        public static string[] GetPermissionIdsByUserByCache(string systemCode, string userId, string companyId = null, bool containPublic = true)
         {
             // 公开的操作权限需要计算
             string[] result = null;
 
             var errorMark = 0;
-            var tableName = BaseModuleEntity.CurrentTableName;
-            if (string.IsNullOrWhiteSpace(systemCode))
-            {
-                systemCode = "Base";
-            }
-            // 就不需要参合基础的角色了
-            if (systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
-            {
-                useBaseRole = false;
-            }
-            tableName = GetModuleTableName(systemCode);
+            var moduleTableName = GetModuleTableName(systemCode);
 
             try
             {
@@ -94,14 +83,6 @@ namespace DotNet.Business
 
                 // 用户都在哪些角色里？通过缓存读取？没有角色的，没必要进行运算了
                 var roleIds = BaseUserManager.GetRoleIdsByCache(systemCode, userId, companyId);
-                if (useBaseRole && !systemCode.Equals("Base", StringComparison.OrdinalIgnoreCase))
-                {
-                    var baseRoleIds = BaseUserManager.GetRoleIdsByCache("Base", userId, companyId);
-                    if (baseRoleIds != null && baseRoleIds.Length > 0)
-                    {
-                        roleIds = StringUtil.Concat(roleIds, baseRoleIds);
-                    }
-                }
                 if (roleIds != null && roleIds.Length > 0)
                 {
                     var userRolePermissionIds = BasePermissionManager.GetPermissionIdsByCache(systemCode, roleIds);
@@ -110,7 +91,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BasePermissionManager.GetPermissionIdsByUser:发生时间:" + DateTime.Now
+                var exception = "BasePermissionManager.GetPermissionIdsByUser:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -118,7 +99,7 @@ namespace DotNet.Business
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
 
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
             }
 
             return result;

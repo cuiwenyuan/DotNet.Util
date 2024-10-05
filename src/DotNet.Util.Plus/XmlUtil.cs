@@ -97,8 +97,9 @@ namespace DotNet.Util
                     }
                     return true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogUtil.WriteException(ex);
                     return false;
                 }
             }
@@ -135,8 +136,9 @@ namespace DotNet.Util
                     doc.Save(filePath);
                     return true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogUtil.WriteException(ex);
                     return false;
                 }
             }
@@ -167,8 +169,9 @@ namespace DotNet.Util
                     doc.Load(filePath);
                     return doc;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogUtil.WriteException(ex);
                     return null;
                 }
             }
@@ -197,8 +200,9 @@ namespace DotNet.Util
                 }
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
+                LogUtil.WriteException(ex);
                 return null;
             }
         }
@@ -405,7 +409,7 @@ namespace DotNet.Util
                         if (!string.IsNullOrEmpty(attribute))
                         {
                             var xe = (XmlElement)xn;
-                            if (xe != null) xe.SetAttribute(attribute, value);
+                            xe?.SetAttribute(attribute, value);
                         }
                     }
                     else
@@ -562,7 +566,7 @@ namespace DotNet.Util
                     {
                         if (string.IsNullOrEmpty(attribute))
                         {
-                            if (xn.ParentNode != null) xn.ParentNode.RemoveChild(xn);
+                            xn.ParentNode?.RemoveChild(xn);
                         }
                         else
                         {

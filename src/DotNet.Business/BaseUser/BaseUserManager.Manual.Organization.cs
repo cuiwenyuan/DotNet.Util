@@ -167,7 +167,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BasePermissionManager.CheckUserRolePermission:发生时间:" + DateTime.Now
+                var exception = "BasePermissionManager.CheckUserRolePermission:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -175,7 +175,7 @@ namespace DotNet.Business
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
 
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
             }
 
             return result;
@@ -205,7 +205,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseUserEntity.FieldId + " IN ("
                         + "SELECT " + BaseUserOrganizationEntity.FieldUserId
                         + " FROM " + BaseUserOrganizationEntity.CurrentTableName
-                        + "  WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + " WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
                         + "       AND (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " = '" + departmentId + "')) ");
                  */
 
@@ -233,8 +233,8 @@ namespace DotNet.Business
                 sb.Append(" AND (" + BaseUserEntity.FieldProvince + " IS NULL)");
             }
 
-            result = ExecuteNonQuery(sb.ToString());
-            sb.Clear();
+            result = ExecuteNonQuery(sb.Return());
+            sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE " + BaseUserEntity.CurrentTableName
                               + " SET " + BaseUserEntity.FieldCity + " = ( SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCity
                              + " FROM " + BaseOrganizationEntity.CurrentTableName
@@ -243,8 +243,8 @@ namespace DotNet.Business
             {
                 sb.Append(" AND (" + BaseUserEntity.FieldCity + " IS NULL)");
             }
-            result = ExecuteNonQuery(sb.ToString());
-            sb.Clear();
+            result = ExecuteNonQuery(sb.Return());
+            sb = PoolUtil.StringBuilder.Get();
             sb.Append("UPDATE " + BaseUserEntity.CurrentTableName
                               + " SET " + BaseUserEntity.FieldDistrict + " = ( SELECT " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDistrict
                              + " FROM " + BaseOrganizationEntity.CurrentTableName
@@ -283,7 +283,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseUserEntity.FieldId + " IN ("
                         + "SELECT " + BaseUserOrganizationEntity.FieldUserId
                         + " FROM " + BaseUserOrganizationEntity.CurrentTableName
-                        + "  WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + " WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
                         + "       AND (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " = '" + departmentId + "')) ");
                 */
             }
@@ -320,7 +320,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseUserEntity.FieldId + " IN ("
                         + "SELECT " + BaseUserOrganizationEntity.FieldUserId
                         + " FROM " + BaseUserOrganizationEntity.CurrentTableName
-                        + "  WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + " WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
                         + "       AND (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldCompanyId + " = '" + companyId + "')) ");
                 */
             }
@@ -351,7 +351,7 @@ namespace DotNet.Business
                 + " OR " + BaseUserEntity.FieldId + " IN ("
                         + "SELECT " + BaseUserOrganizationEntity.FieldUserId
                         + " FROM " + BaseUserOrganizationEntity.CurrentTableName
-                        + "  WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
+                        + " WHERE (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDeleted + " = 0 ) "
                         + "       AND (" + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldWorkgroupId + " IN ( " + StringUtil.ArrayToList(organizationIds) + ") "
                         + "             OR " + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldDepartmentId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "
                         + "             OR " + BaseUserOrganizationEntity.CurrentTableName + "." + BaseUserOrganizationEntity.FieldSubCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ") "

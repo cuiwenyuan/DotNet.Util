@@ -38,7 +38,10 @@ namespace DotNet.Business
                 //Troy.Cui 2019-04-13, 更新OpenId
                 new BaseUserLogonManager(userInfo).SignOut(userInfo.OpenId, userInfo.SystemCode, Utils.GetIp());
                 //这里是缓存的Permission
-                var cacheKey = "P" + userInfo.Id;
+                var cacheKey = "P." + BaseSystemInfo.SystemCode + "." + userInfo.Id;
+                CacheUtil.Remove(cacheKey);
+                //这里是缓存的Permission
+                cacheKey = "P." + userInfo.SystemCode + "." + userInfo.Id;
                 CacheUtil.Remove(cacheKey);
                 //在线用户
                 cacheKey = "OnlineUserName." + userInfo.UserName;

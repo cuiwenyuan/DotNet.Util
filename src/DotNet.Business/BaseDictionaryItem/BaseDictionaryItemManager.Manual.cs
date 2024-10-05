@@ -151,7 +151,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseDictionaryItemEntity entityNew, BaseDictionaryItemEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))

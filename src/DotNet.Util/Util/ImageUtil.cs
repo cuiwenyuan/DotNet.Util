@@ -48,6 +48,8 @@ namespace DotNet.Util
         /// <param name="maxSize">压缩后图片的最大大小（K）</param>
         /// <param name="isFirstCall">是否是第一次调用</param>
         /// <param name="isAutoRotate">是否自动旋转</param>
+        /// <param name="keepExif">保持Exif</param>
+        /// <param name="deleteOrignalImage">删除原始图片</param>
         /// <returns></returns>
         public static bool CompressImage(string filePath, string compressedFilePath, int quality = 90, int maxSize = 300, bool isFirstCall = true, bool isAutoRotate = false, bool keepExif = false, bool deleteOrignalImage = false)
         {

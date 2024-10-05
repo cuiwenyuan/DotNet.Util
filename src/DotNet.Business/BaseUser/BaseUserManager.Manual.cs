@@ -73,7 +73,7 @@ namespace DotNet.Business
             //是否显示无效记录
             if (!showDisabled)
             {
-                sb.Append(" AND " + BaseUserEntity.FieldEnabled + "  = 1 ");
+                sb.Append(" AND " + BaseUserEntity.FieldEnabled + " = 1");
             }
             //是否显示已删除记录
             if (!showDeleted)
@@ -115,23 +115,19 @@ namespace DotNet.Business
             //是否显示已隐藏记录
             if (!showInvisible)
             {
-                sb.Append(" AND " + BaseUserEntity.FieldIsVisible + "  = 1 ");
+                sb.Append(" AND " + BaseUserEntity.FieldIsVisible + " = 1");
             }
             //角色
-            var tableNameUserRole = GetUserRoleTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameUserRole = GetUserRoleTableName(systemCode);
-            }
+            var tableNameUserRole = GetUserRoleTableName(systemCode);
             //指定角色
             if (ValidateUtil.IsInt(roleId))
             {
-                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldUserId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldRoleId + " = '" + roleId + "'");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0))");
             }
             //排除指定角色
             if (ValidateUtil.IsInt(roleIdExcluded))
@@ -144,21 +140,17 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
             }
             //用户菜单模块表
-            var tableNamePermission = GetPermissionTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNamePermission = GetPermissionTableName(systemCode);
-            }
+            var tableNamePermission = GetPermissionTableName(systemCode);
             //指定的菜单模块
             if (ValidateUtil.IsInt(moduleId))
             {
-                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + BaseUserEntity.CurrentTableName + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0))");
             }
             //排除指定菜单模块
             if (ValidateUtil.IsInt(moduleIdExcluded))
@@ -797,7 +789,7 @@ namespace DotNet.Business
                 }
                 catch (Exception ex)
                 {
-                    var writeMessage = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
+                    var exception = "BaseOrganizationManager.GetEntityByCache:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + Environment.NewLine + "Message:" + ex.Message
                         + Environment.NewLine + "Source:" + ex.Source
@@ -805,7 +797,7 @@ namespace DotNet.Business
                         + Environment.NewLine + "TargetSite:" + ex.TargetSite
                         + Environment.NewLine;
 
-                    LogUtil.WriteLog(writeMessage, "Exception");
+                    LogUtil.WriteLog(exception, "Exception");
                 }
 
                 if (organizationEntity == null)
@@ -815,11 +807,11 @@ namespace DotNet.Business
                     // 2015-12-06 吉日嘎拉 进行记录日志功能改进
                     if (organizationEntity == null)
                     {
-                        var writeMessage = "BaseOrganizationManager.GetEntity:发生时间:" + DateTime.Now
+                        var exception = "BaseOrganizationManager.GetEntity:发生时间:" + DateTime.Now
                         + Environment.NewLine + "CompanyId 无法缓存获取:" + userInfo.CompanyId
                         + Environment.NewLine + "BaseUserInfo:" + userInfo.Serialize();
 
-                        LogUtil.WriteLog(writeMessage, "Log");
+                        LogUtil.WriteLog(exception, "Log");
                     }
                 }
                 if (organizationEntity != null)

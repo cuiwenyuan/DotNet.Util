@@ -287,7 +287,7 @@ namespace DotNet.Util
             // 写入调试信息
 #if (DEBUG)
             var milliStart = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
 
             Prepare();
@@ -297,7 +297,7 @@ namespace DotNet.Util
             // 写入调试信息
 #if (DEBUG)
             var milliEnd = Environment.TickCount;
-            Trace.WriteLine(DateTime.Now + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
+            Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
         }
         #endregion
@@ -677,11 +677,11 @@ namespace DotNet.Util
                 var sbField = PoolUtil.StringBuilder.Get();
                 sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
                 //归还
-                _insertField.Return(false);
+                _insertField.Return();
                 var sbValue = PoolUtil.StringBuilder.Get();
                 sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
                 //归还
-                _insertValue.Return(false);
+                _insertValue.Return();
                 if (_sqlOperation == DbOperation.ReplaceInto)
                 {
                     CommandText = "REPLACE INTO " + _tableName + " (" + sbField.Return() + ") VALUES (" + sbValue.Return() + ") ";
@@ -759,7 +759,7 @@ namespace DotNet.Util
             {
                 var sbUpdate = PoolUtil.StringBuilder.Get();
                 sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
-                _updateSql.Return(false);
+                _updateSql.Return();
                 CommandText = "UPDATE " + _tableName + " SET " + sbUpdate.Return() + _whereSql.Return();
             }
             else if (_sqlOperation == DbOperation.Delete)

@@ -502,8 +502,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.OpenNewWebWindow = (string.Compare(GetValue(_xmlDocument, "OpenNewWebWindow"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
-
-            // add by zgl
+            if (Exists("UseBaseTable"))
+            {
+                BaseSystemInfo.UseBaseTable = (string.Compare(GetValue(_xmlDocument, "UseBaseTable"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+            }
             if (Exists("CheckIPAddress"))
             {
                 BaseSystemInfo.CheckIpAddress = (string.Compare(GetValue(_xmlDocument, "CheckIPAddress"), "TRUE", true, CultureInfo.CurrentCulture) == 0);

@@ -57,15 +57,15 @@ namespace DotNet.Business
         public static string SessionName = "UserInfo";
 
 
-        #region public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null) 获用户拥有的操作权限列表
+        #region public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null, string systemCode = null) 获用户拥有的操作权限列表
         /// <summary>
         /// 获用户拥有的操作权限列表
         /// </summary>
         /// <param name="userInfo">当前操作员</param>
         /// <param name="userId">用户主键</param>
-        public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null)
+        public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null, string systemCode = null)
         {
-            return new BasePermissionManager(userInfo).GetUserPermissionList(userInfo, userId, BaseSystemInfo.SystemCode);
+            return new BasePermissionManager(userInfo).GetUserPermissionList(userInfo, userId, systemCode);
         }
         #endregion
 
@@ -524,10 +524,10 @@ namespace DotNet.Business
         /// <param name="authorizationCode"></param>
         /// <param name="transparent"></param>
         /// <param name="useCaching"></param>
-        /// <param name="useDataBase"></param>
+        /// <param name="useDatabase"></param>
         /// <param name="useUserCenterHost"></param>
         /// <returns></returns>
-        public static UserLogonResult LogonByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        public static UserLogonResult LogonByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
         {
             // 统一的登录服务
             UserLogonResult result = null;
@@ -535,24 +535,24 @@ namespace DotNet.Business
 
             if (BaseUserManager.VerifyAuthorizationCode(null, authorizationCode, out openId))
             {
-                result = LogonByOpenId(openId, transparent, useCaching, useDataBase, useUserCenterHost);
+                result = LogonByOpenId(openId, transparent, useCaching, useDatabase, useUserCenterHost);
             }
 
             return result;
         }
 
 
-        #region public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        #region public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
         /// <summary>
         /// 验证用户
         /// </summary>
         /// <param name="openId">当点登录识别码</param>
         /// <param name="transparent">是否使用了代理</param>
         /// <param name="useCaching">使用缓存</param>
-        /// <param name="useDataBase">使用数据库</param>
+        /// <param name="useDatabase">使用数据库</param>
         /// <param name="useUserCenterHost">使用接口</param>
         /// <returns>用户登录信息</returns>
-        public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDataBase = true, bool useUserCenterHost = true)
+        public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
         {
             // 统一的登录服务
             UserLogonResult userLogonResult = null;
@@ -573,7 +573,7 @@ namespace DotNet.Business
                 }
             }
 
-            if (useDataBase)
+            if (useDatabase)
             {
 
             }
@@ -691,7 +691,7 @@ namespace DotNet.Business
                 {
                     //isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogonResult.UserInfo, permissionCode, null);
                     var permissionManager = new BasePermissionManager(userInfo);
-                    isAuthorized = permissionManager.IsAuthorized(userLogonResult.UserInfo.SystemCode, userLogonResult.UserInfo.UserId.ToString(), permissionCode, null);
+                    isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.UserId.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -763,7 +763,7 @@ namespace DotNet.Business
                 if (!string.IsNullOrEmpty(permissionCode))
                 {
                     var permissionManager = new BasePermissionManager(userInfo);
-                    isAuthorized = permissionManager.IsAuthorized(userInfo.SystemCode, userInfo.Id.ToString(), permissionCode, null);
+                    isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -771,9 +771,9 @@ namespace DotNet.Business
                     if (persistCookie)
                     {
                         // 相对安全的方式保存登录状态
-                        SaveCookie(userName, password);
+                        //SaveCookie(userName, password);
                         // 内部单点登录方式
-                        //SaveCookie(userLogonResult.UserInfo);
+                        SaveCookie(userLogonResult.UserInfo);
                     }
                     else
                     {
@@ -872,7 +872,7 @@ namespace DotNet.Business
             }
             if (userInfo != null)
             {
-                var cacheKey = "P" + userInfo.Id;
+                var cacheKey = "P." + BaseSystemInfo.SystemCode + "." + userInfo.Id;
                 CacheUtil.Remove(cacheKey);
 
                 // 这里要考虑读写分离的处理

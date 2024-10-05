@@ -91,7 +91,7 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
@@ -250,7 +250,7 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
@@ -407,7 +407,7 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
@@ -591,7 +591,7 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
@@ -740,7 +740,7 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
                     DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;

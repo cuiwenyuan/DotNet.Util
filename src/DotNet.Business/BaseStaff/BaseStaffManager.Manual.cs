@@ -1014,7 +1014,6 @@ namespace DotNet.Business
                 condition += " OR " + BaseStaffEntity.FieldQuickQuery + " LIKE '%" + searchKey + "')";
             }
             recordCount = DbHelper.GetCount(CurrentTableName, condition);
-            CurrentTableName = "BaseStaff";
 
             return DbHelper.GetDataTableByPage(CurrentTableName, SelectFields, pageNo, pageSize, condition, order);
         }

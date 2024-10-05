@@ -302,7 +302,7 @@ namespace DotNet.Business
                 result.StatusCode = Status.SystemCodeError.ToString();
                 result.StatusMessage = ex.Message;
 
-                //string writeMessage = "BaseUserManager.LogonByNickName:发生时间:" + DateTime.Now
+                //string exception = "BaseUserManager.LogonByNickName:发生时间:" + DateTime.Now
                 //    + System.Environment.NewLine + "errorMark = " + errorMark.ToString()
                 //    + System.Environment.NewLine + "Message:" + ex.Message
                 //    + System.Environment.NewLine + "Source:" + ex.Source
@@ -310,7 +310,7 @@ namespace DotNet.Business
                 //    + System.Environment.NewLine + "TargetSite:" + ex.TargetSite
                 //    + System.Environment.NewLine;
 
-                //LogUtil.WriteLog(writeMessage, "Exception");
+                //LogUtil.WriteLog(exception, "Exception");
             }
 
             return result;
@@ -403,7 +403,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogonByNickNameByCache:发生时间:" + DateTime.Now
+                var exception = "BaseUserManager.LogonByNickNameByCache:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -411,7 +411,7 @@ namespace DotNet.Business
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
 
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
             }
 
             return result;
@@ -497,7 +497,7 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogonByCompanyByCode:发生时间:" + DateTime.Now
+                var exception = "BaseUserManager.LogonByCompanyByCode:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
@@ -505,7 +505,7 @@ namespace DotNet.Business
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
 
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
             }
 
             return result;
@@ -1632,14 +1632,14 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                var writeMessage = "BaseUserManager.LogonByEntity:发生时间:" + DateTime.Now
+                var exception = "BaseUserManager.LogonByEntity:发生时间:" + DateTime.Now
                     + Environment.NewLine + "errorMark = " + errorMark
                     + Environment.NewLine + "Message:" + ex.Message
                     + Environment.NewLine + "Source:" + ex.Source
                     + Environment.NewLine + "StackTrace:" + ex.StackTrace
                     + Environment.NewLine + "TargetSite:" + ex.TargetSite
                     + Environment.NewLine;
-                LogUtil.WriteLog(writeMessage, "Exception");
+                LogUtil.WriteLog(exception, "Exception");
                 throw;
             }
 

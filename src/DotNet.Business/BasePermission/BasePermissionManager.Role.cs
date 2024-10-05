@@ -112,7 +112,7 @@ namespace DotNet.Business
             CurrentTableName = GetPermissionTableName(systemCode);
             var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
 
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
 
             // 判断是否已经存在这个权限，若已经存在就不重复增加了
             if (chekExists)
@@ -120,7 +120,7 @@ namespace DotNet.Business
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
-                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, tableName),
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, roleTableName),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
@@ -142,7 +142,7 @@ namespace DotNet.Business
                 var permissionEntity = new BasePermissionEntity
                 {
                     SystemCode = systemCode,
-                    ResourceCategory = tableName,
+                    ResourceCategory = roleTableName,
                     ResourceId = roleId,
                     PermissionId = permissionId
                 };
@@ -253,11 +253,9 @@ namespace DotNet.Business
             {
                 return result;
             }
-
+            var permissionTableName = GetPermissionTableName(systemCode);
             CurrentTableName = GetPermissionTableName(systemCode);
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-
-            var tableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);            
 
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -367,8 +365,8 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int RevokeRoleAll(string systemCode, string roleId)
         {
-            var tableName = GetPermissionTableName(systemCode);
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
             var whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
@@ -397,8 +395,8 @@ namespace DotNet.Business
         public int CopyRolePermission(string systemCode, int referenceUserId, int targetUserId)
         {
             var result = 0;
-            var tableName = GetPermissionTableName(systemCode);
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
 
             var whereParameters = new List<KeyValuePair<string, object>>
             {

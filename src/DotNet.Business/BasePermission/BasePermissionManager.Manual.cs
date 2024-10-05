@@ -48,17 +48,15 @@ namespace DotNet.Business
             {
                 systemCode = BaseSystemInfo.SystemCode;
             }
-            var cacheKey = "P" + userId;
-            List<BaseModuleEntity> entityList = null;
+            var cacheKey = "P." + systemCode + "." + userId;
+            List<BaseModuleEntity> ls = null;
             // 这里是控制用户并发的，减少框架等重复读取数据库的效率问题
             lock (BaseSystemInfo.UserLock)
             {
-                //var cacheTime = default(TimeSpan);
-                var cacheTime = TimeSpan.FromMilliseconds(3600000);
-                entityList = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id.ToString(), userInfo.CompanyId, true), true);
+                var cacheTime = TimeSpan.FromMilliseconds(86400000);
+                ls = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id, companyId: userInfo.CompanyId, fromCache: true), true);
             }
-            //LogUtil.WriteLog(JsonUtil.ObjectToJson(entityList));
-            return entityList;
+            return ls;
         }
         #endregion
 
@@ -166,8 +164,8 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
                 };
 
-                var tableName = GetModuleTableName(systemCode);
-                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
+                var moduleTableName = GetModuleTableName(systemCode);
+                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, moduleTableName);
                 result = moduleManager.GetList<BaseModuleEntity>(parameters);
             }
 

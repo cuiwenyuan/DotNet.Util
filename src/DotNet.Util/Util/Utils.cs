@@ -1044,9 +1044,9 @@ namespace DotNet.Util
             var endPage = 1;
 
             if (url.IndexOf("?") > 0)
-                url = url + "&";
+                url += "&";
             else
-                url = url + "?";
+                url += "?";
 
             var t1 = "<a href=\"" + url + "&" + pagetag + "=1";
             var t2 = "<a href=\"" + url + "&" + pagetag + "=" + countPage;
@@ -1995,9 +1995,9 @@ namespace DotNet.Util
         /// </summary>
         public static void RestartIisProcess()
         {
+            var xmldoc = new System.Xml.XmlDocument();
             try
             {
-                var xmldoc = new System.Xml.XmlDocument();
                 xmldoc.Load(GetMapPath("~/web.config"));
                 var writer = new System.Xml.XmlTextWriter(GetMapPath("~/web.config"), null);
                 writer.Formatting = System.Xml.Formatting.Indented;

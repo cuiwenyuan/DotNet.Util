@@ -182,7 +182,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseRoleEntity entityNew, BaseRoleEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -245,24 +245,13 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //角色名
-            var tableNameRole = BaseRoleEntity.CurrentTableName;
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameRole = GetRoleTableName(systemCode);
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
-                {
-                    tableNameRole = GetRoleTableName(UserInfo.SystemCode);
-                }
-            }
+            var tableNameRole = GetRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
             if (!showDisabled)
             {
-                sb.Append(" AND " + BaseRoleEntity.FieldEnabled + "  = 1 ");
+                sb.Append(" AND " + BaseRoleEntity.FieldEnabled + " = 1");
             }
             //是否显示已删除记录
             if (!showDeleted)
@@ -272,7 +261,7 @@ namespace DotNet.Business
             //是否显示已隐藏记录
             if (!showInvisible)
             {
-                sb.Append(" AND " + BaseRoleEntity.FieldIsVisible + "  = 1 ");
+                sb.Append(" AND " + BaseRoleEntity.FieldIsVisible + " = 1");
             }
             //创建时间
             if (ValidateUtil.IsDateTime(startTime))
@@ -289,22 +278,20 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseRoleEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
+            //子系统
+            sb.Append(" AND " + BaseRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
             //用户角色
-            var tableNameUserRole = GetUserRoleTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNameUserRole = GetUserRoleTableName(systemCode);
-            }
+            var tableNameUserRole = GetUserRoleTableName(systemCode);
             //指定用户
             if (ValidateUtil.IsInt(userId))
             {
-                sb.Append(" AND ( " + BaseRoleEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BaseRoleEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BaseUserRoleEntity.FieldRoleId);
                 sb.Append(" FROM " + tableNameUserRole);
                 sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + userId + "");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0))");
             }
             //排除指定用户
             if (ValidateUtil.IsInt(userIdExcluded))
@@ -318,23 +305,19 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = 0)) ");
             }
             //用户菜单模块表
-            var tableNamePermission = GetPermissionTableName(UserInfo.SystemCode);
-            if (!string.IsNullOrEmpty(systemCode))
-            {
-                tableNamePermission = GetPermissionTableName(systemCode);
-            }
+            var tableNamePermission = GetPermissionTableName(systemCode);
 
             //指定的菜单模块
             if (ValidateUtil.IsInt(moduleId))
             {
-                sb.Append(" AND ( " + BaseRoleEntity.FieldId + " IN ");
+                sb.Append(" AND ( " + BaseRoleEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
                 sb.Append(" FROM " + tableNamePermission);
                 sb.Append(" WHERE " + BasePermissionEntity.FieldPermissionId + " = '" + moduleId + "'");
-                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "' ");
+                sb.Append(" AND " + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldSystemCode + " = '" + systemCode + "'");
                 sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
+                sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0))");
             }
             //排除指定菜单模块
             if (ValidateUtil.IsInt(moduleIdExcluded))
@@ -375,6 +358,7 @@ namespace DotNet.Business
             if (ValidateUtil.IsInt(userId))
             {
                 sbView.Append("SELECT DISTINCT " + tableNameRole + "." + BaseRoleEntity.FieldId);
+                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldSystemCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCode);
@@ -396,12 +380,13 @@ namespace DotNet.Business
                 sbView.Append(" FROM " + tableNameRole + " INNER JOIN " + tableNameUserRole);
                 sbView.Append(" ON " + tableNameRole + "." + BaseRoleEntity.FieldId + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldRoleId);
                 sbView.Append(" AND " + tableNameRole + "." + BaseRoleEntity.FieldSystemCode + " = " + tableNameUserRole + "." + BaseUserRoleEntity.FieldSystemCode);
-                sbView.Append(" WHERE (" + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId + " = " + userId + ")");
+                sbView.Append(" WHERE " + tableNameUserRole + "." + BaseUserRoleEntity.FieldUserId + " = " + userId + "");
             }
             //指定菜单模块，就读取相应的Permission授权日期
             else if (ValidateUtil.IsInt(moduleId))
             {
                 sbView.Append("SELECT DISTINCT " + tableNameRole + "." + BaseRoleEntity.FieldId);
+                sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldSystemCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldOrganizationId);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCategoryCode);
                 sbView.Append("," + tableNameRole + "." + BaseRoleEntity.FieldCode);
@@ -423,8 +408,8 @@ namespace DotNet.Business
                 sbView.Append(" FROM " + tableNameRole + " INNER JOIN " + tableNamePermission);
                 sbView.Append(" ON " + tableNameRole + "." + BaseRoleEntity.FieldId + " = " + tableNamePermission + "." + BasePermissionEntity.FieldResourceId);
                 sbView.Append(" AND " + tableNameRole + "." + BaseRoleEntity.FieldSystemCode + " = " + tableNamePermission + "." + BasePermissionEntity.FieldSystemCode);
-                sbView.Append(" WHERE (" + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "')");
-                sbView.Append(" AND (" + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + ")");
+                sbView.Append(" WHERE " + tableNamePermission + "." + BasePermissionEntity.FieldResourceCategory + " = '" + tableNameRole + "'");
+                sbView.Append(" AND " + tableNamePermission + "." + BasePermissionEntity.FieldPermissionId + " = " + moduleId + "");
             }
             else
             {
@@ -441,15 +426,11 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="userInfo"></param>
         /// <returns></returns>
-        public DataTable GetApplicationRole(BaseUserInfo userInfo)
+        public DataTable GetApplicationRole(BaseUserInfo userInfo, string systemCode = null)
         {
-            var tableName = BaseRoleEntity.CurrentTableName;
-            if (!string.IsNullOrEmpty(userInfo.SystemCode))
-            {
-                tableName = GetRoleTableName(userInfo.SystemCode);
-            }
+            var roleTableName = GetRoleTableName(systemCode);
             // 获得角色列表
-            var manager = new BaseRoleManager(userInfo, tableName);
+            var manager = new BaseRoleManager(userInfo, roleTableName);
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCategoryCode, "ApplicationRole"),
@@ -728,45 +709,6 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int BatchSave(List<BaseRoleEntity> entities)
         {
-            /*
-            foreach (BaseRoleEntity roleEntity in roleEntites)
-            {
-                // 删除状态
-                if (dr.RowState == DataRowState.Deleted)
-                {
-                    string id = dr[BaseRoleEntity.FieldId, DataRowVersion.Original].ToString();
-                    if (id.Length > 0)
-                    {
-                        result += this.Delete(id);
-                    }
-                }
-                // 被修改过
-                if (dr.RowState == DataRowState.Update)
-                {
-                    string id = dr[BaseRoleEntity.FieldId, DataRowVersion.Original].ToString();
-                    if (!string.IsNullOrEmpty(id))
-                    {
-                        roleEntity.GetFrom(dr);
-                        result += this.UpdateEntity(roleEntity);
-                    }
-                }
-                // 添加状态
-                if (dr.RowState == DataRowState.Added)
-                {
-                    roleEntity.GetFrom(dr);
-                    result += this.AddEntity(roleEntity).Length > 0 ? 1 : 0;
-                }
-                if (dr.RowState == DataRowState.Unchanged)
-                {
-                    continue;
-                }
-                if (dr.RowState == DataRowState.Detached)
-                {
-                    continue;
-                }
-            }
-            */
-
             var result = 0;
             foreach (var entity in entities)
             {
@@ -850,11 +792,7 @@ namespace DotNet.Business
         {
             var result = new DataTable(BaseUserEntity.CurrentTableName);
 
-            var tableName = BaseUserRoleEntity.CurrentTableName;
-            if (!string.IsNullOrWhiteSpace(systemCode))
-            {
-                tableName = GetUserRoleTableName(systemCode);
-            }
+            var userRoleTableName = GetUserRoleTableName(systemCode);
 
             var commandText = @"SELECT BaseUser.Id
                                     , BaseUser.Code
@@ -887,7 +825,7 @@ namespace DotNet.Business
                          + " OR " + BaseUserEntity.FieldRealName + " LIKE '%" + searchKey + "%')";
             }
             // ORDER BY UserRole.CreateTime DESC ";
-            commandText = commandText.Replace("BaseUserRole", tableName);
+            commandText = commandText.Replace("BaseUserRole", userRoleTableName);
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldRoleId, roleId)
@@ -906,57 +844,6 @@ namespace DotNet.Business
             commandText = "(" + commandText + ") T ";
             // 2015-12-05 吉日嘎拉 增加参数化功能
             result = DbHelper.GetDataTableByPage(out recordCount, commandText, "*", pageNo, pageSize, null, dbParameters.ToArray(), orderBy);
-
-            return result;
-        }
-
-        #endregion
-
-        #region public DataTable GetOrganizationDataTable(string systemCode, string roleId)
-        /// <summary>
-        /// 获取角色权限范围（组织机构）
-        /// 2015-11-28 吉日嘎拉 整理参数化
-        /// </summary>
-        /// <param name="systemCode">系统编号</param>
-        /// <param name="roleId">角色主键</param>
-        /// <returns>组织机构表</returns>
-        public DataTable GetOrganizationDataTable(string systemCode, string roleId)
-        {
-            var result = new DataTable(BaseOrganizationEntity.CurrentTableName);
-
-            var tableName = BaseRoleOrganizationEntity.CurrentTableName;
-            if (!string.IsNullOrWhiteSpace(UserInfo.SystemCode))
-            {
-                tableName = GetRoleOrganizationTableName(UserInfo.SystemCode);
-            }
-
-            var commandText = @"SELECT BaseOrganization.Id
-                                    , BaseOrganization.Code
-                                    , BaseOrganization.Name 
-                                    , BaseOrganization.Description 
-                                    , RoleOrganization.Enabled
-                                    , RoleOrganization.CreateTime
-                                    , RoleOrganization.CreateBy
-                                    , RoleOrganization.UpdateTime
-                                    , RoleOrganization.UpdateBy
- FROM BaseOrganization RIGHT OUTER JOIN
-                          (SELECT OrganizationId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
- FROM BaseRoleOrganization
-                            WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId) +
-                                " AND Deleted = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldDeleted) + @") RoleOrganization 
-                            ON BaseOrganization.Id = RoleOrganization.OrganizationId
-                         WHERE BaseOrganization.Enabled = 1 AND BaseOrganization." + BaseOrganizationEntity.FieldDeleted + @" = 0
-                      ORDER BY RoleOrganization.CreateTime DESC ";
-
-            commandText = commandText.Replace("BaseRoleOrganization", tableName);
-
-            var dbParameters = new List<IDbDataParameter>
-            {
-                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldRoleId, roleId),
-                DbHelper.MakeParameter(BaseRoleOrganizationEntity.FieldDeleted, 0)
-            };
-
-            result = Fill(commandText, dbParameters.ToArray());
 
             return result;
         }
@@ -1056,9 +943,9 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             // 动态读取表中的数据
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetRoleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + roleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var listRole = CacheUtil.Cache<List<BaseRoleEntity>>(cacheKey, () =>
@@ -1069,7 +956,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
+                return new BaseRoleManager(roleTableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, refreshCache, cacheTime);
             result = listRole.Find(t => t.Id.Equals(id));
             //直接读取数据库
@@ -1096,9 +983,9 @@ namespace DotNet.Business
             }
 
             // 动态读取表中的数据
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
             //2017.12.19增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetRoleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + roleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var listRole = CacheUtil.Cache<List<BaseRoleEntity>>(cacheKey, () =>
@@ -1109,7 +996,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
+                return new BaseRoleManager(roleTableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, false, cacheTime);
             result = listRole.Find(t => t.Code == code);
             //直接读取数据库
@@ -1138,9 +1025,9 @@ namespace DotNet.Business
             }
 
             // 动态读取表中的数据
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetRoleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + roleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             var listRole = CacheUtil.Cache<List<BaseRoleEntity>>(cacheKey, () =>
@@ -1151,7 +1038,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                return new BaseRoleManager(tableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
+                return new BaseRoleManager(roleTableName).GetList<BaseRoleEntity>(parametersWhere, BaseRoleEntity.FieldId);
             }, true, false, cacheTime);
             result = listRole.Find(t => t.Name == name);
             //直接读取数据库
@@ -1175,19 +1062,19 @@ namespace DotNet.Business
         {
             var result = new List<BaseRoleEntity>();
 
-            var tableName = GetRoleTableName(systemCode);
+            var roleTableName = GetRoleTableName(systemCode);
 
             //2017.12.20增加默认的HttpRuntime.Cache缓存
-            var cacheKey = "List." + GetRoleTableName(systemCode);
+            var cacheKey = "List." + systemCode + "." + roleTableName;
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<List<BaseRoleEntity>>(cacheKey, () =>
             {
-                var roleManager = new BaseRoleManager(tableName);
+                var roleManager = new BaseRoleManager(roleTableName);
                 // 读取目标表中的数据
                 var parametersWhere = new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode,systemCode),
+                    new KeyValuePair<string, object>(BaseRoleEntity.FieldSystemCode, systemCode),
                     // 有效的菜单
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1),
                     // 没被删除的菜单

@@ -104,7 +104,7 @@ namespace DotNet.Business
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
         /// </summary>
         /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
-        /// <param name="destinationTableName">目标表名称</param>
+        /// <param name="destinationTableName">目标表名</param>
         /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
         /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
         public virtual bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0)

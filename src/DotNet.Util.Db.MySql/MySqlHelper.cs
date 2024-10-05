@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2011, DotNet.
+// All Rights Reserved. Copyright (c) 2024, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -10,7 +10,6 @@ using System.Data.Common;
 namespace DotNet.Util
 {
     using MySql.Data.MySqlClient;
-
     /// <summary>
     /// MySqlHelper
     /// 有关数据库连接的方法。
@@ -64,7 +63,7 @@ namespace DotNet.Util
         /// </summary>
         public MySqlHelper()
         {
-            FileName = "MySqlHelper.txt";   // sql查询句日志
+            FileName = "MySqlHelper.log";   // sql查询句日志
         }
         #endregion
 

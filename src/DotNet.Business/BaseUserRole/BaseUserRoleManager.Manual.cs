@@ -135,8 +135,8 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
             };
-            var tableName = GetUserRoleTableName(systemCode);
-            var manager = new BaseUserRoleManager(DbHelper, UserInfo, tableName);
+            var userRoleTableName = GetUserRoleTableName(systemCode);
+            var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             var ls = manager.GetList<BaseUserRoleEntity>(whereParameters, order: BaseUserRoleEntity.FieldCreateTime + " ASC");
             if (ls != null)
             {

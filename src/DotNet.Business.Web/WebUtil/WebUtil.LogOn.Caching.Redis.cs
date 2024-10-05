@@ -119,10 +119,10 @@ namespace DotNet.Business
         /// <param name="userInfo">用户信息</param>
         /// <param name="cachingSystemCode">缓存系统</param>
         /// <param name="useCaching">采用缓存</param>
-        /// <param name="useDataBase">采用数据库</param>
+        /// <param name="useDatabase">采用数据库</param>
         /// <param name="useUserCenterHost">采用用户中心接口</param>
         /// <returns>验证通过</returns>
-        public static bool ValidateUserInfo(BaseUserInfo userInfo, string cachingSystemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
+        public static bool ValidateUserInfo(BaseUserInfo userInfo, string cachingSystemCode = null, bool useCaching = true, bool useDatabase = false, bool useUserCenterHost = false)
         {
             // 用户是否为空的?
             if (userInfo == null)
@@ -179,12 +179,12 @@ namespace DotNet.Business
         /// <param name="openId">用户的令牌</param>
         /// <param name="systemCode">子系统</param>
         /// <param name="useCaching">采用缓存</param>
-        /// <param name="useDataBase">采用数据库</param>
+        /// <param name="useDatabase">采用数据库</param>
         /// <param name="useUserCenterHost">采用用户中心接口</param>
         /// <returns>验证通过</returns>
-        public static bool ValidateOpenId(int userId, string openId, string systemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
+        public static bool ValidateOpenId(int userId, string openId, string systemCode = null, bool useCaching = true, bool useDatabase = false, bool useUserCenterHost = false)
         {
-            return ValidateOpenId(userId.ToString(), openId, systemCode, useCaching, useDataBase, useUserCenterHost);
+            return ValidateOpenId(userId.ToString(), openId, systemCode, useCaching, useDatabase, useUserCenterHost);
         }
 
         /// <summary>
@@ -194,10 +194,10 @@ namespace DotNet.Business
         /// <param name="openId">用户的令牌</param>
         /// <param name="systemCode">子系统</param>
         /// <param name="useCaching">采用缓存</param>
-        /// <param name="useDataBase">采用数据库</param>
+        /// <param name="useDatabase">采用数据库</param>
         /// <param name="useUserCenterHost">采用用户中心接口</param>
         /// <returns>验证通过</returns>
-        public static bool ValidateOpenId(string userId, string openId, string systemCode = null, bool useCaching = true, bool useDataBase = false, bool useUserCenterHost = false)
+        public static bool ValidateOpenId(string userId, string openId, string systemCode = null, bool useCaching = true, bool useDatabase = false, bool useUserCenterHost = false)
         {
             var result = false;
 
@@ -230,7 +230,7 @@ namespace DotNet.Business
                 }
 
                 // 用数据库的方式进行验证
-                if (!result && useDataBase)
+                if (!result && useDatabase)
                 {
                     var userLogonManager = new BaseUserLogonManager();
                     result = userLogonManager.ValidateOpenId(userId, openId, systemCode);
@@ -282,10 +282,10 @@ namespace DotNet.Business
         /// <param name="userInfo">用户信息</param>
         /// <param name="cachingSystemCode"></param>
         /// <param name="useCaching"></param>
-        /// <param name="useDataBase"></param>
+        /// <param name="useDatabase"></param>
         /// <param name="useUserCenterHost"></param>
         /// <returns></returns>
-        public static string GetUserOpenId(BaseUserInfo userInfo, string cachingSystemCode = null, bool useCaching = false, bool useDataBase = true, bool useUserCenterHost = false)
+        public static string GetUserOpenId(BaseUserInfo userInfo, string cachingSystemCode = null, bool useCaching = false, bool useDatabase = true, bool useUserCenterHost = false)
         {
             var result = string.Empty;
 
@@ -313,7 +313,7 @@ namespace DotNet.Business
                 }
 
 
-                if (useDataBase)
+                if (useDatabase)
                 {
                     var userLogonManager = new BaseUserLogonManager(userInfo);
                     result = userLogonManager.GetUserOpenId(userInfo, cachingSystemCode);

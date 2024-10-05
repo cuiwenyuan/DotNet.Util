@@ -373,7 +373,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="cellHeader">单元头的Key和Value：{ { "UserName", "姓名" }, { "Age", "年龄" } };</param>
         /// <param name="iList">数据源</param>
-        /// <param name="sheetName">工作表名称</param>
+        /// <param name="sheetName">工作表名</param>
         /// <returns>文件的下载地址</returns>
         public static string EntityListToExcel2003(Dictionary<string, string> cellHeader, IList iList, string sheetName)
         {

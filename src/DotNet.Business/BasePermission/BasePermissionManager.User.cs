@@ -348,8 +348,8 @@ namespace DotNet.Business
                 return result;
             }
 
-            var tableName = GetPermissionTableName(systemCode);
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
 
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -535,23 +535,23 @@ namespace DotNet.Business
             string[] result = null;
             if (!string.IsNullOrEmpty(permissionId))
             {
-                var tableName = GetPermissionTableName(systemCode);
+                var permissionTableName = GetPermissionTableName(systemCode);
                 var sb = PoolUtil.StringBuilder.Get();
 
                 // 1.本人直接就有某个操作权限的。
-                sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
-                dt = Fill(sb.ToString());
+                sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
+                dt = Fill(sb.Return());
                 var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
-                sb.Clear();
-                sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + GetRoleTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
-                dt = Fill(sb.ToString());
+                sb = PoolUtil.StringBuilder.Get();
+                sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = '" + GetRoleTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
+                dt = Fill(sb.Return());
                 var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
                 // 3.组织机构有某个操作权限。
-                sb.Clear();
-                sb.Append("SELECT ResourceId FROM " + tableName + " WHERE (ResourceCategory = '" + GetRoleOrganizationTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
+                sb = PoolUtil.StringBuilder.Get();
+                sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = '" + GetRoleOrganizationTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
                 dt = Fill(sb.Return());
                 var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
 
@@ -575,8 +575,8 @@ namespace DotNet.Business
         public int CopyUserPermission(string systemCode, int referenceUserId, int targetUserId)
         {
             var result = 0;
-            var tableName = GetPermissionTableName(systemCode);
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
 
             var whereParameters = new List<KeyValuePair<string, object>>
             {

@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <param name="recordKey">记录主键</param>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         /// <param name="systemCode">子系统编码</param>
         public virtual void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null)
         {

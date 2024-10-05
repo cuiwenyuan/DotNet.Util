@@ -436,8 +436,8 @@ namespace DotNet.Util
             // 输出访问日志
             // 写入调试信息
 #if (DEBUG)
-            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
-            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
 
             return Environment.TickCount;
@@ -458,8 +458,8 @@ namespace DotNet.Util
             if (userInfo != null)
             {
                 // Console.WriteLine("Company: " + userInfo.CompanyName + "Department: " + userInfo.DepartmentName + "User: " + userInfo.RealName + " IP: " + userInfo.IPAddress);
-                // Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
-                // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+                // Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+                // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
             }
 #endif
 
@@ -522,7 +522,7 @@ namespace DotNet.Util
         public static void WriteDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {
 #if (DEBUG)
-            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
         }
     }

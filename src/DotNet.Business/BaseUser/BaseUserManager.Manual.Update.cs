@@ -118,7 +118,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         /// <returns>影响行数</returns>
         public int SaveEntityChangeLog(BaseUserEntity entityNew, BaseUserEntity entityOld, string tableName = null)
         {

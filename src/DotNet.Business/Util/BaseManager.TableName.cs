@@ -35,7 +35,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "Module";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BaseModule";
+            }
             return result;
         }
 
@@ -55,7 +58,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "Permission";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BasePermission";
+            }
             return result;
         }
 
@@ -75,7 +81,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "PermissionScope";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BasePermissionScope";
+            }
             return result;
         }
 
@@ -95,7 +104,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "Role";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BaseRole";
+            }
             return result;
         }
 
@@ -115,7 +127,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "RoleOrganization";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BaseRoleOrganization";
+            }
             return result;
         }
 
@@ -135,7 +150,10 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
             result = systemCode + "UserRole";
-
+            if (BaseSystemInfo.UseBaseTable)
+            {
+                result = "BaseUserRole";
+            }
             return result;
         }
 
