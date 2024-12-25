@@ -28,12 +28,28 @@ namespace DotNet.Util
 	/// </summary>
 	public class PostgreSqlHelper : DbHelper, IDbHelper
 	{
-		public NpgsqlConnection  connection   = new NpgsqlConnection();
-		public NpgsqlCommand     command      = new NpgsqlCommand();
-		public NpgsqlDataAdapter dataAdapter  = new NpgsqlDataAdapter();
-		public NpgsqlTransaction transaction;
+        /// <summary>
+        /// connection
+        /// </summary>
+        public NpgsqlConnection  connection   = new NpgsqlConnection();
+        /// <summary>
+        /// command
+        /// </summary>
+        public NpgsqlCommand     command      = new NpgsqlCommand();
+        /// <summary>
+        /// dataAdapter
+        /// </summary>
+        public NpgsqlDataAdapter dataAdapter  = new NpgsqlDataAdapter();
+        /// <summary>
+        /// transaction
+        /// </summary>
+        public NpgsqlTransaction transaction;
 
-		public override DbProviderFactory GetInstance()
+        /// <summary>
+        /// GetInstance
+        /// </summary>
+        /// <returns></returns>
+        public override DbProviderFactory GetInstance()
 		{
             return DbProviderFactories.GetFactory("Npgsql");
 		}

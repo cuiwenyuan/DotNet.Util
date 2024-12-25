@@ -46,12 +46,13 @@ namespace DotNet.Util
                     doc.Load(filePath);
                     var xn = doc.SelectSingleNode(xPath);
                     var n = doc.ImportNode(xmlNode, true);
-                    if (xn != null) xn.AppendChild(n);
+                    xn?.AppendChild(n);
                     doc.Save(filePath);
                     return true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogUtil.WriteException(ex);
                     return false;
                 }
             }

@@ -27,7 +27,7 @@ namespace DotNet.Util
         /// <param name="accessKeyId">accessKeyId</param>
         /// <param name="accessKeySecret">accessKeySecret</param>
         /// <param name="signName">签名</param>
-        /// <param name="param">参数（建议Dictionary<string, object>）</param>
+        /// <param name="param">参数（建议<![CDATA[Dictionary<string, object>]]>）</param>
         /// <returns></returns>
         public static bool Send(out string message, string mobile, string json, string templateCode, string serviceUrl = null, string accessKeyId = null, string accessKeySecret = null, string signName = null, object param = null)
         {

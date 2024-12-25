@@ -1334,6 +1334,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "RememberPassword", BaseSystemInfo.RememberPassword.ToString());
 
             SetValue(xmlDocument, "ClientEncryptPassword", BaseSystemInfo.ClientEncryptPassword.ToString());
+            SetValue(xmlDocument, "UseBaseTable", BaseSystemInfo.UseBaseTable.ToString());
             SetValue(xmlDocument, "CheckIPAddress", BaseSystemInfo.CheckIpAddress.ToString());
             SetValue(xmlDocument, "LogException", BaseSystemInfo.LogException.ToString());
             SetValue(xmlDocument, "LogSql", BaseSystemInfo.LogSql.ToString());
