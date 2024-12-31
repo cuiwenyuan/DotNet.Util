@@ -30,7 +30,7 @@ namespace DotNet.Util
             get
             {
                 // 这个是测试用的
-                // return "http://mas.wangcaisoft.com/";
+                // return "http://mas.wangcaisoft.cn/";
 
                 if (string.IsNullOrEmpty(_userCenterHost))
                 {
@@ -57,7 +57,7 @@ namespace DotNet.Util
                     // 若还是都找不到配置，就用默认的配置文件
                     if (string.IsNullOrEmpty(_userCenterHost))
                     {
-                        _userCenterHost = "https://userCenter.wangcaisoft.com/";
+                        _userCenterHost = "https://userCenter.wangcaisoft.cn/";
                     }
                 }
                 return _userCenterHost;
@@ -79,7 +79,7 @@ namespace DotNet.Util
                 }
                 if (string.IsNullOrEmpty(_mobileHost))
                 {
-                    _mobileHost = "http://dotnet.wangcaisoft.com/WebAPIV" + BaseSystemInfo.DatabaseTableVersion + "/API/Mobile/";
+                    _mobileHost = "http://dotnet.wangcaisoft.cn/WebAPIV" + BaseSystemInfo.DatabaseTableVersion + "/API/Mobile/";
                 }
                 return _mobileHost;
             }
@@ -127,7 +127,7 @@ namespace DotNet.Util
         {
             get
             {
-                var webHost = "http://userCenter.wangcaisoft.com/";
+                var webHost = "http://userCenter.wangcaisoft.cn/";
                 if (ConfigurationManager.AppSettings["WebHost"] != null)
                 {
                     webHost = ConfigurationManager.AppSettings["WebHost"];

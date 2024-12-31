@@ -28,7 +28,7 @@ namespace DotNet.Business
         /// <summary>
         /// 网址
         /// </summary>
-        public static string Url = "redis.wangcaisoft.com:6379";
+        public static string Url = "redis.wangcaisoft.cn:6379";
 
 #if NET452_OR_GREATER
         /// <summary>
