@@ -11,7 +11,7 @@ https://www.nuget.org/packages?q=wangcaisoft
 
 
 ## 背景
-组件历史悠久，大概2006年前后[吉日嘎啦](https://www.cnblogs.com/jirigala/)就开始积累这些类库，后来[崔文远](https://www.cuiwenyuan.com)基于其2014年发布DotNet.Common V4组件继续升级、实战，2020年之后吸收[大石头](http://www.cnblogs.com/nnhy/)主导的[新生命](https://www.newlifex.com)之[NewLife.Core](https://github.com/NewLifeX/X)很多精华，最后呈现了这个开源的代码！
+组件历史悠久，大概2006年前后[吉日嘎啦](https://www.cnblogs.com/jirigala/)就开始积累这些类库，后来[崔文远](https://www.cuiwenyuan.cn)基于其2014年发布DotNet.Common V4组件继续升级、实战，2020年之后吸收[大石头](http://www.cnblogs.com/nnhy/)主导的[新生命](https://www.newlifex.com)之[NewLife.Core](https://github.com/NewLifeX/X)很多精华，最后呈现了这个开源的代码！
 
 ## 初衷
 随着.NET5,.NET6,.NET7陆续推出，越来越少的人使用.NET Framework，相信将本源码用于实际项目的会越来越少，所以如果你是互联网企业从业者，可能你要失望了。强烈推荐传统行业、制造业、中小企业，特别是外企（毕竟微软在国外市场很稳固，不像国内那么Java一统天下）、合资公司使用。 
@@ -21,8 +21,8 @@ https://www.nuget.org/packages?q=wangcaisoft
 ## 联系方式
 我是崔文远，2013年开始把自己弄得一些软件起了个名字：旺财软件。 
 
-个人网站：https://www.cuiwenyuan.com  
-微信：cuiwenyuan1981
+个人网站：https://www.cuiwenyuan.cn  
+微信：cuiwenyuan2048
 
 ## 欢迎勾搭
 如果您在使用中有任何问题，请使用GitHub的Issue功能提交给我，也欢迎加我微信沟通。  
