@@ -45,7 +45,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">显示已禁用</param>
         /// <param name="showDeleted">显示已删除</param>
         /// <returns></returns>
-        public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录

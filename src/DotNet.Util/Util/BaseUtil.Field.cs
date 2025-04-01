@@ -360,6 +360,34 @@ namespace DotNet.Util
 
         #endregion
 
+        #region IsIssued
+        /// <summary>
+        /// 是否已发料 
+        /// </summary>
+        public const string FieldIsIssued = "IsIssued";
+
+        /// <summary>
+        /// 发料时间
+        /// </summary>
+        public const string FieldIssueTime = "IssueTime";
+
+        /// <summary>
+        /// 发料人用户主键
+        /// </summary>
+        public const string FieldIssueUserId = "IssueUserId";
+
+        /// <summary>
+        /// 发料人用户名
+        /// </summary>
+        public const string FieldIssueUserName = "IssueUserName";
+
+        /// <summary>
+        /// 发料人
+        /// </summary>
+        public const string FieldIssueBy = "IssueBy";
+
+        #endregion
+
         /// <summary>
         /// 允许删除
         /// </summary>

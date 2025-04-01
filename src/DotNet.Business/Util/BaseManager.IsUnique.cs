@@ -55,7 +55,7 @@ namespace DotNet.Business
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {
@@ -113,7 +113,7 @@ namespace DotNet.Business
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {
@@ -181,7 +181,7 @@ namespace DotNet.Business
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {

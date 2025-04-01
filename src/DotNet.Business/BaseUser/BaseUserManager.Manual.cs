@@ -52,7 +52,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string organizationId, string userId, string roleId, string roleIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, bool disabledUserOnly, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //用户表名
             var tableNameUser = BaseUserEntity.CurrentTableName;
@@ -110,7 +110,7 @@ namespace DotNet.Business
             //}
             if (ValidateUtil.IsInt(userId))
             {
-                // sb.Append(" AND UserId = " + userId);
+                // sb.Append(" AND " + BaseUtil.FieldUserId + " = " + userId);
             }
             //是否显示已隐藏记录
             if (!showInvisible)
@@ -1625,7 +1625,7 @@ namespace DotNet.Business
             sb.Append("SELECT COUNT(*) AS UserCount "
                             + " FROM " + CurrentTableName
                             + " INNER JOIN " + BaseStaffEntity.CurrentTableName + " ON " + BaseStaffEntity.CurrentTableName + ".Id = " + CurrentTableName + ".Id"
-                            + " WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + ".Enabled = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
+                            + " WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + "." + BaseUtil.FieldEnabled + " = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " > " + entity.Score + " OR (" + CurrentTableName + "."
                             + BaseUserEntity.FieldSortCode + " < " + entity.SortCode + " AND " + CurrentTableName + "." + BaseUserEntity.FieldScore
                             + " = " + entity.Score + "))");

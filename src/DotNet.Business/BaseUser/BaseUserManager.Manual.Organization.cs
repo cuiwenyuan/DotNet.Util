@@ -87,7 +87,7 @@ namespace DotNet.Business
             string sql = string.Format(
                              @"SELECT CompanyId AS Id
   FROM BaseUser
-                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND Enabled =1 AND CompanyId IS NOT NULL  AND (Id = {0})
+                                 WHERE " + BaseUserOrganizationEntity.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " =1 AND CompanyId IS NOT NULL  AND (Id = {0})
                                  UNION
                                 SELECT SubCompanyId AS Id
   FROM BaseUser

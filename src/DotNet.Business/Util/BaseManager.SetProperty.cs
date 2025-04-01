@@ -31,7 +31,7 @@ namespace DotNet.Business
         /// <param name="parameter">参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
@@ -44,7 +44,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(string id, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql);
@@ -56,7 +56,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(object id, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameter, whereSql: whereSql);
@@ -68,7 +68,7 @@ namespace DotNet.Business
         /// <param name="parameters">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(object id, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             return SetProperty(new KeyValuePair<string, object>(PrimaryKey, id), parameters, whereSql: whereSql);
@@ -80,7 +80,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(object[] ids, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             return SetProperty(PrimaryKey, ids, parameter, whereSql: whereSql);
@@ -92,7 +92,7 @@ namespace DotNet.Business
         /// <param name="parameters">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(object[] ids, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             return SetProperty(PrimaryKey, ids, parameters, whereSql: whereSql);
@@ -105,7 +105,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(string name, object[] values, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var result = 0;
@@ -130,7 +130,7 @@ namespace DotNet.Business
         /// <param name="parameters">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(string name, object[] values, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             var result = 0;
@@ -155,7 +155,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter1, KeyValuePair<string, object> whereParameter2, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter1, whereParameter2 };
@@ -170,7 +170,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
@@ -184,7 +184,7 @@ namespace DotNet.Business
         /// <param name="parameter">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, KeyValuePair<string, object> parameter, string whereSql = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter };
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <param name="parameters">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(KeyValuePair<string, object> whereParameter, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             var whereParameters = new List<KeyValuePair<string, object>> { whereParameter };
@@ -211,7 +211,7 @@ namespace DotNet.Business
         /// <param name="parameters">更新参数</param>
         /// <param name="whereSql">条件Sql</param>
         /// <returns></returns>
-        [Obsolete("Please use UpdateProperty method from 2022-12-18", true)]
+        [Obsolete("Please use Update method from 2022-12-18", true)]
         public virtual int SetProperty(List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null)
         {
             return DbHelper.SetProperty(CurrentTableName, whereParameters, parameters, whereSql: whereSql);

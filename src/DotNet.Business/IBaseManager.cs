@@ -625,7 +625,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText);
+        int ExecuteNonQuery(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询语句
@@ -633,7 +633,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters);
+        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         #endregion
 
@@ -643,7 +643,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <returns>object</returns>
-        object ExecuteScalar(string commandText);
+        object ExecuteScalar(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询语句
@@ -651,7 +651,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>Object</returns>
-        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
+        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
         #endregion
 
         #region Fill填充数据表
@@ -660,7 +660,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">查询</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText);
+        DataTable Fill(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
@@ -668,7 +668,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText, IDbDataParameter[] dbParameters);
+        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         #endregion
 
@@ -812,23 +812,49 @@ namespace DotNet.Business
         /// 是否被用过
         /// </summary>
         /// <param name="id">行id</param>
-        /// <param name="tableName">要检查的关联表名</param>
-        /// <param name="tableFieldName">要检查的关联表字段名</param>
-        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField">要检查的关联表字段名</param>
+        /// <param name="currentTableField">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string id, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
+        bool IsUsed(string id, string targetTableName, string targetTableField, string currentTableField = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否被用过（批量）
         /// </summary>
         /// <param name="ids">行Ids</param>
-        /// <param name="tableName">要检查的关联表名</param>
-        /// <param name="tableFieldName">要检查的关联表字段名</param>
-        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField">要检查的关联表字段名</param>
+        /// <param name="currentTableField">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string[] ids, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
+        bool IsUsed(string[] ids, string targetTableName, string targetTableField, string currentTableField = BaseUtil.FieldId, bool checkUserCompany = false);
+
+        /// <summary>
+        /// 是否被用过
+        /// </summary>
+        /// <param name="id">行id</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField1">要检查的关联表字段名1</param>
+        /// <param name="targetTableField2">要检查的关联表字段名2</param>
+        /// <param name="currentTableField1">当前表的关联字段名1（默认为Id）</param>
+        /// <param name="currentTableField2">当前表的关联字段名2（默认为Id）</param>
+        /// <param name="checkUserCompany">是否检查公司数据</param>
+        /// <returns>是否</returns>
+        bool IsUsed(string id, string targetTableName, string targetTableField1, string targetTableField2, string currentTableField1 = BaseUtil.FieldId, string currentTableField2 = BaseUtil.FieldId, bool checkUserCompany = false);
+
+        /// <summary>
+        /// 是否被用过（批量）
+        /// </summary>
+        /// <param name="ids">行Ids</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField1">要检查的关联表字段名1</param>
+        /// <param name="targetTableField2">要检查的关联表字段名2</param>
+        /// <param name="currentTableField1">当前表的关联字段名（默认为Id）</param>
+        ///  <param name="currentTableField2">当前表的关联字段名（默认为Id）</param>
+        /// <param name="checkUserCompany">是否检查公司数据</param>
+        /// <returns>是否</returns>
+        bool IsUsed(string[] ids, string targetTableName, string targetTableField1, string targetTableField2, string currentTableField1 = BaseUtil.FieldId, string currentTableField2 = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 删除缓存

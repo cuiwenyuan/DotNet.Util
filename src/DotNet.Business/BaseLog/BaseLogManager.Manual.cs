@@ -41,7 +41,7 @@ namespace DotNet.Business
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序规则</param>
         /// <returns></returns>
-        public DataTable GetDataTableByPage(string processId, string processName, string methodId, string methodName, string userRealName, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC")
+        public DataTable GetDataTableByPage(string processId, string processName, string methodId, string methodName, string userRealName, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC")
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             

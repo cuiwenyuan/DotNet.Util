@@ -211,7 +211,7 @@ namespace DotNet.Util
         /// <returns>Url参数的int类型值</returns>
         public static int GetQueryInt(string strName)
         {
-            return Utils.StrToInt(HttpContext.Current.Request.QueryString[strName], 0);
+            return HttpContext.Current.Request.QueryString[strName].ToInt();
         }
 
 
@@ -223,7 +223,7 @@ namespace DotNet.Util
         /// <returns>Url参数的int类型值</returns>
         public static int GetQueryInt(string strName, int defValue = 0)
         {
-            return Utils.StrToInt(HttpContext.Current.Request.QueryString[strName], defValue);
+            return HttpContext.Current.Request.QueryString[strName].ToInt(defValue);
         }
 
 
@@ -235,7 +235,7 @@ namespace DotNet.Util
         /// <returns>表单参数的int类型值</returns>
         public static int GetFormInt(string strName, int defValue = 0)
         {
-            return Utils.StrToInt(HttpContext.Current.Request.Form[strName], defValue);
+            return HttpContext.Current.Request.Form[strName].ToInt(defValue);
         }
 
         /// <summary>
@@ -253,43 +253,6 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 获得指定Url参数的float类型值
-        /// </summary>
-        /// <param name="strName">Url参数</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>Url参数的int类型值</returns>
-        public static float GetQueryFloat(string strName, float defValue = 0F)
-        {
-            return Utils.StrToFloat(HttpContext.Current.Request.QueryString[strName], defValue);
-        }
-
-
-        /// <summary>
-        /// 获得指定表单参数的float类型值
-        /// </summary>
-        /// <param name="strName">表单参数</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>表单参数的float类型值</returns>
-        public static float GetFormFloat(string strName, float defValue = 0F)
-        {
-            return Utils.StrToFloat(HttpContext.Current.Request.Form[strName], defValue);
-        }
-
-        /// <summary>
-        /// 获得指定Url或表单参数的float类型值, 先判断Url参数是否为缺省值, 如为True则返回表单参数的值
-        /// </summary>
-        /// <param name="strName">Url或表单参数</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>Url或表单参数的int类型值</returns>
-        public static float GetFloat(string strName, float defValue = 0F)
-        {
-            if (Math.Abs(GetQueryFloat(strName, defValue) - defValue) < 0.001)
-                return GetFormFloat(strName, defValue);
-            else
-                return GetQueryFloat(strName, defValue);
-        }
-
-        /// <summary>
         /// 获得指定Url参数的Decimal类型值
         /// </summary>
         /// <param name="strName">Url参数</param>
@@ -297,7 +260,7 @@ namespace DotNet.Util
         /// <returns>Url参数的int类型值</returns>
         public static decimal GetQueryDecimal(string strName, decimal defValue = 0M)
         {
-            return Utils.StrToDecimal(HttpContext.Current.Request.QueryString[strName], defValue);
+            return HttpContext.Current.Request.QueryString[strName].ToDecimal(defValue);
         }
 
 
@@ -309,7 +272,7 @@ namespace DotNet.Util
         /// <returns>表单参数的float类型值</returns>
         public static decimal GetFormDecimal(string strName, decimal defValue = 0M)
         {
-            return Utils.StrToDecimal(HttpContext.Current.Request.Form[strName], defValue);
+            return HttpContext.Current.Request.Form[strName].ToDecimal(defValue);
         }
 
         /// <summary>

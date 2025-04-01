@@ -449,8 +449,8 @@ namespace DotNet.Business
 
             var sb = PoolUtil.StringBuilder.Get();
             sb.AppendLine("SELECT BaseRole.Code, BaseRole.Name, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
-            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE Enabled = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
-            sb.AppendLine(" WHERE BaseRole.Enabled = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
+            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE " + BaseUtil.FieldEnabled + " = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
+            sb.AppendLine(" WHERE BaseRole." + BaseUtil.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
             //替换表名
             sb = sb.Replace("BaseUserRole", userRoleTableName);
             sb = sb.Replace("BaseRole", roleTableName);
@@ -749,7 +749,7 @@ namespace DotNet.Business
  FROM BaseRole RIGHT OUTER JOIN
                           (SELECT UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole
                             WHERE UserId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId)
-                                  + " AND Enabled = 1 AND SystemCode = '" + systemCode + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0" + @") UserRole 
+                                  + " AND " + BaseUtil.FieldEnabled + " = 1 AND SystemCode = '" + systemCode + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0" + @") UserRole 
                             ON BaseRole.Id = UserRole.RoleId WHERE BaseRole." + BaseRoleEntity.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + @" = 0 
                       ORDER BY UserRole." + BaseRoleEntity.FieldCreateTime + " DESC ";
             //替换表名
@@ -783,7 +783,7 @@ namespace DotNet.Business
         {
             var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var commandText = @"SELECT A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldCode + ", A." + BaseUserEntity.FieldCompanyName + ", A." + BaseUserEntity.FieldDepartmentName + ", A." + BaseUserEntity.FieldRealName + ", A." + BaseUserEntity.FieldDescription + ", A." + BaseUserEntity.FieldEnabled + ", A." + BaseUserEntity.FieldCreateTime + ", A." + BaseUserEntity.FieldCreateBy + ", A." + BaseUserEntity.FieldUpdateTime + ", A." + BaseUserEntity.FieldUpdateBy + " FROM " + BaseUserEntity.CurrentTableName + @" A RIGHT OUTER JOIN (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND Deleted = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole ON A.Id = UserRole.UserId  WHERE A." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + " ORDER BY UserRole." + BaseUserRoleEntity.FieldUpdateTime;
+            var commandText = @"SELECT A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldCode + ", A." + BaseUserEntity.FieldCompanyName + ", A." + BaseUserEntity.FieldDepartmentName + ", A." + BaseUserEntity.FieldRealName + ", A." + BaseUserEntity.FieldDescription + ", A." + BaseUserEntity.FieldEnabled + ", A." + BaseUserEntity.FieldCreateTime + ", A." + BaseUserEntity.FieldCreateBy + ", A." + BaseUserEntity.FieldUpdateTime + ", A." + BaseUserEntity.FieldUpdateBy + " FROM " + BaseUserEntity.CurrentTableName + @" A RIGHT OUTER JOIN (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUtil.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole ON A.Id = UserRole.UserId  WHERE A." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + " ORDER BY UserRole." + BaseUserRoleEntity.FieldUpdateTime;
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldRoleId, roleId),

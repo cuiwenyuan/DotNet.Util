@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// 
     /// 
     ///		2022.12.18 版本：2.0 Troy.Cui 重构为Update方法，新增可选参数addUpdateInfo，默认为true
-    ///		2021.11.19 版本：1.0 Troy.Cui 新增此UpdateProperty方法，统一制定属性字段值更新写法
+    ///		2021.11.19 版本：1.0 Troy.Cui 新增此Update方法，统一制定属性字段值更新写法
     ///
     /// <author>
     ///		<name>Troy.Cui</name>

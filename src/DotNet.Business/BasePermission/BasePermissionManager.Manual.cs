@@ -31,6 +31,28 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager
     {
+        #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
+
+        /// <summary>
+        /// 是否有相应的权限
+        /// </summary>
+        /// <param name="permissionCode">权限编码</param>
+        /// <param name="userId">用户编号</param>
+        /// <returns>是否有权限</returns>
+        public bool IsAuthorized(string permissionCode, string userId = null, string systemCode = null)
+        {
+            if (UserInfo != null && UserInfo.IsAdministrator)
+            {
+                return true;
+            }
+            if (UserInfo != null && string.IsNullOrEmpty(userId))
+            {
+                userId = UserInfo.Id.ToString();
+            }
+            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        }
+        #endregion
+
         #region public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null) 获用户拥有的操作权限列表
         /// <summary>
         /// 获用户拥有的操作权限列表

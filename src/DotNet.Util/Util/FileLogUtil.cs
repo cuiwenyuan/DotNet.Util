@@ -35,6 +35,7 @@ namespace DotNet.Util
                         sb.Append(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat));
                         sb.Append(" ");
                         sb.Append(Thread.CurrentThread.ManagedThreadId);
+                        sb.Append(" ");
                         sb.Append(val.Item2);
                         Trace.WriteLine(sb);
                         //大并发时，写入文本日志速度太慢会积压，内存占用高

@@ -417,9 +417,9 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
         /// <param name="destinationTableName">目标表名</param>
-        /// <param name="bulkCopyTimeout">超时限制，默认为30秒</param>
+        /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
         /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
-        public virtual bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 30, int batchSize = 0)
+        public virtual bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0)
         {
             var result = false;
             // 各自数据集需要自行覆盖实现此处逻辑

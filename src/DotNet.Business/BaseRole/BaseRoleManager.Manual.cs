@@ -242,7 +242,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string moduleId, string moduleIdExcluded, bool showInvisible, string codePrefix, string codePrefixExcluded, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //角色名
             var tableNameRole = GetRoleTableName(systemCode);
@@ -335,13 +335,13 @@ namespace DotNet.Business
             if (!string.IsNullOrEmpty(codePrefix))
             {
                 codePrefix = dbHelper.SqlSafe(codePrefix);
-                sb.Append(" AND  " + BaseRoleEntity.FieldCode + " LIKE N'" + codePrefix + "%'");
+                sb.Append(" AND " + BaseRoleEntity.FieldCode + " LIKE N'" + codePrefix + "%'");
             }
             //排除前缀
             if (!string.IsNullOrEmpty(codePrefixExcluded))
             {
                 codePrefixExcluded = dbHelper.SqlSafe(codePrefixExcluded);
-                sb.Append(" AND  " + BaseRoleEntity.FieldCode + " NOT LIKE N'" + codePrefixExcluded + "%'");
+                sb.Append(" AND " + BaseRoleEntity.FieldCode + " NOT LIKE N'" + codePrefixExcluded + "%'");
             }
             //关键词
             if (!string.IsNullOrEmpty(searchKey))
@@ -613,7 +613,7 @@ namespace DotNet.Business
             return GetDataTable(parametersList, BaseRoleEntity.FieldSortCode);
             /*
             string sql = "SELECT " + BaseRoleEntity.CurrentTableName + ".*,"
-                            + " (SELECT COUNT(*) FROM " + BaseUserRoleEntity.CurrentTableName + " WHERE (Enabled = 1) AND (RoleId = " + BaseRoleEntity.CurrentTableName + ".Id)) AS UserCount "
+                            + " (SELECT COUNT(*) FROM " + BaseUserRoleEntity.CurrentTableName + " WHERE (" + BaseUtil.FieldEnabled + " = 1) AND (RoleId = " + BaseRoleEntity.CurrentTableName + ".Id)) AS UserCount "
                             + " FROM " + BaseRoleEntity.CurrentTableName
                             + " WHERE " + BaseRoleEntity.FieldSystemId + " = " + "'" + systemId + "'"
                             + " ORDER BY " + BaseRoleEntity.FieldSortCode;

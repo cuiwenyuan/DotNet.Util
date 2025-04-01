@@ -30,7 +30,7 @@ namespace DotNet.Business
         /// 用户添加之前执行的方法
         /// </summary>
         /// <param name="entity">用户实体</param>
-        public void BeforeAdd(BaseUserEntity entity)
+        public void BeforeAdd(BaseUserEntity entity, bool checkCodeExist = false)
         {
             // 检测成功，可以添加用户
             Status = Status.OkAdd;
@@ -46,7 +46,7 @@ namespace DotNet.Business
             else
             {
                 // 检查编号是否重复
-                if (!string.IsNullOrEmpty(entity.Code)
+                if (checkCodeExist && !string.IsNullOrEmpty(entity.Code)
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldCode, entity.Code)
                     , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
                 {
@@ -95,11 +95,11 @@ namespace DotNet.Business
         /// <param name="entity">用户实体</param>
         /// <param name="userLogonEntity"></param>
         /// <returns>主键</returns>
-        public string AddUser(BaseUserEntity entity, BaseUserLogonEntity userLogonEntity = null)
+        public string AddUser(BaseUserEntity entity, BaseUserLogonEntity userLogonEntity = null, bool checkCodeExist = false)
         {
             var result = string.Empty;
 
-            BeforeAdd(entity);
+            BeforeAdd(entity, checkCodeExist);
 
             if (StatusCode == Status.OkAdd.ToString())
             {
@@ -112,7 +112,6 @@ namespace DotNet.Business
                     userLogonEntity = new BaseUserLogonEntity();
                 }
                 userLogonEntity.UserId = result.ToInt();
-                //userLogonEntity.CompanyId = entity.CompanyId;
                 //把一些默认值读取到，系统的默认值，这样增加用户时可以把系统的默认值带入
                 userLogonEntity.ConcurrentUser = BaseSystemInfo.CheckOnline ? 0 : 1;
                 userLogonEntity.CheckIpAddress = BaseSystemInfo.CheckIpAddress ? 1 : 0;

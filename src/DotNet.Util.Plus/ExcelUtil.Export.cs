@@ -165,10 +165,13 @@ namespace DotNet.Util
                                     case "System.Double":
                                         dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
                                         break;
-                                }
-                                j++;
+                                }                                
                             }
-
+                            else
+                            {
+                                dataRow.CreateCell(j).SetCellValue(field.Key);
+                            }
+                            j++;
                         }
                         catch (Exception)
                         {
@@ -390,9 +393,13 @@ namespace DotNet.Util
                                 if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
                                 {
                                     sheet.AutoSizeColumn(i);
-                                }
-                                i++;
+                                }                                
                             }
+                            else
+                            {
+                                dataRow.CreateCell(i).SetCellValue(field.Key);
+                            }
+                            i++;
                         }
                         catch (Exception ex)
                         {

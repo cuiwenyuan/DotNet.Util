@@ -97,7 +97,7 @@ namespace DotNet.Business
             };
 
             // 检查编号是否重复
-            if ((entity.Code.Length > 0) && (Exists(parameters, entity.Id)))
+            if (entity.Code.Length > 0 && Exists(parameters, entity.Id))
             {
                 // 编号已重复
                 Status = Status.ErrorCodeExist;
@@ -207,7 +207,7 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string roleId, string roleIdExcluded, bool showInvisible, string isMenu, string parentId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string systemCode, string categoryCode, string userId, string userIdExcluded, string roleId, string roleIdExcluded, bool showInvisible, string isMenu, string parentId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             //菜单模块表名
             var tableNameModule = GetModuleTableName(systemCode);

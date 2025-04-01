@@ -215,31 +215,31 @@ namespace DotNet.Business
                     // Access 中的时间分隔符 是 “#”
                     if (beginDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime >= #{0}#", beginDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= #{0}#", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime <= #{0}#", endDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= #{0}#", endDate));
                     }
                     break;
                 case CurrentDbType.SqlServer:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime >= '{0}'", beginDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= '{0}'", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime <= '{0}'", endDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= '{0}'", endDate));
                     }
                     break;
                 case CurrentDbType.Oracle:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND CreateTime <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate));
                     }
                     break;
             }

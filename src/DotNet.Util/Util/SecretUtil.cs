@@ -136,7 +136,7 @@ namespace DotNet.Util
             }
             // 一定要检查注册码,否则这个软件到处别人复制,我的基类也得不到保障了,这是我的心血,得会珍惜自己的劳动成果.
             // 2007.04.14 JiRiGaLa 改进注册方式,让底层程序更安全一些
-            //if (BaseConfiguration.Instance.RegisterKey.Equals(CodeChange(BaseConfiguration.Instance.DataBase + BaseConfiguration.Instance.CustomerCompanyName)))
+            //if (BaseConfiguration.Instance.RegisterKey.Equals(CodeChange(BaseConfiguration.Instance.Database + BaseConfiguration.Instance.CustomerCompanyName)))
             //{
             //    result = true;
             //}
@@ -363,7 +363,7 @@ namespace DotNet.Util
                 int x, i;
                 for (x = 0; x < len; x++)
                 {
-                    i = Convert.ToInt32(targetValue.Substring(x * 2, 2), 16);
+                    i = (targetValue.Substring(x * 2, 2), 16).ToInt();
                     inputByteArray[x] = (byte)i;
                 }
                 // 通过两次哈希密码设置对称算法的初始化向量   

@@ -48,44 +48,44 @@ namespace DotNet.Business
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <param name="source">来源</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string source = null, string messageType = null, string recipient = null)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string source = null, string messageType = null, string recipient = null)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
-                sb.Append(" AND Enabled = 1");
+                sb.Append(" AND " + BaseUtil.FieldEnabled + " = 1");
             }
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND Deleted = 0");
+                sb.Append(" AND " + BaseUtil.FieldDeleted + " = 0");
             }
 
             if (ValidateUtil.IsInt(companyId))
             {
-                //sb.Append(" AND CompanyId = " + companyId);
+                //sb.Append(" AND " + BaseUtil.FieldCompanyId + " = " + companyId);
             }
             if (UserInfo != null && !UserInfo.IsAdministrator)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(departmentId))
             {
-                //sb.Append(" AND DepartmentId = " + departmentId);
+                //sb.Append(" AND " + BaseUtil.FieldDepartmentId + " = " + departmentId);
             }
             if (ValidateUtil.IsInt(userId))
             {
-                //sb.Append(" AND UserId = " + userId);
+                //sb.Append(" AND " + BaseUtil.FieldUserId + " = " + userId);
             }
             //创建日期
             if (ValidateUtil.IsDateTime(startTime))
             {
-                sb.Append(" AND CreateTime >= '" + startTime + "'");
+                sb.Append(" AND " + BaseUtil.FieldCreateTime + " >= '" + startTime + "'");
             }
             if (ValidateUtil.IsDateTime(endTime))
             {
-                sb.Append(" AND CreateTime <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
+                sb.Append(" AND " + BaseUtil.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
             if (!string.IsNullOrEmpty(source))
             {

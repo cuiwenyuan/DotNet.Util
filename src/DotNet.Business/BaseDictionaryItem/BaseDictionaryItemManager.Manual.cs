@@ -270,7 +270,7 @@ namespace DotNet.Business
                 var entity = new BaseDictionaryManager(UserInfo).GetEntityByCode(dictionaryCode);
                 if (entity != null)
                 {
-                    var cacheKey = "Dt." + CurrentTableName + "." + dictionaryCode;
+                    var cacheKey = "Dt." + BaseDictionaryEntity.CurrentTableName + "." + entity.Id + ".Item";
                     var cacheTime = TimeSpan.FromMilliseconds(86400000);
                     var parameters = new List<KeyValuePair<string, object>>
                     {

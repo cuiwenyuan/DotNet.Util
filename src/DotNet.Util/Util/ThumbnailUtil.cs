@@ -172,14 +172,14 @@ namespace DotNet.Util
                 if (originalWidth / originalHeight > aspectRatio)
                 {
                     factor = originalWidth / maxWidth2;
-                    newWidth = Convert.ToInt32(originalWidth / factor);
-                    newHeight = Convert.ToInt32(originalHeight / factor);
+                    newWidth = (originalWidth / factor).ToInt();
+                    newHeight = (originalHeight / factor).ToInt();
                 }
                 else
                 {
                     factor = originalHeight / maxHeight2;
-                    newWidth = Convert.ToInt32(originalWidth / factor);
-                    newHeight = Convert.ToInt32(originalHeight / factor);
+                    newWidth = (originalWidth / factor).ToInt();
+                    newHeight = (originalHeight / factor).ToInt();
                 }
             }
             else

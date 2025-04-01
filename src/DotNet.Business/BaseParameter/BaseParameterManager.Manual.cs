@@ -160,7 +160,8 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterId, entity.ParameterId),
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterCode, entity.ParameterCode),
                 new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterContent, entity.ParameterContent),
-                new KeyValuePair<string, object>(BaseParameterEntity.FieldDeleted, 0)
+                new KeyValuePair<string, object>(BaseParameterEntity.FieldDeleted, 0),
+                new KeyValuePair<string, object>(BaseParameterEntity.FieldEnabled, 1)
             };
             // 2015-12-22 吉日嘎拉 检查没有删除的，已删除的当日志用了
             if (Exists(parameters))
