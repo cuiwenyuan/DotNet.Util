@@ -1044,9 +1044,9 @@ namespace DotNet.Util
             var endPage = 1;
 
             if (url.IndexOf("?") > 0)
-                url = url + "&";
+                url += "&";
             else
-                url = url + "?";
+                url += "?";
 
             var t1 = "<a href=\"" + url + "&" + pagetag + "=1";
             var t2 = "<a href=\"" + url + "&" + pagetag + "=" + countPage;
@@ -1415,94 +1415,6 @@ namespace DotNet.Util
             var regEx = new Regex(@"</?(?!br|/?p|img)[^>]*>", RegexOptions.IgnoreCase);
 
             return regEx.Replace(html, "");
-        }
-
-        /// <summary>
-        /// object型转换为bool型
-        /// </summary>
-        /// <param name="expression">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的bool类型结果</returns>
-        public static bool StrToBool(object expression, bool defValue)
-        {
-            return DataTypeConverter.StrToBool(expression, defValue);
-        }
-
-        /// <summary>
-        /// string型转换为bool型
-        /// </summary>
-        /// <param name="expression">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的bool类型结果</returns>
-        public static bool StrToBool(string expression, bool defValue)
-        {
-            return DataTypeConverter.StrToBool(expression, defValue);
-        }
-
-        /// <summary>
-        /// 将对象转换为Int32类型
-        /// </summary>
-        /// <param name="expression">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static int StrToInt(object expression, int defValue)
-        {
-            return DataTypeConverter.ObjectToInt(expression, defValue);
-        }
-
-        /// <summary>
-        /// 将字符串转换为Int32类型
-        /// </summary>
-        /// <param name="expression">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static int StrToInt(string expression, int defValue)
-        {
-            return DataTypeConverter.StrToInt(expression, defValue);
-        }
-
-        /// <summary>
-        /// Object型转换为float型
-        /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static float StrToFloat(object strValue, float defValue)
-        {
-            return DataTypeConverter.StrToFloat(strValue, defValue);
-        }
-
-        /// <summary>
-        /// string型转换为float型
-        /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static float StrToFloat(string strValue, float defValue)
-        {
-            return DataTypeConverter.StrToFloat(strValue, defValue);
-        }
-
-        /// <summary>
-        /// Object型转换为decimal型
-        /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static decimal StrToDecimal(object strValue, decimal defValue)
-        {
-            return DataTypeConverter.StrToDecimal(strValue, defValue);
-        }
-
-        /// <summary>
-        /// string型转换为decimal型
-        /// </summary>
-        /// <param name="strValue">要转换的字符串</param>
-        /// <param name="defValue">缺省值</param>
-        /// <returns>转换后的int类型结果</returns>
-        public static decimal StrToDecimal(string strValue, decimal defValue)
-        {
-            return DataTypeConverter.StrToDecimal(strValue, defValue);
         }
 
         /// <summary>
@@ -1995,9 +1907,9 @@ namespace DotNet.Util
         /// </summary>
         public static void RestartIisProcess()
         {
+            var xmldoc = new System.Xml.XmlDocument();
             try
             {
-                var xmldoc = new System.Xml.XmlDocument();
                 xmldoc.Load(GetMapPath("~/web.config"));
                 var writer = new System.Xml.XmlTextWriter(GetMapPath("~/web.config"), null);
                 writer.Formatting = System.Xml.Formatting.Indented;

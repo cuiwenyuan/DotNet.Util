@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -78,8 +78,8 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            CurrentTableName = systemCode + "Permission";            
-            var resourceCategory = systemCode + "Role";
+            CurrentTableName = GetPermissionTableName(systemCode);
+            var resourceCategory = GetRoleTableName(systemCode);
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
@@ -109,11 +109,10 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            var currentId = string.Empty;
+            CurrentTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
 
-            CurrentTableName = systemCode + "Permission";
-
-            var tableName = systemCode + "Role";
+            var roleTableName = GetRoleTableName(systemCode);
 
             // 判断是否已经存在这个权限，若已经存在就不重复增加了
             if (chekExists)
@@ -121,12 +120,12 @@ namespace DotNet.Business
                 var whereParameters = new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
-                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, tableName),
+                    new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, roleTableName),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
-                currentId = GetId(whereParameters);
-                if (!string.IsNullOrEmpty(currentId))
+                result = permissionManager.GetId(whereParameters);
+                if (!string.IsNullOrEmpty(result))
                 {
                     var parameters = new List<KeyValuePair<string, object>>
                     {
@@ -134,38 +133,37 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0),
                     };
                     // 更新状态，设置为有效、并取消删除，权限也不是天天变动的，所以可以更新一下
-                    Update(currentId, parameters);
+                    permissionManager.Update(result, parameters);
                 }
             }
 
-            if (string.IsNullOrEmpty(currentId))
+            if (string.IsNullOrEmpty(result))
             {
                 var permissionEntity = new BasePermissionEntity
                 {
                     SystemCode = systemCode,
-                    ResourceCategory = tableName,
+                    ResourceCategory = roleTableName,
                     ResourceId = roleId,
                     PermissionId = permissionId
                 };
-                var permissionManager = new BasePermissionManager(DbHelper, UserInfo, CurrentTableName);
-                result = permissionManager.Add(permissionEntity, true, false);
-            }
 
-            // 2015-09-21 吉日嘎拉 这里增加变更日志
-            tableName = systemCode + "RolePermission";
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginInsert(BaseChangeLogEntity.CurrentTableName);
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
-            {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
+                result = permissionManager.Add(permissionEntity);
             }
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, roleId);
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "授权");
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnDescription, new BaseModuleManager().GetNameByCache(systemCode, permissionId));
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldOldValue, null);
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldNewValue, permissionId);
-            sqlBuilder.EndInsert();
+            #region 记录日志
+
+            var baseChangeLogEntity = new BaseChangeLogEntity
+            {
+                SystemCode = systemCode,
+                TableName = GetPermissionTableName(systemCode),
+                TableDescription = CurrentTableDescription,
+                RecordKey = result,
+                OldValue = null,
+                NewValue = "{" + BasePermissionEntity.FieldResourceId + ":" + roleId + "," + BasePermissionEntity.FieldPermissionId + ":" + permissionId + "}",
+                SortCode = 1 // 不要排序了，加快写入速度
+            };
+            new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+            #endregion
 
             return result;
         }
@@ -251,40 +249,47 @@ namespace DotNet.Business
         public int RevokeRole(string systemCode, string roleId, string permissionId)
         {
             var result = 0;
+            if (!ValidateUtil.IsInt(roleId) && string.IsNullOrEmpty(permissionId))
+            {
+                return result;
+            }
+            var permissionTableName = GetPermissionTableName(systemCode);
+            CurrentTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);            
 
-            var tableName = systemCode + "Permission";
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
-
-            tableName = systemCode + "Role";
             var parameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, tableName),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, GetRoleTableName(systemCode)),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
             };
-
-            // 2015-09-21 吉日嘎拉 这里增加变更日志
-            tableName = systemCode + "RolePermission";
-            var sqlBuilder = new SqlBuilder(DbHelper);
-            sqlBuilder.BeginInsert(BaseChangeLogEntity.CurrentTableName);
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldTableName, tableName);
-            if (DbHelper.CurrentDbType == CurrentDbType.Oracle)
+            var id = permissionManager.GetId(parameters);
+            if (!id.IsNullOrEmpty())
             {
-                sqlBuilder.SetFormula(BaseChangeLogEntity.FieldId, BaseChangeLogEntity.CurrentTableName + "_SEQ.NEXTVAL");
+                // 伪删除、数据有冗余，但是有历史记录
+                result = permissionManager.SetDeleted(id);
+                // 真删除、执行效率高、但是没有历史记录
+                //result = permissionManager.Delete(id);
+
+                #region 记录日志
+
+                var baseChangeLogEntity = new BaseChangeLogEntity
+                {
+                    SystemCode = systemCode,
+                    TableName = GetPermissionTableName(systemCode),
+                    TableDescription = CurrentTableDescription,
+                    RecordKey = id,
+                    ColumnName = BaseChangeLogEntity.FieldDeleted,
+                    ColumnDescription = "删除",
+                    OldValue = "0",
+                    NewValue = "1",
+                    SortCode = 1 // 不要排序了，加快写入速度
+                };
+                new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+                #endregion
             }
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldRecordKey, roleId);
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnName, "撤销授权");
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldColumnDescription, new BaseModuleManager().GetNameByCache(systemCode, permissionId));
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldOldValue, "1");
-            sqlBuilder.SetValue(BaseChangeLogEntity.FieldNewValue, permissionId);
-            sqlBuilder.EndInsert();
-
-            // 伪删除、数据有冗余，但是有历史记录
-            result = permissionManager.SetDeleted(parameters);
-            // 真删除、执行效率高、但是没有历史记录
-            //result = permissionManager.Delete(parameters);
-
             return result;
         }
         #endregion
@@ -360,12 +365,12 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int RevokeRoleAll(string systemCode, string roleId)
         {
-            var tableName = systemCode + "Permission";
-            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, tableName);
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
             var whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
-                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, systemCode + "Role"),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, GetRoleTableName(systemCode)),
                 new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, roleId)
             };
             var parameters = new List<KeyValuePair<string, object>>
@@ -377,6 +382,56 @@ namespace DotNet.Business
         }
         #endregion
 
+        #endregion
+
+        #region 复制用户权限到新用户
+        /// <summary>
+        /// 复制用户权限到新用户
+        /// </summary>
+        /// <param name="systemCode"></param>
+        /// <param name="referenceUserId">源用户编号</param>
+        /// <param name="targetUserId">目标用户编号</param>
+        /// <returns></returns>
+        public int CopyRolePermission(string systemCode, int referenceUserId, int targetUserId)
+        {
+            var result = 0;
+            var permissionTableName = GetPermissionTableName(systemCode);
+            var permissionManager = new BasePermissionManager(DbHelper, UserInfo, permissionTableName);
+
+            var whereParameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldSystemCode, systemCode),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceCategory, GetRoleTableName(systemCode)),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldResourceId, referenceUserId),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0),
+            };
+            var ls = permissionManager.GetList<BasePermissionEntity>(whereParameters, order: BasePermissionEntity.FieldCreateTime + " ASC");
+            if (ls != null)
+            {
+                foreach (var item in ls)
+                {
+                    item.ResourceId = targetUserId.ToString();
+                    if (permissionManager.AddOrActive(item).IsNullOrEmpty())
+                    {
+                        result++;
+                    }
+                }
+                //运行成功
+                Status = Status.OkAdd;
+                StatusCode = Status.OkAdd.ToString();
+                StatusMessage = Status.OkAdd.ToDescription();
+            }
+            else
+            {
+                //未找到记录
+                Status = Status.NotFound;
+                StatusCode = Status.NotFound.ToString();
+                StatusMessage = Status.NotFound.ToDescription();
+            }
+
+            return result;
+        }
         #endregion
     }
 }

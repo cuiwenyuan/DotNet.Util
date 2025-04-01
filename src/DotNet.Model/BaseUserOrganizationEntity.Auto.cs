@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOrganizationEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -128,6 +128,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("用户兼任")]
         public const string CurrentTableName = "BaseUserOrganization";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "用户兼任";
 
         ///<summary>
         /// 用户账户主键

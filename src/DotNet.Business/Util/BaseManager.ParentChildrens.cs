@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -24,10 +24,6 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        //
-        // 树型结构的算法，递归算法
-        //
-
         #region public DataTable GetParentsByCode(string fieldCode, string code, string order) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
@@ -84,7 +80,6 @@ namespace DotNet.Business
             return DbHelper.GetParentChildrensByCode(CurrentTableName, fieldCode, code, order);
         }
         #endregion
-
 
         #region public string[] GetParentsIdByCode(string fieldCode, string code) 获取父节点列表
         /// <summary>

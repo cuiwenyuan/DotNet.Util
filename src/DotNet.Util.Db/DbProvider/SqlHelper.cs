@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -52,7 +52,7 @@ namespace DotNet.Util
         /// </summary>
         public SqlHelper()
         {
-            FileName = "SqlHelper.txt"; // sql查询句日志
+            FileName = "SqlHelper.log"; // sql查询句日志
         }
         #endregion
 
@@ -317,7 +317,7 @@ namespace DotNet.Util
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
         /// </summary>
         /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
-        /// <param name="destinationTableName">目标表名称</param>
+        /// <param name="destinationTableName">目标表名</param>
         /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
         /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
         public override bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0)
@@ -340,7 +340,7 @@ namespace DotNet.Util
                 // 批量保存数据，只能用于Sql
                 var sqlBulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
                 sqlBulkCopy.BatchSize = batchSize;
-                // 设置目标表名称
+                // 设置目标表名
                 sqlBulkCopy.DestinationTableName = destinationTableName;
                 // 设置超时限制
                 sqlBulkCopy.BulkCopyTimeout = bulkCopyTimeout;

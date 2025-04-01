@@ -48,6 +48,8 @@ namespace DotNet.Util
         /// <param name="maxSize">压缩后图片的最大大小（K）</param>
         /// <param name="isFirstCall">是否是第一次调用</param>
         /// <param name="isAutoRotate">是否自动旋转</param>
+        /// <param name="keepExif">保持Exif</param>
+        /// <param name="deleteOrignalImage">删除原始图片</param>
         /// <returns></returns>
         public static bool CompressImage(string filePath, string compressedFilePath, int quality = 90, int maxSize = 300, bool isFirstCall = true, bool isAutoRotate = false, bool keepExif = false, bool deleteOrignalImage = false)
         {
@@ -237,7 +239,11 @@ namespace DotNet.Util
         #endregion
 
         #region 图片获取EXIF中的经纬度等信息
-
+        /// <summary>
+        /// 图片获取EXIF中的经纬度等信息
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
         public static ExifEntity GetExif(Image img)
         {
             var entity = new ExifEntity();
@@ -315,6 +321,9 @@ namespace DotNet.Util
         #endregion
 
         #region Exif实体
+        /// <summary>
+        /// Exif实体
+        /// </summary>
         public class ExifEntity
         {
             #region 属性

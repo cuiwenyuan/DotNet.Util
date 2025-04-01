@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseDictionaryManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseDictionaryEntity entityNew, BaseDictionaryEntity entityOld, string tableName = null)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -171,17 +171,18 @@ namespace DotNet.Business
                 {
                     continue;
                 }
-                var entity = new BaseChangeLogEntity
+                var baseChangeLogEntity = new BaseChangeLogEntity
                 {
                     TableName = CurrentTableName,
-                    TableDescription = typeof(BaseDictionaryEntity).FieldDescription("CurrentTableName"),
+                    TableDescription = CurrentTableDescription,
                     ColumnName = property.Name,
                     ColumnDescription = fieldDescription.Text,
                     NewValue = newValue,
                     OldValue = oldValue,
-                    RecordKey = entityOld.Id.ToString()
+                    RecordKey = entityOld.Id.ToString(),
+                    SortCode = 1 // 不要排序了，加快写入速度
                 };
-                manager.Add(entity, true, false);
+                manager.Add(baseChangeLogEntity, true, false);
             }
         }
         #endregion

@@ -134,8 +134,7 @@ namespace DotNet.Util
         {
             try
             {
-                var num = Convert.ToDecimal(numstr);
-                return Capital(num);
+                return Capital(numstr.ToDecimal());
             }
             catch
             {

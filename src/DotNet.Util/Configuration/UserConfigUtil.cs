@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -502,8 +502,10 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.OpenNewWebWindow = (string.Compare(GetValue(_xmlDocument, "OpenNewWebWindow"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
             }
-
-            // add by zgl
+            if (Exists("UseBaseTable"))
+            {
+                BaseSystemInfo.UseBaseTable = (string.Compare(GetValue(_xmlDocument, "UseBaseTable"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+            }
             if (Exists("CheckIPAddress"))
             {
                 BaseSystemInfo.CheckIpAddress = (string.Compare(GetValue(_xmlDocument, "CheckIPAddress"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
@@ -912,6 +914,7 @@ namespace DotNet.Util
             BaseSystemInfo.BpmDbConnection = BaseSystemInfo.BpmDbConnectionString;
             BaseSystemInfo.ErpDbConnection = BaseSystemInfo.ErpDbConnectionString;
             BaseSystemInfo.WmsDbConnection = BaseSystemInfo.WmsDbConnectionString;
+            BaseSystemInfo.CwmsDbConnection = BaseSystemInfo.CwmsDbConnectionString;
             BaseSystemInfo.ZbwmsDbConnection = BaseSystemInfo.ZbwmsDbConnectionString;
             BaseSystemInfo.SpwmsDbConnection = BaseSystemInfo.SpwmsDbConnectionString;
             BaseSystemInfo.MesDbConnection = BaseSystemInfo.MesDbConnectionString;
@@ -928,6 +931,7 @@ namespace DotNet.Util
             BaseSystemInfo.SupplierPortalDbConnection = BaseSystemInfo.SupplierPortalDbConnectionString;
             BaseSystemInfo.ReportDbConnection = BaseSystemInfo.ReportDbConnectionString;
             BaseSystemInfo.ScmDbConnection = BaseSystemInfo.ScmDbConnectionString;
+            BaseSystemInfo.CscmDbConnection = BaseSystemInfo.CscmDbConnectionString;
             BaseSystemInfo.ImsDbConnection = BaseSystemInfo.ImsDbConnectionString;
             BaseSystemInfo.IcsDbConnection = BaseSystemInfo.IcsDbConnectionString;
             BaseSystemInfo.OmsDbConnection = BaseSystemInfo.OmsDbConnectionString;
@@ -952,6 +956,7 @@ namespace DotNet.Util
                     BaseSystemInfo.BpmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BpmDbConnectionString);
                     BaseSystemInfo.ErpDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ErpDbConnectionString);
                     BaseSystemInfo.WmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.WmsDbConnectionString);
+                    BaseSystemInfo.CwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CwmsDbConnectionString);
                     BaseSystemInfo.ZbwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ZbwmsDbConnectionString);
                     BaseSystemInfo.SpwmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.SpwmsDbConnectionString);
                     BaseSystemInfo.MesDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MesDbConnectionString);
@@ -966,6 +971,17 @@ namespace DotNet.Util
                     BaseSystemInfo.DealerPortalDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.DealerPortalDbConnectionString);
                     BaseSystemInfo.CustomerPortalDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CustomerPortalDbConnectionString);
                     BaseSystemInfo.SupplierPortalDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.SupplierPortalDbConnectionString);
+                    BaseSystemInfo.ReportDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ReportDbConnectionString);
+                    BaseSystemInfo.ScmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ScmDbConnectionString);
+                    BaseSystemInfo.CscmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CscmDbConnectionString);
+                    BaseSystemInfo.ImsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ImsDbConnectionString);
+                    BaseSystemInfo.IcsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.IcsDbConnectionString);
+                    BaseSystemInfo.OmsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.OmsDbConnectionString);
+                    BaseSystemInfo.MemberDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MemberDbConnectionString);
+                    BaseSystemInfo.BudgetDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.BudgetDbConnectionString);
+                    BaseSystemInfo.ItamsDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.ItamsDbConnectionString);
+                    BaseSystemInfo.CardTicketDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.CardTicketDbConnectionString);
+                    BaseSystemInfo.MdmDbConnection = SecretUtil.DesDecrypt(BaseSystemInfo.MdmDbConnectionString);
                 }
             }
 
@@ -1318,6 +1334,7 @@ namespace DotNet.Util
             SetValue(xmlDocument, "RememberPassword", BaseSystemInfo.RememberPassword.ToString());
 
             SetValue(xmlDocument, "ClientEncryptPassword", BaseSystemInfo.ClientEncryptPassword.ToString());
+            SetValue(xmlDocument, "UseBaseTable", BaseSystemInfo.UseBaseTable.ToString());
             SetValue(xmlDocument, "CheckIPAddress", BaseSystemInfo.CheckIpAddress.ToString());
             SetValue(xmlDocument, "LogException", BaseSystemInfo.LogException.ToString());
             SetValue(xmlDocument, "LogSql", BaseSystemInfo.LogSql.ToString());

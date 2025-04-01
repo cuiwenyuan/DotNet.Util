@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -122,12 +122,14 @@ namespace DotNet.Util
                             else if (to.Contains(";"))
                             {
                                 tos = to.Split(";".ToCharArray());
-
                             }
 
                             foreach (var t in tos)
                             {
-                                message.To.Add(new MailAddress(t));
+                                if (!t.IsNullOrEmpty())
+                                {
+                                    message.To.Add(new MailAddress(t));
+                                }
                             }
                         }
 
@@ -152,7 +154,10 @@ namespace DotNet.Util
 
                                 foreach (var t in bccs)
                                 {
-                                    message.Bcc.Add(new MailAddress(t));
+                                    if (!t.IsNullOrEmpty())
+                                    {
+                                        message.Bcc.Add(new MailAddress(t));
+                                    }
                                 }
                             }
                         }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,27 +36,29 @@ namespace DotNet.Util
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        public virtual IDataReader ExecuteReader(string commandText)
+        public virtual IDataReader ExecuteReader(string commandText, int commandTimeout = 30)
         {
-            return ExecuteReader(commandText, (IDbDataParameter[])null, CommandType.Text);
+            return ExecuteReader(commandText, (IDbDataParameter[])null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters); 执行查询
+        #region public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30); 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters)
+        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return ExecuteReader(commandText, dbParameters, CommandType.Text);
+            return ExecuteReader(commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 执行查询
+        #region public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 执行查询
 
         /// <summary>
         /// 执行查询
@@ -64,8 +66,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -91,10 +94,11 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
-                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    //DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandTimeout = commandTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
@@ -145,10 +149,7 @@ namespace DotNet.Util
                     //{
                     //    Close();
                     //}
-                    if (DbCommand != null)
-                    {
-                        DbCommand.Parameters.Clear();
-                    }
+                    DbCommand?.Parameters.Clear();
                 }
                 stopwatch.Stop();
                 var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";
@@ -169,23 +170,25 @@ namespace DotNet.Util
         /// 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(string commandText)
+        public virtual int ExecuteNonQuery(string commandText, int commandTimeout = 30)
         {
-            return ExecuteNonQuery(_dbTransaction, commandText, (IDbDataParameter[])null, CommandType.Text);
+            return ExecuteNonQuery(_dbTransaction, commandText, (IDbDataParameter[])null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters) 执行查询
+        #region public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters)
+        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return ExecuteNonQuery(_dbTransaction, commandText, dbParameters, CommandType.Text);
+            return ExecuteNonQuery(_dbTransaction, commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -195,28 +198,30 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(string commandText, CommandType commandType)
+        public virtual int ExecuteNonQuery(string commandText, CommandType commandType, int commandTimeout = 30)
         {
-            return ExecuteNonQuery(_dbTransaction, commandText, (IDbDataParameter[])null, commandType);
+            return ExecuteNonQuery(_dbTransaction, commandText, (IDbDataParameter[])null, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 执行查询
+        #region public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
-            return ExecuteNonQuery(_dbTransaction, commandText, dbParameters, commandType);
+            return ExecuteNonQuery(_dbTransaction, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(IDbTransaction transaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 执行查询
+        #region public virtual int ExecuteNonQuery(IDbTransaction transaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
@@ -224,8 +229,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(IDbTransaction transaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual int ExecuteNonQuery(IDbTransaction transaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -250,10 +256,11 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
-                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    //DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandTimeout = commandTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
@@ -349,40 +356,43 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual object ExecuteScalar(string commandText) 执行查询
+        #region public virtual object ExecuteScalar(string commandText, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>object</returns>
-        public virtual object ExecuteScalar(string commandText)
+        public virtual object ExecuteScalar(string commandText, int commandTimeout = 30)
         {
             return ExecuteScalar(commandText, null, CommandType.Text);
         }
         #endregion
 
-        #region public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters) 执行查询
+        #region public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>Object</returns>
-        public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters)
+        public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
             return ExecuteScalar(commandText, dbParameters, CommandType.Text);
         }
         #endregion
 
-        #region public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 执行查询
+        #region public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>Object</returns>
-        public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -407,10 +417,11 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
-                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    //DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandTimeout = commandTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
@@ -488,76 +499,81 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual DataTable Fill(string commandText) 填充数据表
+        #region public virtual DataTable Fill(string commandText, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(string commandText)
+        public virtual DataTable Fill(string commandText, int commandTimeout = 30)
         {
             var dt = new DataTable("DotNet");
-            return Fill(dt, commandText, (IDbDataParameter[])null, CommandType.Text);
+            return Fill(dt, commandText, (IDbDataParameter[])null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataTable Fill(DataTable dt, string commandText) 填充数据表
+        #region public virtual DataTable Fill(DataTable dt, string commandText, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="dt">目标数据表</param>
         /// <param name="commandText">查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(DataTable dt, string commandText)
+        public virtual DataTable Fill(DataTable dt, string commandText, int commandTimeout = 30)
         {
-            return Fill(dt, commandText, (IDbDataParameter[])null, CommandType.Text);
+            return Fill(dt, commandText, (IDbDataParameter[])null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters) 填充数据表
+        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters)
+        public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
             var dt = new DataTable("DotNet");
-            return Fill(dt, commandText, dbParameters, CommandType.Text);
+            return Fill(dt, commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters) 填充数据表
+        #region public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="dt">目标数据表</param>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters)
+        public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return Fill(dt, commandText, dbParameters, CommandType.Text);
+            return Fill(dt, commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 填充数据表
+        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="commandType">命令分类</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var dt = new DataTable("DotNet");
-            return Fill(dt, commandText, dbParameters, commandType);
+            return Fill(dt, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 填充数据表
+        #region public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -565,8 +581,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -591,10 +608,11 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
-                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    //DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandTimeout = commandTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {
@@ -676,21 +694,22 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName) 填充数据权限
+        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, int commandTimeout = 30) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
         /// <param name="dataSet">目标数据权限</param>
         /// <param name="commandText">查询</param>
         /// <param name="tableName">填充表</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName)
+        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, int commandTimeout = 30)
         {
-            return Fill(dataSet, commandText, tableName, (IDbDataParameter[])null, CommandType.Text);
+            return Fill(dataSet, commandText, tableName, (IDbDataParameter[])null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters) 填充数据权限
+        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, int commandTimeout = 30) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
@@ -698,14 +717,15 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters)
+        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return Fill(dataSet, commandText, tableName, dbParameters, CommandType.Text);
+            return Fill(dataSet, commandText, tableName, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType) 填充数据权限
+        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
@@ -714,8 +734,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -740,10 +761,11 @@ namespace DotNet.Util
                 try
                 {
 #if (DEBUG)
-                    Trace.WriteLine(DateTime.Now + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
+                    Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
-                    DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    //DbCommand.CommandTimeout = DbConnection.ConnectionTimeout;
+                    DbCommand.CommandTimeout = commandTimeout;
                     DbCommand.CommandText = commandText;
                     if (CurrentDbType == CurrentDbType.Oracle)
                     {

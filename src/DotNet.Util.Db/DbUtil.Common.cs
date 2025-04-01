@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -111,7 +111,7 @@ namespace DotNet.Util
                     //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
                     if (parameter.Value == null)
                     {
-                        subSqlQuery = " (" + parameter.Key + " IS NULL) ";
+                        subSqlQuery = "" + parameter.Key + " IS NULL";
                     }
                     else
                     {
@@ -119,16 +119,16 @@ namespace DotNet.Util
                         {
                             if (((Array)parameter.Value).Length > 0)
                             {
-                                subSqlQuery = " (" + parameter.Key + " IN (" + StringUtil.ArrayToList((string[])parameter.Value, "'") + ")) ";
+                                subSqlQuery = "" + parameter.Key + " IN (" + StringUtil.ArrayToList((string[])parameter.Value, "'") + ")";
                             }
                             else
                             {
-                                subSqlQuery = " (" + parameter.Key + " IS NULL) ";
+                                subSqlQuery = "" + parameter.Key + " IS NULL";
                             }
                         }
                         else
                         {
-                            subSqlQuery = " (" + parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + ") ";
+                            subSqlQuery = "" + parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + "";
                             //if ((values[i].ToString().IndexOf('[') >= 0) || (values[i].ToString().IndexOf(']') >= 0))
                             //{
                             //    values[i] = values[i].ToString().Replace("[", "/[");
@@ -147,7 +147,7 @@ namespace DotNet.Util
             }
             if (result.Length > 0)
             {
-                result = result.Substring(0, result.Length - relation.Length - 1);
+                result = result.Substring(0, result.Length - relation.Length);
             }
             return result;
         }
@@ -174,7 +174,7 @@ namespace DotNet.Util
                     //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
                     if (values[i] == null)
                     {
-                        subSqlQuery = " (" + names[i] + " IS NULL) ";
+                        subSqlQuery = "" + names[i] + " IS NULL";
                         // 这里就不需要参数化了
                         names[i] = null;
                     }
@@ -184,18 +184,18 @@ namespace DotNet.Util
                         {
                             if (((Array)values[i]).Length > 0)
                             {
-                                subSqlQuery = " (" + names[i] + " IN (" + StringUtil.ArrayToList((string[])values[i], "'") + ")) ";
+                                subSqlQuery = "" + names[i] + " IN (" + StringUtil.ArrayToList((string[])values[i], "'") + ")";
                             }
                             else
                             {
-                                subSqlQuery = " (" + names[i] + " IS NULL) ";
+                                subSqlQuery = "" + names[i] + " IS NULL";
                             }
                             // 这里就不需要参数化了
                             names[i] = null;
                         }
                         else
                         {
-                            subSqlQuery = " (" + names[i] + " = " + dbHelper.GetParameter(names[i]) + ") ";
+                            subSqlQuery = "" + names[i] + " = " + dbHelper.GetParameter(names[i]) + "";
                             //if ((values[i].ToString().IndexOf('[') >= 0) || (values[i].ToString().IndexOf(']') >= 0))
                             //{
                             //    values[i] = values[i].ToString().Replace("[", "/[");
@@ -214,7 +214,7 @@ namespace DotNet.Util
             }
             if (result.Length > 0)
             {
-                result = result.Substring(0, result.Length - relation.Length - 1);
+                result = result.Substring(0, result.Length - relation.Length);
             }
             return result;
         }

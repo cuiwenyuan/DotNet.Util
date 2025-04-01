@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Configuration;
@@ -12,6 +12,7 @@ namespace DotNet.Util
     /// 
     /// 修改记录
     ///
+    ///     2024.06.28 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:CWMS,CSCM
     ///     2020.08.16 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:OMS
     ///     2018.10.31 版本：1.9 Troy Cui	增加常用外部系统的数据库连接:DealerPortal
     ///     2018.08.09 版本：1.8 Troy Cui	增加常用外部系统的数据库连接:SCM,IMS,Member
@@ -457,6 +458,45 @@ namespace DotNet.Util
         /// WMS数据库（连接串，可能是加密的）
         /// </summary>
         public static string WmsDbConnectionString = string.Empty;
+        #endregion
+
+        #region CWMS
+        /// <summary>
+        /// CWMS数据库类别
+        /// </summary>
+        public static CurrentDbType CwmsDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// CWMS数据库
+        /// </summary>
+        private static string _cwmsDbConnection = string.Empty;
+        /// <summary>
+        /// CWMS数据库连接
+        /// </summary>
+        public static string CwmsDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_cwmsDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CWMSDbConnection"]))
+                    {
+                        _cwmsDbConnection = ConfigurationManager.AppSettings["CWMSDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_cwmsDbConnection))
+                    {
+                        _cwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_CWMS;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _cwmsDbConnection;
+            }
+            // 默认的数据库连接
+            set => _cwmsDbConnection = value;
+        }
+        /// <summary>
+        /// CWMS数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string CwmsDbConnectionString = string.Empty;
         #endregion
 
         #region ZBWMS
@@ -1082,6 +1122,45 @@ namespace DotNet.Util
         /// SCM数据库（连接串，可能是加密的）
         /// </summary>
         public static string ScmDbConnectionString = string.Empty;
+        #endregion
+
+        #region CSCM
+        /// <summary>
+        /// CSCM数据库类别
+        /// </summary>
+        public static CurrentDbType CscmDbType = CurrentDbType.SqlServer;
+        /// <summary>
+        /// CSCM数据库
+        /// </summary>
+        private static string _cscmDbConnection = string.Empty;
+        /// <summary>
+        /// CSCM数据库连接
+        /// </summary>
+        public static string CscmDbConnection
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_cscmDbConnection))
+                {
+                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CscmDbConnection"]))
+                    {
+                        _cscmDbConnection = ConfigurationManager.AppSettings["CscmDbConnection"];
+                    }
+                    if (string.IsNullOrEmpty(_cscmDbConnection))
+                    {
+                        _cscmDbConnection = "Data Source=localhost;Initial Catalog=Business_CSCM;Integrated Security=SSPI;";
+                    }
+                }
+                // 默认的数据库连接
+                return _cscmDbConnection;
+            }
+            // 默认的数据库连接
+            set => _cscmDbConnection = value;
+        }
+        /// <summary>
+        /// CSCM数据库（连接串，可能是加密的）
+        /// </summary>
+        public static string CscmDbConnectionString = string.Empty;
         #endregion
 
         #region IMS

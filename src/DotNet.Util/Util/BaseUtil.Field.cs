@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -357,6 +357,34 @@ namespace DotNet.Util
         /// 作废时间
         /// </summary>
         public const string FieldScrapedTime = "ScrapedTime";
+
+        #endregion
+
+        #region IsIssued
+        /// <summary>
+        /// 是否已发料 
+        /// </summary>
+        public const string FieldIsIssued = "IsIssued";
+
+        /// <summary>
+        /// 发料时间
+        /// </summary>
+        public const string FieldIssueTime = "IssueTime";
+
+        /// <summary>
+        /// 发料人用户主键
+        /// </summary>
+        public const string FieldIssueUserId = "IssueUserId";
+
+        /// <summary>
+        /// 发料人用户名
+        /// </summary>
+        public const string FieldIssueUserName = "IssueUserName";
+
+        /// <summary>
+        /// 发料人
+        /// </summary>
+        public const string FieldIssueBy = "IssueBy";
 
         #endregion
 

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -44,7 +44,7 @@ namespace DotNet.Business
             var result = false;
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("WITH T1 AS( ");
-            sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1 ");
+            sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
             if (!string.IsNullOrEmpty(orderTypeId))
             {
                 sb.Append(" AND OrderTypeId = " + orderTypeId + "");
@@ -54,7 +54,7 @@ namespace DotNet.Business
 
             sb.Append(") ");
             sb.Append(",T2 AS ( ");
-            sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1 ");
+            sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
             if (!string.IsNullOrEmpty(orderTypeId))
             {
                 sb.Append(" AND OrderTypeId = " + orderTypeId + "");
@@ -62,6 +62,7 @@ namespace DotNet.Business
             sb.Append(" AND Id > " + currentId + " ORDER BY Id ASC ");
             sb.Append(") ");
             sb.Append("SELECT ISNULL(T1.PreviousId," + currentId + ") AS PreviousId,ISNULL(T1.CurrentId,T2.CurrentId) AS CurrentId,ISNULL(T2.NextId," + currentId + ") AS NextId FROM T1 FULL JOIN T2 ON T1.CurrentId = T2.CurrentId ");
+            sb.Replace(" 1 = 1 AND ", " ");
             var dt = DbHelper.Fill(sb.Return());
             if (dt != null && dt.Rows.Count == 0)
             {

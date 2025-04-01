@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageSucceedManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseMessageSucceedManager : BaseManager
     {
-        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        #region public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
         /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
@@ -45,44 +45,44 @@ namespace DotNet.Business
         /// <param name="showDisabled">是否显示无效记录</param>
         /// <param name="showDeleted">是否显示已删除记录</param>
         /// <returns>数据表</returns>
-        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
+        public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             //是否显示无效记录
             if (!showDisabled)
             {
-                sb.Append(" AND Enabled = 1");
+                sb.Append(" AND " + BaseUtil.FieldEnabled + " = 1");
             }
             //是否显示已删除记录
             if (!showDeleted)
             {
-                sb.Append(" AND Deleted = 0");
+                sb.Append(" AND " + BaseUtil.FieldDeleted + " = 0");
             }
 
             if (ValidateUtil.IsInt(companyId))
             {
-                //sb.Append(" AND CompanyId = " + companyId);
+                //sb.Append(" AND " + BaseUtil.FieldCompanyId + " = " + companyId);
             }
-            //sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+            //sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             if (ValidateUtil.IsInt(departmentId))
             {
-                //sb.Append(" AND DepartmentId = " + departmentId);
+                //sb.Append(" AND " + BaseUtil.FieldDepartmentId + " = " + departmentId);
             }
             if (ValidateUtil.IsInt(userId))
             {
-                //sb.Append(" AND UserId = " + userId);
+                //sb.Append(" AND " + BaseUtil.FieldUserId + " = " + userId);
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion
 
-        #region public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = "CreateTime", string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
+        #region public override DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = false, bool showDeleted = false)
         /// <summary>
         /// 按条件分页查询(带记录状态Enabled和删除状态Deleted)
         /// </summary>
@@ -145,7 +145,7 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion

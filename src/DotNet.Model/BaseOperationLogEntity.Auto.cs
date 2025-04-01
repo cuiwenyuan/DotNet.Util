@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOperationLogEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -104,6 +104,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("操作日志")]
         public const string CurrentTableName = "BaseOperationLog";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "操作日志";
 
         ///<summary>
         /// 子系统编码

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -297,6 +297,10 @@ public partial class BasePage : System.Web.UI.Page
         PermissionInstall = IsAuthorized(module + ".Install");
         PermissionUninstall = IsAuthorized(module + ".Uninstall");
         PermissionCopy = IsAuthorized(module + ".Copy");
+        if (!BaseSystemInfo.PermissionExportEnabled)
+        {
+            PermissionExport = true;
+        }
     }
 
     #endregion

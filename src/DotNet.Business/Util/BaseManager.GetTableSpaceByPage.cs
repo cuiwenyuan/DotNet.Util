@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -64,7 +64,7 @@ namespace DotNet.Business
                     break;
 
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, sb.Return(), null);
         }
         #endregion

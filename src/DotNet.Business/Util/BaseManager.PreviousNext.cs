@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -25,10 +25,6 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        //
-        // 记录导航功能
-        //
-
         private string _previousId = string.Empty; // 上一个记录主键。
         private string _nextId = string.Empty; // 下一个记录主键。
 
@@ -156,10 +152,10 @@ namespace DotNet.Business
             values[0] = id;
             names[1] = BaseUtil.FieldCreateUserId;
             values[1] = UserInfo.Id;
-            var returnObject = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
-            if (returnObject != null)
+            var obj = DbHelper.ExecuteScalar(sb.Return(), DbHelper.MakeParameters(names, values));
+            if (obj != null)
             {
-                result = returnObject.ToString();
+                result = obj.ToString();
             }
             return result;
         }

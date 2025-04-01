@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -140,6 +140,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("消息队列")]
         public const string CurrentTableName = "BaseMessageQueue";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "消息队列";
 
         ///<summary>
         /// 公司编号

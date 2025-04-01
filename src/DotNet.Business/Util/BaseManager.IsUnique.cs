@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -51,11 +51,11 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + fieldName + " = N'" + fieldValue + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {
@@ -109,11 +109,11 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {
@@ -177,11 +177,11 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + field1Name + " = N'" + field1Value + "' AND " + field2Name + " = N'" + field2Value + "' AND " + field3Name + " = N'" + field3Value + "'");
             //未删除
-            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + (BaseUtil.FieldDeleted) + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             if (checkUserCompany)
             {
-                sb.Append(" AND (UserCompanyId = 0 OR UserCompanyId = " + UserInfo.CompanyId + ")");
+                sb.Append(" AND (" + BaseUtil.FieldUserCompanyId + " = 0 OR " + BaseUtil.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             if (ValidateUtil.IsInt(excludeId))
             {

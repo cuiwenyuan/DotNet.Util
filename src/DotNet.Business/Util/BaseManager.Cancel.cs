@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -27,7 +27,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
-        #region Cancel object id
+        #region public virtual int Cancel(object id, bool hasIsAudited = true, bool recordUser = true)
 
         /// <summary>
         /// 取消标志
@@ -72,7 +72,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region Cancel object[] ids
+        #region public virtual int Cancel(object[] ids, bool hasIsAudited = true, bool recordUser = true)
 
         /// <summary>
         /// 批量取消标志
@@ -104,7 +104,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region UndoCancel object id
+        #region public virtual int UndoCancel(object id, bool hasIsAudited = true, bool recordUser = true)
 
         /// <summary>
         /// 撤销取消标志
@@ -149,7 +149,7 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region UndoCancel object[] ids
+        #region public virtual int UndoCancel(object[] ids, bool hasIsAudited = true, bool recordUser = true)
 
         /// <summary>
         /// 批量撤销取消标志

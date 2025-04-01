@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns>数据表</returns>
         public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo, int pageSize, string condition, IDbDataParameter[] dbParameters, string order)
         {
@@ -227,7 +227,7 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (Name LIKE N'%" + searchKey + "%' OR Description LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion

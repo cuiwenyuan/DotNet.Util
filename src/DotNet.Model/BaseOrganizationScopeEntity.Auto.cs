@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseOrganizationScopeEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -272,6 +272,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("组织机构权限范围")]
         public const string CurrentTableName = "BaseOrganizationScope";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "组织机构权限范围";
 
         ///<summary>
         /// 子系统编码

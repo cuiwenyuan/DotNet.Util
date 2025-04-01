@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -24,6 +24,31 @@ namespace DotNet.Business
     /// </remarks>
     public partial class BaseParameterManager
     {
+        #region 删除缓存
+
+        /// <summary>
+        /// 删除缓存
+        /// </summary>
+        /// <returns></returns>
+        public override bool RemoveCache()
+        {
+            var result = false;
+            var cacheKey = "Dt." + CurrentTableName;
+            var cacheKeyTree = "Dt." + CurrentTableName + ".List";
+            if (UserInfo != null)
+            {
+                //cacheKey += "." + UserInfo.CompanyId;
+                //cacheKeyTree = "Dt." + UserInfo.SystemCode + ".ModuleTree";
+            }
+
+            CacheUtil.Remove(cacheKeyTree);
+            result = CacheUtil.Remove(cacheKey);
+            return result;
+        }
+        #endregion
+
+        #region public static void SetParameterByCache(string tableName, BaseParameterEntity entity)
+
         /// <summary>
         /// 设置缓存
         /// </summary>
@@ -35,6 +60,9 @@ namespace DotNet.Business
             CacheUtil.Set<string>(key, entity.ParameterContent);
         }
 
+        #endregion
+
+        #region public static string GetParameterByCache(string tableName, string categoryCode, string parameterId, string parameterCode, bool refreshCache = false)
         /// <summary>
         /// 从缓存获取
         /// </summary>
@@ -56,5 +84,7 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
     }
 }

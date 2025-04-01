@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOAuthManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ namespace DotNet.Business
             sb.Append(" AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'");
             sb.Append(" AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'");
             //未删除
-            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             //sb.Append(" AND (" + BaseUserOAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             if (ValidateUtil.IsInt(excludeId))
@@ -79,7 +79,7 @@ namespace DotNet.Business
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
             sb.Append(" AND " + BaseUserOAuthEntity.FieldUserId + " = " + userId + "");
             //未删除
-            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
+            sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1");
             //当前用户所在公司或者系统公用数据
             //sb.Append(" AND (" + BaseUserOpenAuthEntity.FieldUserCompanyId + " = 0 OR " + BaseUserOpenAuthEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             //需要显示未被删除的记录
@@ -121,7 +121,7 @@ namespace DotNet.Business
                 }
 
                 //未删除
-                sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1 ");
+                sb.Append(" AND " + BaseUserOAuthEntity.FieldDeleted + " = 0 AND " + BaseUserOAuthEntity.FieldEnabled + " = 1");
                 //排序
                 sb.Append(" ORDER BY " + BaseUserOAuthEntity.FieldId + " DESC");
                 var dt = DbHelper.Fill(sb.Return());

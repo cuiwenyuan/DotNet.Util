@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserOrganizationManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ namespace DotNet.Business
                 //按用户公司分表
                 //CurrentTableName = BaseUserOrganizationEntity.CurrentTableName + GetTableSuffix();
             }
-            CurrentTableDescription = typeof(BaseUserOrganizationEntity).FieldDescription("CurrentTableName");
+            CurrentTableDescription = BaseUserOrganizationEntity.CurrentTableDescription;
             PrimaryKey = "Id";
         }
 
@@ -135,7 +135,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         public BaseUserOrganizationEntity GetEntity(List<KeyValuePair<string, object>> parameters, int topLimit = 1, string order = BaseEntity.FieldId + " DESC")
         {
             return BaseEntity.Create<BaseUserOrganizationEntity>(GetDataTable(parameters, topLimit, order));

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -222,7 +222,7 @@ namespace DotNet.Util
             // 首字母进行强制大写改进
             field = field.Substring(0, 1).ToUpper() + field.Substring(1);
 
-            var keywords = new string[] { "Id", "SortCode", "Deleted", "DeletionStateCode", "Enabled", "CreateOn", "CreateTime", "CreateUserId", "CreateBy", "ModifiedOn", "UpdateTime", "ModifiedUserId", "UpdateUserId", "ModifiedBy", "UpdateBy" };
+            var keywords = new string[] { "Id", "SortCode", "Deleted", "Enabled", "CreateTime", "CreateUserId", "CreateBy", "UpdateTime", "UpdateUserId", "UpdateBy" };
 
             foreach (var t in keywords)
             {
@@ -321,7 +321,7 @@ namespace DotNet.Util
             #region BUG修复
             foreach (var permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
             {
-                var scope = Convert.ToInt32(permissionScope);
+                var scope = permissionScope.ToInt();
                 if (StringUtil.Exists(organizationIds, scope.ToString()))
                 {
                     result = permissionScope;
@@ -436,8 +436,8 @@ namespace DotNet.Util
             // 输出访问日志
             // 写入调试信息
 #if (DEBUG)
-            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
-            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
 
             return Environment.TickCount;
@@ -458,8 +458,8 @@ namespace DotNet.Util
             if (userInfo != null)
             {
                 // Console.WriteLine("Company: " + userInfo.CompanyName + "Department: " + userInfo.DepartmentName + "User: " + userInfo.RealName + " IP: " + userInfo.IPAddress);
-                // Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
-                // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+                // Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
+                // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
             }
 #endif
 
@@ -522,7 +522,7 @@ namespace DotNet.Util
         public static void WriteDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {
 #if (DEBUG)
-            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
+            Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
         }
     }

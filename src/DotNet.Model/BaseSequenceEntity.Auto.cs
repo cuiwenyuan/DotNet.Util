@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseSequenceEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -140,6 +140,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("序列")]
         public const string CurrentTableName = "BaseSequence";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "序列";
 
         ///<summary>
         /// 名称

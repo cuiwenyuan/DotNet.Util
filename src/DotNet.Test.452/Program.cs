@@ -233,11 +233,11 @@ namespace DotNet.Test._452
         }
         private static void DbTest()
         {
-            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.com)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = WangCaiMa)));User Id=WangCaiMa;Password=123456;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
+            //var connectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=wangcaisoft.cn)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME = WangCaiMa)));User Id=WangCaiMa;Password=123456;Pooling=true;MAX Pool Size=1024;Min Pool Size=2;Connection Lifetime=20;Connect Timeout=30;";
             //var dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
             //var manager = new EmailRecipientManager(dbHelper);
             //var entity = new EmailRecipientEntity();
-            //entity.Recipient = "Troy.Cui@wangcaisoft.com";
+            //entity.Recipient = "Troy.Cui@wangcaisoft.cn";
             //entity.Name = "Troy.Cui";
             //entity.Category = "Shipping & Handling";
             //var entityId = manager.Add(entity);
