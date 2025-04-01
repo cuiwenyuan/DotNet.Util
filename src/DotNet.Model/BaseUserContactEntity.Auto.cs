@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserContactEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -308,6 +308,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("用户联系方式")]
         public const string CurrentTableName = "BaseUserContact";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "用户联系方式";
 
         ///<summary>
         /// 用户编号

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,15 +38,6 @@ public partial class BasePage : System.Web.UI.Page
     /// 是否数据库报错
     /// </summary>
     protected bool DatabaseError = false;
-    /// <summary>
-    /// 每页显示多少条记录
-    /// </summary>
-    protected int PageSize = 30;
-
-    /// <summary>
-    /// 图片地址
-    /// </summary>
-    protected string ImagesUrl = ConfigurationManager.AppSettings["ImagesURL"];
 
     /// <summary>
     /// 用户信息
@@ -122,10 +113,6 @@ public partial class BasePage : System.Web.UI.Page
         // 这个是在调试环境里的优化功能
         if (!string.IsNullOrEmpty(url))
         {
-            //#if Debug
-            //    url = url.Replace("DotNet.WebForm/", "");
-            // #endif
-
             url = url.ToLower();
             if (!(url == "leftmenu.aspx"
                 || url == "leftsubmenu.aspx"
@@ -184,7 +171,7 @@ public partial class BasePage : System.Web.UI.Page
                 {
                     UserInfo = new CurrentUserInfo(WebUtil.LogonByOpenId(OpenId).UserInfo);
                 }
-            }            
+            }
         }
     }
     #endregion
@@ -226,15 +213,7 @@ public partial class BasePage : System.Web.UI.Page
     /// </summary>
     protected void Page_Load()
     {
-        //if (!Page.ClientScript.IsClientScriptBlockRegistered("chost"))
-        //{
-        //    Page.ClientScript.RegisterClientScriptBlock(GetType(), "chost", "var chost='" + "http://" + Request.Url.Authority + Request.ApplicationPath + "';", true);
-        //}
-        //var jsurl = "http://" + Request.Url.Authority + Request.ApplicationPath + "/js/jquery-1.11.2.min.js";
-        //if (!Page.ClientScript.IsClientScriptBlockRegistered("jquery"))
-        //{
-        //    Page.ClientScript.RegisterClientScriptInclude("jquery", jsurl);
-        //}
+
     }
     #endregion
 
@@ -298,6 +277,24 @@ public partial class BasePage : System.Web.UI.Page
             return ViewState["sortDirection"].ToString();
         }
         set => ViewState["sortDirection"] = value;
+    }
+    #endregion
+
+    #region public virtual int PageIndex 页码Index
+    /// <summary>
+    /// 页码Index，从0开始
+    /// </summary>
+    public virtual int PageIndex
+    {
+        get
+        {
+            if (ViewState["pageIndex"] == null)
+            {
+                ViewState["pageIndex"] = 0;
+            }
+            return ViewState["pageIndex"].ToInt();
+        }
+        set => ViewState["pageIndex"] = value;
     }
     #endregion
 }

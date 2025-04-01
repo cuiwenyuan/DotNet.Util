@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <param name="recordKey">记录主键</param>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         /// <param name="systemCode">子系统编码</param>
         public virtual void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null)
         {
@@ -63,7 +63,7 @@ namespace DotNet.Business
                     {
                         continue;
                     }
-                    var entity = new BaseChangeLogEntity
+                    var baseChangeLogEntity = new BaseChangeLogEntity
                     {
                         SystemCode = systemCode,
                         TableName = CurrentTableName,
@@ -75,7 +75,7 @@ namespace DotNet.Business
                         RecordKey = recordKey,
                         SortCode = 1 // 不要排序了，加快写入速度
                     };
-                    manager.Add(entity, true, false);
+                    manager.Add(baseChangeLogEntity, true, false);
                 }
             }
             else

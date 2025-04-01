@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -73,7 +73,7 @@ namespace DotNet.Util
             }
             set
             {
-                if (value > 1)
+                if (value >= 1)
                 {
                     _pageSize = value;
                 }
@@ -107,11 +107,29 @@ namespace DotNet.Util
         /// <summary>
         /// 排序表达式（ORDER BY后的字段或多个字段）
         /// </summary>
-        public string SortExpression { get; set; } = BaseUtil.FieldCreateTime;
+        public string SortExpression { get; set; } = BaseUtil.FieldId;
 
+        private string _sortDirection = "DESC";
         /// <summary>
         /// 排序方向（DESC或ASC）
         /// </summary>
-        public string SortDirection { get; set; } = "DESC";
+        public string SortDirection
+        {
+            get
+            {
+                return _sortDirection;
+            }
+            set
+            {
+                if (value.Equals("ASC", StringComparison.OrdinalIgnoreCase) || value.Equals("DESC", StringComparison.OrdinalIgnoreCase))
+                {
+                    _sortDirection = value;
+                }
+                else
+                {
+                    _sortDirection = "DESC";
+                }
+            }
+        }
     }
 }

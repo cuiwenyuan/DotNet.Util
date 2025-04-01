@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,13 +36,14 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDailyLogin(int days, string startDate, string endDate)
         {
+            var datetime = DateTime.Today.AddDays(-days);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT CONVERT(NVARCHAR(4),B." + BaseCalendarEntity.FieldFiscalYear + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalMonth + ") + '-' + CONVERT(NVARCHAR(2),B." + BaseCalendarEntity.FieldFiscalDay + ") AS TransactionDate");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0) AS TotalCount");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 1) AS SuccessCount");
             sb.Append(" ,(SELECT COUNT(*) FROM " + CurrentTableName + " A WHERE A." + BaseLogonLogEntity.FieldCreateTime + " = B." + BaseCalendarEntity.FieldTransactionDate + " AND A." + BaseLogonLogEntity.FieldEnabled + " = 1 AND A." + BaseLogonLogEntity.FieldDeleted + " = 0 AND A." + BaseLogonLogEntity.FieldResult + " = 0) AS FailCount");
             sb.Append(" FROM " + BaseCalendarEntity.CurrentTableName + " B ");
-            sb.Append(" WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= GETDATE() AND DATEDIFF(d,B." + BaseCalendarEntity.FieldTransactionDate + ",GETDATE()) < " + days + "");
+            sb.Append(" WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "' AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + datetime.ToString(BaseSystemInfo.DateFormat) + "'");
             if (ValidateUtil.IsDateTime(startDate))
             {
                 sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + startDate + "'");

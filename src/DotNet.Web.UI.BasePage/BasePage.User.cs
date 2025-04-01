@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ public partial class BasePage : System.Web.UI.Page
 
         var sb = PoolUtil.StringBuilder.Get();
         sb.Append(" SELECT * FROM " + BaseUserEntity.CurrentTableName);
-        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1 ");
+        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
         if (!string.IsNullOrEmpty(organizationId))
         {
@@ -84,7 +84,6 @@ public partial class BasePage : System.Web.UI.Page
     /// <param name="securityLevel">安全级别</param>
     protected void GetUser(DropDownList ddlUser, string organizationId = null, bool insertBlank = true, bool? containSelf = null, int? securityLevel = null)
     {
-        //ddlUser.Items.Clear();
         ddlUser.SelectedValue = null;
         var dt = GetUser(organizationId, containSelf, securityLevel);
         if (dt != null && dt.Rows.Count > 0)

@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseLogEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -212,6 +212,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("系统日志")]
         public const string CurrentTableName = "BaseLog";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "系统日志";
 
         ///<summary>
         /// 公司主键

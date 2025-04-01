@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageSucceedEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -128,6 +128,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("成功消息")]
         public const string CurrentTableName = "BaseMessageSucceed";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "成功消息";
 
         ///<summary>
         /// 公司编号

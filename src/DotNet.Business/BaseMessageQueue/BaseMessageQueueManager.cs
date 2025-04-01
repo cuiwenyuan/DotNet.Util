@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (Recipient LIKE N'%" + searchKey + "%' OR Subject LIKE N'%" + searchKey + "%' OR Body LIKE N'%" + searchKey + "%')");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
         #endregion

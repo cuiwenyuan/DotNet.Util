@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -165,10 +165,13 @@ namespace DotNet.Util
                                     case "System.Double":
                                         dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
                                         break;
-                                }
-                                j++;
+                                }                                
                             }
-
+                            else
+                            {
+                                dataRow.CreateCell(j).SetCellValue(field.Key);
+                            }
+                            j++;
                         }
                         catch (Exception)
                         {
@@ -201,7 +204,8 @@ namespace DotNet.Util
         /// <param name="fieldList">数据表字段名-说明对应列表</param>
         /// <param name="fileName">文件名</param>
         /// <param name="exportPicture">是否导出图片</param>
-        public static void ExportXlsxByNpoi(DataTable dt, Dictionary<string, string> fieldList, string fileName, bool exportPicture = false)
+        /// <param name="squarePicture">是否方形图</param>
+        public static void ExportXlsxByNpoi(DataTable dt, Dictionary<string, string> fieldList, string fileName, bool exportPicture = false, bool squarePicture = false)
         {
             var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             var ms = new MemoryStream();
@@ -276,9 +280,18 @@ namespace DotNet.Util
                                          suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                     {
                                         hasPicture = true;
-                                        //正方形的例子50*20 x 10*256
-                                        dataRow.Height = 100 * 20;
-                                        sheet.SetColumnWidth(i, 20 * 256);
+
+                                        if (squarePicture)
+                                        {
+                                            //正方形的例子50*20 x 10*256
+                                            dataRow.Height = 50 * 20;
+                                            sheet.SetColumnWidth(i, 10 * 256);
+                                        }
+                                        else
+                                        {
+                                            dataRow.Height = 100 * 20;
+                                            sheet.SetColumnWidth(i, 20 * 256);
+                                        }
                                         AddPicture(workbook, sheet, filePath, rowIndex, i, suffix);
 
                                     }
@@ -340,9 +353,18 @@ namespace DotNet.Util
                                         if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                         {
                                             hasPicture = true;
-                                            //正方形的例子50*20 x 10*256
-                                            dataRow.Height = 100 * 20;
-                                            sheet.SetColumnWidth(i, 20 * 256);
+                                            
+                                            if (squarePicture)
+                                            {
+                                                //正方形的例子50*20 x 10*256
+                                                dataRow.Height = 50 * 20;
+                                                sheet.SetColumnWidth(i, 10 * 256);
+                                            }
+                                            else
+                                            {
+                                                dataRow.Height = 100 * 20;
+                                                sheet.SetColumnWidth(i, 20 * 256);
+                                            }
                                             AddPicture(workbook, sheet, filePath, rowIndex, i, suffix);
                                             //sheet.GetColumnWidth(i);
 
@@ -371,9 +393,13 @@ namespace DotNet.Util
                                 if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
                                 {
                                     sheet.AutoSizeColumn(i);
-                                }
-                                i++;
+                                }                                
                             }
+                            else
+                            {
+                                dataRow.CreateCell(i).SetCellValue(field.Key);
+                            }
+                            i++;
                         }
                         catch (Exception ex)
                         {

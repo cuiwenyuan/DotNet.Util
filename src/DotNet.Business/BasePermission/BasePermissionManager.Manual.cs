@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BasePermissionManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -31,6 +31,28 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager
     {
+        #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
+
+        /// <summary>
+        /// 是否有相应的权限
+        /// </summary>
+        /// <param name="permissionCode">权限编码</param>
+        /// <param name="userId">用户编号</param>
+        /// <returns>是否有权限</returns>
+        public bool IsAuthorized(string permissionCode, string userId = null, string systemCode = null)
+        {
+            if (UserInfo != null && UserInfo.IsAdministrator)
+            {
+                return true;
+            }
+            if (UserInfo != null && string.IsNullOrEmpty(userId))
+            {
+                userId = UserInfo.Id.ToString();
+            }
+            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        }
+        #endregion
+
         #region public static List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null) 获用户拥有的操作权限列表
         /// <summary>
         /// 获用户拥有的操作权限列表
@@ -48,17 +70,15 @@ namespace DotNet.Business
             {
                 systemCode = BaseSystemInfo.SystemCode;
             }
-            var cacheKey = "P" + userId;
-            List<BaseModuleEntity> entityList = null;
+            var cacheKey = "P." + systemCode + "." + userId;
+            List<BaseModuleEntity> ls = null;
             // 这里是控制用户并发的，减少框架等重复读取数据库的效率问题
             lock (BaseSystemInfo.UserLock)
             {
-                //var cacheTime = default(TimeSpan);
-                var cacheTime = TimeSpan.FromMilliseconds(3600000);
-                entityList = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id.ToString(), userInfo.CompanyId, true), true);
+                var cacheTime = TimeSpan.FromMilliseconds(86400000);
+                ls = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id, companyId: userInfo.CompanyId, fromCache: true), true);
             }
-            //LogUtil.WriteLog(JsonUtil.ObjectToJson(entityList));
-            return entityList;
+            return ls;
         }
         #endregion
 
@@ -87,12 +107,44 @@ namespace DotNet.Business
                 entity.Deleted = 0;
                 //激活
                 UpdateEntity(entity);
+
+                #region 记录日志
+
+                var baseChangeLogEntity = new BaseChangeLogEntity
+                {
+                    TableName = GetPermissionTableName(entity.SystemCode),
+                    RecordKey = result,
+                    ColumnName = BaseChangeLogEntity.FieldDeleted,
+                    ColumnDescription = "激活",
+                    OldValue = "1",
+                    NewValue = "0",
+                    SortCode = 1 // 不要排序了，加快写入速度
+                };
+                new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+                #endregion
             }
             else
             {
                 result = AddEntity(entity);
                 if (!string.IsNullOrEmpty(result))
                 {
+                    #region 记录日志
+
+                    var baseChangeLogEntity = new BaseChangeLogEntity
+                    {
+                        SystemCode = entity.SystemCode,
+                        TableName = GetPermissionTableName(entity.SystemCode),
+                        TableDescription = CurrentTableDescription,
+                        RecordKey = result,
+                        OldValue = null,
+                        NewValue = "{" + BasePermissionEntity.FieldResourceId + ":" + entity.ResourceId + "," + BasePermissionEntity.FieldPermissionId + ":" + entity.PermissionId + "}",
+                        SortCode = 1 // 不要排序了，加快写入速度
+                    };
+                    new BaseChangeLogManager(UserInfo).Add(baseChangeLogEntity, true, false);
+
+                    #endregion
+
                     //运行成功
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -109,7 +161,7 @@ namespace DotNet.Business
 
             return result;
         }
-        #endregion
+        #endregion        
 
         #region 获取角色拥有的权限列表
         /// <summary>
@@ -134,8 +186,8 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)
                 };
 
-                var tableName = systemCode + "Module";
-                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, tableName);
+                var moduleTableName = GetModuleTableName(systemCode);
+                var moduleManager = new BaseModuleManager(DbHelper, UserInfo, moduleTableName);
                 result = moduleManager.GetList<BaseModuleEntity>(parameters);
             }
 
@@ -156,7 +208,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            CurrentTableName = systemCode + "Permission";
+            CurrentTableName = GetPermissionTableName(systemCode);
             resourceCategory = systemCode + resourceCategory;
             var parameters = new List<KeyValuePair<string, object>>
             {

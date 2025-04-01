@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseUserRoleManager.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 using System;
@@ -27,36 +27,6 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseUserRoleManager : BaseManager
     {
-        #region 删除缓存
-
-        /// <summary>
-        /// 删除缓存
-        /// </summary>
-        /// <returns></returns>
-        public override bool RemoveCache()
-        {
-            var result = false;
-            var cacheKey = "Dt." + CurrentTableName;
-            var cacheKeyListBase = "List.Base.UserRole";
-            var cacheKeyListSystemCode = "List.UserBase.Role";
-            var cacheKeySystemCode = "Dt.Base.UserRole";
-            var cacheKeySystemCodeUserId = "Dt.";
-            if (UserInfo != null)
-            {
-                //cacheKey += "." + UserInfo.CompanyId;
-                cacheKeyListSystemCode = "List." + UserInfo.SystemCode + ".UserRole";
-                cacheKeySystemCode = "Dt." + UserInfo.SystemCode + ".UserRole";
-                cacheKeySystemCodeUserId += UserInfo.SystemCode + "." + UserInfo.Id + ".UserRole";
-            }
-            CacheUtil.Remove(cacheKeyListBase);
-            CacheUtil.Remove(cacheKeyListSystemCode);
-            CacheUtil.Remove(cacheKeySystemCode);
-            CacheUtil.Remove(cacheKeySystemCodeUserId);
-            result = CacheUtil.Remove(cacheKey);
-            return result;
-        }
-        #endregion
-
         #region public string Add(BaseUserRoleEntity entity) 添加(判断数据是否重复，防止垃圾数据产生)
 
         /// <summary>
@@ -72,8 +42,6 @@ namespace DotNet.Business
             var whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, entity.SystemCode),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
-                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldRoleId, entity.RoleId),
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, entity.UserId)
             };
@@ -105,6 +73,7 @@ namespace DotNet.Business
         public string AddOrActive(BaseUserRoleEntity entity)
         {
             var result = string.Empty;
+
             var whereParameters = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, entity.SystemCode),
@@ -138,6 +107,58 @@ namespace DotNet.Business
                     StatusCode = Status.DbError.ToString();
                     StatusMessage = Status.DbError.ToDescription();
                 }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 复制用户角色到新用户
+        /// <summary>
+        /// 复制用户角色到新用户
+        /// </summary>
+        /// <param name="systemCode">子系统</param>
+        /// <param name="referenceUserId">源用户编号</param>
+        /// <param name="targetUserId">目标用户编号</param>
+        /// <returns></returns>
+        public int CopyRole(string systemCode, int referenceUserId, int targetUserId)
+        {
+            var result = 0;
+            if (string.IsNullOrEmpty(systemCode))
+            {
+                systemCode = "Base";
+            }
+            var whereParameters = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldSystemCode, systemCode),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldUserId, referenceUserId),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1),
+                new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0),
+            };
+            var userRoleTableName = GetUserRoleTableName(systemCode);
+            var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
+            var ls = manager.GetList<BaseUserRoleEntity>(whereParameters, order: BaseUserRoleEntity.FieldCreateTime + " ASC");
+            if (ls != null)
+            {
+                foreach (var item in ls)
+                {
+                    item.UserId = targetUserId;
+                    if (!manager.AddOrActive(item).IsNullOrEmpty())
+                    {
+                        result++;
+                    }
+                }
+                //运行成功
+                Status = Status.OkAdd;
+                StatusCode = Status.OkAdd.ToString();
+                StatusMessage = Status.OkAdd.ToDescription();
+            }
+            else
+            {
+                //未找到记录
+                Status = Status.NotFound;
+                StatusCode = Status.NotFound.ToString();
+                StatusMessage = Status.NotFound.ToDescription();
             }
 
             return result;

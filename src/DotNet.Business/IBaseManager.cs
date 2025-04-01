@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -102,7 +102,7 @@ namespace DotNet.Business
         /// 获取DataTable
         /// </summary>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(int topLimit, string order);
         /// <summary>
@@ -110,7 +110,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(string name, Object[] values, string order);
         /// <summary>
@@ -123,7 +123,7 @@ namespace DotNet.Business
         /// 获取DataTable
         /// </summary>
         /// <param name="parameter">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, string order);
         /// <summary>
@@ -131,14 +131,14 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(KeyValuePair<string, object> parameter, int topLimit, string order);
         /// <summary>
         /// 获取DataTable
         /// </summary>
         /// <param name="parameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, string order);
         /// <summary>
@@ -146,7 +146,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         DataTable GetDataTable(List<KeyValuePair<string, object>> parameters, int topLimit, string order);
 
@@ -167,7 +167,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList2<T>(string condition, int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -175,7 +175,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(int topLimit = 0, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -198,7 +198,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(string name, Object[] values, string order = null) where T : BaseEntity, new();
         /// <summary>
@@ -206,7 +206,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, string order) where T : BaseEntity, new();
         /// <summary>
@@ -215,7 +215,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter1">参数1</param>
         /// <param name="parameter2">参数2</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order) where T : BaseEntity, new();
         /// <summary>
@@ -224,7 +224,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameter">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(KeyValuePair<string, object> parameter, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
@@ -232,7 +232,7 @@ namespace DotNet.Business
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="parameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, string order) where T : BaseEntity, new();
         /// <summary>
@@ -241,7 +241,7 @@ namespace DotNet.Business
         /// <typeparam name="T"></typeparam>
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, int topLimit, string order) where T : BaseEntity, new();
         /// <summary>
@@ -351,7 +351,7 @@ namespace DotNet.Business
         /// <summary>
         /// 获取属性数组
         /// </summary>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         string[] GetProperties(string order);
         /// <summary>
@@ -625,7 +625,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText);
+        int ExecuteNonQuery(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询语句
@@ -633,7 +633,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters);
+        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         #endregion
 
@@ -643,7 +643,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <returns>object</returns>
-        object ExecuteScalar(string commandText);
+        object ExecuteScalar(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询语句
@@ -651,7 +651,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>Object</returns>
-        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
+        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
         #endregion
 
         #region Fill填充数据表
@@ -660,7 +660,7 @@ namespace DotNet.Business
         /// </summary>
         /// <param name="commandText">查询</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText);
+        DataTable Fill(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
@@ -668,7 +668,7 @@ namespace DotNet.Business
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText, IDbDataParameter[] dbParameters);
+        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         #endregion
 
@@ -812,23 +812,49 @@ namespace DotNet.Business
         /// 是否被用过
         /// </summary>
         /// <param name="id">行id</param>
-        /// <param name="tableName">要检查的关联表名</param>
-        /// <param name="tableFieldName">要检查的关联表字段名</param>
-        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField">要检查的关联表字段名</param>
+        /// <param name="currentTableField">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string id, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
+        bool IsUsed(string id, string targetTableName, string targetTableField, string currentTableField = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 是否被用过（批量）
         /// </summary>
         /// <param name="ids">行Ids</param>
-        /// <param name="tableName">要检查的关联表名</param>
-        /// <param name="tableFieldName">要检查的关联表字段名</param>
-        /// <param name="currentTableFieldName">当前表的关联字段名（默认为Id）</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField">要检查的关联表字段名</param>
+        /// <param name="currentTableField">当前表的关联字段名（默认为Id）</param>
         /// <param name="checkUserCompany">是否检查公司数据</param>
         /// <returns>是否</returns>
-        bool IsUsed(string[] ids, string tableName, string tableFieldName, string currentTableFieldName = BaseUtil.FieldId, bool checkUserCompany = false);
+        bool IsUsed(string[] ids, string targetTableName, string targetTableField, string currentTableField = BaseUtil.FieldId, bool checkUserCompany = false);
+
+        /// <summary>
+        /// 是否被用过
+        /// </summary>
+        /// <param name="id">行id</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField1">要检查的关联表字段名1</param>
+        /// <param name="targetTableField2">要检查的关联表字段名2</param>
+        /// <param name="currentTableField1">当前表的关联字段名1（默认为Id）</param>
+        /// <param name="currentTableField2">当前表的关联字段名2（默认为Id）</param>
+        /// <param name="checkUserCompany">是否检查公司数据</param>
+        /// <returns>是否</returns>
+        bool IsUsed(string id, string targetTableName, string targetTableField1, string targetTableField2, string currentTableField1 = BaseUtil.FieldId, string currentTableField2 = BaseUtil.FieldId, bool checkUserCompany = false);
+
+        /// <summary>
+        /// 是否被用过（批量）
+        /// </summary>
+        /// <param name="ids">行Ids</param>
+        /// <param name="targetTableName">要检查的关联表名</param>
+        /// <param name="targetTableField1">要检查的关联表字段名1</param>
+        /// <param name="targetTableField2">要检查的关联表字段名2</param>
+        /// <param name="currentTableField1">当前表的关联字段名（默认为Id）</param>
+        ///  <param name="currentTableField2">当前表的关联字段名（默认为Id）</param>
+        /// <param name="checkUserCompany">是否检查公司数据</param>
+        /// <returns>是否</returns>
+        bool IsUsed(string[] ids, string targetTableName, string targetTableField1, string targetTableField2, string currentTableField1 = BaseUtil.FieldId, string currentTableField2 = BaseUtil.FieldId, bool checkUserCompany = false);
 
         /// <summary>
         /// 删除缓存
@@ -849,7 +875,7 @@ namespace DotNet.Business
         /// <param name="recordKey">记录主键</param>
         /// <param name="entityNew">修改后的实体对象</param>
         /// <param name="entityOld">修改前的实体对象</param>
-        /// <param name="tableName">表名称</param>
+        /// <param name="tableName">表名</param>
         /// <param name="systemCode">子系统编码</param>
         void SaveEntityChangeLog(string recordKey, object entityOld, object entityNew, string tableName = null, string systemCode = null);
 

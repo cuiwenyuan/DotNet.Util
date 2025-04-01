@@ -107,6 +107,7 @@ namespace DotNet.Util
         /// <param name="image">Image 对象</param>
         /// <param name="savePath">保存路径</param>
         /// <param name="ici">指定格式的编解码参数</param>
+        /// <param name="pis">属性值</param>
         private static void SaveImage(Image image, string savePath, ImageCodecInfo ici, PropertyItem[] pis = null)
         {
             // 设置 原图片 对象的 EncoderParameters 对象
@@ -171,14 +172,14 @@ namespace DotNet.Util
                 if (originalWidth / originalHeight > aspectRatio)
                 {
                     factor = originalWidth / maxWidth2;
-                    newWidth = Convert.ToInt32(originalWidth / factor);
-                    newHeight = Convert.ToInt32(originalHeight / factor);
+                    newWidth = (originalWidth / factor).ToInt();
+                    newHeight = (originalHeight / factor).ToInt();
                 }
                 else
                 {
                     factor = originalHeight / maxHeight2;
-                    newWidth = Convert.ToInt32(originalWidth / factor);
-                    newHeight = Convert.ToInt32(originalHeight / factor);
+                    newWidth = (originalWidth / factor).ToInt();
+                    newHeight = (originalHeight / factor).ToInt();
                 }
             }
             else

@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseDictionaryItemEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -152,6 +152,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("字典项")]
         public const string CurrentTableName = "BaseDictionaryItem";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "字典项";
 
         ///<summary>
         /// 字典编号

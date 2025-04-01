@@ -1,5 +1,5 @@
 ﻿//--------------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //--------------------------------------------------------------------
 
 using System;
@@ -25,6 +25,8 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
+        #region public virtual List<T> GetListById<T>(string id) where T : BaseEntity, new()
+
         /// <summary>
         /// 根据ID获取集合对象
         /// </summary>
@@ -35,6 +37,10 @@ namespace DotNet.Business
         {
             return GetList<T>(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
         }
+
+        #endregion
+
+        #region public virtual List<T> GetList<T>(int topLimit = 0, string order = null) where T : BaseEntity, new()
 
         /// <summary>
         /// 获取集合对象
@@ -53,6 +59,10 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(string[] ids) where T : BaseEntity, new()
+
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -69,6 +79,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(string name, Object[] values, string order = null) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -86,6 +99,10 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
+
+        #region public virtual List<T> GetList<T>(KeyValuePair<string, object> parameter, string order) where T : BaseEntity, new()
 
         /// <summary>
         /// 获取集合对象
@@ -109,6 +126,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order) where T : BaseEntity, new() 
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -133,6 +153,10 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(KeyValuePair<string, object> parameter, int topLimit = 0, string order = null) where T : BaseEntity, new()
+
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -153,6 +177,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, string order) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -170,6 +197,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -188,6 +218,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(params KeyValuePair<string, object>[] parameters) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -209,7 +242,9 @@ namespace DotNet.Business
 
             return result;
         }
+        #endregion
 
+        #region public virtual List<T> GetList<T>(string condition) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -226,6 +261,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(string condition) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -243,6 +281,9 @@ namespace DotNet.Business
             return result;
         }
 
+        #endregion
+
+        #region public virtual List<T> GetList<T>(IDataReader dataReader) where T : BaseEntity, new()
         /// <summary>
         /// 获取集合对象
         /// </summary>
@@ -264,5 +305,7 @@ namespace DotNet.Business
 
             return result;
         }
+
+        #endregion
     }
 }

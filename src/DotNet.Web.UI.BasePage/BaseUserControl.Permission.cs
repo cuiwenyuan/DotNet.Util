@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -77,8 +77,8 @@ public partial class BaseUserControl : UserControl
     /// <returns>是否有权限</returns>
     public bool IsAuthorized(string permissionCode, string permissionName = null)
     {
-        var permissionManager = new BasePermissionManager(UserInfo);
-        return permissionManager.IsAuthorized(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode, permissionName);
+        var manager = new BasePermissionManager(UserInfo);
+        return manager.IsAuthorized(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode, permissionName);
     }
     /// <summary>
     /// 指定用户是否有相应的权限
@@ -89,8 +89,8 @@ public partial class BaseUserControl : UserControl
     /// <returns></returns>
     public bool IsAuthorized(string userId, string permissionCode, string permissionName = null)
     {
-        var permissionManager = new BasePermissionManager(UserInfo);
-        return permissionManager.IsAuthorized(UserInfo.SystemCode, userId, permissionCode, permissionName);
+        var manager = new BasePermissionManager(UserInfo);
+        return manager.IsAuthorized(UserInfo.SystemCode, userId, permissionCode, permissionName);
     }
     #endregion
 
@@ -187,7 +187,6 @@ public partial class BaseUserControl : UserControl
     }
     #endregion
 
-
     #region protected List<BaseModuleEntity> ModuleList 获取模块数据表
     /// <summary>
     /// 获取模块数据表
@@ -273,8 +272,8 @@ public partial class BaseUserControl : UserControl
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
     protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
-        return BaseUtil.FieldToArray(dtDepartment, BaseOrganizationEntity.FieldId);
+        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
+        return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId);
     }
     #endregion
 
@@ -287,30 +286,29 @@ public partial class BaseUserControl : UserControl
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
     protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        DataTable dtDepartment = null;
+        DataTable dt = null;
         var manager = new BaseOrganizationManager(UserInfo);
         if (UserInfo.IsAdministrator)
         {
-            dtDepartment = manager.GetOrganizationDataTable();
+            dt = manager.GetOrganizationDataTable();
         }
         else
         {
-            var permissionScopeManager = new BasePermissionManager(UserInfo);
-            dtDepartment = permissionScopeManager.GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
+            dt = new BasePermissionManager(UserInfo).GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
         }
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
         {
             if (!string.IsNullOrEmpty(UserInfo.DepartmentId))
             {
-                if (!BaseUtil.Exists(dtDepartment, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
+                if (!BaseUtil.Exists(dt, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
                 {
-                    dtDepartment.Merge(manager.GetDataTableById(UserInfo.DepartmentId));
+                    dt.Merge(manager.GetDataTableById(UserInfo.DepartmentId));
                 }
             }
         }
-        dtDepartment.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
-        return dtDepartment;
+        dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+        return dt;
     }
     #endregion
 
@@ -438,7 +436,7 @@ public partial class BaseUserControl : UserControl
 
         var sb = PoolUtil.StringBuilder.Get();
         sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
-        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1 ");
+        sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
         if (!string.IsNullOrEmpty(organizationId))
         {

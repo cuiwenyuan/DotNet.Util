@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -201,16 +201,18 @@ namespace DotNet.Util
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        IDataReader ExecuteReader(string commandText);
+        IDataReader ExecuteReader(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters);
+        IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
@@ -218,31 +220,35 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>结果集流</returns>
-        IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText);
+        int ExecuteNonQuery(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters);
+        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText, CommandType commandType);
+        int ExecuteNonQuery(string commandText, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
@@ -250,8 +256,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
@@ -260,23 +267,26 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        int ExecuteNonQuery(IDbTransaction dbTransaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        int ExecuteNonQuery(IDbTransaction dbTransaction, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>Object</returns>
-        object ExecuteScalar(string commandText);
+        object ExecuteScalar(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>Object</returns>
-        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters);
+        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         /// <summary>
         /// 执行查询
@@ -284,49 +294,35 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>Object</returns>
-        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText);
+        DataTable Fill(string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="dt">目标数据表</param>
         /// <param name="commandText">查询</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        DataTable Fill(DataTable dt, string commandText);
+        DataTable Fill(DataTable dt, string commandText, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText, IDbDataParameter[] dbParameters);
-
-        /// <summary>
-        /// 填充数据表
-        /// </summary>
-        /// <param name="dt">目标数据表</param>
-        /// <param name="commandText">sql查询</param>
-        /// <param name="dbParameters">参数集</param>
-        /// <returns>数据表</returns>
-        DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters);
-
-        /// <summary>
-        /// 填充数据表
-        /// </summary>
-        /// <param name="commandText">sql查询</param>
-        /// <param name="dbParameters">参数集</param>
-        /// <param name="commandType">命令分类</param>
-        /// <returns>数据表</returns>
-        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据表
@@ -334,9 +330,30 @@ namespace DotNet.Util
         /// <param name="dt">目标数据表</param>
         /// <param name="commandText">sql查询</param>
         /// <param name="dbParameters">参数集</param>
-        /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30);
+
+        /// <summary>
+        /// 填充数据表
+        /// </summary>
+        /// <param name="commandText">sql查询</param>
+        /// <param name="dbParameters">参数集</param>
+        /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
+        /// <returns>数据表</returns>
+        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
+
+        /// <summary>
+        /// 填充数据表
+        /// </summary>
+        /// <param name="dt">目标数据表</param>
+        /// <param name="commandText">sql查询</param>
+        /// <param name="dbParameters">参数集</param>
+        /// <param name="commandType">命令分类</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
+        /// <returns>数据表</returns>
+        DataTable Fill(DataTable dt, string commandText, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据权限
@@ -344,8 +361,9 @@ namespace DotNet.Util
         /// <param name="dataSet">目标数据权限</param>
         /// <param name="commandText">查询</param>
         /// <param name="tableName">填充表</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, string commandText, string tableName);
+        DataSet Fill(DataSet dataSet, string commandText, string tableName, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据权限
@@ -354,8 +372,9 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters);
+        DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, int commandTimeout = 30);
 
         /// <summary>
         /// 填充数据权限
@@ -365,16 +384,17 @@ namespace DotNet.Util
         /// <param name="commandText">sql查询</param>
         /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType);
+        DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters, CommandType commandType, int commandTimeout = 30);
 
         /// <summary>
         /// 利用Net SqlBulkCopy 批量导入数据库,速度超快
         /// </summary>
         /// <param name="dt">源内存数据表（先通过SELECT TOP 0获取空白DataTable）</param>
-        /// <param name="destinationTableName">目标表名称</param>
-        /// <param name="bulkCopyTimeout">超时限制（毫秒）</param>
+        /// <param name="destinationTableName">目标表名</param>
+        /// <param name="bulkCopyTimeout">超时限制，默认为30秒</param>
         /// <param name="batchSize">批大小（默认0，即一次性导入）</param>
-        bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 1000, int batchSize = 0);
+        bool SqlBulkCopyData(DataTable dt, string destinationTableName, int bulkCopyTimeout = 30, int batchSize = 0);
     }
 }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -35,7 +35,7 @@ namespace DotNet.Business
         public static List<BaseDictionaryItemEntity> GetSystemCodes()
         {
             var result = new List<BaseDictionaryItemEntity>();
-            result = new BaseDictionaryItemManager().GetDataTableByDictionaryCode("BaseSystem").ToList<BaseDictionaryItemEntity>();
+            result = new BaseDictionaryItemManager().GetDataTableByDictionaryCode("BaseSystemCode").ToList<BaseDictionaryItemEntity>();
             return result;
         }
 

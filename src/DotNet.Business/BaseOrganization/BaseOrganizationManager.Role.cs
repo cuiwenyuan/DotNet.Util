@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -39,13 +39,13 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            var tableName = systemCode + "RoleOrganization";
+            var roleOrganizationTableName = GetRoleOrganizationTableName(systemCode);
 
             // 需要显示未被删除的用户
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT OrganizationId FROM " + tableName
+            sb.Append("SELECT OrganizationId FROM " + roleOrganizationTableName
                             + " WHERE RoleId = " + DbHelper.GetParameter(BaseRoleOrganizationEntity.FieldRoleId)
-                                  + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0 "
+                                  + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                                   + " AND OrganizationId IN (SELECT Id FROM BaseOrganization WHERE " + BaseOrganizationEntity.FieldDeleted + " = 0)");
 
             var dbParameters = new List<IDbDataParameter>
@@ -77,11 +77,11 @@ namespace DotNet.Business
 
         string GetSqlQueryByRole(string systemCode, string[] roleIds)
         {
-            var tableNameRoleOrganization = systemCode + "RoleOrganization";
+            var tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseOrganizationEntity.CurrentTableName
-                            + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1 "
-                            + " AND " + BaseOrganizationEntity.FieldDeleted + "= 0 "
+                            + " WHERE " + BaseOrganizationEntity.FieldEnabled + " = 1"
+                            + " AND " + BaseOrganizationEntity.FieldDeleted + " = 0"
                             + " AND ( " + BaseOrganizationEntity.FieldId + " IN "
                             + " (SELECT  " + BaseRoleOrganizationEntity.FieldOrganizationId
                             + " FROM " + tableNameRoleOrganization
@@ -122,8 +122,8 @@ namespace DotNet.Business
                 Enabled = 1,
                 Deleted = 0
             };
-            var tableName = systemCode + "RoleOrganization";
-            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
+            var roleOrganizationTableName = GetRoleOrganizationTableName(systemCode);
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, roleOrganizationTableName);
             return manager.Add(entity);
         }
 
@@ -161,8 +161,8 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId),
                 new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldOrganizationId, organizationId)
             };
-            var tableName = systemCode + "RoleOrganization";
-            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
+            var roleOrganizationTableName = GetRoleOrganizationTableName(systemCode);
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, roleOrganizationTableName);
             return manager.Delete(parameters);
         }
         /// <summary>
@@ -195,8 +195,8 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            var tableName = systemCode + "RoleOrganization";
-            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, tableName);
+            var roleOrganizationTableName = GetRoleOrganizationTableName(systemCode);
+            var manager = new BaseRoleOrganizationManager(DbHelper, UserInfo, roleOrganizationTableName);
             result += manager.Delete(new List<KeyValuePair<string, object>> { new KeyValuePair<string, object>(BaseRoleOrganizationEntity.FieldRoleId, roleId) });
 
             return result;

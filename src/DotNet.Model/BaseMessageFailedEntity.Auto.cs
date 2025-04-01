@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseMessageFailedEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -152,6 +152,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("失败消息")]
         public const string CurrentTableName = "BaseMessageFailed";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "失败消息";
 
         ///<summary>
         /// 公司编号

@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BasePermissionEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -140,6 +140,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("权限")]
         public const string CurrentTableName = "BasePermission";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "权限";
 
         ///<summary>
         /// 子系统编码

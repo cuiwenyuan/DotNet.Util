@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -42,11 +42,11 @@ namespace DotNet.Util
             {
                 if (parameter.Value != null)
                 {
-                    sb.Append(BaseUtil.SqlLogicConditional + "( " + parameter.Key + " <> '" + parameter.Value + "' ) ");
+                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " <> '" + parameter.Value + "' ");
                 }
                 else
                 {
-                    sb.Append(BaseUtil.SqlLogicConditional + "( " + parameter.Key + " IS NOT NULL) ");
+                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " IS NOT NULL ");
                 }
             }
 

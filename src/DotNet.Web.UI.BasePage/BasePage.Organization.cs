@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -165,30 +165,29 @@ public partial class BasePage : System.Web.UI.Page
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
     protected DataTable GetDepartmentByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        DataTable dtDepartment = null;
+        DataTable dt = null;
         var manager = new BaseOrganizationManager(UserInfo);
         if (UserInfo.IsAdministrator)
         {
-            dtDepartment = manager.GetOrganizationDataTable();
+            dt = manager.GetOrganizationDataTable();
         }
         else
         {
-            var permissionScopeManager = new BasePermissionManager(UserInfo);
-            dtDepartment = permissionScopeManager.GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
+            dt = new BasePermissionManager(UserInfo).GetOrganizationDTByPermission(UserInfo, UserInfo.Id.ToString(), permissionCode);
         }
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
         {
             if (!string.IsNullOrEmpty(UserInfo.DepartmentId))
             {
-                if (!BaseUtil.Exists(dtDepartment, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
+                if (!BaseUtil.Exists(dt, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
                 {
-                    dtDepartment.Merge(manager.GetDataTableById(UserInfo.DepartmentId));
+                    dt.Merge(manager.GetDataTableById(UserInfo.DepartmentId));
                 }
             }
         }
-        dtDepartment.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
-        return dtDepartment;
+        dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+        return dt;
     }
     #endregion
 
@@ -201,8 +200,8 @@ public partial class BasePage : System.Web.UI.Page
     /// <param name="userDepartment">若没数据库至少显示用户自己的部门</param>
     protected string[] GetDepartmentIdsByPermissionScope(bool userDepartment = false, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
     {
-        var dtDepartment = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
-        return BaseUtil.FieldToArray(dtDepartment, BaseOrganizationEntity.FieldId);
+        var dt = GetDepartmentByPermissionScope(userDepartment, insertBlank, permissionCode);
+        return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId);
     }
     #endregion
 

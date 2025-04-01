@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -72,7 +72,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return DbHelper.Count(CurrentTableName, condition: sb.Return());
         }
         #endregion
@@ -126,7 +126,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " < " + endTime + ")");
             }
-            sb.Replace(" 1 = 1 AND ", "");
+            sb.Replace(" 1 = 1 AND ", " ");
             return DbHelper.DistinctCount(CurrentTableName, fieldName, condition: sb.Return());
         }
         #endregion

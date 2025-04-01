@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="BaseRoleOrganizationEntity.Auto.cs" company="DotNet">
-//     Copyright (c) 2024, All rights reserved.
+//     Copyright (c) 2025, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -92,6 +92,11 @@ namespace DotNet.Model
         ///</summary>
         [FieldDescription("角色组织机构")]
         public const string CurrentTableName = "BaseRoleOrganization";
+
+        ///<summary>
+        /// 表名
+        ///</summary>
+        public const string CurrentTableDescription = "角色组织机构";
 
         ///<summary>
         /// 子系统编码

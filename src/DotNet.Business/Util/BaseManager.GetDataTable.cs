@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2024, DotNet.
+// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -27,12 +27,13 @@ namespace DotNet.Business
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
+        #region public virtual DataTable GetDataTable(string condition, List<KeyValuePair<string, object>> parameters, string order)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="parameters">参数</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(string condition, List<KeyValuePair<string, object>> parameters, string order)
         {
@@ -62,11 +63,15 @@ namespace DotNet.Business
 
             return DbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(string condition, string order, params KeyValuePair<string, object>[] parameters)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="condition">查询条件(不包含WHERE)</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <param name="parameters">参数</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(string condition, string order, params KeyValuePair<string, object>[] parameters)
@@ -80,6 +85,10 @@ namespace DotNet.Business
             return GetDataTable(condition, parametersList, order);
 
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTableByWhere(string condition = null)
         /// <summary>
         /// GetDataTableByWhere
         /// </summary>
@@ -95,6 +104,10 @@ namespace DotNet.Business
             }
             return DbHelper.Fill(sb.Return());
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTableById(string id)
         /// <summary>
         /// GetDataTableById
         /// </summary>
@@ -104,6 +117,8 @@ namespace DotNet.Business
         {
             return GetDataTable(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
         }
+
+        #endregion
 
         #region public virtual DataTable GetDataTableByCategory(string categoryId) 获取列表
         /// <summary>
@@ -137,17 +152,22 @@ namespace DotNet.Business
         }
         #endregion
 
-
+        #region public virtual DataTable GetDataTable(int topLimit = 0, string order = null)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(int topLimit = 0, string order = null)
         {
             return DbHelper.GetDataTable(CurrentTableName, null, topLimit, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(string condition)
+
         /// <summary>
         /// GetDataTable
         /// </summary>
@@ -157,6 +177,10 @@ namespace DotNet.Business
         {
             return GetDataTableByWhere(condition);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(string[] ids)
         /// <summary>
         /// GetDataTable
         /// </summary>
@@ -166,52 +190,73 @@ namespace DotNet.Business
         {
             return DbHelper.GetDataTable(CurrentTableName, BaseUtil.FieldId, ids);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(string name, Object[] values, string order = null)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(string name, Object[] values, string order = null)
         {
             return DbHelper.GetDataTable(CurrentTableName, name, values, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, string order)
+
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters"></param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, string order)
         {
             var parameters = new List<KeyValuePair<string, object>> { whereParameters };
             return DbHelper.GetDataTable(CurrentTableName, parameters, 0, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="parameter1">参数1</param>
         /// <param name="parameter2">参数2</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> parameter1, KeyValuePair<string, object> parameter2, string order)
         {
             var parameters = new List<KeyValuePair<string, object>> { parameter1, parameter2 };
             return DbHelper.GetDataTable(CurrentTableName, parameters, 0, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, int topLimit = 0, string order = null)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters">查询条件</param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(KeyValuePair<string, object> whereParameters, int topLimit = 0, string order = null)
         {
             var parameters = new List<KeyValuePair<string, object>> { whereParameters };
             return DbHelper.GetDataTable(CurrentTableName, parameters, topLimit, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(params KeyValuePair<string, object>[] whereParameters)
         /// <summary>
         /// GetDataTable
         /// </summary>
@@ -226,26 +271,36 @@ namespace DotNet.Business
             }
             return DbHelper.GetDataTable(CurrentTableName, parametersList);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, int topLimit = 0, string order = null)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters"></param>
         /// <param name="topLimit">前多少行</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, int topLimit = 0, string order = null)
         {
             return DbHelper.GetDataTable(CurrentTableName, whereParameters, topLimit, order);
         }
+
+        #endregion
+
+        #region public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, string order)
         /// <summary>
         /// GetDataTable
         /// </summary>
         /// <param name="whereParameters">查询条件</param>
-        /// <param name="order">排序(不包含ORDER BY)</param>
+        /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <returns></returns>
         public virtual DataTable GetDataTable(List<KeyValuePair<string, object>> whereParameters, string order)
         {
             return DbHelper.GetDataTable(CurrentTableName, whereParameters, 0, order);
         }
+
+        #endregion
     }
 }
