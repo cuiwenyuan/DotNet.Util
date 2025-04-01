@@ -22,7 +22,7 @@ https://www.nuget.org/packages?q=wangcaisoft
 我是崔文远，2013年开始把自己弄得一些软件起了个名字：旺财软件。 
 
 个人网站：https://www.cuiwenyuan.cn  
-微信：cuiwenyuan2048
+微信：cuiwenyuan1024
 
 ## 欢迎勾搭
 如果您在使用中有任何问题，请使用GitHub的Issue功能提交给我，也欢迎加我微信沟通。  
