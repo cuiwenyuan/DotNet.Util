@@ -42,16 +42,28 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46'">
 		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.22.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
-	</ItemGroup>	
+	<ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net47'">
+		<PackageReference Include="Oracle.ManagedDataAccess" Version="21.19.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net472' or '$(TargetFramework)'=='net48'">
+		<PackageReference Include="Oracle.ManagedDataAccess" Version="23.9.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.280" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.9.1" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.9.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net461'">

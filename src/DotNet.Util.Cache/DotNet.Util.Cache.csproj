@@ -39,7 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.8" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
@@ -47,7 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NewLife.Redis" Version="6.1.2025.401" />
+	  <PackageReference Include="NewLife.Redis" Version="6.3.2025.801" />
 	</ItemGroup>
 
 	<ItemGroup>
