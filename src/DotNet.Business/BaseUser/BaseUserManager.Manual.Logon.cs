@@ -89,7 +89,7 @@ namespace DotNet.Business
                 result.Status = true;
                 result.StatusCode = Status.Ok.ToString();
                 result.StatusMessage = Status.Ok.ToDescription();
-                result.CreateSignature(userInfo);
+                //result.CreateSignature(userInfo);
             }
 
             return result;
