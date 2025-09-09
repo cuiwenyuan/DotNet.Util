@@ -69,7 +69,7 @@ namespace DotNet.Business
                 if (result != null)
                 {
                     var userManager = new BaseUserManager(userInfo);
-                    var userLogonResult = userManager.LogonByUserNameOnly(systemCode, userInfo, userInfo.UserName);
+                    var userLogonResult = userManager.LogonByUserNameOnly(systemCode, userInfo, userName);
 
                     // 检查身份
                     if (userLogonResult.Status == Status.Ok)

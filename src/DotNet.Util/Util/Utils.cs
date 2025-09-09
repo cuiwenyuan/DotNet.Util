@@ -1607,15 +1607,15 @@ namespace DotNet.Util
             {
                 case 3:
                     rgb = color.ToCharArray();
-                    red = Convert.ToInt32(rgb[0] + rgb[0].ToString(), 16);
-                    green = Convert.ToInt32(rgb[1] + rgb[1].ToString(), 16);
-                    blue = Convert.ToInt32(rgb[2] + rgb[2].ToString(), 16);
+                    red = (rgb[0] + rgb[0].ToString(), 16).ToInt();
+                    green = (rgb[1] + rgb[1].ToString(), 16).ToInt();
+                    blue = (rgb[2] + rgb[2].ToString(), 16).ToInt();
                     return Color.FromArgb(red, green, blue);
                 case 6:
                     rgb = color.ToCharArray();
-                    red = Convert.ToInt32(rgb[0] + rgb[1].ToString(), 16);
-                    green = Convert.ToInt32(rgb[2] + rgb[3].ToString(), 16);
-                    blue = Convert.ToInt32(rgb[4] + rgb[5].ToString(), 16);
+                    red = (rgb[0] + rgb[1].ToString(), 16).ToInt();
+                    green = (rgb[2] + rgb[3].ToString(), 16).ToInt();
+                    blue = (rgb[4] + rgb[5].ToString(), 16).ToInt();
                     return Color.FromArgb(red, green, blue);
                 default:
                     return Color.FromName(color);

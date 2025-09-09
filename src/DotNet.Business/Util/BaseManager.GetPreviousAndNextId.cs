@@ -47,7 +47,7 @@ namespace DotNet.Business
             sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
             if (!string.IsNullOrEmpty(orderTypeId))
             {
-                sb.Append(" AND OrderTypeId = " + orderTypeId + "");
+                sb.Append(" AND OrderTypeId = " + orderTypeId.ToInt() + "");
             }
             
             sb.Append(" AND Id < " + currentId + " ORDER BY Id DESC ");
@@ -57,7 +57,7 @@ namespace DotNet.Business
             sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
             if (!string.IsNullOrEmpty(orderTypeId))
             {
-                sb.Append(" AND OrderTypeId = " + orderTypeId + "");
+                sb.Append(" AND OrderTypeId = " + orderTypeId.ToInt() + "");
             }
             sb.Append(" AND Id > " + currentId + " ORDER BY Id ASC ");
             sb.Append(") ");
