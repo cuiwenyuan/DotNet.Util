@@ -59,10 +59,6 @@ namespace DotNet.Business
                 entity.CreateUserId = UserInfo.UserId;
                 entity.CreateBy = UserInfo.RealName;
             }
-            else
-            {
-                entity.CreateBy = entity.CreateBy;
-            }
 
             return AddEntity(entity);
         }
