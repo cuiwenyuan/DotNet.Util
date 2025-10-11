@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Description>A set of .NET 8/7/6/5/Standard 2.1/Standard 2.0 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
-		<Company>www.cuiwenyuan.com</Company>
+		<Description>A set of .NET 9/8/7/6/5/Standard 2.1/Standard 2.0 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<Company>www.cuiwenyuan.cn</Company>
 		<Copyright>©2008-2025 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
@@ -49,8 +49,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NewLife.Core" Version="11.6.2025.801" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="NewLife.Core" Version="11.7.2025.1001" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
@@ -65,12 +65,12 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.8" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.8" />
-		<PackageReference Include="System.Management" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.9" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.9" />
+		<PackageReference Include="System.Management" Version="9.0.9" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>

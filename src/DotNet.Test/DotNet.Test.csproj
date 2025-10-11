@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj" />
     <ProjectReference Include="..\DotNet.Model\DotNet.Model.csproj" />
     <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
