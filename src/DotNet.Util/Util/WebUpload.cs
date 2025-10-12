@@ -46,7 +46,7 @@ namespace DotNet.Util
         /// </summary>
         public WebUpload()
         {
-            
+
         }
 
         /// <summary>
@@ -104,12 +104,12 @@ namespace DotNet.Util
                 //检查文件扩展名是否合法
                 if (!CheckFileExt(fileExt))
                 {
-                    return "{\"status\": 0, \"msg\": \"不允许上传" + fileExt + "类型的文件！\"}";
+                    return "{\"status\": 0, \"msg\": \"不允许上传" + fileExt + "类型的文件！\", \"message\": \"不允许上传" + fileExt + "类型的文件！\"}";
                 }
                 //检查文件大小是否合法
                 if (!CheckFileSize(fileExt, fileSize))
                 {
-                    return "{\"status\": 0, \"msg\": \"文件超过限制的大小！\"}";
+                    return "{\"status\": 0, \"msg\": \"文件超过限制的大小！\", \"message\": \"文件超过限制的大小！\"}";
                 }
                 //检查上传的物理路径是否存在，不存在则创建
                 if (!Directory.Exists(fullUpLoadPath))
@@ -166,13 +166,13 @@ namespace DotNet.Util
                     }
                 }
                 //处理完毕，返回JOSN格式的文件信息
-                return "{\"status\": 1, \"msg\": \"上传文件成功！\", \"name\": \""
+                return "{\"status\": 1, \"msg\": \"上传文件成功！\", \"message\": \"上传文件成功！\", \"name\": \""
                     + fileName + "\", \"path\": \"" + newFilePath + "\", \"thumb\": \""
                     + newThumbnailPath + "\", \"size\": " + fileSize + ", \"ext\": \"" + fileExt + "\"}";
             }
             catch
             {
-                return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\", \"name\": \""
+                return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\", \"message\": \"上传过程中发生意外错误！\", \"name\": \""
                        + "" + "\", \"path\": \"" + "" + "\", \"thumb\": \""
                        + "" + "\", \"size\": " + 0 + ", \"ext\": \"" + "" + "\"}";
             }
@@ -212,12 +212,12 @@ namespace DotNet.Util
                 //检查文件扩展名是否合法
                 if (!CheckFileExt(fileExt))
                 {
-                    return "{\"status\": 0, \"msg\": \"不允许上传" + fileExt + "类型的文件！\"}";
+                    return "{\"status\": 0, \"msg\": \"不允许上传" + fileExt + "类型的文件！\", \"message\": \"不允许上传" + fileExt + "类型的文件！\"}";
                 }
                 //检查文件大小是否合法
                 if (!CheckFileSize(fileExt, fileSize))
                 {
-                    return "{\"status\": 0, \"msg\": \"文件超过限制的大小！\"}";
+                    return "{\"status\": 0, \"msg\": \"文件超过限制的大小！\", \"message\": \"文件超过限制的大小！\"}";
                 }
                 //检查上传的物理路径是否存在，不存在则创建
                 if (!Directory.Exists(fullUpLoadPath))
@@ -266,13 +266,13 @@ namespace DotNet.Util
                     }
                 }
                 //处理完毕，返回JOSN格式的文件信息
-                return "{\"status\": 1, \"msg\": \"上传文件成功！\", \"name\": \""
+                return "{\"status\": 1, \"msg\": \"上传文件成功！\", \"message\": \"上传文件成功！\", \"name\": \""
                     + fileName + "\", \"path\": \"" + newFilePath + "\", \"thumb\": \""
                     + newThumbnailPath + "\", \"size\": " + fileSize + ", \"ext\": \"" + fileExt + "\"}";
             }
             catch
             {
-                return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";
+                return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\", \"message\": \"上传过程中发生意外错误！\"}";
             }
         }
 
@@ -509,7 +509,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e);
-                    return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";
+                    return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\", \"message\": \"上传过程中发生意外错误！\"}";
                 }
                 finally
                 {
@@ -517,7 +517,7 @@ namespace DotNet.Util
                 }
             }
 
-            return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\"}";
+            return "{\"status\": 0, \"msg\": \"上传过程中发生意外错误！\", \"message\": \"上传过程中发生意外错误！\"}";
 
         }
 

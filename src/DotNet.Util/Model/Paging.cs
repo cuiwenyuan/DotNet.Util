@@ -33,34 +33,7 @@ namespace DotNet.Util
                     _pageNo = 1;
                 }
             }
-        }
-        private int _pageIndex = 0;
-        /// <summary>
-        /// 页索引（从0开始，0代表第1页）
-        /// </summary>
-        [Obsolete("Please use PageNo from 2022-08-18")]
-        public int PageIndex
-        {
-            get
-            {
-                return _pageIndex;
-            }
-            set
-            {
-                if (value >= 0)
-                {
-                    _pageIndex = value;
-                    if (_pageNo != _pageIndex + 1)
-                    {
-                        _pageNo = _pageIndex + 1;
-                    }
-                }
-                else
-                {
-                    _pageIndex = 0;
-                }
-            }
-        }
+        }       
         private int _pageSize = 20;
         /// <summary>
         /// 每页显示的记录数
