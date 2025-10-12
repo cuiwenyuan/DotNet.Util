@@ -8,7 +8,7 @@ namespace DotNet.Util
 {
     /// <summary>对象池</summary>
     /// <remarks>
-    /// 文档 https://www.yuque.com/smartstone/nx/object_pool
+    /// 文档 https://newlifex.com/core/object_pool
     /// </remarks>
     public static partial class PoolUtil
     {
@@ -26,23 +26,7 @@ namespace DotNet.Util
 
             var str = returnResult ? sb.ToString() : null;
 
-            PoolUtil.StringBuilder.Put(sb);
-
-            return str;
-        }
-
-        /// <summary>归还一个字符串构建器到对象池</summary>
-        /// <param name="sb">StringBuilder</param>
-        /// <param name="returnResult">是否需要返回结果</param>
-        /// <returns></returns>
-        [Obsolete("Pleaes use Return from 2024-02-01", true)]
-        public static String Put(this StringBuilder sb, Boolean returnResult = true)
-        {
-            if (sb == null) return null;
-
-            var str = returnResult ? sb.ToString() : null;
-
-            PoolUtil.StringBuilder.Put(sb);
+            PoolUtil.StringBuilder.Return(sb);
 
             return str;
         }
@@ -65,7 +49,7 @@ namespace DotNet.Util
             /// <summary>归还</summary>
             /// <param name="sb"></param>
             /// <returns></returns>
-            public override Boolean Put(StringBuilder sb)
+            public override Boolean Return(StringBuilder sb)
             {
                 if (sb.Capacity > MaximumCapacity)
                 {
@@ -99,26 +83,7 @@ namespace DotNet.Util
 
             var buf = returnResult ? ms.ToArray() : null;
 
-            Pool.MemoryStream.Put(ms);
-
-            return buf;
-        }
-
-        /// <summary>归还一个内存流到对象池</summary>
-        /// <param name="ms"></param>
-        /// <param name="returnResult">是否需要返回结果</param>
-        /// <returns></returns>
-        [Obsolete("Pleaes use Return from 2024-02-01", true)]
-        public static Byte[] Put(this MemoryStream ms, Boolean returnResult = true)
-        {
-            if (ms == null)
-            {
-                return null;
-            }
-
-            var buf = returnResult ? ms.ToArray() : null;
-
-            Pool.MemoryStream.Put(ms);
+            Pool.MemoryStream.Return(ms);
 
             return buf;
         }
@@ -141,7 +106,7 @@ namespace DotNet.Util
             /// <summary>归还</summary>
             /// <param name="ms"></param>
             /// <returns></returns>
-            public override Boolean Put(MemoryStream ms)
+            public override Boolean Return(MemoryStream ms)
             {
                 if (ms.Capacity > MaximumCapacity) return false;
 

@@ -67,7 +67,6 @@ namespace DotNet.Util
             if (pageNo >= 1)
             {
                 result.PageNo = pageNo;
-                result.PageIndex = pageNo - 1;
             }
             if (pageSize > 0)
             {

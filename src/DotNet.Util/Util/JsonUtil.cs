@@ -113,7 +113,7 @@ namespace DotNet.Util
                     dic.Add(drow);
                 }
             }
-            //Serialize  
+            //Serialize
             var result = JsonConvert.SerializeObject(dic);
             result = System.Text.RegularExpressions.Regex.Replace(result, @"\\/Date\((\d+)\)\\/", match =>
             {

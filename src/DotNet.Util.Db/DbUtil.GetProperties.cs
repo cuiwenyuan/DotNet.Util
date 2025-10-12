@@ -72,7 +72,7 @@ namespace DotNet.Util
                     case CurrentDbType.Access:
                     case CurrentDbType.SqlServer:
                         sb.Clear();
-                        sb.Append("SELECT TOP " + topLimit + targetField + " FROM " + tableName);
+                        sb.Append("SELECT TOP " + topLimit + " " + targetField + " FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
                         whereSql = " ROWNUM < = " + topLimit;
