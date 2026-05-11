@@ -1,4 +1,4 @@
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +12,7 @@ using System.Net;
 namespace DotNet.Util
 {
     /// <summary>
-    /// Í¼Æ¬
+    /// å›¾ç‰‡
     /// </summary>
     public class ImageUtil
     {
@@ -37,23 +37,23 @@ namespace DotNet.Util
 
         #endregion
 
-        #region Í¼Æ¬Ñ¹Ëõ
+        #region å›¾ç‰‡å‹ç¼©
 
         /// <summary>
-        /// ÎŞËğÑ¹ËõÍ¼Æ¬
+        /// æ— æŸå‹ç¼©å›¾ç‰‡
         /// </summary>
-        /// <param name="filePath">Ô­Í¼Æ¬µØÖ·</param>
-        /// <param name="compressedFilePath">Ñ¹Ëõºó±£´æÍ¼Æ¬µØÖ·</param>
-        /// <param name="quality">Ñ¹ËõÖÊÁ¿£¨Êı×ÖÔ½Ğ¡Ñ¹ËõÂÊÔ½¸ß£©1-100</param>
-        /// <param name="maxSize">Ñ¹ËõºóÍ¼Æ¬µÄ×î´ó´óĞ¡£¨K£©</param>
-        /// <param name="isFirstCall">ÊÇ·ñÊÇµÚÒ»´Îµ÷ÓÃ</param>
-        /// <param name="isAutoRotate">ÊÇ·ñ×Ô¶¯Ğı×ª</param>
-        /// <param name="keepExif">±£³ÖExif</param>
-        /// <param name="deleteOrignalImage">É¾³ıÔ­Ê¼Í¼Æ¬</param>
+        /// <param name="filePath">åŸå›¾ç‰‡åœ°å€</param>
+        /// <param name="compressedFilePath">å‹ç¼©åä¿å­˜å›¾ç‰‡åœ°å€</param>
+        /// <param name="quality">å‹ç¼©è´¨é‡ï¼ˆæ•°å­—è¶Šå°å‹ç¼©ç‡è¶Šé«˜ï¼‰1-100</param>
+        /// <param name="maxSize">å‹ç¼©åå›¾ç‰‡çš„æœ€å¤§å¤§å°ï¼ˆKï¼‰</param>
+        /// <param name="isFirstCall">æ˜¯å¦æ˜¯ç¬¬ä¸€æ¬¡è°ƒç”¨</param>
+        /// <param name="isAutoRotate">æ˜¯å¦è‡ªåŠ¨æ—‹è½¬</param>
+        /// <param name="keepExif">ä¿æŒExif</param>
+        /// <param name="deleteOrignalImage">åˆ é™¤åŸå§‹å›¾ç‰‡</param>
         /// <returns></returns>
         public static bool CompressImage(string filePath, string compressedFilePath, int quality = 90, int maxSize = 300, bool isFirstCall = true, bool isAutoRotate = false, bool keepExif = false, bool deleteOrignalImage = false)
         {
-            //Èç¹ûÊÇµÚÒ»´Îµ÷ÓÃ£¬Ô­Ê¼Í¼ÏñµÄ´óĞ¡Ğ¡ÓÚÒªÑ¹ËõµÄ´óĞ¡£¬ÔòÖ±½Ó¸´ÖÆÎÄ¼ş£¬²¢ÇÒ·µ»Øtrue
+            //å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡è°ƒç”¨ï¼ŒåŸå§‹å›¾åƒçš„å¤§å°å°äºè¦å‹ç¼©çš„å¤§å°ï¼Œåˆ™ç›´æ¥å¤åˆ¶æ–‡ä»¶ï¼Œå¹¶ä¸”è¿”å›true
             var fi = new FileInfo(filePath);
             if (fi.Exists)
             {
@@ -71,7 +71,7 @@ namespace DotNet.Util
                     return true;
                 }
                 var image = Image.FromFile(filePath);
-                // È¡µÃÔ­Ê¼Í¼Æ¬µÄExifĞÅÏ¢
+                // å–å¾—åŸå§‹å›¾ç‰‡çš„Exifä¿¡æ¯
                 PropertyItem[] pis;
                 if (keepExif)
                 {
@@ -84,14 +84,14 @@ namespace DotNet.Util
 
                 if (isAutoRotate)
                 {
-                    // ÕÕÆ¬·½ÏòĞı×ª
+                    // ç…§ç‰‡æ–¹å‘æ—‹è½¬
                     RotateImage(image);
                 }
                 var tFormat = image.RawFormat;
                 var dHeight = image.Height / 2;
                 var dWidth = image.Width / 2;
                 int sW = 0, sH = 0;
-                //°´±ÈÀıËõ·Å
+                //æŒ‰æ¯”ä¾‹ç¼©æ”¾
                 var newSize = new Size(image.Width, image.Height);
                 if (newSize.Width > dHeight || newSize.Width > dWidth)
                 {
@@ -122,10 +122,10 @@ namespace DotNet.Util
                 g.DrawImage(image, new Rectangle((dWidth - sW) / 2, (dHeight - sH) / 2, sW, sH), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
                 g.Dispose();
 
-                //ÒÔÏÂ´úÂëÎª±£´æÍ¼Æ¬Ê±£¬ÉèÖÃÑ¹ËõÖÊÁ¿
+                //ä»¥ä¸‹ä»£ç ä¸ºä¿å­˜å›¾ç‰‡æ—¶ï¼Œè®¾ç½®å‹ç¼©è´¨é‡
                 var ep = new EncoderParameters();
                 long[] qy = new long[1];
-                qy[0] = quality;//ÉèÖÃÑ¹ËõµÄ±ÈÀı1-100
+                qy[0] = quality;//è®¾ç½®å‹ç¼©çš„æ¯”ä¾‹1-100
                 var eParam = new EncoderParameter(Encoder.Quality, qy);
                 ep.Param[0] = eParam;
 
@@ -143,7 +143,7 @@ namespace DotNet.Util
                     }
                     if (jpegICIinfo != null)
                     {
-                        // ÉèÖÃÍ¼Æ¬µÄExifĞÅÏ¢ÎªÔ­Ê¼ĞÅÏ¢
+                        // è®¾ç½®å›¾ç‰‡çš„Exifä¿¡æ¯ä¸ºåŸå§‹ä¿¡æ¯
                         if (pis != null)
                         {
                             foreach (var pi in pis)
@@ -186,9 +186,9 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region Í¼Æ¬·½Ïò
+        #region å›¾ç‰‡æ–¹å‘
         /// <summary>
-        /// ¸ù¾İÍ¼Æ¬exifµ÷Õû·½Ïò
+        /// æ ¹æ®å›¾ç‰‡exifè°ƒæ•´æ–¹å‘
         /// </summary>
         /// <param name="img"></param>
         /// <returns></returns>
@@ -238,9 +238,9 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region Í¼Æ¬»ñÈ¡EXIFÖĞµÄ¾­Î³¶ÈµÈĞÅÏ¢
+        #region å›¾ç‰‡è·å–EXIFä¸­çš„ç»çº¬åº¦ç­‰ä¿¡æ¯
         /// <summary>
-        /// Í¼Æ¬»ñÈ¡EXIFÖĞµÄ¾­Î³¶ÈµÈĞÅÏ¢
+        /// å›¾ç‰‡è·å–EXIFä¸­çš„ç»çº¬åº¦ç­‰ä¿¡æ¯
         /// </summary>
         /// <param name="img"></param>
         /// <returns></returns>
@@ -249,37 +249,37 @@ namespace DotNet.Util
             var entity = new ExifEntity();
             try
             {
-                //ÔØÈëÍ¼Æ¬   
-                //È¡µÃËùÓĞµÄÊôĞÔ(ÒÔPropertyId×öÅÅĞò)   
+                //è½½å…¥å›¾ç‰‡   
+                //å–å¾—æ‰€æœ‰çš„å±æ€§(ä»¥PropertyIdåšæ’åº)   
                 var propertyItems = img.PropertyItems.OrderBy(x => x.Id);
                 foreach (var item in propertyItems)
                 {
-                    //Ö»È¡Id·¶Î§Îª0x0000µ½0x001e
+                    //åªå–IdèŒƒå›´ä¸º0x0000åˆ°0x001e
                     if (item.Id >= 0x0000 && item.Id <= 0x001e)
                     {
                         switch (item.Id)
                         {
-                            case 0x0002://ÉèÖÃÎ³¶È
+                            case 0x0002://è®¾ç½®çº¬åº¦
                                 if (item.Value.Length == 24)
                                 {
-                                    //degrees(½«byte[0]~byte[3]×ª³Éuint, ³ıÒÔbyte[4]~byte[7]×ª³ÉµÄuint)   
+                                    //degrees(å°†byte[0]~byte[3]è½¬æˆuint, é™¤ä»¥byte[4]~byte[7]è½¬æˆçš„uint)   
                                     double d = BitConverter.ToUInt32(item.Value, 0) * 1.0d / BitConverter.ToUInt32(item.Value, 4);
-                                    //minutes(Œ¢byte[8]~byte[11]×ª³Éuint, ³ıÒÔbyte[12]~byte[15]×ª³ÉµÄuint)   
+                                    //minutes(å°‡byte[8]~byte[11]è½¬æˆuint, é™¤ä»¥byte[12]~byte[15]è½¬æˆçš„uint)   
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
-                                    //seconds(Œ¢byte[16]~byte[19]×ª³Éuint, ³ıÒÔbyte[20]~byte[23]×ª³ÉµÄuint)   
+                                    //seconds(å°‡byte[16]~byte[19]è½¬æˆuint, é™¤ä»¥byte[20]~byte[23]è½¬æˆçš„uint)   
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
                                     double dblGPSLatitude = (((s / 60 + m) / 60) + d);
                                     entity.Latitude = dblGPSLatitude;
                                 }
                                 break;
-                            case 0x0004: //ÉèÖÃ¾­¶È
+                            case 0x0004: //è®¾ç½®ç»åº¦
                                 if (item.Value.Length == 24)
                                 {
-                                    //degrees(½«byte[0]~byte[3]×ª³Éuint, ³ıÒÔbyte[4]~byte[7]×ª³ÉµÄuint)   
+                                    //degrees(å°†byte[0]~byte[3]è½¬æˆuint, é™¤ä»¥byte[4]~byte[7]è½¬æˆçš„uint)   
                                     double d = BitConverter.ToUInt32(item.Value, 0) * 1.0d / BitConverter.ToUInt32(item.Value, 4);
-                                    //minutes(½«byte[8]~byte[11]×ª³Éuint, ³ıÒÔbyte[12]~byte[15]×ª³ÉµÄuint)   
+                                    //minutes(å°†byte[8]~byte[11]è½¬æˆuint, é™¤ä»¥byte[12]~byte[15]è½¬æˆçš„uint)   
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
-                                    //seconds(½«byte[16]~byte[19]×ª³Éuint, ³ıÒÔbyte[20]~byte[23]×ª³ÉµÄuint)   
+                                    //seconds(å°†byte[16]~byte[19]è½¬æˆuint, é™¤ä»¥byte[20]~byte[23]è½¬æˆçš„uint)   
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
                                     double dblGPSLongitude = (((s / 60 + m) / 60) + d);
                                     entity.Longitude = dblGPSLongitude;
@@ -287,7 +287,7 @@ namespace DotNet.Util
                                 break;
                         }
                     }
-                    if (item.Id == 0x9003 || item.Id == 0x0132)//IdÎª0x9003±íÊ¾ÅÄÕÕµÄÊ±¼ä
+                    if (item.Id == 0x9003 || item.Id == 0x0132)//Idä¸º0x9003è¡¨ç¤ºæ‹ç…§çš„æ—¶é—´
                     {
                         var propItemValue = item.Value;
                         var dateTimeStr = System.Text.Encoding.ASCII.GetString(propItemValue).Trim('\0');
@@ -295,7 +295,7 @@ namespace DotNet.Util
                         var dt = dateTimeStr.IsNullOrEmpty() ? DateTime.Now : dateTimeStr.ToDateTime();
                         entity.CreateTime = dt;
                     }
-                    if (item.Id == 0x9003)//IdÎª0x0132×îºó¸üĞÂÊ±¼ä
+                    if (item.Id == 0x9003)//Idä¸º0x0132æœ€åæ›´æ–°æ—¶é—´
                     {
                         var propItemValue = item.Value;
                         var dateTimeStr = System.Text.Encoding.ASCII.GetString(propItemValue).Trim('\0');
@@ -320,73 +320,73 @@ namespace DotNet.Util
 
         #endregion
 
-        #region ExifÊµÌå
+        #region Exifå®ä½“
         /// <summary>
-        /// ExifÊµÌå
+        /// Exifå®ä½“
         /// </summary>
         public class ExifEntity
         {
-            #region ÊôĞÔ
+            #region å±æ€§
             /// <summary>
-            /// ·½Ïò
+            /// æ–¹å‘
             /// </summary>
             public int Orientation { get; set; } = 1;
-            /// <summary>Geo¹şÏ£±àÂë¡£»ùÓÚwgs84×ø±ê</summary>
+            /// <summary>Geoå“ˆå¸Œç¼–ç ã€‚åŸºäºwgs84åæ ‡</summary>
             public String Hash { get; set; }
 
-            /// <summary>¾­¶È¡£wgw84×ø±ê</summary>
+            /// <summary>ç»åº¦ã€‚wgw84åæ ‡</summary>
             public Double Longitude { get; set; }
 
-            /// <summary>Î³¶È¡£wgs84×ø±ê</summary>
+            /// <summary>çº¬åº¦ã€‚wgs84åæ ‡</summary>
             public Double Latitude { get; set; }
 
-            /// <summary>µØÖ·¡£ÀıÈçXX¸ßËÙ¡¢XXÂ·</summary>
+            /// <summary>åœ°å€ã€‚ä¾‹å¦‚XXé«˜é€Ÿã€XXè·¯</summary>
             public String Address { get; set; }
 
-            /// <summary>±êÌâ¡£POIÓïÒåµØÖ·</summary>
+            /// <summary>æ ‡é¢˜ã€‚POIè¯­ä¹‰åœ°å€</summary>
             public String Title { get; set; }
 
-            /// <summary>°Ù¶È¾­¶È¡£bd09×ø±ê</summary>
+            /// <summary>ç™¾åº¦ç»åº¦ã€‚bd09åæ ‡</summary>
             public Double LongitudeBd09 { get; set; }
 
-            /// <summary>°Ù¶ÈÎ³¶È¡£bd09×ø±ê</summary>
+            /// <summary>ç™¾åº¦çº¬åº¦ã€‚bd09åæ ‡</summary>
             public Double LatitudeBd09 { get; set; }
 
-            /// <summary>»ğĞÇ¾­¶È¡£gcj02×ø±ê£¬¸ßµÂ¡¢ÌÚÑ¶</summary>
+            /// <summary>ç«æ˜Ÿç»åº¦ã€‚gcj02åæ ‡ï¼Œé«˜å¾·ã€è…¾è®¯</summary>
             public Double LongitudeGcj02 { get; set; }
 
-            /// <summary>»ğĞÇÎ³¶È¡£gcj02×ø±ê£¬¸ßµÂ¡¢ÌÚÑ¶</summary>
+            /// <summary>ç«æ˜Ÿçº¬åº¦ã€‚gcj02åæ ‡ï¼Œé«˜å¾·ã€è…¾è®¯</summary>
             public Double LatitudeGcj02 { get; set; }
 
-            /// <summary>ÇøÓò±àÂë¡£ÏçÕòËÄ¼¶µØÖ·£¬Èç321324114</summary>
+            /// <summary>åŒºåŸŸç¼–ç ã€‚ä¹¡é•‡å››çº§åœ°å€ï¼Œå¦‚321324114</summary>
             public Int32 AreaCode { get; set; }
 
-            /// <summary>ÇøÓòÃû³Æ¡£ÏçÕòËÄ¼¶µØÖ·</summary>
+            /// <summary>åŒºåŸŸåç§°ã€‚ä¹¡é•‡å››çº§åœ°å€</summary>
             public String AreaName { get; set; }
 
-            /// <summary>Ê¡·İ±àÂë</summary>
+            /// <summary>çœä»½ç¼–ç </summary>
             public Int32 ProvinceId { get; set; }
 
-            /// <summary>Ê¡·İÃû³Æ</summary>
+            /// <summary>çœä»½åç§°</summary>
             public String Province { get; set; }
 
-            /// <summary>³ÇÊĞ±àÂë</summary>
+            /// <summary>åŸå¸‚ç¼–ç </summary>
             public Int32 CityId { get; set; }
 
-            /// <summary>³ÇÊĞÃû³Æ</summary>
+            /// <summary>åŸå¸‚åç§°</summary>
             public String City { get; set; }
 
-            /// <summary>ÇøÏØ±àÂë</summary>
+            /// <summary>åŒºå¿ç¼–ç </summary>
             public Int32 DistrictId { get; set; }
 
-            /// <summary>ÇøÏØÃû³Æ</summary>
+            /// <summary>åŒºå¿åç§°</summary>
             public String District { get; set; }
             /// <summary>
-            /// ´´½¨Ê±¼ä
+            /// åˆ›å»ºæ—¶é—´
             /// </summary>
             public DateTime CreateTime { get; set; }
             /// <summary>
-            /// ¸üĞÂÊ±¼ä
+            /// æ›´æ–°æ—¶é—´
             /// </summary>
             public DateTime UpdateTime { get; set; }
             #endregion

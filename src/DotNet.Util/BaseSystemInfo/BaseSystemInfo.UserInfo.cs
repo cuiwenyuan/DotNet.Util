@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -36,7 +36,7 @@ namespace DotNet.Util
                     //IP地址
                     if (string.IsNullOrEmpty(_userInfo.IpAddress))
                     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                         //按照Web应用获取IP地址
                         _userInfo.IpAddress = Utils.GetIp();
 #endif

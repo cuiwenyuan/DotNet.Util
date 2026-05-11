@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -357,7 +357,7 @@ namespace DotNet.Util
         }
         #endregion
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         #region GetResponseCsv 在浏览器中获得CSV格式文件
         /// <summary>

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 
@@ -30,7 +30,7 @@ namespace DotNet.Business
         /// </summary>
         public static string Url = "redis.wangcaisoft.cn:6379";
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 验证OpenId
         /// </summary>

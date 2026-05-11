@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
 // <copyright file="BaseLogManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -235,11 +235,11 @@ namespace DotNet.Business
                 case CurrentDbType.Oracle:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= TO_DATE( '{0}','yyyy-mm-dd hh24:mi:ss') ", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= TO_DATE('{0}','yyyy-mm-dd hh24:mi:ss')", endDate));
                     }
                     break;
             }
@@ -262,33 +262,6 @@ namespace DotNet.Business
         {
             var sql = GetDataTableSql(null, name, value, beginDate, endDate, processId);
             return DbHelper.Fill(sql);
-        }
-        #endregion
-
-        #region public DataTable GetDataTableByDate(string createOn, string processId, string createUserId)
-        /// <summary>
-        /// 按日期查询
-        /// </summary>
-        /// <param name="createOn">记录日期 yyyy/mm/dd</param>
-        /// <param name="processName">模块主键</param>
-        /// <param name="createUserId">用户主键</param>
-        /// <returns>数据表</returns>
-        public DataTable GetDataTableByDate(string createOn, string processName, string createUserId)
-        {
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName
-                    + " WHERE CONVERT(NVARCHAR, " + BaseLogEntity.FieldStartTime + ", 111) = " + dbHelper.GetParameter(BaseLogEntity.FieldStartTime)
-                    + " AND " + BaseLogEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseLogEntity.FieldUserId));
-            sb.Append(" ORDER BY " + BaseLogEntity.FieldStartTime);
-            var names = new string[2];
-            names[0] = BaseLogEntity.FieldStartTime;
-            names[1] = BaseLogEntity.FieldUserId;
-            var values = new Object[2];
-            values[0] = createOn;
-            values[1] = createUserId;
-            var dt = new DataTable(BaseLogEntity.CurrentTableName);
-            dbHelper.Fill(dt, sb.Return(), DbHelper.MakeParameters(names, values));
-            return dt;
         }
         #endregion
 

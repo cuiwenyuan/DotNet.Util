@@ -1,12 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 using System.Web.Configuration;
 #endif
@@ -25,7 +25,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 检查前端传来的用户信息是否正确
         /// 一些接口调用需要检查

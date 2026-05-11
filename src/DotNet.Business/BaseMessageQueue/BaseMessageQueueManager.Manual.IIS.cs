@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ namespace DotNet.Business
         public bool ApplicationRestart()
         {
             var result = false;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             //发送邮件，写入数据库
             var entity = new BaseMessageQueueEntity
             {

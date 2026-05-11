@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;net9.0;netstandard2.1</TargetFrameworks>
-		<Description>A set of .NET 9/8/7/6/5/Standard 2.1/Standard 2.0 Database Access utilities for PostgreSql(support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<TargetFrameworks>net46;net47;net48;net6.0;net7.0;net8.0;net9.0;net10.0;netstandard2.1</TargetFrameworks>
+		<Description>A set of .NET 10/9/8/7/6/5/Standard 2.1/Standard 2.0 Database Access utilities for PostgreSql(support .net framework 4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.cn</Company>
 		<Copyright>©2008-2024 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
@@ -42,7 +42,7 @@
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net461'">
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
 
@@ -50,12 +50,6 @@
 		<PackageReference Include="System.ValueTuple" Version="4.6.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-		<PackageReference Include="Npgsql">
-			<Version>4.0.17</Version>
-		</PackageReference>
-	</ItemGroup>
-	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net46'">
 		<PackageReference Include="Npgsql">
 			<Version>4.0.17</Version>
@@ -103,6 +97,12 @@
 			<Version>9.0.4</Version>
 		</PackageReference>
 	</ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Npgsql">
+            <Version>9.0.4</Version>
+        </PackageReference>
+    </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 	  <PackageReference Include="Npgsql">

@@ -1,12 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Data;
 using System.IO;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Windows.Forms;
 #endif
 using NPOI.SS.UserModel;
@@ -15,7 +15,7 @@ namespace DotNet.Util
 {
     public partial class ExcelUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         private int _returnStatus = 0;
         private string _returnMessage = null;
 

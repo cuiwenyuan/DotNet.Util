@@ -1,12 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 
@@ -45,7 +45,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         #region public static bool SetDropDownListValue(DropDownList dropDownList, string selectedValue)
         /// <summary>

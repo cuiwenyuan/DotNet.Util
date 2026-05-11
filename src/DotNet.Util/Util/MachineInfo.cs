@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -191,7 +191,7 @@ namespace DotNet.Util
         public static string GetCpuSerialNo()
         {
             var cpuSerialNo = string.Empty;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             var managementClass = new ManagementClass("Win32_Processor");
             var managementObjectCollection = managementClass.GetInstances();
             foreach (var o in managementObjectCollection)
@@ -224,7 +224,7 @@ namespace DotNet.Util
         public static string GetHardDiskInfo()
         {
             var hardDisk = string.Empty;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             var managementClass = new ManagementClass("Win32_DiskDrive");
             var managementObjectCollection = managementClass.GetInstances();
             foreach (var o in managementObjectCollection)

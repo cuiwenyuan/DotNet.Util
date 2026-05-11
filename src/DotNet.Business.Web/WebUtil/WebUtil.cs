@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -13,7 +13,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 namespace DotNet.Business
@@ -77,7 +77,7 @@ namespace DotNet.Business
         /// </summary>
         public static string UserIsNotAdminPage = @"~/Modules/Common/System/AccessDeny.aspx";
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region GetOpenId
         /// <summary>
         /// 获取OpenId

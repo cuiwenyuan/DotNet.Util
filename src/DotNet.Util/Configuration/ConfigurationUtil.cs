@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -832,7 +832,7 @@ namespace DotNet.Util
             {
                 BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
             }
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
             {
                 if (System.Web.Hosting.HostingEnvironment.ApplicationID != null)

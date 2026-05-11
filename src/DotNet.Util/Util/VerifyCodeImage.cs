@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 #if NETSTANDARD2_0_OR_GREATER
@@ -316,7 +316,7 @@ namespace DotNet.Util
             var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
             bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             httpContext.Response.ClearContent();
             httpContext.Response.ContentType = "image/Jpeg";
             httpContext.Response.BinaryWrite(memoryStream.GetBuffer());

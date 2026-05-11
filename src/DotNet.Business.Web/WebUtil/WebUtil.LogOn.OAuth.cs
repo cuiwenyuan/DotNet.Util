@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region OAuth登录
 
         /// <summary>

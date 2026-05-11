@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -34,7 +34,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region private void DeleteExistFile(string fileName) 删除已经存在的文件
         /// <summary>
         /// 删除已经存在的文件

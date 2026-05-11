@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -33,7 +33,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WordUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         //在NPOI中，每厘米对应的长度数值
         private const int NPOI_PICTURE_LENGTH_EVERY_CM = 360144;

@@ -1,12 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Data;
 using System.IO;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Windows.Forms;
 #endif
 using NPOI.SS.UserModel;
@@ -36,7 +36,7 @@ namespace DotNet.Util
         {
             get { return _returnMessage; }
         }
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 选择要导入的Excel文件
         /// </summary>

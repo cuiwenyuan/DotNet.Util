@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31521.260
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Util", "DotNet.Util\DotNet.Util.csproj", "{F771F81A-DCC3-4D5F-9643-5184FE5B0E6F}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Web.UI.BasePage", "D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Test", "DotNet.Test\DotNet.Test.csproj", "{4E145CE2-15B1-4DB4-8E48-B966536F5052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test.452", "DotNet.Test.452\DotNet.Test.452.csproj", "{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test.46", "DotNet.Test.452\DotNet.Test.46.csproj", "{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Util.Db.MySql", "DotNet.Util.Db.MySql\DotNet.Util.Db.MySql.csproj", "{C96E3016-8ADD-407E-B9A1-5F4D21B28E7E}"
 EndProject

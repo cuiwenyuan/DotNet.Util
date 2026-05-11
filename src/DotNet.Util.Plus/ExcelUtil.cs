@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 using NPOI.XSSF.UserModel;
@@ -36,7 +36,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region ExcelToTable
         /// <summary>
         /// Excel导入成Datable

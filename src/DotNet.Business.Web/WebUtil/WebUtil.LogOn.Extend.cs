@@ -1,7 +1,7 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
-#if NET452_OR_GREATER
+// All Rights Reserved. Copyright (c) 2026, DotNet.
+//-----------------------------------------------------------------
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 
@@ -14,7 +14,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region public static void Logout(bool useSso, BaseUserInfo userInfo)
         /// <summary>
         /// <param name="useSso">是否使用SSO</param>

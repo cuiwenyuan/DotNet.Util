@@ -1,5 +1,5 @@
 //-----------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------
 
 using System;
@@ -11,7 +11,7 @@ using System.Reflection;
 namespace DotNet.Util
 {
     /// <summary>
-    /// ·´Éä¹¤¾ß
+    /// åå°„å·¥å…·
     /// </summary>
     public static partial class ReflectionUtil
     {
@@ -39,8 +39,8 @@ namespace DotNet.Util
         /// SetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name">Ãû³Æ</param>
-        /// <param name="value">Öµ</param>
+        /// <param name="name">åç§°</param>
+        /// <param name="value">å€¼</param>
         public static void SetField(object obj, string name, object value)
         {
             var fi = obj.GetType().GetField(name, Bf);
@@ -51,7 +51,7 @@ namespace DotNet.Util
         /// GetField
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name">Ãû³Æ</param>
+        /// <param name="name">åç§°</param>
         /// <returns></returns>
         public static object GetField(object obj, string name)
         {
@@ -60,7 +60,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÉèÖÃ¶ÔÏóÊôĞÔµÄÖµ
+        /// è®¾ç½®å¯¹è±¡å±æ€§çš„å€¼
         /// </summary>
         public static void SetProperty(object obj, string name, object value)
         {
@@ -72,7 +72,7 @@ namespace DotNet.Util
         /// <summary>
         /// ChangeType2
         /// </summary>
-        /// <param name="value">Öµ</param>
+        /// <param name="value">å€¼</param>
         /// <param name="conversionType"></param>
         /// <returns></returns>
         public static object ChangeType2(object value, Type conversionType)
@@ -90,7 +90,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñÈ¡¶ÔÏóÊôĞÔµÄÖµ
+        /// è·å–å¯¹è±¡å±æ€§çš„å€¼
         /// </summary>
         public static object GetProperty(object obj, string name)
         {
@@ -99,7 +99,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñÈ¡¶ÔÏóÊôĞÔĞÅÏ¢£¨×é×°³É×Ö·û´®Êä³ö£©
+        /// è·å–å¯¹è±¡å±æ€§ä¿¡æ¯ï¼ˆç»„è£…æˆå­—ç¬¦ä¸²è¾“å‡ºï¼‰
         /// </summary>
         public static List<string> GetPropertyNames(object obj)
         {
@@ -115,7 +115,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñÈ¡¶ÔÏóÊôĞÔĞÅÏ¢£¨×é×°³É×Ö·û´®Êä³ö£©
+        /// è·å–å¯¹è±¡å±æ€§ä¿¡æ¯ï¼ˆç»„è£…æˆå­—ç¬¦ä¸²è¾“å‡ºï¼‰
         /// </summary>
         public static Dictionary<string,string> GetPropertyNameTypes(object obj)
         {

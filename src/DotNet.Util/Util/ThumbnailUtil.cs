@@ -1,4 +1,4 @@
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -9,7 +9,7 @@ using System.Net;
 namespace DotNet.Util
 {
     /// <summary>
-    /// ËõÂÔÍ¼²Î¿¼DTcms
+    /// ç¼©ç•¥å›¾å‚è€ƒDTcms
     /// </summary>
     public class ThumbnailUtil
     {
@@ -17,9 +17,9 @@ namespace DotNet.Util
         private string _srcFileName;
 
         /// <summary>
-        /// ´´½¨
+        /// åˆ›å»º
         /// </summary>
-        /// <param name="fileName">Ô­Ê¼Í¼Æ¬Â·¾¶</param>
+        /// <param name="fileName">åŸå§‹å›¾ç‰‡è·¯å¾„</param>
         public bool SetImage(string fileName)
         {
             _srcFileName = Utils.GetMapPath(fileName);
@@ -36,7 +36,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »Øµ÷
+        /// å›è°ƒ
         /// </summary>
         /// <returns></returns>
         public bool ThumbnailCallback()
@@ -45,11 +45,11 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Éú³ÉËõÂÔÍ¼,·µ»ØËõÂÔÍ¼µÄImage¶ÔÏó
+        /// ç”Ÿæˆç¼©ç•¥å›¾,è¿”å›ç¼©ç•¥å›¾çš„Imageå¯¹è±¡
         /// </summary>
-        /// <param name="width">ËõÂÔÍ¼¿í¶È</param>
-        /// <param name="height">ËõÂÔÍ¼¸ß¶È</param>
-        /// <returns>ËõÂÔÍ¼µÄImage¶ÔÏó</returns>
+        /// <param name="width">ç¼©ç•¥å›¾å®½åº¦</param>
+        /// <param name="height">ç¼©ç•¥å›¾é«˜åº¦</param>
+        /// <returns>ç¼©ç•¥å›¾çš„Imageå¯¹è±¡</returns>
         public Image GetImage(int width, int height)
         {
             Image img;
@@ -59,7 +59,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ±£´æËõÂÔÍ¼
+        /// ä¿å­˜ç¼©ç•¥å›¾
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
@@ -80,12 +80,12 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Éú³ÉËõÂÔÍ¼²¢±£´æ
+        /// ç”Ÿæˆç¼©ç•¥å›¾å¹¶ä¿å­˜
         /// </summary>
-        /// <param name="width">ËõÂÔÍ¼µÄ¿í¶È</param>
-        /// <param name="height">ËõÂÔÍ¼µÄ¸ß¶È</param>
-        /// <param name="imgformat">±£´æµÄÍ¼Ïñ¸ñÊ½</param>
-        /// <returns>ËõÂÔÍ¼µÄImage¶ÔÏó</returns>
+        /// <param name="width">ç¼©ç•¥å›¾çš„å®½åº¦</param>
+        /// <param name="height">ç¼©ç•¥å›¾çš„é«˜åº¦</param>
+        /// <param name="imgformat">ä¿å­˜çš„å›¾åƒæ ¼å¼</param>
+        /// <returns>ç¼©ç•¥å›¾çš„Imageå¯¹è±¡</returns>
         public void SaveImage(int width, int height, ImageFormat imgformat)
         {
             if (imgformat != ImageFormat.Gif && (_srcImage.Width > width) || (_srcImage.Height > height))
@@ -102,18 +102,18 @@ namespace DotNet.Util
         #region Helper
 
         /// <summary>
-        /// ±£´æÍ¼Æ¬
+        /// ä¿å­˜å›¾ç‰‡
         /// </summary>
-        /// <param name="image">Image ¶ÔÏó</param>
-        /// <param name="savePath">±£´æÂ·¾¶</param>
-        /// <param name="ici">Ö¸¶¨¸ñÊ½µÄ±à½âÂë²ÎÊı</param>
-        /// <param name="pis">ÊôĞÔÖµ</param>
+        /// <param name="image">Image å¯¹è±¡</param>
+        /// <param name="savePath">ä¿å­˜è·¯å¾„</param>
+        /// <param name="ici">æŒ‡å®šæ ¼å¼çš„ç¼–è§£ç å‚æ•°</param>
+        /// <param name="pis">å±æ€§å€¼</param>
         private static void SaveImage(Image image, string savePath, ImageCodecInfo ici, PropertyItem[] pis = null)
         {
-            // ÉèÖÃ Ô­Í¼Æ¬ ¶ÔÏóµÄ EncoderParameters ¶ÔÏó
+            // è®¾ç½® åŸå›¾ç‰‡ å¯¹è±¡çš„ EncoderParameters å¯¹è±¡
             var parameters = new EncoderParameters(1);
             parameters.Param[0] = new EncoderParameter(Encoder.Quality, ((long)100));
-            // ÉèÖÃÍ¼Æ¬µÄExifĞÅÏ¢ÎªÔ­Ê¼ĞÅÏ¢
+            // è®¾ç½®å›¾ç‰‡çš„Exifä¿¡æ¯ä¸ºåŸå§‹ä¿¡æ¯
             if (pis != null)
             {
                 foreach (var pi in pis)
@@ -126,10 +126,10 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñÈ¡Í¼Ïñ±àÂë½âÂëÆ÷µÄËùÓĞÏà¹ØĞÅÏ¢
+        /// è·å–å›¾åƒç¼–ç è§£ç å™¨çš„æ‰€æœ‰ç›¸å…³ä¿¡æ¯
         /// </summary>
-        /// <param name="mimeType">°üº¬±àÂë½âÂëÆ÷µÄ¶àÓÃÍ¾Íø¼ÊÓÊ¼şÀ©³äĞ­Òé (MIME) ÀàĞÍµÄ×Ö·û´®</param>
-        /// <returns>·µ»ØÍ¼Ïñ±àÂë½âÂëÆ÷µÄËùÓĞÏà¹ØĞÅÏ¢</returns>
+        /// <param name="mimeType">åŒ…å«ç¼–ç è§£ç å™¨çš„å¤šç”¨é€”ç½‘é™…é‚®ä»¶æ‰©å……åè®® (MIME) ç±»å‹çš„å­—ç¬¦ä¸²</param>
+        /// <returns>è¿”å›å›¾åƒç¼–ç è§£ç å™¨çš„æ‰€æœ‰ç›¸å…³ä¿¡æ¯</returns>
         public static ImageCodecInfo GetCodecInfo(string mimeType)
         {
             var codecInfo = ImageCodecInfo.GetImageEncoders();
@@ -142,21 +142,21 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ¼ÆËãĞÂ³ß´ç
+        /// è®¡ç®—æ–°å°ºå¯¸
         /// </summary>
-        /// <param name="width">Ô­Ê¼¿í¶È</param>
-        /// <param name="height">Ô­Ê¼¸ß¶È</param>
-        /// <param name="maxWidth">×î´óĞÂ¿í¶È</param>
-        /// <param name="maxHeight">×î´óĞÂ¸ß¶È</param>
+        /// <param name="width">åŸå§‹å®½åº¦</param>
+        /// <param name="height">åŸå§‹é«˜åº¦</param>
+        /// <param name="maxWidth">æœ€å¤§æ–°å®½åº¦</param>
+        /// <param name="maxHeight">æœ€å¤§æ–°é«˜åº¦</param>
         /// <returns></returns>
         private static Size ResizeImage(int width, int height, int maxWidth, int maxHeight)
         {
-            //´Ë´Î2012-02-05ĞŞ¸Ä¹ı=================
+            //æ­¤æ¬¡2012-02-05ä¿®æ”¹è¿‡=================
             if (maxWidth <= 0)
                 maxWidth = width;
             if (maxHeight <= 0)
                 maxHeight = height;
-            //ÒÔÉÏ2012-02-05ĞŞ¸Ä¹ı=================
+            //ä»¥ä¸Š2012-02-05ä¿®æ”¹è¿‡=================
             var maxWidth2 = (decimal)maxWidth;
             var maxHeight2 = (decimal)maxHeight;
             var aspectRatio = maxWidth2 / maxHeight2;
@@ -191,9 +191,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// µÃµ½Í¼Æ¬¸ñÊ½
+        /// å¾—åˆ°å›¾ç‰‡æ ¼å¼
         /// </summary>
-        /// <param name="name">ÎÄ¼şÃû³Æ</param>
+        /// <param name="name">æ–‡ä»¶åç§°</param>
         /// <returns></returns>
         public static ImageFormat GetFormat(string name)
         {
@@ -216,17 +216,17 @@ namespace DotNet.Util
         #endregion
 
         /// <summary>
-        /// ÖÆ×÷Ğ¡Õı·½ĞÎ
+        /// åˆ¶ä½œå°æ­£æ–¹å½¢
         /// </summary>
-        /// <param name="image">Í¼Æ¬¶ÔÏó</param>
-        /// <param name="newFileName">ĞÂµØÖ·</param>
-        /// <param name="newSize">³¤¶È»ò¿í¶È</param>
-        /// <param name="isAutoRotate">ÊÇ·ñ×Ô¶¯Ğı×ª</param>
+        /// <param name="image">å›¾ç‰‡å¯¹è±¡</param>
+        /// <param name="newFileName">æ–°åœ°å€</param>
+        /// <param name="newSize">é•¿åº¦æˆ–å®½åº¦</param>
+        /// <param name="isAutoRotate">æ˜¯å¦è‡ªåŠ¨æ—‹è½¬</param>
         public static void MakeSquareImage(Image image, string newFileName, int newSize, bool isAutoRotate = false)
         {
             if (isAutoRotate)
             {
-                // ÕÕÆ¬·½ÏòĞı×ª
+                // ç…§ç‰‡æ–¹å‘æ—‹è½¬
                 ImageUtil.RotateImage(image);
             }
             var i = 0;
@@ -239,12 +239,12 @@ namespace DotNet.Util
             try
             {
                 var g = Graphics.FromImage(b);
-                //ÉèÖÃ¸ßÖÊÁ¿²åÖµ·¨
+                //è®¾ç½®é«˜è´¨é‡æ’å€¼æ³•
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                //ÉèÖÃ¸ßÖÊÁ¿,µÍËÙ¶È³ÊÏÖÆ½»¬³Ì¶È
+                //è®¾ç½®é«˜è´¨é‡,ä½é€Ÿåº¦å‘ˆç°å¹³æ»‘ç¨‹åº¦
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                //Çå³ıÕû¸ö»æÍ¼Ãæ²¢ÒÔÍ¸Ã÷±³¾°É«Ìî³ä
+                //æ¸…é™¤æ•´ä¸ªç»˜å›¾é¢å¹¶ä»¥é€æ˜èƒŒæ™¯è‰²å¡«å……
                 g.Clear(Color.Transparent);
                 if (width < height)
                     g.DrawImage(image, new Rectangle(0, 0, newSize, newSize), new Rectangle(0, (height - width) / 2, width, width), GraphicsUnit.Pixel);
@@ -266,22 +266,22 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÖÆ×÷Ğ¡Õı·½ĞÎ
+        /// åˆ¶ä½œå°æ­£æ–¹å½¢
         /// </summary>
-        /// <param name="fileName">Í¼Æ¬ÎÄ¼şÃû</param>
-        /// <param name="newFileName">ĞÂµØÖ·</param>
-        /// <param name="newSize">³¤¶È»ò¿í¶È</param>
+        /// <param name="fileName">å›¾ç‰‡æ–‡ä»¶å</param>
+        /// <param name="newFileName">æ–°åœ°å€</param>
+        /// <param name="newSize">é•¿åº¦æˆ–å®½åº¦</param>
         public static void MakeSquareImage(string fileName, string newFileName, int newSize)
         {
             MakeSquareImage(Image.FromFile(fileName), newFileName, newSize);
         }
 
         /// <summary>
-        /// ÖÆ×÷Ô¶³ÌĞ¡Õı·½ĞÎ
+        /// åˆ¶ä½œè¿œç¨‹å°æ­£æ–¹å½¢
 		/// </summary>
-		/// <param name="url">Í¼Æ¬url</param>
-		/// <param name="newFileName">ĞÂµØÖ·</param>
-		/// <param name="newSize">³¤¶È»ò¿í¶È</param>
+		/// <param name="url">å›¾ç‰‡url</param>
+		/// <param name="newFileName">æ–°åœ°å€</param>
+		/// <param name="newSize">é•¿åº¦æˆ–å®½åº¦</param>
         public static void MakeRemoteSquareImage(string url, string newFileName, int newSize)
         {
             var stream = GetRemoteImage(url);
@@ -295,12 +295,12 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÖÆ×÷ËõÂÔÍ¼
+        /// åˆ¶ä½œç¼©ç•¥å›¾
         /// </summary>
-        /// <param name="original">Í¼Æ¬¶ÔÏó</param>
-        /// <param name="newFileName">ĞÂÍ¼Â·¾¶</param>
-        /// <param name="maxWidth">×î´ó¿í¶È</param>
-        /// <param name="maxHeight">×î´ó¸ß¶È</param>
+        /// <param name="original">å›¾ç‰‡å¯¹è±¡</param>
+        /// <param name="newFileName">æ–°å›¾è·¯å¾„</param>
+        /// <param name="maxWidth">æœ€å¤§å®½åº¦</param>
+        /// <param name="maxHeight">æœ€å¤§é«˜åº¦</param>
         public static void MakeThumbnailImage(Image original, string newFileName, int maxWidth, int maxHeight)
         {
             var newSize = ResizeImage(original.Width, original.Height, maxWidth, maxHeight);
@@ -324,39 +324,39 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÖÆ×÷ËõÂÔÍ¼
+        /// åˆ¶ä½œç¼©ç•¥å›¾
         /// </summary>
-        /// <param name="fileName">ÎÄ¼şÃû</param>
-        /// <param name="newFileName">ĞÂÍ¼Â·¾¶</param>
-        /// <param name="maxWidth">×î´ó¿í¶È</param>
-        /// <param name="maxHeight">×î´ó¸ß¶È</param>
-        /// <param name="isAutoRotate">ÊÇ·ñ×Ô¶¯Ğı×ª</param>
+        /// <param name="fileName">æ–‡ä»¶å</param>
+        /// <param name="newFileName">æ–°å›¾è·¯å¾„</param>
+        /// <param name="maxWidth">æœ€å¤§å®½åº¦</param>
+        /// <param name="maxHeight">æœ€å¤§é«˜åº¦</param>
+        /// <param name="isAutoRotate">æ˜¯å¦è‡ªåŠ¨æ—‹è½¬</param>
         public static void MakeThumbnailImage(string fileName, string newFileName, int maxWidth, int maxHeight, bool isAutoRotate = false)
         {
-            //2012-02-05ĞŞ¸Ä¹ı£¬Ö§³ÖÌæ»»
+            //2012-02-05ä¿®æ”¹è¿‡ï¼Œæ”¯æŒæ›¿æ¢
             var imageBytes = File.ReadAllBytes(fileName);
             var img = Image.FromStream(new MemoryStream(imageBytes));
             if (isAutoRotate)
             {
-                // ÕÕÆ¬·½ÏòĞı×ª
+                // ç…§ç‰‡æ–¹å‘æ—‹è½¬
                 ImageUtil.RotateImage(img);
             }
             MakeThumbnailImage(img, newFileName, maxWidth, maxHeight);
-            //Ô­ÎÄ
+            //åŸæ–‡
             //MakeThumbnailImage(Image.FromFile(fileName), newFileName, maxWidth, maxHeight);
         }
 
-        #region 2012-2-19 ĞÂÔöÉú³ÉÍ¼Æ¬ËõÂÔÍ¼·½·¨
+        #region 2012-2-19 æ–°å¢ç”Ÿæˆå›¾ç‰‡ç¼©ç•¥å›¾æ–¹æ³•
         /// <summary>
-        /// Éú³ÉËõÂÔÍ¼
+        /// ç”Ÿæˆç¼©ç•¥å›¾
         /// </summary>
-        /// <param name="physicalFileName">Ô´Í¼Â·¾¶£¨ÎïÀíÂ·¾¶£©</param>
-        /// <param name="newPhysicalFileName">ËõÂÔÍ¼Â·¾¶£¨ÎïÀíÂ·¾¶£©</param>
-        /// <param name="width">ËõÂÔÍ¼¿í¶È</param>
-        /// <param name="height">ËõÂÔÍ¼¸ß¶È</param>
-        /// <param name="mode">Éú³ÉËõÂÔÍ¼µÄ·½Ê½</param>
-        /// <param name="isAutoRotate">ÊÇ·ñ×Ô¶¯Ğı×ª</param>
-        /// <param name="keepExif">±£ÁôEXIFĞÅÏ¢</param>
+        /// <param name="physicalFileName">æºå›¾è·¯å¾„ï¼ˆç‰©ç†è·¯å¾„ï¼‰</param>
+        /// <param name="newPhysicalFileName">ç¼©ç•¥å›¾è·¯å¾„ï¼ˆç‰©ç†è·¯å¾„ï¼‰</param>
+        /// <param name="width">ç¼©ç•¥å›¾å®½åº¦</param>
+        /// <param name="height">ç¼©ç•¥å›¾é«˜åº¦</param>
+        /// <param name="mode">ç”Ÿæˆç¼©ç•¥å›¾çš„æ–¹å¼</param>
+        /// <param name="isAutoRotate">æ˜¯å¦è‡ªåŠ¨æ—‹è½¬</param>
+        /// <param name="keepExif">ä¿ç•™EXIFä¿¡æ¯</param>
         public static void MakeThumbnailImage(string physicalFileName, string newPhysicalFileName, int width, int height, string mode, bool isAutoRotate = false, bool keepExif = false)
         {
             var originalImage = Image.FromFile(physicalFileName);
@@ -364,22 +364,22 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region 2023-06-28 ÖØ¹¹Éú³ÉÍ¼Æ¬ËõÂÔÍ¼·½·¨
+        #region 2023-06-28 é‡æ„ç”Ÿæˆå›¾ç‰‡ç¼©ç•¥å›¾æ–¹æ³•
         /// <summary>
-        /// Éú³ÉËõÂÔÍ¼
+        /// ç”Ÿæˆç¼©ç•¥å›¾
         /// </summary>
-        /// <param name="originalImage">Ô­Ê¼Í¼Æ¬</param>
-        /// <param name="newPhysicalFileName">ËõÂÔÍ¼Â·¾¶£¨ÎïÀíÂ·¾¶£©</param>
-        /// <param name="width">ËõÂÔÍ¼¿í¶È</param>
-        /// <param name="height">ËõÂÔÍ¼¸ß¶È</param>
-        /// <param name="mode">Éú³ÉËõÂÔÍ¼µÄ·½Ê½</param>
-        /// <param name="isAutoRotate">ÊÇ·ñ×Ô¶¯Ğı×ª</param>
-        /// <param name="keepExif">±£ÁôEXIFĞÅÏ¢</param>
+        /// <param name="originalImage">åŸå§‹å›¾ç‰‡</param>
+        /// <param name="newPhysicalFileName">ç¼©ç•¥å›¾è·¯å¾„ï¼ˆç‰©ç†è·¯å¾„ï¼‰</param>
+        /// <param name="width">ç¼©ç•¥å›¾å®½åº¦</param>
+        /// <param name="height">ç¼©ç•¥å›¾é«˜åº¦</param>
+        /// <param name="mode">ç”Ÿæˆç¼©ç•¥å›¾çš„æ–¹å¼</param>
+        /// <param name="isAutoRotate">æ˜¯å¦è‡ªåŠ¨æ—‹è½¬</param>
+        /// <param name="keepExif">ä¿ç•™EXIFä¿¡æ¯</param>
         public static void MakeThumbnailImage(Image originalImage, string newPhysicalFileName, int width, int height, string mode, bool isAutoRotate = false, bool keepExif = false)
         {
             try
             {
-                // È¡µÃÔ­Ê¼Í¼Æ¬µÄExifĞÅÏ¢
+                // å–å¾—åŸå§‹å›¾ç‰‡çš„Exifä¿¡æ¯
                 PropertyItem[] pis;
                 if (keepExif)
                 {
@@ -392,7 +392,7 @@ namespace DotNet.Util
 
                 if (isAutoRotate)
                 {
-                    // ÕÕÆ¬·½ÏòĞı×ª
+                    // ç…§ç‰‡æ–¹å‘æ—‹è½¬
                     ImageUtil.RotateImage(originalImage);
                 }
                 var towidth = width;
@@ -405,7 +405,7 @@ namespace DotNet.Util
 
                 switch (mode)
                 {
-                    case "HW": //Ö¸¶¨¸ß¿íËõ·Å£¨²¹°×£©
+                    case "HW": //æŒ‡å®šé«˜å®½ç¼©æ”¾ï¼ˆè¡¥ç™½ï¼‰
                         if ((double)originalImage.Width / (double)originalImage.Height >
                             (double)towidth / (double)toheight)
                         {
@@ -422,13 +422,13 @@ namespace DotNet.Util
                             x = (originalImage.Width - ow) / 2;
                         }
                         break;
-                    case "W": //Ö¸¶¨¿í£¬¸ß°´±ÈÀı
+                    case "W": //æŒ‡å®šå®½ï¼Œé«˜æŒ‰æ¯”ä¾‹
                         toheight = originalImage.Height * width / originalImage.Width;
                         break;
-                    case "H": //Ö¸¶¨¸ß£¬¿í°´±ÈÀı
+                    case "H": //æŒ‡å®šé«˜ï¼Œå®½æŒ‰æ¯”ä¾‹
                         towidth = originalImage.Width * height / originalImage.Height;
                         break;
-                    case "Cut": //Ö¸¶¨¸ß¿í²Ã¼õ£¨²»±äĞÎ£©
+                    case "Cut": //æŒ‡å®šé«˜å®½è£å‡ï¼ˆä¸å˜å½¢ï¼‰
                         if ((double)originalImage.Width / (double)originalImage.Height >
                             (double)towidth / (double)toheight)
                         {
@@ -449,21 +449,21 @@ namespace DotNet.Util
                         break;
                 }
 
-                //ĞÂ½¨Ò»¸öbmpÍ¼Æ¬
+                //æ–°å»ºä¸€ä¸ªbmpå›¾ç‰‡
                 var b = new Bitmap(towidth, toheight);
                 try
                 {
-                    //ĞÂ½¨Ò»¸ö»­°å
+                    //æ–°å»ºä¸€ä¸ªç”»æ¿
                     var g = Graphics.FromImage(b);
-                    //ÉèÖÃ¸ßÖÊÁ¿²åÖµ·¨
+                    //è®¾ç½®é«˜è´¨é‡æ’å€¼æ³•
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    //ÉèÖÃ¸ßÖÊÁ¿,µÍËÙ¶È³ÊÏÖÆ½»¬³Ì¶È
+                    //è®¾ç½®é«˜è´¨é‡,ä½é€Ÿåº¦å‘ˆç°å¹³æ»‘ç¨‹åº¦
                     g.SmoothingMode = SmoothingMode.AntiAlias;
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    //Çå¿Õ»­²¼²¢ÒÔÍ¸Ã÷±³¾°É«Ìî³ä
+                    //æ¸…ç©ºç”»å¸ƒå¹¶ä»¥é€æ˜èƒŒæ™¯è‰²å¡«å……
                     g.Clear(Color.White);
                     //g.Clear(Color.Transparent);
-                    //ÔÚÖ¸¶¨Î»ÖÃ²¢ÇÒ°´Ö¸¶¨´óĞ¡»æÖÆÔ­Í¼Æ¬µÄÖ¸¶¨²¿·Ö
+                    //åœ¨æŒ‡å®šä½ç½®å¹¶ä¸”æŒ‰æŒ‡å®šå¤§å°ç»˜åˆ¶åŸå›¾ç‰‡çš„æŒ‡å®šéƒ¨åˆ†
                     g.DrawImage(originalImage, new Rectangle(0, 0, towidth, toheight), new Rectangle(x, y, ow, oh), GraphicsUnit.Pixel);
 
                     SaveImage(b, newPhysicalFileName, GetCodecInfo("image/" + GetFormat(newPhysicalFileName).ToString().ToLower()), pis: pis);
@@ -487,18 +487,18 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region 2012-10-30 ĞÂÔöÍ¼Æ¬²Ã¼ô·½·¨
+        #region 2012-10-30 æ–°å¢å›¾ç‰‡è£å‰ªæ–¹æ³•
         /// <summary>
-        /// ²Ã¼ôÍ¼Æ¬²¢±£´æ
+        /// è£å‰ªå›¾ç‰‡å¹¶ä¿å­˜
         /// </summary>
-        /// <param name="fileName">Ô´Í¼Â·¾¶£¨¾ø¶ÔÂ·¾¶£©</param>
-        /// <param name="newFileName">ËõÂÔÍ¼Â·¾¶£¨¾ø¶ÔÂ·¾¶£©</param>
-        /// <param name="maxWidth">ËõÂÔÍ¼¿í¶È</param>
-        /// <param name="maxHeight">ËõÂÔÍ¼¸ß¶È</param>
-        /// <param name="cropWidth">²Ã¼ô¿í¶È</param>
-        /// <param name="cropHeight">²Ã¼ô¸ß¶È</param>
-        /// <param name="x">XÖá</param>
-        /// <param name="y">YÖá</param>
+        /// <param name="fileName">æºå›¾è·¯å¾„ï¼ˆç»å¯¹è·¯å¾„ï¼‰</param>
+        /// <param name="newFileName">ç¼©ç•¥å›¾è·¯å¾„ï¼ˆç»å¯¹è·¯å¾„ï¼‰</param>
+        /// <param name="maxWidth">ç¼©ç•¥å›¾å®½åº¦</param>
+        /// <param name="maxHeight">ç¼©ç•¥å›¾é«˜åº¦</param>
+        /// <param name="cropWidth">è£å‰ªå®½åº¦</param>
+        /// <param name="cropHeight">è£å‰ªé«˜åº¦</param>
+        /// <param name="x">Xè½´</param>
+        /// <param name="y">Yè½´</param>
         public static bool MakeThumbnailImage(string fileName, string newFileName, int maxWidth, int maxHeight, int cropWidth, int cropHeight, int x, int y)
         {
             var imageBytes = File.ReadAllBytes(fileName);
@@ -508,14 +508,14 @@ namespace DotNet.Util
             {
                 using (var g = Graphics.FromImage(b))
                 {
-                    //ÉèÖÃ¸ßÖÊÁ¿²åÖµ·¨
+                    //è®¾ç½®é«˜è´¨é‡æ’å€¼æ³•
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    //ÉèÖÃ¸ßÖÊÁ¿,µÍËÙ¶È³ÊÏÖÆ½»¬³Ì¶È
+                    //è®¾ç½®é«˜è´¨é‡,ä½é€Ÿåº¦å‘ˆç°å¹³æ»‘ç¨‹åº¦
                     g.SmoothingMode = SmoothingMode.AntiAlias;
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    //Çå¿Õ»­²¼²¢ÒÔÍ¸Ã÷±³¾°É«Ìî³ä
+                    //æ¸…ç©ºç”»å¸ƒå¹¶ä»¥é€æ˜èƒŒæ™¯è‰²å¡«å……
                     g.Clear(Color.Transparent);
-                    //ÔÚÖ¸¶¨Î»ÖÃ²¢ÇÒ°´Ö¸¶¨´óĞ¡»æÖÆÔ­Í¼Æ¬µÄÖ¸¶¨²¿·Ö
+                    //åœ¨æŒ‡å®šä½ç½®å¹¶ä¸”æŒ‰æŒ‡å®šå¤§å°ç»˜åˆ¶åŸå›¾ç‰‡çš„æŒ‡å®šéƒ¨åˆ†
                     g.DrawImage(originalImage, new Rectangle(0, 0, cropWidth, cropHeight), x, y, cropWidth, cropHeight, GraphicsUnit.Pixel);
                     Image displayImage = new Bitmap(b, maxWidth, maxHeight);
                     SaveImage(displayImage, newFileName, GetCodecInfo("image/" + GetFormat(newFileName).ToString().ToLower()));
@@ -536,12 +536,12 @@ namespace DotNet.Util
         #endregion
 
         /// <summary>
-        /// ÖÆ×÷Ô¶³ÌËõÂÔÍ¼
+        /// åˆ¶ä½œè¿œç¨‹ç¼©ç•¥å›¾
         /// </summary>
-        /// <param name="url">Í¼Æ¬URL</param>
-        /// <param name="newFileName">ĞÂÍ¼Â·¾¶</param>
-        /// <param name="maxWidth">×î´ó¿í¶È</param>
-        /// <param name="maxHeight">×î´ó¸ß¶È</param>
+        /// <param name="url">å›¾ç‰‡URL</param>
+        /// <param name="newFileName">æ–°å›¾è·¯å¾„</param>
+        /// <param name="maxWidth">æœ€å¤§å®½åº¦</param>
+        /// <param name="maxHeight">æœ€å¤§é«˜åº¦</param>
         public static void MakeRemoteThumbnailImage(string url, string newFileName, int maxWidth, int maxHeight)
         {
             var stream = GetRemoteImage(url);
@@ -553,9 +553,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñÈ¡Í¼Æ¬Á÷
+        /// è·å–å›¾ç‰‡æµ
         /// </summary>
-        /// <param name="url">Í¼Æ¬URL</param>
+        /// <param name="url">å›¾ç‰‡URL</param>
         /// <returns></returns>
         private static Stream GetRemoteImage(string url)
         {
