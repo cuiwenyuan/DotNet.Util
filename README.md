@@ -1,4 +1,53 @@
 # DotNet.Util
+`DotNet.Util` is a collection of C# utility libraries targeting multiple frameworks. The projects provide common helpers (IO, path, reflection, serialization, XML/Word export, database adapters, caching, etc.) intended to be consumed by applications and other libraries.
+
+Supported targets
+- Multi-targeted: `net452`, `net46`, `net47`, `net48`, `net6.0`, `net7.0`, `net8.0`, `net9.0`, `netstandard2.0`, `netstandard2.1`.
+
+NuGet packages
+- Official packages are published under the `Wangcaisoft.*` namespace on NuGet. Search: https://www.nuget.org/packages?q=wangcaisoft
+
+Quick start
+- Clone repository:
+
+  ```sh
+  git clone https://github.com/cuiwenyuan/DotNet.Util.git
+  cd DotNet.Util
+  ```
+
+- Restore and build (recommended):
+
+  ```sh
+  dotnet restore
+  dotnet build -c Release
+  ```
+
+- Notes: building `net4x` targets requires Windows and Visual Studio with the appropriate .NET Framework Developer Packs (minimum .NET Framework 4.5.2 as noted in project files).
+
+Repository layout (overview)
+- `src/DotNet.Util` — core utility library
+- `src/DotNet.Util.Plus` — extended utilities (Excel/Word export, compression, etc.)
+- `src/DotNet.Util.Db*` — database adapters and expression helpers (MySql/Oracle/PostgreSql/SQLite/OleDb)
+- `src/DotNet.Util.Cache` — cache helpers
+- `src/DotNet.Business*` — example business projects and web demo
+- `src/DotNet.Model` — common models and entities
+
+Documentation and next steps
+- This repository includes source XML documentation generation. Key documentation files to add or review: `CONTRIBUTING.md`, `INSTALL.md`, `CHANGELOG.md`, and `API_PROTECTION.md` (present in repo).
+
+Contributing
+- See `CONTRIBUTING.md` for contribution workflow, coding style, testing and PR guidance.
+
+License
+- MIT — see `LICENSE` in repository root.
+
+Contact
+- For issues or feature requests open an Issue on GitHub.
+
+Notes
+- The project has a long history and aims for broad compatibility. When making breaking changes avoid modifying public API without an explicit migration plan and version bump.
+
+# DotNet.Util
 DotNet.Util is a set of .NET6 + .NET5 + Standard 2.0/2.1 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8).  
 DotNet.Util是一系列.NET6 + .NET5 + Standard 2.0/2.1组件工具，绝大部分支持.NET Framework 4.52/4.6/4.7/4.8平台，各项目默认支持netstandard2.1/netstandard2.0/net4.8/net4.7/net4.6/net4.52。
 
@@ -8,6 +57,9 @@ DotNet.Util是一系列.NET6 + .NET5 + Standard 2.0/2.1组件工具，绝大部�
 ## Nuget
 因为DotNet.被占用，目前NuGet的包以WangCaiSoft.开头。 
 https://www.nuget.org/packages?q=wangcaisoft
+
+## 中文简介（简要）
+`DotNet.Util` 是一套多目标的 C# 工具库，包含常用的工具函数、文档导出与数据库适配器，支持 .NET Framework 和现代 .NET 平台。更多使用与构建说明请参考 `INSTALL.md` 和 `CONTRIBUTING.md`。
 
 
 ## 背景
