@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -151,87 +151,5 @@ namespace DotNet.Business
         }
 
         #endregion
-
-        /// <summary>
-        /// 缓存预热,强制重新缓存
-        /// </summary>
-        /// <returns></returns>
-        public int CachePreheating()
-        {
-            var result = 0;
-
-            var systemCodes = BaseSystemManager.GetSystemCodes();
-            foreach (var entity in systemCodes)
-            {
-                GetEntitiesByCache(entity.ItemKey, true);
-                result += CachePreheating(entity.ItemKey);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 缓存预热,强制重新缓存
-        /// </summary>
-        /// <param name="systemCode">系统编号</param>
-        /// <returns>影响行数</returns>
-        public static int CachePreheating(string systemCode)
-        {
-            var result = 0;
-
-            // 把所有的组织机构都缓存起来的代码
-            var manager = new BaseModuleManager(GetModuleTableName(systemCode));
-            var dataReader = manager.ExecuteReader();
-            if (dataReader != null && !dataReader.IsClosed)
-            {
-                while (dataReader.Read())
-                {
-                    var entity = BaseEntity.Create<BaseModuleEntity>(dataReader, false);
-                    if (entity != null)
-                    {
-                        SetCache(systemCode, entity);
-                        result++;
-                        System.Console.WriteLine(result + " : " + entity.Code);
-                    }
-                }
-
-                dataReader.Close();
-            }
-
-            return result;
-        }
-        /// <summary>
-        /// 刷新缓存
-        /// </summary>
-        /// <param name="systemCode"></param>
-        /// <param name="moduleId"></param>
-        /// <returns></returns>
-        public int RefreshCache(string systemCode, string moduleId)
-        {
-            var result = 0;
-
-            // 2016-02-29 吉日嘎拉 强制刷新缓存
-            GetEntityByCache(systemCode, moduleId, true);
-
-            return result;
-        }
-        /// <summary>
-        /// 刷新缓存
-        /// </summary>
-        /// <param name="systemCode"></param>
-        /// <returns></returns>
-        public int RefreshCache(string systemCode)
-        {
-            var result = 0;
-
-            var list = new BaseModuleManager().GetEntitiesByCache(systemCode, true);
-            foreach (var entity in list)
-            {
-                // 2016-02-29 吉日嘎拉 强制刷新缓存
-                GetEntityByCache(systemCode, entity.Id.ToString(), true);
-            }
-
-            return result;
-        }
     }
 }

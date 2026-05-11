@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -41,7 +41,7 @@ namespace DotNet.Util
             var result = true;
             if (!string.IsNullOrEmpty(commandText))
             {
-                var unSafeText = new string[] { "Delete", "Insert", "Update", "Truncate"};
+                var unSafeText = new string[] { "Delete", "Insert", "Update", "Truncate" };
                 for (var i = 0; i < unSafeText.Length; i++)
                 {
                     var unSafeString = unSafeText[i];
@@ -78,7 +78,9 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
+#if (DEBUG)
                 Console.WriteLine(e.Message);
+#endif
             }
 
             return result;
@@ -107,7 +109,9 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
+#if (DEBUG)
                 Console.WriteLine(e.Message);
+#endif
                 return false;
             }
 
@@ -378,7 +382,7 @@ namespace DotNet.Util
                 cs.FlushFinalBlock();
                 return Encoding.Default.GetString(ms.ToArray());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
             }
@@ -499,7 +503,7 @@ namespace DotNet.Util
                 }
             }
             else
-            { 
+            {
                 //口令小于6位则显示太短  
                 if (passLen > 0)
                 {

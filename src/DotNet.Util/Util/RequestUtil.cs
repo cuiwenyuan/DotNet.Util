@@ -11,13 +11,13 @@ using System.Text.RegularExpressions;
 namespace DotNet.Util
 {
     /// <summary>
-    /// Request²Ù×÷Àà
+    /// Requestæ“ä½œç±»
     /// </summary>
     public partial class RequestUtil
     {
 
         /// <summary>
-        /// µÃµ½µ±Ç°ÍêÕûÖ÷»úÍ·
+        /// å¾—åˆ°å½“å‰å®Œæ•´ä¸»æœºå¤´
         /// </summary>
         /// <returns></returns>
         public static string GetCurrentFullHost()
@@ -39,7 +39,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// µÃµ½Ö÷»úÍ·
+        /// å¾—åˆ°ä¸»æœºå¤´
         /// </summary>
         /// <returns></returns>
         public static string GetHost()
@@ -51,9 +51,9 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÇëÇóµÄÔ­Ê¼ URL(URL ÖĞÓòĞÅÏ¢Ö®ºóµÄ²¿·Ö,°üÀ¨²éÑ¯×Ö·û´®(Èç¹û´æÔÚ))
+        /// è·å–å½“å‰è¯·æ±‚çš„åŸå§‹ URL(URL ä¸­åŸŸä¿¡æ¯ä¹‹åçš„éƒ¨åˆ†,åŒ…æ‹¬æŸ¥è¯¢å­—ç¬¦ä¸²(å¦‚æœå­˜åœ¨))
         /// </summary>
-        /// <returns>Ô­Ê¼ URL</returns>
+        /// <returns>åŸå§‹ URL</returns>
         public static string GetRawUrl()
         {
             var result = string.Empty;
@@ -62,9 +62,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÅĞ¶Ïµ±Ç°·ÃÎÊÊÇ·ñÀ´×Ôä¯ÀÀÆ÷Èí¼ş
+        /// åˆ¤æ–­å½“å‰è®¿é—®æ˜¯å¦æ¥è‡ªæµè§ˆå™¨è½¯ä»¶
         /// </summary>
-        /// <returns>µ±Ç°·ÃÎÊÊÇ·ñÀ´×Ôä¯ÀÀÆ÷Èí¼ş</returns>
+        /// <returns>å½“å‰è®¿é—®æ˜¯å¦æ¥è‡ªæµè§ˆå™¨è½¯ä»¶</returns>
         public static bool IsBrowserGet()
         {
             string[] browserName = { "ie", "opera", "netscape", "mozilla", "konqueror", "firefox" };
@@ -78,9 +78,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ÅĞ¶ÏÊÇ·ñÀ´×ÔËÑË÷ÒıÇæÁ´½Ó
+        /// åˆ¤æ–­æ˜¯å¦æ¥è‡ªæœç´¢å¼•æ“é“¾æ¥
         /// </summary>
-        /// <returns>ÊÇ·ñÀ´×ÔËÑË÷ÒıÇæÁ´½Ó</returns>
+        /// <returns>æ˜¯å¦æ¥è‡ªæœç´¢å¼•æ“é“¾æ¥</returns>
         public static bool IsSearchEnginesGet()
         {
             if (HttpContext.Current.Request.UrlReferrer == null)
@@ -97,9 +97,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃµ±Ç°ÍêÕûUrlµØÖ·
+        /// è·å¾—å½“å‰å®Œæ•´Urlåœ°å€
         /// </summary>
-        /// <returns>µ±Ç°ÍêÕûUrlµØÖ·</returns>
+        /// <returns>å½“å‰å®Œæ•´Urlåœ°å€</returns>
         public static string GetUrl()
         {
             return HttpContext.Current.Request.Url.ToString();
@@ -107,21 +107,21 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šUrlå‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">Url²ÎÊı</param>
-        /// <returns>Url²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">Urlå‚æ•°</param>
+        /// <returns>Urlå‚æ•°çš„å€¼</returns>
         public static string GetQueryString(string strName)
         {
             return GetQueryString(strName, false);
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šUrlå‚æ•°çš„å€¼
         /// </summary> 
-        /// <param name="strName">Url²ÎÊı</param>
-        /// <param name="sqlSafeCheck">ÊÇ·ñ½øĞĞSQL°²È«¼ì²é</param>
-        /// <returns>Url²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">Urlå‚æ•°</param>
+        /// <param name="sqlSafeCheck">æ˜¯å¦è¿›è¡ŒSQLå®‰å…¨æ£€æŸ¥</param>
+        /// <returns>Urlå‚æ•°çš„å€¼</returns>
         public static string GetQueryString(string strName, bool sqlSafeCheck)
         {
             if (HttpContext.Current.Request.QueryString[strName] == null)
@@ -134,9 +134,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃµ±Ç°Ò³ÃæµÄÃû³Æ
+        /// è·å¾—å½“å‰é¡µé¢çš„åç§°
         /// </summary>
-        /// <returns>µ±Ç°Ò³ÃæµÄÃû³Æ</returns>
+        /// <returns>å½“å‰é¡µé¢çš„åç§°</returns>
         public static string GetPageName()
         {
             var urlArr = HttpContext.Current.Request.Url.AbsolutePath.Split('/');
@@ -144,7 +144,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ·µ»Ø±íµ¥»òUrl²ÎÊıµÄ×Ü¸öÊı
+        /// è¿”å›è¡¨å•æˆ–Urlå‚æ•°çš„æ€»ä¸ªæ•°
         /// </summary>
         /// <returns></returns>
         public static int GetParamCount()
@@ -154,21 +154,21 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šè¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">±íµ¥²ÎÊı</param>
-        /// <returns>±íµ¥²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">è¡¨å•å‚æ•°</param>
+        /// <returns>è¡¨å•å‚æ•°çš„å€¼</returns>
         public static string GetFormString(string strName)
         {
             return GetFormString(strName, false);
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šè¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">±íµ¥²ÎÊı</param>
-        /// <param name="sqlSafeCheck">ÊÇ·ñ½øĞĞSQL°²È«¼ì²é</param>
-        /// <returns>±íµ¥²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">è¡¨å•å‚æ•°</param>
+        /// <param name="sqlSafeCheck">æ˜¯å¦è¿›è¡ŒSQLå®‰å…¨æ£€æŸ¥</param>
+        /// <returns>è¡¨å•å‚æ•°çš„å€¼</returns>
         public static string GetFormString(string strName, bool sqlSafeCheck)
         {
             if (HttpContext.Current.Request.Form[strName] == null)
@@ -181,21 +181,21 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃUrl»ò±íµ¥²ÎÊıµÄÖµ, ÏÈÅĞ¶ÏUrl²ÎÊıÊÇ·ñÎª¿Õ×Ö·û´®, ÈçÎªTrueÔò·µ»Ø±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—Urlæˆ–è¡¨å•å‚æ•°çš„å€¼, å…ˆåˆ¤æ–­Urlå‚æ•°æ˜¯å¦ä¸ºç©ºå­—ç¬¦ä¸², å¦‚ä¸ºTrueåˆ™è¿”å›è¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">²ÎÊı</param>
-        /// <returns>Url»ò±íµ¥²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">å‚æ•°</param>
+        /// <returns>Urlæˆ–è¡¨å•å‚æ•°çš„å€¼</returns>
         public static string GetString(string strName)
         {
             return GetString(strName, false);
         }
 
         /// <summary>
-        /// »ñµÃUrl»ò±íµ¥²ÎÊıµÄÖµ, ÏÈÅĞ¶ÏUrl²ÎÊıÊÇ·ñÎª¿Õ×Ö·û´®, ÈçÎªTrueÔò·µ»Ø±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—Urlæˆ–è¡¨å•å‚æ•°çš„å€¼, å…ˆåˆ¤æ–­Urlå‚æ•°æ˜¯å¦ä¸ºç©ºå­—ç¬¦ä¸², å¦‚ä¸ºTrueåˆ™è¿”å›è¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">²ÎÊı</param>
-        /// <param name="sqlSafeCheck">ÊÇ·ñ½øĞĞSQL°²È«¼ì²é</param>
-        /// <returns>Url»ò±íµ¥²ÎÊıµÄÖµ</returns>
+        /// <param name="strName">å‚æ•°</param>
+        /// <param name="sqlSafeCheck">æ˜¯å¦è¿›è¡ŒSQLå®‰å…¨æ£€æŸ¥</param>
+        /// <returns>Urlæˆ–è¡¨å•å‚æ•°çš„å€¼</returns>
         public static string GetString(string strName, bool sqlSafeCheck)
         {
             if ("".Equals(GetQueryString(strName)))
@@ -205,10 +205,10 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url²ÎÊıµÄintÀàĞÍÖµ
+        /// è·å¾—æŒ‡å®šUrlå‚æ•°çš„intç±»å‹å€¼
         /// </summary>
-        /// <param name="strName">Url²ÎÊı</param>
-        /// <returns>Url²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">Urlå‚æ•°</param>
+        /// <returns>Urlå‚æ•°çš„intç±»å‹å€¼</returns>
         public static int GetQueryInt(string strName)
         {
             return HttpContext.Current.Request.QueryString[strName].ToInt();
@@ -216,11 +216,11 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url²ÎÊıµÄintÀàĞÍÖµ
+        /// è·å¾—æŒ‡å®šUrlå‚æ•°çš„intç±»å‹å€¼
         /// </summary>
-        /// <param name="strName">Url²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>Url²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">Urlå‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>Urlå‚æ•°çš„intç±»å‹å€¼</returns>
         public static int GetQueryInt(string strName, int defValue = 0)
         {
             return HttpContext.Current.Request.QueryString[strName].ToInt(defValue);
@@ -228,22 +228,22 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨±íµ¥²ÎÊıµÄintÀàĞÍÖµ
+        /// è·å¾—æŒ‡å®šè¡¨å•å‚æ•°çš„intç±»å‹å€¼
         /// </summary>
-        /// <param name="strName">±íµ¥²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>±íµ¥²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">è¡¨å•å‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>è¡¨å•å‚æ•°çš„intç±»å‹å€¼</returns>
         public static int GetFormInt(string strName, int defValue = 0)
         {
             return HttpContext.Current.Request.Form[strName].ToInt(defValue);
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url»ò±íµ¥²ÎÊıµÄintÀàĞÍÖµ, ÏÈÅĞ¶ÏUrl²ÎÊıÊÇ·ñÎªÈ±Ê¡Öµ, ÈçÎªTrueÔò·µ»Ø±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šUrlæˆ–è¡¨å•å‚æ•°çš„intç±»å‹å€¼, å…ˆåˆ¤æ–­Urlå‚æ•°æ˜¯å¦ä¸ºç¼ºçœå€¼, å¦‚ä¸ºTrueåˆ™è¿”å›è¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">Url»ò±íµ¥²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>Url»ò±íµ¥²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">Urlæˆ–è¡¨å•å‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>Urlæˆ–è¡¨å•å‚æ•°çš„intç±»å‹å€¼</returns>
         public static int GetInt(string strName, int defValue = 0)
         {
             if (GetQueryInt(strName, defValue) == defValue)
@@ -253,11 +253,11 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url²ÎÊıµÄDecimalÀàĞÍÖµ
+        /// è·å¾—æŒ‡å®šUrlå‚æ•°çš„Decimalç±»å‹å€¼
         /// </summary>
-        /// <param name="strName">Url²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>Url²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">Urlå‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>Urlå‚æ•°çš„intç±»å‹å€¼</returns>
         public static decimal GetQueryDecimal(string strName, decimal defValue = 0M)
         {
             return HttpContext.Current.Request.QueryString[strName].ToDecimal(defValue);
@@ -265,22 +265,22 @@ namespace DotNet.Util
 
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨±íµ¥²ÎÊıµÄDecimalÀàĞÍÖµ
+        /// è·å¾—æŒ‡å®šè¡¨å•å‚æ•°çš„Decimalç±»å‹å€¼
         /// </summary>
-        /// <param name="strName">±íµ¥²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>±íµ¥²ÎÊıµÄfloatÀàĞÍÖµ</returns>
+        /// <param name="strName">è¡¨å•å‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>è¡¨å•å‚æ•°çš„floatç±»å‹å€¼</returns>
         public static decimal GetFormDecimal(string strName, decimal defValue = 0M)
         {
             return HttpContext.Current.Request.Form[strName].ToDecimal(defValue);
         }
 
         /// <summary>
-        /// »ñµÃÖ¸¶¨Url»ò±íµ¥²ÎÊıµÄDecimalÀàĞÍÖµ, ÏÈÅĞ¶ÏUrl²ÎÊıÊÇ·ñÎªÈ±Ê¡Öµ, ÈçÎªTrueÔò·µ»Ø±íµ¥²ÎÊıµÄÖµ
+        /// è·å¾—æŒ‡å®šUrlæˆ–è¡¨å•å‚æ•°çš„Decimalç±»å‹å€¼, å…ˆåˆ¤æ–­Urlå‚æ•°æ˜¯å¦ä¸ºç¼ºçœå€¼, å¦‚ä¸ºTrueåˆ™è¿”å›è¡¨å•å‚æ•°çš„å€¼
         /// </summary>
-        /// <param name="strName">Url»ò±íµ¥²ÎÊı</param>
-        /// <param name="defValue">È±Ê¡Öµ</param>
-        /// <returns>Url»ò±íµ¥²ÎÊıµÄintÀàĞÍÖµ</returns>
+        /// <param name="strName">Urlæˆ–è¡¨å•å‚æ•°</param>
+        /// <param name="defValue">ç¼ºçœå€¼</param>
+        /// <returns>Urlæˆ–è¡¨å•å‚æ•°çš„intç±»å‹å€¼</returns>
         public static decimal GetDecimal(string strName, decimal defValue = 0M)
         {
             if (GetQueryDecimal(strName, defValue) == defValue)
@@ -290,9 +290,9 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// »ñµÃµ±Ç°Ò³Ãæ¿Í»§¶ËµÄIP-²»ÍÆ¼öÖ±½ÓÊ¹ÓÃ£¬ÇëÊ¹ÓÃUtils.GetIp()
+        /// è·å¾—å½“å‰é¡µé¢å®¢æˆ·ç«¯çš„IP-ä¸æ¨èç›´æ¥ä½¿ç”¨ï¼Œè¯·ä½¿ç”¨Utils.GetIp()
         /// </summary>
-        /// <returns>µ±Ç°Ò³Ãæ¿Í»§¶ËµÄIP</returns>
+        /// <returns>å½“å‰é¡µé¢å®¢æˆ·ç«¯çš„IP</returns>
         public static string GetIp()
         {
             var result = string.Empty;
@@ -317,7 +317,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Í¨¹ıÅĞ¶ÏÊÇ·ñÊ¹ÓÃ´úÀí»ñÈ¡ÓÃ»§µÄÕæÊµIPµØÖ·
+        /// é€šè¿‡åˆ¤æ–­æ˜¯å¦ä½¿ç”¨ä»£ç†è·å–ç”¨æˆ·çš„çœŸå®IPåœ°å€
         /// </summary>
         /// <returns></returns>
         public static string GetRealIp()
@@ -335,14 +335,14 @@ namespace DotNet.Util
                 }
                 if (!string.IsNullOrEmpty(result))
                 {
-                    //¿ÉÄÜÓĞ´úÀí //Ã»ÓĞ¡°.¡±¿Ï¶¨ÊÇ·ÇIPv4¸ñÊ½ 
+                    //å¯èƒ½æœ‰ä»£ç† //æ²¡æœ‰â€œ.â€è‚¯å®šæ˜¯éIPv4æ ¼å¼ 
                     if (result.IndexOf(".", StringComparison.OrdinalIgnoreCase) == -1)
                         result = null;
                     else
                     {
                         if (result.IndexOf(",", StringComparison.OrdinalIgnoreCase) != -1)
                         {
-                            //ÓĞ¡°,¡±£¬¹À¼Æ¶à¸ö´úÀí¡£È¡µÚÒ»¸ö²»ÊÇÄÚÍøµÄIP¡£ 
+                            //æœ‰â€œ,â€ï¼Œä¼°è®¡å¤šä¸ªä»£ç†ã€‚å–ç¬¬ä¸€ä¸ªä¸æ˜¯å†…ç½‘çš„IPã€‚ 
                             result = result.Replace(" ", "").Replace("'", "");
                             var temporaryIp = result.Split(",;".ToCharArray());
                             foreach (var t in temporaryIp)
@@ -352,16 +352,16 @@ namespace DotNet.Util
                                     && t.Substring(0, 7) != "192.168"
                                     && t.Substring(0, 7) != "172.16.")
                                 {
-                                    //ÕÒµ½²»ÊÇÄÚÍøµÄµØÖ· 
+                                    //æ‰¾åˆ°ä¸æ˜¯å†…ç½‘çš„åœ°å€ 
                                     return t;
                                 }
                             }
                         }
                         else if (IsIp(result))
-                            //´úÀí¼´ÊÇIP¸ñÊ½
+                            //ä»£ç†å³æ˜¯IPæ ¼å¼
                             return result;
                         else
-                            //´úÀíÖĞµÄÄÚÈİ ·ÇIP£¬È¡IP 
+                            //ä»£ç†ä¸­çš„å†…å®¹ éIPï¼Œå–IP 
                             result = null;
                     }
 
@@ -388,7 +388,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// Í¨¹ıÕıÔòÅĞ¶Ï×Ö·û´®ÊÇ·ñÎªIPµØÖ·
+        /// é€šè¿‡æ­£åˆ™åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦ä¸ºIPåœ°å€
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -404,10 +404,10 @@ namespace DotNet.Util
 
         #region public static string GetResponse(string url)
         /// <summary>
-        /// »ñÈ¡Ò»¸öÍøÒ³
+        /// è·å–ä¸€ä¸ªç½‘é¡µ
         /// </summary>
-        /// <param name="url">µØÖ·</param>
-        /// <returns>×Ö·û´®·µ»ØÖµ</returns>
+        /// <param name="url">åœ°å€</param>
+        /// <returns>å­—ç¬¦ä¸²è¿”å›å€¼</returns>
         public static string GetResponse(string url)
         {
             string result = null;
@@ -441,8 +441,8 @@ namespace DotNet.Util
         #endregion
 
         /// <summary>
-        /// »ñÈ¡È«²¿ÇëÇó²ÎÊı£¬getºÍpostµÄ ¼ò»¯°æ
-        /// 2016-09-21 ËÎ±ë Ôö¼Ó»ñÈ¡È«²¿ÇëÇó²ÎÊıµÄ·½·¨
+        /// è·å–å…¨éƒ¨è¯·æ±‚å‚æ•°ï¼Œgetå’Œpostçš„ ç®€åŒ–ç‰ˆ
+        /// 2016-09-21 å®‹å½ª å¢åŠ è·å–å…¨éƒ¨è¯·æ±‚å‚æ•°çš„æ–¹æ³•
         /// </summary>
         public static string GetRequestParameters()
         {
@@ -465,12 +465,12 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// ·ÖÎö url ×Ö·û´®ÖĞµÄ²ÎÊıĞÅÏ¢
-        /// Õë¶ÔgetÇëÇóµÄ
+        /// åˆ†æ url å­—ç¬¦ä¸²ä¸­çš„å‚æ•°ä¿¡æ¯
+        /// é’ˆå¯¹getè¯·æ±‚çš„
         /// </summary>
-        /// <param name="url">ÊäÈëµÄ URL</param>
-        /// <param name="baseUrl">Êä³ö URL µÄ»ù´¡²¿·Ö</param>
-        /// <param name="nvc">Êä³ö·ÖÎöºóµÃµ½µÄ (²ÎÊıÃû,²ÎÊıÖµ) µÄ¼¯ºÏ</param>
+        /// <param name="url">è¾“å…¥çš„ URL</param>
+        /// <param name="baseUrl">è¾“å‡º URL çš„åŸºç¡€éƒ¨åˆ†</param>
+        /// <param name="nvc">è¾“å‡ºåˆ†æåå¾—åˆ°çš„ (å‚æ•°å,å‚æ•°å€¼) çš„é›†åˆ</param>
         public static void ParseUrl(string url, out string baseUrl, out NameValueCollection nvc)
         {
             if (url == null)
@@ -495,7 +495,7 @@ namespace DotNet.Util
                 return;
             }
             var ps = url.Substring(questionMarkIndex + 1);
-            // ¿ªÊ¼·ÖÎö²ÎÊı¶Ô  
+            // å¼€å§‹åˆ†æå‚æ•°å¯¹  
             var reg = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
             var mc = reg.Matches(ps);
             foreach (Match m in mc)
@@ -514,23 +514,11 @@ using System.Text;
 namespace DotNet.Util
 {
     /// <summary>
-    /// Request²Ù×÷Àà
+    /// Requestæ“ä½œç±»
     /// </summary>
     public partial class RequestUtil
     {
-        #region public static string GetResponse(string url)
-        /// <summary>
-        /// »ñÈ¡Ò»¸öÍøÒ³
-        /// </summary>
-        /// <param name="url">µØÖ·</param>
-        /// <returns>×Ö·û´®·µ»ØÖµ</returns>
-        public static string GetResponse(string url)
-        {
-            string result = null;
-            //TODO:.NET STANDARD 2.0µÄÊµÏÖ·½Ê½
-            return result;
-        }
-        #endregion
+
     }
 }
 #endif

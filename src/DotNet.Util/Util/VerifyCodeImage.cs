@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -321,7 +321,7 @@ namespace DotNet.Util
             httpContext.Response.ContentType = "image/Jpeg";
             httpContext.Response.BinaryWrite(memoryStream.GetBuffer());
 #elif NETSTANDARD2_0_OR_GREATER
-            //TODO:.NET STANDARD 2.0的实现方式
+            //.NET STANDARD 2.0的实现方式
 #endif
 
             memoryStream.Close();

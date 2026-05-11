@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -155,8 +155,8 @@ namespace DotNet.Util
             var response = (HttpWebResponse)request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             var result = reader.ReadToEnd();
-            Console.WriteLine("通用文字识别（高精度版）:");
-            Console.WriteLine(result);
+            //Console.WriteLine("通用文字识别（高精度版）:");
+            //Console.WriteLine(result);
             return result;
         }
         /// <summary>

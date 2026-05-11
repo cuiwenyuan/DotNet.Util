@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseLogManager.cs" company="DotNet">
 //     Copyright (c) 2025, All rights reserved.
 // </copyright>
@@ -295,14 +295,14 @@ namespace DotNet.Business
         /// <summary>
         /// 搜索
         /// </summary>
-        /// <param name="userIds"></param>
-        /// <param name="search"></param>
-        /// <param name="enabled"></param>
-        /// <param name="onlyOnline"></param>
-        /// <returns></returns>
+        /// <param name="userIds">用户编号</param>
+        /// <param name="search">搜索关键字</param>
+        /// <param name="enabled">是否启用</param>
+        /// <param name="onlyOnline">是否仅显示在线用户</param>
+        /// <returns>数据表</returns>
         public DataTable Search(string[] userIds, string search, bool? enabled, bool onlyOnline)
         {
-            //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
+            //这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "

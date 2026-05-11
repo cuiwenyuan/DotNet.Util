@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -1299,7 +1299,6 @@ namespace DotNet.Business
                         {
                             if (!ipAddressName.Equals("局域网") && !userLogonEntity.IpAddressName.Equals(ipAddressName))
                             {
-                                // TODO 开启手机验证功能！, 三天验证一次也可以了
                                 errorMark = 10;
                                 BaseUserContactEntity userContactEntity = null;
                                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
@@ -1521,9 +1520,6 @@ namespace DotNet.Business
                                 // 密码错误后 1：应该记录日志
                                 errorMark = 24;
                                 BaseLogonLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.PasswordError.ToDescription(), 1, 0, sourceType, targetApplication, targetIp);
-                                // TODO: 密码错误后 2：看最近1个小时输入了几次错误了？24小时里。
-                                // TODO: 密码错误后 3：若错误密码数量已经超过了指定的限制，那用户就需要被锁定1个小时。
-                                // TODO: 密码错误后 4：同时需要处理返回值，是由于密码次数过多导致的被锁定，登录时也应该能读取这个状态比较，时间过期了，也应该进行处理一下状态。
                                 // 密码强度检查，若是要有安全要求比较高的，返回的提醒消息要进行特殊处理，不能返回非常明确的提示信息。
                                 if (BaseSystemInfo.CheckPasswordStrength)
                                 {

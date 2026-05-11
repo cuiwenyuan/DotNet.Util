@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -41,18 +41,18 @@ namespace DotNet.Business
             var key = string.Empty;
             result = 0;
             var i = 0;
-            
-                key = "Logon:UserCount:" + DateTime.Now.ToString("yyyy-MM");
-                var list = CacheUtil.Get<List<int>>(key);
-                foreach (var id in list)
-                {
-                    i++;
-                    commandText = "UPDATE " + BaseUserEntity.CurrentTableName + " SET " + BaseUserEntity.FieldUserFrom + " = 'Base' WHERE " + BaseUserEntity.FieldId + " = " + id;
-                    result += ExecuteNonQuery(commandText);
-                    Console.WriteLine("Count:" + i + "/" + list.Count + " Id:" + id);
-                }
 
-                return result;
+            key = "Logon:UserCount:" + DateTime.Now.ToString("yyyy-MM");
+            var list = CacheUtil.Get<List<int>>(key);
+            foreach (var id in list)
+            {
+                i++;
+                commandText = "UPDATE " + BaseUserEntity.CurrentTableName + " SET " + BaseUserEntity.FieldUserFrom + " = 'Base' WHERE " + BaseUserEntity.FieldId + " = " + id;
+                result += ExecuteNonQuery(commandText);
+                Console.WriteLine("Count:" + i + "/" + list.Count + " Id:" + id);
+            }
+
+            return result;
         }
 
         /// <summary>

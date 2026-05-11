@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BasePermissionScopeManager.cs" company="DotNet">
 //     Copyright (c) 2025, All rights reserved.
 // </copyright>
@@ -1469,7 +1469,6 @@ namespace DotNet.Business
                 sb.Append(" AND ((SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE()))<=0"
                          + " OR (SELECT DATEDIFF(day, " + BasePermissionScopeEntity.FieldEndTime + ", GETDATE())) IS NULL)");
             }
-            // TODO:其他数据库的兼容
             sb.Append(" ORDER BY " + BasePermissionScopeEntity.FieldCreateTime + " DESC ");
             return DbHelper.Fill(sb.Return());
         }

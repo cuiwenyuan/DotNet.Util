@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -196,7 +196,7 @@ namespace DotNet.Util
         /// <param name="message">文件文本内容</param>
         public static void WriteBinaryFile(string fileName, string message)
         {
-            Console.WriteLine(@"写入二进制文件信息开始。");
+            //Console.WriteLine(@"写入二进制文件信息开始。");
             FileStream fs = null;
             BinaryWriter bw = null;
             try

@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -155,10 +155,6 @@ namespace DotNet.Util
             {
                 sb.Append($"SELECT COUNT(*) FROM USER_SEQUENCES WHERE SEQUENCE_NAME = '{sequenceName.ToUpper()}'");
             }
-            else if (dbHelper.CurrentDbType == CurrentDbType.Db2)
-            {
-                // TODO
-            }
             var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
             {
@@ -166,7 +162,7 @@ namespace DotNet.Util
             }
             if (!result && dbHelper.CurrentDbType == CurrentDbType.Oracle && autoCreate)
             {
-                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1");
+                _ = dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1");
             }
             return result;
         }

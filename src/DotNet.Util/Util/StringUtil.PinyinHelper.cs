@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
 
@@ -60,7 +60,7 @@ namespace DotNet.Util
             }
 
             // 返回处理结果字符串，以，分隔每个拼音组合
-            return result;   
+            return result;
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace DotNet.Util
 
             var reg = new Regex("^[\u4e00-\u9fa5]$");//验证是否输入汉字
             var arr = new byte[2];
-            
+
             int asc = 0, m1 = 0, m2 = 0;
             if (!string.IsNullOrEmpty(targetValue))
             {
@@ -281,10 +281,10 @@ namespace DotNet.Util
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     // 2015-11-26 吉日嘎拉 空时处理一下，问题出在那里，暂时没空就先把程序注释上，不要出异常就好。
-                    Console.WriteLine(targetValue + ":" + ex.Message);
+                    LogUtil.WriteLog(targetValue + ":" + ex.Message, "Exception");
                 }
             }
 
