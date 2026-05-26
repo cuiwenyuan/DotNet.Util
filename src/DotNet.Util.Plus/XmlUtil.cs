@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 #else
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -32,11 +32,11 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -73,10 +73,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -120,10 +120,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    //IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -157,10 +157,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -225,10 +225,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -268,10 +268,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -325,10 +325,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -385,10 +385,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -470,10 +470,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -543,10 +543,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -603,10 +603,10 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }

@@ -165,7 +165,7 @@ namespace DotNet.Util
                                     case "System.Double":
                                         dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
                                         break;
-                                }                                
+                                }
                             }
                             else
                             {
@@ -353,7 +353,7 @@ namespace DotNet.Util
                                         if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                         {
                                             hasPicture = true;
-                                            
+
                                             if (squarePicture)
                                             {
                                                 //正方形的例子50*20 x 10*256
@@ -393,7 +393,7 @@ namespace DotNet.Util
                                 if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
                                 {
                                     sheet.AutoSizeColumn(i);
-                                }                                
+                                }
                             }
                             else
                             {
