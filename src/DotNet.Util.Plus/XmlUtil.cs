@@ -17,6 +17,41 @@ namespace DotNet.Util
     /// </summary>
     public static class XmlUtil
     {
+#if NET46_OR_GREATER
+#else
+        /// <summary>
+        /// If set, XmlUtil will use this IFileProvider to resolve relative file paths.
+        /// Consumers (e.g., during app startup) can set XmlUtil.FileProvider = hostEnvironment.ContentRootFileProvider;
+        /// </summary>
+        public static IFileProvider FileProvider { get; set; }
+
+        /// <summary>
+        /// Optional host environment that may expose a ContentRootFileProvider property.
+        /// </summary>
+        public static IHostEnvironment HostEnvironment { get; set; }
+
+        private static IFileProvider ResolveFileProvider()
+        {
+            if (FileProvider != null) return FileProvider;
+            if (HostEnvironment != null)
+            {
+                try
+                {
+                    var prop = HostEnvironment.GetType().GetProperty("ContentRootFileProvider");
+                    if (prop != null)
+                    {
+                        var val = prop.GetValue(HostEnvironment) as IFileProvider;
+                        if (val != null) return val;
+                    }
+                }
+                catch
+                {
+                    // ignore and fall back
+                }
+            }
+            return new PhysicalFileProvider(AppContext.BaseDirectory);
+        }
+#endif
         #region 增、删、改操作==============================================
 
         /// <summary>
@@ -36,7 +71,7 @@ namespace DotNet.Util
 
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -76,7 +111,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -123,7 +158,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -160,7 +195,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -228,7 +263,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -271,7 +306,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -328,7 +363,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -388,7 +423,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -473,7 +508,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -546,7 +581,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
