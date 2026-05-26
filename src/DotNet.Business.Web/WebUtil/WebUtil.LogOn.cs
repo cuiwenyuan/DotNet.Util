@@ -519,29 +519,6 @@ namespace DotNet.Business
         #endregion
 
         #region 用OpenId登录部分
-        /// <summary>
-        /// 授权码登录
-        /// </summary>
-        /// <param name="authorizationCode"></param>
-        /// <param name="transparent"></param>
-        /// <param name="useCaching"></param>
-        /// <param name="useDatabase"></param>
-        /// <param name="useUserCenterHost"></param>
-        /// <returns></returns>
-        public static UserLogonResult LogonByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
-        {
-            // 统一的登录服务
-            UserLogonResult result = null;
-            var openId = string.Empty;
-
-            if (BaseUserManager.VerifyAuthorizationCode(null, authorizationCode, out openId))
-            {
-                result = LogonByOpenId(openId, transparent, useCaching, useDatabase, useUserCenterHost);
-            }
-
-            return result;
-        }
-
 
         #region public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
         /// <summary>
