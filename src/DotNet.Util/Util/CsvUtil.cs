@@ -70,6 +70,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private static StringBuilder GetCsvFormatData(IDataReader dataReader, Dictionary<string, string> fieldList = null, string separator = ",")
         {
+            //TODO:fieldList的处理
             // 返回总字符串
             var csvRows = PoolUtil.StringBuilder.Get();
             // 表头内容字符串

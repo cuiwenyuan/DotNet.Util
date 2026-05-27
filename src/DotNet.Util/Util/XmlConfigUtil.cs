@@ -1,7 +1,10 @@
-﻿﻿using System;
+﻿using DotNet.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace DotNet.Util
 {
@@ -42,27 +45,62 @@ namespace DotNet.Util
         private readonly bool _autoSave = true;
 
         /// <summary>
+        /// 读写锁，保证线程安全
+        /// </summary>
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="xmlPath">XML路径，默认为XmlConfig\Config.config</param>
         public XmlConfigUtil(string xmlPath = "XmlConfig\\Config.config")
         {
-            _fullName = string.Format(@"{0}\" + xmlPath, AppDomain.CurrentDomain.BaseDirectory); ;
-
-            if (!File.Exists(_fullName))
+            // 增强路径安全验证，防止路径遍历攻击
+            var fileName = Path.GetFileName(xmlPath);
+            if (!xmlPath.EndsWith(fileName) || ContainsInvalidPathChars(xmlPath))
             {
-                var directoryName = Path.GetDirectoryName(_fullName);
-                if (!string.IsNullOrWhiteSpace(directoryName))
-                {
-                    Directory.CreateDirectory(directoryName);
-                }
-                _doc.AppendChild(_doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                _doc.AppendChild(_doc.CreateElement("root"));
-                CreateNode(DefaultNodeName);
-                _doc.Save(_fullName);
+                throw new ArgumentException("Invalid path: path traversal or invalid characters detected", nameof(xmlPath));
             }
 
-            _doc.Load(_fullName);
+            _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, xmlPath);
+
+            // 验证最终路径是否仍然安全
+            var fullPath = Path.GetFullPath(_fullName);
+            var baseDir = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+            if (!fullPath.StartsWith(baseDir, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Invalid path: outside of application directory", nameof(xmlPath));
+            }
+
+            try
+            {
+                _lock.EnterWriteLock();
+
+                if (!File.Exists(_fullName))
+                {
+                    var directoryName = Path.GetDirectoryName(_fullName);
+                    if (!string.IsNullOrWhiteSpace(directoryName))
+                    {
+                        Directory.CreateDirectory(directoryName);
+                    }
+
+                    // 配置XML设置以防止XXE
+                    _doc.XmlResolver = null;
+                    _doc.AppendChild(_doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+                    _doc.AppendChild(_doc.CreateElement("root"));
+                    CreateNode(DefaultNodeName);
+                    _doc.Save(_fullName);
+                }
+
+                // 配置XML设置以防止XXE
+                _doc.XmlResolver = null;
+                _doc.Load(_fullName);
+            }
+            finally
+            {
+                if (_lock.IsWriteLockHeld)
+                    _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -73,6 +111,7 @@ namespace DotNet.Util
         {
             try
             {
+                _lock.EnterWriteLock();
                 _doc.Save(_fullName);
                 return true;
             }
@@ -80,6 +119,11 @@ namespace DotNet.Util
             {
                 LogUtil.WriteException(ex);
                 return false;
+            }
+            finally
+            {
+                if (_lock.IsWriteLockHeld)
+                    _lock.ExitWriteLock();
             }
         }
 
@@ -98,37 +142,90 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName) || !IsValidXmlName(itemName) || !IsValidXmlAttribute(key))
+            {
+                return string.Empty;
+            }
+
             try
             {
-                var node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                _lock.EnterReadLock();
+
+                var node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}");
                 if (node == null)
                 {
-                    CreateNode(nodeName);
-                    node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                    // 在读锁中发现不存在，升级为写锁创建节点
+                    _lock.ExitReadLock();
+                    _lock.EnterWriteLock();
+
+                    // 双重检查
+                    node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}");
+                    if (node == null)
+                    {
+                        CreateNode(nodeName);
+                        node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}");
+                    }
+
+                    _lock.ExitWriteLock();
+                    _lock.EnterReadLock();
                 }
-                var item = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
+
+                // Use escaped attribute literal without adding extra quotes around it
+                var item = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}/{EscapeXPathName(itemName)}[@key={EscapeXPathAttributeValue(key)}]") as XmlElement;
                 if (item == null)
                 {
-                    //自动创建item                    
-                    var itemNew = _doc.CreateElement(itemName);
-                    itemNew.SetAttribute("key", key);
-                    itemNew.SetAttribute("value", defaultValue);
-                    node.AppendChild(itemNew);
-                    if (_autoSave)
+                    // 退出读锁，进入写锁来创建新项目
+                    _lock.ExitReadLock();
+                    _lock.EnterWriteLock();
+
+                    // 双重检查
+                    item = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}/{EscapeXPathName(itemName)}[@key={EscapeXPathAttributeValue(key)}]") as XmlElement;
+                    if (item == null)
                     {
-                        Save();
+                        //自动创建item                    
+                        var itemNew = _doc.CreateElement(itemName);
+                        itemNew.SetAttribute("key", key);
+                        itemNew.SetAttribute("value", defaultValue);
+                        node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
+                        if (node != null)
+                        {
+                            node.AppendChild(itemNew);
+                            if (_autoSave)
+                            {
+                                _lock.ExitWriteLock();
+                                Save(); // Save方法内部会处理锁
+                                _lock.EnterWriteLock(); // 重新获取锁以便返回
+                            }
+                        }
                     }
+                    else
+                    {
+                        // 其他线程已经创建了该项目，直接返回其值
+                        var result = item.GetAttribute("value");
+                        _lock.ExitWriteLock();
+                        return result;
+                    }
+
+                    _lock.ExitWriteLock();
                     return defaultValue;
                 }
                 else
                 {
-                    return item.GetAttribute("value");
+                    var result = item.GetAttribute("value");
+                    return result;
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
                 return string.Empty;
+            }
+            finally
+            {
+                if (_lock.IsReadLockHeld)
+                    _lock.ExitReadLock();
             }
         }
 
@@ -146,15 +243,26 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName) || !IsValidXmlName(itemName) || !IsValidXmlAttribute(key))
+            {
+                return false;
+            }
+
             try
             {
-                var node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                _lock.EnterWriteLock();
+
+                var node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
                 if (node == null)
                 {
                     CreateNode(nodeName);
-                    node = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                    node = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
                 }
-                var item = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
+
+                // Use escaped attribute literal without adding extra quotes around it
+                var item = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}/{EscapeXPathName(itemName)}[@key={EscapeXPathAttributeValue(key)}]") as XmlElement;
                 if (item == null)
                 {
                     //自动创建item
@@ -170,13 +278,18 @@ namespace DotNet.Util
 
                 if (_autoSave)
                 {
-                    Save();
+                    _doc.Save(_fullName);
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
                 return false;
+            }
+            finally
+            {
+                if (_lock.IsWriteLockHeld)
+                    _lock.ExitWriteLock();
             }
             return true;
         }
@@ -192,15 +305,27 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName))
+            {
+                return new List<string>();
+            }
+
             try
             {
+                _lock.EnterReadLock();
+
                 var keys = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
                 if (xmlElement != null)
                 {
-                    foreach (XmlElement node in xmlElement)
+                    foreach (XmlNode node in xmlElement.ChildNodes)
                     {
-                        keys.Add(node.GetAttribute("key"));
+                        if (node is XmlElement element)
+                        {
+                            keys.Add(element.GetAttribute("key"));
+                        }
                     }
                 }
 
@@ -210,6 +335,11 @@ namespace DotNet.Util
             {
                 LogUtil.WriteException(ex);
                 return new List<string>();
+            }
+            finally
+            {
+                if (_lock.IsReadLockHeld)
+                    _lock.ExitReadLock();
             }
         }
 
@@ -224,24 +354,41 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName))
+            {
+                return new List<string>();
+            }
+
             try
             {
-                var keys = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                _lock.EnterReadLock();
+
+                var values = new List<string>();
+                var xmlElement = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
                 if (xmlElement != null)
                 {
-                    foreach (XmlElement node in xmlElement)
+                    foreach (XmlNode node in xmlElement.ChildNodes)
                     {
-                        keys.Add(node.GetAttribute("value"));
+                        if (node is XmlElement element)
+                        {
+                            values.Add(element.GetAttribute("value"));
+                        }
                     }
                 }
 
-                return keys;
+                return values;
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
                 return new List<string>();
+            }
+            finally
+            {
+                if (_lock.IsReadLockHeld)
+                    _lock.ExitReadLock();
             }
         }
 
@@ -256,15 +403,32 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName))
+            {
+                return new Dictionary<string, string>();
+            }
+
             try
             {
+                _lock.EnterReadLock();
+
                 var keyValues = new Dictionary<string, string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                var xmlElement = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
                 if (xmlElement != null)
                 {
-                    foreach (XmlElement node in xmlElement)
+                    foreach (XmlNode node in xmlElement.ChildNodes)
                     {
-                        keyValues.Add(node.GetAttribute("key"), node.GetAttribute("value"));
+                        if (node is XmlElement element)
+                        {
+                            var key = element.GetAttribute("key");
+                            if (!key.IsNullOrEmpty())
+                            {
+                                var value = element.GetAttribute("value");
+                                keyValues[key] = value; // 使用字典的覆盖特性，如果有重复键，取最后一个
+                            }
+                        }
                     }
                 }
 
@@ -275,6 +439,11 @@ namespace DotNet.Util
             {
                 LogUtil.WriteException(ex);
                 return new Dictionary<string, string>();
+            }
+            finally
+            {
+                if (_lock.IsReadLockHeld)
+                    _lock.ExitReadLock();
             }
         }
 
@@ -291,11 +460,20 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName) || !IsValidXmlName(itemName) || !IsValidXmlAttribute(key))
+            {
+                return false;
+            }
+
             try
             {
+                _lock.EnterWriteLock();
+
                 CreateNode(nodeName);
-                var keyValue = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                var xmlElement = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/{itemName}[@key='{key}']");
+                var keyValue = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
+                var xmlElement = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}/{EscapeXPathName(itemName)}[@key={EscapeXPathAttributeValue(key)}]") as XmlElement;
                 if (keyValue != null && xmlElement != null)
                 {
                     keyValue.RemoveChild(xmlElement);
@@ -303,13 +481,18 @@ namespace DotNet.Util
 
                 if (_autoSave)
                 {
-                    Save();
+                    _doc.Save(_fullName);
                 }
             }
             catch (Exception ex)
             {
                 LogUtil.WriteException(ex);
                 return false;
+            }
+            finally
+            {
+                if (_lock.IsWriteLockHeld)
+                    _lock.ExitWriteLock();
             }
             return true;
         }
@@ -323,13 +506,18 @@ namespace DotNet.Util
         {
             try
             {
+                _lock.EnterReadLock();
+
                 var nodes = new List<string>();
-                var xmlElement = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root");
+                var xmlElement = SelectSingleNodeSafe($"/root") as XmlElement;
                 if (xmlElement != null)
                 {
-                    foreach (XmlElement node in xmlElement)
+                    foreach (XmlNode node in xmlElement.ChildNodes)
                     {
-                        nodes.Add(node.Name);
+                        if (node is XmlElement element)
+                        {
+                            nodes.Add(element.Name);
+                        }
                     }
                 }
 
@@ -339,6 +527,11 @@ namespace DotNet.Util
             {
                 LogUtil.WriteException(ex);
                 return new List<string>();
+            }
+            finally
+            {
+                if (_lock.IsReadLockHeld)
+                    _lock.ExitReadLock();
             }
         }
 
@@ -353,7 +546,14 @@ namespace DotNet.Util
             {
                 nodeName = DefaultNodeName;
             }
-            if (_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}") == null)
+
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName))
+            {
+                return;
+            }
+
+            if (SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") == null)
             {
                 _doc.DocumentElement.AppendChild(_doc.CreateElement(nodeName));
             }
@@ -366,17 +566,25 @@ namespace DotNet.Util
         /// <returns></returns>
         public bool DeleteNode(string nodeName)
         {
+            // 验证参数安全性
+            if (!IsValidXmlName(nodeName))
+            {
+                return false;
+            }
+
             try
             {
-                var keyValue = _doc.DocumentElement.SelectSingleNode($"/root");
-                var xmlElement = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                _lock.EnterWriteLock();
+
+                var keyValue = SelectSingleNodeSafe($"/root") as XmlElement;
+                var xmlElement = SelectSingleNodeSafe($"/root/{EscapeXPathName(nodeName)}") as XmlElement;
 
                 if (keyValue != null && xmlElement != null)
                 {
                     keyValue.RemoveChild(xmlElement);
                     if (_autoSave)
                     {
-                        Save();
+                        _doc.Save(_fullName);
                     }
                 }
 
@@ -387,6 +595,118 @@ namespace DotNet.Util
                 LogUtil.WriteException(ex);
                 return false;
             }
+            finally
+            {
+                if (_lock.IsWriteLockHeld)
+                    _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// 安全地选择单个节点，防止XPath注入
+        /// </summary>
+        /// <param name="xpath">XPath表达式</param>
+        /// <returns>匹配的节点</returns>
+        private XmlNode SelectSingleNodeSafe(string xpath)
+        {
+            try
+            {
+                return _doc.DocumentElement?.SelectSingleNode(xpath);
+            }
+            catch (XPathException)
+            {
+                LogUtil.WriteException(new ArgumentException($"Invalid XPath expression: {xpath}"));
+                // XPath语法错误，返回null
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 验证XML名称是否有效
+        /// </summary>
+        /// <param name="name">XML名称</param>
+        /// <returns>是否有效</returns>
+        private bool IsValidXmlName(string name)
+        {
+            if (name.IsNullOrEmpty()) return false;
+
+            try
+            {
+                XmlConvert.VerifyName(name);
+                return true;
+            }
+            catch (XmlException)
+            {
+                LogUtil.WriteException(new ArgumentException($"Invalid XML name: {name}"));
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 验证XML属性值是否有效（防止XPath注入）
+        /// </summary>
+        /// <param name="value">属性值</param>
+        /// <returns>是否有效</returns>
+        private bool IsValidXmlAttribute(string value)
+        {
+            if (value == null) return true;
+
+            // 检查是否包含可能用于XPath注入的字符
+            return !value.Contains("'") && !value.Contains("\"");
+        }
+
+        /// <summary>
+        /// 转义XPath中的名称
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <returns>转义后的名称</returns>
+        private string EscapeXPathName(string name)
+        {
+            // 简单的验证，确保名称是有效的XML名称
+            if (!IsValidXmlName(name))
+            {
+                throw new ArgumentException($"Invalid XML name: {name}");
+            }
+            return name;
+        }
+
+        /// <summary>
+        /// 转义XPath属性值
+        /// </summary>
+        /// <param name="value">属性值</param>
+        /// <returns>转义后的属性值</returns>
+        private string EscapeXPathAttributeValue(string value)
+        {
+            if (value == null) return "''";
+
+            // 如果值中包含单引号，则使用concat函数
+            if (value.Contains("'"))
+            {
+                if (value.Contains("\""))
+                {
+                    // 如果同时包含单引号和双引号，则需要更复杂的处理
+                    // 这里简单返回用单引号包围并转义的内容
+                    return "'" + value.Replace("'", "&apos;") + "'";
+                }
+                return "\"" + value + "\"";
+            }
+            return "'" + value + "'";
+        }
+
+        /// <summary>
+        /// 检查路径是否包含非法字符
+        /// </summary>
+        /// <param name="path">路径</param>
+        /// <returns>是否包含非法字符</returns>
+        private bool ContainsInvalidPathChars(string path)
+        {
+            char[] invalidChars = { '<', '>', '|', '*', '?' };
+            foreach (char c in path)
+            {
+                if (Array.Exists(invalidChars, x => x == c))
+                    return true;
+            }
+            return false;
         }
     }
 }

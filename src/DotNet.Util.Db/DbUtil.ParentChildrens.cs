@@ -251,7 +251,7 @@ namespace DotNet.Util
                     break;
                 case CurrentDbType.Oracle:
                     sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH(" + dbHelper.GetParameter(fieldCode) + ")) = " + dbHelper.GetParameter(fieldCode) + ") ");
-                    sb.Append(" OR (" + fieldCode + " = SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + "))) ");
+                    sb.Append(" OR (" + fieldCode + " = SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + ")))");
                     break;
             }
             if (!order.IsNullOrEmpty())

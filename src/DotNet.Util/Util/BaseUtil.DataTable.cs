@@ -140,7 +140,7 @@ namespace DotNet.Util
                 {
                     dtNew.ImportRow(row[i]);
                 }
-            }            
+            }
             return dtNew;
         }
         #endregion

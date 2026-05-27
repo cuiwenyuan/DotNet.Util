@@ -12,7 +12,7 @@ namespace DotNet.Util
     ///
     ///     2013.12.24 版本：3.0 JiRiGaLa 进行重命名。
     ///     2012.05.07 版本：2.0 JiRiGaLa 增加UserSubCompany。
-    ///     2009.09.01 版本：1.0 Troy Cui 创建。
+    ///     2009.09.01 版本：1.0 JiRiGaLa 创建。
     ///		
     /// <author>
     ///		<name>Troy.Cui</name>

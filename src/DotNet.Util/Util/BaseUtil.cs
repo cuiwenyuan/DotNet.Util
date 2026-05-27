@@ -221,7 +221,7 @@ namespace DotNet.Util
             // 首字母进行强制大写改进
             field = field.Substring(0, 1).ToUpper() + field.Substring(1);
 
-            var keywords = new string[] { "Id", "SortCode", "Deleted", "Enabled", "CreateTime", "CreateUserId", "CreateBy", "UpdateTime", "UpdateUserId", "UpdateBy" };
+            var keywords = new string[] { BaseUtil.FieldId, BaseUtil.FieldSortCode, BaseUtil.FieldDeleted, BaseUtil.FieldEnabled, BaseUtil.FieldCreateTime, BaseUtil.FieldCreateUserId, BaseUtil.FieldCreateBy, BaseUtil.FieldUpdateTime, BaseUtil.FieldUpdateUserId, BaseUtil.FieldUpdateBy };
 
             foreach (var t in keywords)
             {

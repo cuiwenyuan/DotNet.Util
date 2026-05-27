@@ -8,7 +8,7 @@ namespace DotNet.Util
 {
     /// <summary>对象池</summary>
     /// <remarks>
-    /// 文档 https://newlifex.com/core/object_pool
+    /// 文档 https://www.yuque.com/smartstone/nx/object_pool
     /// </remarks>
     public static partial class PoolUtil
     {

@@ -77,7 +77,7 @@ namespace DotNet.Util
                 }
                 else
                 {
-                    _ipBinaryFilePath = AppDomain.CurrentDomain.BaseDirectory + "\\DataBase\\17monipdb.dat";
+                    _ipBinaryFilePath = AppDomain.CurrentDomain.BaseDirectory + "\\Database\\17monipdb.dat";
                 }
 
                 var file = new FileInfo(_ipBinaryFilePath);

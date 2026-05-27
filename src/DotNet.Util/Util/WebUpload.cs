@@ -490,6 +490,7 @@ namespace DotNet.Util
                                 {
                                     { "status", 1 },
                                     { "msg", "上传文件成功！" },
+                                    { "message", "上传文件成功！" },
                                     { "name", "" + newFileName + "" },
                                     { "path", "" + newFilePath + "" },
                                     { "thumbnail", "" + newThumbnailPath + "" },

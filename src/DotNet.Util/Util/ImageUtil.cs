@@ -174,7 +174,7 @@ namespace DotNet.Util
                 {
                     image.Dispose();
                     ob.Dispose();
-                }                
+                }
                 if (deleteOrignalImage)
                 {
                     fi.Delete();

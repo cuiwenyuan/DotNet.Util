@@ -262,7 +262,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region LogonLog
+        #region LoginLog
         /// <summary>
         /// 登录日志数据库类别
         /// </summary>

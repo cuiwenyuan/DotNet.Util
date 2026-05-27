@@ -406,7 +406,7 @@ namespace DotNet.Util
                 }
                 _dbConnection.Dispose();
                 _dbConnection = null;
-            }            
+            }
         }
         #endregion
 
