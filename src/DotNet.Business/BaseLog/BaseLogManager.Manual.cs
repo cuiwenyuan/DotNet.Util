@@ -46,23 +46,23 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             
             ////子系统
-            //if (!string.IsNullOrEmpty(processId))
+            //if (!processId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.field + " = N'" + systemCode + "'");
             //}
             ////用户主键
-            //if (!string.IsNullOrEmpty(userId))
+            //if (!userId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserId + " = N'" + userId + "'");
             //}
             ////用户名
-            //if (!string.IsNullOrEmpty(userName))
+            //if (!userName.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseLogEntity.CurrentTableName + "." + BaseLogEntity.FieldUserName + " = N'" + userName + "'");
             //}
 
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldService + " LIKE N'%" + searchKey + "%')");

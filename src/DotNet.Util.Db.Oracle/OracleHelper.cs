@@ -120,7 +120,7 @@ namespace DotNet.Util
             {
                 returnValue += t + " || ";
             }
-            if (!string.IsNullOrEmpty(returnValue))
+            if (!returnValue.IsNullOrEmpty())
             {
                 returnValue = returnValue.Substring(0, returnValue.Length - 4);
             }

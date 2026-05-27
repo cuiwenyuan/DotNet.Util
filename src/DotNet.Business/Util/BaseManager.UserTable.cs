@@ -4,6 +4,8 @@
 
 namespace DotNet.Business
 {
+    using Util;
+
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
@@ -28,7 +30,7 @@ namespace DotNet.Business
         public virtual string GetTableSuffix()
         {
             var result = string.Empty;
-            if (UserInfo != null && !string.IsNullOrEmpty(UserInfo.CompanyId) && !UserInfo.IsAdministrator)
+            if (UserInfo != null && !(UserInfo.CompanyId).IsNullOrEmpty() && !UserInfo.IsAdministrator)
             {
                 result = UserInfo.CompanyId.ToString();
             }

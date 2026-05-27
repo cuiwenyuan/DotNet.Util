@@ -42,7 +42,7 @@ namespace DotNet.Util
                 result += field + " LIKE '%" + t + "%' AND ";
             }
 
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(0, result.Length - 5);
             }
@@ -62,7 +62,7 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetSearchString(string searchKey, bool allLike = false)
         {
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = searchKey.Trim();
                 searchKey = SecretUtil.SqlSafe(searchKey);
@@ -110,7 +110,7 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetLikeSearchKey(string searchKey)
         {
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 //必须[放在%替换前面
                 searchKey = searchKey.Replace("[", "[[]");
@@ -137,7 +137,7 @@ namespace DotNet.Util
         {
             var result = false;
 
-            if (ids != null && !string.IsNullOrEmpty(targetString))
+            if (ids != null && !targetString.IsNullOrEmpty())
             {
                 foreach (var i in ids)
                 {
@@ -183,7 +183,7 @@ namespace DotNet.Util
                     {
                         for (var j = 0; j < i.Length; j++)
                         {
-                            if (!string.IsNullOrEmpty(i[j]))
+                            if (!i[j].IsNullOrEmpty())
                             {
                                 if (!result.Contains(i[j]))
                                 {
@@ -235,7 +235,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string[] Remove(string[] ids, string id)
         {
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 return Remove(ids, new string[] { id });
             }
@@ -354,7 +354,7 @@ namespace DotNet.Util
             foreach (var cellPhone in mobile)
             {
                 var phones = cellPhone.Trim();
-                if (!string.IsNullOrEmpty(phones))
+                if (!phones.IsNullOrEmpty())
                 {
                     // 用回车分割，然后再用,符号分割
                     var phone = phones.Split(',');
@@ -367,7 +367,7 @@ namespace DotNet.Util
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(p.Trim()))
+                            if (!(p.Trim()).IsNullOrEmpty())
                             {
                                 mobileList.Add(p.Trim());
                             }
@@ -379,11 +379,11 @@ namespace DotNet.Util
             // 去掉重复，不要空的，有时候需要发重复的短信的，因为有多个包裹时，需要有重复的信息
             if (distinct)
             {
-                mobile = mobileList.Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                mobile = mobileList.Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             else
             {
-                mobile = mobileList.Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                mobile = mobileList.Where(t => !t.IsNullOrEmpty()).ToArray();
             }
 
             return mobile;
@@ -508,7 +508,7 @@ namespace DotNet.Util
         /// <returns>合并空格后的字符串</returns>
         public static string MergeSpace(string str)
         {
-            if (!string.IsNullOrEmpty(str) && str.Length > 0)
+            if (!str.IsNullOrEmpty() && str.Length > 0)
             {
                 str = new System.Text.RegularExpressions.Regex("[\\s]+").Replace(str, " ");
             }
@@ -527,7 +527,7 @@ namespace DotNet.Util
         public static string CutString(string source, string start, string end)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(source) && source.Contains(start) && source.Contains(end))
+            if (!source.IsNullOrEmpty() && source.Contains(start) && source.Contains(end))
             {
                 int startIndex, endIndex;
                 try
@@ -562,7 +562,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideSensitiveInfo(this string info, int left, int right, bool basedOnLeft = true)
         {
-            if (string.IsNullOrEmpty(info))
+            if (info.IsNullOrEmpty())
             {
                 return "";
             }
@@ -616,7 +616,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideSensitiveInfo(this string info, int ratio = 3, bool basedOnLeft = true)
         {
-            if (string.IsNullOrEmpty(info))
+            if (info.IsNullOrEmpty())
             {
                 return "";
             }
@@ -653,7 +653,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideEmailDetails(this string email, int left = 3)
         {
-            if (string.IsNullOrEmpty(email))
+            if (email.IsNullOrEmpty())
             {
                 return "";
             }

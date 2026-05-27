@@ -45,11 +45,11 @@ namespace DotNet.Util
         {
             IDataReader dataReader = null;
             recordCount = 0;
-            if (string.IsNullOrEmpty(selectField))
+            if (selectField.IsNullOrEmpty())
             {
                 selectField = "*";
             }
-            if (string.IsNullOrEmpty(condition))
+            if (condition.IsNullOrEmpty())
             {
                 condition = string.Empty;
             }
@@ -108,11 +108,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
-            if (string.IsNullOrEmpty(sortExpression))
+            if (sortExpression.IsNullOrEmpty())
             {
                 sortExpression = BaseUtil.FieldCreateTime;
             }
-            if (string.IsNullOrEmpty(sortDirection))
+            if (sortDirection.IsNullOrEmpty())
             {
                 sortDirection = " DESC";
             }
@@ -230,7 +230,7 @@ namespace DotNet.Util
             {
                 currentIndex = string.Empty;
             }
-            if (!string.IsNullOrEmpty(conditions))
+            if (!conditions.IsNullOrEmpty())
             {
                 conditions = "WHERE " + conditions;
             }

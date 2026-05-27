@@ -62,7 +62,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public virtual DataTable GetDataTableByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = "*")
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 tableName = CurrentTableName;
             }
@@ -70,12 +70,12 @@ namespace DotNet.Business
             {
                 // 统计总条数
                 var commandText = string.Empty;
-                if (string.IsNullOrEmpty(tableName))
+                if (tableName.IsNullOrEmpty())
                 {
                     tableName = CurrentTableName;
                 }
                 var sb = PoolUtil.StringBuilder.Get();
-                if (!string.IsNullOrEmpty(condition))
+                if (!condition.IsNullOrEmpty())
                 {
                     sb.Append(" WHERE " + condition);
                 }
@@ -122,7 +122,7 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public virtual DataTable GetDataTableByPage(IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 tableName = CurrentTableName;
             }
@@ -130,12 +130,12 @@ namespace DotNet.Business
             {
                 // 统计总条数
                 var commandText = string.Empty;
-                if (string.IsNullOrEmpty(tableName))
+                if (tableName.IsNullOrEmpty())
                 {
                     tableName = CurrentTableName;
                 }
                 var sb = PoolUtil.StringBuilder.Get();
-                if (!string.IsNullOrEmpty(condition))
+                if (!condition.IsNullOrEmpty())
                 {
                     sb.Append(" WHERE " + condition);
                 }
@@ -222,7 +222,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (Name LIKE N'%" + searchKey + "%' OR Description LIKE N'%" + searchKey + "%')");

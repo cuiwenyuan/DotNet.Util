@@ -439,7 +439,7 @@ namespace DotNet.Util
         {
             try
             {
-                if (!string.IsNullOrEmpty(filePath))
+                if (!filePath.IsNullOrEmpty())
                 {
                     //转为本地路径
                     filePath = HttpContext.Current.Server.MapPath(filePath);

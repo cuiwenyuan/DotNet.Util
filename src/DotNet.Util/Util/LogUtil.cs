@@ -36,15 +36,15 @@ namespace DotNet.Util
         /// <param name="logFileNamePattern">日志文件名日期格式，可以按年、按月、按天、按小时、按分钟、按秒生成日志文件，默认为BaseSystemInfo.LogFileNamePattern的格式</param>
         public static void WriteLog(string exception, string folder = "Log", string prefix = null, string suffix = null, string extension = "log", string logFileNamePattern = "")
         {
-            if (string.IsNullOrEmpty(folder))
+            if (folder.IsNullOrEmpty())
             {
                 folder = "Log";
             }
-            if (string.IsNullOrEmpty(extension))
+            if (extension.IsNullOrEmpty())
             {
                 extension = "log";
             }
-            if (string.IsNullOrEmpty(suffix))
+            if (suffix.IsNullOrEmpty())
             {
                 suffix = "log";
             }
@@ -58,7 +58,7 @@ namespace DotNet.Util
                 Directory.CreateDirectory(logDirectory);
             }
             var fileName = prefix + DateTime.Now.ToString(BaseSystemInfo.LogFileNamePattern) + "_" + suffix + "_0." + extension;
-            if (!string.IsNullOrEmpty(logFileNamePattern))
+            if (!logFileNamePattern.IsNullOrEmpty())
             {
                 fileName = prefix + DateTime.Now.ToString(logFileNamePattern) + "_" + suffix + "_0." + extension;
             }

@@ -119,7 +119,7 @@ namespace DotNet.Util
                     break;
             }
             if (workbook == null) { return; }
-            var sheet = string.IsNullOrEmpty(dt.TableName) ? workbook.CreateSheet("Sheet1") : workbook.CreateSheet(dt.TableName);
+            var sheet = (dt.TableName).IsNullOrEmpty() ? workbook.CreateSheet("Sheet1") : workbook.CreateSheet(dt.TableName);
 
             //表头  
             var row = sheet.CreateRow(0);
@@ -191,7 +191,7 @@ namespace DotNet.Util
         /// <param name="excelPreviewFolder">Excel预览文件夹</param>
         public static void ExcelToHtml(string excelFilePath, string excelPreviewFolder = "excel")
         {
-            if (!string.IsNullOrEmpty(excelFilePath))
+            if (!excelFilePath.IsNullOrEmpty())
             {
                 IWorkbook wb;
                 using (var fs = new FileStream(Utils.GetMapPath(excelFilePath), FileMode.Open, FileAccess.Read))
@@ -288,7 +288,7 @@ namespace DotNet.Util
                 throw new ArgumentNullException(nameof(cellHeader));
             }
 
-            if (string.IsNullOrEmpty(filePath))
+            if (filePath.IsNullOrEmpty())
             {
                 throw new ArgumentException($"'{nameof(filePath)}' cannot be null or empty.", nameof(filePath));
             }
@@ -565,7 +565,7 @@ namespace DotNet.Util
             var rs = distanceType.IsValueType ? Activator.CreateInstance(distanceType) : null;
 
             // 1.判断传递的单元格是否为空
-            if (sourceCell == null || string.IsNullOrEmpty(sourceCell.ToString()))
+            if (sourceCell == null || (sourceCell.ToString()).IsNullOrEmpty())
             {
                 return rs;
             }

@@ -51,7 +51,7 @@ namespace DotNet.Business
             {
                 return result;
             }
-            if (string.IsNullOrEmpty(macAddress))
+            if (macAddress.IsNullOrEmpty())
             {
                 return result;
             }
@@ -79,7 +79,7 @@ namespace DotNet.Business
             //                var parameterManager = new BaseParameterManager();
             //                for (var i = 0; i < mac.Length; i++)
             //                {
-            //                    if (!string.IsNullOrEmpty(mac[i]))
+            //                    if (!mac[i].IsNullOrEmpty())
             //                    {
             //                        // 把收集过来的mac地址需要保存起来
             //                        var parameterEntity = new BaseParameterEntity();
@@ -104,7 +104,7 @@ namespace DotNet.Business
             //            for (var i = 0; i < mac.Length; i++)
             //            {
             //                // 这里对数据还不放心，进行优化处理
-            //                if (!string.IsNullOrEmpty(mac[i]))
+            //                if (!mac[i].IsNullOrEmpty())
             //                {
             //                    mac[i] = mac[i].Trim();
             //                    result = redisClient.SetContainsItem(key, mac[i]);
@@ -256,7 +256,7 @@ namespace DotNet.Business
                 {
                     for (int i = 0; i < mac.Length; i++)
                     {
-                        if (!string.IsNullOrEmpty(mac[i]))
+                        if (!mac[i].IsNullOrEmpty())
                         {
                             // 把收集过来的mac地址需要保存起来
                             BaseParameterEntity parameterEntity = new BaseParameterEntity();

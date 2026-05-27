@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -93,7 +93,7 @@ namespace DotNet.Util
         private static string GetLogPath(string customDirectory, string fileName, string extension)
         {
             string newFilePath;
-            var logDir = string.IsNullOrEmpty(customDirectory) ? Path.Combine(Environment.CurrentDirectory, "Log") : customDirectory;
+            var logDir = customDirectory.IsNullOrEmpty() ? Path.Combine(Environment.CurrentDirectory, "Log") : customDirectory;
             if (!Directory.Exists(logDir))
             {
                 Directory.CreateDirectory(logDir);

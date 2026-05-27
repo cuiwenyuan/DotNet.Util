@@ -646,7 +646,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public string GetStateMessage(string statusCode)
         {
-            if (string.IsNullOrEmpty(statusCode))
+            if (statusCode.IsNullOrEmpty())
             {
                 return string.Empty;
             }
@@ -1037,9 +1037,9 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.CreateTime = DateTime.Now;
-                entity.CreateIp = !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp();
+                entity.CreateIp = !createIp.IsNullOrEmpty() ? createIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldCreateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, !createIp.IsNullOrEmpty() ? createIp : Utils.GetIp());
             }
         }
         #endregion
@@ -1079,9 +1079,9 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.UpdateTime = DateTime.Now;
-                entity.UpdateIp = !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp();
+                entity.UpdateIp = !updateIp.IsNullOrEmpty() ? updateIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, !updateIp.IsNullOrEmpty() ? updateIp : Utils.GetIp());
             }
         }
         #endregion

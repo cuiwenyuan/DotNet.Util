@@ -47,7 +47,7 @@ namespace DotNet.Business
             // 密码强度检查
             if (BaseSystemInfo.CheckPasswordStrength)
             {
-                if (string.IsNullOrEmpty(newPassword))
+                if (newPassword.IsNullOrEmpty())
                 {
                     Status = Status.PasswordCanNotBeNull;
                     StatusCode = Status.PasswordCanNotBeNull.ToString();

@@ -67,7 +67,7 @@ namespace DotNet.Business
                 return result;
             }
 
-            if (string.IsNullOrEmpty(ipAddress))
+            if (ipAddress.IsNullOrEmpty())
             {
                 return result;
             }

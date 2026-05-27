@@ -117,7 +117,7 @@ namespace DotNet.Business
             sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1");
 
             var dbParameters = new List<IDbDataParameter>();
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 // prepare search key with wildcards
                 searchKey = searchKey.Trim();
@@ -171,17 +171,17 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             ////子系统
-            //if (!string.IsNullOrEmpty(processId))
+            //if (!processId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.field + " = N'" + systemCode + "'");
             //}
             ////用户主键
-            //if (!string.IsNullOrEmpty(userId))
+            //if (!userId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserId + " = N'" + userId + "'");
             //}
             ////用户名
-            //if (!string.IsNullOrEmpty(userName))
+            //if (!userName.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserName + " = N'" + userName + "'");
             //}
@@ -195,7 +195,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldId + " LIKE N'%" + searchKey + "%')");

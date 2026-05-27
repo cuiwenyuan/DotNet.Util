@@ -283,7 +283,7 @@ namespace DotNet.Util
             {
                 codeLength = Length;
             }
-            var arr = CodeSerial.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var arr = CodeSerial.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             var code = "";
             var randValue = -1;
             var random = new Random(unchecked((int)DateTime.Now.Ticks));

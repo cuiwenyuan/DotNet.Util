@@ -83,7 +83,7 @@ namespace DotNet.Business
                 //// 向服务器发送POST数据
                 //var responseArray = webClient.UploadValues(url, postValues);
                 // string response = Encoding.UTF8.GetString(responseArray);
-                // if (!string.IsNullOrEmpty(response))
+                // if (!response.IsNullOrEmpty())
                 // {
                 //      result = response.Equals(true.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 // }

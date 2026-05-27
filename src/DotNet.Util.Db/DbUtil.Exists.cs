@@ -38,7 +38,7 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName + " WHERE " + GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional));
 
-            if (!string.IsNullOrEmpty(parameter.Key))
+            if (!(parameter.Key).IsNullOrEmpty())
             {
                 if (parameter.Value != null)
                 {
@@ -87,7 +87,7 @@ namespace DotNet.Util
                 currentIndex = string.Empty;
             }
             sb.Append("SELECT " + currentIndex + " COUNT(*) FROM " + tableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

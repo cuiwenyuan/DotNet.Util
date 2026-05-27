@@ -359,7 +359,7 @@ namespace DotNet.Util
         /// <returns>保存文件是否成功 </returns>  
         public string Base64SaveAs(string base64String, out string uploadedFileName, string subFolder = @"ItemPhoto", bool isThumbnail = true, string thumbnailMode = "W", bool isAutoRotate = false, bool keepExif = false, bool createThumbnail = true, bool createIcon = true, bool createMiddle = false, bool createLarge = true, int thumbnailWidth = 180, int thumbnailHeight = 180, int iconWidth = 90, int iconHeight = 90, int middleWidth = 500, int middleHeight = 500, int largeWidth = 700, int largeHeight = 700)
         {
-            if (string.IsNullOrEmpty(thumbnailMode))
+            if (thumbnailMode.IsNullOrEmpty())
             {
                 thumbnailMode = "W";
             }
@@ -396,7 +396,7 @@ namespace DotNet.Util
             }
             var fileSize = 0L;
             // 创建文件
-            if (!string.IsNullOrEmpty(base64String) && !File.Exists(newPhysicalFilePath))
+            if (!base64String.IsNullOrEmpty() && !File.Exists(newPhysicalFilePath))
             {
                 try
                 {
@@ -529,7 +529,7 @@ namespace DotNet.Util
         private string GetUpLoadPath(string subFolder = null)
         {
             var path = _webpath + _filepath + "/"; //站点目录+上传目录
-            if (!string.IsNullOrEmpty(subFolder))
+            if (!subFolder.IsNullOrEmpty())
             {
                 path += subFolder + "/";
             }

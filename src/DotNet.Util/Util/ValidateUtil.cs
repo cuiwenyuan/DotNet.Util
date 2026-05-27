@@ -219,7 +219,7 @@ namespace DotNet.Util
         /// <returns>true/false</returns>
         public static bool IsNumeric(string inputNumeric)
         {
-            if (string.IsNullOrEmpty(inputNumeric))
+            if (inputNumeric.IsNullOrEmpty())
             {
                 return false;
             }
@@ -350,7 +350,7 @@ namespace DotNet.Util
             var result = false;
 
             // 2015-12-12 吉日嘎拉 手机号码是空的，认为不准确就可以了
-            if (!string.IsNullOrEmpty(mobile))
+            if (!mobile.IsNullOrEmpty())
             {
                 mobile = mobile.Trim();
                 //const string regexString = @"^(1(([34578][0-9])|(47)|[8][01236789]))\d{8}$";
@@ -390,7 +390,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsUserName(string userName)
         {
-            if (string.IsNullOrEmpty(userName))
+            if (userName.IsNullOrEmpty())
             {
                 userName = string.Empty;
             }
@@ -406,7 +406,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsLetterOrIsDigit(string letterOrIsDigit)
         {
-            if (string.IsNullOrEmpty(letterOrIsDigit))
+            if (letterOrIsDigit.IsNullOrEmpty())
             {
                 letterOrIsDigit = string.Empty;
             }
@@ -423,7 +423,7 @@ namespace DotNet.Util
         public static bool IsTelephone(string telephone)
         {
             var result = true;
-            if (string.IsNullOrEmpty(telephone))
+            if (telephone.IsNullOrEmpty())
             {
                 foreach (var t in telephone)
                 {
@@ -458,7 +458,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsChineseCharacters(string realName)
         {
-            if (string.IsNullOrEmpty(realName))
+            if (realName.IsNullOrEmpty())
             {
                 return false;
             }
@@ -499,7 +499,7 @@ namespace DotNet.Util
         public static bool CheckPasswordStrength(string password, string userName = null)
         {
             var result = true;
-            if (!string.IsNullOrEmpty(password))
+            if (!password.IsNullOrEmpty())
             {
 
                 if (password.IndexOf("123", StringComparison.OrdinalIgnoreCase) > -1)
@@ -578,7 +578,7 @@ namespace DotNet.Util
         public static bool IsUPCA(string code)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
                 var checkDigit = 0;
                 var isDigitsOnly = IsDigitsOnly(code);
@@ -671,7 +671,7 @@ namespace DotNet.Util
             var result = false;
             var upperVin = vin.ToUpper();
             //排除字母I、O、Q
-            if (!string.IsNullOrEmpty(vin) && vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (!vin.IsNullOrEmpty() && vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 // VIN码从第1位到第17位的“加权值”：
                 var vinMapWeighting = new Dictionary<int, int>
@@ -784,7 +784,7 @@ namespace DotNet.Util
         public static bool IsPlateNumber(string plateNumber)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(plateNumber) && plateNumber.Length == 7)
+            if (!plateNumber.IsNullOrEmpty() && plateNumber.Length == 7)
             {
                 const string pattern = @"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
                 result = Regex.IsMatch(plateNumber, pattern);

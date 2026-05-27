@@ -168,7 +168,7 @@ namespace DotNet.Business
                 {
                     sequenceEntity.Step = defaultStep.ToInt();
                 }
-                if (!string.IsNullOrEmpty(defaultPrefix))
+                if (!defaultPrefix.IsNullOrEmpty())
                 {
                     sequenceEntity.Prefix = defaultPrefix;
                 }
@@ -176,7 +176,7 @@ namespace DotNet.Business
                 {
                     sequenceEntity.Prefix = DefaultPrefix;
                 }
-                if (!string.IsNullOrEmpty(defaultDelimiter))
+                if (!defaultDelimiter.IsNullOrEmpty())
                 {
                     sequenceEntity.Delimiter = defaultDelimiter;
                 }

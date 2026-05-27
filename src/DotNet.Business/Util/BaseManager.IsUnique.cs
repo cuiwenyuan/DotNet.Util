@@ -39,7 +39,7 @@ namespace DotNet.Business
             var result = false;
             //安全过滤一下
             fieldValue = dbHelper.SqlSafe(fieldValue);
-            if (!string.IsNullOrEmpty(fieldName))
+            if (!fieldName.IsNullOrEmpty())
             {
                 fieldName = dbHelper.SqlSafe(fieldName);
             }
@@ -89,7 +89,7 @@ namespace DotNet.Business
             //安全过滤一下
             field1Value = dbHelper.SqlSafe(field1Value);
             field2Value = dbHelper.SqlSafe(field2Value);
-            if (!string.IsNullOrEmpty(field1Name))
+            if (!field1Name.IsNullOrEmpty())
             {
                 field1Name = dbHelper.SqlSafe(field1Name);
             }
@@ -97,7 +97,7 @@ namespace DotNet.Business
             {
                 field1Name = "Name";
             }
-            if (!string.IsNullOrEmpty(field2Name))
+            if (!field2Name.IsNullOrEmpty())
             {
                 field2Name = dbHelper.SqlSafe(field2Name);
             }
@@ -149,7 +149,7 @@ namespace DotNet.Business
             //安全过滤一下
             field1Value = dbHelper.SqlSafe(field1Value);
             field2Value = dbHelper.SqlSafe(field2Value);
-            if (!string.IsNullOrEmpty(field1Name))
+            if (!field1Name.IsNullOrEmpty())
             {
                 field1Name = dbHelper.SqlSafe(field1Name);
             }
@@ -157,7 +157,7 @@ namespace DotNet.Business
             {
                 field1Name = "Name";
             }
-            if (!string.IsNullOrEmpty(field2Name))
+            if (!field2Name.IsNullOrEmpty())
             {
                 field2Name = dbHelper.SqlSafe(field2Name);
             }
@@ -165,7 +165,7 @@ namespace DotNet.Business
             {
                 field2Name = "Name";
             }
-            if (!string.IsNullOrEmpty(field3Name))
+            if (!field3Name.IsNullOrEmpty())
             {
                 field3Name = dbHelper.SqlSafe(field3Name);
             }
@@ -219,7 +219,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName + " WHERE " + dbHelper.GetWhereString(whereParameters, BaseUtil.SqlLogicConditional));
 
-            if (!string.IsNullOrEmpty(excludeId))
+            if (!excludeId.IsNullOrEmpty())
             {
                 if (ValidateUtil.IsInt(excludeId))
                 {

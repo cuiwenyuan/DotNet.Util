@@ -347,7 +347,7 @@ namespace DotNet.Util
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    if (!String.IsNullOrEmpty(result))
+                    if (!result.IsNullOrEmpty())
                     {
                         result = result.Substring(0, result.Length - 3);
                     }
@@ -370,7 +370,7 @@ namespace DotNet.Util
                     {
                         result += values[i] + " || ";
                     }
-                    if (!String.IsNullOrEmpty(result))
+                    if (!result.IsNullOrEmpty())
                     {
                         result = result.Substring(0, result.Length - 4);
                     }

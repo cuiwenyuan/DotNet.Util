@@ -84,7 +84,7 @@ namespace DotNet.Business
             /*
             // 把主库的数据库认证也去掉
             string connectionString = ConfigurationHelper.AppSettings("K8Connection", BaseSystemInfo.EncryptDbConnection);
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!connectionString.IsNullOrEmpty())
             {
                 IDbHelper dbHelper = DbHelperFactory.Create(CurrentDbType.Oracle, connectionString);
                 string commandText = string.Format(@"UPDATE TAB_USER 

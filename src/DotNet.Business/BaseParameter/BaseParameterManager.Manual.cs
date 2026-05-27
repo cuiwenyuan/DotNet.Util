@@ -91,22 +91,22 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseParameterEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 systemCode = dbHelper.SqlSafe(systemCode);
                 sb.Append(" AND " + BaseParameterEntity.FieldSystemCode + " = N'" + systemCode + "'");
             }
-            if (!string.IsNullOrEmpty(parameterId))
+            if (!parameterId.IsNullOrEmpty())
             {
                 parameterId = dbHelper.SqlSafe(parameterId);
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterId + " = N'" + parameterId + "'");
             }
-            if (!string.IsNullOrEmpty(parameterCode))
+            if (!parameterCode.IsNullOrEmpty())
             {
                 parameterCode = dbHelper.SqlSafe(parameterCode);
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterCode + " = N'" + parameterCode + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseParameterEntity.FieldParameterCode + " LIKE N'%" + searchKey + "%' OR " + BaseParameterEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -173,7 +173,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     // 运行成功
                     Status = Status.OkAdd;
@@ -261,15 +261,15 @@ namespace DotNet.Business
 
             var result = string.Empty;
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseParameterEntity.FieldCategoryCode + " = '" + categoryCode + "'");
             }
-            if (!string.IsNullOrEmpty(parameterId))
+            if (!parameterId.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterId + " = '" + parameterId + "'");
             }
-            if (!string.IsNullOrEmpty(parameterCode))
+            if (!parameterCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseParameterEntity.FieldParameterCode + " = '" + parameterCode + "'");
             }

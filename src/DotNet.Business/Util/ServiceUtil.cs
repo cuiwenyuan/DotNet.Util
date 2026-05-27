@@ -34,47 +34,47 @@ namespace DotNet.Business
         {
             if (userInfo != null)
             {
-                if (string.IsNullOrEmpty(userInfo.Code))
+                if ((userInfo.Code).IsNullOrEmpty())
                 {
                     userInfo.Code = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyCode))
+                if ((userInfo.CompanyCode).IsNullOrEmpty())
                 {
                     userInfo.CompanyCode = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyId))
+                if ((userInfo.CompanyId).IsNullOrEmpty())
                 {
                     userInfo.CompanyId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyName))
+                if ((userInfo.CompanyName).IsNullOrEmpty())
                 {
                     userInfo.CompanyName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentCode))
+                if ((userInfo.DepartmentCode).IsNullOrEmpty())
                 {
                     userInfo.DepartmentCode = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentId))
+                if ((userInfo.DepartmentId).IsNullOrEmpty())
                 {
                     userInfo.DepartmentId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentName))
+                if ((userInfo.DepartmentName).IsNullOrEmpty())
                 {
                     userInfo.DepartmentName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.NickName))
+                if ((userInfo.NickName).IsNullOrEmpty())
                 {
                     userInfo.NickName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.OpenId))
+                if ((userInfo.OpenId).IsNullOrEmpty())
                 {
                     userInfo.OpenId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.RealName))
+                if ((userInfo.RealName).IsNullOrEmpty())
                 {
                     userInfo.RealName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.UserName))
+                if ((userInfo.UserName).IsNullOrEmpty())
                 {
                     userInfo.UserName = string.Empty;
                 }
@@ -110,49 +110,49 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (userInfo != null && !string.IsNullOrEmpty(userInfo.Signature))
+            if (userInfo != null && !(userInfo.Signature).IsNullOrEmpty())
             {
-                if (string.IsNullOrEmpty(userInfo.Code))
+                if ((userInfo.Code).IsNullOrEmpty())
                 {
                     userInfo.Code = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyCode))
+                if ((userInfo.CompanyCode).IsNullOrEmpty())
                 {
                     userInfo.CompanyCode = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyId))
+                if ((userInfo.CompanyId).IsNullOrEmpty())
                 {
                     userInfo.CompanyId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.CompanyName))
+                if ((userInfo.CompanyName).IsNullOrEmpty())
                 {
                     userInfo.CompanyName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentCode))
+                if ((userInfo.DepartmentCode).IsNullOrEmpty())
                 {
                     userInfo.DepartmentCode = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentId))
+                if ((userInfo.DepartmentId).IsNullOrEmpty())
                 {
                     userInfo.DepartmentId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.DepartmentName))
+                if ((userInfo.DepartmentName).IsNullOrEmpty())
                 {
                     userInfo.DepartmentName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.NickName))
+                if ((userInfo.NickName).IsNullOrEmpty())
                 {
                     userInfo.NickName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.OpenId))
+                if ((userInfo.OpenId).IsNullOrEmpty())
                 {
                     userInfo.OpenId = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.RealName))
+                if ((userInfo.RealName).IsNullOrEmpty())
                 {
                     userInfo.RealName = string.Empty;
                 }
-                if (string.IsNullOrEmpty(userInfo.UserName))
+                if ((userInfo.UserName).IsNullOrEmpty())
                 {
                     userInfo.UserName = string.Empty;
                 }

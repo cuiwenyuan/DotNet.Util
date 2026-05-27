@@ -91,7 +91,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BasePermissionEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BasePermissionEntity.FieldPermissionId + " LIKE N'%" + searchKey + "%' OR " + BasePermissionEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -116,7 +116,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BasePermissionEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -199,7 +199,7 @@ namespace DotNet.Business
 
             // string permissionId = moduleManager.GetIdByAdd(permissionCode, permissionName);
             // 没有找到相应的权限
-            // if (string.IsNullOrEmpty(permissionId))
+            // if (permissionId.IsNullOrEmpty())
             //{
             //    return false;
             //}
@@ -224,7 +224,7 @@ namespace DotNet.Business
                 // 这里需要判断,是系统权限？（系统管理员？）
                 /*
                 BaseUserManager userManager = new BaseUserManager(this.DbHelper, this.UserInfo);
-                if (!string.IsNullOrEmpty(permissionEntity.CategoryCode) && permissionEntity.CategoryCode.Equals("System"))
+                if (!(permissionEntity.CategoryCode).IsNullOrEmpty() && permissionEntity.CategoryCode.Equals("System"))
                 {
                     // 用户管理员
                     result = userManager.IsInRoleByCode(userId, "System");
@@ -234,7 +234,7 @@ namespace DotNet.Business
                     }
                 }
                 // 这里需要判断,是业务权限？(业务管理员？)
-                if (!string.IsNullOrEmpty(permissionEntity.CategoryCode) && permissionEntity.CategoryCode.Equals("Application"))
+                if (!(permissionEntity.CategoryCode).IsNullOrEmpty() && permissionEntity.CategoryCode.Equals("Application"))
                 {
                     result = userManager.IsInRoleByCode(userId, "Application");
                     if (result)
@@ -263,7 +263,7 @@ namespace DotNet.Business
             {
                 // 2016-02-26 吉日嘎拉 进行简化权限判断，登录时应该选系统，选公司比较好，登录到哪个公司应该先确定？
                 var companyId = BaseUserManager.GetCompanyIdByCache(userId);
-                if (!string.IsNullOrEmpty(companyId))
+                if (!companyId.IsNullOrEmpty())
                 {
                     if (CheckResourcePermission(systemCode, BaseOrganizationEntity.CurrentTableName, companyId, permissionEntity.Id.ToString()))
                     {
@@ -298,7 +298,7 @@ namespace DotNet.Business
             {
                 return false;
             }
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -379,7 +379,7 @@ namespace DotNet.Business
         {
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -409,7 +409,7 @@ namespace DotNet.Business
                 // 2016-02-27 吉日嘎拉 提高数据库查询效率，不需要全表扫描，提高判断权限的效率
                 CurrentTableName = GetPermissionTableName(systemCode);
                 var id = GetProperty(parameters, BasePermissionEntity.FieldId);
-                result = !string.IsNullOrEmpty(id);
+                result = !id.IsNullOrEmpty();
             }
             catch (Exception ex)
             {
@@ -648,7 +648,7 @@ namespace DotNet.Business
                 // 按部门(组织机构)获取权限项
                 if (BaseSystemInfo.UseOrganizationPermission)
                 {
-                    if (!string.IsNullOrEmpty(companyId))
+                    if (!companyId.IsNullOrEmpty())
                     {
                         sb = PoolUtil.StringBuilder.Get();
                         sb.Append("SELECT " + BasePermissionEntity.FieldPermissionId);
@@ -659,7 +659,7 @@ namespace DotNet.Business
                         sb.Append(" AND " + BasePermissionEntity.FieldEnabled + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldEnabled));
                         sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = " + DbHelper.GetParameter(BasePermissionEntity.FieldDeleted));
                         // dt = DbHelper.Fill(sql);
-                        // string[] organizationPermission = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldPermissionId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                        // string[] organizationPermission = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldPermissionId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
                         // 2015-12-02 吉日嘎拉 优化参数，用ExecuteReader，提高效率节约内存。
                         dbParameters = new List<IDbDataParameter>
                         {
@@ -719,7 +719,7 @@ namespace DotNet.Business
             // 需要自动的能把前台判断过的权限，都记录到后台来
             var permissionId = string.Empty;
 #if (DEBUG)
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 var permissionEntity = new BaseModuleEntity();
                 permissionEntity.Code = permissionCode;
@@ -750,7 +750,7 @@ namespace DotNet.Business
 
             permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 return false;
             }

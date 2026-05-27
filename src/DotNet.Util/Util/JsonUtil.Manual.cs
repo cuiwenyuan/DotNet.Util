@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
@@ -93,7 +93,7 @@ namespace DotNet.Util
         public static string GetJosnValue(string json, string key)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(json))
+            if (!json.IsNullOrEmpty())
             {
                 var jsonDic = Split(json);
                 if (jsonDic.ContainsKey(key))
@@ -169,7 +169,7 @@ namespace DotNet.Util
         /// </summary>
         public static List<Dictionary<string, string>> SplitArray(string jsonArray)
         {
-            if (string.IsNullOrEmpty(jsonArray))
+            if (jsonArray.IsNullOrEmpty())
             {
                 return null;
             }

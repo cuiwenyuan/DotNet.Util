@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 
 namespace DotNet.Util
 {
@@ -10,7 +10,7 @@ namespace DotNet.Util
         /// <summary>
         /// 是否启用Redis
         /// </summary>
-        public static bool redisEnabled = BaseSystemInfo.RedisEnabled && !string.IsNullOrEmpty(BaseSystemInfo.RedisServer);
+        public static bool redisEnabled = BaseSystemInfo.RedisEnabled && !(BaseSystemInfo.RedisServer).IsNullOrEmpty();
 
         #region 缓存（创建或刷新）
         /// <summary>

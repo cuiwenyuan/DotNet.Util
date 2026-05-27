@@ -50,7 +50,7 @@ namespace DotNet.Business
         {
             BaseUserLogonEntity result = null;
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 var key = "UserLogon:" + id;
                 result = CacheUtil.Cache(key, () => GetCacheByKey(key), true);

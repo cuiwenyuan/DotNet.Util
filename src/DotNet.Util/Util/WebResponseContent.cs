@@ -1,4 +1,4 @@
-﻿namespace DotNet.Util
+﻿﻿namespace DotNet.Util
 {
     /// <summary>
     /// WebResponseContent
@@ -138,7 +138,7 @@
                 Status = (bool)status;
             }
             Code = ((int)responseType).ToString();
-            if (!string.IsNullOrEmpty(msg))
+            if (!msg.IsNullOrEmpty())
             {
                 Message = msg;
                 return this;

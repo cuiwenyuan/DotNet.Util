@@ -93,7 +93,7 @@ namespace DotNet.Util
         /// <returns>字段值数组</returns>
         public static string[] FieldToArray(DataTable dt, string field)
         {
-            return dt.Select().Select(n => n[field].ToString()).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return dt.Select().Select(n => n[field].ToString()).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -108,7 +108,7 @@ namespace DotNet.Util
         {
             var dtNew = dt.Clone();
             var filterExpression = string.Empty;
-            if (!string.IsNullOrEmpty(where))
+            if (!where.IsNullOrEmpty())
             {
                 var row = dt.Select(where);
                 for (var i = 0; i < row.Length; i++)
@@ -132,7 +132,7 @@ namespace DotNet.Util
         {
             var dtNew = dt.Clone();
             var filterExpression = string.Empty;
-            if (!string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
+            if (!fieldName.IsNullOrEmpty() && !fieldValue.IsNullOrEmpty())
             {
                 filterExpression = fieldName + " = '" + fieldValue + "'";
                 var row = dt.Select(filterExpression);
@@ -161,9 +161,9 @@ namespace DotNet.Util
                 // 要求把相等的删除掉
                 if (equals)
                 {
-                    if (string.IsNullOrEmpty(fieldValue))
+                    if (fieldValue.IsNullOrEmpty())
                     {
-                        if (string.IsNullOrEmpty(dr[fieldName].ToString()))
+                        if ((dr[fieldName].ToString()).IsNullOrEmpty())
                         {
                             dr.Delete();
                         }
@@ -178,9 +178,9 @@ namespace DotNet.Util
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(fieldValue))
+                    if (fieldValue.IsNullOrEmpty())
                     {
-                        if (!string.IsNullOrEmpty(dr[fieldName].ToString()))
+                        if (!(dr[fieldName].ToString()).IsNullOrEmpty())
                         {
                             dr.Delete();
                         }

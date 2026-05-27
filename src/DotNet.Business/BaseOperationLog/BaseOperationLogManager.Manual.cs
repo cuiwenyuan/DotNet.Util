@@ -92,27 +92,27 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseOperationLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(operation))
+            if (!operation.IsNullOrEmpty())
             {
                 operation = dbHelper.SqlSafe(operation);
                 sb.Append(" AND " + BaseOperationLogEntity.FieldOperation + " = N'" + operation + "'");
             }
-            if (!string.IsNullOrEmpty(tableName))
+            if (!tableName.IsNullOrEmpty())
             {
                 tableName = dbHelper.SqlSafe(tableName);
                 sb.Append(" AND " + BaseOperationLogEntity.FieldTableName + " = N'" + tableName + "'");
             }
-            if (!string.IsNullOrEmpty(tableDescription))
+            if (!tableDescription.IsNullOrEmpty())
             {
                 tableDescription = dbHelper.SqlSafe(tableDescription);
                 sb.Append(" AND " + BaseOperationLogEntity.FieldTableDescription + " = N'" + tableDescription + "'");
             }
-            if (!string.IsNullOrEmpty(recordKey))
+            if (!recordKey.IsNullOrEmpty())
             {
                 recordKey = dbHelper.SqlSafe(recordKey);
                 sb.Append(" AND " + BaseOperationLogEntity.FieldRecordKey + " = N'" + recordKey + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseOperationLogEntity.FieldOperation + " LIKE N'%" + searchKey + "%' OR " + BaseOperationLogEntity.FieldTableName + " LIKE N'%" + searchKey + "%')");

@@ -72,11 +72,11 @@ namespace DotNet.Util
             {
                 result.PageSize = pageSize;
             }
-            if (!string.IsNullOrEmpty(sortExpression))
+            if (!sortExpression.IsNullOrEmpty())
             {
                 result.SortExpression = sortExpression;
             }
-            if (!string.IsNullOrEmpty(sortDirection))
+            if (!sortDirection.IsNullOrEmpty())
             {
                 if (sortDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase) || sortDirection.Equals("DESC", StringComparison.OrdinalIgnoreCase))
                 {
@@ -117,7 +117,7 @@ namespace DotNet.Util
             var keys = new List<int>();
             foreach (var key in ids)
             {
-                if (!string.IsNullOrEmpty(key))
+                if (!key.IsNullOrEmpty())
                 {
                     keys.Add(key.ToInt());
                 }

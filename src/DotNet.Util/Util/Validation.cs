@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿﻿using System.Text.RegularExpressions;
 using System.IO;
 
 namespace DotNet.Util
@@ -60,7 +60,7 @@ namespace DotNet.Util
         public static bool CheckPasswordStrength(string password)
         {
             var returnValue = true;
-            if (string.IsNullOrEmpty(password))
+            if (password.IsNullOrEmpty())
             {
                 returnValue = false;
             }
@@ -91,7 +91,7 @@ namespace DotNet.Util
         /// <returns>true/false</returns>
         public static bool IsBlank(string strInput)
         {
-            return string.IsNullOrEmpty(strInput);
+            return strInput.IsNullOrEmpty();
         }
 
         /// <summary>是否数字</summary>
@@ -99,7 +99,7 @@ namespace DotNet.Util
         /// <returns>true/false</returns>
         public static bool IsNumeric(string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
+            if (strInput.IsNullOrEmpty())
                 return false;
             var reg = new Regex(@"^[-]?\d+[.]?\d*$");
             return reg.IsMatch(strInput);

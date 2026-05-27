@@ -39,7 +39,7 @@ namespace DotNet.Business
         /// <returns>有权限</returns>
         public bool CheckPermission(string systemCode, string userId, string permissionCode)
         {
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 return false;
             }
@@ -51,7 +51,7 @@ namespace DotNet.Business
 
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -161,7 +161,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (!ValidateUtil.IsInt(userId) && string.IsNullOrEmpty(permissionId))
+            if (!ValidateUtil.IsInt(userId) && permissionId.IsNullOrEmpty())
             {
                 return result;
             }
@@ -179,7 +179,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
                 result = permissionManager.GetId(whereParameters);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     var parameters = new List<KeyValuePair<string, object>>
                     {
@@ -194,7 +194,7 @@ namespace DotNet.Business
                 }
             }
 
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 var permissionEntity = new BasePermissionEntity
                 {
@@ -250,7 +250,7 @@ namespace DotNet.Business
             var result = string.Empty;
 
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 result = GrantUser(systemCode, userId, permissionId);
             }
@@ -343,7 +343,7 @@ namespace DotNet.Business
         public int RevokeUser(string systemCode, string userId, string permissionId)
         {
             var result = 0;
-            if (!ValidateUtil.IsInt(userId) && string.IsNullOrEmpty(permissionId))
+            if (!ValidateUtil.IsInt(userId) && permissionId.IsNullOrEmpty())
             {
                 return result;
             }
@@ -402,7 +402,7 @@ namespace DotNet.Business
             var result = 0;
 
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 result = RevokeUser(systemCode, userId, permissionId);
             }
@@ -533,7 +533,7 @@ namespace DotNet.Business
         {
             DataTable dt = null;
             string[] result = null;
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 var permissionTableName = GetPermissionTableName(systemCode);
                 var sb = PoolUtil.StringBuilder.Get();
@@ -541,19 +541,19 @@ namespace DotNet.Business
                 // 1.本人直接就有某个操作权限的。
                 sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
                 dt = Fill(sb.Return());
-                var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
                 sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = '" + GetRoleTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
                 dt = Fill(sb.Return());
-                var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 3.组织机构有某个操作权限。
                 sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT ResourceId FROM " + permissionTableName + " WHERE (ResourceCategory = '" + GetRoleOrganizationTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND (" + BaseModuleEntity.FieldDeleted + " = 0) AND (" + BaseUtil.FieldEnabled + " = 1)");
                 dt = Fill(sb.Return());
-                var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var organizationIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 4.获取所有有这个操作权限的用户Id，而且这些用户是有效的。
                 var userManager = new BaseUserManager(UserInfo);

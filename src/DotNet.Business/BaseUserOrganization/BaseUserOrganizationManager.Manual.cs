@@ -102,7 +102,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUserOrganizationEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseUserOrganizationEntity.FieldUserId + " LIKE N'%" + searchKey + "%' OR " + BaseUserOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");

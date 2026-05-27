@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -94,7 +94,7 @@ namespace DotNet.Util
         public string GetValue(string key, string defaultValue = null, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
             defaultValue ??= string.Empty;
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -142,7 +142,7 @@ namespace DotNet.Util
         public bool SetValue(string key, string value, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
             value ??= string.Empty;
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -188,7 +188,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public List<string> GetAllKey(string nodeName = DefaultNodeName)
         {
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -220,7 +220,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public List<string> GetAllValue(string nodeName = DefaultNodeName)
         {
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -252,7 +252,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public Dictionary<string, string> GetAllKeyValue(string nodeName = DefaultNodeName)
         {
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -287,7 +287,7 @@ namespace DotNet.Util
         /// 
         public bool DeleteValue(string key, string nodeName = DefaultNodeName, string itemName = DefaultItemName)
         {
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }
@@ -349,7 +349,7 @@ namespace DotNet.Util
         /// <param name="nodeName"></param>
         private void CreateNode(string nodeName = DefaultNodeName)
         {
-            if (string.IsNullOrEmpty(nodeName))
+            if (nodeName.IsNullOrEmpty())
             {
                 nodeName = DefaultNodeName;
             }

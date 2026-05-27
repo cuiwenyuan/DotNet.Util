@@ -69,7 +69,7 @@ namespace DotNet.Util
                     expirationTime = expirationTimeString.ToDateTime();
                 }
 
-                if (!string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(secretKey) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+                if (!apiKey.IsNullOrEmpty() && !secretKey.IsNullOrEmpty() && (token.IsNullOrEmpty() || DateTime.Now > expirationTime))
                 {
                     expirationTime = DateTime.Now;
 

@@ -41,7 +41,7 @@ namespace DotNet.Util
             {
                 result = ConfigurationManager.AppSettings[key];
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 if (encrypt)
                 {
@@ -833,7 +833,7 @@ namespace DotNet.Util
                 BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
             }
 #if NET46_OR_GREATER
-            if (string.IsNullOrEmpty(BaseSystemInfo.ApplicationId))
+            if ((BaseSystemInfo.ApplicationId).IsNullOrEmpty())
             {
                 if (System.Web.Hosting.HostingEnvironment.ApplicationID != null)
                 {

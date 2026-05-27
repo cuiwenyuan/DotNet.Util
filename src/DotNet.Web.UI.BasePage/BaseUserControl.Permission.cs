@@ -105,7 +105,7 @@ public partial class BaseUserControl : UserControl
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -175,7 +175,7 @@ public partial class BaseUserControl : UserControl
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsModuleAuthorized(moduleCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -299,7 +299,7 @@ public partial class BaseUserControl : UserControl
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
         {
-            if (!string.IsNullOrEmpty(UserInfo.DepartmentId))
+            if (!(UserInfo.DepartmentId).IsNullOrEmpty())
             {
                 if (!BaseUtil.Exists(dt, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
                 {
@@ -356,7 +356,7 @@ public partial class BaseUserControl : UserControl
         ddlUser.Items.Clear();
         var entityList = new List<BaseUserEntity>();
         var manager = new BaseUserManager(UserInfo);
-        if (string.IsNullOrEmpty(organizationId))
+        if (organizationId.IsNullOrEmpty())
         {
             if (UserInfo.IsAdministrator)
             {
@@ -438,7 +438,7 @@ public partial class BaseUserControl : UserControl
         sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName);
         sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
-        if (!string.IsNullOrEmpty(organizationId))
+        if (!organizationId.IsNullOrEmpty())
         {
             sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ");
         }

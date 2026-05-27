@@ -719,11 +719,11 @@ namespace DotNet.Util
         public static bool IsInWhiteList(string ip = null)
         {
             var result = false;
-            if (string.IsNullOrEmpty(ip))
+            if (ip.IsNullOrEmpty())
             {
                 ip = GetIp();
             }
-            if (!string.IsNullOrEmpty(ip) && !string.IsNullOrEmpty(BaseSystemInfo.WhiteList))
+            if (!ip.IsNullOrEmpty() && !(BaseSystemInfo.WhiteList).IsNullOrEmpty())
             {
                 var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                 for (var i = 0; i < whiteLists.Length; i++)
@@ -1953,7 +1953,7 @@ namespace DotNet.Util
         /// <returns>string</returns>
         public static string GetFileExt(string filepath)
         {
-            if (string.IsNullOrEmpty(filepath))
+            if (filepath.IsNullOrEmpty())
             {
                 return "";
             }
@@ -1972,7 +1972,7 @@ namespace DotNet.Util
         /// <param name="filepath"></param>
         public static void DeleteUpFile(string filepath)
         {
-            if (string.IsNullOrEmpty(filepath))
+            if (filepath.IsNullOrEmpty())
             {
                 return;
             }
@@ -2006,7 +2006,7 @@ namespace DotNet.Util
         public static void EmptyFolder(string dir, string fileExtension = null, int days = 0, int hours = 0, string[] skipFileExtensions = null)
         {
             var dt = DateTime.Now;
-            if (!string.IsNullOrEmpty(fileExtension))
+            if (!fileExtension.IsNullOrEmpty())
             {
                 fileExtension = "*." + fileExtension.Replace(".", "");
             }
@@ -2114,7 +2114,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DropHtml(string htmlstring)
         {
-            if (string.IsNullOrEmpty(htmlstring)) return "";
+            if (htmlstring.IsNullOrEmpty()) return "";
             //删除脚本  
             htmlstring = Regex.Replace(htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
             //删除HTML  
@@ -2295,7 +2295,7 @@ namespace DotNet.Util
         /// </summary>
         public static string UrlExecute(string urlPath)
         {
-            if (string.IsNullOrEmpty(urlPath))
+            if (urlPath.IsNullOrEmpty())
             {
                 return "error";
             }
@@ -2329,13 +2329,13 @@ namespace DotNet.Util
             //优先使用GetRealIp
             result = RequestUtil.GetRealIp();
             //其次使用GetIp
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 result = RequestUtil.GetIp();
             }
 #endif
             //最后使用MachineInfo
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 result = MachineInfo.GetIpAddress();
             }

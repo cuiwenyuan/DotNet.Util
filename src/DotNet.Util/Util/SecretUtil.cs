@@ -39,7 +39,7 @@ namespace DotNet.Util
         public static bool IsSqlSafe(string commandText)
         {
             var result = true;
-            if (!string.IsNullOrEmpty(commandText))
+            if (!commandText.IsNullOrEmpty())
             {
                 var unSafeText = new string[] { "Delete", "Insert", "Update", "Truncate" };
                 for (var i = 0; i < unSafeText.Length; i++)
@@ -172,7 +172,7 @@ namespace DotNet.Util
         public static string Md5(string password, int length)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(password))
+            if (!password.IsNullOrEmpty())
             {
                 //32位加密
                 #region 方法1 .NET 4.5中已经废弃不用的API
@@ -226,7 +226,7 @@ namespace DotNet.Util
         public static string Sha1(string password)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(password))
+            if (!password.IsNullOrEmpty())
             {
                 #region 方法3
                 //1.创建一个MD5对象
@@ -311,7 +311,7 @@ namespace DotNet.Util
         /// <returns>加密值</returns>
         public static string DesEncrypt(string targetValue, string key)
         {
-            if (string.IsNullOrEmpty(targetValue))
+            if (targetValue.IsNullOrEmpty())
             {
                 return string.Empty;
             }
@@ -354,7 +354,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DesDecrypt(string targetValue, string key)
         {
-            if (string.IsNullOrEmpty(targetValue))
+            if (targetValue.IsNullOrEmpty())
             {
                 return string.Empty;
             }

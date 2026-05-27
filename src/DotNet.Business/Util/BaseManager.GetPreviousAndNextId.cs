@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual bool GetPreviousAndNextId(int currentId, string tableName, string orderTypeId, out int previousId, out int nextId)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 tableName = CurrentTableName;
             }
@@ -45,7 +45,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("WITH T1 AS( ");
             sb.Append("SELECT TOP 1 Id AS PreviousId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
-            if (!string.IsNullOrEmpty(orderTypeId))
+            if (!orderTypeId.IsNullOrEmpty())
             {
                 sb.Append(" AND OrderTypeId = " + orderTypeId.ToInt() + "");
             }
@@ -55,7 +55,7 @@ namespace DotNet.Business
             sb.Append(") ");
             sb.Append(",T2 AS ( ");
             sb.Append("SELECT TOP 1 Id AS NextId, " + currentId + " AS CurrentId FROM " + tableName + " WHERE 1 = 1");
-            if (!string.IsNullOrEmpty(orderTypeId))
+            if (!orderTypeId.IsNullOrEmpty())
             {
                 sb.Append(" AND OrderTypeId = " + orderTypeId.ToInt() + "");
             }

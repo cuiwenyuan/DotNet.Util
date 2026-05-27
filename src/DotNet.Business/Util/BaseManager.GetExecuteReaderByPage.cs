@@ -81,19 +81,19 @@ namespace DotNet.Business
         /// <returns>数据表</returns>
         public virtual IDataReader ExecuteReaderByPage(out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, IDbDataParameter[] dbParameters = null, string selectField = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 tableName = CurrentTableName;
             }
             if (tableName.ToUpper().IndexOf("SELECT", StringComparison.Ordinal) >= 0 || DbHelper.CurrentDbType == CurrentDbType.MySql || DbHelper.CurrentDbType == CurrentDbType.Oracle)
             {
                 // 统计总条数
-                if (string.IsNullOrEmpty(tableName))
+                if (tableName.IsNullOrEmpty())
                 {
                     tableName = CurrentTableName;
                 }
                 var sb = PoolUtil.StringBuilder.Get();
-                if (!string.IsNullOrEmpty(condition))
+                if (!condition.IsNullOrEmpty())
                 {
                     sb.Append(" WHERE " + condition);
                 }

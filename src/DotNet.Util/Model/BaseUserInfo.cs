@@ -52,7 +52,7 @@ namespace DotNet.Util
         /// <returns>访问地址</returns>
         public string GetUserParameter(string url, string authorizationCode = null)
         {
-            if (!string.IsNullOrEmpty(url))
+            if (!url.IsNullOrEmpty())
             {
                 url = url.Replace("{Ticks}", DateTime.Now.ToString("yyyyMMddHHmmss"));
                 url = url.Replace("{UserCode}", Code);
@@ -66,7 +66,7 @@ namespace DotNet.Util
                 url = url.Replace("{CompanyCode}", CompanyCode);
 
                 // 2016-05-17 吉日嘎拉 进行令牌优化
-                if (!string.IsNullOrEmpty(authorizationCode))
+                if (!authorizationCode.IsNullOrEmpty())
                 {
                     if (url.IndexOf("code", StringComparison.OrdinalIgnoreCase) < 0)
                     {
@@ -98,7 +98,7 @@ namespace DotNet.Util
         /// <returns>单点登录网址</returns>
         public string GetUrl(string url, bool isUrl = true)
         {
-            if (!string.IsNullOrEmpty(url))
+            if (!url.IsNullOrEmpty())
             {
                 url = GetUserParameter(url);
                 if (isUrl && url.ToUpper().IndexOf("HTTP://", StringComparison.OrdinalIgnoreCase) < 0)
@@ -361,17 +361,17 @@ namespace DotNet.Util
 
         private string GetSystemCode()
         {
-            if (string.IsNullOrEmpty(_systemCode))
+            if (_systemCode.IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["SystemCode"]))
+                if (!ConfigurationManager.AppSettings["SystemCode"].IsNullOrEmpty())
                 {
                     _systemCode = ConfigurationManager.AppSettings["SystemCode"];
                 }
-                if (string.IsNullOrEmpty(_systemCode))
+                if (_systemCode.IsNullOrEmpty())
                 {
                     _systemCode = BaseSystemInfo.SystemCode;
                 }
-                if (string.IsNullOrEmpty(_systemCode))
+                if (_systemCode.IsNullOrEmpty())
                 {
                     _systemCode = "Base";
                 }
@@ -405,7 +405,7 @@ namespace DotNet.Util
         public static BaseUserInfo Deserialize(string response)
         {
             BaseUserInfo userInfo = null;
-            if (!string.IsNullOrEmpty(response))
+            if (!response.IsNullOrEmpty())
             {
                 userInfo = JsonUtil.JsonToObject<BaseUserInfo>(response);
             }

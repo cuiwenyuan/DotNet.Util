@@ -279,7 +279,7 @@ namespace DotNet.Util
         /// <param name="separator"></param>
         private static void WriteSpecialCharacter(string content, StringBuilder sb, string separator)
         {
-            if (!string.IsNullOrEmpty(content))
+            if (!content.IsNullOrEmpty())
             {
                 if (content.Contains("\""))
                 {

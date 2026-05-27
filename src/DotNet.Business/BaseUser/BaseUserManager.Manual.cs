@@ -164,7 +164,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseUserEntity.FieldRealName + " LIKE N'%" + searchKey + "%'");
@@ -626,7 +626,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByRoleCode(string systemCode, string roleCode, string companyId = null)
         {
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -676,7 +676,7 @@ namespace DotNet.Business
             statusMessage = userManager.GetStateMessage();
 
             // 20140219 JiRiGaLa 添加成功的用户才增加联系方式
-            if (!string.IsNullOrEmpty(result) && status == Status.OkAdd && userContactEntity != null)
+            if (!result.IsNullOrEmpty() && status == Status.OkAdd && userContactEntity != null)
             {
                 // 添加联系方式
                 userContactEntity.UserId = result.ToInt();
@@ -781,7 +781,7 @@ namespace DotNet.Business
 
             BaseOrganizationEntity organizationEntity = null;
 
-            if (!string.IsNullOrEmpty(userInfo.CompanyId))
+            if (!(userInfo.CompanyId).IsNullOrEmpty())
             {
                 try
                 {
@@ -821,7 +821,7 @@ namespace DotNet.Business
             }
             ////部门数据需要从部门表里读取
 
-            //if (!validateUserOnly && !string.IsNullOrEmpty(userInfo.DepartmentId))
+            //if (!validateUserOnly && !(userInfo.DepartmentId).IsNullOrEmpty())
             //{
             //    organizationEntity = BaseOrganizationManager.GetEntityByCache(userInfo.DepartmentId);
             //}
@@ -1036,7 +1036,7 @@ namespace DotNet.Business
             StatusCode = Status.UserNotFound.ToString();
             StatusMessage = GetStateMessage(StatusCode);
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(openId))
+            if (!openId.IsNullOrEmpty())
             {
                 var userLogonManager = new BaseUserLogonManager();
                 var parameters = new List<KeyValuePair<string, object>>
@@ -1080,7 +1080,7 @@ namespace DotNet.Business
             StatusCode = Status.UserNotFound.ToString();
             StatusMessage = GetStateMessage(StatusCode);
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(email) && ValidateUtil.IsEmail(email))
+            if (!email.IsNullOrEmpty() && ValidateUtil.IsEmail(email))
             {
                 var userContactManager = new BaseUserContactManager();
                 var parameters = new List<KeyValuePair<string, object>>
@@ -1263,19 +1263,19 @@ namespace DotNet.Business
             //{
             //    return true;
             //}
-            //if (!string.IsNullOrEmpty(entity.Code) && entity.Code.Equals("Administrator", StringComparison.Ordinal))
+            //if (!(entity.Code).IsNullOrEmpty() && entity.Code.Equals("Administrator", StringComparison.Ordinal))
             //{
             //    return true;
             //}
-            //if (!string.IsNullOrEmpty(entity.UserName) && entity.UserName.Equals("Administrator", StringComparison.Ordinal))
+            //if (!(entity.UserName).IsNullOrEmpty() && entity.UserName.Equals("Administrator", StringComparison.Ordinal))
             //{
             //    return true;
             //}
-            //if (!string.IsNullOrEmpty(entity.NickName) && entity.NickName.Equals("Administrator", StringComparison.Ordinal))
+            //if (!(entity.NickName).IsNullOrEmpty() && entity.NickName.Equals("Administrator", StringComparison.Ordinal))
             //{
             //    return true;
             //}
-            //if (!string.IsNullOrEmpty(entity.RealName) && entity.RealName.Equals("Administrator", StringComparison.Ordinal))
+            //if (!(entity.RealName).IsNullOrEmpty() && entity.RealName.Equals("Administrator", StringComparison.Ordinal))
             //{
             //    return true;
             //}
@@ -1297,11 +1297,11 @@ namespace DotNet.Business
                     {
                         return true;
                     }
-                    if (!string.IsNullOrEmpty(roleEntity.Code) && roleEntity.Code.Equals(DefaultRole.Administrators.ToString()))
+                    if (!(roleEntity.Code).IsNullOrEmpty() && roleEntity.Code.Equals(DefaultRole.Administrators.ToString()))
                     {
                         return true;
                     }
-                    if (!string.IsNullOrEmpty(roleEntity.RealName) && roleEntity.RealName.Equals(DefaultRole.Administrators.ToString()))
+                    if (!(roleEntity.RealName).IsNullOrEmpty() && roleEntity.RealName.Equals(DefaultRole.Administrators.ToString()))
                     {
                         return true;
                     }
@@ -1336,17 +1336,17 @@ namespace DotNet.Business
         public string GetUsersName(string userIdList)
         {
             var userRealNames = string.Empty;
-            var ids = userIdList.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var ids = userIdList.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             BaseUserEntity entity = null;
             foreach (var id in ids)
             {
                 entity = GetEntity(id);
-                if (entity != null && !string.IsNullOrEmpty(entity.RealName))
+                if (entity != null && !(entity.RealName).IsNullOrEmpty())
                 {
                     userRealNames += "," + entity.RealName;
                 }
             }
-            if (!string.IsNullOrEmpty(userRealNames))
+            if (!userRealNames.IsNullOrEmpty())
             {
                 userRealNames = userRealNames.Substring(1);
             }
@@ -1394,7 +1394,7 @@ namespace DotNet.Business
             Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(openId))
+            if (!openId.IsNullOrEmpty())
             {
                 var manager = new BaseUserManager(DbHelper);
                 var parameters = new List<KeyValuePair<string, object>>
@@ -1587,7 +1587,7 @@ namespace DotNet.Business
                 if (dr.RowState == DataRowState.Modified)
                 {
                     var id = dr[BaseUserEntity.FieldId, DataRowVersion.Original].ToString();
-                    if (!string.IsNullOrEmpty(id))
+                    if (!id.IsNullOrEmpty())
                     {
                         userEntity.GetFrom(dr);
                         result += UpdateEntity(userEntity);
@@ -1644,12 +1644,12 @@ namespace DotNet.Business
             var list = GetList<BaseUserEntity>();
             foreach (var entity in list)
             {
-                if (string.IsNullOrEmpty(entity.QuickQuery))
+                if ((entity.QuickQuery).IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.QuickQuery = StringUtil.GetPinyin(entity.RealName).ToLower();
                 }
-                if (string.IsNullOrEmpty(entity.SimpleSpelling))
+                if ((entity.SimpleSpelling).IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.RealName).ToLower();
@@ -1674,7 +1674,7 @@ namespace DotNet.Business
             {
                 result += "," + entity.RealName;
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(1);
             }

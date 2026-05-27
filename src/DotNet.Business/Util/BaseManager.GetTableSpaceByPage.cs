@@ -50,7 +50,7 @@ namespace DotNet.Business
                     sb.AppendLine("FROM sysobjects AS A INNER JOIN sysindexes AS B ON A.id = B.id");
                     sb.AppendLine("LEFT JOIN sys.extended_properties C ON A.id = C.major_id AND minor_id = 0 AND C.name = 'MS_Description'");
                     sb.AppendLine("WHERE (A.type = 'u') AND(B.indid IN(0, 1))");
-                    if (!string.IsNullOrEmpty(searchKey))
+                    if (!searchKey.IsNullOrEmpty())
                     {
                         searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                         sb.AppendLine(" AND (CAST(A.name AS NVARCHAR(MAX)) LIKE N'%" + searchKey + "%' OR CAST(C.value AS NVARCHAR(MAX)) LIKE N'%" + searchKey + "%')");

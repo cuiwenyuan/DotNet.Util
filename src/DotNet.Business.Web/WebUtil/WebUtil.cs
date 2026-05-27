@@ -176,7 +176,7 @@ namespace DotNet.Business
             Directory.CreateDirectory(makeDirectory);
             // 获得文件名
             var postedFileName = string.Empty;
-            if (string.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 postedFileName = HttpContext.Current.Server.HtmlEncode(Path.GetFileName(httpPostedFile.FileName));
             }
@@ -315,7 +315,7 @@ namespace DotNet.Business
                         {
                             // 把选中的ID保存到字符串
                             var id = string.Empty;
-                            if (string.IsNullOrEmpty(key))
+                            if (key.IsNullOrEmpty())
                             {
                                 id = gv.DataKeys[gv.Rows[i].RowIndex].Value.ToString();
                             }
@@ -336,7 +336,7 @@ namespace DotNet.Business
             if (idList.Length > 1)
             {
                 idList = idList.Substring(0, idList.Length - 1);
-                ids = idList.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                ids = idList.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return ids;
         }
@@ -418,7 +418,7 @@ namespace DotNet.Business
                 if (checkBox.Checked == isChecked)
                 {
                     // 把选中的ID保存到字符串
-                    if (string.IsNullOrEmpty(key))
+                    if (key.IsNullOrEmpty())
                     {
                         id = ((HiddenField)repeater.Items[i].FindControl(key)).Value;
                     }
@@ -436,7 +436,7 @@ namespace DotNet.Business
             if (idList.Length > 1)
             {
                 idList = idList.Substring(0, idList.Length - 1);
-                ids = idList.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                ids = idList.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return ids;
         }
@@ -517,7 +517,7 @@ namespace DotNet.Business
             if (ds.Length > 1)
             {
                 ds = ds.Substring(0, ds.Length - 1);
-                paramIDs = ds.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                paramIDs = ds.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return paramIDs;
         }

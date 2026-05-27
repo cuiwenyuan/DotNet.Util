@@ -60,13 +60,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_userCenterDbConnection))
+                if (_userCenterDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["UserCenterDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["UserCenterDbConnection"].IsNullOrEmpty())
                     {
                         _userCenterDbConnection = ConfigurationManager.AppSettings["UserCenterDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_userCenterDbConnection))
+                    if (_userCenterDbConnection.IsNullOrEmpty())
                     {
                         _userCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
@@ -93,13 +93,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_userCenterWriteDbConnection))
+                if (_userCenterWriteDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["UserCenterDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["UserCenterDbConnection"].IsNullOrEmpty())
                     {
                         _userCenterWriteDbConnection = ConfigurationManager.AppSettings["UserCenterDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_userCenterWriteDbConnection))
+                    if (_userCenterWriteDbConnection.IsNullOrEmpty())
                     {
                         _userCenterWriteDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
@@ -117,13 +117,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_userCenterReadDbConnection))
+                if (_userCenterReadDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["UserCenterDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["UserCenterDbConnection"].IsNullOrEmpty())
                     {
                         _userCenterReadDbConnection = ConfigurationManager.AppSettings["UserCenterDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_userCenterReadDbConnection))
+                    if (_userCenterReadDbConnection.IsNullOrEmpty())
                     {
                         _userCenterReadDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
@@ -156,13 +156,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_messageDbConnection))
+                if (_messageDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["MessageDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["MessageDbConnection"].IsNullOrEmpty())
                     {
                         _messageDbConnection = ConfigurationManager.AppSettings["MessageDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_messageDbConnection))
+                    if (_messageDbConnection.IsNullOrEmpty())
                     {
                         _messageDbConnection = "Data Source=localhost;Initial Catalog=Business_Message;Integrated Security=SSPI;";
                     }
@@ -197,13 +197,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_businessDbConnection))
+                if (_businessDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["BusinessDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["BusinessDbConnection"].IsNullOrEmpty())
                     {
                         _businessDbConnection = ConfigurationManager.AppSettings["BusinessDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_businessDbConnection))
+                    if (_businessDbConnection.IsNullOrEmpty())
                     {
                         _businessDbConnection = "Data Source=localhost;Initial Catalog=Business_Project;Integrated Security=SSPI;";
                     }
@@ -238,13 +238,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_workflowDbConnection))
+                if (_workflowDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WorkFlowDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["WorkFlowDbConnection"].IsNullOrEmpty())
                     {
                         _workflowDbConnection = ConfigurationManager.AppSettings["WorkFlowDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_workflowDbConnection))
+                    if (_workflowDbConnection.IsNullOrEmpty())
                     {
                         _workflowDbConnection = "Data Source=localhost;Initial Catalog=WorkFlowV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
@@ -279,13 +279,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_loginLogDbConnection))
+                if (_loginLogDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LogonLogDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["LogonLogDbConnection"].IsNullOrEmpty())
                     {
                         _loginLogDbConnection = ConfigurationManager.AppSettings["LogonLogDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_loginLogDbConnection))
+                    if (_loginLogDbConnection.IsNullOrEmpty())
                     {
                         _loginLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                     }
@@ -320,13 +320,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_webAppDbConnection))
+                if (_webAppDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WebAppDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["WebAppDbConnection"].IsNullOrEmpty())
                     {
                         _webAppDbConnection = ConfigurationManager.AppSettings["WebAppDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_webAppDbConnection))
+                    if (_webAppDbConnection.IsNullOrEmpty())
                     {
                         _webAppDbConnection = "Data Source=localhost;Initial Catalog=Business_WebApp;Integrated Security=SSPI;";
                     }
@@ -359,13 +359,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_bpmDbConnection))
+                if (_bpmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["BPMDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["BPMDbConnection"].IsNullOrEmpty())
                     {
                         _bpmDbConnection = ConfigurationManager.AppSettings["BPMDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_bpmDbConnection))
+                    if (_bpmDbConnection.IsNullOrEmpty())
                     {
                         _bpmDbConnection = "Data Source=localhost;Initial Catalog=Business_BPM;Integrated Security=SSPI;";
                     }
@@ -398,13 +398,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_erpDbConnection))
+                if (_erpDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ERPDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ERPDbConnection"].IsNullOrEmpty())
                     {
                         _erpDbConnection = ConfigurationManager.AppSettings["ERPDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_erpDbConnection))
+                    if (_erpDbConnection.IsNullOrEmpty())
                     {
                         _erpDbConnection = "Data Source=localhost;Initial Catalog=Business_ERP;Integrated Security=SSPI;";
                     }
@@ -437,13 +437,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_wmsDbConnection))
+                if (_wmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["WMSDbConnection"].IsNullOrEmpty())
                     {
                         _wmsDbConnection = ConfigurationManager.AppSettings["WMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_wmsDbConnection))
+                    if (_wmsDbConnection.IsNullOrEmpty())
                     {
                         _wmsDbConnection = "Data Source=localhost;Initial Catalog=Business_WMS;Integrated Security=SSPI;";
                     }
@@ -476,13 +476,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_cwmsDbConnection))
+                if (_cwmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CWMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CWMSDbConnection"].IsNullOrEmpty())
                     {
                         _cwmsDbConnection = ConfigurationManager.AppSettings["CWMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_cwmsDbConnection))
+                    if (_cwmsDbConnection.IsNullOrEmpty())
                     {
                         _cwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_CWMS;Integrated Security=SSPI;";
                     }
@@ -515,13 +515,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_zbwmsDbConnection))
+                if (_zbwmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ZBWMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ZBWMSDbConnection"].IsNullOrEmpty())
                     {
                         _zbwmsDbConnection = ConfigurationManager.AppSettings["ZBWMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_zbwmsDbConnection))
+                    if (_zbwmsDbConnection.IsNullOrEmpty())
                     {
                         _zbwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_ZBWMS;Integrated Security=SSPI;";
                     }
@@ -554,13 +554,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_spwmsDbConnection))
+                if (_spwmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["SPWMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["SPWMSDbConnection"].IsNullOrEmpty())
                     {
                         _spwmsDbConnection = ConfigurationManager.AppSettings["SPWMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_spwmsDbConnection))
+                    if (_spwmsDbConnection.IsNullOrEmpty())
                     {
                         _spwmsDbConnection = "Data Source=localhost;Initial Catalog=Business_SPWMS;Integrated Security=SSPI;";
                     }
@@ -593,13 +593,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_mesDbConnection))
+                if (_mesDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["MESDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["MESDbConnection"].IsNullOrEmpty())
                     {
                         _mesDbConnection = ConfigurationManager.AppSettings["MESDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_mesDbConnection))
+                    if (_mesDbConnection.IsNullOrEmpty())
                     {
                         _mesDbConnection = "Data Source=localhost;Initial Catalog=Business_MES;Integrated Security=SSPI;";
                     }
@@ -632,13 +632,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_hrmDbConnection))
+                if (_hrmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["HRMDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["HRMDbConnection"].IsNullOrEmpty())
                     {
                         _hrmDbConnection = ConfigurationManager.AppSettings["HRMDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_hrmDbConnection))
+                    if (_hrmDbConnection.IsNullOrEmpty())
                     {
                         _hrmDbConnection = "Data Source=localhost;Initial Catalog=Business_HRM;Integrated Security=SSPI;";
                     }
@@ -671,13 +671,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_crmDbConnection))
+                if (_crmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CRMDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CRMDbConnection"].IsNullOrEmpty())
                     {
                         _crmDbConnection = ConfigurationManager.AppSettings["CRMDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_crmDbConnection))
+                    if (_crmDbConnection.IsNullOrEmpty())
                     {
                         _crmDbConnection = "Data Source=localhost;Initial Catalog=Business_CRM;Integrated Security=SSPI;";
                     }
@@ -710,13 +710,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_oaDbConnection))
+                if (_oaDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["OADbConnection"]))
+                    if (!ConfigurationManager.AppSettings["OADbConnection"].IsNullOrEmpty())
                     {
                         _oaDbConnection = ConfigurationManager.AppSettings["OADbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_oaDbConnection))
+                    if (_oaDbConnection.IsNullOrEmpty())
                     {
                         _oaDbConnection = "Data Source=localhost;Initial Catalog=Business_OA;Integrated Security=SSPI;";
                     }
@@ -749,13 +749,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_labelDbConnection))
+                if (_labelDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LabelDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["LabelDbConnection"].IsNullOrEmpty())
                     {
                         _labelDbConnection = ConfigurationManager.AppSettings["LabelDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_labelDbConnection))
+                    if (_labelDbConnection.IsNullOrEmpty())
                     {
                         _labelDbConnection = "Data Source=localhost;Initial Catalog=Business_Label;Integrated Security=SSPI;";
                     }
@@ -789,13 +789,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_webDbConnection))
+                if (_webDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["WebDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["WebDbConnection"].IsNullOrEmpty())
                     {
                         _webDbConnection = ConfigurationManager.AppSettings["WebDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_webDbConnection))
+                    if (_webDbConnection.IsNullOrEmpty())
                     {
                         _webDbConnection = "Data Source=localhost;Initial Catalog=Business_Web;Integrated Security=SSPI;";
                     }
@@ -828,13 +828,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_cmsDbConnection))
+                if (_cmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CMSDbConnection"].IsNullOrEmpty())
                     {
                         _cmsDbConnection = ConfigurationManager.AppSettings["CMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_cmsDbConnection))
+                    if (_cmsDbConnection.IsNullOrEmpty())
                     {
                         _cmsDbConnection = "Data Source=localhost;Initial Catalog=Business_CMS;Integrated Security=SSPI;";
                     }
@@ -867,13 +867,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_dTcmsDbConnection))
+                if (_dTcmsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["DTcmsDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["DTcmsDbConnection"].IsNullOrEmpty())
                     {
                         _dTcmsDbConnection = ConfigurationManager.AppSettings["DTcmsDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_dTcmsDbConnection))
+                    if (_dTcmsDbConnection.IsNullOrEmpty())
                     {
                         _dTcmsDbConnection = "Data Source=localhost;Initial Catalog=DTcms;Integrated Security=SSPI;";
                     }
@@ -906,13 +906,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_flowPortalDbConnection))
+                if (_flowPortalDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["FlowPortalDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["FlowPortalDbConnection"].IsNullOrEmpty())
                     {
                         _flowPortalDbConnection = ConfigurationManager.AppSettings["FlowPortalDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_flowPortalDbConnection))
+                    if (_flowPortalDbConnection.IsNullOrEmpty())
                     {
                         _flowPortalDbConnection = "Data Source=localhost;Initial Catalog=Business_FlowPortal;Integrated Security=SSPI;";
                     }
@@ -945,13 +945,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_dealerPortalDbConnection))
+                if (_dealerPortalDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["DealerPortalDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["DealerPortalDbConnection"].IsNullOrEmpty())
                     {
                         _dealerPortalDbConnection = ConfigurationManager.AppSettings["DealerPortalDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_dealerPortalDbConnection))
+                    if (_dealerPortalDbConnection.IsNullOrEmpty())
                     {
                         _dealerPortalDbConnection = "Data Source=localhost;Initial Catalog=Business_DealerPortal;Integrated Security=SSPI;";
                     }
@@ -984,13 +984,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_customerPortalDbConnection))
+                if (_customerPortalDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CustomerPortalDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CustomerPortalDbConnection"].IsNullOrEmpty())
                     {
                         _customerPortalDbConnection = ConfigurationManager.AppSettings["CustomerPortalDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_customerPortalDbConnection))
+                    if (_customerPortalDbConnection.IsNullOrEmpty())
                     {
                         _customerPortalDbConnection = "Data Source=localhost;Initial Catalog=Business_CustomerPortal;Integrated Security=SSPI;";
                     }
@@ -1023,13 +1023,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_supplierPortalDbConnection))
+                if (_supplierPortalDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["SupplierPortalDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["SupplierPortalDbConnection"].IsNullOrEmpty())
                     {
                         _supplierPortalDbConnection = ConfigurationManager.AppSettings["SupplierPortalDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_supplierPortalDbConnection))
+                    if (_supplierPortalDbConnection.IsNullOrEmpty())
                     {
                         _supplierPortalDbConnection = "Data Source=localhost;Initial Catalog=Business_SupplierPortal;Integrated Security=SSPI;";
                     }
@@ -1062,13 +1062,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_reportDbConnection))
+                if (_reportDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ReportDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ReportDbConnection"].IsNullOrEmpty())
                     {
                         _reportDbConnection = ConfigurationManager.AppSettings["ReportDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_reportDbConnection))
+                    if (_reportDbConnection.IsNullOrEmpty())
                     {
                         _reportDbConnection = "Data Source=localhost;Initial Catalog=Business_Report;Integrated Security=SSPI;";
                     }
@@ -1101,13 +1101,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_scmDbConnection))
+                if (_scmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ScmDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ScmDbConnection"].IsNullOrEmpty())
                     {
                         _scmDbConnection = ConfigurationManager.AppSettings["ScmDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_scmDbConnection))
+                    if (_scmDbConnection.IsNullOrEmpty())
                     {
                         _scmDbConnection = "Data Source=localhost;Initial Catalog=Business_SCM;Integrated Security=SSPI;";
                     }
@@ -1140,13 +1140,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_cscmDbConnection))
+                if (_cscmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CscmDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CscmDbConnection"].IsNullOrEmpty())
                     {
                         _cscmDbConnection = ConfigurationManager.AppSettings["CscmDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_cscmDbConnection))
+                    if (_cscmDbConnection.IsNullOrEmpty())
                     {
                         _cscmDbConnection = "Data Source=localhost;Initial Catalog=Business_CSCM;Integrated Security=SSPI;";
                     }
@@ -1179,13 +1179,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_imsDbConnection))
+                if (_imsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ImsDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ImsDbConnection"].IsNullOrEmpty())
                     {
                         _imsDbConnection = ConfigurationManager.AppSettings["ImsDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_imsDbConnection))
+                    if (_imsDbConnection.IsNullOrEmpty())
                     {
                         _imsDbConnection = "Data Source=localhost;Initial Catalog=Business_IMS;Integrated Security=SSPI;";
                     }
@@ -1218,13 +1218,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_icsDbConnection))
+                if (_icsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["IcsDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["IcsDbConnection"].IsNullOrEmpty())
                     {
                         _icsDbConnection = ConfigurationManager.AppSettings["IcsDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_icsDbConnection))
+                    if (_icsDbConnection.IsNullOrEmpty())
                     {
                         _icsDbConnection = "Data Source=localhost;Initial Catalog=Business_ICS;Integrated Security=SSPI;";
                     }
@@ -1257,13 +1257,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_omsDbConnection))
+                if (_omsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["OMSDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["OMSDbConnection"].IsNullOrEmpty())
                     {
                         _omsDbConnection = ConfigurationManager.AppSettings["OMSDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_omsDbConnection))
+                    if (_omsDbConnection.IsNullOrEmpty())
                     {
                         _omsDbConnection = "Data Source=localhost;Initial Catalog=Business_OMS;Integrated Security=SSPI;";
                     }
@@ -1296,13 +1296,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_memberDbConnection))
+                if (_memberDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["MemberDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["MemberDbConnection"].IsNullOrEmpty())
                     {
                         _memberDbConnection = ConfigurationManager.AppSettings["MemberDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_memberDbConnection))
+                    if (_memberDbConnection.IsNullOrEmpty())
                     {
                         _memberDbConnection = "Data Source=localhost;Initial Catalog=Business_Member;Integrated Security=SSPI;";
                     }
@@ -1335,13 +1335,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_budgetDbConnection))
+                if (_budgetDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["BudgetDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["BudgetDbConnection"].IsNullOrEmpty())
                     {
                         _budgetDbConnection = ConfigurationManager.AppSettings["BudgetDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_budgetDbConnection))
+                    if (_budgetDbConnection.IsNullOrEmpty())
                     {
                         _budgetDbConnection = "Data Source=localhost;Initial Catalog=Business_Budget;Integrated Security=SSPI;";
                     }
@@ -1374,13 +1374,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_itamsDbConnection))
+                if (_itamsDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["ItamsDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["ItamsDbConnection"].IsNullOrEmpty())
                     {
                         _itamsDbConnection = ConfigurationManager.AppSettings["ItamsDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_itamsDbConnection))
+                    if (_itamsDbConnection.IsNullOrEmpty())
                     {
                         _itamsDbConnection = "Data Source=localhost;Initial Catalog=Business_ITAMS;Integrated Security=SSPI;";
                     }
@@ -1413,13 +1413,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_cardTicketDbConnection))
+                if (_cardTicketDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CardTicketDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["CardTicketDbConnection"].IsNullOrEmpty())
                     {
                         _cardTicketDbConnection = ConfigurationManager.AppSettings["CardTicketDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_cardTicketDbConnection))
+                    if (_cardTicketDbConnection.IsNullOrEmpty())
                     {
                         _cardTicketDbConnection = "Data Source=localhost;Initial Catalog=Business_CardTicket;Integrated Security=SSPI;";
                     }
@@ -1452,13 +1452,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_mdmDbConnection))
+                if (_mdmDbConnection.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["MDMDbConnection"]))
+                    if (!ConfigurationManager.AppSettings["MDMDbConnection"].IsNullOrEmpty())
                     {
                         _mdmDbConnection = ConfigurationManager.AppSettings["MDMDbConnection"];
                     }
-                    if (string.IsNullOrEmpty(_mdmDbConnection))
+                    if (_mdmDbConnection.IsNullOrEmpty())
                     {
                         _mdmDbConnection = "Data Source=localhost;Initial Catalog=Business_MDM;Integrated Security=SSPI;";
                     }

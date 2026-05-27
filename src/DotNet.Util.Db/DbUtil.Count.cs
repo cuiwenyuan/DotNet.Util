@@ -36,7 +36,7 @@ namespace DotNet.Util
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -63,7 +63,7 @@ namespace DotNet.Util
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(DISTINCT " + fieldName + ") FROM " + tableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

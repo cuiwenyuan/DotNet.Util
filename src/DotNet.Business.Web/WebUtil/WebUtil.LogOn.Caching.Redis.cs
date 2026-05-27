@@ -36,7 +36,7 @@ namespace DotNet.Business
             BaseUserInfo result = null;
 
             var key = string.Empty;
-            if (string.IsNullOrEmpty(cachingSystemCode))
+            if (cachingSystemCode.IsNullOrEmpty())
             {
                 key = "openId:" + openId;
             }
@@ -45,7 +45,7 @@ namespace DotNet.Business
                 key = "openId:" + cachingSystemCode + ":" + openId;
             }
             var userId = CacheUtil.Get<string>(key);
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 key = "userInfo:" + userId;
                 result = CacheUtil.Get<BaseUserInfo>(key);

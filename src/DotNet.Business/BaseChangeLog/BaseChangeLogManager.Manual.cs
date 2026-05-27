@@ -44,27 +44,27 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
             
             //表名
-            if (!string.IsNullOrEmpty(tableCode))
+            if (!tableCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseChangeLogEntity.CurrentTableName + "." + BaseChangeLogEntity.FieldTableName + " = N'" + tableCode + "'");
             }
             //表描述
-            if (!string.IsNullOrEmpty(tableDescription))
+            if (!tableDescription.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseChangeLogEntity.CurrentTableName + "." + BaseChangeLogEntity.FieldTableDescription + " = N'" + tableDescription + "'");
             }
             //字段名
-            if (!string.IsNullOrEmpty(columnCode))
+            if (!columnCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseChangeLogEntity.CurrentTableName + "." + BaseChangeLogEntity.FieldColumnName + " = N'" + columnCode + "'");
             }
             //字段描述
-            if (!string.IsNullOrEmpty(columnDescription))
+            if (!columnDescription.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseChangeLogEntity.CurrentTableName + "." + BaseChangeLogEntity.FieldColumnDescription + " = N'" + columnDescription + "'");
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseChangeLogEntity.FieldTableName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldTableDescription + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnName + " LIKE N'%" + searchKey + "%' OR " + BaseChangeLogEntity.FieldColumnDescription + " LIKE N'%" + searchKey + "%')");

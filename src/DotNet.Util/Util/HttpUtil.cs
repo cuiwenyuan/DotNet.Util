@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -477,7 +477,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool DownloadPicture(string pictureUrl, out string filePath, string folder = "WeChat", string fileName = null, string fileExtension = ".png", int timeOut = -1)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 fileName = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             }
@@ -553,7 +553,7 @@ namespace DotNet.Util
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
-            if (!string.IsNullOrEmpty(contentType))
+            if (!contentType.IsNullOrEmpty())
             {
                 request.ContentType = contentType;
             }

@@ -41,7 +41,7 @@ public partial class BasePage : System.Web.UI.Page
         sb.Append(" SELECT * FROM " + BaseUserEntity.CurrentTableName);
         sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
-        if (!string.IsNullOrEmpty(organizationId))
+        if (!organizationId.IsNullOrEmpty())
         {
             sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ");
         }
@@ -116,7 +116,7 @@ public partial class BasePage : System.Web.UI.Page
         //ddlUser.Items.Clear();
         var entityList = new List<BaseUserEntity>();
         var manager = new BaseUserManager(UserInfo);
-        if (!string.IsNullOrEmpty(organizationId))
+        if (!organizationId.IsNullOrEmpty())
         {
             entityList = manager.GetListByOrganizations(new string[] { organizationId });
         }
@@ -186,7 +186,7 @@ public partial class BasePage : System.Web.UI.Page
     public string GetRoleCategory(string itemValue)
     {
         var result = string.Empty;
-        if (!string.IsNullOrEmpty(itemValue))
+        if (!itemValue.IsNullOrEmpty())
         {
             var entity = new BaseDictionaryItemManager(UserInfo).GetEntity("BaseRoleCategory", itemValue, itemValue);
             if (entity != null)

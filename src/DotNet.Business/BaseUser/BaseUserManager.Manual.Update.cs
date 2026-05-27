@@ -60,7 +60,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.CompanyId)
                 };
 
-                if (checkCodeExist && !string.IsNullOrEmpty(entity.Code)
+                if (checkCodeExist && !(entity.Code).IsNullOrEmpty()
                     && entity.Code.Length > 0
                     && Exists(parameters, entity.Id))
                 {
@@ -69,12 +69,12 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(entity.QuickQuery))
+                    if ((entity.QuickQuery).IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.QuickQuery = StringUtil.GetPinyin(entity.RealName).ToLower();
                     }
-                    if (string.IsNullOrEmpty(entity.SimpleSpelling))
+                    if ((entity.SimpleSpelling).IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.RealName).ToLower();
@@ -124,7 +124,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -201,20 +201,20 @@ namespace DotNet.Business
             // userEntity.WorkgroupId = result.WorkgroupId;
             // userEntity.WorkgroupName = result.WorkgroupName;
             // 若有主键就是先更新，没主键就是添加
-            if (!string.IsNullOrEmpty(userEntity.Id.ToString()))
+            if (!(userEntity.Id.ToString()).IsNullOrEmpty())
             {
                 result = UpdateEntity(userEntity) > 0;
                 // 若不存在，就是添加的意思
                 if (!result)
                 {
                     // 更新不成功表示没数据，需要添加数据，这时候要注意主键不能出错
-                    result = !string.IsNullOrEmpty(AddEntity(userEntity));
+                    result = !AddEntity(userEntity).IsNullOrEmpty();
                 }
             }
             else
             {
                 // 若没有主键就是添加数据
-                result = !string.IsNullOrEmpty(AddEntity(userEntity));
+                result = !AddEntity(userEntity).IsNullOrEmpty();
             }
             SetPassword(userInfo.UserId, userPassword, true, true, false);
 
@@ -229,20 +229,20 @@ namespace DotNet.Business
             userLogonEntity.OpenId = userInfo.OpenId;
             userLogonEntity.IPAddress = userInfo.IPAddress;
             userLogonEntity.MACAddress = userInfo.MACAddress;
-            if (!string.IsNullOrEmpty(userLogonEntity.Id))
+            if (!(userLogonEntity.Id).IsNullOrEmpty())
             {
                 result = userLogonManager.Update(userLogonEntity) > 0;
                 // 若不存在，就是添加的意思
                 if (!result)
                 {
                     // 更新不成功表示没数据，需要添加数据，这时候要注意主键不能出错
-                    result = !string.IsNullOrEmpty(userLogonManager.Add(userLogonEntity));
+                    result = !(userLogonManager.Add(userLogonEntity)).IsNullOrEmpty();
                 }
             }
             else
             {
                 // 若没有主键就是添加数据
-                result = !string.IsNullOrEmpty(userLogonManager.Add(userLogonEntity));
+                result = !(userLogonManager.Add(userLogonEntity)).IsNullOrEmpty();
             }
             */
 

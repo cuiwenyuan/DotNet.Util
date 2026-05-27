@@ -95,17 +95,17 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseDictionaryItemEntity.FieldDictionaryId + " = " + dictionaryId.ToInt());
             }
-            if (!string.IsNullOrEmpty(dictionaryCode))
+            if (!dictionaryCode.IsNullOrEmpty())
             {
                 dictionaryCode = dbHelper.SqlSafe(dictionaryCode);
                 sb.Append(" AND " + BaseDictionaryItemEntity.FieldDictionaryId + " IN (SELECT " + BaseDictionaryEntity.FieldId + " FROM " + BaseDictionaryEntity.CurrentTableName + " WHERE " + BaseDictionaryEntity.FieldEnabled + " = 1 AND " + BaseDictionaryEntity.FieldDeleted + " = 0 AND " + BaseDictionaryEntity.FieldCode + " = N'" + dictionaryCode + "')");
             }
-            if (!string.IsNullOrEmpty(language))
+            if (!language.IsNullOrEmpty())
             {
                 language = dbHelper.SqlSafe(language);
                 sb.Append(" AND " + BaseDictionaryItemEntity.FieldLanguage + " = N'" + language + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseDictionaryItemEntity.FieldItemKey + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldItemName + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldItemValue + " LIKE N'%" + searchKey + "%' OR " + BaseDictionaryItemEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -130,7 +130,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseDictionaryItemEntity.FieldUserCompanyId + " = 0 OR " + BaseDictionaryItemEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0)), true, false, cacheTime);

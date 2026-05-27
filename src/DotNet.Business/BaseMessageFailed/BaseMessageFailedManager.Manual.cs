@@ -87,22 +87,22 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUtil.FieldCreateTime + " <= DATEADD(s,-1,DATEADD(d,1,'" + endTime + "'))");
             }
-            if (!string.IsNullOrEmpty(source))
+            if (!source.IsNullOrEmpty())
             {
                 source = dbHelper.SqlSafe(source);
                 sb.Append(" AND " + BaseMessageSucceedEntity.FieldSource + " = N'" + source + "'");
             }
-            if (!string.IsNullOrEmpty(messageType))
+            if (!messageType.IsNullOrEmpty())
             {
                 messageType = dbHelper.SqlSafe(messageType);
                 sb.Append(" AND " + BaseMessageSucceedEntity.FieldMessageType + " = N'" + messageType + "'");
             }
-            if (!string.IsNullOrEmpty(recipient))
+            if (!recipient.IsNullOrEmpty())
             {
                 recipient = dbHelper.SqlSafe(recipient);
                 sb.Append(" AND " + BaseMessageSucceedEntity.FieldRecipient + " = N'" + recipient + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseMessageSucceedEntity.FieldSubject + " LIKE N'%" + searchKey + "%' OR " + BaseMessageSucceedEntity.FieldBody + " LIKE N'%" + searchKey + "%')");

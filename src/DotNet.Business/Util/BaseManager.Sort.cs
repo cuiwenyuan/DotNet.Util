@@ -134,11 +134,11 @@ namespace DotNet.Business
         public string GetUpId(string categoryCode, string id, string whereSubQuery = null)
         {
             var sbQuery = PoolUtil.StringBuilder.Get();
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
             }
-            if (!string.IsNullOrEmpty(whereSubQuery))
+            if (!whereSubQuery.IsNullOrEmpty())
             {
                 sbQuery.Append(whereSubQuery + " AND ");
             }
@@ -269,11 +269,11 @@ namespace DotNet.Business
         public string GetDownId(string categoryCode, string id, string whereSubQuery = null)
         {
             var sbQuery = PoolUtil.StringBuilder.Get();
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
             }
-            if (!string.IsNullOrEmpty(whereSubQuery))
+            if (!whereSubQuery.IsNullOrEmpty())
             {
                 sbQuery.Append(whereSubQuery + " AND ");
             }

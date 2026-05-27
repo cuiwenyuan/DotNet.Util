@@ -25,7 +25,7 @@ namespace DotNet.Util
             string tmpStr;
             string[] tmpArr;
 
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 for (i = 0; i < targetValue.Length; i++)
                 {
@@ -72,12 +72,12 @@ namespace DotNet.Util
         {
             var result = string.Empty;
 
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 foreach (var c in targetValue)
                 {
                     var pinyin = GetPinyin(c);
-                    if (!string.IsNullOrEmpty(pinyin))
+                    if (!pinyin.IsNullOrEmpty())
                     {
                         result += pinyin.Substring(0, 1);
                     }
@@ -217,7 +217,7 @@ namespace DotNet.Util
             var arr = new byte[2];
 
             int asc = 0, m1 = 0, m2 = 0;
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 try
                 {

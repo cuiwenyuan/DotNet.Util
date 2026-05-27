@@ -55,7 +55,7 @@ namespace DotNet.Util
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("DELETE FROM " + tableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

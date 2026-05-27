@@ -111,7 +111,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BasePermissionScopeEntity.FieldPermissionId + " LIKE N'%" + searchKey + "%' OR " + BasePermissionScopeEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -136,7 +136,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BasePermissionScopeEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionScopeEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionScopeEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -253,7 +253,7 @@ namespace DotNet.Business
         {
             var sql = GetOrganizationIdsSql(systemCode, managerUserId, permissionCode);
             var dt = DbHelper.Fill(sql);
-            var organizationIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var organizationIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             return BaseUtil.GetPermissionScope(organizationIds);
         }
 
@@ -397,7 +397,7 @@ namespace DotNet.Business
                 }
             }
             var dt = DbHelper.Fill(sb.Return());
-            return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(dt, BaseOrganizationEntity.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -433,7 +433,7 @@ namespace DotNet.Business
                     whereQuery = StringUtil.ArrayToList(ids);
                 }
             }
-            if (string.IsNullOrEmpty(whereQuery))
+            if (whereQuery.IsNullOrEmpty())
             {
                 whereQuery = " NULL ";
             }
@@ -516,7 +516,7 @@ namespace DotNet.Business
         {
             var sql = GetRoleIdsSql(systemCode, managerUserId, permissionCode);
             var dt = DbHelper.Fill(sql);
-            var ids = BaseUtil.FieldToArray(dt, BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var ids = BaseUtil.FieldToArray(dt, BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             // 这里列出只是有效地，没被删除的角色主键
             if (ids != null && ids.Length > 0)
             {
@@ -834,7 +834,7 @@ namespace DotNet.Business
             };
 
             var dt = GetDataTable(parameters);
-            result = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            result = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             return result;
         }
         #endregion
@@ -944,7 +944,7 @@ namespace DotNet.Business
             + " ) ");
 
             var dt = DbHelper.Fill(sb.Return());
-            var resourceIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            var resourceIds = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
             // 按部门获取权限
             if (BaseSystemInfo.UseOrganizationPermission)
@@ -964,7 +964,7 @@ namespace DotNet.Business
                            + " AND (" + BasePermissionScopeEntity.FieldEnabled + " = 1) "
                            + " AND (" + BasePermissionScopeEntity.FieldDeleted + " = 0)");
                 dt = DbHelper.Fill(sb.Return());
-                var resourceIdsByOrganization = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var resourceIdsByOrganization = BaseUtil.FieldToArray(dt, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
                 resourceIds = StringUtil.Concat(resourceIds, resourceIdsByOrganization);
             }
 
@@ -996,7 +996,7 @@ namespace DotNet.Business
             }
             var idList = StringUtil.ArrayToList(resourceScopeIds);
             // 若本来就没管理部门啥的，那就没必要进行递归操作了
-            if (!string.IsNullOrEmpty(idList))
+            if (!idList.IsNullOrEmpty())
             {
                 var sb = PoolUtil.StringBuilder.Get();
                 if (DbHelper.CurrentDbType == CurrentDbType.SqlServer)
@@ -1014,7 +1014,7 @@ namespace DotNet.Business
                 }
 
                 var dt = DbHelper.Fill(sb.Return());
-                var resourceIds = BaseUtil.FieldToArray(dt, "Id").Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var resourceIds = BaseUtil.FieldToArray(dt, "Id").Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
                 return StringUtil.Concat(resourceScopeIds, resourceIds);
             }
             return resourceScopeIds;
@@ -1348,19 +1348,19 @@ namespace DotNet.Business
                 // 不用设置的太大
                 string srcStartDate = manager.GetProperty(names, values, BasePermissionScopeEntity.FieldStartDate);
                 string srcEndDate = manager.GetProperty(names, values, BasePermissionScopeEntity.FieldEndDate);
-                if (string.IsNullOrEmpty(srcStartDate))
+                if (srcStartDate.IsNullOrEmpty())
                 {
                     srcStartDate = minDate;
                 }
-                if (string.IsNullOrEmpty(startDate))
+                if (startDate.IsNullOrEmpty())
                 {
                     startDate = minDate;
                 }
-                if (string.IsNullOrEmpty(srcEndDate))
+                if (srcEndDate.IsNullOrEmpty())
                 {
                     srcEndDate = maxDate;
                 }
-                if (string.IsNullOrEmpty(endDate))
+                if (endDate.IsNullOrEmpty())
                 {
                     endDate = maxDate;
                 }
@@ -1414,15 +1414,15 @@ namespace DotNet.Business
                             + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " =0 "
                             + " AND " + BasePermissionScopeEntity.FieldEnabled + " =1 ");
             var dbParameters = new List<IDbDataParameter>();
-            if (!string.IsNullOrEmpty(resourceId))
+            if (!resourceId.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceId + " = '" + resourceId + "'");
             }
-            if (!string.IsNullOrEmpty(resourceCategory))
+            if (!resourceCategory.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'");
             }
-            if (!string.IsNullOrEmpty(targetCategory))
+            if (!targetCategory.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'");
             }
@@ -1445,19 +1445,19 @@ namespace DotNet.Business
             sb.Append("SELECT * FROM " + CurrentTableName
                             + " WHERE " + BasePermissionScopeEntity.FieldDeleted + " = 0"
                             + " AND " + BasePermissionScopeEntity.FieldEnabled + " = 1");
-            if (!string.IsNullOrEmpty(resourceCategory))
+            if (!resourceCategory.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldResourceCategory + " = '" + resourceCategory + "'");
             }
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldPermissionId + " = '" + permissionId + "'");
             }
-            if (!string.IsNullOrEmpty(targetCategory))
+            if (!targetCategory.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetCategory + " = '" + targetCategory + "'");
             }
-            if (!string.IsNullOrEmpty(targetId))
+            if (!targetId.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BasePermissionScopeEntity.FieldTargetId + " = '" + targetId + "'");
             }

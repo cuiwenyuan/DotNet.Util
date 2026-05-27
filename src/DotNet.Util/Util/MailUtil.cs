@@ -42,7 +42,7 @@ namespace DotNet.Util
         public static bool Send(string to, string subject, string body, string attachmentPaths = null, string encoding = "UTF-8", bool isBodyHtml = true)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(to))
+            if (!to.IsNullOrEmpty())
             {
                 try
                 {
@@ -53,18 +53,18 @@ namespace DotNet.Util
                         //接收人邮箱地址
                         message.To = to;
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
                         {
                             message.Bcc = BaseSystemInfo.MailBcc;
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
                         {
                             message.From = BaseSystemInfo.MailFrom;
                         }
 
                         //在有附件的情况下添加附件
-                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        if (!attachmentPaths.IsNullOrEmpty())
                         {
                             message.Attachments.Clear();
                             try
@@ -133,7 +133,7 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
                         {
                             //message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
                             if (!BaseSystemInfo.MailBcc.Contains(",") && !BaseSystemInfo.MailBcc.Contains(";"))
@@ -162,13 +162,13 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
                         {
                             message.From = new MailAddress(BaseSystemInfo.MailFrom);
                         }
 
                         //在有附件的情况下添加附件
-                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        if (!attachmentPaths.IsNullOrEmpty())
                         {
                             message.Attachments.Clear();
                             try

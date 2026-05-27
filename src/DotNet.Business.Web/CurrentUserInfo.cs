@@ -52,7 +52,7 @@ namespace DotNet.Business
         //    {
         //        BaseOrganizationEntity company = null;
         //        // 读取组织机构的信息
-        //        if (!string.IsNullOrEmpty(CompanyId))
+        //        if (!CompanyId.IsNullOrEmpty())
         //        {
         //            company = new BaseOrganizationManager().GetEntity(CompanyId);
         //        }

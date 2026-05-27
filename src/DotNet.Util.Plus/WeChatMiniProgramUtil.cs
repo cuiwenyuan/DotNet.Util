@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,20 +35,20 @@ namespace DotNet.Util
             var result = string.Empty;
             var accessToken = GetAccessToken();
 
-            if (string.IsNullOrEmpty(lineColorR))
+            if (lineColorR.IsNullOrEmpty())
             {
                 lineColorR = "0";
             }
-            if (string.IsNullOrEmpty(lineColorG))
+            if (lineColorG.IsNullOrEmpty())
             {
                 lineColorG = "0";
             }
-            if (string.IsNullOrEmpty(lineColorB))
+            if (lineColorB.IsNullOrEmpty())
             {
                 lineColorB = "0";
             }
 
-            if (!string.IsNullOrEmpty(accessToken))
+            if (!accessToken.IsNullOrEmpty())
             {
                 //默认1：普通微信二维码
                 var postUrl = $"https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token={accessToken}";
@@ -132,7 +132,7 @@ namespace DotNet.Util
                     expirationTime = Convert.ToDateTime(expirationTimeString);
                 }
 
-                if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+                if (!appid.IsNullOrEmpty() && !secret.IsNullOrEmpty() && (token.IsNullOrEmpty() || DateTime.Now > expirationTime))
                 {
                     expirationTime = DateTime.Now;
                     var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
@@ -186,7 +186,7 @@ namespace DotNet.Util
                            response.EnsureSuccessStatusCode();
 
                            var contentType = response.Content.Headers.ContentType;
-                           if (string.IsNullOrEmpty(contentType.CharSet))
+                           if ((contentType.CharSet).IsNullOrEmpty())
                            {
                                contentType.CharSet = "utf-8";
                            }

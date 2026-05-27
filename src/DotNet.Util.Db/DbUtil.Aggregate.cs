@@ -55,7 +55,7 @@ namespace DotNet.Util
 
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -99,7 +99,7 @@ namespace DotNet.Util
                     break;
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -153,7 +153,7 @@ namespace DotNet.Util
                     break;
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

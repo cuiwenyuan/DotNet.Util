@@ -44,7 +44,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !clientIp.IsNullOrEmpty() ? clientIp : Utils.GetIp()));
             }
             //业务条件
             var whereParameters = new List<KeyValuePair<string, object>>
@@ -87,7 +87,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !clientIp.IsNullOrEmpty() ? clientIp : Utils.GetIp()));
             }
             //业务条件
             var whereParameters = new List<KeyValuePair<string, object>>
@@ -197,7 +197,7 @@ namespace DotNet.Business
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateUserName, UserInfo.UserName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateBy, UserInfo.RealName));
                 parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateTime, DateTime.Now));
-                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
+                parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !clientIp.IsNullOrEmpty() ? clientIp : Utils.GetIp()));
             }
             var result = Update(whereParameters, parameters, whereSql: whereSql, clientIp: clientIp, addUpdateInfo: recordUser);
             if (result > 0)

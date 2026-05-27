@@ -209,7 +209,7 @@ namespace DotNet.Util
             {
                 for (var i = 0; i < checkStrings.Length; i++)
                 {
-                    if (string.IsNullOrEmpty(dt.Rows[j][checkStrings[i]].ToString()))
+                    if ((dt.Rows[j][checkStrings[i]].ToString()).IsNullOrEmpty())
                     {
                         sb.Append("\"" + checkStrings[i] + "\"不能为空。");
                         dt.Rows[j]["错误信息"] = sb;

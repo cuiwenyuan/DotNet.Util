@@ -60,7 +60,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -155,7 +155,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseDictionaryEntity entityNew, BaseDictionaryEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;

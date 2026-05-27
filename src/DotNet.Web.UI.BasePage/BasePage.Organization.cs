@@ -178,7 +178,7 @@ public partial class BasePage : System.Web.UI.Page
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
         {
-            if (!string.IsNullOrEmpty(UserInfo.DepartmentId))
+            if (!(UserInfo.DepartmentId).IsNullOrEmpty())
             {
                 if (!BaseUtil.Exists(dt, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
                 {
@@ -266,7 +266,7 @@ public partial class BasePage : System.Web.UI.Page
     public string GetOrganizationCategory(string itemValue)
     {
         var result = string.Empty;
-        if (!string.IsNullOrEmpty(itemValue))
+        if (!itemValue.IsNullOrEmpty())
         {
             var entity = new BaseDictionaryItemManager(UserInfo).GetEntity("BaseOrganizationCategory", itemValue, itemValue);
             if (entity != null)

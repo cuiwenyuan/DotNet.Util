@@ -40,7 +40,7 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" AND " + condition);
             }
@@ -94,7 +94,7 @@ namespace DotNet.Business
         public virtual int GetTotalDistinctCount(string fieldName, string condition = null, int days = 0, bool currentWeek = false, bool currentMonth = false, bool currentQuarter = false, bool currentYear = false, string startTime = null, string endTime = null)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" AND " + condition);
             }
@@ -148,7 +148,7 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" AND " + condition);
             }
@@ -174,7 +174,7 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(BaseUtil.FieldDeleted + " = 0 AND " + BaseUtil.FieldEnabled + " = 1");
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" AND " + condition);
             }

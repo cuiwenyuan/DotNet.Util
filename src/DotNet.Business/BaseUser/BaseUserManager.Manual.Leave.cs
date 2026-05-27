@@ -53,7 +53,7 @@ namespace DotNet.Business
             }
 
             // 2016-03-17 吉日嘎拉 停止吉信的号码
-            if (userEntity != null && !string.IsNullOrEmpty(userEntity.NickName))
+            if (userEntity != null && !(userEntity.NickName).IsNullOrEmpty())
             {
                 //AfterLeaveStopIm(userEntity);
             }
@@ -65,7 +65,7 @@ namespace DotNet.Business
                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
                 userContactEntity = BaseUserContactManager.GetEntityByCache(userEntity.Id);
 
-                if (userContactEntity != null && !string.IsNullOrEmpty(userContactEntity.CompanyEmail))
+                if (userContactEntity != null && !(userContactEntity.CompanyEmail).IsNullOrEmpty())
                 {
                     // 自动停用邮箱
                 }

@@ -71,7 +71,7 @@ namespace DotNet.Util
         {
             try
             {
-                if (!string.IsNullOrEmpty(filePath))
+                if (!filePath.IsNullOrEmpty())
                 {
                     _ipBinaryFilePath = filePath;
                 }
@@ -165,7 +165,7 @@ namespace DotNet.Util
             {
                 return null;
             }
-            else if (string.IsNullOrEmpty(location[2]))
+            else if (location[2].IsNullOrEmpty())
             {
                 location[2] = location[1];
             }
@@ -182,10 +182,10 @@ namespace DotNet.Util
             var ipInfo = FindIp(ip);
             if (ipInfo != null)
             {
-                if (!string.IsNullOrEmpty(ipInfo.Province))
+                if (!(ipInfo.Province).IsNullOrEmpty())
                 {
                     result = ipInfo.Province;
-                    if (!string.IsNullOrEmpty(ipInfo.City))
+                    if (!(ipInfo.City).IsNullOrEmpty())
                     {
                         if (!ipInfo.Province.Equals(ipInfo.City))
                         {
@@ -204,7 +204,7 @@ namespace DotNet.Util
         public static bool IsLocalIp(string ipAddress)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
                 if (ipAddress.StartsWith("192.168.")
                     || ipAddress.StartsWith("172.")
@@ -216,7 +216,7 @@ namespace DotNet.Util
                 // 检查是否在公司新任的列表里
                 if (!result)
                 {
-                    if (!string.IsNullOrEmpty(BaseSystemInfo.WhiteList))
+                    if (!(BaseSystemInfo.WhiteList).IsNullOrEmpty())
                     {
                         var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                         for (var i = 0; i < whiteLists.Length; i++)

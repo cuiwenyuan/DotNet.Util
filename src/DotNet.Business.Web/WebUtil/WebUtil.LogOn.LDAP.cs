@@ -38,15 +38,15 @@ namespace DotNet.Business
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
             var userInfo = GetUserInfo();
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = BaseSystemInfo.SystemCode;
-                if (string.IsNullOrEmpty(systemCode))
+                if (systemCode.IsNullOrEmpty())
                 {
                     systemCode = userInfo.SystemCode;
                 }
             }
-            if (string.IsNullOrEmpty(userInfo.IpAddress))
+            if ((userInfo.IpAddress).IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
@@ -76,7 +76,7 @@ namespace DotNet.Business
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
-                        if (!string.IsNullOrEmpty(permissionCode))
+                        if (!permissionCode.IsNullOrEmpty())
                         {
                             var permissionManager = new BasePermissionManager(userInfo);
                             isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
@@ -151,15 +151,15 @@ namespace DotNet.Business
             // 统一的登录服务
             var taskId = Guid.NewGuid().ToString("N");
             var userInfo = GetUserInfo();
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = BaseSystemInfo.SystemCode;
-                if (string.IsNullOrEmpty(systemCode))
+                if (systemCode.IsNullOrEmpty())
                 {
                     systemCode = userInfo.SystemCode;
                 }
             }
-            if (string.IsNullOrEmpty(userInfo.IpAddress))
+            if ((userInfo.IpAddress).IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
@@ -171,7 +171,7 @@ namespace DotNet.Business
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
-                if (!string.IsNullOrEmpty(permissionCode))
+                if (!permissionCode.IsNullOrEmpty())
                 {
                     var permissionManager = new BasePermissionManager(userInfo);
                     isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);

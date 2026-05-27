@@ -236,7 +236,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -279,7 +279,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
             };
             userId = DbHelper.GetProperty(CurrentTableName, parameters, BaseUserLogonEntity.FieldUserId);
-            result = !string.IsNullOrEmpty(userId);
+            result = !userId.IsNullOrEmpty();
 
             return result;
         }
@@ -668,7 +668,7 @@ namespace DotNet.Business
             // 是自己在线，然后重新登录为别人时，需要把自己注销掉
             if (UserInfo != null && UserInfo.UserId > 0)
             {
-                if (!string.IsNullOrEmpty(UserInfo.OpenId) && !UserInfo.UserId.Equals(id))
+                if (!(UserInfo.OpenId).IsNullOrEmpty() && !UserInfo.UserId.Equals(id))
                 {
                     // 要设置为下线状态，这里要判断游客状态
                     if (SignOut(UserInfo.OpenId))
@@ -722,7 +722,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseUserLogonEntity entityNew, BaseUserLogonEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -963,11 +963,11 @@ namespace DotNet.Business
         /// <returns></returns>
         public string UpdateVisitTime(BaseUserLogonEntity userLogonEntity, bool createOpenId = true)
         {
-            var openId = string.IsNullOrEmpty(userLogonEntity?.OpenId) ? Guid.NewGuid().ToString("N") : userLogonEntity?.OpenId;
+            var openId = (userLogonEntity?.OpenId).IsNullOrEmpty() ? Guid.NewGuid().ToString("N") : userLogonEntity?.OpenId;
 
             //Troy.Cui 2020-02-29 强制每次都自动生成，但对于可并发用户，OpenId过期了才更新一下OpenId
             //Troy.Cui 并发用户需要检测下OpenId过期时间 2020-06-17
-            if (createOpenId && userLogonEntity.ConcurrentUser == 1 && userLogonEntity.OpenIdTimeoutTime.HasValue && !string.IsNullOrEmpty(userLogonEntity.OpenId))
+            if (createOpenId && userLogonEntity.ConcurrentUser == 1 && userLogonEntity.OpenIdTimeoutTime.HasValue && !(userLogonEntity.OpenId).IsNullOrEmpty())
             {
                 //var timeSpan = DateTime.Now - userLogonEntity.OpenIdTimeoutTime.Value;
                 var timeSpan = userLogonEntity.OpenIdTimeoutTime.Value - DateTime.Now;
@@ -1029,7 +1029,7 @@ namespace DotNet.Business
                 if (userEntity != null && userEntity.Id > 0)
                 {
                     var ipAddressName = string.Empty;
-                    if (!string.IsNullOrEmpty(ipAddress))
+                    if (!ipAddress.IsNullOrEmpty())
                     {
                         ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
                     }

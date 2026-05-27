@@ -29,12 +29,12 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection OpenAsync()
         {
-            if (string.IsNullOrEmpty(ConnectionString))
+            if (ConnectionString.IsNullOrEmpty())
             {
                 BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
                 // 读取不到，就用用户中心数据库
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
+                if ((BaseSystemInfo.BusinessDbConnection).IsNullOrEmpty())
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
                 }
@@ -100,7 +100,7 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection GetDbConnectionAsync(string connectionString)
         {
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!connectionString.IsNullOrEmpty())
             {
                 OpenAsync(connectionString);
             }

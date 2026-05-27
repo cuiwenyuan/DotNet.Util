@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -22,7 +22,7 @@ namespace DotNet.Util
         {
             try
             {
-                if (string.IsNullOrEmpty(domainUserName))
+                if (domainUserName.IsNullOrEmpty())
                 {
                     return null;
                 }

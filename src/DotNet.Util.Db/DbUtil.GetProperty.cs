@@ -39,7 +39,7 @@ namespace DotNet.Util
         {
             var result = string.Empty;
 
-            if (string.IsNullOrEmpty(targetField))
+            if (targetField.IsNullOrEmpty())
             {
                 targetField = BaseUtil.FieldId;
             }
@@ -78,7 +78,7 @@ namespace DotNet.Util
                 sb.Append(" WHERE " + whereSql);
             }
 
-            if (!string.IsNullOrEmpty(orderBy))
+            if (!orderBy.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + orderBy);
             }

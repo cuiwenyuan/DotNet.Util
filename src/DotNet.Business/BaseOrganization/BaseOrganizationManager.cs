@@ -103,7 +103,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseOrganizationEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -128,7 +128,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseOrganizationEntity.FieldUserCompanyId + " = 0 OR " + BaseOrganizationEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -151,7 +151,7 @@ namespace DotNet.Business
             {
                 result += "," + entity.Name;
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(1);
             }
@@ -195,7 +195,7 @@ namespace DotNet.Business
         public DataTable GetInnerOrganization(string organizationId = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(organizationId))
+            if (!organizationId.IsNullOrEmpty())
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, organizationId));
             }
@@ -213,7 +213,7 @@ namespace DotNet.Business
         public DataTable GetCompanyDt(string organizationId = null)
         {
             var parameters = new List<KeyValuePair<string, object>>();
-            if (!string.IsNullOrEmpty(organizationId))
+            if (!organizationId.IsNullOrEmpty())
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseOrganizationEntity.FieldParentId, organizationId));
             }
@@ -514,12 +514,12 @@ namespace DotNet.Business
             var list = GetList<BaseOrganizationEntity>();
             foreach (var entity in list)
             {
-                if (string.IsNullOrEmpty(entity.QuickQuery))
+                if ((entity.QuickQuery).IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                 }
-                if (string.IsNullOrEmpty(entity.SimpleSpelling))
+                if ((entity.SimpleSpelling).IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();
@@ -550,14 +550,14 @@ namespace DotNet.Business
                     var innerOrganization = isInnerOrganization.Value == true ? "1" : "0";
                     sb.Append(string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldIsInnerOrganization, innerOrganization));
                 }
-                if (!string.IsNullOrEmpty(parentId))
+                if (!parentId.IsNullOrEmpty())
                 {
                     sb.Append(string.Format(" AND {0} = {1}", BaseOrganizationEntity.FieldParentId, parentId));
                 }
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim().ToLower();
-                if (!string.IsNullOrEmpty(searchKey))
+                if (!searchKey.IsNullOrEmpty())
                 {
                     sb.Append(string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
                     sb.Append(string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
@@ -579,7 +579,7 @@ namespace DotNet.Business
 
                 dbParameters = new List<IDbDataParameter>();
                 searchKey = searchKey.Trim();
-                if (!string.IsNullOrEmpty(searchKey))
+                if (!searchKey.IsNullOrEmpty())
                 {
                     sb.Append(string.Format(" AND ({0} LIKE {1}", BaseOrganizationEntity.FieldName, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
                     sb.Append(string.Format(" OR {0} LIKE {1}", BaseOrganizationEntity.FieldSimpleSpelling, DbHelper.GetParameter(BaseOrganizationEntity.FieldName)));
@@ -591,7 +591,7 @@ namespace DotNet.Business
                     dbParameters.Add(DbHelper.MakeParameter(BaseOrganizationEntity.FieldName, searchKey));
                 }
 
-                if (!string.IsNullOrEmpty(parentId))
+                if (!parentId.IsNullOrEmpty())
                 {
                     sb.Append("  START WITH Id = " + parentId + " "
                              + "  CONNECT BY PRIOR " + BaseOrganizationEntity.FieldId + " = " + BaseOrganizationEntity.FieldParentId);
@@ -613,7 +613,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 var entity = GetEntityByCache(id);
                 if (entity != null)
@@ -637,7 +637,7 @@ namespace DotNet.Business
         public static string GetIdByNameByCache(string name)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(name))
+            if (!name.IsNullOrEmpty())
             {
                 var entity = GetEntityByNameByCache(name);
                 if (entity != null)
@@ -655,7 +655,7 @@ namespace DotNet.Business
         public static string GetNameByCodeByCache(string code)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
                 var entity = GetEntityByCodeByCache(code);
                 if (entity != null)
@@ -784,7 +784,7 @@ namespace DotNet.Business
         {
             BaseOrganizationEntity result = null;
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 var cacheKey = "O:";
                 cacheKey += id;

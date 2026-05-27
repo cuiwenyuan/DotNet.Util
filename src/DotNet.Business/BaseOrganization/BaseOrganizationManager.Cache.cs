@@ -100,7 +100,7 @@ namespace DotNet.Business
         {
             BaseOrganizationEntity result = null;
 
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
                 // string key = "OrganizationByCode:" + code;
                 var key = "OBC:" + code;
@@ -118,7 +118,7 @@ namespace DotNet.Business
         public static BaseOrganizationEntity GetEntityByNameByCache(string name)
         {
             BaseOrganizationEntity result = null;
-            if (!string.IsNullOrEmpty(name))
+            if (!name.IsNullOrEmpty())
             {
                 // string key = "OrganizationByName:" + name;
                 var key = "OBN:" + name;
@@ -181,17 +181,17 @@ namespace DotNet.Business
 
             var key = string.Empty;
             // 01：所有网点查询的缓存数据方法
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
                 key = "All:" + code.ToLower();
                 CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
             }
-            if (!string.IsNullOrEmpty(name))
+            if (!name.IsNullOrEmpty())
             {
                 key = "All:" + name.ToLower();
                 CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
             }
-            if (!string.IsNullOrEmpty(simpleSpelling))
+            if (!simpleSpelling.IsNullOrEmpty())
             {
                 key = "All:" + simpleSpelling.ToLower();
                 CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -223,20 +223,20 @@ namespace DotNet.Business
             var key = string.Empty;
             // 02：父级主键缓存数据方法
             var parentId = organizationEntity.ParentId;
-            if (!string.IsNullOrEmpty(parentId.ToString()))
+            if (!(parentId.ToString()).IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-06 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "ParentId:" + parentId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "ParentId:" + parentId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "ParentId:" + parentId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -272,18 +272,18 @@ namespace DotNet.Business
             // 03: 按一级网点缓存数据方法
             if (organizationEntity.CompanyId > 0)
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-18 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "CompanyId:" + organizationEntity.CompanyId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "CompanyId:" + organizationEntity.CompanyId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "CompanyId:" + organizationEntity.CompanyId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -318,20 +318,20 @@ namespace DotNet.Business
 
             // 04：结算中心主键缓存数据方法
             var costCenterId = organizationEntity.CostCenterId;
-            if (!string.IsNullOrEmpty(costCenterId))
+            if (!costCenterId.IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-06 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "CostCenterId:" + costCenterId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "CostCenterId:" + costCenterId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "CostCenterId:" + costCenterId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -340,20 +340,20 @@ namespace DotNet.Business
 
             // 05：按省缓存数据方法
             var provinceId = organizationEntity.ProvinceId;
-            if (!string.IsNullOrEmpty(provinceId?.ToString()))
+            if (!(provinceId?.ToString()).IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-06 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "ProvinceId:" + provinceId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "ProvinceId:" + provinceId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "ProvinceId:" + provinceId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -362,20 +362,20 @@ namespace DotNet.Business
 
             // 06：按市缓存数据方法
             var cityId = organizationEntity.CityId;
-            if (!string.IsNullOrEmpty(cityId?.ToString()))
+            if (!(cityId?.ToString()).IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-06 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "CityId:" + cityId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "CityId:" + cityId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "CityId:" + cityId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
@@ -384,20 +384,20 @@ namespace DotNet.Business
 
             // 07：所有下属递归的方式进行快速缓存检索（START WITH CONNECT BY PRIOR） 包括自己
             var startId = organizationEntity.Id.ToString();
-            while (!string.IsNullOrEmpty(startId))
+            while (!startId.IsNullOrEmpty())
             {
-                if (!string.IsNullOrEmpty(code))
+                if (!code.IsNullOrEmpty())
                 {
                     // 2016-01-06 吉日嘎拉 这里需要小写，提高效率，提高有善度
                     key = "StartId:" + startId + ":" + code.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(name))
+                if (!name.IsNullOrEmpty())
                 {
                     key = "StartId:" + startId + ":" + name.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));
                 }
-                if (!string.IsNullOrEmpty(simpleSpelling))
+                if (!simpleSpelling.IsNullOrEmpty())
                 {
                     key = "StartId:" + startId + ":" + simpleSpelling.ToLower();
                     CacheUtil.Set(key, organization, new TimeSpan(15, 0, 0, 0));

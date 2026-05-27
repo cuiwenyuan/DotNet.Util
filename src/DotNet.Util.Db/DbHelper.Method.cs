@@ -959,7 +959,7 @@ namespace DotNet.Util
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(GetSql(commandText, commandType, dbParameters));
-            if (!string.IsNullOrEmpty(statisticsText))
+            if (!statisticsText.IsNullOrEmpty())
             {
                 sb.Append($" [{statisticsText}]");
             }

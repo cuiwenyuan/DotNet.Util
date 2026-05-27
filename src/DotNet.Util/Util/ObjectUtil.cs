@@ -43,7 +43,7 @@ namespace DotNet.Util
             {
                 foreach (var i in ids)
                 {
-                    if (!string.IsNullOrEmpty(separator))
+                    if (!separator.IsNullOrEmpty())
                     {
                         stringList += separator + i + separator + ",";
                     }
@@ -55,11 +55,11 @@ namespace DotNet.Util
                 }
             }
 
-            if (!string.IsNullOrEmpty(stringList))
+            if (!stringList.IsNullOrEmpty())
             {
                 result = stringList.Substring(0, stringList.Length - 1);
             }
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 result = "NULL";
             }

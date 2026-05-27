@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <returns>数据库访问类</returns>
         public static IDbHelper GetDbHelper(CurrentDbType dbType = CurrentDbType.SqlServer, string connectionString = null)
         {
-            if (string.IsNullOrEmpty(connectionString))
+            if (connectionString.IsNullOrEmpty())
             {
                 connectionString = BaseSystemInfo.UserCenterDbConnection;
             }

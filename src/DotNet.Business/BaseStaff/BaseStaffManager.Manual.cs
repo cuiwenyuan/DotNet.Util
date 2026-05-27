@@ -88,11 +88,11 @@ namespace DotNet.Business
         public BaseUserInfo ConvertToUserInfo(BaseUserInfo userInfo, BaseStaffEntity staffEntity)
         {
             userInfo.EmployeeNumber = staffEntity.EmployeeNumber;
-            if (string.IsNullOrEmpty(userInfo.UserName))
+            if ((userInfo.UserName).IsNullOrEmpty())
             {
                 userInfo.UserName = staffEntity.UserName;
             }
-            if (string.IsNullOrEmpty(userInfo.RealName))
+            if ((userInfo.RealName).IsNullOrEmpty())
             {
                 userInfo.RealName = staffEntity.RealName;
             }
@@ -158,7 +158,7 @@ namespace DotNet.Business
         public string UniqueAdd(BaseStaffEntity staffEntity, out Status status)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(staffEntity.UserName) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
+            if (!(staffEntity.UserName).IsNullOrEmpty() && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
             {
                 // 名称已重复
                 status = Status.ErrorUserExist;
@@ -166,7 +166,7 @@ namespace DotNet.Business
             else
             {
                 // 检查编号是否重复
-                if (!string.IsNullOrEmpty(staffEntity.EmployeeNumber) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
+                if (!(staffEntity.EmployeeNumber).IsNullOrEmpty() && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)))
                 {
                     // 编号已重复
                     status = Status.ErrorCodeExist;
@@ -193,7 +193,7 @@ namespace DotNet.Business
         {
             var result = 0;
             // 检查编号是否重复
-            if (!string.IsNullOrEmpty(staffEntity.EmployeeNumber) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
+            if (!(staffEntity.EmployeeNumber).IsNullOrEmpty() && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, staffEntity.EmployeeNumber), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
             {
                 // 编号已重复
                 status = Status.ErrorCodeExist;
@@ -201,7 +201,7 @@ namespace DotNet.Business
             else
             {
                 // 用户名是空的，不判断是否重复了
-                if (!string.IsNullOrEmpty(staffEntity.UserName) && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
+                if (!(staffEntity.UserName).IsNullOrEmpty() && Exists(new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, staffEntity.UserName), new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0), staffEntity.Id))
                 {
                     // 名称已重复
                     status = Status.ErrorUserExist;
@@ -272,7 +272,7 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseStaffEntity.CurrentTableName + ".* "
                 + " FROM " + BaseStaffEntity.CurrentTableName);
-            if (!string.IsNullOrEmpty(companyId))
+            if (!companyId.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + companyId + "' ");
             }
@@ -334,7 +334,7 @@ namespace DotNet.Business
                 + " ,(SELECT " + BaseRoleEntity.FieldName + " FROM " + BaseRoleEntity.CurrentTableName + " WHERE Id = RoleId) AS RoleName "
                 + " FROM " + BaseStaffEntity.CurrentTableName + " LEFT OUTER JOIN " + BaseUserEntity.CurrentTableName
                 + "       ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId);
-            if (!string.IsNullOrEmpty(departmentId))
+            if (!departmentId.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + departmentId + "' ");
             }
@@ -425,7 +425,7 @@ namespace DotNet.Business
                 sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " IN (" + StringUtil.ArrayToList(organizationIds) + ")) ");
             }
 
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 if (userName.IndexOf('%') < 0)
                 {
@@ -433,18 +433,18 @@ namespace DotNet.Business
                 }
                 userName = DbHelper.SqlSafe(userName);
             }
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 userName = userName.ToLower();
                 sb.Append(" AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE ('" + userName + "') ");
             }
 
-            if (!string.IsNullOrEmpty(enabled))
+            if (!enabled.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = '" + enabled + "'");
             }
 
-            if (!string.IsNullOrEmpty(role))
+            if (!role.IsNullOrEmpty())
             {
                 // sql += " AND " + BaseUserEntity.FieldRoleId + " = '" + role + "'");
             }
@@ -510,7 +510,7 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + "      ON " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldId + " = OT.Id ");
-            if (string.IsNullOrEmpty(organizationId))
+            if (organizationId.IsNullOrEmpty())
             {
                 sb.Append(" WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ");
             }
@@ -519,7 +519,7 @@ namespace DotNet.Business
                 sb.Append(" WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
                 sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
@@ -585,7 +585,7 @@ namespace DotNet.Business
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "A ON " + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldCompanyId
                             + "      LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " " + BaseOrganizationEntity.CurrentTableName + "B ON " + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId);
             //+ "      LEFT OUTER JOIN ItemsDuty ON ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId;
-            if (string.IsNullOrEmpty(organizationId))
+            if (organizationId.IsNullOrEmpty())
             {
                 sb.Append(" WHERE ((" + BaseOrganizationEntity.CurrentTableName + "A." + BaseOrganizationEntity.FieldIsInnerOrganization + " = 1) OR (" + BaseOrganizationEntity.CurrentTableName + "B." + BaseOrganizationEntity.FieldIsInnerOrganization + " =1)) ");
             }
@@ -594,7 +594,7 @@ namespace DotNet.Business
                 sb.Append(" WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "'"
                 + " OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "') ");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
                 sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
@@ -644,11 +644,11 @@ namespace DotNet.Business
                             + " LEFT OUTER JOIN " + BaseOrganizationEntity.CurrentTableName + " ON " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldId + " = " + BaseStaffEntity.FieldDepartmentId
                             //+ " LEFT OUTER JOIN ItemsDuty ON  ItemsDuty." + BaseItemDetailsEntity.FieldId + " = " + BaseStaffEntity.FieldDutyId
                             + " WHERE (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")");
-            if (!string.IsNullOrEmpty(organizationId))
+            if (!organizationId.IsNullOrEmpty())
             {
                 sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = '" + organizationId + "' OR " + BaseStaffEntity.FieldCompanyId + " = '" + organizationId + "')");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 sb.Append(" AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldUserName + " LIKE '%" + searchKey + "%'");
                 sb.Append(" OR " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "%'");
@@ -868,7 +868,7 @@ namespace DotNet.Business
         {
             var result = 0;
             var userId = GetEntity(staffId).UserId.ToString();
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 // 删除用户
                 var userManager = new BaseUserManager(UserInfo);
@@ -891,7 +891,7 @@ namespace DotNet.Business
         {
             // 先把用户设置为是否删除
             var userId = GetProperty(id, BaseStaffEntity.FieldUserId);
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 var userManager = new BaseUserManager(UserInfo);
                 userManager.SetDeleted(userId);
@@ -998,15 +998,15 @@ namespace DotNet.Business
         {
             var condition = BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldEnabled + " = 1";
 
-            if (!string.IsNullOrEmpty(companyId))
+            if (!companyId.IsNullOrEmpty())
             {
                 condition += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCompanyId + " = " + companyId + ")";
             }
-            if (!string.IsNullOrEmpty(departmentId))
+            if (!departmentId.IsNullOrEmpty())
             {
                 condition += " AND (" + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldDepartmentId + " = " + departmentId + ")";
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = "'" + StringUtil.GetSearchString(searchKey) + "'";
                 condition += " AND (" + BaseStaffEntity.FieldRealName + " LIKE '%" + searchKey + "'";

@@ -45,11 +45,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
-            if (string.IsNullOrEmpty(sortExpression))
+            if (sortExpression.IsNullOrEmpty())
             {
                 sortExpression = BaseUtil.FieldCreateTime;
             }
-            if (string.IsNullOrEmpty(sortDirection))
+            if (sortDirection.IsNullOrEmpty())
             {
                 sortDirection = " DESC";
             }
@@ -68,7 +68,7 @@ namespace DotNet.Util
                         sql = "(" + sql + ") T ";
                     }
                     //Troy 20160605 将条件放在内部，解决ROWNUM的筛选不到的bug。
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sql = "(SELECT * FROM " + sql + " WHERE " + condition + ") T";
                     }
@@ -102,11 +102,11 @@ namespace DotNet.Util
                     if (sql.ToUpper().Trim().StartsWith("SELECT") && !sql.ToUpper().Trim().EndsWith(")T"))
                     {
                         //将条件放在内部，解决筛选不到的bug
-                        if (!string.IsNullOrEmpty(condition))
+                        if (!condition.IsNullOrEmpty())
                         {
                             sql += " AND " + condition + "";
                         }
-                        if (!string.IsNullOrEmpty(sortExpression) && !string.IsNullOrEmpty(sortDirection))
+                        if (!sortExpression.IsNullOrEmpty() && !sortDirection.IsNullOrEmpty())
                         {
                             sql += " ORDER BY " + sortExpression + " " + sortDirection + "";
                         }
@@ -115,11 +115,11 @@ namespace DotNet.Util
                     else
                     {
                         //将条件放在内部，解决筛选不到的bug
-                        if (!string.IsNullOrEmpty(condition))
+                        if (!condition.IsNullOrEmpty())
                         {
                             sql += " WHERE " + condition + "";
                         }
-                        if (!string.IsNullOrEmpty(sortExpression) && !string.IsNullOrEmpty(sortDirection))
+                        if (!sortExpression.IsNullOrEmpty() && !sortDirection.IsNullOrEmpty())
                         {
                             sql += " ORDER BY " + sortExpression + " " + sortDirection + "";
                         }
@@ -161,11 +161,11 @@ namespace DotNet.Util
             tableName = tableName.ToTableName();
             DataTable dt = null;
             recordCount = 0;
-            if (string.IsNullOrEmpty(selectField))
+            if (selectField.IsNullOrEmpty())
             {
                 selectField = "*";
             }
-            if (string.IsNullOrEmpty(condition))
+            if (condition.IsNullOrEmpty())
             {
                 condition = string.Empty;
             }
@@ -202,11 +202,11 @@ namespace DotNet.Util
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             sql = sql.ToTableName();
-            if (string.IsNullOrEmpty(sortExpression))
+            if (sortExpression.IsNullOrEmpty())
             {
                 sortExpression = BaseUtil.FieldCreateTime;
             }
-            if (string.IsNullOrEmpty(sortDirection))
+            if (sortDirection.IsNullOrEmpty())
             {
                 sortDirection = " DESC";
             }
@@ -282,7 +282,7 @@ namespace DotNet.Util
             {
                 currentIndex = string.Empty;
             }
-            if (!string.IsNullOrEmpty(conditions))
+            if (!conditions.IsNullOrEmpty())
             {
                 conditions = "WHERE " + conditions;
             }

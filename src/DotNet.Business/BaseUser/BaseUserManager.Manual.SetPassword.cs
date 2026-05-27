@@ -41,7 +41,7 @@ namespace DotNet.Business
         {
             var result = SecretUtil.Md5(password, 32).ToUpper();
 
-            if (!string.IsNullOrEmpty(salt) && (salt.Length == 20))
+            if (!salt.IsNullOrEmpty() && (salt.Length == 20))
             {
                 result = salt.Substring(6) + result + salt.Substring(6, 10);
                 result = SecretUtil.Md5(result, 32).ToUpper();

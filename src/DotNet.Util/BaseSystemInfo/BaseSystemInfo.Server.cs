@@ -32,7 +32,7 @@ namespace DotNet.Util
                 // 这个是测试用的
                 // return "http://mas.wangcaisoft.cn/";
 
-                if (string.IsNullOrEmpty(_userCenterHost))
+                if (_userCenterHost.IsNullOrEmpty())
                 {
                     // 针对内部服务调用配置，内部可以指定服务位置
                     if (ConfigurationManager.AppSettings["UserCenterHost"] != null)
@@ -40,7 +40,7 @@ namespace DotNet.Util
                         _userCenterHost = ConfigurationManager.AppSettings["UserCenterHost"];
                     }
                     // 若没配置用户中心？看是否选了明确的主机？针对CS客户端
-                    if (string.IsNullOrEmpty(_userCenterHost))
+                    if (_userCenterHost.IsNullOrEmpty())
                     {
                         if (!string.IsNullOrWhiteSpace(Host))
                         {
@@ -55,7 +55,7 @@ namespace DotNet.Util
                         }
                     }
                     // 若还是都找不到配置，就用默认的配置文件
-                    if (string.IsNullOrEmpty(_userCenterHost))
+                    if (_userCenterHost.IsNullOrEmpty())
                     {
                         _userCenterHost = "https://userCenter.wangcaisoft.cn/";
                     }
@@ -77,7 +77,7 @@ namespace DotNet.Util
                 {
                     _mobileHost = ConfigurationManager.AppSettings["MobileHost"];
                 }
-                if (string.IsNullOrEmpty(_mobileHost))
+                if (_mobileHost.IsNullOrEmpty())
                 {
                     _mobileHost = "http://dotnet.wangcaisoft.cn/WebAPIV" + BaseSystemInfo.DatabaseTableVersion + "/API/Mobile/";
                 }
@@ -192,13 +192,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_systemCode))
+                if (_systemCode.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["SystemCode"]))
+                    if (!ConfigurationManager.AppSettings["SystemCode"].IsNullOrEmpty())
                     {
                         _systemCode = ConfigurationManager.AppSettings["SystemCode"];
                     }
-                    if (string.IsNullOrEmpty(_systemCode))
+                    if (_systemCode.IsNullOrEmpty())
                     {
                         _systemCode = "Base";
                     }

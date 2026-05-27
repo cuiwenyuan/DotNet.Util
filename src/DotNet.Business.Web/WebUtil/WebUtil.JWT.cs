@@ -64,7 +64,7 @@ namespace DotNet.Business
             json = string.Empty;
             userId = 0;
             openId = string.Empty;
-            if (!string.IsNullOrEmpty(token))
+            if (!token.IsNullOrEmpty())
             {
                 try
                 {

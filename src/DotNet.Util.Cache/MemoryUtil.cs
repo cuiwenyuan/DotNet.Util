@@ -33,7 +33,7 @@ namespace DotNet.Util
         public static bool Contains(string cacheKey)
         {
 #if NET46_OR_GREATER
-            if (!string.IsNullOrEmpty(cacheKey) && Cache[cacheKey] == null)
+            if (!cacheKey.IsNullOrEmpty() && Cache[cacheKey] == null)
             {
                 return true;
             }
@@ -43,7 +43,7 @@ namespace DotNet.Util
             }
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
-            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+            if (!cacheKey.IsNullOrEmpty() && Cache.TryGetValue(cacheKey, out obj))
             {
                 return true;
             }
@@ -65,7 +65,7 @@ namespace DotNet.Util
             return Cache[cacheKey];
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
-            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+            if (!cacheKey.IsNullOrEmpty() && Cache.TryGetValue(cacheKey, out obj))
             {
                 return obj;
             }

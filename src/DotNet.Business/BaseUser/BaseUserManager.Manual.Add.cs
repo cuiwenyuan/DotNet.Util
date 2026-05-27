@@ -35,7 +35,7 @@ namespace DotNet.Business
             // 检测成功，可以添加用户
             Status = Status.OkAdd;
             StatusCode = Status.OkAdd.ToString();
-            if (!string.IsNullOrEmpty(entity.UserName)
+            if (!(entity.UserName).IsNullOrEmpty()
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldUserName, entity.UserName)
                 , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
             {
@@ -46,7 +46,7 @@ namespace DotNet.Business
             else
             {
                 // 检查编号是否重复
-                if (checkCodeExist && !string.IsNullOrEmpty(entity.Code)
+                if (checkCodeExist && !(entity.Code).IsNullOrEmpty()
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldCode, entity.Code)
                     , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
                 {
@@ -68,7 +68,7 @@ namespace DotNet.Business
                         Status = Status.ErrorNameExist;
                         StatusCode = Status.ErrorNameExist.ToString();
                     }
-                    if (!string.IsNullOrEmpty(entity.Code))
+                    if (!(entity.Code).IsNullOrEmpty())
                     {
                         parameters = new List<KeyValuePair<string, object>>
                         {

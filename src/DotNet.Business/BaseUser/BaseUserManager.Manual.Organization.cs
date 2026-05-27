@@ -55,7 +55,7 @@ namespace DotNet.Business
             };
             var organizationManager = new BaseOrganizationManager(UserInfo);
             var organizationId = organizationManager.GetId(parameters);
-            if (string.IsNullOrEmpty(organizationId))
+            if (organizationId.IsNullOrEmpty())
             {
                 return result;
             }
@@ -139,7 +139,7 @@ namespace DotNet.Business
             var dt = DbHelper.Fill(sql);
             if (dt != null && dt.Rows.Count > 0)
             {
-                result = BaseUtil.FieldToArray(dt, BaseUserEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                result = BaseUtil.FieldToArray(dt, BaseUserEntity.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             */
             // 2015-12-02 吉日嘎拉 方法优化，采用 ExecuteReader 提高效率，减少内存使用。
@@ -196,7 +196,7 @@ namespace DotNet.Business
             sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
-            if (!string.IsNullOrEmpty(departmentId))
+            if (!departmentId.IsNullOrEmpty())
             {
                 // 从用户表
                 sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDepartmentId + " = '" + departmentId + "') ");
@@ -274,7 +274,7 @@ namespace DotNet.Business
             sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
-            if (!string.IsNullOrEmpty(departmentId))
+            if (!departmentId.IsNullOrEmpty())
             {
                 // 从用户表
                 sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDepartmentId + " = '" + departmentId + "') ");
@@ -311,7 +311,7 @@ namespace DotNet.Business
             sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
 
-            if (!string.IsNullOrEmpty(companyId))
+            if (!companyId.IsNullOrEmpty())
             {
                 // 从用户表
                 sb.Append(" AND (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = '" + companyId + "') ");
@@ -403,7 +403,7 @@ namespace DotNet.Business
             {
                 var sql = GetUserSql(organizationIds, true);
                 var dt = DbHelper.Fill(sql);
-                companyUsers = BaseUtil.FieldToArray(dt, BaseUserEntity.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                companyUsers = BaseUtil.FieldToArray(dt, BaseUserEntity.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
 
             string[] roleUsers = null;
@@ -430,7 +430,7 @@ namespace DotNet.Business
                 + " FROM " + BaseUserEntity.CurrentTableName);
             sb.Append(" WHERE (" + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldDeleted + " = 0");
             sb.Append(" AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldEnabled + " = 1 ) ");
-            if (!string.IsNullOrEmpty(departmentId))
+            if (!departmentId.IsNullOrEmpty())
             {
                 var organizationManager = new BaseOrganizationManager(DbHelper, UserInfo);
                 var organizationIds = organizationManager.GetChildrensId(BaseOrganizationEntity.FieldId, departmentId, BaseOrganizationEntity.FieldParentId);
@@ -443,7 +443,7 @@ namespace DotNet.Business
             }
             var dbParameters = new List<IDbDataParameter>();
             searchKey = searchKey.Trim();
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 sb.Append(" AND (" + BaseUserEntity.FieldUserName + " LIKE " + DbHelper.GetParameter(BaseUserEntity.FieldUserName));
                 sb.Append(" OR " + BaseUserEntity.FieldCode + " LIKE " + DbHelper.GetParameter(BaseUserEntity.FieldCode));

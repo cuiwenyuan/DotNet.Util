@@ -111,7 +111,7 @@ public partial class BasePage : System.Web.UI.Page
         // string applicationPath = HttpContext.Current.Request.ApplicationPath;
         // ApplicationPath	"/DotNet.WebForm"	string
         // 这个是在调试环境里的优化功能
-        if (!string.IsNullOrEmpty(url))
+        if (!url.IsNullOrEmpty())
         {
             url = url.ToLower();
             if (!(url == "leftmenu.aspx"
@@ -157,7 +157,7 @@ public partial class BasePage : System.Web.UI.Page
                 // string url = "http://localhost/GetSignin.ashx?OpenId=" + UserInfo.OpenId;
                 var url = ConfigurationManager.AppSettings["SSOVerify"] + "?OpenId=" + UserInfo.OpenId;
                 var jsonUserInfo = RequestUtil.GetResponse(url);
-                if (!string.IsNullOrEmpty(jsonUserInfo))
+                if (!jsonUserInfo.IsNullOrEmpty())
                 {
                     var userInfoJ = JsonUtil.JsonToObject<BaseUserInfo>(jsonUserInfo);
                     Page.Response.Write(userInfoJ.UserName);

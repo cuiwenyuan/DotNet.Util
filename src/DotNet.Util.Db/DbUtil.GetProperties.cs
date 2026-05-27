@@ -39,7 +39,7 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", values) + ")");
             var dt = dbHelper.Fill(sb.Return());
-            return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -57,7 +57,7 @@ namespace DotNet.Util
         {
             var result = new List<string>();
 
-            if (string.IsNullOrEmpty(targetField))
+            if (targetField.IsNullOrEmpty())
             {
                 targetField = BaseUtil.FieldId;
             }

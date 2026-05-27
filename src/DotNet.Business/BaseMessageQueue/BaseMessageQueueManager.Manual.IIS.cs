@@ -49,7 +49,7 @@ namespace DotNet.Business
                        + "<br>ApplicationID：" + BaseSystemInfo.ApplicationId + "<br>ApplicationPhysicalPath：" + System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath + "<br>ApplicationVirtualPath：" + System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath + "<br><br>" + Environment.NewLine + BaseSystemInfo.SoftFullName + "<br>自动发送" + "<br>" + DateTime.Now,
                 SortCode = 1
             };
-            if (!string.IsNullOrEmpty(Add(entity)))
+            if (!Add(entity).IsNullOrEmpty())
             {
                 result = true;
             }

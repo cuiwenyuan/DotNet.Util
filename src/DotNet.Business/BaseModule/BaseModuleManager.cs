@@ -96,7 +96,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseModuleEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseModuleEntity.FieldName + " LIKE N'%" + searchKey + "%' OR " + BaseModuleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -121,7 +121,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseModuleEntity.FieldUserCompanyId + " = 0 OR " + BaseModuleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseModuleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseModuleEntity.FieldDeleted, 0)), true, false, cacheTime);

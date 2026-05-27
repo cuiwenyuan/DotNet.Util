@@ -53,7 +53,7 @@ namespace DotNet.Util
             get
             {
                 var fileName = FileName;
-                if (!string.IsNullOrEmpty(BaseSystemInfo.StartupPath))
+                if (!(BaseSystemInfo.StartupPath).IsNullOrEmpty())
                 {
                     fileName = BaseSystemInfo.StartupPath + "\\" + FileName;
                 }
@@ -91,7 +91,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Exists(string key)
         {
-            return !string.IsNullOrEmpty(GetValue(key));
+            return !GetValue(key).IsNullOrEmpty();
         }
         /// <summary>
         /// 获取选项值
@@ -104,7 +104,7 @@ namespace DotNet.Util
             var xmlDocument = new XmlDocument();
             xmlDocument.Load(ConfigFileName);
             option = GetOption(xmlDocument, SelectPath, key);
-            return option.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return option.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
 
         #region public static string GetOption(XmlDocument xmlDocument, string selectPath, string key) 设置配置项
@@ -146,7 +146,7 @@ namespace DotNet.Util
         {
             var result = string.Empty;
             result = GetValue(_xmlDocument, SelectPath, key);
-            if (!string.IsNullOrEmpty(result) && encrypt)
+            if (!result.IsNullOrEmpty() && encrypt)
             {
                 result = SecretUtil.DesDecrypt(result);
             }
@@ -238,7 +238,7 @@ namespace DotNet.Util
             if (Exists())
             {
                 var fileName = ConfigFileName;
-                if (!string.IsNullOrEmpty(BaseSystemInfo.StartupPath))
+                if (!(BaseSystemInfo.StartupPath).IsNullOrEmpty())
                 {
                     fileName = BaseSystemInfo.StartupPath + "\\" + ConfigFileName;
                 }
@@ -988,15 +988,15 @@ namespace DotNet.Util
             // 若是本地模式运行，然后还缺少数据库配置？
             if (BaseSystemInfo.Service.Equals("DotNet.Business"))
             {
-                if (string.IsNullOrEmpty(BaseSystemInfo.UserCenterDbConnection))
+                if ((BaseSystemInfo.UserCenterDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.LogonLogDbConnection))
+                if ((BaseSystemInfo.LogonLogDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.LogonLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.MessageDbConnection))
+                if ((BaseSystemInfo.MessageDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.MessageDbConnection = BaseSystemInfo.UserCenterDbConnection;
                 }

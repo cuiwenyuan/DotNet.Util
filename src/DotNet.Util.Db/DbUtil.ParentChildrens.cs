@@ -57,7 +57,7 @@ namespace DotNet.Util
                     sb.Append(" WHERE (SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + ")) = " + fieldCode + ") ");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -100,7 +100,7 @@ namespace DotNet.Util
                 sb.Append(" FROM " + tableName
                          + "    START WITH " + fieldParentId + " = " + dbHelper.GetParameter(fieldId)
                          + "  CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
-                if (!string.IsNullOrEmpty(order))
+                if (!order.IsNullOrEmpty())
                 {
                     sb.Append(" ORDER BY " + order);
                 }
@@ -168,7 +168,7 @@ namespace DotNet.Util
             sb.Append(" FROM " + tableName
                      + " START WITH " + fieldId + " IN (" + string.Join(",", ids) + ")"
                      + " CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -209,7 +209,7 @@ namespace DotNet.Util
                     sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH('" + code + "')) = '" + code + "') ");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -254,7 +254,7 @@ namespace DotNet.Util
                     sb.Append(" OR (" + fieldCode + " = SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + "))) ");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -284,7 +284,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -301,7 +301,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order)
         {
-            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -317,7 +317,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -333,7 +333,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 

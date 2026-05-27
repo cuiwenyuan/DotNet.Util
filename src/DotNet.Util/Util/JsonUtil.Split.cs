@@ -19,7 +19,7 @@ namespace DotNet.Util
             internal static bool IsJson(string json, out int errIndex)
             {
                 errIndex = 0;
-                if (!string.IsNullOrEmpty(json) && json.Length > 1 &&
+                if (!json.IsNullOrEmpty() && json.Length > 1 &&
                     ((json[0] == '{' && json[json.Length - 1] == '}') || (json[0] == '[' && json[json.Length - 1] == ']')))
                 {
                     var cs = new CharState();
@@ -55,7 +55,7 @@ namespace DotNet.Util
             {
                 var result = new List<Dictionary<string, string>>();
 
-                if (!string.IsNullOrEmpty(json))
+                if (!json.IsNullOrEmpty())
                 {
                     var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     var key = string.Empty;
@@ -103,7 +103,7 @@ namespace DotNet.Util
                             }
                             if (cs.SetDicValue)//…Ë÷√º¸÷µ∂‘°£
                             {
-                                if (!string.IsNullOrEmpty(key) && !dic.ContainsKey(key))
+                                if (!key.IsNullOrEmpty() && !dic.ContainsKey(key))
                                 {
                                     //if (value != string.Empty)
                                     //{
@@ -153,7 +153,7 @@ namespace DotNet.Util
             {
                 errIndex = 0;
                 var len = 0;
-                if (!string.IsNullOrEmpty(json))
+                if (!json.IsNullOrEmpty())
                 {
                     var cs = new CharState();
                     char c;

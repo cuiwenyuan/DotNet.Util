@@ -46,7 +46,7 @@ namespace DotNet.Business
             // 返回值
             string[] result = null;
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 //2017.12.20增加默认的HttpRuntime.Cache缓存
                 var cacheKey = "Array" + systemCode + userId + companyId + "RoleIds";
@@ -83,11 +83,11 @@ namespace DotNet.Business
             // 返回值
             var result = false;
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 // 从缓存里快速得到角色对应的主键盘
                 var roleId = BaseRoleManager.GetIdByCodeByCache(systemCode, roleCode);
-                if (!string.IsNullOrEmpty(roleId))
+                if (!roleId.IsNullOrEmpty())
                 {
                     var roleIds = GetRoleIdsByCache(systemCode, userId, companyId);
                     if (roleIds != null && roleIds.Length > 0)
@@ -139,17 +139,17 @@ namespace DotNet.Business
             var result = false;
 
             // 用户参数不合法
-            if (string.IsNullOrEmpty(userId))
+            if (userId.IsNullOrEmpty())
             {
                 return result;
             }
             // 角色名称不合法
-            if (string.IsNullOrEmpty(roleName))
+            if (roleName.IsNullOrEmpty())
             {
                 return result;
             }
             // 传入的系统编号不合法，自动认为是基础系统
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -157,7 +157,7 @@ namespace DotNet.Business
             var roleId = BaseRoleManager.GetIdByNameByCache(systemCode, roleName);
 
             // 无法获取角色主键
-            if (string.IsNullOrEmpty(roleId))
+            if (roleId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -220,7 +220,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 return false;
             }
@@ -230,14 +230,14 @@ namespace DotNet.Business
                 return false;
             }
 
-            if (string.IsNullOrEmpty(roleCode))
+            if (roleCode.IsNullOrEmpty())
             {
                 return false;
             }
 
             // 2016-01-07 吉日嘎拉 这里用缓存、效率会高
             var roleId = BaseRoleManager.GetIdByCodeByCache(systemCode, roleCode);
-            if (string.IsNullOrEmpty(roleId))
+            if (roleId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -313,7 +313,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 return false;
             }
@@ -386,7 +386,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 return false;
             }
@@ -519,7 +519,7 @@ namespace DotNet.Business
             }
 
             return result.ToArray();
-            // return BaseUtil.FieldToArray(result, BaseUserRoleEntity.FieldRoleId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            // return BaseUtil.FieldToArray(result, BaseUserRoleEntity.FieldRoleId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -558,12 +558,12 @@ namespace DotNet.Business
         {
             List<BaseUserEntity> result = null;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
             var roleId = BaseRoleManager.GetIdByCodeByCache(systemCode, roleCode);
-            if (!string.IsNullOrEmpty(roleId))
+            if (!roleId.IsNullOrEmpty())
             {
                 result = GetListByRole(systemCode, new string[] { roleId }, companyId);
             }
@@ -627,7 +627,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public DataTable GetDataTableByRole(string systemCode, string[] roleIds, string companyId = null)
         {
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -662,7 +662,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -693,7 +693,7 @@ namespace DotNet.Business
         {
             var result = 0;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -866,7 +866,7 @@ namespace DotNet.Business
         {
             string[] result = null;
             var roleId = BaseRoleManager.GetIdByCodeByCache(systemCode, roleCode);
-            if (!string.IsNullOrEmpty(roleId))
+            if (!roleId.IsNullOrEmpty())
             {
                 result = GetUserIdsInRoleId(systemCode, roleId, companyId);
             }
@@ -908,7 +908,7 @@ namespace DotNet.Business
             sb.Append(" ) )");
 
             // var dt = DbHelper.Fill(sql);
-            // return BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            // return BaseUtil.FieldToArray(dt, BaseUserRoleEntity.FieldUserId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
             var userIds = new List<string>();
             var dataReader = DbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
@@ -1006,7 +1006,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -1165,7 +1165,7 @@ namespace DotNet.Business
         public int CopyPermission(string systemCode, int referenceUserId, int targetUserId)
         {
             var result = 0;
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }

@@ -63,7 +63,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool AppendChild(string filePath, string xPath, XmlNode xmlNode)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -104,7 +104,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -151,7 +151,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool UpdateNodeInnerText(string filePath, string xPath, string value)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -188,7 +188,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static XmlDocument LoadXmlDoc(string filePath)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -256,7 +256,7 @@ namespace DotNet.Util
         public static string GetTemplate(string filePath)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -299,7 +299,7 @@ namespace DotNet.Util
         public static bool CreateXmlFile(string filePath, string fileContent, string templatePath, bool overwrite = true)
         {
             var result = overwrite;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -328,7 +328,7 @@ namespace DotNet.Util
                     using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 }
                 using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
-                if (string.IsNullOrEmpty(fileContent))
+                if (fileContent.IsNullOrEmpty())
                 {
                     fileContent = GetTemplate(templatePath);
                 }
@@ -356,7 +356,7 @@ namespace DotNet.Util
         public static string Read(string filePath, string node, string attribute, string nameSpace = "")
         {
             var value = string.Empty;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -372,7 +372,7 @@ namespace DotNet.Util
                     var doc = new XmlDocument();
                     doc.Load(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -383,7 +383,7 @@ namespace DotNet.Util
                     {
                         if (xn.Attributes != null)
                         {
-                            value = (string.IsNullOrEmpty(attribute) ? xn.InnerText : xn.Attributes[attribute].Value);
+                            value = (attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value);
                         }
                     }
                 }
@@ -416,7 +416,7 @@ namespace DotNet.Util
          ************************************************/
         public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -432,7 +432,7 @@ namespace DotNet.Util
                     var doc = new XmlDocument();
                     doc.Load(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -440,9 +440,9 @@ namespace DotNet.Util
                         xn = doc.SelectSingleNode(node, xmlnam);
                     }
 
-                    if (string.IsNullOrEmpty(element))
+                    if (element.IsNullOrEmpty())
                     {
-                        if (!string.IsNullOrEmpty(attribute))
+                        if (!attribute.IsNullOrEmpty())
                         {
                             var xe = (XmlElement)xn;
                             xe?.SetAttribute(attribute, value);
@@ -451,7 +451,7 @@ namespace DotNet.Util
                     else
                     {
                         var xe = doc.CreateElement(element);
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xe.InnerText = value;
 
@@ -501,7 +501,7 @@ namespace DotNet.Util
          ************************************************/
         public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -517,7 +517,7 @@ namespace DotNet.Util
                     var doc = new XmlDocument();
                     doc.Load(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -528,7 +528,7 @@ namespace DotNet.Util
                     var xe = (XmlElement)xn;
                     if (xe != null)
                     {
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xe.InnerText = value;
                         }
@@ -574,7 +574,7 @@ namespace DotNet.Util
          ************************************************/
         public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -590,7 +590,7 @@ namespace DotNet.Util
                     var doc = new XmlDocument();
                     doc.Load(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -600,7 +600,7 @@ namespace DotNet.Util
                     var xe = (XmlElement)xn;
                     if (xn != null)
                     {
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xn.ParentNode?.RemoveChild(xn);
                         }
@@ -634,7 +634,7 @@ namespace DotNet.Util
          ************************************************/
         public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
@@ -653,12 +653,12 @@ namespace DotNet.Util
                     {
                         foreach (var parameter in parameters)
                         {
-                            if (!string.IsNullOrEmpty(parameter.Key) && !string.IsNullOrEmpty(parameter.Value))
+                            if (!(parameter.Key).IsNullOrEmpty() && !(parameter.Value).IsNullOrEmpty())
                             {
                                 var node = parameter.Key;
                                 var value = parameter.Value;
                                 var xn = doc.SelectSingleNode(node);
-                                if (!string.IsNullOrEmpty(nameSpace))
+                                if (!nameSpace.IsNullOrEmpty())
                                 {
                                     var xmlnam = new XmlNamespaceManager(doc.NameTable);
                                     xmlnam.AddNamespace("a", nameSpace);

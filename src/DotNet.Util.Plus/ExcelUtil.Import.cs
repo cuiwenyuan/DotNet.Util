@@ -201,7 +201,7 @@ namespace DotNet.Util
             {
                 for (var i = 0; i < checkStrings.Length; i++)
                 {
-                    if (string.IsNullOrEmpty(dt.Rows[j][checkStrings[i]].ToString()))
+                    if ((dt.Rows[j][checkStrings[i]].ToString()).IsNullOrEmpty())
                     {
                         result.Append("\"" + checkStrings[i] + "\"不能为空。");
                         dt.Rows[j]["错误信息"] = result;

@@ -361,7 +361,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -387,11 +387,11 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (UserInfo != null && string.IsNullOrEmpty(userId))
+        if (UserInfo != null && userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
     }
     #endregion
 
@@ -406,7 +406,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsUrlAuthorized(url))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -432,12 +432,12 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (string.IsNullOrEmpty(userId))
+        if (userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
 
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.NavigateUrl) && (entity.NavigateUrl.Equals(moduleUrl, StringComparison.OrdinalIgnoreCase) || moduleUrl.StartsWith(entity.NavigateUrl))) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.NavigateUrl).IsNullOrEmpty() && (entity.NavigateUrl.Equals(moduleUrl, StringComparison.OrdinalIgnoreCase) || moduleUrl.StartsWith(entity.NavigateUrl))) > 0;
     }
     #endregion
 
@@ -452,7 +452,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsModuleAuthorized(moduleCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -478,11 +478,11 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (string.IsNullOrEmpty(userId))
+        if (userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(moduleCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(moduleCode, StringComparison.OrdinalIgnoreCase)) > 0;
     }
     #endregion
 

@@ -75,7 +75,7 @@ namespace DotNet.Business
                 else
                 {
                     result = AddEntity(entity);
-                    if (!string.IsNullOrEmpty(result))
+                    if (!result.IsNullOrEmpty())
                     {
                         Status = Status.OkAdd;
                         StatusCode = Status.OkAdd.ToString();
@@ -146,12 +146,12 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(entity.QuickQuery))
+                    if ((entity.QuickQuery).IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                     }
-                    if (string.IsNullOrEmpty(entity.SimpleSpelling))
+                    if ((entity.SimpleSpelling).IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();
@@ -223,7 +223,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseOrganizationEntity entityNew, BaseOrganizationEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -293,7 +293,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldDeleted + " = 0");
             }
             //分类
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
@@ -329,7 +329,7 @@ namespace DotNet.Business
             //角色
             var tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
             //指定角色
-            if (!string.IsNullOrEmpty(roleId) && ValidateUtil.IsNumeric(roleId))
+            if (!roleId.IsNullOrEmpty() && ValidateUtil.IsNumeric(roleId))
             {
                 sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
@@ -339,7 +339,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
             }
             //排除指定角色
-            if (!string.IsNullOrEmpty(roleIdExcluded) && ValidateUtil.IsNumeric(roleIdExcluded))
+            if (!roleIdExcluded.IsNullOrEmpty() && ValidateUtil.IsNumeric(roleIdExcluded))
             {
                 sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " NOT IN ");
                 sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
@@ -351,7 +351,7 @@ namespace DotNet.Business
             //用户菜单模块表
             var tableNamePermission = GetPermissionTableName(systemCode);
             //指定的菜单模块
-            if (!string.IsNullOrEmpty(moduleId) && ValidateUtil.IsNumeric(moduleId))
+            if (!moduleId.IsNullOrEmpty() && ValidateUtil.IsNumeric(moduleId))
             {
                 sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " IN");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
@@ -362,7 +362,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
             //排除指定菜单模块
-            if (!string.IsNullOrEmpty(moduleIdExcluded) && ValidateUtil.IsNumeric(moduleIdExcluded))
+            if (!moduleIdExcluded.IsNullOrEmpty() && ValidateUtil.IsNumeric(moduleIdExcluded))
             {
                 sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " NOT IN ");
                 sb.Append(" (SELECT DISTINCT " + BasePermissionEntity.FieldResourceId);
@@ -373,7 +373,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
             //父级编号
-            if (!string.IsNullOrEmpty(parentId) && ValidateUtil.IsNumeric(parentId))
+            if (!parentId.IsNullOrEmpty() && ValidateUtil.IsNumeric(parentId))
             {
                 sb.Append(" AND ( ");
                 //本级
@@ -408,7 +408,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseOrganizationEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseOrganizationEntity.FieldName + " LIKE N'%" + searchKey + "%'");
@@ -455,7 +455,7 @@ namespace DotNet.Business
             dt.Columns.Add("LayerId", typeof(int));
             //调用迭代组合成datatable
             //默认从输入的开始
-            if (string.IsNullOrEmpty(parentId))
+            if (parentId.IsNullOrEmpty())
             {
                 GetChilds(dtOld, dt, null, 0);
             }
@@ -489,7 +489,7 @@ namespace DotNet.Business
                 //添加一行数据
                 var row = dtNew.NewRow();
                 row["Id"] = dr[i]["Id"].ToInt();
-                if (string.IsNullOrEmpty(dr[i]["ParentId"].ToString()))
+                if ((dr[i]["ParentId"].ToString()).IsNullOrEmpty())
                 {
                     row["ParentId"] = 0;
                 }
@@ -503,12 +503,12 @@ namespace DotNet.Business
                 row["Description"] = dr[i]["Description"].ToString();
                 row["Enabled"] = dr[i]["Enabled"].ToInt();
                 row["Deleted"] = dr[i]["Deleted"].ToInt();
-                if (!string.IsNullOrEmpty(dr[i]["CreateTime"].ToString()))
+                if (!(dr[i]["CreateTime"].ToString()).IsNullOrEmpty())
                 {
                     row["CreateTime"] = DateTime.Parse(dr[i]["CreateTime"].ToString());
                 }
                 row["CreateBy"] = dr[i]["CreateBy"].ToString();
-                if (!string.IsNullOrEmpty(dr[i]["UpdateTime"].ToString()))
+                if (!(dr[i]["UpdateTime"].ToString()).IsNullOrEmpty())
                 {
                     row["UpdateTime"] = DateTime.Parse(dr[i]["UpdateTime"].ToString());
                 }

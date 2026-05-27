@@ -105,7 +105,7 @@ namespace DotNet.Util
             var macAddressList = GetMacAddressList().OrderBy(ip => ip).Take(2).ToList();
             foreach (var mac in macAddressList)
             {
-                if (!string.IsNullOrEmpty(mac))
+                if (!mac.IsNullOrEmpty())
                 {
                     macAddress = mac;
                     // 格式化
@@ -155,7 +155,7 @@ namespace DotNet.Util
                     && ni.OperationalStatus == OperationalStatus.Up)
                 {
                     var macAddress = ni.GetPhysicalAddress().ToString();
-                    if (!string.IsNullOrEmpty(macAddress) && !macAddress.StartsWith("000000000000") && macAddress.Length == 12)
+                    if (!macAddress.IsNullOrEmpty() && !macAddress.StartsWith("000000000000") && macAddress.Length == 12)
                     {
                         result.Add(ni.GetPhysicalAddress().ToString());
                     }

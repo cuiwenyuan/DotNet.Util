@@ -485,7 +485,7 @@ namespace DotNet.Util
         /// <returns>条件语句</returns>
         public void SetWhere(string targetFiled, object targetValue, string targetFiledName = null, string relation = " AND ")
         {
-            if (string.IsNullOrEmpty(targetFiledName))
+            if (targetFiledName.IsNullOrEmpty())
             {
                 targetFiledName = targetFiled;
             }
@@ -515,7 +515,7 @@ namespace DotNet.Util
                 _whereSql.Append(targetFiled + " IS NULL ");
             }
             // 空值
-            else if (targetValue != null && (targetValue is string) && string.IsNullOrEmpty((string)targetValue))
+            else if (targetValue != null && (targetValue is string) && ((string)targetValue).IsNullOrEmpty())
             {
                 _whereSql.Append(targetFiled + " = '' ");
             }
@@ -536,7 +536,7 @@ namespace DotNet.Util
         /// <returns>排序</returns>
         public string SetOrderBy(string orderBy)
         {
-            if (string.IsNullOrEmpty(_orderBy))
+            if (_orderBy.IsNullOrEmpty())
             {
                 _orderBy = " ORDER BY ";
             }
@@ -553,7 +553,7 @@ namespace DotNet.Util
         /// <returns>随机排序函数</returns>
         public string SetOrderByRandom()
         {
-            if (string.IsNullOrEmpty(_orderBy))
+            if (_orderBy.IsNullOrEmpty())
             {
                 _orderBy = " ORDER BY ";
             }
@@ -740,7 +740,7 @@ namespace DotNet.Util
                                     //以下代码不好用！！！
                                     //var sb = PoolUtil.StringBuilder.Get();
                                     //sb.AppendLine("BEGIN");
-                                    //if (!string.IsNullOrEmpty(CommandText))
+                                    //if (!CommandText.IsNullOrEmpty())
                                     //{
                                     //    sb.AppendLine(CommandText.TrimEnd(";") + ";");
                                     //    sb.AppendLine($"SELECT {sequenceName}.CURRVAL FROM DUAL;");
@@ -805,7 +805,7 @@ namespace DotNet.Util
                     {
                         // 执行语句
                         result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
-                        if (result > 0 && !string.IsNullOrEmpty(identitySql) && !PreIdentity && ReturnId)
+                        if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
                         {
                             // 获取当前序列主键
                             var obj = _dbHelper.ExecuteScalar(identitySql);

@@ -73,7 +73,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -118,7 +118,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
+                if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -130,7 +130,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
+                if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
                 {
                     parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -185,7 +185,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseRoleEntity entityNew, BaseRoleEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -274,7 +274,7 @@ namespace DotNet.Business
             }
 
             //角色分类
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseRoleEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
@@ -332,19 +332,19 @@ namespace DotNet.Business
                 sb.Append(" AND " + BasePermissionEntity.FieldDeleted + " = 0)) ");
             }
             //前缀
-            if (!string.IsNullOrEmpty(codePrefix))
+            if (!codePrefix.IsNullOrEmpty())
             {
                 codePrefix = dbHelper.SqlSafe(codePrefix);
                 sb.Append(" AND " + BaseRoleEntity.FieldCode + " LIKE N'" + codePrefix + "%'");
             }
             //排除前缀
-            if (!string.IsNullOrEmpty(codePrefixExcluded))
+            if (!codePrefixExcluded.IsNullOrEmpty())
             {
                 codePrefixExcluded = dbHelper.SqlSafe(codePrefixExcluded);
                 sb.Append(" AND " + BaseRoleEntity.FieldCode + " NOT LIKE N'" + codePrefixExcluded + "%'");
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseRoleEntity.FieldName + " LIKE N'%" + searchKey + "%'");
@@ -482,7 +482,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            if (!string.IsNullOrEmpty(entity.OrganizationId.ToString()))
+            if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
@@ -652,16 +652,16 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName + " WHERE " + BaseRoleEntity.FieldDeleted + " = 0");
 
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetSearchString(searchKey);
                 sb.Append(string.Format("  AND ({0} LIKE '{1}' OR {2} LIKE '{3}')", BaseRoleEntity.FieldName, searchKey, BaseRoleEntity.FieldDescription, searchKey));
             }
-            if (!string.IsNullOrEmpty(organizationId))
+            if (!organizationId.IsNullOrEmpty())
             {
                 sb.Append(string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldOrganizationId, organizationId));
             }
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sb.Append(string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldCategoryCode, categoryCode));
             }
@@ -759,12 +759,12 @@ namespace DotNet.Business
         {
             var condition = BaseRoleEntity.FieldDeleted + " = 0";
 
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 condition += string.Format(" AND {0} = '{1}'", BaseRoleEntity.FieldCategoryCode, categoryCode);
             }
 
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = string.Format("'{0}'", StringUtil.GetSearchString(searchKey));
                 condition += string.Format(" AND ({0} LIKE {1}", BaseRoleEntity.FieldName, searchKey);
@@ -813,7 +813,7 @@ namespace DotNet.Business
                             WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + @" AND " + BaseUserEntity.FieldDeleted + @" = 0) UserRole 
                          WHERE BaseUser.Id = UserRole.UserId 
                                AND BaseUser." + BaseUserEntity.FieldDeleted + " = 0";
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 // 2016-02-25 吉日嘎拉 增加搜索功能、方便管理
                 if (searchKey.IndexOf("%") < 0)
@@ -832,12 +832,12 @@ namespace DotNet.Business
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldRoleId, roleId)
             };
 
-            if (!string.IsNullOrEmpty(companyId))
+            if (!companyId.IsNullOrEmpty())
             {
                 commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyId, companyId));
             }
-            if (!string.IsNullOrEmpty(userId))
+            if (!userId.IsNullOrEmpty())
             {
                 commandText += " AND " + BaseUserEntity.CurrentTableName + "." + BaseUserEntity.FieldId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldId);
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldId, userId));

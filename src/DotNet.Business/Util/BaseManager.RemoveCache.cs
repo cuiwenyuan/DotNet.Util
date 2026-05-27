@@ -99,7 +99,7 @@ namespace DotNet.Business
         {
             var result = false;
             var cacheKeyEntity = CurrentTableName + ".Entity.";
-            if (string.IsNullOrEmpty(id))
+            if (id.IsNullOrEmpty())
             {
                 CacheUtil.RemoveByRegex("^" + cacheKeyEntity + "+\\w+$");
             }

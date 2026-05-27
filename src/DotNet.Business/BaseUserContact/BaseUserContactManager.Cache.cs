@@ -80,20 +80,20 @@ namespace DotNet.Business
             var result = false;
 
             // 若有主键就是先更新，没主键就是添加
-            if (!string.IsNullOrEmpty(entity.Id.ToString()))
+            if (!(entity.Id.ToString()).IsNullOrEmpty())
             {
                 result = Update(entity) > 0;
                 // 若不存在，就是添加的意思
                 if (!result)
                 {
                     // 更新不成功表示没数据，需要添加数据，这时候要注意主键不能出错
-                    result = !string.IsNullOrEmpty(Add(entity));
+                    result = !Add(entity).IsNullOrEmpty();
                 }
             }
             else
             {
                 // 若没有主键就是添加数据
-                result = !string.IsNullOrEmpty(Add(entity));
+                result = !Add(entity).IsNullOrEmpty();
             }
 
             // 2016-01-20 吉日嘎拉， 用户的联系方式修改后，要把用户的修改时间也修改，这样才会同步下载用户的信息，用户的联系方式
@@ -152,7 +152,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseUserContactEntity entityNew, BaseUserContactEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;

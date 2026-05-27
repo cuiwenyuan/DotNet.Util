@@ -59,7 +59,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.FieldDeleted + " = 0");
             }
             //子系统
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldSystemCode + " = N'" + systemCode + "'");
             }
@@ -69,12 +69,12 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldUserId + " = N'" + userId + "'");
             }
             //用户名
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldUserName + " = N'" + userName + "'");
             }
             //公司名称
-            if (!string.IsNullOrEmpty(companyName))
+            if (!companyName.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCompanyName + " = N'" + companyName + "'");
             }
@@ -93,7 +93,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
@@ -166,23 +166,23 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //子系统编码
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldSystemCode + " = N'" + systemCode + "'");
             }
             //用户名
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 userName = dbHelper.SqlSafe(userName);
                 sb.Append(" AND " + BaseLogonLogEntity.FieldUserName + " = N'" + userName + "'");
             }
             //操作状态
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = dbHelper.SqlSafe(result);
                 sb.Append(" AND " + BaseLogonLogEntity.FieldResult + " = N'" + result + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
@@ -412,7 +412,7 @@ namespace DotNet.Business
             // 
             var result = 1;
 
-            if (!string.IsNullOrEmpty(loginStatus))
+            if (!loginStatus.IsNullOrEmpty())
             {
                 if (loginStatus == "用户登录")
                 {

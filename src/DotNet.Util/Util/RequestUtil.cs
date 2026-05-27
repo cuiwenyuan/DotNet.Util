@@ -300,16 +300,16 @@ namespace DotNet.Util
             if (HttpContext.Current != null)
             {
                 result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-                if (string.IsNullOrEmpty(result))
+                if (result.IsNullOrEmpty())
                 {
                     result = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
                 }
-                if (string.IsNullOrEmpty(result))
+                if (result.IsNullOrEmpty())
                 {
                     result = HttpContext.Current.Request.UserHostAddress;
                 }
             }
-            if (string.IsNullOrEmpty(result) || !Utils.IsIp(result))
+            if (result.IsNullOrEmpty() || !Utils.IsIp(result))
             {
                 return "127.0.0.1";
             }
@@ -333,7 +333,7 @@ namespace DotNet.Util
                 {
                     result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
                 }
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     //可能有代理 //没有“.”肯定是非IPv4格式 
                     if (result.IndexOf(".", StringComparison.OrdinalIgnoreCase) == -1)
@@ -374,12 +374,12 @@ namespace DotNet.Util
                     ? HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"]
                     : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
 
-                if (string.IsNullOrEmpty(result))
+                if (result.IsNullOrEmpty())
                 {
                     result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
                 }
 
-                if (string.IsNullOrEmpty(result) || result.Equals("::1"))
+                if (result.IsNullOrEmpty() || result.Equals("::1"))
                 {
                     result = HttpContext.Current.Request.UserHostAddress;
                 }
@@ -394,7 +394,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private static bool IsIp(string str)
         {
-            if (string.IsNullOrEmpty(str) || str.Length < 7 || str.Length > 15) return false;
+            if (str.IsNullOrEmpty() || str.Length < 7 || str.Length > 15) return false;
 
             var regformat = @"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$";
 

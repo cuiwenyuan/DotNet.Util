@@ -187,7 +187,7 @@ namespace DotNet.Util
         public static void Redirect(string url)
         {
             var page = (Page)System.Web.HttpContext.Current.Handler;
-            if (string.IsNullOrEmpty(url))
+            if (url.IsNullOrEmpty())
                 page.ClientScript.RegisterStartupScript(page.GetType(), "message", "跳转地址不能为空。");
             else
                 page.ClientScript.RegisterStartupScript(page.GetType(), "message", "<script>location='" + url + "';</script>");

@@ -96,7 +96,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -121,7 +121,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -191,15 +191,15 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1 = 1");
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 sb.Append(string.Format(" AND {0} = '{1}' ", name, value));
             }
-            if (!string.IsNullOrEmpty(processId))
+            if (!processId.IsNullOrEmpty())
             {
                 // sb.Append(string.Format(" AND {0} = '{1}' ", BaseLogEntity.FieldProcessId, processId));
             }
-            if (!string.IsNullOrEmpty(beginDate) && !string.IsNullOrEmpty(endDate))
+            if (!beginDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
             {
                 beginDate = DateTime.Parse(beginDate).ToShortDateString();
                 endDate = DateTime.Parse(endDate).AddDays(1).ToShortDateString();

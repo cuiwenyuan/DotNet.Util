@@ -58,7 +58,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ");
             }
-            if (!string.IsNullOrEmpty(statisticsText))
+            if (!statisticsText.IsNullOrEmpty())
             {
                 sb.Append(statisticsText);
             }

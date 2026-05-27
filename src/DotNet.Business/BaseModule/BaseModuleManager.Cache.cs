@@ -99,12 +99,12 @@ namespace DotNet.Business
         /// <param name="entity"></param>
         private static void SetCache(string systemCode, BaseModuleEntity entity)
         {
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
 
-            if (entity != null && !string.IsNullOrEmpty(entity.Id.ToString()))
+            if (entity != null && !(entity.Id.ToString()).IsNullOrEmpty())
             {
                 var key = GetModuleTableName(systemCode) + "." + entity.Id;
                 CacheUtil.Set<BaseModuleEntity>(key, entity);

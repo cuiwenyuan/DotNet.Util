@@ -56,7 +56,7 @@ namespace DotNet.Business
         {
             // 2016-01-25 黄斌 添加, 从缓存中 通过唯一用户名获取
             BaseUserEntity result = null;
-            if (string.IsNullOrEmpty(nickName))
+            if (nickName.IsNullOrEmpty())
             {
                 return result;
             }
@@ -80,13 +80,13 @@ namespace DotNet.Business
                 key = "User:" + entity.Id;
                 CacheUtil.Set<BaseUserEntity>(key, entity);
 
-                if (!string.IsNullOrEmpty(entity.NickName))
+                if (!(entity.NickName).IsNullOrEmpty())
                 {
                     key = "User:ByNickName:" + entity.NickName.ToLower();
                     CacheUtil.Set<string>(key, entity.Id.ToString());
                 }
 
-                if (!string.IsNullOrEmpty(entity.Code))
+                if (!(entity.Code).IsNullOrEmpty())
                 {
                     key = "User:ByCode:" + entity.Code;
                     CacheUtil.Set<string>(key, entity.Id.ToString());
@@ -96,7 +96,7 @@ namespace DotNet.Business
                 }
 
                 var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId.ToString());
-                if (!string.IsNullOrEmpty(companyCode))
+                if (!companyCode.IsNullOrEmpty())
                 {
                     key = "User:ByCompanyCode:ByCode" + companyCode + ":" + entity.Code;
                     CacheUtil.Set<string>(key, entity.Id.ToString());
@@ -261,7 +261,7 @@ namespace DotNet.Business
             var realName = userEntity.RealName;
             //string simpleSpelling = userEntity.SimpleSpelling.ToLower();
             var simpleSpelling = userEntity.SimpleSpelling;
-            if (!string.IsNullOrEmpty(simpleSpelling))
+            if (!simpleSpelling.IsNullOrEmpty())
             {
                 simpleSpelling = simpleSpelling.ToLower();
             }
@@ -304,7 +304,7 @@ namespace DotNet.Business
             }
 
             // 02：按用户编号进行缓存
-            if (!string.IsNullOrEmpty(code.Trim()))
+            if (!(code.Trim()).IsNullOrEmpty())
             {
                 for (var i = 6; i <= code.Length; i++)
                 {
@@ -314,7 +314,7 @@ namespace DotNet.Business
                     //redisClient.ExpireEntryAt(key, DateTime.Now.AddDays(15));
                 }
             }
-            if (!string.IsNullOrEmpty(realName.Trim()))
+            if (!(realName.Trim()).IsNullOrEmpty())
             {
                 key = "User:CodeOrRealName:" + realName.ToLower();
                 //redisClient.AddItemToSortedSet(key, user, score);
@@ -352,12 +352,12 @@ namespace DotNet.Business
                 CacheUtil.Remove(key);
 
                 // 2016-05-24 吉日嘎拉 解除登录限制的方法，防止一天都登录不上的问题发生
-                //if (!string.IsNullOrEmpty(userEntity.NickName))
+                //if (!(userEntity.NickName).IsNullOrEmpty())
                 //{
                 //    key = "u:" + userEntity.NickName;
                 //    PooledRedisHelper.CallLimitRemove(key);
                 //}
-                //if (!string.IsNullOrEmpty(userEntity.Code))
+                //if (!(userEntity.Code).IsNullOrEmpty())
                 //{
                 //    key = "u:" + userEntity.Code;
                 //    PooledRedisHelper.CallLimitRemove(key);

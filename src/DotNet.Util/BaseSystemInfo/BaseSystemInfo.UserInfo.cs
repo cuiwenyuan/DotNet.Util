@@ -34,7 +34,7 @@ namespace DotNet.Util
                 {
                     _userInfo = new BaseUserInfo();
                     //IP地址
-                    if (string.IsNullOrEmpty(_userInfo.IpAddress))
+                    if ((_userInfo.IpAddress).IsNullOrEmpty())
                     {
 #if NET46_OR_GREATER
                         //按照Web应用获取IP地址
@@ -42,19 +42,19 @@ namespace DotNet.Util
 #endif
                     }
                     //Mac地址  add by zgl
-                    if (string.IsNullOrEmpty(_userInfo.MacAddress))
+                    if ((_userInfo.MacAddress).IsNullOrEmpty())
                     {
                         // 获取所有的 mac 地址
                         _userInfo.MacAddress = MachineInfo.GetMacAddress(false);
                     }
 
                     //用户名
-                    if (string.IsNullOrEmpty(_userInfo.UserName))
+                    if ((_userInfo.UserName).IsNullOrEmpty())
                     {
                         _userInfo.UserName = Environment.MachineName;
                     }
                     //真实姓名
-                    if (string.IsNullOrEmpty(_userInfo.RealName))
+                    if ((_userInfo.RealName).IsNullOrEmpty())
                     {
                         _userInfo.RealName = Environment.UserName;
                     }

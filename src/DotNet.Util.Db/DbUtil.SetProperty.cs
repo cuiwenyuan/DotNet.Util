@@ -42,7 +42,7 @@ namespace DotNet.Util
             // 先设置参数条件
             sqlBuilder.SetWhere(whereParameters);
             // 后设置手写的SQL条件
-            if (!string.IsNullOrEmpty(whereSql))
+            if (!whereSql.IsNullOrEmpty())
             {
                 sqlBuilder.SetWhere(whereSql);
             }

@@ -35,7 +35,7 @@ namespace DotNet.Util
         {
             var result = defaultDbType;
 
-            if (!string.IsNullOrEmpty(dbType))
+            if (!dbType.IsNullOrEmpty())
             {
                 foreach (CurrentDbType currentDbType in Enum.GetValues(typeof(CurrentDbType)))
                 {

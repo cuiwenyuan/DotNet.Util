@@ -45,11 +45,11 @@ namespace DotNet.Business
 
             if (newType.Equals(oldType) && oldType.IsClass && newType.IsClass)
             {
-                if (string.IsNullOrEmpty(systemCode))
+                if (systemCode.IsNullOrEmpty())
                 {
                     systemCode = BaseSystemInfo.SystemCode;
                 }
-                if (string.IsNullOrEmpty(tableName))
+                if (tableName.IsNullOrEmpty())
                 {
                     tableName = BaseChangeLogEntity.CurrentTableName;
                 }

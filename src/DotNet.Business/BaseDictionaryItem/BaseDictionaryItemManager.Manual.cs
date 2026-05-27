@@ -60,7 +60,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -154,7 +154,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseDictionaryItemEntity entityNew, BaseDictionaryItemEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -230,7 +230,7 @@ namespace DotNet.Business
         public BaseDictionaryItemEntity GetEntity(string dictionaryCode, string itemKey, string itemValue = null)
         {
             BaseDictionaryItemEntity entity = null;
-            if (!string.IsNullOrEmpty(dictionaryCode) && !string.IsNullOrEmpty(itemKey))
+            if (!dictionaryCode.IsNullOrEmpty() && !itemKey.IsNullOrEmpty())
             {
                 var entityBaseDictionary = new BaseDictionaryManager(UserInfo).GetEntityByCode(dictionaryCode);
                 if (entityBaseDictionary != null)
@@ -242,7 +242,7 @@ namespace DotNet.Business
                         new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldDeleted, 0),
                         new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldEnabled, 1)
                     };
-                    if (!string.IsNullOrEmpty(itemValue))
+                    if (!itemValue.IsNullOrEmpty())
                     {
                         parameters.Add(new KeyValuePair<string, object>(BaseDictionaryItemEntity.FieldItemValue, itemValue));
                     }
@@ -265,7 +265,7 @@ namespace DotNet.Business
         public DataTable GetDataTableByDictionaryCode(string dictionaryCode)
         {
             var dt = new DataTable();
-            if (!string.IsNullOrEmpty(dictionaryCode))
+            if (!dictionaryCode.IsNullOrEmpty())
             {
                 var entity = new BaseDictionaryManager(UserInfo).GetEntityByCode(dictionaryCode);
                 if (entity != null)

@@ -104,18 +104,18 @@ namespace DotNet.Business
         public BaseUserOAuthEntity GetEntity(string name, string openId, string unionId, string systemCode)
         {
             BaseUserOAuthEntity result = null;
-            if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(openId))
+            if (!name.IsNullOrEmpty() && !openId.IsNullOrEmpty())
             {
                 name = dbHelper.SqlSafe(name);
                 var sb = PoolUtil.StringBuilder.Get();
                 //需要显示未被删除的记录
                 sb.Append("SELECT TOP 1 * FROM " + CurrentTableName + " WHERE " + BaseUserOAuthEntity.FieldName + " = N'" + name + "'");
-                if (!string.IsNullOrEmpty(openId))
+                if (!openId.IsNullOrEmpty())
                 {
                     sb.Append(" AND " + BaseUserOAuthEntity.FieldOpenId + " = N'" + openId + "'");
                 }
 
-                if (!string.IsNullOrEmpty(unionId))
+                if (!unionId.IsNullOrEmpty())
                 {
                     sb.Append(" AND " + BaseUserOAuthEntity.FieldUnionId + " = N'" + unionId + "'");
                 }

@@ -36,7 +36,7 @@ namespace DotNet.Business
             Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(openId))
+            if (!openId.IsNullOrEmpty())
             {
                 var userLogonManager = new BaseUserLogonManager();
                 var parameters = new List<KeyValuePair<string, object>>
@@ -44,7 +44,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId)
                 };
                 var id = userLogonManager.GetId(parameters);
-                if (!string.IsNullOrEmpty(id))
+                if (!id.IsNullOrEmpty())
                 {
                     parameters = new List<KeyValuePair<string, object>>
                     {
@@ -73,7 +73,7 @@ namespace DotNet.Business
             Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
@@ -102,7 +102,7 @@ namespace DotNet.Business
             Status = Status.UserNotFound;
             StatusCode = Status.UserNotFound.ToString();
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(email) && ValidateUtil.IsEmail(email))
+            if (!email.IsNullOrEmpty() && ValidateUtil.IsEmail(email))
             {
                 var userContactManager = new BaseUserContactManager();
                 var parameters = new List<KeyValuePair<string, object>>
@@ -110,7 +110,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserContactEntity.FieldEmail, email)
                 };
                 var id = userContactManager.GetId(parameters);
-                if (!string.IsNullOrEmpty(id))
+                if (!id.IsNullOrEmpty())
                 {
                     parameters = new List<KeyValuePair<string, object>>
                     {

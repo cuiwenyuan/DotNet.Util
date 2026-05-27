@@ -63,7 +63,7 @@ namespace DotNet.Util
         public static string ToTableName(this string tableName)
         {
             var result = tableName;
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 if (!result.StartsWith("(") && !result.EndsWith(")") && result.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
@@ -106,9 +106,9 @@ namespace DotNet.Util
             var subSqlQuery = string.Empty;
             foreach (var parameter in parameters)
             {
-                if (!string.IsNullOrEmpty(parameter.Key))
+                if (!(parameter.Key).IsNullOrEmpty())
                 {
-                    //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
+                    //if (values[i] == null || (values[i].ToString()).IsNullOrEmpty())
                     if (parameter.Value == null)
                     {
                         subSqlQuery = "" + parameter.Key + " IS NULL";
@@ -171,7 +171,7 @@ namespace DotNet.Util
             {
                 if ((names[i] != null) && (names[i].Length > 0))
                 {
-                    //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
+                    //if (values[i] == null || (values[i].ToString()).IsNullOrEmpty())
                     if (values[i] == null)
                     {
                         subSqlQuery = "" + names[i] + " IS NULL";

@@ -106,7 +106,7 @@ namespace DotNet.Util
             {
                 result += values[i] + " + ";
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(0, result.Length - 3);
             }
@@ -325,7 +325,7 @@ namespace DotNet.Util
             var result = false;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            if (string.IsNullOrEmpty(destinationTableName))
+            if (destinationTableName.IsNullOrEmpty())
             {
                 destinationTableName = dt.TableName;
             }

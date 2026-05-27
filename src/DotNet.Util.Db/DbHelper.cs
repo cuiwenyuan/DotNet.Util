@@ -136,7 +136,7 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public virtual string SqlSafe(string value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 value = value.Replace("'", "''");
             }
@@ -168,7 +168,7 @@ namespace DotNet.Util
             {
                 result += t + PlusSign();
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(0, result.Length - 3);
             }
@@ -187,12 +187,12 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection Open()
         {
-            if (string.IsNullOrEmpty(ConnectionString))
+            if (ConnectionString.IsNullOrEmpty())
             {
                 BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
                 // 读取不到，就用用户中心数据库
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
+                if ((BaseSystemInfo.BusinessDbConnection).IsNullOrEmpty())
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
                 }
@@ -257,7 +257,7 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection GetDbConnection(string connectionString)
         {
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!connectionString.IsNullOrEmpty())
             {
                 Open(connectionString);
             }

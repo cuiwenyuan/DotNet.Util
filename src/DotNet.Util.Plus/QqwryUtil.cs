@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -231,7 +231,7 @@ namespace DotNet.Util
         /// <returns></returns>  
         private static void Init(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (path.IsNullOrEmpty())
             {
                 path = Utils.GetMapPath("/plus/qqwry.dat");
             }

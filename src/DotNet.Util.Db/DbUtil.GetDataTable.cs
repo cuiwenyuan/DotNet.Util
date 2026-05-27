@@ -46,7 +46,7 @@ namespace DotNet.Util
             {
                 sb.Append("  WHERE " + name + " IN (" + ObjectUtil.ToList(values, "'") + ")");
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -82,19 +82,19 @@ namespace DotNet.Util
                         sb.Append("SELECT TOP " + topLimit + " * FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
-                        if (string.IsNullOrEmpty(order))
+                        if (order.IsNullOrEmpty())
                         {
                             whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
                         }
                         break;
                 }
             }
-            if (string.IsNullOrEmpty(sqlLogicConditional))
+            if (sqlLogicConditional.IsNullOrEmpty())
             {
                 sqlLogicConditional = BaseUtil.SqlLogicConditional;
             }
             var subSql = GetWhereString(dbHelper, parameters, sqlLogicConditional);
-            if (!string.IsNullOrEmpty(subSql))
+            if (!subSql.IsNullOrEmpty())
             {
                 if (whereSql.Length > 0)
                 {
@@ -109,7 +109,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + whereSql);
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -121,7 +121,7 @@ namespace DotNet.Util
                         sb.Append(" LIMIT 0, " + topLimit);
                         break;
                     case CurrentDbType.Oracle:
-                        if (!string.IsNullOrEmpty(order))
+                        if (!order.IsNullOrEmpty())
                         {
                             sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
                         }
@@ -171,7 +171,7 @@ namespace DotNet.Util
                         sb.Append("SELECT TOP " + topLimit + selectField + " FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
-                        if (string.IsNullOrEmpty(order))
+                        if (order.IsNullOrEmpty())
                         {
                             whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
                         }
@@ -179,12 +179,12 @@ namespace DotNet.Util
                 }
             }
             // 要传入 conditions
-            if (!string.IsNullOrEmpty(conditions))
+            if (!conditions.IsNullOrEmpty())
             {
                 conditions = " WHERE " + conditions;
             }
             sb.Append(conditions + whereSql);
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -197,7 +197,7 @@ namespace DotNet.Util
                         sb.Append(" LIMIT 0, " + topLimit);
                         break;
                     case CurrentDbType.Oracle:
-                        if (!string.IsNullOrEmpty(order))
+                        if (!order.IsNullOrEmpty())
                         {
                             sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
                         }

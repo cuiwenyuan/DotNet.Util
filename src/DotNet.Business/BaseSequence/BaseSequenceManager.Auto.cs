@@ -37,7 +37,7 @@ namespace DotNet.Business
             {
                 dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
-            if (string.IsNullOrEmpty(CurrentTableName))
+            if (CurrentTableName.IsNullOrEmpty())
             {
                 CurrentTableName = BaseSequenceEntity.CurrentTableName;
                 //按用户公司分表

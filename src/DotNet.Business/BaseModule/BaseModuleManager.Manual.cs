@@ -57,7 +57,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     Status = Status.OkAdd;
                     StatusCode = Status.OkAdd.ToString();
@@ -151,7 +151,7 @@ namespace DotNet.Business
         /// <param name="tableName">表名</param>
         public void SaveEntityChangeLog(BaseModuleEntity entityNew, BaseModuleEntity entityOld, string tableName = null)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 //统一放在一个公共表 Troy.Cui 2016-08-17
                 tableName = BaseChangeLogEntity.CurrentTableName;
@@ -229,7 +229,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseModuleEntity.FieldIsVisible + " = 1");
             }
             //显示是否为菜单
-            if (!string.IsNullOrEmpty(isMenu) && ValidateUtil.IsNumeric(isMenu))
+            if (!isMenu.IsNullOrEmpty() && ValidateUtil.IsNumeric(isMenu))
             {
                 sb.Append(" AND " + BaseModuleEntity.FieldIsMenu + " = " + isMenu);
             }
@@ -245,7 +245,7 @@ namespace DotNet.Business
             }
 
             //菜单模块分类
-            if (!string.IsNullOrEmpty(categoryCode))
+            if (!categoryCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseModuleEntity.FieldCategoryCode + " = N'" + categoryCode + "'");
             }
@@ -363,7 +363,7 @@ namespace DotNet.Business
                 sb.Append(" )");
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseModuleEntity.FieldName + " LIKE N'%" + searchKey + "%'");
@@ -516,7 +516,7 @@ namespace DotNet.Business
             dt.Columns.Add("LayerId", typeof(int));
             //调用迭代组合成datatable
             //默认从输入的开始
-            if (string.IsNullOrEmpty(parentId))
+            if (parentId.IsNullOrEmpty())
             {
                 GetChildren(dtOld, dt, null, 0);
             }
@@ -550,7 +550,7 @@ namespace DotNet.Business
                 //添加一行数据
                 var row = dtNew.NewRow();
                 row["Id"] = t["Id"].ToInt();
-                if (string.IsNullOrEmpty(t["ParentId"].ToString()))
+                if ((t["ParentId"].ToString()).IsNullOrEmpty())
                 {
                     row["ParentId"] = 0;
                 }
@@ -567,12 +567,12 @@ namespace DotNet.Business
                 row["IsPublic"] = t["IsPublic"].ToInt();
                 row["IsExpand"] = t["IsExpand"].ToInt();
                 row["SortCode"] = t["SortCode"].ToInt();
-                if (!string.IsNullOrEmpty(t["CreateTime"].ToString()))
+                if (!(t["CreateTime"].ToString()).IsNullOrEmpty())
                 {
                     row["CreateTime"] = DateTime.Parse(t["CreateTime"].ToString());
                 }
                 row["CreateBy"] = t["CreateBy"].ToString();
-                if (!string.IsNullOrEmpty(t["UpdateTime"].ToString()))
+                if (!(t["UpdateTime"].ToString()).IsNullOrEmpty())
                 {
                     row["UpdateTime"] = DateTime.Parse(t["UpdateTime"].ToString());
                 }
@@ -674,7 +674,7 @@ namespace DotNet.Business
         /// <param name="isMenu">是否菜单(0/1)</param>
         public DataTable GetModuleTree(string systemCode, string isMenu = null)
         {
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = "Base";
             }
@@ -858,7 +858,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
                 var moduleEntity = GetEntityByCacheByCode(systemCode, code);
                 if (moduleEntity != null)

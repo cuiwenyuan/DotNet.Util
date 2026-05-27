@@ -116,7 +116,7 @@ namespace DotNet.Business
             var permissionId = string.Empty;
             permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
             // 没有找到相应的权限
-            if (string.IsNullOrEmpty(permissionId))
+            if (permissionId.IsNullOrEmpty())
             {
                 return false;
             }
