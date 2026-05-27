@@ -846,4 +846,94 @@ public partial class BasePage : System.Web.UI.Page
 
     #endregion
 
+    public IDbHelper GetCurrentDbHelper(string systemCode)
+    {
+        var currentDbHelper = BusinessDbHelper;
+        if (!systemCode.IsNullOrEmpty())
+        {
+            switch (systemCode)
+            {
+                case "UserCenter":
+                    currentDbHelper = UserCenterDbHelper;
+                    break;
+                case "Business":
+                    currentDbHelper = BusinessDbHelper;
+                    break;
+                case "Message":
+                    currentDbHelper = MessageDbHelper;
+                    break;
+                case "WorkFlow":
+                    currentDbHelper = WorkFlowDbHelper;
+                    break;
+                case "WebApp":
+                    currentDbHelper = WebAppDbHelper;
+                    break;
+                case "BPM":
+                    currentDbHelper = BpmDbHelper;
+                    break;
+                case "ERP":
+                    currentDbHelper = ErpDbHelper;
+                    break;
+                case "WMS":
+                    currentDbHelper = WmsDbHelper;
+                    break;
+                case "MES":
+                    currentDbHelper = MesDbHelper;
+                    break;
+                case "HRM":
+                    currentDbHelper = HrmDbHelper;
+                    break;
+                case "CRM":
+                    currentDbHelper = CrmDbHelper;
+                    break;
+                case "OA":
+                    currentDbHelper = OaDbHelper;
+                    break;
+                case "Label":
+                    currentDbHelper = LabelDbHelper;
+                    break;
+                case "WebSite":
+                    currentDbHelper = WebSiteDbHelper;
+                    break;
+                case "CMS":
+                    currentDbHelper = CmsDbHelper;
+                    break;
+                case "FlowPortal":
+                    currentDbHelper = FlowPortalDbHelper;
+                    break;
+                case "DealerPortal":
+                    currentDbHelper = DealerPortalDbHelper;
+                    break;
+                case "CustomerPortal":
+                    currentDbHelper = CustomerPortalDbHelper;
+                    break;
+                case "SupplierPortal":
+                    currentDbHelper = SupplierPortalDbHelper;
+                    break;
+                case "Report":
+                    currentDbHelper = ReportDbHelper;
+                    break;
+                case "SCM":
+                    currentDbHelper = ScmDbHelper;
+                    break;
+                case "IMS":
+                    currentDbHelper = ImsDbHelper;
+                    break;
+                case "ICS":
+                    currentDbHelper = IcsDbHelper;
+                    break;
+                case "OMS":
+                    currentDbHelper = OmsDbHelper;
+                    break;
+                case "Member":
+                    currentDbHelper = MemberDbHelper;
+                    break;
+                default:
+                    currentDbHelper = DbHelper;
+                    break;
+            }
+        }
+
+        return currentDbHelper;
+    }
 }

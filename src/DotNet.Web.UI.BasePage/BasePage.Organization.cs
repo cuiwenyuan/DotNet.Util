@@ -61,14 +61,14 @@ public partial class BasePage : System.Web.UI.Page
     {
         //dropDownList.Items.Clear();
         var manager = new BaseOrganizationManager(UserInfo);
-        var dtOrganization = manager.GetOrganizationDataTable(parentId, false, categoryCode);
+        var dt = manager.GetOrganizationDataTable(parentId, false, categoryCode);
         dropDownList.SelectedValue = null;
-        if (dtOrganization != null && dtOrganization.Rows.Count > 0)
+        if (dt != null && dt.Rows.Count > 0)
         {
-            dtOrganization.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+            dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
             dropDownList.DataValueField = BaseOrganizationEntity.FieldId;
             dropDownList.DataTextField = BaseOrganizationEntity.FieldName;
-            dropDownList.DataSource = dtOrganization;
+            dropDownList.DataSource = dt;
         }
         dropDownList.DataBind();
         if (insertBlank)

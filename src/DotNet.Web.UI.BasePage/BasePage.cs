@@ -148,7 +148,7 @@ public partial class BasePage : System.Web.UI.Page
     {
         if (Page.Request["OpenId"] != null)
         {
-            // 读取参数
+            // 获取参数
             OpenId = Page.Request["OpenId"];
             // 看看是远程的还是本地的登录方式
             if (ConfigurationManager.AppSettings["SSOVerify"] != null)
@@ -167,9 +167,9 @@ public partial class BasePage : System.Web.UI.Page
             {
                 // 通过本地登录方式进行登录
                 // 若没登录或者登录的标识不一致，需要重新登录
-                if (!WebUtil.UserIsLogon() || !UserInfo.OpenId.Equals(OpenId))
+                if (!WebUtil.UserIsLogon() || (UserInfo != null && !UserInfo.OpenId.Equals(OpenId)))
                 {
-                    UserInfo = new CurrentUserInfo(WebUtil.LogonByOpenId(OpenId).UserInfo);
+                    UserInfo = new CurrentUserInfo(WebUtil.LogonByOpenId(OpenId)?.UserInfo);
                 }
             }
         }

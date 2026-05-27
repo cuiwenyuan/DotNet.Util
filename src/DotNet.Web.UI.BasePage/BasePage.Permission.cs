@@ -348,8 +348,6 @@ public partial class BasePage : System.Web.UI.Page
     }
     #endregion
 
-    // 用户操作权限常用判断函数
-
     #region public void Authorized(string permissionCode, string accessDenyUrl = null) 是否有相应权限，同时若没权限会重新定位到某个页面
     /// <summary>
     /// 是否有相应权限，同时若没权限会重新定位到某个页面
