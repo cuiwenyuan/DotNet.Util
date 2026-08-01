@@ -95,7 +95,7 @@ namespace DotNet.Util
                 var newSize = new Size(image.Width, image.Height);
                 if (newSize.Width > dHeight || newSize.Width > dWidth)
                 {
-                    if ((newSize.Width * dHeight) > (newSize.Width * dWidth))
+                    if ((newSize.Width * dHeight) > (newSize.Height * dWidth))
                     {
                         sW = dWidth;
                         sH = (dWidth * newSize.Height) / newSize.Width;
@@ -163,7 +163,7 @@ namespace DotNet.Util
                     {
                         ob.Save(compressedFilePath, tFormat);
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -249,8 +249,8 @@ namespace DotNet.Util
             var entity = new ExifEntity();
             try
             {
-                //载入图片   
-                //取得所有的属性(以PropertyId做排序)   
+                //载入图片
+                //取得所有的属性(以PropertyId做排序)
                 var propertyItems = img.PropertyItems.OrderBy(x => x.Id);
                 foreach (var item in propertyItems)
                 {
@@ -262,11 +262,11 @@ namespace DotNet.Util
                             case 0x0002://设置纬度
                                 if (item.Value.Length == 24)
                                 {
-                                    //degrees(将byte[0]~byte[3]转成uint, 除以byte[4]~byte[7]转成的uint)   
+                                    //degrees(将byte[0]~byte[3]转成uint, 除以byte[4]~byte[7]转成的uint)
                                     double d = BitConverter.ToUInt32(item.Value, 0) * 1.0d / BitConverter.ToUInt32(item.Value, 4);
-                                    //minutes(將byte[8]~byte[11]转成uint, 除以byte[12]~byte[15]转成的uint)   
+                                    //minutes(將byte[8]~byte[11]转成uint, 除以byte[12]~byte[15]转成的uint)
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
-                                    //seconds(將byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)   
+                                    //seconds(將byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
                                     double dblGPSLatitude = (((s / 60 + m) / 60) + d);
                                     entity.Latitude = dblGPSLatitude;
@@ -275,11 +275,11 @@ namespace DotNet.Util
                             case 0x0004: //设置经度
                                 if (item.Value.Length == 24)
                                 {
-                                    //degrees(将byte[0]~byte[3]转成uint, 除以byte[4]~byte[7]转成的uint)   
+                                    //degrees(将byte[0]~byte[3]转成uint, 除以byte[4]~byte[7]转成的uint)
                                     double d = BitConverter.ToUInt32(item.Value, 0) * 1.0d / BitConverter.ToUInt32(item.Value, 4);
-                                    //minutes(将byte[8]~byte[11]转成uint, 除以byte[12]~byte[15]转成的uint)   
+                                    //minutes(将byte[8]~byte[11]转成uint, 除以byte[12]~byte[15]转成的uint)
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
-                                    //seconds(将byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)   
+                                    //seconds(将byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
                                     double dblGPSLongitude = (((s / 60 + m) / 60) + d);
                                     entity.Longitude = dblGPSLongitude;

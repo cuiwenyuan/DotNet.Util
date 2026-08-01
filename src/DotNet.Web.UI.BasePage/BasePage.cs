@@ -13,9 +13,9 @@ using DotNet.Util;
 /// <remarks>
 /// BasePage
 /// 基础网页类
-/// 
+///
 /// 修改记录
-/// 
+///
 /// 版本：4.1 2017.05.09    Troy Cui    完善代码。
 /// 版本：2.6 2011.06.19    zgl         修改dbHelper，_userCenterDbHelper的属性为protected->private
 ///                                     增加protected  string  GetSequence(string tableName) 根据表名，取得序列号
@@ -25,12 +25,12 @@ using DotNet.Util;
 ///	版本：2.2 2007.12.09    JiRiGaLa    获得页面权限的 GetPermission 函数改进。
 ///	版本：2.1 2007.12.08    JiRiGaLa    单点登录功能完善。
 ///	版本：2.0 2006.02.02    JiRiGaLa    页面注释都修改好。
-///	
+///
 /// 版本：4.1
-/// <author>  
+/// <author>
 ///		<name>Troy.Cui</name>
 ///		<date>2017.05.09</date>
-/// </author> 
+/// </author>
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
@@ -153,9 +153,9 @@ public partial class BasePage : System.Web.UI.Page
             // 看看是远程的还是本地的登录方式
             if (ConfigurationManager.AppSettings["SSOVerify"] != null)
             {
-                // 通过远程方式进行登录                
+                // 通过远程方式进行登录
                 // string url = "http://localhost/GetSignin.ashx?OpenId=" + UserInfo.OpenId;
-                var url = ConfigurationManager.AppSettings["SSOVerify"] + "?OpenId=" + UserInfo.OpenId;
+                var url = ConfigurationManager.AppSettings["SSOVerify"] + "?OpenId=" + OpenId;
                 var jsonUserInfo = RequestUtil.GetResponse(url);
                 if (!jsonUserInfo.IsNullOrEmpty())
                 {

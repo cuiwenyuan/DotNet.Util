@@ -28,7 +28,7 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
@@ -83,7 +83,7 @@ namespace DotNet.Util
 
         private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
         {
-            return true; //总是接受  
+            return true; //总是接受
         }
         /// <summary>
         /// 创建请求
@@ -110,7 +110,7 @@ namespace DotNet.Util
             //设置boundaryValue
             var boundaryValue = DateTime.Now.Ticks.ToString("x");
             var boundary = "--" + boundaryValue;
-            request.ContentType = "\r\nmultipart/form-data; boundary=" + boundaryValue;
+            request.ContentType = "multipart/form-data; boundary=" + boundaryValue;
             //设置KeepAlive
             request.KeepAlive = true;
             //设置请求数据，拼接成字符串
@@ -183,7 +183,7 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
@@ -244,7 +244,7 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
@@ -298,7 +298,7 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
@@ -352,7 +352,7 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
@@ -401,7 +401,7 @@ namespace DotNet.Util
         /// <summary>
         /// HTTP POST方式请求数据(带图片)
         /// </summary>
-        /// <param name="url">URL</param>        
+        /// <param name="url">URL</param>
         /// <param name="param">POST的数据</param>
         /// <param name="fileByte">图片</param>
         /// <returns></returns>
@@ -464,7 +464,7 @@ namespace DotNet.Util
         #endregion
 
         #region 下载图片 DownloadPicture
-        
+
         /// <summary>
         /// 下载图片
         /// </summary>

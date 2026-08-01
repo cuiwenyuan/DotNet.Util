@@ -9,16 +9,16 @@ namespace DotNet.Util
     /// <summary>
     ///	BaseUtil
     /// 通用基类
-    /// 
-    /// 
+    ///
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2021.12.31 版本：5.1   Troy.Cui重构
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2021.12.31</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseUtil
     {
@@ -30,7 +30,12 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Boolean ConvertToBoolean(Object targetValue)
         {
-            return targetValue != DBNull.Value && (targetValue.ToString().Equals(true.ToString()) || targetValue.ToString().Equals("1"));
+            if (targetValue == null || targetValue == DBNull.Value)
+            {
+                return false;
+            }
+            var value = targetValue.ToString();
+            return value.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase) || value.Equals("1");
         }
         /// <summary>
         /// 转为字符串
@@ -275,9 +280,13 @@ namespace DotNet.Util
         {
             var returnValue = DateTime.MinValue;
 
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                returnValue = Convert.ToDateTime(targetValue.ToString());
+                DateTime dt;
+                if (DateTime.TryParse(targetValue.ToString(), out dt))
+                {
+                    returnValue = dt;
+                }
             }
 
             return returnValue;

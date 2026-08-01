@@ -19,7 +19,7 @@ namespace DotNet.Business
     {
         #region public static string BuildUrl(string url, string paramText, string paramValue)
         /// <summary>
-        /// url里有key的值，就替换为value,没有的话就追加.构造Url的参数 
+        /// url里有key的值，就替换为value,没有的话就追加.构造Url的参数
         /// </summary>
         /// <param name="url"></param>
         /// <param name="paramText"></param>
@@ -86,6 +86,7 @@ namespace DotNet.Business
             {
                 // 设置为被选中状态
                 listItem.Selected = true;
+                result = true;
             }
             return result;
         }

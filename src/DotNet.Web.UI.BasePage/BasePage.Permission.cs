@@ -14,17 +14,17 @@ using DotNet.Util;
 /// <remarks>
 /// BasePage
 /// 基础网页类
-/// 
+///
 /// 修改记录
-/// 
+///
 /// 版本：4.1 2017.05.09    Troy Cui    完善代码。
 ///	版本：1.0 2012.11.10    JiRiGaLa    整理代码。
-///	
+///
 /// 版本：4.1
-/// <author>  
+/// <author>
 ///		<name>Troy.Cui</name>
 ///		<date>2017.05.09</date>
-/// </author> 
+/// </author>
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
@@ -264,9 +264,10 @@ public partial class BasePage : System.Web.UI.Page
         PermissionList = IsAuthorized(module + ".List");
         PermissionListAll = IsAuthorized(module + ".ListAll");
         PermissionShow = IsAuthorized(module + ".Show");
+        PermissionShow = IsAuthorized(module + ".Display");
         PermissionView = IsAuthorized(module + ".View");
         PermissionViewAll = IsAuthorized(module + ".ViewAll");
-        PermissionShow = IsAuthorized(module + ".Display");
+        PermissionDisplay = IsAuthorized(module + ".Display");
         PermissionAudit = IsAuthorized(module + ".Audit");
         PermissionUndoAudit = IsAuthorized(module + ".UndoAudit");
         PermissionDelete = IsAuthorized(module + ".Delete");

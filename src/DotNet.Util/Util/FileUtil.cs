@@ -14,19 +14,19 @@ namespace DotNet.Util
     /// <summary>
     ///	FileUtil
     /// 文件帮助类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2015.03.22 版本：1.4    JiRiGaLa 异常数据记录更多信息。
     ///		2012.05.03 版本：1.3    Pcsky增加一个读取文本文件内容的方法(GetTextFileContent)
     ///		2011.07.31 版本：1.2    Sunplay增加一个删除文件的方法(DeleteFile)。
     ///		2011.07.31 版本：1.1    Sunplay增加一个获取文件大小的方法(GetFileSize)。
     ///		2010.07.10 版本：1.0	JiRiGaLa 创建。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2015.03.22</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class FileUtil
     {
@@ -167,11 +167,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static byte[] ImageToByte(Image image)
         {
-            var ms = new MemoryStream();
-            image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-            var file = ms.GetBuffer();
-            ms.Close();
-            return file;
+            using (var ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+                return ms.ToArray();
+            }
         }
         /// <summary>
         /// 字节转图片
@@ -361,7 +361,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 删除文件 
+        /// 删除文件
         /// </summary>
         /// <param name="fileName">文件全路径</param>
         /// <returns>bool 是否删除成功</returns>

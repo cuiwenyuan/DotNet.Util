@@ -141,7 +141,7 @@ namespace DotNet.Util
                     {
                         pi.SetValue(entity, BaseUtil.ConvertToNullableFloat(value), null);
                     }
-                    else if (pi.PropertyType == typeof(double?))
+                    else if (pi.PropertyType == typeof(double))
                     {
                         pi.SetValue(entity, BaseUtil.ConvertToDouble(value), null);
                     }

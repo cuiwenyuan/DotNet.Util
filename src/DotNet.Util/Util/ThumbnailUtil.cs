@@ -88,7 +88,7 @@ namespace DotNet.Util
         /// <returns>缩略图的Image对象</returns>
         public void SaveImage(int width, int height, ImageFormat imgformat)
         {
-            if (imgformat != ImageFormat.Gif && (_srcImage.Width > width) || (_srcImage.Height > height))
+            if (imgformat != ImageFormat.Gif && ((_srcImage.Width > width) || (_srcImage.Height > height)))
             {
                 Image img;
                 var callb = new Image.GetThumbnailImageAbort(ThumbnailCallback);
@@ -168,7 +168,7 @@ namespace DotNet.Util
             if (originalWidth > maxWidth2 || originalHeight > maxHeight2)
             {
                 decimal factor;
-                // determine the largest factor 
+                // determine the largest factor
                 if (originalWidth / originalHeight > aspectRatio)
                 {
                     factor = originalWidth / maxWidth2;

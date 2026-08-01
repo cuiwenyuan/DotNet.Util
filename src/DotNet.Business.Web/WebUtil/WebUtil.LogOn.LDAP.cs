@@ -79,7 +79,7 @@ namespace DotNet.Business
                         if (!permissionCode.IsNullOrEmpty())
                         {
                             var permissionManager = new BasePermissionManager(userInfo);
-                            isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                            isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.Id.ToString(), permissionCode, null);
                         }
                         // 有相应的权限才可以登录
                         if (isAuthorized)
@@ -89,13 +89,20 @@ namespace DotNet.Business
                                 // 相对安全的方式保存登录状态
                                 //SaveCookie(userName, password);
                                 // 内部单点登录方式 Troy.Cui 2016.12.26
-                                SaveCookie(userInfo);
+                                SaveCookie(userLogonResult.UserInfo);
                             }
                             else
                             {
                                 RemoveUserCookie();
                             }
                             Logon(userLogonResult.UserInfo, formsAuthentication);
+
+                            userLogonResult.Status = Status.Ok;
+                            userLogonResult.StatusCode = Status.Ok.ToString();
+                            userLogonResult.StatusMessage = "登录成功";
+                            status = Status.Ok;
+                            statusMessage = "登录成功";
+                            baseUserInfo = userLogonResult.UserInfo;
                         }
                         else
                         {
@@ -106,13 +113,6 @@ namespace DotNet.Business
                             statusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
                             baseUserInfo = userLogonResult.UserInfo;
                         }
-
-                        userLogonResult.Status = Status.Ok;
-                        userLogonResult.StatusCode = Status.Ok.ToString();
-                        userLogonResult.StatusMessage = "登录成功";
-                        status = Status.Ok;
-                        statusMessage = "登录成功";
-                        baseUserInfo = userLogonResult.UserInfo;
                     }
                     else
                     {
@@ -174,7 +174,7 @@ namespace DotNet.Business
                 if (!permissionCode.IsNullOrEmpty())
                 {
                     var permissionManager = new BasePermissionManager(userInfo);
-                    isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                    isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.UserId.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -184,7 +184,7 @@ namespace DotNet.Business
                         // 相对安全的方式保存登录状态
                         //SaveCookie(userName, password);
                         // 内部单点登录方式 Troy.Cui 2016.12.26
-                        SaveCookie(userInfo);
+                        SaveCookie(userLogonResult.UserInfo);
                     }
                     else
                     {

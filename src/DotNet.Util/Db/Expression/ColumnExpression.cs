@@ -12,7 +12,7 @@ namespace DotNet.Util
      public class ColumnExpression : DbBaseExpression
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -25,7 +25,7 @@ namespace DotNet.Util
             this.MemberInfo = memberInfo;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -39,7 +39,7 @@ namespace DotNet.Util
             this.FunctionName = functionName;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -51,7 +51,7 @@ namespace DotNet.Util
             this.Value = value;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -63,7 +63,7 @@ namespace DotNet.Util
             this.ColumnAlias = columnAlias;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -77,7 +77,7 @@ namespace DotNet.Util
             this.FunctionName = functionName;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -167,7 +167,25 @@ namespace DotNet.Util
         /// <summary>
         /// 判断是否为可空类型
         /// </summary>
-        public bool IsNullable => Nullable.GetUnderlyingType(typeof(MemberInfo)) != null;
+        public bool IsNullable
+        {
+            get
+            {
+                if (MemberInfo == null)
+                {
+                    return false;
+                }
+                if (MemberInfo is PropertyInfo propertyInfo)
+                {
+                    return Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
+                }
+                if (MemberInfo is FieldInfo fieldInfo)
+                {
+                    return Nullable.GetUnderlyingType(fieldInfo.FieldType) != null;
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// 表的别名

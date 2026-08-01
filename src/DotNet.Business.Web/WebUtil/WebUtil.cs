@@ -30,7 +30,7 @@ namespace DotNet.Business
 
         /// <summary>
         /// 是否显示提示信息
-        /// </summary> 
+        /// </summary>
         public static bool ShowInformation = true;
 
         /// <summary>
@@ -420,11 +420,11 @@ namespace DotNet.Business
                     // 把选中的ID保存到字符串
                     if (key.IsNullOrEmpty())
                     {
-                        id = ((HiddenField)repeater.Items[i].FindControl(key)).Value;
+                        id = ((HiddenField)repeater.Items[i].FindControl("hidId")).Value;
                     }
                     else
                     {
-                        id = ((HiddenField)repeater.Items[i].FindControl("hidId")).Value;
+                        id = ((HiddenField)repeater.Items[i].FindControl(key)).Value;
                     }
                     if (id.Length > 0)
                     {

@@ -237,7 +237,7 @@ namespace DotNet.Util
             var result = false;
             if (expression != null)
             {
-                result = Regex.IsMatch(expression.ToString(), @"^([0-9])[0-9]*(\.\w*)?$");
+                result = Regex.IsMatch(expression.ToString(), @"^[0-9]+(\.[0-9]+)?$");
             }
             return result;
         }
@@ -597,7 +597,7 @@ namespace DotNet.Util
                     //60984399883
                     //Check digit calculation is based on modulus 10 with digits in an odd
                     //position (from right to left) being weighted 1 and even position digits
-                    //being weighted 3. 
+                    //being weighted 3.
                     //Implementation based on http://stackoverflow.com/questions/10143547/how-do-i-validate-a-upc-or-ean-code
                     result = checkDigit == CalculateUPCACheckDigit(code);
                 }

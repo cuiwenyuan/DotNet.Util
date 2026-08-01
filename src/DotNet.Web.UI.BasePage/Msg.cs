@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web;
 
@@ -10,6 +11,25 @@ namespace DotNet.Util
     /// </summary>
     public partial class Msg
     {
+        /// <summary>
+        /// 对写入JavaScript字符串的内容进行转义，防止XSS
+        /// </summary>
+        /// <param name="content">内容</param>
+        /// <returns>转义后的内容</returns>
+        private static string JsEncode(string content)
+        {
+            if (content == null)
+            {
+                return string.Empty;
+            }
+            content = content.Replace("\\", "\\\\")
+                             .Replace("'", "\\'")
+                             .Replace("\"", "\\\"")
+                             .Replace("\r\n", "\\n")
+                             .Replace("\r", "\\n")
+                             .Replace("\n", "\\n");
+            return Regex.Replace(content, "</script", "<\\/script", RegexOptions.IgnoreCase);
+        }
         #region public static void LayerAlert(string message, bool fail = false, bool close = false) Layer显示消息，不需要确认
 
         /// <summary>
@@ -34,17 +54,17 @@ namespace DotNet.Util
             }
             if (fail)
             {
-                message = "<script>layer.ready(function () {layer.msg('" + message + "', {icon: 2, shift: 2} );});</script>";
+                message = "<script>layer.ready(function () {layer.msg('" + JsEncode(message) + "', {icon: 2, shift: 2} );});</script>";
             }
             else
             {
                 if (close)
                 {
-                    message = "<script>layer.ready(function () {layer.msg('" + message + "', {icon: 1, shift: 2, time: " + closeTime + "}, function(){ parent.layer.close(parent.layer.getFrameIndex(window.name)); });});</script>";
+                    message = "<script>layer.ready(function () {layer.msg('" + JsEncode(message) + "', {icon: 1, shift: 2, time: " + closeTime + "}, function(){ parent.layer.close(parent.layer.getFrameIndex(window.name)); });});</script>";
                 }
                 else
                 {
-                    message = "<script>layer.ready(function () {layer.msg('" + message + "', {icon: 1, shift: 2, time: " + closeTime + "} );});</script>";
+                    message = "<script>layer.ready(function () {layer.msg('" + JsEncode(message) + "', {icon: 1, shift: 2, time: " + closeTime + "} );});</script>";
                 }
             }
             //page.ClientScript.RegisterStartupScript(page.GetType(), "message", message);
@@ -80,13 +100,13 @@ namespace DotNet.Util
             {
                 //message = "</script><script>layer.ready(function () {layer.msg('" + message + "', {icon: 2, shift: 2}, function(){location.href='" + url + "';} );});</script>";
                 //先跳转
-                message = "</script><script>layer.ready(function () {parent.layer.msg('" + message + "', {icon: 2, shift: 2, time: " + closeTime + "});location.href='" + url + "';});</script>";
+                message = "</script><script>layer.ready(function () {parent.layer.msg('" + JsEncode(message) + "', {icon: 2, shift: 2, time: " + closeTime + "});location.href='" + JsEncode(url) + "';});</script>";
             }
             else
             {
                 //message = "<script>layer.ready(function () {layer.msg('" + message + "', {icon: 1, shift: 2}, function(){location.href='" + url + "';} );});</script>";
                 //先跳转
-                message = "<script>layer.ready(function () {parent.layer.msg('" + message + "', {icon: 1, shift: 2, time: " + closeTime + "});location.href='" + url + "';});</script>";
+                message = "<script>layer.ready(function () {parent.layer.msg('" + JsEncode(message) + "', {icon: 1, shift: 2, time: " + closeTime + "});location.href='" + JsEncode(url) + "';});</script>";
             }
             //page.ClientScript.RegisterStartupScript(page.GetType(), "message", message);
             //Troy.Cui提交后不再等待页面执行完毕再弹出提示 2018-11-27
@@ -103,7 +123,7 @@ namespace DotNet.Util
         public static void ShowAlert(string message)
         {
             var page = (Page)System.Web.HttpContext.Current.Handler;
-            message = "<script>alert('" + message + "');</script>";
+            message = "<script>alert('" + JsEncode(message) + "');</script>";
             page.ClientScript.RegisterStartupScript(page.GetType(), "message", message);
 
         }
@@ -118,7 +138,7 @@ namespace DotNet.Util
         public static void ShowAlert(string message, string url)
         {
             var page = (Page)System.Web.HttpContext.Current.Handler;
-            message = "<script>alert('" + message + "');location='" + url + "';</script>";
+            message = "<script>alert('" + JsEncode(message) + "');location='" + JsEncode(url) + "';</script>";
             page.ClientScript.RegisterStartupScript(page.GetType(), "message", message);
         }
         #endregion
@@ -149,7 +169,7 @@ namespace DotNet.Util
         public static void ShowConfirmAlert(string message, string confirmUrl, bool closeWindow = false)
         {
             var page = (Page)System.Web.HttpContext.Current.Handler;
-            message = "<script>if( confirm('" + message + "') ) {document.location.href='" + confirmUrl +
+            message = "<script>if( confirm('" + JsEncode(message) + "') ) {document.location.href='" + JsEncode(confirmUrl) +
                       "'; } else { window.history.back(); }";
 
             if (closeWindow)
@@ -170,8 +190,8 @@ namespace DotNet.Util
         public static void ShowConfirmAlert(string message, string confirmurl, string cancelUrl, bool closeWindow = false)
         {
             var page = (Page)System.Web.HttpContext.Current.Handler;
-            message = "<script>if( confirm('" + message + "') ) {document.location.href='" + confirmurl +
-                      "'; } else { document.location.href='" + cancelUrl + "' }";
+            message = "<script>if( confirm('" + JsEncode(message) + "') ) {document.location.href='" + JsEncode(confirmurl) +
+                      "'; } else { document.location.href='" + JsEncode(cancelUrl) + "' }";
             if (closeWindow)
                 message += " window.close();";
             message += "</script>";
@@ -190,7 +210,7 @@ namespace DotNet.Util
             if (url.IsNullOrEmpty())
                 page.ClientScript.RegisterStartupScript(page.GetType(), "message", "跳转地址不能为空。");
             else
-                page.ClientScript.RegisterStartupScript(page.GetType(), "message", "<script>location='" + url + "';</script>");
+                page.ClientScript.RegisterStartupScript(page.GetType(), "message", "<script>location='" + JsEncode(url) + "';</script>");
         }
         #endregion
 
@@ -203,7 +223,7 @@ namespace DotNet.Util
         {
             // message = StringUtil.DeleteUnVisibleChar(message);
             var js = @"<script>
-                    alert('" + message + "');</script>";
+                    alert('" + JsEncode(message) + "');</script>";
 
             //2008年4月26日15:46:38 Modify by zxy
             //现在使用Page来注册脚本，如果使用 Response.Write来输出脚本，该脚本会出现在页面的顶部，破坏页面的布局。
@@ -242,7 +262,7 @@ namespace DotNet.Util
             js += "window.opener=null;" + System.Environment.NewLine;
             js += "window.open('','_self');" + System.Environment.NewLine;
             js += "}" + System.Environment.NewLine;
-            js += "alert('" + message + "');" + System.Environment.NewLine;
+            js += "alert('" + JsEncode(message) + "');" + System.Environment.NewLine;
             js += "window.close();";
             js += "</script>" + System.Environment.NewLine;
 
@@ -271,7 +291,7 @@ namespace DotNet.Util
         public static void AlertAndRedirect(string message, string toUrl)
         {
             var js = "<script>alert('{0}');window.location.replace('{1}')</script>";
-            HttpContext.Current.Response.Write(string.Format(js, message, toUrl));
+            HttpContext.Current.Response.Write(string.Format(js, JsEncode(message), JsEncode(toUrl)));
         }
         #endregion
 
@@ -282,7 +302,7 @@ namespace DotNet.Util
         /// <param name="str"></param>
         public static void JsAlert(string str)
         {
-            HttpContext.Current.Response.Write("<script>alert('" + str + "');history.go(-1);</script>");
+            HttpContext.Current.Response.Write("<script>alert('" + JsEncode(str) + "');history.go(-1);</script>");
             HttpContext.Current.Response.End();
         }
         #endregion
@@ -295,7 +315,7 @@ namespace DotNet.Util
         /// <param name="url"></param>
         public static void JsAlert(string str, string url)
         {
-            HttpContext.Current.Response.Write("<script>alert('" + str + "');window.location.href='" + url + "';</script>");
+            HttpContext.Current.Response.Write("<script>alert('" + JsEncode(str) + "');window.location.href='" + JsEncode(url) + "';</script>");
             HttpContext.Current.Response.End();
         }
         #endregion

@@ -95,7 +95,7 @@ namespace DotNet.Business
                     {
                         //获取当前页面
                         returnUrl = HttpUtility.UrlEncode(HttpContext.Current.Request.Url.ToString());
-                        //returnUrl = Server.UrlEncode(HttpContext.Current.Request.Url.ToString()); 
+                        //returnUrl = Server.UrlEncode(HttpContext.Current.Request.Url.ToString());
                     }
                     var js = @"<script language='JavaScript'>top.window.location.replace('{0}');</script>";
                     js = string.Format(js, UserLogonPage + "?ReturnUrl=" + returnUrl);
@@ -727,12 +727,12 @@ namespace DotNet.Business
             {
                 userInfo.SystemCode = systemCode;
             }
-            if (!(userInfo.IpAddress).IsNullOrEmpty())
+            if ((userInfo.IpAddress).IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
             var userManager = new BaseUserManager(userInfo) { CheckIsAdministrator = true };
-            var userLogonResult = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, Utils.GetIp());
+            var userLogonResult = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, userInfo.IpAddress);
             // 检查身份
             if (userLogonResult.Status == Status.Ok)
             {
@@ -741,7 +741,7 @@ namespace DotNet.Business
                 if (!permissionCode.IsNullOrEmpty())
                 {
                     var permissionManager = new BasePermissionManager(userInfo);
-                    isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                    isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.Id.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)

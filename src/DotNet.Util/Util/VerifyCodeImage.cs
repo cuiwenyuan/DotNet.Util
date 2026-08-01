@@ -240,8 +240,8 @@ namespace DotNet.Util
             // 随机字体和颜色的验证码字符
             for (var i = 0; i < code.Length; i++)
             {
-                cindex = rand.Next(Colors.Length - 1);
-                findex = rand.Next(Fonts.Length - 1);
+                cindex = rand.Next(Colors.Length);
+                findex = rand.Next(Fonts.Length);
 
                 font = new Font(Fonts[findex], fSize, FontStyle.Bold);
                 brush = new SolidBrush(Colors[cindex]);
@@ -289,7 +289,7 @@ namespace DotNet.Util
             var random = new Random(unchecked((int)DateTime.Now.Ticks));
             for (var i = 0; i < codeLength; i++)
             {
-                randValue = random.Next(0, arr.Length - 1);
+                randValue = random.Next(0, arr.Length);
                 code += arr[randValue];
             }
             return code;
@@ -319,7 +319,7 @@ namespace DotNet.Util
 #if NET46_OR_GREATER
             httpContext.Response.ClearContent();
             httpContext.Response.ContentType = "image/Jpeg";
-            httpContext.Response.BinaryWrite(memoryStream.GetBuffer());
+            httpContext.Response.BinaryWrite(memoryStream.ToArray());
 #elif NETSTANDARD2_0_OR_GREATER
             //.NET STANDARD 2.0的实现方式
 #endif

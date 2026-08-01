@@ -75,7 +75,7 @@ namespace DotNet.Business
                                 // 相对安全的方式保存登录状态
                                 //SaveCookie(userName, password);
                                 // 内部单点登录方式 Troy.Cui 2016.12.26
-                                SaveCookie(userInfo);
+                                SaveCookie(userLogonResult.UserInfo);
                             }
                             else
                             {

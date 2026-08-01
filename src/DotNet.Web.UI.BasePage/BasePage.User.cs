@@ -12,16 +12,16 @@ using DotNet.Util;
 /// <remarks>
 /// BasePage
 /// 基础网页类
-/// 
+///
 /// 修改记录
-/// 
+///
 ///	版本：1.0 2012.11.10    JiRiGaLa    整理代码。
-///	
+///
 /// 版本：1.0
-/// <author>  
+/// <author>
 ///		<name>Troy.Cui</name>
 ///		<date>2017.05.09</date>
-/// </author> 
+/// </author>
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
@@ -38,37 +38,48 @@ public partial class BasePage : System.Web.UI.Page
         var manager = new BaseUserManager(UserInfo);
 
         var sb = PoolUtil.StringBuilder.Get();
+        var dbParameters = new List<IDbDataParameter>();
         sb.Append(" SELECT * FROM " + BaseUserEntity.CurrentTableName);
         sb.Append(" WHERE (" + BaseUserEntity.FieldDeleted + " = 0 AND " + BaseUserEntity.FieldEnabled + " = 1 AND " + BaseUserEntity.FieldIsVisible + " = 1");
 
         if (!organizationId.IsNullOrEmpty())
         {
-            sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "' ");
+            sb.Append(" AND " + BaseUserEntity.FieldDepartmentId + " = " + manager.DbHelper.GetParameter("OrganizationId") + " ");
+            dbParameters.Add(manager.DbHelper.MakeParameter("OrganizationId", organizationId));
         }
         if (securityLevel != null)
         {
-            sb.Append(" AND " + BaseUserEntity.FieldSecurityLevel + " < " + securityLevel + " ");
+            sb.Append(" AND " + BaseUserEntity.FieldSecurityLevel + " < " + manager.DbHelper.GetParameter("SecurityLevel") + " ");
+            dbParameters.Add(manager.DbHelper.MakeParameter("SecurityLevel", securityLevel));
         }
         sb.Append(" )");
         if (containSelf.HasValue)
         {
             if (containSelf == true)
             {
-                sb.Append(" OR ( " + BaseUserEntity.FieldId + " = '" + UserInfo.Id + "'");
-                sb.Append(" AND ( " + BaseUserEntity.FieldCompanyId + " = '" + organizationId + "'");
-                sb.Append(" OR  " + BaseUserEntity.FieldSubCompanyId + " = '" + organizationId + "'");
-                sb.Append(" OR  " + BaseUserEntity.FieldDepartmentId + " = '" + organizationId + "'");
-                sb.Append(" OR  " + BaseUserEntity.FieldWorkgroupId + " = '" + organizationId + "'))");
+                sb.Append(" OR ( " + BaseUserEntity.FieldId + " = " + manager.DbHelper.GetParameter("UserInfoId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("UserInfoId", UserInfo.Id));
+                sb.Append(" AND ( " + BaseUserEntity.FieldCompanyId + " = " + manager.DbHelper.GetParameter("CompanyId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("CompanyId", organizationId ?? string.Empty));
+                sb.Append(" OR  " + BaseUserEntity.FieldSubCompanyId + " = " + manager.DbHelper.GetParameter("SubCompanyId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("SubCompanyId", organizationId ?? string.Empty));
+                sb.Append(" OR  " + BaseUserEntity.FieldDepartmentId + " = " + manager.DbHelper.GetParameter("ContainDepartmentId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("ContainDepartmentId", organizationId ?? string.Empty));
+                sb.Append(" OR  " + BaseUserEntity.FieldWorkgroupId + " = " + manager.DbHelper.GetParameter("WorkgroupId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("WorkgroupId", organizationId ?? string.Empty));
+                sb.Append("))");
             }
             else
             {
-                sb.Append(" AND ( " + BaseUserEntity.FieldId + " != '" + UserInfo.Id + "')");
+                sb.Append(" AND ( " + BaseUserEntity.FieldId + " != " + manager.DbHelper.GetParameter("ExcludeUserId"));
+                dbParameters.Add(manager.DbHelper.MakeParameter("ExcludeUserId", UserInfo.Id));
+                sb.Append(")");
             }
         }
 
         sb.Append(" ORDER BY " + BaseUserEntity.FieldSortCode);
 
-        dtUser = manager.Fill(sb.Return());
+        dtUser = manager.Fill(sb.Return(), dbParameters.ToArray());
         dtUser.TableName = BaseUserEntity.CurrentTableName;
         dtUser.DefaultView.Sort = BaseUserEntity.FieldSortCode;
         return dtUser;

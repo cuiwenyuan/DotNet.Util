@@ -17,19 +17,19 @@ namespace DotNet.Util
     /// <summary>
     /// BaseExportCSV
     /// 导出CSV格式数据
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2021.12.31 版本：5.0 Troy.Cui	ToDataTable方法增加fieldList和fieldListOnly用于读取控制
     ///     2021.09.21 版本：4.0 Troy.Cui	增加ToDataTable方法，并增加fieldList字典控制csv输出
     ///     2009.07.08 版本：3.0 JiRiGaLa	更新完善程序，将方法修改为静态方法。
     ///     2007.08.11 版本：2.0 JiRiGaLa	更新完善程序。
     ///     2006.12.01 版本：1.0 JiRiGaLa	新创建。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2009.07.08</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class CsvUtil
     {
@@ -95,9 +95,10 @@ namespace DotNet.Util
             while (dataReader.Read())
             {
                 sb = PoolUtil.StringBuilder.Get();
-                for (var index = 0; index < dataReader.FieldCount - 1; index++)
+                for (var index = 0; index < dataReader.FieldCount; index++)
                 {
-                    if (sb.Length > 0)
+                    // 除第一列外，其余列前面都要加上分隔符，避免空值导致列错位
+                    if (index > 0)
                     {
                         sb.Append(separator);
                     }
@@ -113,11 +114,6 @@ namespace DotNet.Util
                             sb.Append(value);
                         }
                     }
-                }
-                // 最后一个逗号用空来替代
-                if (!dataReader.IsDBNull(dataReader.FieldCount - 1))
-                {
-                    sb.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, ""));
                 }
                 csvRows.AppendLine(sb.Return());
             }
@@ -234,12 +230,12 @@ namespace DotNet.Util
                             {
                                 if (fieldList.ContainsKey(dc.ColumnName))
                                 {
-                                    i++;
                                     WriteSpecialCharacter(drv[dc.ColumnName]?.ToString(), sb, separator);
                                     if (i < fieldList.Count)
                                     {
                                         sb.Append(separator);
                                     }
+                                    i++;
                                 }
                                 //LogUtil.WriteLog(j + "," + i + "," + dt.Columns.Count + "," + fieldList?.Count + ":" + drv[dc.ColumnName]?.ToString());
                             }

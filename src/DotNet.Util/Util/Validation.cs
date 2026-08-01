@@ -139,7 +139,7 @@ namespace DotNet.Util
         /// <returns>成功与否</returns>
         public static bool IsMobile(string mobile)
         {
-            var format = @"^13[0-9]{9}|15[012356789][0-9]{8}|18[0256789][0-9]{8}|147[0-9]{8}$";
+            var format = @"^(13[0-9]{9}|15[012356789][0-9]{8}|18[0256789][0-9]{8}|147[0-9]{8})$";
             return Regex.IsMatch(mobile, format);
         }
 
@@ -165,7 +165,7 @@ namespace DotNet.Util
             // 1-30位
             // \w 匹配字母或数字或下划线或汉字
             // \W 匹配任意不是字母，数字，下划线，汉字的字符
-            // \S 匹配任意不是空白符的字符 
+            // \S 匹配任意不是空白符的字符
             var format = @"^\S{1,30}$";
             return Regex.IsMatch(loginName, format);
         }

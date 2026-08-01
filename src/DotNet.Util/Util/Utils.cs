@@ -96,7 +96,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="strSearch">字符串</param>
         /// <param name="stringArray">字符串数组</param>
-        /// <returns>字符串在指定字符串数组中的位置, 如不存在则返回-1</returns>		
+        /// <returns>字符串在指定字符串数组中的位置, 如不存在则返回-1</returns>
         public static int GetInArrayId(string strSearch, string[] stringArray)
         {
             return GetInArrayId(strSearch, stringArray, true);
@@ -169,14 +169,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string RTrim(string str)
         {
-            for (var i = str.Length; i >= 0; i--)
+            if (str == null)
             {
-                if (str[i].Equals(" ") || str[i].Equals("\r") || str[i].Equals("\n"))
-                {
-                    str.Remove(i, 1);
-                }
+                return null;
             }
-            return str;
+            return str.TrimEnd(' ', '\r', '\n');
         }
 
 
@@ -439,7 +436,7 @@ namespace DotNet.Util
                         else
                             nFlag = 0;
 
-                        anResultFlag[i] = nFlag;
+                        anResultFlag[i - pStartIndex] = nFlag;
                     }
 
                     if ((bsSrcString[pEndIndex - 1] > 127) && (anResultFlag[pLength - 1] == 1))
@@ -528,7 +525,7 @@ namespace DotNet.Util
         public static bool IsBase64String(string str)
         {
             //A-Z, a-z, 0-9, +, /, =
-            return Regex.IsMatch(str, @"[A-Za-z0-9\+\/\=]");
+            return Regex.IsMatch(str, @"^[A-Za-z0-9\+\/\=]+$");
         }
         /// <summary>
         /// 检测是否有Sql危险字符
@@ -560,7 +557,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 返回URL中结尾的文件名
-        /// </summary>		
+        /// </summary>
         public static string GetFilename(string url)
         {
             if (url == null)
@@ -573,7 +570,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 根据阿拉伯数字返回月份的名称(可更改为某种语言)
-        /// </summary>	
+        /// </summary>
         public static string[] Monthes
         {
             get
@@ -703,7 +700,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public static bool IsTime(string timeval)
@@ -1043,13 +1040,13 @@ namespace DotNet.Util
             var startPage = 1;
             var endPage = 1;
 
-            if (url.IndexOf("?") > 0)
+            if (url.IndexOf("?") >= 0)
                 url += "&";
             else
                 url += "?";
 
-            var t1 = "<a href=\"" + url + "&" + pagetag + "=1";
-            var t2 = "<a href=\"" + url + "&" + pagetag + "=" + countPage;
+            var t1 = "<a href=\"" + url + pagetag + "=1";
+            var t2 = "<a href=\"" + url + pagetag + "=" + countPage;
             if (anchor != null)
             {
                 t1 += anchor;
@@ -1207,7 +1204,7 @@ namespace DotNet.Util
         private static bool IsUtf8(FileStream sbInputStream)
         {
             int i;
-            byte cOctets;  // octets to go in this UTF-8 encoded character 
+            byte cOctets;  // octets to go in this UTF-8 encoded character
             byte chr;
             var bAllAscii = true;
             var iLen = sbInputStream.Length;
@@ -1261,13 +1258,13 @@ namespace DotNet.Util
         public static string FormatBytesStr(int bytes)
         {
             if (bytes > 1073741824)
-                return ((double)(bytes / 1073741824)).ToString("0") + "G";
+                return (bytes / 1073741824.0).ToString("0") + "G";
 
             if (bytes > 1048576)
-                return ((double)(bytes / 1048576)).ToString("0") + "M";
+                return (bytes / 1048576.0).ToString("0") + "M";
 
             if (bytes > 1024)
-                return ((double)(bytes / 1024)).ToString("0") + "K";
+                return (bytes / 1024.0).ToString("0") + "K";
 
             return bytes + "Bytes";
         }
@@ -1329,8 +1326,12 @@ namespace DotNet.Util
                 var r = 0;
                 for (var i = 0; i < tmpip.Length; i++)
                 {
+                    // * 表示该IP段任意，匹配该段并继续检查后续段
                     if (tmpip[i] == "*")
-                        return true;
+                    {
+                        r++;
+                        continue;
+                    }
 
                     if (userip.Length > i)
                     {
@@ -2115,9 +2116,9 @@ namespace DotNet.Util
         public static string DropHtml(string htmlstring)
         {
             if (htmlstring.IsNullOrEmpty()) return "";
-            //删除脚本  
+            //删除脚本
             htmlstring = Regex.Replace(htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
-            //删除HTML  
+            //删除HTML
             htmlstring = Regex.Replace(htmlstring, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);
             htmlstring = Regex.Replace(htmlstring, @"([\r\n])[\s]+", "", RegexOptions.IgnoreCase);
             htmlstring = Regex.Replace(htmlstring, @"-->", "", RegexOptions.IgnoreCase);

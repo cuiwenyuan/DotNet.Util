@@ -110,7 +110,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static SymmetricAlgorithm Decrypt(this SymmetricAlgorithm sa, Stream instream, Stream outstream)
         {
-            return NewLife.SecurityHelper.Encrypt(sa, instream, outstream);
+            return NewLife.SecurityHelper.Decrypt(sa, instream, outstream);
         }
 
         /// <summary>对称解密算法扩展</summary>
@@ -122,7 +122,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Byte[] Decrypt(this SymmetricAlgorithm sa, Byte[] data, Byte[] pass = null, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.PKCS7)
         {
-            return NewLife.SecurityHelper.Encrypt(sa, data, pass: pass, mode: mode, padding: padding);
+            return NewLife.SecurityHelper.Decrypt(sa, data, pass: pass, mode: mode, padding: padding);
         }
 
         #endregion

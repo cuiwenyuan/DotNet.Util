@@ -13,9 +13,9 @@ namespace DotNet.Util
     /// <summary>
     ///	BaseUtil
     /// 通用基类
-    /// 
+    ///
     /// 这个类可是修改了很多次啊，已经比较经典了，随着专业的提升，人也会不断提高，技术也会越来越精湛。
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2021-04-15 版本：4.0 Troy.Cui 移到ObjectUtil类中
@@ -39,17 +39,17 @@ namespace DotNet.Util
     ///		2006.02.05 版本：1.1	JiRiGaLa 重新调整主键的规范化。
     ///		2005.12.30 版本：1.0	JiRiGaLa 数据库连接方式都进行改进
     ///		2005.09.04 版本：1.0	JiRiGaLa 执行数据库脚本
-    ///		2005.08.19 版本：1.0	整理一下编排	
+    ///		2005.08.19 版本：1.0	整理一下编排
     ///		2005.07.10 版本：1.0	修改了程序，格式以及理念都有些提高，应该是一次大突破
     ///		2004.11.12 版本：1.0	添加了最新的GetParent、GetChildren、GetParentChildren 方法
     ///		2004.07.21 版本：1.0	UpdateRecord、Delete、SetProperty、GetProperty、ExecuteNonQuery、GetRecord 方法进行改进。
     ///								还删除一些重复的主键，提取了最优化的方法，有时候写的主键真的是垃圾，可能自己也没有注意时就写出了垃圾。
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2009.09.08</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseUtil
     {
@@ -245,7 +245,7 @@ namespace DotNet.Util
         /// <returns>过滤后的结果</returns>
         public static DataTable SetColumnsFilter(DataTable dt, string[] columns)
         {
-            for (var i = dt.Columns.Count - 1; i > 0; i--)
+            for (var i = dt.Columns.Count - 1; i >= 0; i--)
             {
                 // 不是关键字的才过滤，全过滤了，没法用了
                 if (!IsKeywords(dt.Columns[i].ColumnName))
@@ -493,8 +493,8 @@ namespace DotNet.Util
             Console.WriteLine(string.Empty);
             Console.WriteLine(string.Empty);
 
-            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat) 
-            //    + " : " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() 
+            // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeFormat)
+            //    + " : " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString()
             //    + " : " + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
 

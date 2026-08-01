@@ -281,9 +281,9 @@ namespace DotNet.Util
         public static string DecodeBase64(string codeType, string code)
         {
             var decode = "";
-            var bytes = Convert.FromBase64String(code);
             try
             {
+                var bytes = Convert.FromBase64String(code);
                 decode = Encoding.GetEncoding(codeType).GetString(bytes);
             }
             catch
@@ -319,10 +319,12 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             var des = new DESCryptoServiceProvider();
             var inputByteArray = Encoding.Default.GetBytes(targetValue);
-            //通过两次哈希密码设置对称算法的初始化向量   
-            des.Key = Encoding.ASCII.GetBytes(Sha1(Md5(key).Substring(0, 8)).Substring(0, 8));
-            //通过两次哈希密码设置算法的机密密钥   
-            des.IV = Encoding.ASCII.GetBytes(Sha1(Md5(key).Substring(0, 8)).Substring(0, 8));
+            //通过两次哈希密码设置对称算法的初始化向量
+            var keyHash = Sha1(Md5(key).Substring(0, 8));
+            //通过两次哈希密码设置算法的机密密钥
+            des.Key = Encoding.ASCII.GetBytes(keyHash.Substring(0, 8));
+            //使用密钥散列的另一部分作为初始化向量，避免Key与IV相同
+            des.IV = Encoding.ASCII.GetBytes(keyHash.Substring(8, 8));
             var ms = new MemoryStream();
             var cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write);
             cs.Write(inputByteArray, 0, inputByteArray.Length);
@@ -370,10 +372,12 @@ namespace DotNet.Util
                     i = (targetValue.Substring(x * 2, 2), 16).ToInt();
                     inputByteArray[x] = (byte)i;
                 }
-                // 通过两次哈希密码设置对称算法的初始化向量   
-                des.Key = Encoding.ASCII.GetBytes(Sha1(Md5(key).Substring(0, 8)).Substring(0, 8));
-                // 通过两次哈希密码设置算法的机密密钥   
-                des.IV = Encoding.ASCII.GetBytes(Sha1(Md5(key).Substring(0, 8)).Substring(0, 8));
+                // 通过两次哈希密码设置对称算法的初始化向量
+                var keyHash = Sha1(Md5(key).Substring(0, 8));
+                // 通过两次哈希密码设置算法的机密密钥
+                des.Key = Encoding.ASCII.GetBytes(keyHash.Substring(0, 8));
+                // 使用密钥散列的另一部分作为初始化向量，避免Key与IV相同
+                des.IV = Encoding.ASCII.GetBytes(keyHash.Substring(8, 8));
                 // 定义内存流
                 var ms = new MemoryStream();
                 // 定义加密流
@@ -414,14 +418,14 @@ namespace DotNet.Util
         /// <returns>强度级别</returns>
         public static int GetUserPassWordRate(string passWord)
         {
-            /*  
-             * 返回值值表示口令等级  
-             * 0 不合法口令  
-             * 1 太短  
-             * 2 弱  
-             * 3 一般  
-             * 4 很好  
-             * 5 极佳  
+            /*
+             * 返回值值表示口令等级
+             * 0 不合法口令
+             * 1 太短
+             * 2 弱
+             * 3 一般
+             * 4 很好
+             * 5 极佳
              */
             var i = 0;
             //if(pass==null || pass.length()==0)
@@ -481,9 +485,9 @@ namespace DotNet.Util
                     {
                         i = 2;
                     }
-                    /*   
-                     * 字母数字任意一种类型小于6且总长度大于等于6  
-                     * 则说明此密码是字母或数字加任意其他字符组合而成  
+                    /*
+                     * 字母数字任意一种类型小于6且总长度大于等于6
+                     * 则说明此密码是字母或数字加任意其他字符组合而成
                      */
                     else
                     {
@@ -504,10 +508,10 @@ namespace DotNet.Util
             }
             else
             {
-                //口令小于6位则显示太短  
+                //口令小于6位则显示太短
                 if (passLen > 0)
                 {
-                    i = 1; //口令太短  
+                    i = 1; //口令太短
                 }
                 else
                 {

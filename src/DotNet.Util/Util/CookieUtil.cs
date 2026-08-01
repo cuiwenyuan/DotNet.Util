@@ -32,28 +32,25 @@ namespace DotNet.Util
             {
                 cookie = new HttpCookie(cookieName);
             }
-            else
-            {
-                //强制使用SSL传输
-                //cookie.Secure = true;
+            //强制使用SSL传输
+            //cookie.Secure = true;
 
-                // 存在的话就设定新值
-                cookie.Value = cookieValue;
-                // 设定失效时间
-                if (expireDays != 0)
-                {
-                    cookie.Expires = DateTime.Now.AddDays(expireDays);
-                }
-                // 指定客户端脚本是否可以访问[默认为false]
-                cookie.HttpOnly = httpOnly;
-                // 指定统一的Path，比便能通存通取
-                cookie.Path = "/";
-                // 设置跨域,这样在其它二级域名下就都可以访问到了，千万注意一定要.domain.com的形式，.不能少
-                cookie.Domain = domainName;
-                // 通过覆盖的方法
-                HttpContext.Current.Response.Cookies.Add(cookie);
+            // 存在的话就设定新值
+            cookie.Value = cookieValue;
+            // 设定失效时间
+            if (expireDays != 0)
+            {
+                cookie.Expires = DateTime.Now.AddDays(expireDays);
             }
-        
+            // 指定客户端脚本是否可以访问[默认为false]
+            cookie.HttpOnly = httpOnly;
+            // 指定统一的Path，比便能通存通取
+            cookie.Path = "/";
+            // 设置跨域,这样在其它二级域名下就都可以访问到了，千万注意一定要.domain.com的形式，.不能少
+            cookie.Domain = domainName;
+            // 通过覆盖的方法
+            HttpContext.Current.Response.Cookies.Add(cookie);
+
         }
 
         #endregion
@@ -78,9 +75,9 @@ namespace DotNet.Util
         #endregion
 
         #region Clear
-        /// <summary> 
+        /// <summary>
         /// 清除Cookie，使用覆盖并加有效期的方式
-        /// </summary> 
+        /// </summary>
         /// <param name="cookieName">Cookie名称</param>
         public static void Clear(string cookieName)
         {
@@ -140,7 +137,7 @@ namespace DotNet.Util
                 cookie = HttpContext.Current.Request.Cookies[i];
                 if (cookie.HasKeys)
                 {
-                    for (var j = 0; j < cookie.Values.Count - 1; j++)
+                    for (var j = 0; j < cookie.Values.Count; j++)
                     {
                         subKeyName = HttpContext.Current.Server.HtmlEncode(cookie.Values.AllKeys[j]);
                         subKeyValue = HttpContext.Current.Server.HtmlEncode(cookie.Values[j]);

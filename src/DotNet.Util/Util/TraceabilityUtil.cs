@@ -38,14 +38,12 @@ namespace DotNet.Util
         public static string GenerateKey(int random)
         {
             var chars = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".Split(',');
+            var seed = unchecked((int)DateTime.Now.Ticks + random);
+            var randomSeed = new Random(seed);
             for (var i = 0; i < random; i++)
             {
-                var r = random;
+                var r = randomSeed.Next(1, chars.Length);
                 var f = chars[0];
-                if (random > chars.Length)
-                {
-                    r = random % 62;
-                }
                 chars[0] = chars[r - 1];
                 chars[r - 1] = f;
             }

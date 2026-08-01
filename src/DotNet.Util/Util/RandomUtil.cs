@@ -9,11 +9,11 @@ namespace DotNet.Util
     /// <summary>
     /// BaseRandom
     /// 产生随机数
-    /// 
+    ///
     /// 随机数管理，最大值、最小值可以自己进行设定。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2021.08.05 版本：4.0 Troy.Cui	简化方法名，去掉Random。
     ///     2009.07.08 版本：3.0 JiRiGaLa	更新完善程序，将方法修改为静态方法。
     ///		2007.06.30 版本：3.2 JiRiGaLa   产生随机字符。
@@ -22,11 +22,11 @@ namespace DotNet.Util
     ///	    2004.11.12 版本：3.0 JiRiGaLa   一些方法改进，主键格式优化，基本上看上去还过得去了。
     ///     2005.03.07 版本：2.0 JiRiGaLa   2005.03.07 更新程序排版。
     ///     2005.08.13 版本：1.0 JiRiGaLa   参数格式标准化。
-    ///     
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2007.06.30</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class RandomUtil
     {
@@ -61,7 +61,7 @@ namespace DotNet.Util
             }
             for (var i = 0; i < length; i++)
             {
-                var r = _random.Next(0, _randomString.Length - 1);
+                var r = _random.Next(0, _randomString.Length);
                 result += _randomString[r];
             }
             return result;
@@ -82,7 +82,7 @@ namespace DotNet.Util
             }
             for (var i = 0; i < length; i++)
             {
-                var r = _random.Next(0, _randomNumber.Length - 1);
+                var r = _random.Next(0, _randomNumber.Length);
                 result += _randomNumber[r];
             }
             return result;

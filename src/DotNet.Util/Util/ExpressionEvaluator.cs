@@ -2,22 +2,28 @@
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.CSharp;
 
 namespace DotNet.Util
 {
-    /// <summary> 
+    /// <summary>
     /// 计算表达式的类
     /// </summary>
     public static class CalculateExpression
         {
-            /// <summary> 
-            /// 接受一个string类型的表达式并计算结果,返回一个object对象,静态方法 
-            /// </summary> 
-            /// <param name="expression"></param> 
-            /// <returns></returns> 
+            /// <summary>
+            /// 接受一个string类型的表达式并计算结果,返回一个object对象,静态方法
+            /// </summary>
+            /// <param name="expression"></param>
+            /// <returns></returns>
             public static object Calculate(string expression)
             {
+                // 安全校验：仅允许数字、四则运算符、括号和小数点，防止注入任意C#代码
+                if (string.IsNullOrWhiteSpace(expression) || !Regex.IsMatch(expression, @"^[0-9+\-*/(). ]+$"))
+                {
+                    throw new ArgumentException("表达式包含非法字符。");
+                }
                 var className = "Calc";
                 var methodName = "Run";
                 expression = expression.Replace("/", "*1.0/");
@@ -40,10 +46,10 @@ namespace DotNet.Util
                 //编译代码
                 var result = new CSharpCodeProvider().CompileAssemblyFromSource(paras, sb.Return());
 
-                //获取编译后的程序集。 
+                //获取编译后的程序集。
                 var assembly = result.CompiledAssembly;
 
-                //动态调用方法。 
+                //动态调用方法。
                 var eval = assembly.CreateInstance(className);
                 var method = eval.GetType().GetMethod(methodName);
                 var reobj = method.Invoke(eval, null);
