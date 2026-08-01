@@ -65,7 +65,7 @@ namespace DotNet.Business
                         if (!permissionCode.IsNullOrEmpty())
                         {
                             var permissionManager = new BasePermissionManager(userInfo);
-                            isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                            isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.Id.ToString(), permissionCode, null);
                         }
                         // 有相应的权限才可以登录
                         if (isAuthorized)
