@@ -72,7 +72,7 @@ namespace DotNet.Util
         /// <returns>自动压缩后的图片</returns>
         public static Bitmap GetThumbnailImageFromFile(string fileName, int maxHeightWidth = 0)
         {
-            var image = Image.FromFile(fileName);
+            using var image = Image.FromFile(fileName);
             var height = image.Height;
             var width = image.Width;
             if (maxHeightWidth != 0)
@@ -88,7 +88,8 @@ namespace DotNet.Util
                     width = (maxHeightWidth * image.Width) / image.Height;
                 }
             }
-            return new Bitmap(image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero));
+            using var thumbnail = image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero);
+            return new Bitmap(thumbnail);
         }
 
         #region public static string GetFriendlyFileSize(double fileSize) 有善的文件大小现实方式
@@ -136,12 +137,9 @@ namespace DotNet.Util
         /// <returns>字节</returns>
         public static byte[] GetFile(string fileName)
         {
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var br = new BinaryReader(fs);
-            var file = br.ReadBytes(((int)fs.Length));
-            br.Close();
-            fs.Close();
-            return file;
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            using var br = new BinaryReader(fs);
+            return br.ReadBytes(checked((int)fs.Length));
         }
 
         /// <summary>
@@ -156,9 +154,8 @@ namespace DotNet.Util
             {
                 Directory.CreateDirectory(directoryName);
             }
-            var fs = new FileStream(fileName, FileMode.Create);
+            using var fs = new FileStream(fileName, FileMode.Create);
             fs.Write(file, 0, file.Length);
-            fs.Close();
         }
         /// <summary>
         /// 图片转字节
@@ -180,13 +177,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Image ByteToImage(byte[] buffer)
         {
-            Image image;
             using (var ms = new MemoryStream(buffer))
             {
-                image = Image.FromStream(ms);
-                ms.Close();
+                using var image = Image.FromStream(ms);
+                return new Bitmap(image);
             }
-            return image;
         }
 
         /// <summary>

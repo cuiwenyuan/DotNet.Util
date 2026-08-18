@@ -50,11 +50,6 @@ namespace DotNet.Util
         /// <summary>
         /// 数据库类型：SQLite
         /// </summary>
-        SqLite,
-
-        /// <summary>
-        /// 数据库类型：SQLite
-        /// </summary>
         SQLite,
 
         /// <summary>

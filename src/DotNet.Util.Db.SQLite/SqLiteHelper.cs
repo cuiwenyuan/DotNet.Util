@@ -29,13 +29,13 @@ namespace DotNet.Util
     /// </author> 
     /// </summary>
 
-    public class SqLiteHelper : DbHelper, IDbHelper
+    public class SQLiteHelper : DbHelper, IDbHelper
     {
         #region   构造方法
         /// <summary>
         /// 构造函数
         /// </summary>
-        public SqLiteHelper()
+        public SQLiteHelper()
         {
             FileName = "SQLite.txt";   // sql查询句日志
         }
@@ -44,7 +44,7 @@ namespace DotNet.Util
         /// 数据库连接
         /// </summary>
         /// <param name="connectionString">数据连接</param>
-        public SqLiteHelper(string connectionString)
+        public SQLiteHelper(string connectionString)
             : this()
         {
             ConnectionString = connectionString;
@@ -70,7 +70,7 @@ namespace DotNet.Util
         {
             get
             {
-                return CurrentDbType.SqLite;
+                return CurrentDbType.SQLite;
             }
         }
         #endregion
@@ -95,9 +95,14 @@ namespace DotNet.Util
         {
             var commandText = " SELECT " + this.GetDbNow();
             Open();
-            var dateTime = ExecuteScalar(commandText, null, CommandType.Text).ToString();
-            Close();
-            return dateTime;
+            try
+            {
+                return ExecuteScalar(commandText, null, CommandType.Text)?.ToString() ?? string.Empty;
+            }
+            finally
+            {
+                Close();
+            }
         }
         #endregion
 
@@ -110,7 +115,7 @@ namespace DotNet.Util
         /// <returns>参数</returns>
         public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
         {
-            return new SQLiteParameter(targetFiled, targetValue);
+            return new SQLiteParameter(targetFiled, targetValue ?? DBNull.Value);
         }
         #endregion
 
@@ -145,9 +150,13 @@ namespace DotNet.Util
             var dbParameters = new List<IDbDataParameter>();
             if (targetFileds != null && targetValues != null)
             {
+                if (targetFileds.Length != targetValues.Length)
+                {
+                    throw new ArgumentException("Parameter names and values must have the same length.");
+                }
                 for (var i = 0; i < targetFileds.Length; i++)
                 {
-                    if (targetFileds[i] != null && targetValues[i] != null && (!(targetValues[i] is Array)))
+                    if (targetFileds[i] != null && !(targetValues[i] is Array))
                     {
                         dbParameters.Add(this.MakeInParam(targetFileds[i], targetValues[i]));
                     }

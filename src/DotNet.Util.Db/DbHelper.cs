@@ -227,6 +227,9 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, "open connection error");
+                    _dbConnection.Dispose();
+                    _dbConnection = null;
+                    throw;
                 }
                 if (_dbConnection.State == ConnectionState.Open)
                 {

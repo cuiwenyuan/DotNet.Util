@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using ICSharpCode.SharpZipLib.Checksum;
@@ -24,23 +24,27 @@ namespace DotNet.Util
         /// <param name="keepRootFolders">保持根目录结构</param>
         public static void CreateZip(string[] sourceFilePaths, string destinationZipFilePath, int compressionLevel = 6, string[] skipFolders = null, string[] skipFileExtensions = null, bool keepRootFolders = false)
         {
-            var zipStream = new ZipOutputStream(File.Create(destinationZipFilePath));
+            using var zipStream = new ZipOutputStream(File.Create(destinationZipFilePath));
             // 压缩级别 0-9
             zipStream.SetLevel(compressionLevel);
-            foreach (var sourceFilePath in sourceFilePaths)
+            foreach (var sourceFilePath in sourceFilePaths ?? Array.Empty<string>())
             {
-                var filePath = sourceFilePath;
-                if (filePath[filePath.Length - 1] != Path.DirectorySeparatorChar)
+                if (File.Exists(sourceFilePath))
                 {
-                    filePath += Path.DirectorySeparatorChar;
+                    CreateZipFile(sourceFilePath, zipStream, Path.GetDirectoryName(Path.GetFullPath(sourceFilePath)), skipFileExtensions);
                 }
-                if (Directory.Exists(filePath))
+                else if (Directory.Exists(sourceFilePath))
                 {
+                    var filePath = Path.GetFullPath(sourceFilePath);
+                    if (!filePath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) &&
+                        !filePath.EndsWith(Path.AltDirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                    {
+                        filePath += Path.DirectorySeparatorChar;
+                    }
                     CreateZipFiles(filePath, zipStream, filePath, skipFolders: skipFolders, skipFileExtensions: skipFileExtensions, keepRootFolders: keepRootFolders);
                 }
             }
             zipStream.Finish();
-            zipStream.Close();
         }
 
         /// <summary>
@@ -97,29 +101,55 @@ namespace DotNet.Util
                     }
                     if (!skip)
                     {
-                        //如果是文件，开始压缩
-                        var fileStream = File.OpenRead(file);
-                        var buffer = new byte[fileStream.Length];
-                        fileStream.Read(buffer, 0, buffer.Length);
-                        var tempFile = file.Substring(staticFile.LastIndexOf("\\") + 1);
-                        if (keepRootFolders)
-                        {
-                            tempFile = file.Substring(staticFile.IndexOf("\\") + 1);
-                        }
-                        var entry = new ZipEntry(tempFile);
-
-                        entry.DateTime = DateTime.Now;
-                        entry.Size = fileStream.Length;
-                        fileStream.Close();
-                        crc.Reset();
-                        crc.Update(buffer);
-                        entry.Crc = crc.Value;
-                        zipStream.PutNextEntry(entry);
-
-                        zipStream.Write(buffer, 0, buffer.Length);
+                        CreateZipFile(file, zipStream, staticFile, skipFileExtensions, keepRootFolders, crc);
                     }
                 }
             }
+        }
+
+        private static void CreateZipFile(string file, ZipOutputStream zipStream, string staticFile, string[] skipFileExtensions, bool keepRootFolders = false, Crc32 crc = null)
+        {
+            if (skipFileExtensions != null)
+            {
+                var extension = Path.GetExtension(file);
+                if (skipFileExtensions.Any(item => extension.Equals("." + item.Replace(".", ""), StringComparison.OrdinalIgnoreCase)))
+                {
+                    return;
+                }
+            }
+
+            var root = Path.GetFullPath(staticFile ?? string.Empty).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var fullFile = Path.GetFullPath(file);
+            var entryName = keepRootFolders && fullFile.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
+                ? fullFile.Substring(root.Length + 1)
+                : Path.GetFileName(fullFile);
+            entryName = entryName.Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
+
+            using var fileStream = File.OpenRead(fullFile);
+            var checksum = crc ?? new Crc32();
+            checksum.Reset();
+            var buffer = new byte[81920];
+            int bytesRead;
+            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                var checksumBuffer = new byte[bytesRead];
+                Buffer.BlockCopy(buffer, 0, checksumBuffer, 0, bytesRead);
+                checksum.Update(checksumBuffer);
+            }
+
+            var entry = new ZipEntry(entryName)
+            {
+                DateTime = DateTime.Now,
+                Size = fileStream.Length,
+                Crc = checksum.Value
+            };
+            zipStream.PutNextEntry(entry);
+            fileStream.Position = 0;
+            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                zipStream.Write(buffer, 0, bytesRead);
+            }
+            zipStream.CloseEntry();
         }
     }
 }

@@ -46,7 +46,7 @@ namespace DotNet.Business
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                 case CurrentDbType.SqlServer:
                     sb.Append("SELECT TOP " + rows + " * FROM " + tableName);
                     if (!condition.IsNullOrEmpty())

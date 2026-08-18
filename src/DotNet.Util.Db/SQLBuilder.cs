@@ -557,7 +557,7 @@ namespace DotNet.Util
             {
                 _orderBy = " ORDER BY ";
             }
-            switch (_dbHelper.CurrentDbType)
+            switch (_dbType)
             {
                 case CurrentDbType.Oracle:
                     _orderBy += "DBMS_RANDOM.VALUE()";
@@ -568,6 +568,10 @@ namespace DotNet.Util
                     break;
                 case CurrentDbType.MySql:
                     _orderBy += "Rand()";
+                    break;
+                case CurrentDbType.SQLite:
+                case CurrentDbType.PostgreSql:
+                    _orderBy += "RANDOM()";
                     break;
             }
             return _orderBy;
@@ -585,18 +589,21 @@ namespace DotNet.Util
             var dt = new DataTable(_tableName);
             if (_topN != null)
             {
-                switch (_dbHelper.CurrentDbType)
+                switch (_dbType)
                 {
                     case CurrentDbType.Oracle:
-                        // 这里还需要把条件进行优化
-                        CommandText = "SELECT * FROM " + _tableName + " WHERE ROWNUM <= " + _topN + _orderBy;
+                        CommandText = "SELECT * FROM (SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + ") WHERE ROWNUM <= " + _topN;
                         break;
                     case CurrentDbType.SqlServer:
                     case CurrentDbType.Access:
                         CommandText = "SELECT TOP " + _topN + " * FROM " + _tableName + _whereSql.Return() + _orderBy;
                         break;
                     case CurrentDbType.MySql:
-                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT 1 , " + _topN;
+                    case CurrentDbType.SQLite:
+                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT 0 , " + _topN;
+                        break;
+                    case CurrentDbType.PostgreSql:
+                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT " + _topN;
                         break;
                 }
             }
@@ -716,8 +723,8 @@ namespace DotNet.Util
                                 CommandText += "; SELECT LAST_INSERT_ID();";
                             }
                             break;
-                        // SqLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
-                        case CurrentDbType.SqLite:
+                        // SQLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
+                        case CurrentDbType.SQLite:
                             if (ReturnId)
                             {
                                 CommandText += "; SELECT last_insert_rowid() newid;";
@@ -796,7 +803,7 @@ namespace DotNet.Util
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
 
-            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SqLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
+            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SQLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
             {
                 // 读取返回值
                 if (ReturnId)

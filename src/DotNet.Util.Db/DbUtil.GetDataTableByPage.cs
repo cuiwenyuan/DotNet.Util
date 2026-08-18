@@ -303,7 +303,7 @@ namespace DotNet.Util
                     , orderBy, tableName, conditions, sqlEnd, sqlStart));
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.MySql
-                || dbHelper.CurrentDbType == CurrentDbType.SqLite)
+                || dbHelper.CurrentDbType == CurrentDbType.SQLite)
             {
                 sb.Append(string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4}, {5}", selectField, tableName, conditions, orderBy, sqlStart, pageSize));
             }

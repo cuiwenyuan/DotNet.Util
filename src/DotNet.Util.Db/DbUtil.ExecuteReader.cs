@@ -36,6 +36,7 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
+            var dbParameters = new List<IDbDataParameter>();
             sb.Append("SELECT * FROM " + tableName);
             if (values == null || values.Length == 0)
             {
@@ -43,13 +44,24 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append(" WHERE " + name + " IN (" + ObjectUtil.ToList(values, "'") + ")");
+                sb.Append(" WHERE " + name + " IN (");
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sb.Append(",");
+                    }
+                    var parameterName = "value" + i;
+                    sb.Append(DbUtil.GetParameter(dbHelper.CurrentDbType, parameterName));
+                    dbParameters.Add(dbHelper.MakeParameter(parameterName, values[i]));
+                }
+                sb.Append(")");
             }
             if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
         }
         /// <summary>
         /// ExecuteReader
@@ -199,7 +211,9 @@ namespace DotNet.Util
                     }
                     if (topLimit > 0)
                     {
-                        sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                        var innerQuery = sb.ToString();
+                        sb.Clear();
+                        sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM <= " + topLimit);
                     }
                     break;
 
@@ -233,7 +247,7 @@ namespace DotNet.Util
                     break;
 
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT " + selectFields);
                     if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
                     {
@@ -278,6 +292,7 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
+            var dbParameters = new List<IDbDataParameter>();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
 
             if (values == null || values.Length == 0)
@@ -286,13 +301,24 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append(" WHERE " + name + " IN (" + string.Join(",", values) + ")");
+                sb.Append(" WHERE " + name + " IN (");
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sb.Append(",");
+                    }
+                    var parameterName = "value" + i;
+                    sb.Append(DbUtil.GetParameter(dbHelper.CurrentDbType, parameterName));
+                    dbParameters.Add(dbHelper.MakeParameter(parameterName, values[i]));
+                }
+                sb.Append(")");
             }
             if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
         }
         /// <summary>
         /// ExecuteReader

@@ -65,11 +65,14 @@ namespace DotNet.Util
                 _dbConnection.ConnectionString = ConnectionString;
                 try
                 {
-                    _dbConnection.OpenAsync();
+                    _dbConnection.OpenAsync().GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, "open connection error");
+                    _dbConnection.Dispose();
+                    _dbConnection = null;
+                    throw;
                 }
                 if (_dbConnection.State == ConnectionState.Open)
                 {

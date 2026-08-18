@@ -43,7 +43,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:
@@ -88,7 +88,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:
@@ -142,7 +142,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:

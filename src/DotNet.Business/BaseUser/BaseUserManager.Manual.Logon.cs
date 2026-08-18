@@ -934,7 +934,7 @@ namespace DotNet.Business
             // 服务器上、本地都需要能登录才可以
             if (dt != null && dt.Rows.Count == 0)
             {
-                if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqLite)
+                if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SQLite)
                 {
                     where = " Id > 0 AND " + BaseUserEntity.FieldUserName + " = '" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0";
                     dt = GetDataTable(where);

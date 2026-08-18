@@ -125,7 +125,7 @@ namespace DotNet.Util
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM information_schema.TABLES WHERE table_name = '{0}'", tableName));
             }
-            else if (dbHelper.CurrentDbType == CurrentDbType.SqLite)
+            else if (dbHelper.CurrentDbType == CurrentDbType.SQLite)
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = '{0}'", tableName));
             }

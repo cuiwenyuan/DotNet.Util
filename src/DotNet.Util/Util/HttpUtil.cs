@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -72,9 +72,8 @@ namespace DotNet.Util
             }
             finally
             {
-                request = null;
-                sw = null;
-                response = null;
+                sw?.Dispose();
+                response?.Dispose();
             }
 
             return responseStr;
@@ -96,7 +95,7 @@ namespace DotNet.Util
         {
             var contentType = "image/jpeg";
             //待请求参数数组
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var PicByte = new byte[fs.Length];
             fs.Read(PicByte, 0, PicByte.Length);
             var lengthFile = PicByte.Length;
@@ -132,7 +131,7 @@ namespace DotNet.Util
             request.ContentLength = length;
 
             //请求远程HTTP
-            var rs = request.GetRequestStream();
+            using var rs = request.GetRequestStream();
             Stream s = null;
             try
             {
@@ -140,7 +139,7 @@ namespace DotNet.Util
                 rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
                 rs.Write(PicByte, 0, lengthFile);
                 rs.Write(boundayBytes, 0, boundayBytes.Length);
-                var HttpWResp = (HttpWebResponse)request.GetResponse();
+                using var HttpWResp = (HttpWebResponse)request.GetResponse();
                 s = HttpWResp.GetResponseStream();
             }
             catch //(WebException e)
@@ -166,8 +165,6 @@ namespace DotNet.Util
                 responseData.Append(line);
             }
             s.Close();
-            fs.Close();
-
             return responseData.Return();
         }
         #endregion
@@ -186,7 +183,6 @@ namespace DotNet.Util
             //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -224,9 +220,8 @@ namespace DotNet.Util
             }
             finally
             {
-                request = null;
-                sw = null;
-                response = null;
+                sw?.Dispose();
+                response?.Dispose();
             }
 
             return responseStr;
@@ -247,7 +242,6 @@ namespace DotNet.Util
             //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -283,6 +277,10 @@ namespace DotNet.Util
             {
                 throw;
             }
+            finally
+            {
+                response?.Dispose();
+            }
             return responseStr;
         }
         #endregion
@@ -301,7 +299,6 @@ namespace DotNet.Util
             //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -338,6 +335,10 @@ namespace DotNet.Util
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                response?.Dispose();
             }
             return responseStr;
         }

@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved , Copyright (c) 2024 , DotNet. 
 //-----------------------------------------------------------------
 
@@ -107,9 +107,14 @@ namespace DotNet.Util
 		{
 			string commandText = " SELECT " + this.GetDbNow();
 			this.Open();
-			string dateTime = this.ExecuteScalar(commandText, null, CommandType.Text).ToString();
-			this.Close();
-			return dateTime;
+			try
+			{
+				return this.ExecuteScalar(commandText, null, CommandType.Text)?.ToString() ?? string.Empty;
+			}
+			finally
+			{
+				this.Close();
+			}
 		}
 		#endregion
 
@@ -122,7 +127,7 @@ namespace DotNet.Util
 		/// <returns>参数</returns>
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
-			return (IDbDataParameter)(new NpgsqlParameter(targetFiled, targetValue));
+			return (IDbDataParameter)(new NpgsqlParameter(targetFiled, targetValue ?? DBNull.Value));
 		}
 		#endregion
 
@@ -156,9 +161,13 @@ namespace DotNet.Util
 			List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
 			if (targetFileds != null && targetValues != null)
 			{
+				if (targetFileds.Length != targetValues.Length)
+				{
+					throw new ArgumentException("Parameter names and values must have the same length.");
+				}
 				for (int i = 0; i < targetFileds.Length; i++)
 				{
-					if (targetFileds[i] != null && targetValues[i] != null)
+					if (targetFileds[i] != null && !(targetValues[i] is Array))
 					{
 						dbParameters.Add(this.MakeInParam(targetFileds[i], targetValues[i]));
 					}

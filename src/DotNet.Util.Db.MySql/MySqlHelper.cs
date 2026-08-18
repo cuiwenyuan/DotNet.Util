@@ -98,9 +98,14 @@ namespace DotNet.Util
         {
             var commandText = " SELECT " + GetDbNow();
             Open();
-            var dateTime = ExecuteScalar(commandText, null, CommandType.Text).ToString();
-            Close();
-            return dateTime;
+            try
+            {
+                return ExecuteScalar(commandText, null, CommandType.Text)?.ToString() ?? string.Empty;
+            }
+            finally
+            {
+                Close();
+            }
         }
         #endregion
 
@@ -113,7 +118,7 @@ namespace DotNet.Util
         /// <returns>参数</returns>
         public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
         {
-            return new MySqlParameter(targetFiled, targetValue);
+            return new MySqlParameter(targetFiled, targetValue ?? DBNull.Value);
         }
         #endregion
 
@@ -147,9 +152,13 @@ namespace DotNet.Util
             var dbParameters = new List<IDbDataParameter>();
             if (targetFileds != null && targetValues != null)
             {
+                if (targetFileds.Length != targetValues.Length)
+                {
+                    throw new ArgumentException("Parameter names and values must have the same length.");
+                }
                 for (var i = 0; i < targetFileds.Length; i++)
                 {
-                    if (targetFileds[i] != null && targetValues[i] != null)
+                    if (targetFileds[i] != null && !(targetValues[i] is Array))
                     {
                         dbParameters.Add(MakeInParam(targetFileds[i], targetValues[i]));
                     }

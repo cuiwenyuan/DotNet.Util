@@ -42,7 +42,7 @@ namespace DotNet.Business
             {
                 case CurrentDbType.Access:
                     break;
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     break;
                 case CurrentDbType.SqlServer:
 
