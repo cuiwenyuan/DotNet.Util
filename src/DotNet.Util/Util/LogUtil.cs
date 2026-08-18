@@ -84,7 +84,7 @@ namespace DotNet.Util
             if (exception != null)
             {
                 sb.Append(" Source:" + exception.Source);
-                sb.Append(" TargetSite:" + exception.TargetSite.Name);
+                sb.Append(" TargetSite:" + exception.TargetSite?.Name);
                 sb.Append(" Type:" + exception.GetType());
                 sb.Append(" Message:" + exception.Message);
                 sb.Append(" StackTrace:" + exception.StackTrace);

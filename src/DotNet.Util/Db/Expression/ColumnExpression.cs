@@ -12,7 +12,7 @@ namespace DotNet.Util
      public class ColumnExpression : DbBaseExpression
     {
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -25,7 +25,7 @@ namespace DotNet.Util
             this.MemberInfo = memberInfo;
         }
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -39,7 +39,7 @@ namespace DotNet.Util
             this.FunctionName = functionName;
         }
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -51,7 +51,7 @@ namespace DotNet.Util
             this.Value = value;
         }
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -63,7 +63,7 @@ namespace DotNet.Util
             this.ColumnAlias = columnAlias;
         }
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>
@@ -77,7 +77,7 @@ namespace DotNet.Util
             this.FunctionName = functionName;
         }
         /// <summary>
-        ///
+        /// ColumnExpression
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableAlias"></param>

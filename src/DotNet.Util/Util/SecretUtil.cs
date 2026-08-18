@@ -41,7 +41,7 @@ namespace DotNet.Util
             var result = true;
             if (!commandText.IsNullOrEmpty())
             {
-                var unSafeText = new string[] { "Delete", "Insert", "Update", "Truncate" };
+                var unSafeText = new string[] {"Delete", "Insert", "Update", "Truncate"};
                 for (var i = 0; i < unSafeText.Length; i++)
                 {
                     var unSafeString = unSafeText[i];
