@@ -18,10 +18,16 @@ namespace DotNet.Util
         /// <returns>成功与否</returns>
         public static bool IsCorrectCaptchaCode(string strInput)
         {
-            if (SessionUtil.Get("CaptchaCode") != null)
+            if (strInput.IsNullOrEmpty())
             {
-                var captchCode = SessionUtil.Get("CaptchaCode").Trim();
-                if (string.Equals(captchCode.ToLower(), strInput.ToLower(), StringComparison.Ordinal))
+                return false;
+            }
+            var captchaCode = SessionUtil.Get("CaptchaCode");
+            if (captchaCode != null)
+            {
+                // 一次性使用：取出后立即清除，防止验证码重放
+                SessionUtil.Clear("CaptchaCode");
+                if (string.Equals(captchaCode.Trim(), strInput.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

@@ -140,6 +140,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {
@@ -343,14 +344,23 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         private void SetBackParamValue(IDbDataParameter[] dbParameters)
         {
-            if (dbParameters != null)
+            if (dbParameters == null || DbCommand == null)
             {
-                for (var i = 0; i <= dbParameters.Length - 1; i++)
+                return;
+            }
+
+            foreach (var dbParameter in dbParameters)
+            {
+                if (dbParameter == null || dbParameter.Direction == ParameterDirection.Input)
                 {
-                    if (dbParameters[i].Direction != ParameterDirection.Input)
-                    {
-                        dbParameters[i].Value = DbCommand.Parameters[i].Value;
-                    }
+                    continue;
+                }
+
+                var commandParameter = DbCommand.Parameters.Cast<IDataParameter>()
+                    .FirstOrDefault(t => t.ParameterName.Equals(dbParameter.ParameterName, StringComparison.OrdinalIgnoreCase));
+                if (commandParameter != null)
+                {
+                    dbParameter.Value = commandParameter.Value;
                 }
             }
         }

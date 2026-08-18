@@ -3,8 +3,10 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotNet.Util
 {
@@ -103,48 +105,38 @@ namespace DotNet.Util
             {
                 return result;
             }
-            var subSqlQuery = string.Empty;
+
             foreach (var parameter in parameters)
             {
-                if (!(parameter.Key).IsNullOrEmpty())
+                if (parameter.Key.IsNullOrEmpty())
                 {
-                    //if (values[i] == null || (values[i].ToString()).IsNullOrEmpty())
-                    if (parameter.Value == null)
+                    continue;
+                }
+
+                if (parameter.Value == null)
+                {
+                    result += parameter.Key + " IS NULL" + relation;
+                    continue;
+                }
+
+                if (parameter.Value is IEnumerable enumerable && !(parameter.Value is string))
+                {
+                    var values = enumerable.Cast<object>().Where(t => t != null).Select(t => t.ToString()).ToList();
+                    if (values.Count > 0)
                     {
-                        subSqlQuery = "" + parameter.Key + " IS NULL";
+                        var sqlValues = values.Select(v => "'" + v.Replace("'", "''") + "'").ToArray();
+                        result += parameter.Key + " IN (" + string.Join(",", sqlValues) + ")" + relation;
                     }
                     else
                     {
-                        if (parameter.Value is Array)
-                        {
-                            if (((Array)parameter.Value).Length > 0)
-                            {
-                                subSqlQuery = "" + parameter.Key + " IN (" + StringUtil.ArrayToList((string[])parameter.Value, "'") + ")";
-                            }
-                            else
-                            {
-                                subSqlQuery = "" + parameter.Key + " IS NULL";
-                            }
-                        }
-                        else
-                        {
-                            subSqlQuery = "" + parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + "";
-                            //if ((values[i].ToString().IndexOf('[') >= 0) || (values[i].ToString().IndexOf(']') >= 0))
-                            //{
-                            //    values[i] = values[i].ToString().Replace("[", "/[");
-                            //    values[i] = values[i].ToString().Replace("]", "/]");
-                            //    values[i] = SqlSafe(values[i].ToString());
-                            //    subSqlQuery = " (" + names[i] + " LIKE '" + values[i] + "' ESCAPE '/') ";
-                            //    values[i] = null;
-                            //    subSqlQuery = " (" + names[i] + " LIKE ? ESCAPE '/') ";
-                            //}
-                        }
-                        // 这里操作，就会有些重复了，不应该进行处理
-                        // values[i] = this.SqlSafe(values[i].ToString());
+                        result += parameter.Key + " IS NULL" + relation;
                     }
-                    result += subSqlQuery + relation;
+                    continue;
                 }
+
+                result += parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + relation;
             }
+
             if (result.Length > 0)
             {
                 result = result.Substring(0, result.Length - relation.Length);

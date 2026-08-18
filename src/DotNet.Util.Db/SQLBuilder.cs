@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -489,11 +490,17 @@ namespace DotNet.Util
             {
                 targetFiledName = targetFiled;
             }
-            //whereParameters Troy Cui 12.06.2017
-            //fix the issue - The variable name '%.*ls' has already been declared. Variable names must be unique within a query batch or stored procedure. 
-            //IdWhere就是Id这个字段的WHERE语句中的参数名
-            //NameWhere就是Name这个字段的WHERE语句中的参数名，Troy Cui 2019.07.02补充说明
-            targetFiledName += "Where";
+
+            var parameterName = targetFiledName + "Where";
+            if (DbParameters.Any(t => t.Key.Equals(parameterName, StringComparison.OrdinalIgnoreCase)))
+            {
+                var index = 1;
+                while (DbParameters.Any(t => t.Key.Equals(parameterName + index, StringComparison.OrdinalIgnoreCase)))
+                {
+                    index++;
+                }
+                parameterName += index;
+            }
 
             if (_whereSql.Length == 0)
             {
@@ -506,7 +513,15 @@ namespace DotNet.Util
             }
             if (targetValue is Array)
             {
-                _whereSql.Append(targetFiled + " IN (" + ObjectUtil.ToList((object[])targetValue, "'") + ")");
+                var values = ((Array)targetValue).Cast<object>().Where(t => t != null).Select(t => t.ToString()).ToList();
+                if (values.Count > 0)
+                {
+                    _whereSql.Append(targetFiled + " IN (" + string.Join(",", values.Select(v => "'" + v.Replace("'", "''") + "'")) + ")");
+                }
+                else
+                {
+                    _whereSql.Append(targetFiled + " IS NULL ");
+                }
                 return;
             }
             // NULL值
@@ -521,8 +536,8 @@ namespace DotNet.Util
             }
             else
             {
-                _whereSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, targetFiledName));
-                AddParameter(targetFiledName, targetValue);
+                _whereSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, parameterName));
+                AddParameter(parameterName, targetValue);
             }
             // return this.WhereSql;
         }

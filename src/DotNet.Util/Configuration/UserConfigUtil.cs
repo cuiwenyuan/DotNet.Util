@@ -70,8 +70,7 @@ namespace DotNet.Util
         public static Dictionary<String, String> GetLogonTo()
         {
             var result = new Dictionary<String, String>();
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(ConfigFileName);
+            var xmlDocument = LoadXmlDocument(ConfigFileName);
             var xmlNodeList = xmlDocument.SelectNodes(SelectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
@@ -101,8 +100,7 @@ namespace DotNet.Util
         public static string[] GetOptions(string key)
         {
             var option = string.Empty;
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(ConfigFileName);
+            var xmlDocument = LoadXmlDocument(ConfigFileName);
             option = GetOption(xmlDocument, SelectPath, key);
             return option.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
@@ -177,8 +175,7 @@ namespace DotNet.Util
         /// <returns>值</returns>
         public static string GetValue(string fileName, string selectPath, string key)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(fileName);
+            var xmlDocument = LoadXmlDocument(fileName);
             return GetValue(xmlDocument, selectPath, key);
         }
         #endregion
@@ -249,13 +246,45 @@ namespace DotNet.Util
 
         private static XmlDocument _xmlDocument = new XmlDocument();
 
+        private static XmlDocument LoadXmlDocument(string fileName)
+        {
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+            using var reader = XmlReader.Create(fileName, settings);
+            doc.Load(reader);
+            return doc;
+        }
+
+        private static XmlDocument LoadXmlDocument(Stream stream)
+        {
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+            using var reader = XmlReader.Create(stream, settings);
+            doc.Load(reader);
+            return doc;
+        }
+
         /// <summary>
         /// 获取配置
         /// </summary>
         /// <param name="stream"></param>
         public static void GetConfig(Stream stream)
         {
-            _xmlDocument.Load(stream);
+            _xmlDocument = LoadXmlDocument(stream);
             GetConfig(_xmlDocument);
         }
 
@@ -265,7 +294,7 @@ namespace DotNet.Util
         /// <param name="fileName">配置文件</param>
         public static void GetConfig(string fileName)
         {
-            _xmlDocument.Load(fileName);
+            _xmlDocument = LoadXmlDocument(fileName);
             GetConfig(_xmlDocument);
         }
 
@@ -1196,8 +1225,7 @@ namespace DotNet.Util
         {
             if (File.Exists(ConfigFileName))
             {
-                var xmlDocument = new XmlDocument();
-                xmlDocument.Load(ConfigFileName);
+                var xmlDocument = LoadXmlDocument(ConfigFileName);
                 SetValue(xmlDocument, key, keyValue, checkExists);
                 xmlDocument.Save(ConfigFileName);
             }
@@ -1275,8 +1303,7 @@ namespace DotNet.Util
         /// <param name="fileName">配置文件</param>
         public static void SaveConfig(string fileName)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(fileName);
+            var xmlDocument = LoadXmlDocument(fileName);
 
             #region 写入Redis配置
             SetValue(xmlDocument, "RedisEnabled", BaseSystemInfo.RedisEnabled.ToString());

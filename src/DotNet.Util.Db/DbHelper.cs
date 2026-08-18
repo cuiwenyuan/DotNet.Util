@@ -322,12 +322,17 @@ namespace DotNet.Util
         {
             if (InTransaction)
             {
-                // 事务已经完成了，一定要更新标志信息
-                InTransaction = false;
-                MustCloseConnection = true;
-                _dbTransaction.Commit();
-                //释放掉 Troy.Cui 2018.07.02
-                _dbTransaction.Dispose();
+                try
+                {
+                    _dbTransaction.Commit();
+                }
+                finally
+                {
+                    InTransaction = false;
+                    MustCloseConnection = true;
+                    _dbTransaction?.Dispose();
+                    _dbTransaction = null;
+                }
             }
         }
         #endregion
@@ -340,10 +345,16 @@ namespace DotNet.Util
         {
             if (InTransaction)
             {
-                InTransaction = false;
-                _dbTransaction.Rollback();
-                //释放掉 Troy.Cui 2018.07.02
-                _dbTransaction.Dispose();
+                try
+                {
+                    _dbTransaction.Rollback();
+                }
+                finally
+                {
+                    InTransaction = false;
+                    _dbTransaction?.Dispose();
+                    _dbTransaction = null;
+                }
             }
         }
         #endregion

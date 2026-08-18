@@ -408,8 +408,22 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string Post(string url, IDictionary<object, object> param, byte[] fileByte)
         {
+            return Post(url, param, fileByte, "upload.bin", "application/octet-stream");
+        }
+
+        /// <summary>
+        /// HTTP POST方式请求数据(带图片)
+        /// </summary>
+        /// <param name="url">URL</param>
+        /// <param name="param">POST的数据</param>
+        /// <param name="fileByte">图片</param>
+        /// <param name="fileName">上传文件名</param>
+        /// <param name="contentType">文件内容类型</param>
+        /// <returns></returns>
+        public static string Post(string url, IDictionary<object, object> param, byte[] fileByte, string fileName, string contentType = "application/octet-stream")
+        {
             var boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            var boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+            var boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
 
             var wr = (HttpWebRequest)WebRequest.Create(url);
             wr.ContentType = "multipart/form-data; boundary=" + boundary;
@@ -417,48 +431,35 @@ namespace DotNet.Util
             wr.KeepAlive = true;
             wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
 
-            var rs = wr.GetRequestStream();
-            string responseStr = null;
-
-            var formdataTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
-            foreach (string key in param.Keys)
+            string responseStr;
+            using (var rs = wr.GetRequestStream())
             {
-                rs.Write(boundarybytes, 0, boundarybytes.Length);
-                var formitem = string.Format(formdataTemplate, key, param[key]);
-                var formitembytes = System.Text.Encoding.UTF8.GetBytes(formitem);
-                rs.Write(formitembytes, 0, formitembytes.Length);
-            }
-            rs.Write(boundarybytes, 0, boundarybytes.Length);
-
-            var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
-            var header = string.Format(headerTemplate, "pic", fileByte, "text/plain");//image/jpeg
-            var headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
-            rs.Write(headerbytes, 0, headerbytes.Length);
-
-            rs.Write(fileByte, 0, fileByte.Length);
-
-            var trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-            rs.Write(trailer, 0, trailer.Length);
-            rs.Close();
-
-            WebResponse wresp = null;
-            try
-            {
-                wresp = wr.GetResponse();
-                var stream2 = wresp.GetResponseStream();
-                var sr = new StreamReader(stream2);
-                responseStr = sr.ReadToEnd();
-                // logger.Error(string.Format("File uploaded, server response is: {0}", responseStr));
-            }
-            catch //(Exception ex)
-            {
-                //logger.Error("Error uploading file", ex);
-                if (wresp != null)
+                var formdataTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+                foreach (string key in param.Keys)
                 {
-                    wresp.Close();
-                    wresp = null;
+                    rs.Write(boundarybytes, 0, boundarybytes.Length);
+                    var formitem = string.Format(formdataTemplate, key, param[key]);
+                    var formitembytes = Encoding.UTF8.GetBytes(formitem);
+                    rs.Write(formitembytes, 0, formitembytes.Length);
                 }
-                throw;
+                rs.Write(boundarybytes, 0, boundarybytes.Length);
+
+                var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
+                var header = string.Format(headerTemplate, "pic", fileName, contentType);
+                var headerbytes = Encoding.UTF8.GetBytes(header);
+                rs.Write(headerbytes, 0, headerbytes.Length);
+
+                rs.Write(fileByte, 0, fileByte.Length);
+
+                var trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                rs.Write(trailer, 0, trailer.Length);
+            }
+
+            using (var wresp = wr.GetResponse())
+            using (var stream2 = wresp.GetResponseStream())
+            using (var sr = new StreamReader(stream2))
+            {
+                responseStr = sr.ReadToEnd();
             }
             return responseStr;
         }

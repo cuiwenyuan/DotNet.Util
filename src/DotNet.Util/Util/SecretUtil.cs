@@ -38,21 +38,31 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public static bool IsSqlSafe(string commandText)
         {
-            var result = true;
-            if (!commandText.IsNullOrEmpty())
+            if (commandText.IsNullOrEmpty())
             {
-                var unSafeText = new string[] {"Delete", "Insert", "Update", "Truncate"};
-                for (var i = 0; i < unSafeText.Length; i++)
+                return true;
+            }
+
+            var trimmed = commandText.Trim();
+            if (trimmed.Length == 0)
+            {
+                return true;
+            }
+
+            var unsafeWords = new[] { "DELETE", "INSERT", "UPDATE", "TRUNCATE", "DROP", "ALTER", "EXEC", "EXECUTE" };
+            foreach (var word in unsafeWords)
+            {
+                if (trimmed.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    var unSafeString = unSafeText[i];
-                    if (commandText.IndexOf(unSafeString, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        result = false;
-                        break;
-                    }
+                    return false;
                 }
             }
-            return result;
+
+            // 进一步封堵常见注入模式
+            return trimmed.IndexOf(";", StringComparison.Ordinal) < 0
+                   && trimmed.IndexOf("--", StringComparison.Ordinal) < 0
+                   && trimmed.IndexOf("/*", StringComparison.Ordinal) < 0
+                   && trimmed.IndexOf("*/", StringComparison.Ordinal) < 0;
         }
         #endregion
 
@@ -71,9 +81,10 @@ namespace DotNet.Util
             var buffer = byteConverter.GetBytes(dataToSign);
             try
             {
-                var cryptoServiceProvider = new RSACryptoServiceProvider();
+                using var cryptoServiceProvider = new RSACryptoServiceProvider();
                 cryptoServiceProvider.ImportCspBlob(Convert.FromBase64String(privateKey));
-                var signedData = cryptoServiceProvider.SignData(buffer, new SHA1CryptoServiceProvider());
+                using var sha256 = SHA256.Create();
+                var signedData = cryptoServiceProvider.SignData(buffer, sha256);
                 result = Convert.ToBase64String(signedData);
             }
             catch (CryptographicException e)
@@ -103,9 +114,18 @@ namespace DotNet.Util
             var buffer = byteConverter.GetBytes(dataToVerify);
             try
             {
-                var cryptoServiceProvider = new RSACryptoServiceProvider();
+                using var cryptoServiceProvider = new RSACryptoServiceProvider();
                 cryptoServiceProvider.ImportCspBlob(Convert.FromBase64String(publicKey));
-                result = cryptoServiceProvider.VerifyData(buffer, new SHA1CryptoServiceProvider(), signedData);
+                using (var sha256 = SHA256.Create())
+                {
+                    result = cryptoServiceProvider.VerifyData(buffer, sha256, signedData);
+                }
+                if (!result)
+                {
+                    // 兼容旧版SHA-1签名的验证（仅验签，不再签发）
+                    using var sha1 = new SHA1CryptoServiceProvider();
+                    result = cryptoServiceProvider.VerifyData(buffer, sha1, signedData);
+                }
             }
             catch (CryptographicException e)
             {
