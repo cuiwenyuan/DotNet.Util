@@ -366,14 +366,12 @@ namespace DotNet.Util
         /// </summary>
         public virtual void Close()
         {
+#if (DEBUG)
             if (_dbConnection != null)
             {
-                _dbConnection.Close();
-                _dbConnection.Dispose();
-#if (DEBUG)
-                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
-#endif
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + _dbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
             }
+#endif
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
             Dispose();
         }

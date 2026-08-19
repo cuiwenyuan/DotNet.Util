@@ -408,6 +408,7 @@ namespace DotNet.Util
                 {
                     case CurrentDbType.Access:
                     case CurrentDbType.SqlServer:
+                        sb.Clear();
                         sb.Append("SELECT TOP " + topLimit + selectField + " FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
@@ -438,7 +439,9 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (!order.IsNullOrEmpty())
                         {
-                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                            var innerQuery = sb.ToString();
+                            sb.Clear();
+                            sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM < = " + topLimit);
                         }
                         break;
                 }

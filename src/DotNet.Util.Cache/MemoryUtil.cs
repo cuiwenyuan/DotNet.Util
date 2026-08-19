@@ -307,24 +307,14 @@ namespace DotNet.Util
         /// </summary>
         public static void RemoveAll()
         {
-            var keys = new List<string>();
 #if NET46_OR_GREATER
-            var iDictionaryEnumerator = Cache.GetEnumerator();
-            while (iDictionaryEnumerator.MoveNext())
+            var keys = GetAllKeys();
+            foreach (var key in keys)
             {
-                Cache.Remove(Convert.ToString(iDictionaryEnumerator.Key));
+                Cache.Remove(key);
             }
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
-            var cacheItems = entries as IDictionary;
-            if (cacheItems != null)
-            {
-                foreach (DictionaryEntry cacheItem in cacheItems)
-                {
-                    keys.Add(cacheItem.Key.ToString());
-                }
-            }
+            Cache.Compact(1.0);
 #endif
         }
         /// <summary>

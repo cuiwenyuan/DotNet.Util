@@ -536,7 +536,7 @@ namespace DotNet.Business
                 if (permissionIds != null && permissionIds.Length > 0 && entities != null)
                 {
                     // 要特别注意IsPublic的设置，容易造成失控
-                    result = entities.Where(t => (t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0) || permissionIds.Contains(t.Id.ToString())).ToList();
+                    result = entities.Where(t => t.Enabled == 1 && t.Deleted == 0 && (t.IsPublic == 1 || permissionIds.Contains(t.Id.ToString()))).ToList();
                 }
                 else
                 {
