@@ -7,21 +7,21 @@ namespace DotNet.Util
     /// <summary>
     /// Status
     /// 程序运行状态。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2016.04.13 版本：2.3 JiRiGaLa 实现登录限制的、用户名登录限制、密码登录限制。
     ///     2015.11.19 版本：2.2 JiRiGaLa IPLimit、LogonLimit 功能增加、限制访问、限制ip的变量定义好。
     ///     2015.11.11 版本：2.1 JiRiGaLa 实现公司没找到的功能。
     ///     2013.02.11 版本：2.0 JiRiGaLa 其实这部分代码已经与AppMessage重复。
     ///		2007.12.09 版本：1.1 JiRiGaLa 重新命名为 StatusCode。
     ///		2007.12.04 版本：1.0 JiRiGaLa 重新调整主键的规范化。
-    ///		
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.04.13</date>
-    /// </author> 
-    /// </summary>    
+    /// </author>
+    /// </summary>
     public enum Status
     {
         /// <summary>
@@ -140,7 +140,8 @@ namespace DotNet.Util
         /// 数据已被其他人修改
         /// </summary>
         [EnumDescription("数据已被其他人修改")]
-        ErrorChanged = 24,
+        //修复：原来与 ErrorUpdate 同为 24，导致两种状态无法区分；改为唯一值
+        ErrorChanged = 54,
         /// <summary>
         /// 未找到记录
         /// </summary>
@@ -156,7 +157,7 @@ namespace DotNet.Util
         /// </summary>
         [EnumDescription("密码错误")]
         PasswordError = 27,
-        
+
         /// <summary>
         /// 登录被拒绝
         /// </summary>

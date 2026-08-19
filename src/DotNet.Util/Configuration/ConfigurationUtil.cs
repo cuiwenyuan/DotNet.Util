@@ -10,20 +10,20 @@ namespace DotNet.Util
     /// <summary>
     /// ConfigurationUtil
     /// 连接配置。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2021.03.17 版本：4.0 Troy Cui  新增MQTT、FTP、WebApi的相关配置，并分类获取代码
     ///     2017.12.05 版本：3.0 Troy Cui  新增10个外部系统数据库连接的配置
-    ///     2016.03.14 版本：2.1 JiRiGaLa  RecordLogonLog、RecordLog 开关的读取完善。 
-    ///     2014.01.16 版本：2.0 JiRiGaLa  读取加密连接串的方法。 
+    ///     2016.03.14 版本：2.1 JiRiGaLa  RecordLogonLog、RecordLog 开关的读取完善。
+    ///     2014.01.16 版本：2.0 JiRiGaLa  读取加密连接串的方法。
     ///     2011.07.05 版本：1.1 zgl 增加  BaseSystemInfo.CheckIPAddress。
     ///		2008.06.08 版本：1.0 JiRiGaLa 将程序从 BaseConfiguration 进行了分离。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.03.14</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class ConfigurationUtil
     {
@@ -677,7 +677,8 @@ namespace DotNet.Util
         /// </summary>
         public static void GetMqttConfig()
         {
-            if (ConfigurationManager.AppSettings["Mqtterver"] != null)
+            //修复：原代码检查的是错误的键名 "Mqtterver"，导致 MqttServer 永远无法从配置文件加载
+            if (ConfigurationManager.AppSettings["MqttServer"] != null)
             {
                 BaseSystemInfo.MqttServer = ConfigurationManager.AppSettings["MqttServer"];
             }
@@ -896,7 +897,8 @@ namespace DotNet.Util
         /// </summary>
         public static void GetFtpConfig()
         {
-            if (ConfigurationManager.AppSettings["Ftperver"] != null)
+            //修复：原代码检查的是错误的键名 "Ftperver"，导致 FtpServer 永远无法从配置文件加载
+            if (ConfigurationManager.AppSettings["FtpServer"] != null)
             {
                 BaseSystemInfo.FtpServer = ConfigurationManager.AppSettings["FtpServer"];
             }
@@ -955,7 +957,8 @@ namespace DotNet.Util
             {
                 if (ValidateUtil.IsInt(ConfigurationManager.AppSettings["RedisInitialDb"]))
                 {
-                    BaseSystemInfo.RedisInitialDb = long.Parse(ConfigurationManager.AppSettings["RedisInitialDb"]);
+                    //修复：长数字串（超过 long 范围）时 long.Parse 会抛 OverflowException，改用安全的 ToLong()
+                    BaseSystemInfo.RedisInitialDb = ConfigurationManager.AppSettings["RedisInitialDb"].ToLong();
                 }
             }
 

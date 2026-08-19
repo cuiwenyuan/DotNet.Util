@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -164,7 +165,8 @@ namespace DotNet.Util
             var result = false;
             if (!string.IsNullOrWhiteSpace(expression))
             {
-                result = Regex.IsMatch(expression.Trim(), @"^[1-9]*$");
+                //修复：原正则 ^[1-9]*$ 不包含 0，导致 IsLong("10")/IsLong("0") 等返回 false
+                result = Regex.IsMatch(expression.Trim(), @"^[0-9]+$");
             }
             return result;
         }
@@ -356,7 +358,7 @@ namespace DotNet.Util
                 //const string regexString = @"^(1(([34578][0-9])|(47)|[8][01236789]))\d{8}$";
                 //根据最新号码段更新 https://www.qqzeng.com/article/phone.html 2021.07.22
                 //const string regexString = @"^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$";
-                const string regexString = @"^1(3[0-9]|4[56789]|5[0-3,5-9]|6[2567]|7[012345678]|8[0123456789]|9[1389])\d{8}$";
+                const string regexString = @"^1(3[0-9]|4[56789]|5[0-35-9]|6[2567]|7[012345678]|8[0123456789]|9[1389])\d{8}$";
                 var regex = new Regex(regexString);
                 result = regex.IsMatch(mobile);
             }
@@ -365,17 +367,57 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 是否身份证号码
+        /// 是否身份证号码（15位/18位，18位含 GB 11643-1999 校验码验证）
         /// </summary>
-        /// <param name="idCard"></param>
-        /// <returns></returns>
+        /// <param name="idCard">身份证号码</param>
+        /// <returns>格式正确</returns>
         public static bool IsIdCard(string idCard)
         {
-            idCard = idCard.Trim();
-            if (idCard.Length == 15 || idCard.Length == 18)
+            if (idCard.IsNullOrEmpty())
             {
+                return false;
+            }
+            idCard = idCard.Trim();
+
+            // 15位身份证（旧版）：6位地区码 + 6位出生日期YYMMDD + 3位顺序码
+            if (idCard.Length == 15)
+            {
+                if (!Regex.IsMatch(idCard, @"^\d{15}$"))
+                {
+                    return false;
+                }
+                // 出生日期（第7-12位），15位身份证默认补足为19世纪
+                if (!DateTime.TryParseExact("19" + idCard.Substring(6, 6), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    return false;
+                }
                 return true;
             }
+
+            // 18位身份证（新版）：6位地区码 + 8位出生日期YYYYMMDD + 3位顺序码 + 1位校验码
+            if (idCard.Length == 18)
+            {
+                if (!Regex.IsMatch(idCard, @"^\d{17}[\dXx]$"))
+                {
+                    return false;
+                }
+                // 出生日期（第7-14位）
+                if (!DateTime.TryParseExact(idCard.Substring(6, 8), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    return false;
+                }
+                // 校验码验证（GB 11643-1999）
+                var weights = new[] { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+                const string checkChars = "10X98765432";
+                var sum = 0;
+                for (var i = 0; i < 17; i++)
+                {
+                    sum += (idCard[i] - '0') * weights[i];
+                }
+                var checkChar = checkChars[sum % 11];
+                return char.ToUpperInvariant(idCard[17]) == checkChar;
+            }
+
             return false;
             // const string regexString = @"[\d]{6}(19|20)*[\d]{2}((0[1-9])|(11|12))*[\d]{2}((0[1-9])|^2[\d]{1}([0-9])|(30|31))*[\d]{3}[xX]|[\d]{4}";
             // const string regexString = @"^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$";
@@ -423,21 +465,13 @@ namespace DotNet.Util
         public static bool IsTelephone(string telephone)
         {
             var result = true;
-            if (telephone.IsNullOrEmpty())
+            //修正：原实现条件写反（IsNullOrEmpty 时反而执行校验），导致永远返回 true
+            if (!telephone.IsNullOrEmpty())
             {
                 foreach (var t in telephone)
                 {
-                    if (t.Equals("-")
-                        || t.Equals("0")
-                        || t.Equals("1")
-                        || t.Equals("2")
-                        || t.Equals("3")
-                        || t.Equals("4")
-                        || t.Equals("5")
-                        || t.Equals("6")
-                        || t.Equals("7")
-                        || t.Equals("8")
-                        || t.Equals("9"))
+                    //修正：char.Equals(string) 恒为 false，需改为字符直接比较
+                    if (t == '-' || (t >= '0' && t <= '9'))
                     {
                         result = true;
                     }
@@ -502,11 +536,6 @@ namespace DotNet.Util
             if (!password.IsNullOrEmpty())
             {
 
-                if (password.IndexOf("123", StringComparison.OrdinalIgnoreCase) > -1)
-                {
-                    result = false;
-                }
-
                 var isDigit = false;
                 var isLetter = false;
                 foreach (var t in password)
@@ -522,7 +551,8 @@ namespace DotNet.Util
                     }
                 }
 
-                result = (isDigit && isLetter);
+                //修复：原代码中“包含123”的判断会被下面的赋值覆盖（死代码），需要合并进最终结果
+                result = (isDigit && isLetter && password.IndexOf("123", StringComparison.OrdinalIgnoreCase) < 0);
                 // 密码至少为8位，为数字加字母
                 if (password.Length < 8)
                 {
@@ -580,25 +610,14 @@ namespace DotNet.Util
             var result = false;
             if (!code.IsNullOrEmpty())
             {
-                var checkDigit = 0;
                 var isDigitsOnly = IsDigitsOnly(code);
-                if (code.Length == 11 && isDigitsOnly)
+                //UPC-A 编码固定为12位数字（11位数据 + 1位校验码）
+                //修正：12位时校验码应取最后一位数字（code[11] - '0'），
+                //原实现直接取 char 的 ASCII 值导致合法编码永远校验失败；
+                //同时移除了“11位自动补校验码后必然通过”的无意义逻辑。
+                if (isDigitsOnly && code.Length == 12)
                 {
-                    // Add Fake CheckSum
-                    checkDigit = CalculateUPCACheckDigit(code);
-                    code += checkDigit.ToString();
-                }
-                else if (code.Length == 12)
-                {
-                    checkDigit = code[11];
-                }
-                if (code.Length == 12 && isDigitsOnly)
-                {
-                    //60984399883
-                    //Check digit calculation is based on modulus 10 with digits in an odd
-                    //position (from right to left) being weighted 1 and even position digits
-                    //being weighted 3.
-                    //Implementation based on http://stackoverflow.com/questions/10143547/how-do-i-validate-a-upc-or-ean-code
+                    var checkDigit = code[11] - '0';
                     result = checkDigit == CalculateUPCACheckDigit(code);
                 }
             }
@@ -669,9 +688,14 @@ namespace DotNet.Util
         public static bool IsVIN(string vin)
         {
             var result = false;
+            //修复：空值直接返回，避免 vin.ToUpper() 抛 NullReferenceException
+            if (vin.IsNullOrEmpty())
+            {
+                return result;
+            }
             var upperVin = vin.ToUpper();
             //排除字母I、O、Q
-            if (!vin.IsNullOrEmpty() && vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 // VIN码从第1位到第17位的“加权值”：
                 var vinMapWeighting = new Dictionary<int, int>

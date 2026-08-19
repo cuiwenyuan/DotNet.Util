@@ -310,18 +310,19 @@ namespace DotNet.Util
         /// <returns></returns>
         public override IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
         {
-            OleDbParameter parameter;
-
+            //修复：不能将 System.Data.DbType 数值直接强转为 OleDbType（两者枚举值完全不对应），
+            //应通过 OleDbParameter.DbType 属性由提供程序正确映射类型
+            var parameter = new OleDbParameter
+            {
+                ParameterName = parameterName,
+                DbType = dbType,
+                Direction = parameterDirection
+            };
             if (parameterSize > 0)
             {
-                parameter = new OleDbParameter(parameterName, (OleDbType)dbType, parameterSize);
-            }
-            else
-            {
-                parameter = new OleDbParameter(parameterName, (OleDbType)dbType);
+                parameter.Size = parameterSize;
             }
 
-            parameter.Direction = parameterDirection;
             if (!(parameterDirection == ParameterDirection.Output && parameterValue == null))
             {
                 parameter.Value = parameterValue;

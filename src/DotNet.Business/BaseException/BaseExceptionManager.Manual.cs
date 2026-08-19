@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+#if !NET46_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 
 namespace DotNet.Business
 {
@@ -15,15 +18,15 @@ namespace DotNet.Business
     /// <summary>
     /// BaseExceptionManager
     /// 异常管理
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2016.09.23 版本：1.0 Troy.Cui	新增。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.09.23</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseExceptionManager : BaseManager
     {
@@ -84,7 +87,12 @@ namespace DotNet.Business
                 return result;
             }
             // Windows系统异常中
+            //修复：EventLog 仅 Windows 支持，非 Windows 平台（net6.0+ on Linux）调用会抛 PlatformNotSupportedException
+#if NET46_OR_GREATER
             if (BaseSystemInfo.EventLog)
+#else
+            if (BaseSystemInfo.EventLog && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
             {
                 if (!EventLog.SourceExists(BaseSystemInfo.SoftName))
                 {

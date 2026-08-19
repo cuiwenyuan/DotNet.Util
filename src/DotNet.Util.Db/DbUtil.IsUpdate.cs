@@ -10,16 +10,16 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2021.05.21 版本：4.0 Troy.Cui 增加Version参数，兼容旧版本V4
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -81,7 +81,11 @@ namespace DotNet.Util
             var result = false;
             foreach (DataRow dr in dt.Rows)
             {
-                result = IsUpdate(dr, oldUpdateUserId, oldUpdateTime);
+                //修复：任一记录被修改即返回 true（原来逐行覆盖，只有最后一行生效）
+                if (IsUpdate(dr, oldUpdateUserId, oldUpdateTime))
+                {
+                    return true;
+                }
             }
             return result;
         }
@@ -105,7 +109,8 @@ namespace DotNet.Util
                 var newUpdateTime = dr[BaseUtil.FieldUpdateTime].ToDateTime();
                 var newUpdateUserId = dr[BaseUtil.FieldUpdateUserId].ToString();
                 var diff = DateTime.Compare(newUpdateTime, oldUpdateTime.ToDateTime());
-                if (!newUpdateUserId.Equals(oldUpdateUserId))
+                //修复：diff 之前计算了却从未使用，同一个人后续修改也不会被识别为已更新
+                if (diff > 0 || !newUpdateUserId.Equals(oldUpdateUserId))
                 {
                     result = true;
                 }

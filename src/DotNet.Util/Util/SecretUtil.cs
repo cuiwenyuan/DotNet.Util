@@ -335,9 +335,15 @@ namespace DotNet.Util
             {
                 return string.Empty;
             }
+            //修复：key 为空时 Md5 返回空串，Substring(0,8) 会越界
+            if (key.IsNullOrEmpty())
+            {
+                key = BaseSystemInfo.SecurityKey;
+            }
 
             var sb = PoolUtil.StringBuilder.Get();
-            var des = new DESCryptoServiceProvider();
+            //修复：使用 using 释放 DES/MemoryStream/CryptoStream
+            using var des = new DESCryptoServiceProvider();
             var inputByteArray = Encoding.Default.GetBytes(targetValue);
             //通过两次哈希密码设置对称算法的初始化向量
             var keyHash = Sha1(Md5(key).Substring(0, 8));
@@ -345,10 +351,12 @@ namespace DotNet.Util
             des.Key = Encoding.ASCII.GetBytes(keyHash.Substring(0, 8));
             //使用密钥散列的另一部分作为初始化向量，避免Key与IV相同
             des.IV = Encoding.ASCII.GetBytes(keyHash.Substring(8, 8));
-            var ms = new MemoryStream();
-            var cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write);
-            cs.Write(inputByteArray, 0, inputByteArray.Length);
-            cs.FlushFinalBlock();
+            using var ms = new MemoryStream();
+            using (var cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(inputByteArray, 0, inputByteArray.Length);
+                cs.FlushFinalBlock();
+            }
             foreach (var b in ms.ToArray())
             {
                 sb.AppendFormat("{0:X2}", b);
@@ -380,16 +388,23 @@ namespace DotNet.Util
             {
                 return string.Empty;
             }
+            //修复：key 为空时 Md5 返回空串，Substring(0,8) 会越界
+            if (key.IsNullOrEmpty())
+            {
+                key = BaseSystemInfo.SecurityKey;
+            }
             // 定义DES加密对象
             try
             {
-                var des = new DESCryptoServiceProvider();
+                using var des = new DESCryptoServiceProvider();
                 var len = targetValue.Length / 2;
                 var inputByteArray = new byte[len];
                 int x, i;
                 for (x = 0; x < len; x++)
                 {
-                    i = (targetValue.Substring(x * 2, 2), 16).ToInt();
+                    //修复：原 (substring, 16).ToInt() 是元组字面量，ToInt 恒返回 0，导致解密永远失败；
+                    //应把十六进制子串按 16 进制转换为 int
+                    i = Convert.ToInt32(targetValue.Substring(x * 2, 2), 16);
                     inputByteArray[x] = (byte)i;
                 }
                 // 通过两次哈希密码设置对称算法的初始化向量
@@ -399,11 +414,13 @@ namespace DotNet.Util
                 // 使用密钥散列的另一部分作为初始化向量，避免Key与IV相同
                 des.IV = Encoding.ASCII.GetBytes(keyHash.Substring(8, 8));
                 // 定义内存流
-                var ms = new MemoryStream();
+                using var ms = new MemoryStream();
                 // 定义加密流
-                var cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write);
-                cs.Write(inputByteArray, 0, inputByteArray.Length);
-                cs.FlushFinalBlock();
+                using (var cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(inputByteArray, 0, inputByteArray.Length);
+                    cs.FlushFinalBlock();
+                }
                 return Encoding.Default.GetString(ms.ToArray());
             }
             catch (Exception ex)

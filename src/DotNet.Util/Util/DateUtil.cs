@@ -95,53 +95,53 @@ namespace DotNet.Util
 
 
         /*
-        //1.1 取当前年月日时分秒 
+        //1.1 取当前年月日时分秒
                 currentTime=System.DateTime.Now;
-        //1.2 取当前年 
-                int 年=currentTime.Year; 
-        //1.3 取当前月 
-                int 月=currentTime.Month; 
-        //1.4 取当前日 
-                int 日=currentTime.Day; 
-        //1.5 取当前时 
-                int 时=currentTime.Hour; 
-        //1.6 取当前分 
-                int 分=currentTime.Minute; 
-        //1.7 取当前秒 
-                int 秒=currentTime.Second; 
-        //1.8 取当前毫秒 
-                int 毫秒=currentTime.Millisecond; 
-        //（变量可用中文） 
+        //1.2 取当前年
+                int 年=currentTime.Year;
+        //1.3 取当前月
+                int 月=currentTime.Month;
+        //1.4 取当前日
+                int 日=currentTime.Day;
+        //1.5 取当前时
+                int 时=currentTime.Hour;
+        //1.6 取当前分
+                int 分=currentTime.Minute;
+        //1.7 取当前秒
+                int 秒=currentTime.Second;
+        //1.8 取当前毫秒
+                int 毫秒=currentTime.Millisecond;
+        //（变量可用中文）
 
-        //1.9 取中文日期显示——年月日时分 
-                         string strY=currentTime.ToString("f"); //不显示秒 
+        //1.9 取中文日期显示——年月日时分
+                         string strY=currentTime.ToString("f"); //不显示秒
 
-        //1.10 取中文日期显示_年月 
-                 string strYM=currentTime.ToString("y"); 
+        //1.10 取中文日期显示_年月
+                 string strYM=currentTime.ToString("y");
 
-        //1.11 取中文日期显示_月日 
-                 string strMD=currentTime.ToString("m"); 
+        //1.11 取中文日期显示_月日
+                 string strMD=currentTime.ToString("m");
 
-        //1.12 取中文年月日 
-                 string strYMD=currentTime.ToString("D"); 
+        //1.12 取中文年月日
+                 string strYMD=currentTime.ToString("D");
 
-        /1.13 取当前时分，格式为：14：24 
-        string strT=currentTime.ToString("t"); 
+        /1.13 取当前时分，格式为：14：24
+        string strT=currentTime.ToString("t");
 
-        //1.14 取当前时间，格式为：2003-09-23T14:46:48 
-        string strT=currentTime.ToString("s"); 
+        //1.14 取当前时间，格式为：2003-09-23T14:46:48
+        string strT=currentTime.ToString("s");
 
-        //1.15 取当前时间，格式为：2003-09-23 14:48:30Z 
-                                              string strT=currentTime.ToString("u"); 
+        //1.15 取当前时间，格式为：2003-09-23 14:48:30Z
+                                              string strT=currentTime.ToString("u");
 
-        //1.16 取当前时间，格式为：2003-09-23 14:48 
-        string strT=currentTime.ToString("g"); 
+        //1.16 取当前时间，格式为：2003-09-23 14:48
+        string strT=currentTime.ToString("g");
 
-        //1.17 取当前时间，格式为：Tue, 23 Sep 2003 14:52:40 GMT 
-                                                     string strT=currentTime.ToString("r"); 
+        //1.17 取当前时间，格式为：Tue, 23 Sep 2003 14:52:40 GMT
+                                                     string strT=currentTime.ToString("r");
 
-        //1.18获得当前时间 n 天后的日期时间 
-            DateTime newDay = DateTime.Now.AddDays(100); 
+        //1.18获得当前时间 n 天后的日期时间
+            DateTime newDay = DateTime.Now.AddDays(100);
         */
 
         #region 返回本年有多少天
@@ -531,7 +531,8 @@ namespace DotNet.Util
             }
             if (WeekStart == 2)
             {
-                return (day.Date.Day + i - 1) / 7;
+                //修复：与 WeekStart == 1 保持一致，第一个不完整周返回 1 而不是 0
+                return (day.Date.Day + i - 1) / 7 + 1;
 
             }
             return 0;
@@ -551,7 +552,8 @@ namespace DotNet.Util
             switch (TimeType)
             {
                 case "Week":
-                    return now.AddDays(-(int)now.DayOfWeek + 1);
+                    //修复：周日（DayOfWeek=0）原来会取到下周一，改为当前周周一
+                    return now.AddDays(-GetMondayOffset(now) + 1);
                 case "Month":
                     return now.AddDays(-now.Day + 1);
                 case "Season":
@@ -560,7 +562,7 @@ namespace DotNet.Util
                 case "Year":
                     return now.AddDays(-now.DayOfYear + 1);
                 default:
-                    return now.AddDays(-(int)now.DayOfWeek + 1);
+                    return now.AddDays(-GetMondayOffset(now) + 1);
             }
         }
 
@@ -575,7 +577,8 @@ namespace DotNet.Util
             switch (timeType)
             {
                 case "Week":
-                    return now.AddDays(7 - (int)now.DayOfWeek);
+                    //修复：周日（DayOfWeek=0）原来会取到下周日，改为当天
+                    return now.AddDays(7 - GetMondayOffset(now));
                 case "Month":
                     return now.AddMonths(1).AddDays(-now.AddMonths(1).Day + 1).AddDays(-1);
                 case "Season":
@@ -585,8 +588,17 @@ namespace DotNet.Util
                     var time2 = now.AddYears(1);
                     return time2.AddDays(-time2.DayOfYear);
                 default:
-                    return now.AddDays(7 - (int)now.DayOfWeek);
+                    return now.AddDays(7 - GetMondayOffset(now));
             }
+        }
+
+        /// <summary>
+        /// 获取一周内周一至周日的偏移（周一=1 ... 周日=7）
+        /// </summary>
+        private static int GetMondayOffset(DateTime now)
+        {
+            var dayOfWeek = (int)now.DayOfWeek;
+            return dayOfWeek == 0 ? 7 : dayOfWeek;
         }
         #endregion
 

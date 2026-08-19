@@ -131,13 +131,16 @@ namespace DotNet.Util
             Thread.Sleep(10000);
             var openId = string.Empty;
             var url = WebHost + @"/UserCenter/LogonService.ashx";
-            var webClient = new WebClient();
-            var postValues = new NameValueCollection();
-            postValues.Add("function", "CreateOpenId");
-            postValues.Add("userInfo", UserInfo.Serialize());
-            //向服务器发送POST数据
-            var responseArray = webClient.UploadValues(url, postValues);
-            openId = Encoding.UTF8.GetString(responseArray);
+            //修复：WebClient 实现了 IDisposable，需释放避免句柄/连接泄漏
+            using (var webClient = new WebClient())
+            {
+                var postValues = new NameValueCollection();
+                postValues.Add("function", "CreateOpenId");
+                postValues.Add("userInfo", UserInfo.Serialize());
+                //向服务器发送POST数据
+                var responseArray = webClient.UploadValues(url, postValues);
+                openId = Encoding.UTF8.GetString(responseArray);
+            }
             if (!string.IsNullOrWhiteSpace(openId))
             {
                 UserInfo.OpenId = openId;

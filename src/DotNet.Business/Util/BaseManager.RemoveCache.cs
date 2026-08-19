@@ -9,15 +9,15 @@ namespace DotNet.Business
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2018.08.29 版本：Troy.Cui进行扩展。
     ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2018.08.29</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
@@ -36,6 +36,9 @@ namespace DotNet.Business
                 cacheKey += "." + UserInfo.CompanyId;
             }
             result = CacheUtil.Remove(cacheKey);
+            //修复：部分读取方法（如序列下拉列表）的缓存键带公司范围后缀 Dt.X.{CompanyId}.{0|1}，一并清除避免缓存失效不彻底
+            CacheUtil.Remove(cacheKey + ".0");
+            CacheUtil.Remove(cacheKey + ".1");
             return result;
         }
         #endregion

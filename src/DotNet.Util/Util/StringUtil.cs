@@ -13,16 +13,16 @@ namespace DotNet.Util
     /// <summary>
     ///	StringUtil
     /// 字符串辅助类
-    /// 
-    /// 
+    ///
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2016.01.12 版本：1.0	SongBiao
-    ///	
+    ///
     /// <author>
     ///		<name>SongBiao</name>
     ///		<date>2016.01.12</date>
-    /// </author> 
+    /// </author>
     /// </summary>
 
     public static partial class StringUtil
@@ -389,12 +389,12 @@ namespace DotNet.Util
             return mobile;
         }
 
-        /// <summary>  
-        /// 字符串转为UniCode码字符串  
+        /// <summary>
+        /// 字符串转为UniCode码字符串
         /// 避免生成的json中有特殊字符造成的问题
-        /// </summary>  
-        /// <param name="target"></param>  
-        /// <returns></returns>  
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static string StringToUnicode(string target)
         {
             target = string.Equals(target, "N/A", StringComparison.OrdinalIgnoreCase) ? "" : target;
@@ -420,30 +420,20 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string CutString(string inputString, int len)
         {
-            var ascii = new ASCIIEncoding();
+            if (inputString == null)
+            {
+                return string.Empty;
+            }
             var tempLen = 0;
             var tempString = "";
-            var s = ascii.GetBytes(inputString);
-            for (var i = 0; i < s.Length; i++)
+            //修复：原实现用 ASCII 字节数当作字符下标，遇到中文会越界或截断错位；
+            //改为按字符遍历，非 ASCII（中文等）按 2 个宽度计，与原逻辑一致
+            for (var i = 0; i < inputString.Length; i++)
             {
-                if ((int)s[i] == 63)
-                {
-                    tempLen += 2;
-                }
-                else
-                {
-                    tempLen += 1;
-                }
-
-                try
-                {
-                    tempString += inputString.Substring(i, 1);
-                }
-                catch
-                {
-                    break;
-                }
-
+                var ch = inputString[i];
+                //非 ASCII 字符按 2 个宽度计
+                tempLen += ch > 255 ? 2 : 1;
+                tempString += ch;
                 if (tempLen > len)
                     break;
             }

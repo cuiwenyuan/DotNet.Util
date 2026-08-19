@@ -308,7 +308,8 @@ namespace DotNet.Util
                 var count = (int)fs.Length;
                 var buffer = new byte[count];
                 br.Read(buffer, 0, buffer.Length);
-                message = Encoding.Default.GetString(buffer);
+                //修复：与 WriteBinaryFile 写入的 UTF-8 保持一致，避免非 ASCII 内容乱码（原 Encoding.Default 在 .NET Framework 上是 ANSI）
+                message = Encoding.UTF8.GetString(buffer);
                 // message = br.ReadString();
 
                 // 读取完毕，关闭.
@@ -465,7 +466,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName)
         {
-            var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
+            //修复：使用 using 释放 StreamReader/文件句柄
+            using var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
             return sr.ReadToEnd();
         }
 
@@ -505,8 +507,9 @@ namespace DotNet.Util
                 case ".bmp": mime = "image/bmp"; break;
                 case ".jpeg":
                 case ".jpg":
-                case ".jpe":
-                case ".png": mime = "image/jpeg"; break;
+                case ".jpe": mime = "image/jpeg"; break;
+                //修复：.png 之前错误地返回了 image/jpeg
+                case ".png": mime = "image/png"; break;
                 case ".mpeg":
                 case ".mpg":
                 case ".mpe":

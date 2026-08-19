@@ -13,7 +13,7 @@ namespace DotNet.Business
     /// <remarks>
     /// BaseUserManager
     /// 用户缓存管理
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2020.12.08 版本：1.5 Troy.Cui   使用CacheUtil缓存
@@ -21,11 +21,11 @@ namespace DotNet.Business
     ///	版本：1.2 2016.01.07    JiRiGaLa    缓存服务器，读写分离。
     ///	版本：1.1 2015.06.15    JiRiGaLa    增加强制刷新缓存的功能。
     ///	版本：1.0 2015.01.06    JiRiGaLa    缓存优化。
-    ///	
-    /// <author>  
+    ///
+    /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.01.18</date>
-    /// </author> 
+    /// </author>
     /// </remarks>
     public partial class BaseUserManager
     {
@@ -83,24 +83,27 @@ namespace DotNet.Business
                 if (!(entity.NickName).IsNullOrEmpty())
                 {
                     key = "User:ByNickName:" + entity.NickName.ToLower();
-                    CacheUtil.Set<string>(key, entity.Id.ToString());
+                    //修复：该键的读取方期望 BaseUserEntity，原来写入 string 造成类型不一致/缓存失效
+                    CacheUtil.Set<BaseUserEntity>(key, entity);
                 }
 
                 if (!(entity.Code).IsNullOrEmpty())
                 {
                     key = "User:ByCode:" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id.ToString());
+                    CacheUtil.Set<BaseUserEntity>(key, entity);
 
                     key = "User:ByCompanyId:ByCode" + entity.CompanyId + ":" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id.ToString());
+                    CacheUtil.Set<BaseUserEntity>(key, entity);
                 }
 
-                var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId.ToString());
-                if (!companyCode.IsNullOrEmpty())
-                {
-                    key = "User:ByCompanyCode:ByCode" + companyCode + ":" + entity.Code;
-                    CacheUtil.Set<string>(key, entity.Id.ToString());
-                }
+                //修复：User:ByCompanyCode:ByCode 键由 IsInOrganizationByCode 用作 bool 缓存，
+                //此处不再写入 string，避免类型不一致污染缓存（该缓存按需自动生成）
+                //var companyCode = BaseOrganizationManager.GetCodeByCache(entity.CompanyId.ToString());
+                //if (!companyCode.IsNullOrEmpty())
+                //{
+                //    key = "User:ByCompanyCode:ByCode" + companyCode + ":" + entity.Code;
+                //    CacheUtil.Set<string>(key, entity.Id.ToString());
+                //}
 
                 Console.WriteLine(entity.Id + " : " + entity.RealName);
             }

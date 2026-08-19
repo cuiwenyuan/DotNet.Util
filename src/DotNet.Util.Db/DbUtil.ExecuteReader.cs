@@ -11,15 +11,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2015.06.16 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2015.06.16</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -146,7 +146,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
         {
-            // 这里是需要完善的功能，完善了这个，是一次重大突破 
+            // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
             return dbHelper.ExecuteReader(sql);
         }
@@ -387,7 +387,7 @@ namespace DotNet.Util
         #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
 
         /// <summary>
-        /// 参数化查询 
+        /// 参数化查询
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">表名</param>
@@ -414,7 +414,7 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (order.IsNullOrEmpty())
                         {
-                            whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
+                            whereSql = AddWhere(whereSql, " ROWNUM <= " + topLimit);
                         }
                         break;
                 }
@@ -441,7 +441,7 @@ namespace DotNet.Util
                         {
                             var innerQuery = sb.ToString();
                             sb.Clear();
-                            sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM < = " + topLimit);
+                            sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM <= " + topLimit);
                         }
                         break;
                 }

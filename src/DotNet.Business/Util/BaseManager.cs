@@ -16,10 +16,10 @@ namespace DotNet.Business
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
-    /// 
+    ///
     /// 总觉得自己写的程序不上档次，这些新技术也玩玩，也许做出来的东西更专业了。
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.04 版本：1.5 JiRiGaLa 文件进行分割，简化处理。
     ///		2010.06.23 版本：1.4 JiRiGaLa 删除简化了一些重复的函数功能。
     ///		2007.11.22 版本：1.3 JiRiGaLa 创建没有BaseSystemInfo的构造函数。
@@ -30,7 +30,7 @@ namespace DotNet.Business
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.04</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
@@ -650,8 +650,12 @@ namespace DotNet.Business
             {
                 return string.Empty;
             }
-            var status = (Status)Enum.Parse(typeof(Status), statusCode, true);
-            return GetStateMessage(status);
+            //修复：未知状态码时 Enum.Parse 会抛 ArgumentException，改为安全解析并回退到 Error
+            if (Enum.TryParse(statusCode, true, out Status status))
+            {
+                return GetStateMessage(status);
+            }
+            return GetStateMessage(Status.Error);
         }
 
         #endregion
@@ -1135,7 +1139,7 @@ namespace DotNet.Business
             }
             return result;
         }
-        #endregion        
+        #endregion
 
     }
 }

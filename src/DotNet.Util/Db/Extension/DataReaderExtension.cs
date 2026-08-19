@@ -81,7 +81,7 @@ namespace DotNet.Util
                             var pi = t.GetProperty(dataReader.GetName(i), BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                             if (pi != null)
                             {
-                                //绑定实体对象中同名的字段  
+                                //绑定实体对象中同名的字段
                                 pi.SetValue(entity, BaseUtil.ChangeType(dataReader[i], pi.PropertyType), null);
                             }
                         }
@@ -104,7 +104,9 @@ namespace DotNet.Util
             if (dataReader != null && !dataReader.IsClosed)
             {
                 var entity = Activator.CreateInstance<T>();
-                while (dataReader.Read())
+                //修复：此方法设计为在调用方 while (dataReader.Read()){} 循环内逐行使用，
+                //只读取当前行，不再自行循环读取所有行并关闭 reader（否则会吞掉整个结果集并返回最后一行）
+                if (dataReader.Read())
                 {
                     var t = typeof(T);
                     var count = dataReader.FieldCount;
@@ -120,7 +122,6 @@ namespace DotNet.Util
                         }
                     }
                 }
-                dataReader.Close();
                 return entity;
             }
             else

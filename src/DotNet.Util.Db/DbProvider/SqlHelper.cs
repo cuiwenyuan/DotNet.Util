@@ -14,18 +14,18 @@ namespace DotNet.Util
     /// <summary>
     /// SqlHelper
     /// 获取参数总汇
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2012.03.17 版本：1.3 zhangyi  精细化注释
     ///		2008.08.26 版本：1.2 JiRiGaLa 修改Open时的错误反馈。
     ///		2008.06.01 版本：1.1 JiRiGaLa 数据库连接获得方式进行改进，构造函数获得调通。
     ///		2008.05.07 版本：1.0 JiRiGaLa 创建。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2008.08.26</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public class SqlHelper : DbHelper, IDbHelper
     {
@@ -331,43 +331,54 @@ namespace DotNet.Util
             }
             // SQL 数据连接
             SqlConnection sqlConnection = null;
-            // 打开数据库
-            Open();
-            // 获取连接
-            sqlConnection = (SqlConnection)GetDbConnection();
-            using (var tran = sqlConnection.BeginTransaction())
+            try
             {
-                // 批量保存数据，只能用于Sql
-                var sqlBulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
-                sqlBulkCopy.BatchSize = batchSize;
-                // 设置目标表名
-                sqlBulkCopy.DestinationTableName = destinationTableName;
-                // 设置超时限制
-                sqlBulkCopy.BulkCopyTimeout = bulkCopyTimeout;
+                // 打开数据库
+                Open();
+                // 获取连接
+                sqlConnection = (SqlConnection)GetDbConnection();
+                using (var tran = sqlConnection.BeginTransaction())
+                {
+                    // 批量保存数据，只能用于Sql
+                    var sqlBulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, tran);
+                    sqlBulkCopy.BatchSize = batchSize;
+                    // 设置目标表名
+                    sqlBulkCopy.DestinationTableName = destinationTableName;
+                    // 设置超时限制
+                    sqlBulkCopy.BulkCopyTimeout = bulkCopyTimeout;
 
-                foreach (DataColumn dtColumn in dt.Columns)
-                {
-                    sqlBulkCopy.ColumnMappings.Add(dtColumn.ColumnName, dtColumn.ColumnName);
+                    foreach (DataColumn dtColumn in dt.Columns)
+                    {
+                        sqlBulkCopy.ColumnMappings.Add(dtColumn.ColumnName, dtColumn.ColumnName);
+                    }
+                    try
+                    {
+                        // 写入
+                        sqlBulkCopy.WriteToServer(dt);
+                        // 提交事务
+                        tran.Commit();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        sqlBulkCopy.Close();
+                        LogUtil.WriteException(ex, "SqlBulkCopyData");
+                    }
+                    finally
+                    {
+                        sqlBulkCopy.Close();
+                    }
                 }
-                try
-                {
-                    // 写入
-                    sqlBulkCopy.WriteToServer(dt);
-                    // 提交事务
-                    tran.Commit();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    sqlBulkCopy.Close();
-                    LogUtil.WriteException(ex, "SqlBulkCopyData");
-                }
-                finally
-                {
-                    sqlBulkCopy.Close();
-                    Close();
-                }
+            }
+            catch (Exception ex)
+            {
+                //修复：打开连接/开启事务等阶段出错时也要记录异常并关闭连接，避免连接泄漏
+                LogUtil.WriteException(ex, "SqlBulkCopyData");
+            }
+            finally
+            {
+                Close();
             }
             stopwatch.Stop();
             var statisticsText = $"{stopwatch.Elapsed.TotalMilliseconds}ms";

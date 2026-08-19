@@ -384,6 +384,12 @@ namespace DotNet.Util
         {
             var myResult = pSrcString;
 
+            // 参数校验：防止负长度/负起始位置/空字符串导致的索引越界
+            if (pSrcString == null || pStartIndex < 0 || pLength <= 0)
+            {
+                return string.Empty;
+            }
+
             var bComments = Encoding.UTF8.GetBytes(pSrcString);
             foreach (var c in Encoding.UTF8.GetChars(bComments))
             {    //当是日文或韩文时(注:中文的范围:\u4e00 - \u9fa5, 日文在\u0800 - \u4e00, 韩文为\xAC00-\xD7A3)
@@ -441,6 +447,12 @@ namespace DotNet.Util
 
                     if ((bsSrcString[pEndIndex - 1] > 127) && (anResultFlag[pLength - 1] == 1))
                         nRealLength = pLength + 1;
+
+                    //防止截取越界（当最后一个字节是3字节UTF-8字符的首字节时会多取1字节）
+                    if (nRealLength > bsSrcString.Length - pStartIndex)
+                    {
+                        nRealLength = bsSrcString.Length - pStartIndex;
+                    }
 
                     bsResult = new byte[nRealLength];
 
@@ -784,8 +796,19 @@ namespace DotNet.Util
             var textArray1 = SplitString(bantext, "\r\n");
             for (var num1 = 0; num1 < textArray1.Length; num1++)
             {
-                text1 = textArray1[num1].Substring(0, textArray1[num1].IndexOf("="));
-                text2 = textArray1[num1].Substring(textArray1[num1].IndexOf("=") + 1);
+                var line = textArray1[num1];
+                if (line == null)
+                {
+                    continue;
+                }
+                var equalsIndex = line.IndexOf('=');
+                //跳过不含“=”的行，避免 Substring 越界导致崩溃
+                if (equalsIndex <= 0)
+                {
+                    continue;
+                }
+                text1 = line.Substring(0, equalsIndex);
+                text2 = line.Substring(equalsIndex + 1);
                 str = str.Replace(text1, text2);
             }
             return str;
@@ -1608,15 +1631,16 @@ namespace DotNet.Util
             {
                 case 3:
                     rgb = color.ToCharArray();
-                    red = (rgb[0] + rgb[0].ToString(), 16).ToInt();
-                    green = (rgb[1] + rgb[1].ToString(), 16).ToInt();
-                    blue = (rgb[2] + rgb[2].ToString(), 16).ToInt();
+                    //3位颜色 #rgb 等价于 #rrggbb，分别将两位相同字符按16进制转换
+                    red = Convert.ToInt32(rgb[0].ToString() + rgb[0].ToString(), 16);
+                    green = Convert.ToInt32(rgb[1].ToString() + rgb[1].ToString(), 16);
+                    blue = Convert.ToInt32(rgb[2].ToString() + rgb[2].ToString(), 16);
                     return Color.FromArgb(red, green, blue);
                 case 6:
                     rgb = color.ToCharArray();
-                    red = (rgb[0] + rgb[1].ToString(), 16).ToInt();
-                    green = (rgb[2] + rgb[3].ToString(), 16).ToInt();
-                    blue = (rgb[4] + rgb[5].ToString(), 16).ToInt();
+                    red = Convert.ToInt32(rgb[0].ToString() + rgb[1].ToString(), 16);
+                    green = Convert.ToInt32(rgb[2].ToString() + rgb[3].ToString(), 16);
+                    blue = Convert.ToInt32(rgb[4].ToString() + rgb[5].ToString(), 16);
                     return Color.FromArgb(red, green, blue);
                 default:
                     return Color.FromName(color);
@@ -2134,11 +2158,13 @@ namespace DotNet.Util
             htmlstring = Regex.Replace(htmlstring, @"&(copy|#169);", "\xa9", RegexOptions.IgnoreCase);
 
             htmlstring = Regex.Replace(htmlstring, @"&#(\d+);", "", RegexOptions.IgnoreCase);
-            htmlstring.Replace("<", "");
-            htmlstring.Replace(">", "");
-            htmlstring.Replace("\r\n", "");
-            htmlstring.Replace("&emsp;", "");
-            htmlstring = HttpContext.Current.Server.HtmlEncode(htmlstring).Trim();
+            htmlstring = htmlstring.Replace("<", "").Replace(">", "").Replace("\r\n", "").Replace("&emsp;", "");
+            //非Web环境下 HttpContext.Current 可能为 null，避免空引用
+            if (HttpContext.Current != null)
+            {
+                htmlstring = HttpContext.Current.Server.HtmlEncode(htmlstring);
+            }
+            htmlstring = htmlstring.Trim();
             return htmlstring;
         }
         #endregion
@@ -2167,8 +2193,9 @@ namespace DotNet.Util
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(input);
-            sb.Replace("'", "&apos;");
+            //注意：必须先替换 &，否则后面插入的 &apos;/&lt;/&gt; 中的 & 会被二次转义
             sb.Replace("&", "&amp;");
+            sb.Replace("'", "&apos;");
             sb.Replace("<", "&lt;");
             sb.Replace(">", "&gt;");
             sb.Replace("\r\n", "<br />");

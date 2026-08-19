@@ -14,7 +14,7 @@ namespace DotNet.Util
     /// <summary>
     /// UserConfigUtil
     /// 访问用户配置文件的类
-    /// 
+    ///
     /// 修改记录
     ///     2021.03.17 版本：4.0 Troy Cui  新增MQTT、FTP、WebApi的相关配置，并分类获取代码
     ///     2015.07.31 版本：1.5 lhy      增加保存多个历史登录用户的记录功能。
@@ -23,13 +23,13 @@ namespace DotNet.Util
     ///		2008.04.22 版本：1.2 JiRiGaLa 从指定的文件读取配置项。
     ///		2007.07.31 版本：1.1 JiRiGaLa 规范化 FielName 变量。
     ///		2007.04.14 版本：1.0 JiRiGaLa 专门读取注册表的类，主键书写格式改进。
-    ///		
+    ///
     ///	版本：1.2
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2008.04.22</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class UserConfigUtil
     {
@@ -74,14 +74,21 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(SelectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals("LogonTo".ToUpper()))
+                //修复：原代码使用拼错的属性名 "dispaly"，且未对缺失属性做空判断
+                var key = xmlNode.Attributes["key"]?.Value;
+                if (key != null && key.Equals("LogonTo", StringComparison.OrdinalIgnoreCase))
                 {
-                    result.Add(xmlNode.Attributes["value"].Value, xmlNode.Attributes["dispaly"].Value);
+                    var value = xmlNode.Attributes["value"]?.Value;
+                    if (value != null && !result.ContainsKey(value))
+                    {
+                        //兼容拼写：优先 display，其次 dispaly
+                        result.Add(value, xmlNode.Attributes["display"]?.Value ?? xmlNode.Attributes["dispaly"]?.Value);
+                    }
                 }
             }
             return result;
         }
-        #endregion      
+        #endregion
 
         /// <summary>
         /// 是否存在
@@ -119,7 +126,8 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(selectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals(key.ToUpper()))
+                //修复：缺失 key 属性时避免 NullReferenceException
+                if (xmlNode.Attributes["key"]?.Value.Equals(key, StringComparison.OrdinalIgnoreCase) == true)
                 {
                     if (xmlNode.Attributes["Options"] != null)
                     {
@@ -207,9 +215,10 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(selectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals(key.ToUpper()))
+                //修复：缺失 key/value 属性时避免 NullReferenceException
+                if (xmlNode.Attributes["key"]?.Value.Equals(key, StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    result = xmlNode.Attributes["value"].Value;
+                    result = xmlNode.Attributes["value"]?.Value ?? string.Empty;
                     break;
                 }
             }
@@ -234,12 +243,8 @@ namespace DotNet.Util
         {
             if (Exists())
             {
-                var fileName = ConfigFileName;
-                if (!(BaseSystemInfo.StartupPath).IsNullOrEmpty())
-                {
-                    fileName = BaseSystemInfo.StartupPath + "\\" + ConfigFileName;
-                }
-                GetConfig(fileName);
+                //修复：ConfigFileName 已经拼接了 StartupPath，这里不能再次拼接，否则路径变成 StartupPath\StartupPath\Config.xml
+                GetConfig(ConfigFileName);
             }
         }
         #endregion
@@ -307,6 +312,11 @@ namespace DotNet.Util
             _xmlDocument = document;
 
             #region 获取Redis配置
+            //修复：RedisEnabled 之前只写不读，保存后重新加载会丢失开关状态
+            if (Exists("RedisEnabled"))
+            {
+                BaseSystemInfo.RedisEnabled = GetValue(_xmlDocument, "RedisEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
             if (Exists("RedisServer"))
             {
                 BaseSystemInfo.RedisServer = GetValue(_xmlDocument, "RedisServer");
@@ -525,6 +535,33 @@ namespace DotNet.Util
             if (Exists("ServerEncryptPassword"))
             {
                 BaseSystemInfo.ServerEncryptPassword = (string.Compare(GetValue(_xmlDocument, "ServerEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+            }
+
+            //修复：密码策略配置之前只写不读，保存后重新加载会丢失
+            if (Exists("PasswordMiniLength"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "PasswordMiniLength")))
+                {
+                    BaseSystemInfo.PasswordMiniLength = GetValue(_xmlDocument, "PasswordMiniLength").ToInt();
+                }
+            }
+            if (Exists("NumericCharacters"))
+            {
+                BaseSystemInfo.NumericCharacters = GetValue(_xmlDocument, "NumericCharacters").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (Exists("PasswordChangeCycle"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "PasswordChangeCycle")))
+                {
+                    BaseSystemInfo.PasswordChangeCycle = GetValue(_xmlDocument, "PasswordChangeCycle").ToInt();
+                }
+            }
+            if (Exists("AccountMinimumLength"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "AccountMinimumLength")))
+                {
+                    BaseSystemInfo.AccountMinimumLength = GetValue(_xmlDocument, "AccountMinimumLength").ToInt();
+                }
             }
 
             if (Exists("OpenNewWebWindow"))
@@ -1335,7 +1372,10 @@ namespace DotNet.Util
 
             #region 写入WebApi配置
             SetValue(xmlDocument, "WebApiMonitorEnabled", BaseSystemInfo.WebApiMonitorEnabled.ToString());
+            //修复：这两个目录之前只读不写，补充写入
+            SetValue(xmlDocument, "WebApiMonitorFolder", BaseSystemInfo.WebApiMonitorFolder);
             SetValue(xmlDocument, "WebApiSlowMonitorEnabled", BaseSystemInfo.WebApiSlowMonitorEnabled.ToString());
+            SetValue(xmlDocument, "WebApiSlowMonitorFolder", BaseSystemInfo.WebApiSlowMonitorFolder);
             SetValue(xmlDocument, "WebApiSlowResponseMilliseconds", BaseSystemInfo.WebApiSlowResponseMilliseconds.ToString());
             #endregion
 

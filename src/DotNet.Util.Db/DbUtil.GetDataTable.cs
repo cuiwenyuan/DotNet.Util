@@ -10,16 +10,16 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2021.08.30 版本：2.0	Troy Cui 优化升级。
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -44,7 +44,21 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append("  WHERE " + name + " IN (" + ObjectUtil.ToList(values, "'") + ")");
+                //修复：对 IN 列表中的每个值进行转义，防止 SQL 注入
+                var valueList = PoolUtil.StringBuilder.Get();
+                foreach (var value in values)
+                {
+                    if (value == null)
+                    {
+                        continue;
+                    }
+                    valueList.Append("'" + SqlSafe(value.ToString()) + "',");
+                }
+                if (valueList.Length > 0)
+                {
+                    valueList.Length -= 1;
+                }
+                sb.Append("  WHERE " + name + " IN (" + valueList.Return() + ")");
             }
             if (!order.IsNullOrEmpty())
             {
@@ -84,7 +98,7 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (order.IsNullOrEmpty())
                         {
-                            whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
+                            whereSql = AddWhere(whereSql, " ROWNUM <= " + topLimit);
                         }
                         break;
                 }
@@ -123,7 +137,7 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (!order.IsNullOrEmpty())
                         {
-                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM <= " + topLimit);
                         }
                         break;
                 }
@@ -173,7 +187,7 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (order.IsNullOrEmpty())
                         {
-                            whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
+                            whereSql = AddWhere(whereSql, " ROWNUM <= " + topLimit);
                         }
                         break;
                 }
@@ -199,7 +213,7 @@ namespace DotNet.Util
                     case CurrentDbType.Oracle:
                         if (!order.IsNullOrEmpty())
                         {
-                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM <= " + topLimit);
                         }
                         break;
                 }

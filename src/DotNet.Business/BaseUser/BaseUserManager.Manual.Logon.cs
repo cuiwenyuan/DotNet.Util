@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// <summary>
     /// BaseUserManager
     /// 用户管理
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2020.12.08 版本：1.5 Troy.Cui 使用CacheUtil缓存
@@ -27,11 +27,11 @@ namespace DotNet.Business
     ///		2014.03.25 版本：3.0 JiRiGaLa CheckIsAdministrator 不是所有系统都需要验证是否超级管理员，去掉效率会更高，特别是针对登录接口可以优化了。
     ///		2013.10.20 版本：2.0 JiRiGaLa 集成K8物流系统的登录功能。
     ///		2011.10.17 版本：1.0 JiRiGaLa 主键整理。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.01.28</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
@@ -68,7 +68,7 @@ namespace DotNet.Business
         #region GetAuthorizationCode
         /// <summary>
         /// 获取登录操作的验证码
-        /// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。 
+        /// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <returns>操作码</returns>
@@ -800,15 +800,9 @@ namespace DotNet.Business
             result = LogonByCompanyByCode(companyCode, userCode, out userEntity);
             if (userEntity != null)
             {
-                // 2015-11-11 吉日嘎拉 进行手机验证
-                var mobileValidate = false;
-                var mobile = BaseUserContactManager.GetMobileByCache(userEntity.Id);
-                //if (ValidateUtil.IsMobile(mobile))
-                //{
-                //    var mobileService = new MobileService();
-                //    mobileValidate = mobileService.ValidateVerificationCode(UserInfo, mobile, verificationCode);
-                //}
-                if (!mobileValidate)
+                //修复：原代码引用了不存在的 MobileService（被注释掉），导致 mobileValidate 恒为 false、验证码登录永远失败。
+                //改为使用本类内置的 Verify() 校验数据库中保存的验证码
+                if (!Verify(userEntity.Id.ToString(), verificationCode))
                 {
                     result.Status = Status.VerificationCodeError;
                     result.StatusCode = Status.VerificationCodeError.ToString();

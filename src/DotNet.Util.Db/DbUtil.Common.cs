@@ -13,11 +13,11 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 这个类可是修改了很多次啊，已经比较经典了，随着专业的提升，人也会不断提高，技术也会越来越精湛。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2011.08.09 版本：4.9    张广梁   修改 public static bool IsModifed(DataRow dr, string oldUpdateUserId, DateTime? oldUpdateTime)的逻辑
     ///		2010.07.08 版本：4.8	JiRiGaLa 增加 Insert 方法。
     ///		2009.01.15 版本：4.7	JiRiGaLa 将方法修改为 static 静态的，提高运行速度。
@@ -42,17 +42,17 @@ namespace DotNet.Util
     ///		2006.02.05 版本：1.1	JiRiGaLa 重新调整主键的规范化。
     ///		2005.12.30 版本：1.0	JiRiGaLa 数据库连接方式都进行改进
     ///		2005.09.04 版本：1.0	JiRiGaLa 执行数据库脚本
-    ///		2005.08.19 版本：1.0	JiRiGaLa 整理一下编排	
+    ///		2005.08.19 版本：1.0	JiRiGaLa 整理一下编排
     ///		2005.07.10 版本：1.0	JiRiGaLa 修改了程序，格式以及理念都有些提高，应该是一次大突破
     ///		2004.11.12 版本：1.0	JiRiGaLa 添加了最新的GetParent、GetChildren、GetParentChildren 方法
     ///		2004.07.21 版本：1.0	JiRiGaLa UpdateRecord、Delete、SetProperty、GetProperty、ExecuteNonQuery、GetRecord 方法进行改进。
     ///								还删除一些重复的主键，提取了最优化的方法，有时候写的主键真的是垃圾，可能自己也没有注意时就写出了垃圾。
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2009.01.15</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -216,7 +216,7 @@ namespace DotNet.Util
         #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
         /// <summary>
         /// 获得条件语句
-        /// 20110523 吉日嘎拉，改进空数组 
+        /// 20110523 吉日嘎拉，改进空数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="names">字段名</param>
@@ -228,7 +228,7 @@ namespace DotNet.Util
         #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
         /// <summary>
         /// 获得条件语句
-        /// 20110523 吉日嘎拉，改进空数组 
+        /// 20110523 吉日嘎拉，改进空数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="names">字段名</param>
@@ -254,9 +254,15 @@ namespace DotNet.Util
                     {
                         if (values[i] is Array)
                         {
-                            if (((Array)values[i]).Length > 0)
+                            //修复：不再强转 string[]（其他数组类型会抛 InvalidCastException），
+                            //并对每个值转义，防止 SQL 注入
+                            var arrayValues = ((Array)values[i]).Cast<object>()
+                                .Where(t => t != null)
+                                .Select(t => "'" + SqlSafe(Convert.ToString(t)) + "'")
+                                .ToList();
+                            if (arrayValues.Count > 0)
                             {
-                                subSqlQuery = "" + names[i] + " IN (" + StringUtil.ArrayToList((string[])values[i], "'") + ")";
+                                subSqlQuery = "" + names[i] + " IN (" + string.Join(",", arrayValues) + ")";
                             }
                             else
                             {

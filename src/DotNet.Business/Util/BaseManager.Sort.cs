@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
-    /// 
+    ///
     /// 修改记录
     ///
     ///		2022.12.18 版本：Troy.Cui增加。
@@ -20,7 +20,7 @@ namespace DotNet.Business
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2022.12.18</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
@@ -134,9 +134,11 @@ namespace DotNet.Business
         public string GetUpId(string categoryCode, string id, string whereSubQuery = null)
         {
             var sbQuery = PoolUtil.StringBuilder.Get();
+            //修复：对拼入 SQL 的值转义，防止 SQL 注入
+            var safeId = dbHelper.SqlSafe(id);
             if (!categoryCode.IsNullOrEmpty())
             {
-                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
+                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + dbHelper.SqlSafe(categoryCode) + "' AND ");
             }
             if (!whereSubQuery.IsNullOrEmpty())
             {
@@ -147,7 +149,7 @@ namespace DotNet.Business
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + "))");
+                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + "))");
             if (dbHelper.ExecuteScalar(sb.Return()).ToInt() == 0)
             {
                 sb = PoolUtil.StringBuilder.Get();
@@ -155,7 +157,7 @@ namespace DotNet.Business
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " <= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
             else
             {
@@ -164,7 +166,7 @@ namespace DotNet.Business
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " < (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + ")) ORDER BY " + BaseUtil.FieldSortCode + " DESC, " + BaseUtil.FieldId + " DESC");
             }
             sbQuery.Return();
             return dbHelper.ExecuteScalar(sb.Return())?.ToString();
@@ -180,8 +182,8 @@ namespace DotNet.Business
         /// <returns>目标主键</returns>
         public string GetUpId(string id, string whereSubQuery = null)
         {
-            // 有bug
-            return GetUpId(CurrentTableName, id);
+            //修复：原来错误地把 CurrentTableName 当作 categoryCode 传入（导致查不到记录），且丢失了 whereSubQuery
+            return GetUpId(string.Empty, id, whereSubQuery);
         }
         #endregion
 
@@ -200,7 +202,8 @@ namespace DotNet.Business
             var upId = GetUpId(categoryId, id, whereSubQuery);
 
             var result = 0;
-            if (upId.Length == 0)
+            //修复：没有上一条记录时 GetUpId 返回 null，避免空引用
+            if (upId.IsNullOrEmpty())
             {
                 return result;
             }
@@ -269,9 +272,11 @@ namespace DotNet.Business
         public string GetDownId(string categoryCode, string id, string whereSubQuery = null)
         {
             var sbQuery = PoolUtil.StringBuilder.Get();
+            //修复：对拼入 SQL 的值转义，防止 SQL 注入
+            var safeId = dbHelper.SqlSafe(id);
             if (!categoryCode.IsNullOrEmpty())
             {
-                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + categoryCode + "' AND ");
+                sbQuery.Append(BaseUtil.FieldCategoryCode + " = '" + dbHelper.SqlSafe(categoryCode) + "' AND ");
             }
             if (!whereSubQuery.IsNullOrEmpty())
             {
@@ -282,15 +287,16 @@ namespace DotNet.Business
             sb.Append("SELECT COUNT(*) FROM " + CurrentTableName
                 + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                 + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " ))");
-            if (dbHelper.ExecuteScalar(sb.Return()).Equals("0"))
+                + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + " ))");
+            //修复：ExecuteScalar 返回的是数字，Equals("0") 永远为 false，改为数值比较
+            if (dbHelper.ExecuteScalar(sb.Return()).ToInt() == 0)
             {
                 sb = PoolUtil.StringBuilder.Get();
                 sb.Append("SELECT TOP 1 " + BaseUtil.FieldId
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " >= (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
             else
             {
@@ -299,7 +305,7 @@ namespace DotNet.Business
                                            + " FROM " + CurrentTableName
                                            + " WHERE (" + sbQuery + BaseUtil.FieldSortCode + " > (SELECT TOP 1 ISNULL(" + BaseUtil.FieldSortCode
                                            + "," + BaseUtil.FieldId + ") FROM " + CurrentTableName
-                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + id + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
+                                           + " WHERE (" + sbQuery + BaseUtil.FieldId + " = '" + safeId + "') ORDER BY " + BaseUtil.FieldSortCode + " )) ORDER BY " + BaseUtil.FieldSortCode + " ASC, " + BaseUtil.FieldId + " ASC");
             }
             sbQuery.Return();
             return dbHelper.ExecuteScalar(sb.Return())?.ToString();
@@ -332,7 +338,8 @@ namespace DotNet.Business
         {
             var result = 0;
             var downId = GetDownId(categoryId, id, whereSubQuery);
-            if (downId.Length == 0)
+            //修复：没有下一条记录时 GetDownId 返回 null，避免空引用
+            if (downId.IsNullOrEmpty())
             {
                 return result;
             }

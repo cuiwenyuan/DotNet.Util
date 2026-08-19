@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,10 +26,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求
+            //如果是发送HTTPS请求（不再全局跳过证书校验，避免影响整个进程的 TLS 安全）
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -80,10 +77,6 @@ namespace DotNet.Util
         }
 
 
-        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
-        {
-            return true; //总是接受
-        }
         /// <summary>
         /// 创建请求
         /// </summary>
@@ -131,41 +124,40 @@ namespace DotNet.Util
             request.ContentLength = length;
 
             //请求远程HTTP
-            using var rs = request.GetRequestStream();
-            Stream s = null;
-            try
+            using (var rs = request.GetRequestStream())
             {
-                //发送数据请求服务器
-                rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
-                rs.Write(PicByte, 0, lengthFile);
-                rs.Write(boundayBytes, 0, boundayBytes.Length);
-                using var HttpWResp = (HttpWebResponse)request.GetResponse();
-                s = HttpWResp.GetResponseStream();
-            }
-            catch //(WebException e)
-            {
-                //LogResult(e.Message);
-                return "";
-            }
-            finally
-            {
-                if (rs != null)
+                try
                 {
-                    rs.Close();
+                    //发送数据请求服务器
+                    rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+                    rs.Write(PicByte, 0, lengthFile);
+                    rs.Write(boundayBytes, 0, boundayBytes.Length);
+                    using (var httpWResp = (HttpWebResponse)request.GetResponse())
+                    {
+                        //在响应释放之前完成读取，避免从已释放的流中读取导致 ObjectDisposedException
+                        using (var s = httpWResp.GetResponseStream())
+                        {
+                            if (s == null)
+                            {
+                                return "";
+                            }
+                            using var sr = new StreamReader(s, code);
+                            var responseData = PoolUtil.StringBuilder.Get();
+                            string line;
+                            while ((line = sr.ReadLine()) != null)
+                            {
+                                responseData.Append(line);
+                            }
+                            return responseData.Return();
+                        }
+                    }
+                }
+                catch //(WebException e)
+                {
+                    //LogResult(e.Message);
+                    return "";
                 }
             }
-
-            //读取处理结果
-            var sr = new StreamReader(s, code);
-            var responseData = PoolUtil.StringBuilder.Get();
-
-            String line;
-            while ((line = sr.ReadLine()) != null)
-            {
-                responseData.Append(line);
-            }
-            s.Close();
-            return responseData.Return();
         }
         #endregion
 
@@ -353,10 +345,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求
+            //如果是发送HTTPS请求（不再全局跳过证书校验，避免影响整个进程的 TLS 安全）
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -551,38 +542,40 @@ namespace DotNet.Util
         /// <param name="timeOut"></param>
         /// <param name="headers"></param>
         /// <returns></returns>
-        public static Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
+        public static async Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            if (!contentType.IsNullOrEmpty())
-            {
-                request.ContentType = contentType;
-            }
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                    request.Headers[header.Key] = header.Value;
-            }
-
             try
             {
-                var bytes = Encoding.UTF8.GetBytes(postData ?? "");
-                using (var sendStream = request.GetRequestStream())
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                if (!contentType.IsNullOrEmpty())
                 {
-                    sendStream.Write(bytes, 0, bytes.Length);
+                    request.ContentType = contentType;
+                }
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                        request.Headers[header.Key] = header.Value;
+                }
+                request.Timeout = timeOut * 1000;
+
+                var bytes = Encoding.UTF8.GetBytes(postData ?? "");
+                using (var sendStream = await request.GetRequestStreamAsync())
+                {
+                    await sendStream.WriteAsync(bytes, 0, bytes.Length);
                 }
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    var responseStream = response.GetResponseStream();
-                    var sr = new StreamReader(responseStream, Encoding.UTF8);
-                    return sr.ReadToEndAsync();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message);
+                return ex.Message;
             }
 
         }
@@ -592,7 +585,7 @@ namespace DotNet.Util
         /// <param name="url"></param>
         /// <param name="headers"></param>
         /// <returns></returns>
-        public static Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null)
+        public static async Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null)
         {
             try
             {
@@ -602,16 +595,17 @@ namespace DotNet.Util
                     foreach (var header in headers)
                         request.Headers[header.Key] = header.Value;
                 }
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    var responseStream = response.GetResponseStream();
-                    var sr = new StreamReader(responseStream, Encoding.UTF8);
-                    return sr.ReadToEndAsync();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message);
+                return ex.Message;
             }
         }
 #endif

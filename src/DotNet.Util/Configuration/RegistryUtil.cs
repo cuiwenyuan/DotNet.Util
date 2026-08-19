@@ -11,23 +11,23 @@ namespace DotNet.Util
     /// <summary>
     /// RegistryUtil
     /// 访问注册表的类。
-    /// 
+    ///
     /// 修改记录
     ///
-    ///		2008.06.08 版本：3.2 JiRiGaLa 命名修改为 RegistryHelper。 
-    ///		2007.07.30 版本：3.1 JiRiGaLa Exists 函数名规范化。 
-    ///		2007.04.14 版本：3.0 JiRiGaLa 检查程序格式通过，不再进行修改主键操作。 
+    ///		2008.06.08 版本：3.2 JiRiGaLa 命名修改为 RegistryHelper。
+    ///		2007.07.30 版本：3.1 JiRiGaLa Exists 函数名规范化。
+    ///		2007.04.14 版本：3.0 JiRiGaLa 检查程序格式通过，不再进行修改主键操作。
     ///     2006.11.17 版本：2.2 JiRiGaLa 添加方法CheckExistSubKey()。
     ///     2006.09.08 版本：2.1 JiRiGaLa 变量命名规范化。
     ///     2006.04.18 版本：2.0 JiRiGaLa 重新调整主键的规范化。
     ///		2005.08.08 版本：1.0 JiRiGaLa 专门读取注册表的类，主键书写格式改进。
-    ///		
+    ///
     ///	版本：3.0
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2007.04.14</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class RegistryUtil
     {
@@ -45,13 +45,14 @@ namespace DotNet.Util
         public static string GetValue(string key)
         {
 #if NET46_OR_GREATER
+            //修复：子键可能不存在（OpenSubKey 返回 null），且注册表值可能不是 string 类型
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
-            return (string)registryKey.GetValue(key);
+            return registryKey?.GetValue(key)?.ToString();
 #elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
-                return (string)registryKey.GetValue(key);
+                return registryKey?.GetValue(key)?.ToString();
             }
             return null;
 #elif NET5_0_OR_GREATER
@@ -69,12 +70,21 @@ namespace DotNet.Util
         public static void SetValue(string key, string keyValue)
         {
 #if NET46_OR_GREATER
+            //修复：子键不存在时 OpenSubKey 返回 null，需先创建，避免 NullReferenceException
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
+            if (registryKey == null)
+            {
+                registryKey = Registry.LocalMachine.CreateSubKey(SubKey);
+            }
             registryKey.SetValue(key, keyValue);
 #elif NETSTANDARD2_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
+                if (registryKey == null)
+                {
+                    registryKey = Registry.LocalMachine.CreateSubKey(SubKey);
+                }
                 registryKey.SetValue(key, keyValue);
             }
 #endif
@@ -105,19 +115,8 @@ namespace DotNet.Util
             var result = false;
 #if NET46_OR_GREATER
             var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
-            var subKeyNames = registryKey.GetSubKeyNames();
-            for (var i = 0; i < subKeyNames.Length; i++)
+            if (registryKey != null)
             {
-                if (key.Equals(subKeyNames[i]))
-                {
-                    result = true;
-                    break;
-                }
-            }
-#elif NETSTANDARD2_0_OR_GREATER
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
                 var subKeyNames = registryKey.GetSubKeyNames();
                 for (var i = 0; i < subKeyNames.Length; i++)
                 {
@@ -125,6 +124,23 @@ namespace DotNet.Util
                     {
                         result = true;
                         break;
+                    }
+                }
+            }
+#elif NETSTANDARD2_0_OR_GREATER
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
+                if (registryKey != null)
+                {
+                    var subKeyNames = registryKey.GetSubKeyNames();
+                    for (var i = 0; i < subKeyNames.Length; i++)
+                    {
+                        if (key.Equals(subKeyNames[i]))
+                        {
+                            result = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -172,7 +188,8 @@ namespace DotNet.Util
             SubKey = "Software\\" + "DotNet" + "\\" + BaseSystemInfo.SoftName;
             SetValue("CustomerCompanyId", BaseSystemInfo.CustomerCompanyId);
             SetValue("CustomerCompanyName", BaseSystemInfo.CustomerCompanyName);
-            SetValue("ConfigurationFrom", BaseSystemInfo.RegisterKey);
+            //修复：应写入配置来源枚举值，而不是注册码
+            SetValue("ConfigurationFrom", BaseSystemInfo.ConfigurationFrom.ToString());
             SetValue("TimeFormat", BaseSystemInfo.TimeFormat);
             SetValue("DateFormat", BaseSystemInfo.DateFormat);
             SetValue("DateTimeFormat", BaseSystemInfo.DateTimeFormat);
@@ -182,7 +199,8 @@ namespace DotNet.Util
             SetValue("CurrentLanguage", BaseSystemInfo.CurrentLanguage);
 
             // 数据库连接
-            SetValue("DbType", CurrentDbType.SqlServer.ToString());
+            //修复：写入实际的业务数据库类型，而不是硬编码 SqlServer
+            SetValue("DbType", BaseSystemInfo.BusinessDbType.ToString());
             SetValue("RegisterKey", "DotNet");
         }
         #endregion
@@ -210,10 +228,8 @@ namespace DotNet.Util
                 }
             }
             // 检测是否已经有数据了，若已经有数据了，就不进行读取了。
-            if (BaseSystemInfo.SoftName.Length == 0)
-            {
-                GetValues();
-            }
+            //修复：无论 SoftName 是否预先设置，都应读取注册表配置，否则配置永远不会被加载
+            GetValues();
         }
         #endregion
     }

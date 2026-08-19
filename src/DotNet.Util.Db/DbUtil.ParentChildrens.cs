@@ -13,15 +13,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -117,7 +117,7 @@ namespace DotNet.Util
                 {
                     sb.Append(" WITH Tree AS (SELECT " + fieldId
                              + " FROM " + tableName
-                             + "       WHERE " + fieldParentId + " IN ('" + id + "') "
+                             + "       WHERE " + fieldParentId + " IN ('" + SqlSafe(id) + "') "
                              + "       UNION ALL "
                              + "      SELECT ResourceTree." + fieldId
                              + " FROM " + tableName + " AS ResourceTree INNER JOIN "
@@ -129,7 +129,7 @@ namespace DotNet.Util
                 {
                     sb.Append(" WITH Tree AS (SELECT * "
                              + " FROM " + tableName
-                             + "       WHERE Id IN ('" + id + "') "
+                             + "       WHERE Id IN ('" + SqlSafe(id) + "') "
                              + "       UNION ALL "
                              + "      SELECT ResourceTree.* "
                              + " FROM " + tableName + " AS ResourceTree INNER JOIN "
@@ -224,10 +224,10 @@ namespace DotNet.Util
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    sb.Append(" WHERE (LEFT(" + fieldCode + ", LEN('" + code + "')) = '" + code + "') ");
+                    sb.Append(" WHERE (LEFT(" + fieldCode + ", LEN('" + SqlSafe(code) + "')) = '" + SqlSafe(code) + "') ");
                     break;
                 case CurrentDbType.Oracle:
-                    sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH('" + code + "')) = '" + code + "') ");
+                    sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH('" + SqlSafe(code) + "')) = '" + SqlSafe(code) + "') ");
                     break;
             }
             if (!order.IsNullOrEmpty())

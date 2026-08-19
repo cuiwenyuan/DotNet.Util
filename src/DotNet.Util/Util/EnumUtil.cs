@@ -39,8 +39,6 @@ namespace DotNet.Util
         /// </summary>
         public static DataTable EnumToDataTable(Type enumType, string nameColumnName = "key", string valueColumnName = "value", string descriptionColumnName = "description")
         {
-            var names = Enum.GetNames(enumType);
-            var values = Enum.GetValues(enumType);
             var descriptions = GetEnumDescriptions(enumType);
 
             var dt = new DataTable();
@@ -48,13 +46,26 @@ namespace DotNet.Util
             dt.Columns.Add(nameColumnName, Type.GetType("System.String"));
             dt.Columns.Add(descriptionColumnName, Type.GetType("System.String"));
             dt.Columns[nameColumnName].Unique = true;
-            for (var i = 0; i < values.Length; i++)
+
+            //修复：Enum.GetNames/GetValues 按值排序，而 GetEnumDescriptions 按声明顺序返回，
+            //对于未按值递增声明的枚举会错位；这里改为按声明顺序遍历字段，与描述一一对应。
+            //同时用 Convert.ToInt32 兼容底层类型为 uint/long/ulong 的枚举。
+            var fields = enumType.GetFields();
+            var descriptionIndex = 0;
+            foreach (var field in fields)
             {
-                var dr = dt.NewRow();
-                dr[valueColumnName] = (int)values.GetValue(i);
-                dr[nameColumnName] = names[i];
-                dr[descriptionColumnName] = descriptions[i];
-                dt.Rows.Add(dr);
+                if (field.FieldType.IsEnum)
+                {
+                    var dr = dt.NewRow();
+                    dr[valueColumnName] = Convert.ToInt32(enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null));
+                    dr[nameColumnName] = field.Name;
+                    if (descriptionIndex < descriptions.Count)
+                    {
+                        dr[descriptionColumnName] = descriptions[descriptionIndex];
+                    }
+                    dt.Rows.Add(dr);
+                    descriptionIndex++;
+                }
             }
             return dt;
         }
@@ -78,7 +89,8 @@ namespace DotNet.Util
             {
                 if (field.FieldType.IsEnum)
                 {
-                    value = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
+                    //修复：底层类型不是 int 时 (int) 拆箱会抛 InvalidCastException，改用 Convert.ToInt32
+                    value = Convert.ToInt32(enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
                     var array = field.GetCustomAttributes(enumDescription, true);
                     if (array.Length > 0)
                     {

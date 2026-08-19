@@ -10,15 +10,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -77,7 +77,13 @@ namespace DotNet.Util
             if (minId > 0 && batchSize >= 1)
             {
                 var maxId = minId + batchSize;
-                var result = dbHelper.Delete(tableName, condition + " AND " + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " <" + maxId);
+                //修复：condition 为空时生成 WHERE  AND 会报 SQL 语法错误
+                var conditionSql = string.Empty;
+                if (!condition.IsNullOrEmpty())
+                {
+                    conditionSql = condition + " AND ";
+                }
+                var result = dbHelper.Delete(tableName, conditionSql + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " < " + maxId);
                 Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total deleted: " + result);
                 BatchDelete(dbHelper, tableName, condition, batchSize: batchSize);
             }
@@ -98,11 +104,14 @@ namespace DotNet.Util
         public static int Truncate(this IDbHelper dbHelper, string tableName)
         {
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("TRUNCATE TABLE " + tableName);
-            // DB2 V9.7 以后才支持这个语句
             if (dbHelper.CurrentDbType == CurrentDbType.Db2)
             {
-                sb.Append(" ALTER TABLE " + tableName + " ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE ");
+                //修复：DB2 用 ALTER TABLE ... ACTIVATE NOT LOGGED 清空表，不能与 TRUNCATE 组合成一条无效语句
+                sb.Append("ALTER TABLE " + tableName + " ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE ");
+            }
+            else
+            {
+                sb.Append("TRUNCATE TABLE " + tableName);
             }
             return dbHelper.ExecuteNonQuery(sb.Return());
         }

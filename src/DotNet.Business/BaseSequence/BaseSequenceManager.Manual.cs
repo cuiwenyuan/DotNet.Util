@@ -15,20 +15,20 @@ namespace DotNet.Business
     /// <summary>
     /// 序列产生器
     /// BaseSequenceManager
-    /// 
+    ///
     /// 核心思想:
     /// 当前读取到的就是是最新的,每次读取后进行了更新
     /// 考虑到处理的简单方便以及新能的提高,可以采用多线程技术
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2010.07.04 版本：3.2 JiRiGaLa	用代码生成器产生序列生成器代码，规范化代码，用锁的机制防止B/S并发问题。
     ///		2010.06.03 版本：3.1 JiRiGaLa	去掉单实例的做法、防止并发问题发生。
     ///		2010.01.25 版本：3.0 JiRiGaLa	序号生成算法优化。
     ///		2008.09.09 版本：2.0 JiRiGaLa	主键整理。
     ///		2007.07.20 版本：1.9 JiRiGaLa	序列产生器，增加锁机制，并整理优化主键。
     ///		2006.02.07 版本：1.8 JiRiGaLa	重新调整主键的规范化。
-    ///		2005.10.06 版本：1.7 JiRiGaLa	添加是否补充0位的属性。	
+    ///		2005.10.06 版本：1.7 JiRiGaLa	添加是否补充0位的属性。
     ///		2005.08.08 版本：1.6 JiRiGaLa	命名方式等进行改进。
     ///		2005.07.15 版本：1.5 JiRiGaLa	主键格式进行改进。
     ///		2004.07.21 版本：1.4 JiRiGaLa	改进了主键的编排、参数名称规范化。
@@ -36,11 +36,11 @@ namespace DotNet.Business
     ///		2004.06.15 版本：1.2 JiRiGaLa	查询当前序号的优化，若找不到表自动添加一条。
     ///		2004.02.22 版本：1.1 JiRiGaLa	表字段名字进行了修改,一些继承属性也进行了修改。
     ///		2003.10.16 版本：1.0 JiRiGaLa	改进成以后可以扩展到多种数据库的结构形式。
-    ///		 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2010.01.25</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseSequenceManager : BaseManager
     {
@@ -938,13 +938,20 @@ namespace DotNet.Business
                 {
                     // 若有相应的表，那就把序列号都计算好
                     sequenceEntity = GetEntity(ids[i]);
+                    //修复：记录不存在时避免 NullReferenceException
+                    if (sequenceEntity == null)
+                    {
+                        continue;
+                    }
+                    var safeName = sequenceEntity.Name.Replace("'", "''");
+                    //修复：COALESCE 防止空表时 MAX/MIN 返回 NULL 写入 NULL 序列号
                     var commandText = string.Format(@"UPDATE BaseSequence
-                                               SET Sequence = (SELECT MAX(SortCode) + 1  AS MaxSortCode FROM {0})
-	                                               , Reduction = ( SELECT MIN(SortCode) -1 AS MinSortCode FROM {0})
-                                             WHERE Name = '{0}' ", sequenceEntity.Name);
+                                               SET Sequence = (SELECT COALESCE(MAX(SortCode), {2}) + 1 AS MaxSortCode FROM {0})
+	                                               , Reduction = ( SELECT COALESCE(MIN(SortCode), {3}) - 1 AS MinSortCode FROM {0})
+                                             WHERE Name = '{1}' ", safeName, safeName, DefaultSequence, DefaultReduction);
                     try
                     {
-                        ExecuteNonQuery(commandText);
+                        result += ExecuteNonQuery(commandText);
                     }
                     catch
                     {
@@ -969,7 +976,9 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public int Reset(string name)
         {
-            var commandText = string.Format(@"UPDATE " + CurrentTableName + " SET Sequence = (SELECT ISNULL(MAX(SortCode),10000000) AS MaxSortCode FROM {0} WHERE SortCode > 0), Reduction = (SELECT ISNULL(MIN(SortCode),9999999) AS MinSortCode FROM {0} WHERE SortCode > 0) WHERE Name = N'{0}' ", name);
+            //修复：ISNULL/N'...' 为 SQL Server 专属语法，改用可移植的 COALESCE，避免在 MySQL/Oracle/PostgreSQL 上抛异常
+            var safeName = name.Replace("'", "''");
+            var commandText = string.Format(@"UPDATE " + CurrentTableName + " SET Sequence = (SELECT COALESCE(MAX(SortCode),10000000) AS MaxSortCode FROM {0} WHERE SortCode > 0), Reduction = (SELECT COALESCE(MIN(SortCode),9999999) AS MinSortCode FROM {0} WHERE SortCode > 0) WHERE Name = '{0}' ", safeName);
             var result = ExecuteNonQuery(commandText);
             return result;
         }

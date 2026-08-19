@@ -17,15 +17,15 @@ namespace DotNet.Business
     /// <summary>
     /// BaseMessageQueueManager
     /// 消息队列管理层
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///	2022-12-16 版本：1.0 Troy.Cui 创建文件。
-    ///		
+    ///
     /// <author>
     ///	<name>Troy.Cui</name>
     ///	<date>2022-12-16</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseMessageQueueManager : BaseManager
     {
@@ -234,7 +234,8 @@ namespace DotNet.Business
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
                     {
-                        result += base.SetDeleted(id, true, true);
+                        //修复：批量“撤销删除”应调用 UndoSetDeleted，原代码误调用了 SetDeleted 导致“撤销”反而再次删除数据
+                        result += base.UndoSetDeleted(id, true, true);
                     }
                     else
                     {

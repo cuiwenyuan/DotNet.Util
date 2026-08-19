@@ -16,7 +16,7 @@ namespace DotNet.Util
     /// <summary>
     /// SQLBuilder
     /// SQL语句生成器（适合简单的添加、删除、更新等语句，可以写出编译时强类型检查的效果）
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2022.05.12 版本：5.0 Troy.Cui    完善描述和Region。
@@ -38,11 +38,11 @@ namespace DotNet.Util
     ///		2005.08.08 版本：1.2 JiRiGaLa   修改主键，修改格式。
     ///		2005.12.30 版本：1.1 JiRiGaLa   数据库连接进行优化。
     ///		2005.12.29 版本：1.0 JiRiGaLa   主键创建。
-    ///		
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2022.05.12</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class SqlBuilder
     {
@@ -469,7 +469,16 @@ namespace DotNet.Util
             }
             else
             {
-                _whereSql.Append(whereSql);
+                //修复：多次 SetWhere 时用 AND 连接，避免生成无分隔符的无效SQL
+                _whereSql.Append(" AND ");
+                if (whereSql.TrimStart().StartsWith("AND", StringComparison.OrdinalIgnoreCase))
+                {
+                    _whereSql.Append(whereSql.CutStart("AND"));
+                }
+                else
+                {
+                    _whereSql.Append(whereSql);
+                }
             }
         }
         #endregion
@@ -712,11 +721,18 @@ namespace DotNet.Util
             if (_sqlOperation == DbOperation.Insert || _sqlOperation == DbOperation.ReplaceInto)
             {
                 var sbField = PoolUtil.StringBuilder.Get();
-                sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
+                //修复：未调用 SetValue 时避免 Substring(0, -2) 越界
+                if (_insertField.Length >= 2)
+                {
+                    sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
+                }
                 //归还
                 _insertField.Return();
                 var sbValue = PoolUtil.StringBuilder.Get();
-                sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
+                if (_insertValue.Length >= 2)
+                {
+                    sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
+                }
                 //归还
                 _insertValue.Return();
                 if (_sqlOperation == DbOperation.ReplaceInto)
@@ -795,7 +811,11 @@ namespace DotNet.Util
             else if (_sqlOperation == DbOperation.Update)
             {
                 var sbUpdate = PoolUtil.StringBuilder.Get();
-                sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
+                //修复：未调用 SetValue 时避免 Substring(0, -2) 越界
+                if (_updateSql.Length >= 2)
+                {
+                    sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
+                }
                 _updateSql.Return();
                 CommandText = "UPDATE " + _tableName + " SET " + sbUpdate.Return() + _whereSql.Return();
             }
@@ -840,13 +860,28 @@ namespace DotNet.Util
                 {
                     if (_dbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        // 执行语句
-                        result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
-                        if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
+                        //修复：在同一会话中执行 INSERT 与 CURRVAL，
+                        //避免 ExecuteNonQuery 关闭连接后重新打开新会话导致 ORA-08002: CURRVAL is not yet defined
+                        var originalMustCloseConnection = _dbHelper.MustCloseConnection;
+                        try
                         {
-                            // 获取当前序列主键
-                            var obj = _dbHelper.ExecuteScalar(identitySql);
-                            result = obj.ToInt();
+                            _dbHelper.MustCloseConnection = false;
+                            // 执行语句
+                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                            if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
+                            {
+                                // 获取当前序列主键
+                                var obj = _dbHelper.ExecuteScalar(identitySql);
+                                result = obj.ToInt();
+                            }
+                        }
+                        finally
+                        {
+                            _dbHelper.MustCloseConnection = originalMustCloseConnection;
+                            if (originalMustCloseConnection)
+                            {
+                                _dbHelper.Close();
+                            }
                         }
                     }
                     else

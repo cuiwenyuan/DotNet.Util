@@ -11,19 +11,19 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2015.01.31 版本：2.2    潘齐民   修改分页方法，SqlServer库查询条件从Between strat And end 改成小于等于end 大于start
     ///     2014.08.08 版本：2.1    SongBiao 修改分页方法 多表联合显示查询字段的位置
     ///     2014.01.23 版本：2.o    JiRiGaLa 整理 Oracle 分页功能
     ///     2013.11.03 版本：1.1    HongMing Oracle 获取分页数据 增加MySQL
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -124,14 +124,26 @@ namespace DotNet.Util
                 case CurrentDbType.Db2:
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
                     sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + ") AS ROWNUM, " + sql.Substring(7) + "  ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
+                    //修复：兼容已包裹的 "(SELECT ...)"，并正确去掉 SELECT 前缀，避免破坏SQL
+                    var rowNumberSql = sql;
+                    if (rowNumberSql.StartsWith("(", StringComparison.Ordinal) && rowNumberSql.EndsWith(")", StringComparison.Ordinal))
+                    {
+                        rowNumberSql = rowNumberSql.Substring(1, rowNumberSql.Length - 2);
+                    }
+                    rowNumberSql = rowNumberSql.TrimStart();
+                    if (rowNumberSql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        rowNumberSql = rowNumberSql.Substring(6);
+                    }
+                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + ") AS ROWNUM, " + rowNumberSql + "  ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
                     break;
                 case CurrentDbType.Access:
                     if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         sql = " (" + sql + ") ";
                     }
-                    commandText = string.Format("SELECT * FROM (SELECT TOP {0} * FROM (SELECT TOP {1} * FROM {2} T ORDER BY {3} " + sortDirection + ") T1 ORDER BY {4} DESC ) T2 ORDER BY {5} " + sortDirection, sqlCount, sqlStart, sql, sortExpression, sortExpression, sortExpression);
+                    //修复：内层 TOP 应取到当前页末尾（sqlEnd），否则会返回上一页的数据
+                    commandText = string.Format("SELECT * FROM (SELECT TOP {0} * FROM (SELECT TOP {1} * FROM {2} T ORDER BY {3} " + sortDirection + ") T1 ORDER BY {4} DESC ) T2 ORDER BY {5} " + sortDirection, sqlCount, sqlEnd, sql, sortExpression, sortExpression, sortExpression);
                     break;
                 case CurrentDbType.Oracle:
                     commandText = string.Format(@"SELECT T.*, ROWNUM RN FROM ({0} AND ROWNUM <= {1} ORDER BY {2}) T WHERE ROWNUM > {3}", sql, sqlEnd, sortExpression, sqlStart);
@@ -320,7 +332,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 获取分页数据（防注入功能的） 
+        /// 获取分页数据（防注入功能的）
         /// </summary>
         /// <param name="recordCount">记录条数</param>
         /// <param name="dbHelper">dbHelper</param>

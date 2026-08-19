@@ -55,7 +55,7 @@ namespace DotNet.Util
         public static int ConvertToInt(Object targetValue, int defaultValue = 0)
         {
             var returnValue = defaultValue;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -69,7 +69,7 @@ namespace DotNet.Util
         public static int? ConvertToNullableInt(Object targetValue)
         {
             int? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -83,7 +83,7 @@ namespace DotNet.Util
         public static Byte ConvertToByteInt(Object targetValue)
         {
             Byte returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -97,7 +97,7 @@ namespace DotNet.Util
         public static Byte? ConvertToNullableByteInt(Object targetValue)
         {
             Byte? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -111,7 +111,7 @@ namespace DotNet.Util
         public static Int32 ConvertToInt32(Object targetValue)
         {
             var returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -125,7 +125,7 @@ namespace DotNet.Util
         public static Int32? ConvertToNullableInt32(Object targetValue)
         {
             Int32? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -139,7 +139,7 @@ namespace DotNet.Util
         public static Int64 ConvertToInt64(Object targetValue)
         {
             Int64 returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -153,7 +153,7 @@ namespace DotNet.Util
         public static Int64? ConvertToNullableInt64(Object targetValue)
         {
             Int64? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -167,7 +167,7 @@ namespace DotNet.Util
         public static long ConvertToLong(Object targetValue)
         {
             long returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -181,7 +181,7 @@ namespace DotNet.Util
         public static long? ConvertToNullableLong(Object targetValue)
         {
             long? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -195,7 +195,7 @@ namespace DotNet.Util
         public static Double ConvertToDouble(Object targetValue)
         {
             Double returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -209,7 +209,7 @@ namespace DotNet.Util
         public static Double? ConvertToNullableDouble(Object targetValue)
         {
             Double? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -223,7 +223,7 @@ namespace DotNet.Util
         public static float ConvertToFloat(Object targetValue)
         {
             float returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -237,7 +237,7 @@ namespace DotNet.Util
         public static float? ConvertToNullableFloat(Object targetValue)
         {
             float? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -251,7 +251,7 @@ namespace DotNet.Util
         public static decimal ConvertToDecimal(Object targetValue)
         {
             decimal returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -265,7 +265,7 @@ namespace DotNet.Util
         public static decimal? ConvertToNullableDecimal(Object targetValue)
         {
             decimal? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
             }
@@ -299,7 +299,7 @@ namespace DotNet.Util
         public static DateTime? ConvertToNullableDateTime(Object targetValue)
         {
             DateTime? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
                 if (DateTime.TryParse(targetValue.ToString(), out var dt)) returnValue = dt;
             }

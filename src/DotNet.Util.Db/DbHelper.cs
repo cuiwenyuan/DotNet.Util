@@ -15,16 +15,16 @@ namespace DotNet.Util
     /// <summary>
     /// DbHelper
     /// 数据库访问层基础类。
-    /// 
+    ///
     /// 修改记录
-    ///     
+    ///
     ///     2013.02.04 版本：3.3 JiRiGaLa 解决并发问题。
     ///     2011.02.20 版本：3.2 JiRiGaLa 重新排版代码。
     ///     2011.01.29 版本：3.1 JiRiGaLa 实现IDisposable接口。
     ///     2010.06.13 版本：3.0 JiRiGaLa 改进为支持静态方法，不用数据库Open、Close的方式，AutoOpenClose开关。
     ///		2010.03.14 版本：2.0 JiRiGaLa 无法彻底释放、并发时出现异常问题解决。
     ///		2009.11.25 版本：1.0 JiRiGaLa 改进ConnectionString。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2011.02.20</date>
@@ -216,6 +216,23 @@ namespace DotNet.Util
         {
             // 若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
+            //修复：重复调用 Open 时先释放旧的连接，避免连接泄漏/连接池耗尽
+            if (_dbConnection != null)
+            {
+                try
+                {
+                    if (_dbConnection.State != ConnectionState.Closed)
+                    {
+                        _dbConnection.Close();
+                    }
+                    _dbConnection.Dispose();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "close old connection error");
+                }
+                _dbConnection = null;
+            }
             _dbConnection = GetInstance().CreateConnection();
             if (_dbConnection != null)
             {
@@ -375,7 +392,7 @@ namespace DotNet.Util
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
             Dispose();
         }
-        #endregion        
+        #endregion
 
         #region public virtual void Dispose() 内存回收
         /// <summary>
@@ -415,7 +432,7 @@ namespace DotNet.Util
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
-                    _dbConnection.Close();                    
+                    _dbConnection.Close();
                 }
                 _dbConnection.Dispose();
                 _dbConnection = null;
@@ -438,6 +455,6 @@ namespace DotNet.Util
             // 各自数据集需要自行覆盖实现此处逻辑
             return result;
         }
-        #endregion        
+        #endregion
     }
 }

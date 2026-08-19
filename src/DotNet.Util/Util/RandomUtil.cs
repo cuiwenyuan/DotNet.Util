@@ -47,7 +47,7 @@ namespace DotNet.Util
         /// </summary>
         public static int RandomLength = 6;
 
-        private const string _randomString = "0123456789ABCDEFGHIJKMLNPQRSTUVWXYZ";
+        private const string _randomString = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
         private const string _randomNumber = "0123456789";
         private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
@@ -123,7 +123,8 @@ namespace DotNet.Util
         /// <returns>随机数</returns>
         public static int GetRandom()
         {
-            return NextInt(Minimum, Maximal);
+            //修复：NextInt 上界为开区间，需 +1 才能取到 Maximal（如 999999）
+            return NextInt(Minimum, Maximal + 1);
         }
         #endregion
 
@@ -136,7 +137,8 @@ namespace DotNet.Util
         /// <returns>随机数</returns>
         public static int GetRandom(int minimum, int maximal)
         {
-            return NextInt(minimum, maximal);
+            //修复：maximal 按文档含义为最大值（包含），NextInt 上界为开区间需 +1
+            return NextInt(minimum, maximal + 1);
         }
         #endregion
     }

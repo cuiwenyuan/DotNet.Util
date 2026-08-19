@@ -95,7 +95,8 @@ namespace DotNet.Util
                             is_hyaline = isHyaline
                         };
                         var json3 = JsonConvert.SerializeObject(data3);
-                        result = DownloadBufferImage(postUrl, JsonConvert.SerializeObject(json3));
+                        //修复：json3 已是 JSON 字符串，再次序列化会将其转义成带引号的字符串导致请求体非法
+                        result = DownloadBufferImage(postUrl, json3);
                         break;
                 }
             }
@@ -104,7 +105,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 根据当前日期 判断Access_Token 是否超期  如果超期返回新的Access_Token，否则返回之前的Access_Token  
+        /// 根据当前日期 判断Access_Token 是否超期  如果超期返回新的Access_Token，否则返回之前的Access_Token
         /// </summary>
         /// <returns></returns>
         public static string GetAccessToken()
@@ -235,19 +236,19 @@ namespace DotNet.Util
             return result;
         }
 
-        /// <summary>  
-        ///Access_token 的摘要说明  
-        /// </summary>  
+        /// <summary>
+        ///Access_token 的摘要说明
+        /// </summary>
         public class AccessToken
         {
-            /// <summary>  
-            /// 获取到的凭证   
-            /// </summary>  
+            /// <summary>
+            /// 获取到的凭证
+            /// </summary>
             public string access_token { get; set; }
 
-            /// <summary>  
-            /// 凭证有效时间，单位：秒  
-            /// </summary>  
+            /// <summary>
+            /// 凭证有效时间，单位：秒
+            /// </summary>
             public string expires_in { get; set; }
         }
         #endregion
