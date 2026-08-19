@@ -352,6 +352,7 @@ namespace DotNet.Util
                 finally
                 {
                     InTransaction = false;
+                    MustCloseConnection = true;
                     _dbTransaction?.Dispose();
                     _dbTransaction = null;
                 }

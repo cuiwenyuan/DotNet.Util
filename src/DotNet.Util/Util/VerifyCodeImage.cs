@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 #if NET46_OR_GREATER
 using System.Web;
 #endif
@@ -193,6 +194,30 @@ namespace DotNet.Util
         /// <param name="code"></param>
         /// <param name="multValue"></param>
         /// <returns></returns>
+        private static readonly RandomNumberGenerator _cryptoRandom = RandomNumberGenerator.Create();
+
+        private static int GetRandomInt(int minValue, int maxValue)
+        {
+            if (maxValue <= minValue)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxValue));
+            }
+
+            var range = (long)maxValue - minValue;
+            var limit = uint.MaxValue / range * range;
+            uint randomValue;
+
+            do
+            {
+                var buffer = new byte[4];
+                _cryptoRandom.GetBytes(buffer);
+                randomValue = BitConverter.ToUInt32(buffer, 0);
+            }
+            while (randomValue >= limit);
+
+            return minValue + (int)(randomValue % range);
+        }
+
         public Bitmap CreateImage(string code, double multValue)
         {
             var fSize = FontSize;
@@ -207,8 +232,6 @@ namespace DotNet.Util
 
             graphics.Clear(BackgroundColor);
 
-            var rand = new Random();
-
             // 给背景添加随机生成的燥点
             if (Chaos)
             {
@@ -218,8 +241,8 @@ namespace DotNet.Util
 
                 for (var i = 0; i < c; i++)
                 {
-                    var x = rand.Next(bitmap.Width);
-                    var y = rand.Next(bitmap.Height);
+                    var x = GetRandomInt(0, bitmap.Width);
+                    var y = GetRandomInt(0, bitmap.Height);
 
                     graphics.DrawRectangle(pen, x, y, 1, 1);
                 }
@@ -240,8 +263,8 @@ namespace DotNet.Util
             // 随机字体和颜色的验证码字符
             for (var i = 0; i < code.Length; i++)
             {
-                cindex = rand.Next(Colors.Length);
-                findex = rand.Next(Fonts.Length);
+                cindex = GetRandomInt(0, Colors.Length);
+                findex = GetRandomInt(0, Fonts.Length);
 
                 font = new Font(Fonts[findex], fSize, FontStyle.Bold);
                 brush = new SolidBrush(Colors[cindex]);
@@ -283,13 +306,17 @@ namespace DotNet.Util
             {
                 codeLength = Length;
             }
+
             var arr = CodeSerial.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            if (arr.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var code = "";
-            var randValue = -1;
-            var random = new Random(unchecked((int)DateTime.Now.Ticks));
             for (var i = 0; i < codeLength; i++)
             {
-                randValue = random.Next(0, arr.Length);
+                var randValue = GetRandomInt(0, arr.Length);
                 code += arr[randValue];
             }
             return code;

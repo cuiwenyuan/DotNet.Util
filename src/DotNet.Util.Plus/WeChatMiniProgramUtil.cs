@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -118,10 +118,11 @@ namespace DotNet.Util
             var secret = "";
             // 路径需要修改下
             var filePath = Utils.GetMapPath("~/xmlconfig/WeChatMiniProgram.config");
-            var doc = new XmlDocument();
+            XmlDocument doc = null;
             try
             {
-                doc.Load(filePath);
+                doc = XmlUtil.LoadXmlDocSafe(filePath);
+                if (doc == null) return token;
                 appid = doc.SelectSingleNode(@"Root/appid")?.InnerText;
                 secret = doc.SelectSingleNode(@"Root/secret")?.InnerText;
 

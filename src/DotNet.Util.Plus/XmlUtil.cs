@@ -17,6 +17,34 @@ namespace DotNet.Util
     /// </summary>
     public static class XmlUtil
     {
+        public static XmlDocument LoadXmlDocumentSecure(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
+
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null,
+                IgnoreComments = false,
+                IgnoreWhitespace = false
+            };
+
+            var document = new XmlDocument { XmlResolver = null };
+            using (var reader = XmlReader.Create(filePath, settings))
+            {
+                document.Load(reader);
+            }
+            return document;
+        }
+
+        public static XmlDocument LoadXmlDocSafe(string filePath)
+        {
+            return LoadXmlDocumentSecure(filePath);
+        }
+
 #if NET46_OR_GREATER
 #else
         /// <summary>
@@ -77,8 +105,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(xPath);
                     var n = doc.ImportNode(xmlNode, true);
                     xn?.AppendChild(n);
@@ -117,8 +144,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(toFilePath);
+                    var doc = LoadXmlDocumentSecure(toFilePath);
                     var xn = doc.SelectSingleNode(toXPath);
 
                     var xnList = ReadNodes(filePath, xPath);
@@ -164,8 +190,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(xPath);
                     var xe = (XmlElement)xn;
                     if (xe != null) xe.InnerText = value;
@@ -201,9 +226,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
-                    return doc;
+                    return LoadXmlDocumentSecure(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -226,12 +249,11 @@ namespace DotNet.Util
         {
             try
             {
-                var doc = new XmlDocument();
-                doc.Load(filePath);
+                var doc = LoadXmlDocumentSecure(filePath);
                 var xn = doc.SelectSingleNode(xPath);
                 if (xn != null)
                 {
-                    var xnList = xn.ChildNodes;  //得到该节点的子节点
+                    var xnList = xn.ChildNodes;
                     return xnList;
                 }
                 return null;
@@ -369,8 +391,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
                     if (!nameSpace.IsNullOrEmpty())
                     {
@@ -429,8 +450,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
                     if (!nameSpace.IsNullOrEmpty())
                     {
@@ -514,8 +534,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
                     if (!nameSpace.IsNullOrEmpty())
                     {
@@ -587,8 +606,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
                     if (!nameSpace.IsNullOrEmpty())
                     {
@@ -647,8 +665,7 @@ namespace DotNet.Util
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     if (parameters != null && parameters.Count > 0)
                     {
                         foreach (var parameter in parameters)

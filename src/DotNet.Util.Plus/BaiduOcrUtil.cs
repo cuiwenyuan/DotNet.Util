@@ -55,10 +55,11 @@ namespace DotNet.Util
             var secretKey = "";
 
             var filePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"xmlconfig\BaiduAI.config");
-            var doc = new XmlDocument();
+            XmlDocument doc = null;
             try
             {
-                doc.Load(filePath);
+                doc = XmlUtil.LoadXmlDocSafe(filePath);
+                if (doc == null) return token;
                 apiKey = doc.SelectSingleNode(@"Root/apiKey")?.InnerText;
                 secretKey = doc.SelectSingleNode(@"Root/secretKey")?.InnerText;
 

@@ -121,11 +121,14 @@ namespace DotNet.Util
 
                 if (parameter.Value is IEnumerable enumerable && !(parameter.Value is string))
                 {
-                    var values = enumerable.Cast<object>().Where(t => t != null).Select(t => t.ToString()).ToList();
+                    var values = enumerable.Cast<object>().Where(t => t != null).ToList();
                     if (values.Count > 0)
                     {
-                        var sqlValues = values.Select(v => "'" + v.Replace("'", "''") + "'").ToArray();
-                        result += parameter.Key + " IN (" + string.Join(",", sqlValues) + ")" + relation;
+                        var safeValues = values
+                            .Select(t => SqlSafe(Convert.ToString(t)))
+                            .Select(t => "'" + t + "'")
+                            .ToList();
+                        result += parameter.Key + " IN (" + string.Join(",", safeValues) + ")" + relation;
                     }
                     else
                     {
@@ -135,6 +138,7 @@ namespace DotNet.Util
                 }
 
                 result += parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + relation;
+
             }
 
             if (result.Length > 0)
@@ -143,6 +147,18 @@ namespace DotNet.Util
             }
             return result;
         }
+        #endregion
+
+        #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
+        /// <summary>
+        /// 获得条件语句
+        /// 20110523 吉日嘎拉，改进空数组 
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="names">字段名</param>
+        /// <param name="values">字段值</param>
+        /// <param name="relation">逻辑关系</param>
+        /// <returns>字符串</returns>
         #endregion
 
         #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句

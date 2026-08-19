@@ -309,6 +309,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {
@@ -482,6 +483,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {

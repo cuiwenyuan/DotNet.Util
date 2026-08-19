@@ -516,7 +516,18 @@ namespace DotNet.Util
                 var values = ((Array)targetValue).Cast<object>().Where(t => t != null).Select(t => t.ToString()).ToList();
                 if (values.Count > 0)
                 {
-                    _whereSql.Append(targetFiled + " IN (" + string.Join(",", values.Select(v => "'" + v.Replace("'", "''") + "'")) + ")");
+                    var parameterNames = new List<string>();
+                    for (var i = 0; i < values.Count; i++)
+                    {
+                        var itemParameterName = parameterName + "_" + i;
+                        while (DbParameters.Any(t => t.Key.Equals(itemParameterName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            itemParameterName = parameterName + "_" + i + "_" + Guid.NewGuid().ToString("N").Substring(0, 4);
+                        }
+                        parameterNames.Add(DbUtil.GetParameter(_dbType, itemParameterName));
+                        AddParameter(itemParameterName, values[i]);
+                    }
+                    _whereSql.Append(targetFiled + " IN (" + string.Join(",", parameterNames) + ")");
                 }
                 else
                 {
@@ -571,6 +582,10 @@ namespace DotNet.Util
             if (_orderBy.IsNullOrEmpty())
             {
                 _orderBy = " ORDER BY ";
+            }
+            else if (!_orderBy.TrimEnd().EndsWith(",", StringComparison.Ordinal))
+            {
+                _orderBy += ", ";
             }
             switch (_dbType)
             {

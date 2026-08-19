@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0_OR_GREATER
+#if NETSTANDARD2_0_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +15,7 @@ namespace DotNet.Util
     public static class DrawingUtil
     {//颜色列表，用于验证码、噪线、噪点 
         private static readonly Color[] _colors = new[] { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
+        private static readonly Random _cryptoRandom = new Random();
 
         /// <summary>
         /// 绘制验证码图片，返回图片的字节数组
@@ -30,7 +31,7 @@ namespace DotNet.Util
             //字体
             var font = new Font("Times New Roman", 16);
 
-            var r = new Random();
+            var r = _cryptoRandom;
 
             var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
@@ -92,7 +93,7 @@ namespace DotNet.Util
             if (arr == null || !arr.Any())
                 return default(T);
 
-            var r = new Random();
+            var r = _cryptoRandom;
 
             return arr[r.Next(arr.Length)];
         }
