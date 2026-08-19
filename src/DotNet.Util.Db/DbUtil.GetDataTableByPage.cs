@@ -123,13 +123,21 @@ namespace DotNet.Util
                     commandText = string.Format(@"SELECT * FROM (SELECT T.*, ROWNUM RN FROM {0} WHERE ROWNUM <= {2}) T WHERE RN > {1}", sql, sqlStart, sqlEnd);
                     break;
                 case CurrentDbType.MySql:
+                case CurrentDbType.SQLite:
                     if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         sql = " (" + sql + ") ";
                     }
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
-                    sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, sqlEnd);
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, pageSize);
+                    break;
+                case CurrentDbType.PostgreSql:
+                    if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sql = " (" + sql + ") ";
+                    }
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
             return dbHelper.Fill(commandText, dbParameters);
@@ -220,9 +228,13 @@ namespace DotNet.Util
                     commandText = string.Format(@"SELECT T.*, ROWNUM RN FROM ({0} AND ROWNUM <= {1} ORDER BY {2}) T WHERE ROWNUM > {3}", sql, sqlEnd, sortExpression, sqlStart);
                     break;
                 case CurrentDbType.MySql:
+                case CurrentDbType.SQLite:
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
-                    sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, sqlEnd);
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, pageSize);
+                    break;
+                case CurrentDbType.PostgreSql:
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
             return dbHelper.Fill(commandText, dbParameters);
@@ -295,6 +307,10 @@ namespace DotNet.Util
                 || dbHelper.CurrentDbType == CurrentDbType.SQLite)
             {
                 sb.Append(string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4}, {5}", selectField, tableName, conditions, orderBy, sqlStart, pageSize));
+            }
+            else if (dbHelper.CurrentDbType == CurrentDbType.PostgreSql)
+            {
+                sb.Append(string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4} OFFSET {5}", selectField, tableName, conditions, orderBy, pageSize, sqlStart));
             }
 
             var dt = new DataTable(tableName);

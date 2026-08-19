@@ -33,14 +33,7 @@ namespace DotNet.Util
         public static bool Contains(string cacheKey)
         {
 #if NET46_OR_GREATER
-            if (!cacheKey.IsNullOrEmpty() && Cache[cacheKey] == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return !cacheKey.IsNullOrEmpty() && Cache[cacheKey] != null;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
             if (!cacheKey.IsNullOrEmpty() && Cache.TryGetValue(cacheKey, out obj))
@@ -364,13 +357,11 @@ namespace DotNet.Util
             {
                 keys.Add(Convert.ToString(iDictionaryEnumerator.Key));
             }
-#elif NETSTANDARD2_0_OR_GREATER
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
-            var cacheItems = entries as IDictionary;
-            if (cacheItems != null)
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            var entries = GetMemoryCacheEntries();
+            if (entries != null)
             {
-                foreach (DictionaryEntry cacheItem in cacheItems)
+                foreach (DictionaryEntry cacheItem in entries)
                 {
                     keys.Add(cacheItem.Key.ToString());
                 }
@@ -378,5 +369,28 @@ namespace DotNet.Util
 #endif
             return keys;
         }
+
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+        private static IDictionary GetMemoryCacheEntries()
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var cacheType = Cache.GetType();
+            var entriesField = cacheType.GetField("_entries", flags);
+            if (entriesField != null)
+            {
+                return entriesField.GetValue(Cache) as IDictionary;
+            }
+            var coherentStateField = cacheType.GetField("_coherentState", flags);
+            var coherentState = coherentStateField?.GetValue(Cache);
+            if (coherentState == null)
+            {
+                return null;
+            }
+            var coherentType = coherentState.GetType();
+            var coherentEntries = coherentType.GetField("_entries", flags)?.GetValue(coherentState)
+                                  ?? coherentType.GetProperty("EntriesCollection", flags)?.GetValue(coherentState);
+            return coherentEntries as IDictionary;
+        }
+#endif
     }
 }

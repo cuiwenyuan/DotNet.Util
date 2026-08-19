@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewLife.Caching;
@@ -146,10 +146,18 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveByRegex(string pattern)
         {
-            if (!string.IsNullOrWhiteSpace(pattern))
+            if (string.IsNullOrWhiteSpace(pattern))
             {
-                var keys = redisClient.Keys;
-                foreach (var key in keys)
+                return;
+            }
+            var keys = redisClient.Keys;
+            if (keys == null)
+            {
+                return;
+            }
+            foreach (var key in keys)
+            {
+                if (key != null && System.Text.RegularExpressions.Regex.IsMatch(key, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
                 {
                     redisClient.Remove(key);
                 }

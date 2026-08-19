@@ -1735,19 +1735,11 @@ namespace DotNet.Business
                 }
 
                 // 07. 锁定日期是否有限制
-                if (userLogonEntity.LockStartTime != null)
+                if (userLogonEntity.LockStartTime != null || userLogonEntity.LockEndTime != null)
                 {
-                    if (DateTime.Now > userLogonEntity.LockStartTime)
-                    {
-                        if (userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime)
-                        {
-                            return false;
-                        }
-                    }
-                }
-                if (userLogonEntity.LockEndTime != null)
-                {
-                    if (DateTime.Now < userLogonEntity.LockEndTime)
+                    var afterStart = userLogonEntity.LockStartTime == null || DateTime.Now > userLogonEntity.LockStartTime;
+                    var beforeEnd = userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime;
+                    if (afterStart && beforeEnd)
                     {
                         return false;
                     }
@@ -1756,7 +1748,7 @@ namespace DotNet.Business
                 // 03. 系统是否采用了密码加密策略？
                 if (BaseSystemInfo.ServerEncryptPassword)
                 {
-                    password = EncryptUserPassword(password);
+                    password = EncryptUserPassword(password, userLogonEntity.Salt);
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)
