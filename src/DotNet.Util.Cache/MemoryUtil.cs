@@ -110,9 +110,8 @@ namespace DotNet.Util
         /// <param name="slidingExpiration">弹性过期</param>
         public static void Set(string cacheKey, object cacheValue, TimeSpan slidingExpiration)
         {
-            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Insert(cacheKey, cacheValue, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
+            //注意两种过期策略只能使用其中一种
+            Cache.Insert(cacheKey, cacheValue, null, Cache.NoAbsoluteExpiration, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
         }
 
         /// <summary>
@@ -123,9 +122,8 @@ namespace DotNet.Util
         /// <param name="slidingExpiration">弹性过期</param>
         public static void Set<T>(string cacheKey, T t, TimeSpan slidingExpiration)
         {
-            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Insert(cacheKey, t, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
+            //注意两种过期策略只能使用其中一种
+            Cache.Insert(cacheKey, t, null, Cache.NoAbsoluteExpiration, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
         }
 
         /// <summary>
@@ -198,15 +196,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //注意两种过期策略只能使用其中一种，使用了AbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把AbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.MaxValue,
-                SlidingExpiration = slidingExpiration,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
-
+            Cache.Set(cacheKey, cacheValue, CreateSlidingOptions(slidingExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -218,14 +208,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set<T>(string cacheKey, T t, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //注意两种过期策略只能使用其中一种，使用了AbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把AbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Set(cacheKey, t, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.MaxValue,
-                SlidingExpiration = slidingExpiration,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            Cache.Set(cacheKey, t, CreateSlidingOptions(slidingExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -237,12 +220,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, DateTime absoluteExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = absoluteExpiration,
-                SlidingExpiration = TimeSpan.Zero,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            Cache.Set(cacheKey, cacheValue, CreateAbsoluteOptions(absoluteExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -255,13 +233,43 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, DateTime absoluteExpiration, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //将指定项添加到 Cache 对象，该对象具有依赖项、过期和优先级策略以及一个委托（可用于在从 Cache 移除插入项时通知应用程序）。如果 Cache 中已保存了具有相同 key 参数的项，则对此方法的调用将失败。若要使用相同的 key 参数改写现有的 Cache 项，请使用 Insert 方法.
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
+            Cache.Set(cacheKey, cacheValue, CreateExpirationOptions(absoluteExpiration, slidingExpiration, cacheItemPriority));
+        }
+
+        private static MemoryCacheEntryOptions CreateSlidingOptions(TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority)
+        {
+            var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = absoluteExpiration,
-                SlidingExpiration = slidingExpiration,
                 Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            };
+            if (slidingExpiration > TimeSpan.Zero)
+            {
+                options.SlidingExpiration = slidingExpiration;
+            }
+            return options.RegisterPostEvictionCallback(MyCallback);
+        }
+
+        private static MemoryCacheEntryOptions CreateAbsoluteOptions(DateTime absoluteExpiration, CacheItemPriority cacheItemPriority)
+        {
+            return CreateExpirationOptions(absoluteExpiration, TimeSpan.Zero, cacheItemPriority);
+        }
+
+        private static MemoryCacheEntryOptions CreateExpirationOptions(DateTime absoluteExpiration, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority)
+        {
+            var options = new MemoryCacheEntryOptions
+            {
+                Priority = cacheItemPriority
+            };
+            if (slidingExpiration > TimeSpan.Zero)
+            {
+                options.SlidingExpiration = slidingExpiration;
+            }
+            if (absoluteExpiration != DateTime.MaxValue && absoluteExpiration != DateTime.MinValue)
+            {
+                var kind = absoluteExpiration.Kind == DateTimeKind.Unspecified ? DateTimeKind.Local : absoluteExpiration.Kind;
+                options.AbsoluteExpiration = new DateTimeOffset(DateTime.SpecifyKind(absoluteExpiration, kind));
+            }
+            return options.RegisterPostEvictionCallback(MyCallback);
         }
 
         /// <summary>

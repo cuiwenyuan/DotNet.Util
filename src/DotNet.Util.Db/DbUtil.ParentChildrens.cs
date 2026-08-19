@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -165,12 +166,32 @@ namespace DotNet.Util
             {
                 sb.Append("SELECT * ");
             }
+            var parameters = new List<KeyValuePair<string, object>>();
+            var placeholders = new List<string>();
+            if (ids != null)
+            {
+                for (var i = 0; i < ids.Length; i++)
+                {
+                    if (ids[i].IsNullOrEmpty())
+                    {
+                        continue;
+                    }
+                    var parameterName = "Id" + i;
+                    placeholders.Add(dbHelper.GetParameter(parameterName));
+                    parameters.Add(new KeyValuePair<string, object>(parameterName, ids[i]));
+                }
+            }
+            var inClause = placeholders.Count > 0 ? string.Join(",", placeholders) : "NULL";
             sb.Append(" FROM " + tableName
-                     + " START WITH " + fieldId + " IN (" + string.Join(",", ids) + ")"
+                     + " START WITH " + fieldId + " IN (" + inClause + ")"
                      + " CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
             if (!order.IsNullOrEmpty())
             {
-                sb.Append(" ORDER BY " + order);
+                sb.Append(" ORDER BY " + GetSafeSortExpression(order));
+            }
+            if (parameters.Count > 0)
+            {
+                return dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
             }
             return dbHelper.Fill(sb.Return());
         }

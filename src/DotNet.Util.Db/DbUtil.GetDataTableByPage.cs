@@ -45,14 +45,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
-            if (sortExpression.IsNullOrEmpty())
-            {
-                sortExpression = BaseUtil.FieldCreateTime;
-            }
-            if (sortDirection.IsNullOrEmpty())
-            {
-                sortDirection = " DESC";
-            }
+            sortExpression = GetSafeSortExpression(sortExpression);
+            sortDirection = GetSafeSortDirection(sortDirection);
             var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
@@ -202,14 +196,8 @@ namespace DotNet.Util
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             sql = sql.ToTableName();
-            if (sortExpression.IsNullOrEmpty())
-            {
-                sortExpression = BaseUtil.FieldCreateTime;
-            }
-            if (sortDirection.IsNullOrEmpty())
-            {
-                sortDirection = " DESC";
-            }
+            sortExpression = GetSafeSortExpression(sortExpression);
+            sortDirection = GetSafeSortDirection(sortDirection);
             var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
@@ -276,6 +264,7 @@ namespace DotNet.Util
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         {
             tableName = tableName.ToTableName();
+            orderBy = GetSafeSortExpression(orderBy);
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
             if (currentIndex == null)

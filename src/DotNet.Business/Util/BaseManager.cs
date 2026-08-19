@@ -438,7 +438,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual int DeleteEntity(object id)
         {
-            return DeleteEntity(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
+            return DeleteEntity(new KeyValuePair<string, object>(PrimaryKey, id));
         }
 
         #endregion

@@ -36,9 +36,29 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
         {
+            if (values == null || values.Length == 0)
+            {
+                return new string[0];
+            }
+            var parameters = new List<KeyValuePair<string, object>>();
+            var placeholders = new List<string>();
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (values[i] == null)
+                {
+                    continue;
+                }
+                var parameterName = "Value" + i;
+                placeholders.Add(dbHelper.GetParameter(parameterName));
+                parameters.Add(new KeyValuePair<string, object>(parameterName, values[i]));
+            }
+            if (placeholders.Count == 0)
+            {
+                return new string[0];
+            }
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", values) + ")");
-            var dt = dbHelper.Fill(sb.Return());
+            sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", placeholders) + ")");
+            var dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
             return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion

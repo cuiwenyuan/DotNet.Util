@@ -84,8 +84,72 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public static string SqlSafe(string value)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
             value = value.Replace("'", "''");
             // value = value.Replace("%", "'%");
+            return value;
+        }
+        #endregion
+
+        #region public static string GetSafeSortDirection(string sortDirection) 校验排序方向
+        /// <summary>
+        /// 仅允许 ASC / DESC，其他值回退为 DESC。
+        /// </summary>
+        /// <param name="sortDirection">排序方向</param>
+        /// <returns>安全的排序方向</returns>
+        public static string GetSafeSortDirection(string sortDirection)
+        {
+            if (sortDirection.IsNullOrEmpty())
+            {
+                return "DESC";
+            }
+            var value = sortDirection.Trim();
+            if (value.Equals("ASC", StringComparison.OrdinalIgnoreCase))
+            {
+                return "ASC";
+            }
+            if (value.Equals("DESC", StringComparison.OrdinalIgnoreCase))
+            {
+                return "DESC";
+            }
+            return "DESC";
+        }
+        #endregion
+
+        #region public static string GetSafeSortExpression(string sortExpression, string defaultExpression = null) 校验排序字段
+        /// <summary>
+        /// 校验排序字段，阻止将任意 SQL 拼进 ORDER BY。
+        /// </summary>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="defaultExpression">非法时的回退字段</param>
+        /// <returns>安全的排序字段</returns>
+        public static string GetSafeSortExpression(string sortExpression, string defaultExpression = null)
+        {
+            var fallback = defaultExpression.IsNullOrEmpty() ? BaseUtil.FieldCreateTime : defaultExpression;
+            if (sortExpression.IsNullOrEmpty())
+            {
+                return fallback;
+            }
+            var value = sortExpression.Trim();
+            if (value.IndexOf(';') >= 0
+                || value.IndexOf("--", StringComparison.Ordinal) >= 0
+                || value.IndexOf("/*", StringComparison.Ordinal) >= 0
+                || value.IndexOf("*/", StringComparison.Ordinal) >= 0
+                || value.IndexOf('\'') >= 0)
+            {
+                return fallback;
+            }
+            for (var i = 0; i < value.Length; i++)
+            {
+                var ch = value[i];
+                if (!(char.IsLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == ',' || ch == ' ' || ch == '[' || ch == ']'))
+                {
+                    return fallback;
+                }
+            }
             return value;
         }
         #endregion
