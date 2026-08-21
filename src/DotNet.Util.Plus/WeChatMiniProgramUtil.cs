@@ -183,7 +183,7 @@ namespace DotNet.Util
                     httpClient.PostAsync(requestUri, httpContent).ContinueWith(
                        (requestTask) =>
                        {
-                           var response = requestTask.Result;
+                           var response = requestTask.GetAwaiter().GetResult();
 
                            response.EnsureSuccessStatusCode();
 
@@ -192,9 +192,9 @@ namespace DotNet.Util
                            {
                                contentType.CharSet = "utf-8";
                            }
-                           LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().Result.LongLength.ToString(), "QRCode");
+                           LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().ConfigureAwait(false).GetAwaiter().GetResult().LongLength.ToString(), "QRCode");
 
-                           var data = response.Content.ReadAsByteArrayAsync().Result;
+                           var data = response.Content.ReadAsByteArrayAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                            var fileName = string.Empty;
 

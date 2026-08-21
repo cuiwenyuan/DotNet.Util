@@ -90,7 +90,14 @@ namespace DotNet.Util
             //待请求参数数组
             using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var PicByte = new byte[fs.Length];
-            fs.Read(PicByte, 0, PicByte.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var picBytesRead = 0;
+            while (picBytesRead < PicByte.Length)
+            {
+                var n = fs.Read(PicByte, picBytesRead, PicByte.Length - picBytesRead);
+                if (n == 0) break;
+                picBytesRead += n;
+            }
             var lengthFile = PicByte.Length;
 
             //构造请求地址

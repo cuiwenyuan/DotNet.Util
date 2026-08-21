@@ -220,8 +220,10 @@ namespace DotNet.Util
                 {
                     Directory.CreateDirectory(Utils.GetMapPath(excelPreviewFolder));
                 }
-                var htmlFileName = excelFilePath.Replace(".", DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day +
-                                                                 DateTime.Now.Hour + ".");
+                // 修复：原 Replace(".", ...) 会替换路径中所有点（含目录/版本号/扩展名），且日期分量被整数相加后丢失。
+                // 改为仅取文件名（无扩展名）+ 时间戳，生成唯一且合法的 HTML 文件名。
+                var timeStamp = DateTime.Now.ToString("yyyyMMddHH");
+                var htmlFileName = Path.GetFileNameWithoutExtension(excelFilePath) + timeStamp;
                 var htmlFile = HttpContext.Current.Server.MapPath("/") + excelPreviewFolder + "/" + htmlFileName + ".html";
                 //输出的html文件   需创建对应的文件目录  这里是根目录下的doc文件夹
                 excelToHtmlConverter.Document.Save(htmlFile);

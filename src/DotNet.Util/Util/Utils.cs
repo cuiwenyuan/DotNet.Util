@@ -1063,7 +1063,8 @@ namespace DotNet.Util
             var startPage = 1;
             var endPage = 1;
 
-            if (url.IndexOf("?") >= 0)
+            // 修复 #12a：url 为 null 时 url.IndexOf 会抛 NullReferenceException，先判空
+            if (!string.IsNullOrEmpty(url) && url.IndexOf("?") >= 0)
                 url += "&";
             else
                 url += "?";
@@ -1486,7 +1487,8 @@ namespace DotNet.Util
 
                                 case "timesect":
                                     var splitetime = strs.Split('-');
-                                    if (IsTime(splitetime[1]) == false || IsTime(splitetime[0]) == false)
+                                    // 修复 #11：strs 不含 '-' 时 splitetime 长度为 1，访问 [1] 会 IndexOutOfRangeException，先判长度
+                                    if (splitetime.Length < 2 || IsTime(splitetime[1]) == false || IsTime(splitetime[0]) == false)
                                         throw new Exception();
                                     break;
                             }
@@ -1508,7 +1510,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ClearLastChar(string str)
         {
-            return (str == "") ? "" : str.Substring(0, str.Length - 1);
+            // 修复 #10：str 为 null 时 str.Substring 会抛 NullReferenceException，改为 IsNullOrEmpty 守护
+            return string.IsNullOrEmpty(str) ? string.Empty : str.Substring(0, str.Length - 1);
         }
 
         /// <summary>

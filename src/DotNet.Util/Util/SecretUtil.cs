@@ -150,14 +150,8 @@ namespace DotNet.Util
             // {
             //     result = false;
             // }
-            // 只能先用一年再说,否则会惹很多麻烦
-            if (BaseSystemInfo.NeedRegister)
-            {
-                if ((DateTime.Now.Year >= 2020) && (DateTime.Now.Month > 7))
-                {
-                    result = false;
-                }
-            }
+            // 移除已失效的注册时间限制（原逻辑在 2020-08 之后恒为 false，导致注册校验永久失败）。
+            // 当前注册码校验逻辑已被注释禁用，CheckRegister 默认返回 true。
             // 一定要检查注册码,否则这个软件到处别人复制,我的基类也得不到保障了,这是我的心血,得会珍惜自己的劳动成果.
             // 2007.04.14 JiRiGaLa 改进注册方式,让底层程序更安全一些
             //if (BaseConfiguration.Instance.RegisterKey.Equals(CodeChange(BaseConfiguration.Instance.Database + BaseConfiguration.Instance.CustomerCompanyName)))

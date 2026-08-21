@@ -83,8 +83,9 @@ namespace DotNet.Util
                         new KeyValuePair<string, string>("client_secret", clientSecret)
                     };
 
-                    var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).Result;
-                    var returnContent = response.Content.ReadAsStringAsync().Result;
+                    // 修复：同步方法中阻塞异步调用，使用 ConfigureAwait(false)+GetAwaiter().GetResult() 避免 ASP.NET 同步上下文死锁
+                    var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).ConfigureAwait(false).GetAwaiter().GetResult();
+                    var returnContent = response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                     var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
 
@@ -169,7 +170,14 @@ namespace DotNet.Util
         {
             var fs = new FileStream(filePath, FileMode.Open);
             var bytes = new byte[fs.Length];
-            fs.Read(bytes, 0, (int)fs.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var baiduBytesRead = 0;
+            while (baiduBytesRead < bytes.Length)
+            {
+                var n = fs.Read(bytes, baiduBytesRead, bytes.Length - baiduBytesRead);
+                if (n == 0) break;
+                baiduBytesRead += n;
+            }
             // 转Base64
             var baser64 = Convert.ToBase64String(bytes);
             fs.Close();

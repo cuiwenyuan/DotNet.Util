@@ -58,6 +58,23 @@ namespace DotNet.Util
         {
             //若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
+            //修复：重复调用 OpenAsync 时先释放旧连接，避免连接泄漏/连接池耗尽（与同步 Open 保持一致）
+            if (_dbConnection != null)
+            {
+                try
+                {
+                    if (_dbConnection.State != ConnectionState.Closed)
+                    {
+                        _dbConnection.Close();
+                    }
+                    _dbConnection.Dispose();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "close old connection error");
+                }
+                _dbConnection = null;
+            }
             _dbConnection = GetInstance().CreateConnection();
             //var dbConnection = _dbConnection;
             if (_dbConnection != null)

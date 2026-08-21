@@ -84,7 +84,14 @@ namespace DotNet.Util
                 _dataBuffer = new byte[file.Length];
                 using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
                 {
-                    fs.Read(_dataBuffer, 0, _dataBuffer.Length);
+                    // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                    var ipBytesRead = 0;
+                    while (ipBytesRead < _dataBuffer.Length)
+                    {
+                        var n = fs.Read(_dataBuffer, ipBytesRead, _dataBuffer.Length - ipBytesRead);
+                        if (n == 0) break;
+                        ipBytesRead += n;
+                    }
                 }
 
                 var indexLength = BytesToLong(_dataBuffer[0], _dataBuffer[1], _dataBuffer[2], _dataBuffer[3]);

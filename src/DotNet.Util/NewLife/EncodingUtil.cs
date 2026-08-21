@@ -43,7 +43,14 @@ namespace DotNet.Util
 
             // 首先检查BOM
             var boms = new Byte[stream.Length > 4 ? 4 : stream.Length];
-            stream.Read(boms, 0, boms.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var bomRead = 0;
+            while (bomRead < boms.Length)
+            {
+                var n = stream.Read(boms, bomRead, boms.Length - bomRead);
+                if (n == 0) break;
+                bomRead += n;
+            }
 
             var encoding = DetectBOM(boms);
             if (encoding != null)
@@ -56,7 +63,17 @@ namespace DotNet.Util
             // 抽查一段字节数组
             var data = new Byte[sampleSize > stream.Length ? stream.Length : sampleSize];
             Array.Copy(boms, data, boms.Length);
-            if (stream.Length > boms.Length) stream.Read(data, boms.Length, data.Length - boms.Length);
+            if (stream.Length > boms.Length)
+            {
+                // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                var dataRead = boms.Length;
+                while (dataRead < data.Length)
+                {
+                    var n = stream.Read(data, dataRead, data.Length - dataRead);
+                    if (n == 0) break;
+                    dataRead += n;
+                }
+            }
             stream.Position = pos;
 
             return DetectInternal(data);

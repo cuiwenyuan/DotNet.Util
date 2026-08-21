@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// </summary>
         public static void ClearCache()
         {
-            lock (BaseSystemInfo.UserLock)
+            lock (_locker)
             {
                 CacheUtil.Remove(BaseStaffEntity.CurrentTableName);
             }

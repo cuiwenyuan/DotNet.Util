@@ -30,6 +30,9 @@ using System.Data;
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
+    // 修复：原共用全局 BaseSystemInfo.UserLock，与权限/人员等互不相关操作互相阻塞；改为本页面类独立锁
+    private static readonly object _cacheClearLock = new object();
+
     #region protected void ListServerCache() 清除服务器Runtime缓存
     /// <summary>
     /// 清除服务器Runtime缓存
@@ -71,7 +74,7 @@ public partial class BasePage : System.Web.UI.Page
     /// </summary>
     public void ClearServerCache()
     {
-        lock (BaseSystemInfo.UserLock)
+        lock (_cacheClearLock)
         {
             var keys = new List<string>();
             // retrieve application Cache enumerator 

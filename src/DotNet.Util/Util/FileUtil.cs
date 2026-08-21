@@ -307,7 +307,14 @@ namespace DotNet.Util
                 //完整的读取文件类容需要获取文件的长度
                 var count = (int)fs.Length;
                 var buffer = new byte[count];
-                br.Read(buffer, 0, buffer.Length);
+                // 修复：BinaryReader.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                var fileBytesRead = 0;
+                while (fileBytesRead < buffer.Length)
+                {
+                    var n = br.Read(buffer, fileBytesRead, buffer.Length - fileBytesRead);
+                    if (n == 0) break;
+                    fileBytesRead += n;
+                }
                 //修复：与 WriteBinaryFile 写入的 UTF-8 保持一致，避免非 ASCII 内容乱码（原 Encoding.Default 在 .NET Framework 上是 ANSI）
                 message = Encoding.UTF8.GetString(buffer);
                 // message = br.ReadString();

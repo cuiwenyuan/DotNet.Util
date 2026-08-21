@@ -151,7 +151,14 @@ namespace DotNet.Util
         private static void ReadIp(long offset, ref byte[] buffIp)
         {
             _fs.Position = offset;
-            _fs.Read(buffIp, 0, buffIp.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var qqBytesRead = 0;
+            while (qqBytesRead < buffIp.Length)
+            {
+                var n = _fs.Read(buffIp, qqBytesRead, buffIp.Length - qqBytesRead);
+                if (n == 0) break;
+                qqBytesRead += n;
+            }
 
             for (var i = 0; i < buffIp.Length / 2; i++)
             {

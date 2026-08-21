@@ -28,7 +28,20 @@
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-		
+	</PropertyGroup>
+
+	<!-- 修复：net6.0/net7.0 不支持 Microsoft.Extensions.* 及 System.* 的 9.0.9 包（无对应 TFM 资产）。
+	     按 TFM 条件引用兼容版本，真正消除 NU1701 而非抑制。
+	     注意：Microsoft.AspNetCore.Hosting 2.3.0 间接要求 Microsoft.Extensions.* >= 8.0.0，
+	     故 net6/net7 的 Extensions 包须用 8.0.0（含 netstandard2.0 资产，兼容 net6/net7）；
+	     System.* 包无此约束，用 6.0.0（原生支持 net6.0）。 -->
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
+		<ExtensionsVersion>8.0.0</ExtensionsVersion>
+		<SystemVersion>6.0.0</SystemVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+		<ExtensionsVersion>9.0.9</ExtensionsVersion>
+		<SystemVersion>9.0.9</SystemVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -65,12 +78,12 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.9" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.9" />
-		<PackageReference Include="System.Management" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="$(SystemVersion)" />
+		<PackageReference Include="System.Drawing.Common" Version="$(SystemVersion)" />
+		<PackageReference Include="System.Management" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>

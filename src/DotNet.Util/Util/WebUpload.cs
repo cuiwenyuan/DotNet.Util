@@ -561,7 +561,8 @@ namespace DotNet.Util
                 al.Add("jpeg");
                 al.Add("jpg");
                 al.Add("png");
-                if (al.Contains(fileExt.ToLower()))
+                // 修复 #12b：fileExt 为 null/空时 fileExt.ToLower() 会抛 NullReferenceException，先判空
+                if (!string.IsNullOrEmpty(fileExt) && al.Contains(fileExt.ToLower()))
                 {
                     return true;
                 }

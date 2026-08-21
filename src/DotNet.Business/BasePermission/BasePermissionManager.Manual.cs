@@ -31,6 +31,9 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager
     {
+        // 修复：原共用全局 BaseSystemInfo.UserLock，与缓存/人员等互不相关操作互相阻塞；改为本类独立锁
+        private static readonly object _permissionLock = new object();
+
         #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace DotNet.Business
             var cacheKey = "P." + systemCode + "." + userId;
             List<BaseModuleEntity> ls = null;
             // 这里是控制用户并发的，减少框架等重复读取数据库的效率问题
-            lock (BaseSystemInfo.UserLock)
+            lock (_permissionLock)
             {
                 var cacheTime = TimeSpan.FromMilliseconds(86400000);
                 ls = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id, companyId: userInfo.CompanyId, fromCache: true), true);

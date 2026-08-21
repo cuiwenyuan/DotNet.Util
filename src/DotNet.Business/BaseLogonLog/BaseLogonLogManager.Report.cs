@@ -46,11 +46,14 @@ namespace DotNet.Business
             sb.Append(" WHERE B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + DateTime.Now.ToString(BaseSystemInfo.DateFormat) + "' AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + datetime.ToString(BaseSystemInfo.DateFormat) + "'");
             if (ValidateUtil.IsDateTime(startDate))
             {
-                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + startDate + "'");
+                // 修复：将校验通过的日期重新解析为规范格式，杜绝注入（仅保留安全日期字面量）
+                var safeStart = startDate.ToDateTime().ToString(BaseSystemInfo.DateFormat);
+                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " >= '" + safeStart + "'");
             }
             if (ValidateUtil.IsDateTime(endDate))
             {
-                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + endDate + "'");
+                var safeEnd = endDate.ToDateTime().ToString(BaseSystemInfo.DateFormat);
+                sb.Append(" AND B." + BaseCalendarEntity.FieldTransactionDate + " <= '" + safeEnd + "'");
             }
             sb.Append(" ORDER BY B." + BaseCalendarEntity.FieldTransactionDate + " ASC");
 

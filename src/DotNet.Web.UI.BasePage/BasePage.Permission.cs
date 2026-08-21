@@ -28,6 +28,9 @@ using DotNet.Util;
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
+    // 修复：原共用全局 BaseSystemInfo.UserLock，与缓存/人员等互不相关操作互相阻塞；改为本页面类独立实例锁
+    private static readonly object _permissionClearLock = new object();
+
     #region 常用操作权限项定义
 
     /// <summary>
@@ -491,7 +494,7 @@ public partial class BasePage : System.Web.UI.Page
     /// </summary>
     protected void ClearPermissionCache()
     {
-        lock (BaseSystemInfo.UserLock)
+        lock (_permissionClearLock)
         {
             // 清除模块菜单权限
             var cacheKey = string.Empty;

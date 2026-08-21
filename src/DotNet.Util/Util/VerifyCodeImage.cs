@@ -381,7 +381,14 @@ namespace DotNet.Util
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                 var arr = new byte[ms.Length];
                 ms.Position = 0;
-                ms.Read(arr, 0, (int)ms.Length);
+                // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                var vcBytesRead = 0;
+                while (vcBytesRead < arr.Length)
+                {
+                    var n = ms.Read(arr, vcBytesRead, arr.Length - vcBytesRead);
+                    if (n == 0) break;
+                    vcBytesRead += n;
+                }
                 ms.Close();
                 return Convert.ToBase64String(arr);
             }
