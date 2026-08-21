@@ -1807,7 +1807,12 @@ namespace DotNet.Util
                 var sr = new StreamReader(resStream);
                 return sr.ReadToEnd();
             }
-            catch { return ""; }
+            catch (Exception ex)
+            {
+                //修复：记录日志而非静默吞掉，调用方仍可通过空串区分失败
+                LogUtil.WriteLog(ex, "GetSourceTextByUrl 获取URL内容失败: " + url);
+                return "";
+            }
         }
 
         /// <summary>
@@ -1945,8 +1950,11 @@ namespace DotNet.Util
                 writer.Flush();
                 writer.Close();
             }
-            catch
-            {; }
+            catch (Exception ex)
+            {
+                //修复：重启 IIS（重写 web.config）失败不能静默忽略，记录日志
+                LogUtil.WriteLog(ex, "RestartIisProcess 重写 web.config 失败");
+            }
         }
 
         /// <summary>

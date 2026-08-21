@@ -503,14 +503,14 @@ namespace DotNet.Business
                 row["Description"] = dr[i]["Description"].ToString();
                 row["Enabled"] = dr[i]["Enabled"].ToInt();
                 row["Deleted"] = dr[i]["Deleted"].ToInt();
-                if (!(dr[i]["CreateTime"].ToString()).IsNullOrEmpty())
+                if (DateTime.TryParse(dr[i]["CreateTime"].ToString(), out var createTime))
                 {
-                    row["CreateTime"] = DateTime.Parse(dr[i]["CreateTime"].ToString());
+                    row["CreateTime"] = createTime;
                 }
                 row["CreateBy"] = dr[i]["CreateBy"].ToString();
-                if (!(dr[i]["UpdateTime"].ToString()).IsNullOrEmpty())
+                if (DateTime.TryParse(dr[i]["UpdateTime"].ToString(), out var updateTime))
                 {
-                    row["UpdateTime"] = DateTime.Parse(dr[i]["UpdateTime"].ToString());
+                    row["UpdateTime"] = updateTime;
                 }
                 row["UpdateBy"] = dr[i]["UpdateBy"].ToString();
                 row["LayerId"] = layerId;
@@ -519,7 +519,10 @@ namespace DotNet.Business
                 if (layerId <= 5)
                 {
                     //调用自身迭代
-                    GetChilds(dtOld, dtNew, int.Parse(dr[i]["Id"].ToString()), layerId);
+                    if (int.TryParse(dr[i]["Id"].ToString(), out var childId))
+                    {
+                        GetChilds(dtOld, dtNew, childId, layerId);
+                    }
                 }
             }
         }

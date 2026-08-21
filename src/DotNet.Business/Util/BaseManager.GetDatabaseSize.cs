@@ -54,7 +54,7 @@ namespace DotNet.Business
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     //database_name,database_size
-                    result = decimal.Parse(dt.Rows[0][1].ToString().Replace("MB", "").Trim()) / 1024;
+                    result = decimal.TryParse(dt.Rows[0][1].ToString().Replace("MB", "").Trim(), out var databaseSize) ? databaseSize / 1024 : 0;
                 }
             }
             catch (Exception ex)

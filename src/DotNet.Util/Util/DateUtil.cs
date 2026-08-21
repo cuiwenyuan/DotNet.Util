@@ -437,18 +437,12 @@ namespace DotNet.Util
         /// <returns>日期对象</returns>
         public static DateTime ToDate(string strInput)
         {
-            DateTime oDateTime;
-
-            try
+            if (DateTime.TryParse(strInput, out var oDateTime) || DateTime.TryParse(strInput, CultureInfo.InvariantCulture, DateTimeStyles.None, out oDateTime))
             {
-                oDateTime = DateTime.Parse(strInput);
-            }
-            catch (Exception)
-            {
-                oDateTime = DateTime.Today;
+                return oDateTime;
             }
 
-            return oDateTime;
+            return DateTime.Today;
         }
         #endregion
 

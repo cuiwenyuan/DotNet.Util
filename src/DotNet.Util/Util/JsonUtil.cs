@@ -117,8 +117,12 @@ namespace DotNet.Util
             var result = JsonConvert.SerializeObject(dic);
             result = System.Text.RegularExpressions.Regex.Replace(result, @"\\/Date\((\d+)\)\\/", match =>
             {
+                if (!long.TryParse(match.Groups[1].Value, out var milliseconds))
+                {
+                    return match.Value;
+                }
                 var datetime = new DateTime(1970, 1, 1);
-                datetime = datetime.AddMilliseconds(long.Parse(match.Groups[1].Value));
+                datetime = datetime.AddMilliseconds(milliseconds);
                 datetime = datetime.ToLocalTime();
                 return datetime.ToString(dateTimeFormat);
             });

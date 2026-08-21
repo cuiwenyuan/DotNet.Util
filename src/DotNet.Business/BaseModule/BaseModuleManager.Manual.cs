@@ -567,14 +567,14 @@ namespace DotNet.Business
                 row["IsPublic"] = t["IsPublic"].ToInt();
                 row["IsExpand"] = t["IsExpand"].ToInt();
                 row["SortCode"] = t["SortCode"].ToInt();
-                if (!(t["CreateTime"].ToString()).IsNullOrEmpty())
+                if (DateTime.TryParse(t["CreateTime"].ToString(), out var createTime))
                 {
-                    row["CreateTime"] = DateTime.Parse(t["CreateTime"].ToString());
+                    row["CreateTime"] = createTime;
                 }
                 row["CreateBy"] = t["CreateBy"].ToString();
-                if (!(t["UpdateTime"].ToString()).IsNullOrEmpty())
+                if (DateTime.TryParse(t["UpdateTime"].ToString(), out var updateTime))
                 {
-                    row["UpdateTime"] = DateTime.Parse(t["UpdateTime"].ToString());
+                    row["UpdateTime"] = updateTime;
                 }
                 row["UpdateBy"] = t["UpdateBy"].ToString();
                 row["LayerId"] = layerId;

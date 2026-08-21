@@ -191,7 +191,11 @@ namespace DotNet.Util
 
                 //return data.CompareTo(buf) == 0;
             }
-            catch { }
+            catch (Exception)
+            {
+                // 编码不匹配时解码必然抛异常，属探测的正常失败路径，视为不匹配；
+                // 明确捕获 Exception 而非裸 catch，避免吞掉致命异常
+            }
 
             return false;
         }

@@ -308,7 +308,113 @@ namespace DotNet.Util
         }
 
         /// <summary>
+        /// AES数据加密（安全替代 DES，供新代码使用）
+        /// <para>输出格式：Base64(16字节随机IV + 密文)，密钥由 SHA256(key) 派生为 32 字节</para>
+        /// </summary>
+        /// <param name="targetValue">目标字段</param>
+        /// <returns>加密值</returns>
+        public static string AesEncrypt(string targetValue)
+        {
+            return AesEncrypt(targetValue, BaseSystemInfo.SecurityKey);
+        }
+
+        /// <summary>
+        /// AES数据加密
+        /// </summary>
+        /// <param name="targetValue">目标值</param>
+        /// <param name="key">密钥</param>
+        /// <returns>加密值</returns>
+        public static string AesEncrypt(string targetValue, string key)
+        {
+            if (targetValue.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+            if (key.IsNullOrEmpty())
+            {
+                key = BaseSystemInfo.SecurityKey;
+            }
+
+            using var aes = Aes.Create();
+            aes.Key = Sha256Bytes(key);
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.GenerateIV(); // 每次加密使用随机 IV，前置到密文，避免 IV 复用
+            using var ms = new MemoryStream();
+            ms.Write(aes.IV, 0, aes.IV.Length);
+            using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+            using (var sw = new StreamWriter(cs, Encoding.UTF8))
+            {
+                sw.Write(targetValue);
+            }
+            return Convert.ToBase64String(ms.ToArray());
+        }
+
+        /// <summary>
+        /// AES数据解密（与 AesEncrypt 配套）
+        /// </summary>
+        /// <param name="targetValue">目标字段</param>
+        /// <returns>解密值；解密失败返回空串</returns>
+        public static string AesDecrypt(string targetValue)
+        {
+            return AesDecrypt(targetValue, BaseSystemInfo.SecurityKey);
+        }
+
+        /// <summary>
+        /// AES数据解密
+        /// </summary>
+        /// <param name="targetValue">目标值</param>
+        /// <param name="key">密钥</param>
+        /// <returns>解密值；解密失败返回空串</returns>
+        public static string AesDecrypt(string targetValue, string key)
+        {
+            if (targetValue.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+            if (key.IsNullOrEmpty())
+            {
+                key = BaseSystemInfo.SecurityKey;
+            }
+
+            try
+            {
+                var fullCipher = Convert.FromBase64String(targetValue);
+                if (fullCipher.Length <= 16)
+                {
+                    return string.Empty;
+                }
+                using var aes = Aes.Create();
+                aes.Key = Sha256Bytes(key);
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                var iv = new byte[16];
+                Array.Copy(fullCipher, 0, iv, 0, iv.Length);
+                aes.IV = iv;
+                using var ms = new MemoryStream(fullCipher, 16, fullCipher.Length - 16);
+                using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read);
+                using var sr = new StreamReader(cs, Encoding.UTF8);
+                return sr.ReadToEnd();
+            }
+            catch
+            {
+                // 解密失败不抛异常，与 DesDecrypt 行为保持一致
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// SHA256 摘要，用于从密钥派生 AES 密钥
+        /// </summary>
+        private static byte[] Sha256Bytes(string key)
+        {
+            using var sha = SHA256.Create();
+            return sha.ComputeHash(Encoding.UTF8.GetBytes(key));
+        }
+
+        /// <summary>
         /// DES数据加密
+        /// <para>警告：DES（56位密钥）已被证明不安全，此方法仅为兼容历史持久化数据保留；新代码请使用 AesEncrypt</para>
         /// </summary>
         /// <param name="targetValue">目标字段</param>
         /// <returns>加密</returns>
@@ -371,6 +477,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// DES数据解密
+        /// <para>警告：DES（56位密钥）已被证明不安全，此方法仅为兼容历史持久化数据保留；新代码请使用 AesDecrypt</para>
         /// 20140219 吉日嘎拉 就是出错了，也不能让程序崩溃
         /// </summary>
         /// <param name="targetValue"></param>

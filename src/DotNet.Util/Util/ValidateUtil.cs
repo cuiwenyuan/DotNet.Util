@@ -284,15 +284,7 @@ namespace DotNet.Util
                 //加强判断 Troy.Cui 2016-07-02
                 if (!result)
                 {
-                    try
-                    {
-                        DateTime.Parse(expression);
-                        result = true;
-                    }
-                    catch
-                    {
-                        result = false;
-                    }
+                    result = DateTime.TryParse(expression, out _) || DateTime.TryParse(expression, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
                 }
             }
             return result;

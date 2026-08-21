@@ -1396,7 +1396,14 @@ namespace DotNet.Business
         {
             // 开始日期是无限大
             // 结束日期是无限大
-            return DateTime.Parse(smallDate) < DateTime.Parse(bigDate);
+            if (DateTime.TryParse(smallDate, out var smallDateTime) || DateTime.TryParse(smallDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out smallDateTime))
+            {
+                if (DateTime.TryParse(bigDate, out var bigDateTime) || DateTime.TryParse(bigDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out bigDateTime))
+                {
+                    return smallDateTime < bigDateTime;
+                }
+            }
+            return false;
         }
         #endregion
 

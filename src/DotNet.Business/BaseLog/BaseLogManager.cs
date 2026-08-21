@@ -201,8 +201,14 @@ namespace DotNet.Business
             }
             if (!beginDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
             {
-                beginDate = DateTime.Parse(beginDate).ToShortDateString();
-                endDate = DateTime.Parse(endDate).AddDays(1).ToShortDateString();
+                if (DateTime.TryParse(beginDate, out var beginDateTime) || DateTime.TryParse(beginDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out beginDateTime))
+                {
+                    beginDate = beginDateTime.ToShortDateString();
+                }
+                if (DateTime.TryParse(endDate, out var endDateTime) || DateTime.TryParse(endDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out endDateTime))
+                {
+                    endDate = endDateTime.AddDays(1).ToShortDateString();
+                }
             }
             // 注意安全问题
             if (userIds != null)

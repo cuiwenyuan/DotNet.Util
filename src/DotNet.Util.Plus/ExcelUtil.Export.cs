@@ -118,7 +118,7 @@ namespace DotNet.Util
                                 dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : dr[i]));
                                 break;
                             case "System.DateTime":
-                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : DateTime.TryParse(dr[i].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                 break;
                             case "System.Int16":
                             case "System.Int32":
@@ -152,7 +152,7 @@ namespace DotNet.Util
                                             );
                                         break;
                                     case "System.DateTime":
-                                        dataRow.CreateCell(j).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        dataRow.CreateCell(j).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : DateTime.TryParse(dr[field.Key].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                         break;
                                     case "System.Int16":
                                     case "System.Int32":
@@ -303,7 +303,7 @@ namespace DotNet.Util
                                     }
                                     break;
                                 case "System.DateTime":
-                                    dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                    dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : DateTime.TryParse(dr[i].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                     break;
                                 case "System.Int16":
                                 case "System.Int32":
@@ -375,7 +375,7 @@ namespace DotNet.Util
                                         }
                                         break;
                                     case "System.DateTime":
-                                        dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : DateTime.TryParse(dr[field.Key].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                         break;
                                     case "System.Int16":
                                     case "System.Int32":

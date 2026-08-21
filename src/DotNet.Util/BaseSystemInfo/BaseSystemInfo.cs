@@ -128,7 +128,7 @@ namespace DotNet.Util
         /// </summary>
         private static void CreateOpenId()
         {
-            Thread.Sleep(10000);
+            //修复：移除无意义的 10 秒硬编码延迟（前后无任何等待条件），OpenId 应立即获取，不再阻塞后台线程 10 秒
             var openId = string.Empty;
             var url = WebHost + @"/UserCenter/LogonService.ashx";
             //修复：WebClient 实现了 IDisposable，需释放避免句柄/连接泄漏

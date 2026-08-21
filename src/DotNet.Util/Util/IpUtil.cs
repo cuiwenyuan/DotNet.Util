@@ -130,7 +130,11 @@ namespace DotNet.Util
             var ips = ip.Split('.');
             
             var ipPrefixValue = ips[0].ToInt();
-            long ip2LongValue = BytesToLong(byte.Parse(ips[0]), byte.Parse(ips[1]), byte.Parse(ips[2]), byte.Parse(ips[3]));
+            if (!(byte.TryParse(ips[0], out var ipByte0) && byte.TryParse(ips[1], out var ipByte1) && byte.TryParse(ips[2], out var ipByte2) && byte.TryParse(ips[3], out var ipByte3)))
+            {
+                return new[] { "", "", "", "" };
+            }
+            long ip2LongValue = BytesToLong(ipByte0, ipByte1, ipByte2, ipByte3);
             var start = _index[ipPrefixValue];
             var maxCompLen = _offset - 1028;
             long indexOffset = -1;

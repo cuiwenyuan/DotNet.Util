@@ -125,7 +125,11 @@ namespace DotNet.Util
                             // 因为一般每一个对象负责自己内部成员的释放
                             disp.Dispose();
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            //修复：Dispose 不应向上抛异常（破坏 using 语义），但失败需记录日志
+                            LogUtil.WriteLog(ex, "Dispose 释放成员对象失败: " + item);
+                        }
                     }
                 }
             }
@@ -136,7 +140,11 @@ namespace DotNet.Util
                 {
                     disp2.Dispose();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    //修复：Dispose 不应向上抛异常（破坏 using 语义），但失败需记录日志
+                    LogUtil.WriteLog(ex, "Dispose 释放对象失败: " + obj);
+                }
             }
 
             return obj;

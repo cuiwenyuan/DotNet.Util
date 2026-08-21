@@ -147,7 +147,7 @@ namespace DotNet.Util
                     model.expires_in = accessToken.expires_in;
 
                     doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
-                    expirationTime = expirationTime.AddSeconds(int.Parse(model.expires_in));
+                    expirationTime = expirationTime.AddSeconds(int.TryParse(model.expires_in, out var expiresIn) ? expiresIn : 7200);
                     doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                     doc.Save(filePath);
                     token = model.access_token;

@@ -161,7 +161,11 @@ namespace DotNet.Business
                 // 当前日期
                 // string dateTime = DateTime.Now.ToString(BaseSystemInfo.DateFormat).ToString();
                 // loadDirectory = categoryId + "\\" + dateTime + "\\" + objectId;
-                loadDirectory = categoryId + "\\" + objectId;
+                //修复：categoryId/objectId 可能来自用户输入，消毒后再拼目录，防 ..\ 目录穿越
+                var safeCategoryId = SanitizePathSegment(categoryId);
+                var safeObjectId = SanitizePathSegment(objectId);
+                loadDirectory = (safeCategoryId.IsNullOrEmpty() ? "Default" : safeCategoryId) + "\\" +
+                                (safeObjectId.IsNullOrEmpty() ? "Default" : safeObjectId);
             }
             // 需要创建的目录，图片放在这里，为了保存历史纪录，使用了当前日期做为目录
             var makeDirectory = rootPath + loadDirectory;
@@ -182,7 +186,8 @@ namespace DotNet.Business
             }
             else
             {
-                postedFileName = fileName;
+                //修复：fileName 参数同样可能含路径（..\），统一取纯文件名防目录穿越
+                postedFileName = Path.GetFileName(fileName);
             }
             // 图片重新指定，虚拟的路径
             // 这里还需要更新学生的最新照片
@@ -193,6 +198,32 @@ namespace DotNet.Business
             return fileUrl;
         }
         #endregion
+
+        /// <summary>
+        /// 消毒路径段：去除目录穿越（..\、../）与非法文件名字符，仅保留单个安全目录名
+        /// </summary>
+        /// <param name="value">原始输入</param>
+        /// <returns>安全目录名；输入非法时返回空串</returns>
+        private static string SanitizePathSegment(string value)
+        {
+            if (value.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+            // 只取最后一个路径段，去掉 ..\、../ 等前缀
+            var safe = Path.GetFileName(value);
+            if (safe.IsNullOrEmpty() || safe == "." || safe == "..")
+            {
+                return string.Empty;
+            }
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sb = new System.Text.StringBuilder(safe.Length);
+            foreach (var c in safe)
+            {
+                sb.Append(Array.IndexOf(invalidChars, c) >= 0 ? '_' : c);
+            }
+            return sb.ToString();
+        }
 
         #region public static string UpLoadFile(string categoryId, string objectId, string loadDirectory, bool deleteFile) 上传文件
         /// <summary>

@@ -381,7 +381,19 @@ namespace DotNet.Util
         {
             try
             {
-                var fileName = sheetName + "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".xls"; // 文件名称
+                //修复：sheetName 可能含路径分隔符/非法文件名字符（甚至 ..\），生成文件名与工作表名前先消毒
+                var safeSheetName = string.IsNullOrEmpty(sheetName) ? "Sheet" : sheetName;
+                var invalidFileNameChars = Path.GetInvalidFileNameChars();
+                foreach (var c in invalidFileNameChars)
+                {
+                    safeSheetName = safeSheetName.Replace(c, '_');
+                }
+                safeSheetName = safeSheetName.Replace("..", "_"); // 防目录穿越
+                if (string.IsNullOrEmpty(safeSheetName))
+                {
+                    safeSheetName = "Sheet";
+                }
+                var fileName = safeSheetName + "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".xls"; // 文件名称
                 var urlPath = "UpFiles/ExcelFiles/" + fileName; // 文件下载的URL地址，供给前台下载
                 var filePath = HttpContext.Current.Server.MapPath("\\" + urlPath); // 文件路径
 
@@ -394,7 +406,7 @@ namespace DotNet.Util
 
                 // 2.解析单元格头部，设置单元头的中文名称
                 var workbook = new HSSFWorkbook(); // 工作簿
-                var sheet = workbook.CreateSheet(sheetName); // 工作表
+                var sheet = workbook.CreateSheet(safeSheetName); // 工作表
                 var row = sheet.CreateRow(0);
                 var keys = cellHeader.Keys.ToList();
                 for (var i = 0; i < keys.Count; i++)
@@ -650,7 +662,16 @@ namespace DotNet.Util
         {
             try
             {
-                var fileName = file.FileName.Insert(file.FileName.LastIndexOf('.'), "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                //修复：file.FileName 为客户端可控，先用 Path.GetFileName 去除路径（防 ..\ 目录穿越），
+                //再基于文件名主干安全插入时间戳；无扩展名时不再抛 ArgumentOutOfRangeException
+                var originalFileName = Path.GetFileName(file.FileName);
+                if (string.IsNullOrEmpty(originalFileName))
+                {
+                    return string.Empty;
+                }
+                var extension = Path.GetExtension(originalFileName);
+                var baseName = Path.GetFileNameWithoutExtension(originalFileName);
+                var fileName = baseName + "-" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extension;
                 var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/UpFiles/ExcelFiles"), fileName);
                 var directoryName = Path.GetDirectoryName(filePath);
                 if (directoryName != null && !Directory.Exists(directoryName))
