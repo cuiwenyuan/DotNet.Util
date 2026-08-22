@@ -657,13 +657,25 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName, string encoding = "gb2312")
         {
-            //var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
-            var sr = new StreamReader(fileName, Encoding.GetEncoding(encoding));
-            var message = sr.ReadToEnd();
-            // 及时关闭
-            sr.Close();
-
-            return message;
+            //修复：.NET Core 默认不支持 gb2312（需注册 CodePagesEncodingProvider）；sr 用 using 确保释放
+            Encoding enc;
+            try
+            {
+#if NET46_OR_GREATER
+                // .NET Framework 原生支持 GB2312
+                enc = Encoding.GetEncoding(encoding);
+#else
+                // .NET Core 需注册 CodePagesEncodingProvider 后获取
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                enc = Encoding.GetEncoding(encoding);
+#endif
+            }
+            catch (Exception)
+            {
+                enc = Encoding.UTF8; // 获取失败兜底，避免崩溃
+            }
+            using var sr = new StreamReader(fileName, enc);
+            return sr.ReadToEnd();
         }
         #endregion
     }

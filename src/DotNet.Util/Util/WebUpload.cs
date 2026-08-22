@@ -285,7 +285,8 @@ namespace DotNet.Util
         /// <returns>上传后的路径</returns>
         public string RemoteSaveAs(string fileUri)
         {
-            var client = new WebClient();
+            //修复：using 确保异常路径也释放 WebClient（原 client.Dispose() 在 catch 的 early-return 之后不会执行）
+            using var client = new WebClient();
             var fileExt = string.Empty; //文件扩展名，不含“.”
             if (fileUri.LastIndexOf(".", StringComparison.Ordinal) == -1)
             {
@@ -326,11 +327,12 @@ namespace DotNet.Util
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                //修复：记录日志而非静默吞掉（原裸 catch 会吞掉下载失败等异常）
+                LogUtil.WriteLog(ex, "RemoteSaveAs 下载远程文件失败: " + fileUri);
                 return string.Empty;
             }
-            client.Dispose();
             return newFilePath;
         }
 

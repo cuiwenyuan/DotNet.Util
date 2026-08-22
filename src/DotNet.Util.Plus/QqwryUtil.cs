@@ -121,7 +121,8 @@ namespace DotNet.Util
             {
             }
 
-            if (i > 0) return Encoding.Default.GetString(buf.ToArray(), 0, i);
+            //修复：纯真 IP 库地区名为 GBK 编码，显式使用 GBK（原 Encoding.Default 在 .NET Core 上是 UTF-8，会乱码）
+            if (i > 0) return Utils.GbkEncoding.GetString(buf.ToArray(), 0, i);
             else return "";
         }
 

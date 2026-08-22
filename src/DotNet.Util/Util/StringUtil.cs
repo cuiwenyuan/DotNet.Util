@@ -431,15 +431,15 @@ namespace DotNet.Util
             for (var i = 0; i < inputString.Length; i++)
             {
                 var ch = inputString[i];
-                //非 ASCII 字符按 2 个宽度计
-                tempLen += ch > 255 ? 2 : 1;
+                //非 ASCII 字符按 3 个宽度计（UTF-8）
+                tempLen += ch > 255 ? 3 : 1;
                 tempString += ch;
                 if (tempLen > len)
                     break;
             }
 
             //如果截过则加上半个省略号
-            var mybyte = Encoding.Default.GetBytes(inputString);
+            var mybyte = Encoding.UTF8.GetBytes(inputString);
             if (mybyte.Length > len)
                 tempString += "..";
             return tempString;

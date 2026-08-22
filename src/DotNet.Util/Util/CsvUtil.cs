@@ -415,8 +415,9 @@ namespace DotNet.Util
         public static DataTable ToDataTable(string fileName, string separator = ",", bool firstLineIsHeader = false, Encoding encoding = null, Dictionary<string, string> fieldList = null, bool fieldListOnly = false)
         {
             var dt = new DataTable();
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var sr = new StreamReader(fs, encoding ?? EncodingUtil.Detect(fs));
+            //修复：使用 using 确保异常路径也释放文件句柄（原 Close 在方法尾、无 try/finally 保护）
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            using var sr = new StreamReader(fs, encoding ?? EncodingUtil.Detect(fs));
             //记录每次读取的一行记录
             var line = "";
             //记录每行记录中的各字段内容
@@ -541,8 +542,6 @@ namespace DotNet.Util
                 }
             }
 
-            sr.Close();
-            fs.Close();
             return dt;
         }
         #endregion

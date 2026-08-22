@@ -289,7 +289,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void SendByThread(string to, string title, string body, int port = 25)
         {
-            new Thread(new ThreadStart(delegate ()
+            //修复：new Thread 每次调用创建新线程（高并发线程风暴），改用线程池 Task.Run
+            System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
@@ -324,8 +325,7 @@ namespace DotNet.Util
                 {
                     LogUtil.WriteException(ex);
                 }
-
-            })).Start();
+            });
         }
     }
 }

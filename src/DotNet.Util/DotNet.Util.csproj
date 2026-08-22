@@ -84,6 +84,7 @@
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Drawing.Common" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Management" Version="$(SystemVersion)" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>

@@ -37,12 +37,12 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 返回字符串真实长度, 1个汉字长度为2
+        /// 返回字符串真实长度, 1个汉字长度为3（UTF-8）
         /// </summary>
         /// <returns>字符长度</returns>
         public static int GetStringLength(string str)
         {
-            return Encoding.Default.GetBytes(str).Length;
+            return Encoding.UTF8.GetBytes(str).Length;
         }
         /// <summary>
         /// 是否是压缩
@@ -339,7 +339,7 @@ namespace DotNet.Util
         {
             str = str.TrimEnd();
             var result = string.Empty;// 最终返回的结果
-            var byteLen = Encoding.Default.GetByteCount(str);// 单字节字符长度
+            var byteLen = Encoding.UTF8.GetByteCount(str);// 单字节字符长度（UTF-8，中文3字节）
             var charLen = str.Length;// 把字符平等对待时的字符串长度
             var byteCount = 0;// 记录读取进度
             var pos = 0;// 记录截取位置
@@ -347,8 +347,8 @@ namespace DotNet.Util
             {
                 for (var i = 0; i < charLen; i++)
                 {
-                    if (Convert.ToInt32(str.ToCharArray()[i]) > 255)// 按中文字符计算加2
-                        byteCount += 2;
+                    if (Convert.ToInt32(str.ToCharArray()[i]) > 255)// 按中文字符计算加3（UTF-8）
+                        byteCount += 3;
                     else// 按英文字符计算加1
                         byteCount += 1;
                     if (byteCount > len)// 超出时只记下上一个有效位置
@@ -407,7 +407,7 @@ namespace DotNet.Util
 
             if (pLength >= 0)
             {
-                var bsSrcString = Encoding.Default.GetBytes(pSrcString);
+                var bsSrcString = Encoding.UTF8.GetBytes(pSrcString);
 
                 //当字符串长度大于起始位置
                 if (bsSrcString.Length > pStartIndex)
@@ -458,7 +458,7 @@ namespace DotNet.Util
 
                     Array.Copy(bsSrcString, pStartIndex, bsResult, 0, nRealLength);
 
-                    myResult = Encoding.Default.GetString(bsResult);
+                    myResult = Encoding.UTF8.GetString(bsResult);
                     myResult = myResult + pTailString;
                 }
             }
@@ -782,7 +782,7 @@ namespace DotNet.Util
             {
                 fs = File.Create(page.Server.MapPath("") + "\\" + outpath);
             }
-            var bt = Encoding.Default.GetBytes(writer.ToString());
+            var bt = Encoding.UTF8.GetBytes(writer.ToString());
             fs.Write(bt, 0, bt.Length);
             fs.Close();
         }
@@ -1801,11 +1801,12 @@ namespace DotNet.Util
             {
                 var request = WebRequest.Create(url);
                 request.Timeout = 20000;//20秒超时
-                var response = request.GetResponse();
-
-                var resStream = response.GetResponseStream();
-                var sr = new StreamReader(resStream);
-                return sr.ReadToEnd();
+                //修复：使用 using 确保 response/响应流在异常路径也释放（原实现 response/resStream/sr 均未释放）
+                using (var response = request.GetResponse())
+                using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                {
+                    return sr.ReadToEnd();
+                }
             }
             catch (Exception ex)
             {
@@ -2356,6 +2357,30 @@ namespace DotNet.Util
         }
         #endregion
 #endif
+
+        /// <summary>
+        /// GB2312/GBK 编码（兼容 .NET Framework 与 .NET Core；Core 下自动注册 CodePagesEncodingProvider）
+        /// </summary>
+        public static readonly Encoding GbkEncoding = CreateGbkEncoding();
+
+        private static Encoding CreateGbkEncoding()
+        {
+            try
+            {
+#if NET46_OR_GREATER
+                // .NET Framework 原生支持 GB2312
+                return Encoding.GetEncoding("gb2312");
+#else
+                // .NET Core 默认不支持 gb2312，需注册 CodePagesEncodingProvider
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                return Encoding.GetEncoding("gb2312");
+#endif
+            }
+            catch (Exception)
+            {
+                return Encoding.UTF8; // 获取失败兜底，避免崩溃
+            }
+        }
 
         /// <summary>
         /// 推荐使用的获取IP方式

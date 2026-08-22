@@ -58,9 +58,11 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -208,9 +210,11 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -267,9 +271,11 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)

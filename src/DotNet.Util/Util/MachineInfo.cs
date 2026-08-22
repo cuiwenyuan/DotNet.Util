@@ -335,7 +335,7 @@ namespace DotNet.Util
                 var webRequest = WebRequest.Create(uri);
                 using (var stream = webRequest.GetResponse().GetResponseStream())
                 {
-                    var sr = new System.IO.StreamReader(stream, System.Text.Encoding.Default);
+                    var sr = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
                     result = sr.ReadToEnd();
                 }
             }

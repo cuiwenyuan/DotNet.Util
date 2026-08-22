@@ -984,7 +984,8 @@ namespace DotNet.Business
 
             //UpdateVisitTimeTask(userLogonEntity, openId, createOpenId);
             // 抛出一个线程
-            new Thread(UpdateVisitTimeTask).Start(new Tuple<BaseUserLogonEntity, string, bool>(userLogonEntity, openId, createOpenId));
+            //修复：new Thread 每次调用创建新线程（高并发线程风暴），改用线程池 Task.Run
+            System.Threading.Tasks.Task.Run(() => UpdateVisitTimeTask(new Tuple<BaseUserLogonEntity, string, bool>(userLogonEntity, openId, createOpenId)));
 
             return openId;
         }

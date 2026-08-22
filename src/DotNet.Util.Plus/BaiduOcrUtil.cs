@@ -117,7 +117,7 @@ namespace DotNet.Util
         {
             var token = GetAccessToken();
             var host = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + token;
-            var encoding = Encoding.Default;
+            var encoding = Encoding.UTF8;
             var request = (HttpWebRequest)WebRequest.Create(host);
             request.Method = "post";
             request.KeepAlive = true;
@@ -144,7 +144,7 @@ namespace DotNet.Util
         {
             var token = GetAccessToken();
             var host = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=" + token;
-            var encoding = Encoding.Default;
+            var encoding = Encoding.UTF8;
             var request = (HttpWebRequest)WebRequest.Create(host);
             request.Method = "post";
             request.KeepAlive = true;

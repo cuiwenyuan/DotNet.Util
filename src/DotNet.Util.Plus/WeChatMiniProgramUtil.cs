@@ -222,7 +222,7 @@ namespace DotNet.Util
                            }
                            else
                            {
-                               LogUtil.WriteLog(Encoding.Default.GetString(data), "QRCode");
+                               LogUtil.WriteLog(Encoding.UTF8.GetString(data), "QRCode");
                            }
 
                        }).Wait(5000);

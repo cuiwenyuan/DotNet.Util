@@ -292,7 +292,7 @@ namespace DotNet.Util
                 try
                 {
                     using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (var sr = new StreamReader(fs, Encoding.Default))
+                    using (var sr = new StreamReader(fs, Encoding.UTF8))
                     {
                         result = sr.ReadToEnd();
                     }

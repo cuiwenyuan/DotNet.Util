@@ -227,7 +227,8 @@ namespace DotNet.Util
                         // 如果输入的是汉字
                         if (reg.IsMatch(mChar[j].ToString()))
                         {
-                            arr = System.Text.Encoding.Default.GetBytes(mChar[j].ToString());
+                            //修复：拼音依赖 GBK 双字节区位码，显式 GBK（Encoding.Default 在 .NET Core 上是 UTF-8，拼音将全错）
+                            arr = Utils.GbkEncoding.GetBytes(mChar[j].ToString());
                             m1 = (short)(arr[0]);
                             m2 = (short)(arr[1]);
                             asc = m1 * 256 + m2 - 65536;

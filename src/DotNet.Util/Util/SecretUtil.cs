@@ -444,7 +444,8 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             //修复：使用 using 释放 DES/MemoryStream/CryptoStream
             using var des = new DESCryptoServiceProvider();
-            var inputByteArray = Encoding.Default.GetBytes(targetValue);
+            //修复：显式 UTF-8（原 Encoding.Default 依赖系统代码页，Framework=ANSI/GBK、Core=UTF-8，跨运行时密文不一致）
+            var inputByteArray = Encoding.UTF8.GetBytes(targetValue);
             //通过两次哈希密码设置对称算法的初始化向量
             var keyHash = Sha1(Md5(key).Substring(0, 8));
             //通过两次哈希密码设置算法的机密密钥
@@ -522,7 +523,17 @@ namespace DotNet.Util
                     cs.Write(inputByteArray, 0, inputByteArray.Length);
                     cs.FlushFinalBlock();
                 }
-                return Encoding.Default.GetString(ms.ToArray());
+                //修复：先按 UTF-8 严格解码（新密文），失败回退 GBK（旧密文为 .NET Framework 时代 Encoding.Default=GBK 加密）
+                var plainBytes = ms.ToArray();
+                try
+                {
+                    var utf8Strict = new UTF8Encoding(false, true); // throwOnInvalidBytes
+                    return utf8Strict.GetString(plainBytes);
+                }
+                catch (DecoderFallbackException)
+                {
+                    return Utils.GbkEncoding.GetString(plainBytes);
+                }
             }
             catch (Exception ex)
             {
