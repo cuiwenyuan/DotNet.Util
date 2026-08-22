@@ -510,8 +510,8 @@ namespace DotNet.Util
             //WeekStart
             //1表示 周一至周日 为一周
             //2表示 周日至周六 为一周
-            DateTime FirstofMonth;
-            FirstofMonth = Convert.ToDateTime(day.Date.Year + "-" + day.Date.Month + "-" + 1);
+            //修复：直接用 new DateTime 构造，避免字符串解析的依赖与开销
+            var FirstofMonth = new DateTime(day.Year, day.Month, 1);
 
             var i = (int)FirstofMonth.Date.DayOfWeek;
             if (i == 0)

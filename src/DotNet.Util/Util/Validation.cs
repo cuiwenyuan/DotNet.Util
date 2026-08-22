@@ -1,4 +1,5 @@
-﻿﻿using System.Text.RegularExpressions;
+﻿﻿using System;
+using System.Text.RegularExpressions;
 using System.IO;
 
 namespace DotNet.Util
@@ -128,7 +129,7 @@ namespace DotNet.Util
             email = email.Trim();
             const string regexString =
                 @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
-            var regex = new Regex(regexString);
+            var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
             return regex.IsMatch(email);
         }
 
@@ -140,7 +141,7 @@ namespace DotNet.Util
         public static bool IsMobile(string mobile)
         {
             var format = @"^(13[0-9]{9}|15[012356789][0-9]{8}|18[0256789][0-9]{8}|147[0-9]{8})$";
-            return Regex.IsMatch(mobile, format);
+            return Regex.IsMatch(mobile, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace DotNet.Util
         {
             // 6-20位
             var format = @"^\S{6,20}$";
-            return Regex.IsMatch(password, format);
+            return Regex.IsMatch(password, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace DotNet.Util
             // \W 匹配任意不是字母，数字，下划线，汉字的字符
             // \S 匹配任意不是空白符的字符
             var format = @"^\S{1,30}$";
-            return Regex.IsMatch(loginName, format);
+            return Regex.IsMatch(loginName, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 
         /// <summary>
@@ -179,7 +180,7 @@ namespace DotNet.Util
         {
             // 最多10位
             var format = @"^[1-9]*[1-9][0-9]*$";
-            return Regex.IsMatch(qq, format);
+            return Regex.IsMatch(qq, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
     }
 }

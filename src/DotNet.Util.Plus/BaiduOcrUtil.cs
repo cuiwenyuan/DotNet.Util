@@ -75,7 +75,6 @@ namespace DotNet.Util
                     expirationTime = DateTime.Now;
 
                     var authHost = "https://aip.baidubce.com/oauth/2.0/token";
-                    var client = new HttpClient();
                     var paraList = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("grant_type", "client_credentials"),
@@ -83,21 +82,24 @@ namespace DotNet.Util
                         new KeyValuePair<string, string>("client_secret", clientSecret)
                     };
 
-                    // 修复：同步方法中阻塞异步调用，使用 ConfigureAwait(false)+GetAwaiter().GetResult() 避免 ASP.NET 同步上下文死锁
-                    var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).ConfigureAwait(false).GetAwaiter().GetResult();
-                    var returnContent = response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                    // 修复：同步方法中阻塞异步调用，使用 ConfigureAwait(false)+GetAwaiter().GetResult() 避免 ASP.NET 同步上下文死锁；using 释放 HttpClient 与响应，避免正常路径泄漏
+                    using (var client = new HttpClient())
+                    using (var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).ConfigureAwait(false).GetAwaiter().GetResult())
+                    {
+                        var returnContent = response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
-                    var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
+                        var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
 
-                    var model = new AccessToken();
-                    model.access_token = accessToken.access_token;
-                    model.expires_in = accessToken.expires_in;
+                        var model = new AccessToken();
+                        model.access_token = accessToken.access_token;
+                        model.expires_in = accessToken.expires_in;
 
-                    doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
-                    expirationTime = expirationTime.AddSeconds(int.TryParse(model.expires_in, out var expiresIn) ? expiresIn : 2592000);
-                    doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                    doc.Save(filePath);
-                    token = model.access_token;
+                        doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
+                        expirationTime = expirationTime.AddSeconds(int.TryParse(model.expires_in, out var expiresIn) ? expiresIn : 2592000);
+                        doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                        doc.Save(filePath);
+                        token = model.access_token;
+                    }
 
                 }
             }

@@ -289,7 +289,8 @@ namespace DotNet.Util
             return Convert.ToString(intValue);
         }
         /// <summary>
-        /// MD5函数
+        /// MD5函数（注意：MD5 已被证明不安全，仅适用于校验和等非安全场景；
+        /// 口令等敏感数据请勿使用，建议使用 SecretUtil（加盐）或 SHA256）
         /// </summary>
         /// <param name="str">原始字符串</param>
         /// <returns>MD5结果</returns>
@@ -630,11 +631,12 @@ namespace DotNet.Util
             if (datetimestr.Equals(""))
                 return replacestr;
 
-            try
+            //修复：使用 DateTime.TryParse 替代 Convert.ToDateTime + try/catch 静默吞异常
+            if (DateTime.TryParse(datetimestr, out var dt))
             {
-                datetimestr = Convert.ToDateTime(datetimestr).ToString("yyyy-MM-dd").Replace("1900-01-01", replacestr);
+                datetimestr = dt.ToString("yyyy-MM-dd").Replace("1900-01-01", replacestr);
             }
-            catch
+            else
             {
                 return replacestr;
             }
@@ -1202,13 +1204,15 @@ namespace DotNet.Util
             {
                 if (subFiles[j].Extension.ToLower().Equals(".htm"))
                 {
-                    var fs = new FileStream(subFiles[j].FullName, FileMode.Open, FileAccess.Read);
-                    var bUtf8 = IsUtf8(fs);
-                    fs.Close();
-                    if (!bUtf8)
+                    //修复：使用 using 确保 FileStream 在异常路径也释放
+                    using (var fs = new FileStream(subFiles[j].FullName, FileMode.Open, FileAccess.Read))
                     {
-                        sb.Append(subFiles[j].FullName);
-                        sb.Append("\r\n");
+                        var bUtf8 = IsUtf8(fs);
+                        if (!bUtf8)
+                        {
+                            sb.Append(subFiles[j].FullName);
+                            sb.Append("\r\n");
+                        }
                     }
                 }
             }
@@ -2257,22 +2261,24 @@ namespace DotNet.Util
             request.Timeout = 15000;
             request.AllowAutoRedirect = false;
 
-            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                sw = new StreamWriter(request.GetRequestStream());
-                sw.Write(param);
-                sw.Close();
+                //修复：使用 using 确保 StreamWriter/StreamReader 在异常路径也释放
+                using (var sw = new StreamWriter(request.GetRequestStream()))
+                {
+                    sw.Write(param);
+                }
 
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -2282,7 +2288,6 @@ namespace DotNet.Util
             finally
             {
                 request = null;
-                sw = null;
                 response = null;
             }
 
@@ -2312,9 +2317,11 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)

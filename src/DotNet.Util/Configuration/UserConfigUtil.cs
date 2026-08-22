@@ -470,7 +470,11 @@ namespace DotNet.Util
             }
             if (Exists("Port"))
             {
-                int.TryParse(GetValue(_xmlDocument, "Port"), out BaseSystemInfo.Port);
+                var portValue = GetValue(_xmlDocument, "Port");
+                if (!int.TryParse(portValue, out BaseSystemInfo.Port))
+                {
+                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：Port=" + portValue + "，已使用默认值。");
+                }
             }
             if (Exists("MobileHost"))
             {
@@ -745,11 +749,19 @@ namespace DotNet.Util
             }
             if (Exists("OnlineLimit"))
             {
-                int.TryParse(GetValue(_xmlDocument, "OnlineLimit"), out BaseSystemInfo.OnlineLimit);
+                var onlineLimitValue = GetValue(_xmlDocument, "OnlineLimit");
+                if (!int.TryParse(onlineLimitValue, out BaseSystemInfo.OnlineLimit))
+                {
+                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：OnlineLimit=" + onlineLimitValue + "，已使用默认值。");
+                }
             }
             if (Exists("SlowQueryMilliseconds"))
             {
-                int.TryParse(GetValue(_xmlDocument, "SlowQueryMilliseconds"), out BaseSystemInfo.SlowQueryMilliseconds);
+                var slowQueryValue = GetValue(_xmlDocument, "SlowQueryMilliseconds");
+                if (!int.TryParse(slowQueryValue, out BaseSystemInfo.SlowQueryMilliseconds))
+                {
+                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：SlowQueryMilliseconds=" + slowQueryValue + "，已使用默认值。");
+                }
             }
             if (Exists("UserCenterDbType"))
             {

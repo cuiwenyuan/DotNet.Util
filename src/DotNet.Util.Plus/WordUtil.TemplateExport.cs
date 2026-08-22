@@ -201,7 +201,7 @@ namespace DotNet.Util
                     //不含有占位符
                     var first_cell_text = tmplRowCells[0].GetText();
                     string regEx = @"\{.+?\}";
-                    Regex r = new Regex(regEx);
+                    Regex r = new Regex(regEx, RegexOptions.None, TimeSpan.FromSeconds(1));
                     var matched = r.IsMatch(first_cell_text);
                     if (!matched) continue;
 
@@ -275,7 +275,7 @@ namespace DotNet.Util
 
             //用正则判断段落里是否含有占位符
             string regEx = @"\{.+?\}";
-            Regex r = new Regex(regEx);
+            Regex r = new Regex(regEx, RegexOptions.None, TimeSpan.FromSeconds(1));
             var matched = r.IsMatch(paragraph.Text);
             if (!matched)
             {

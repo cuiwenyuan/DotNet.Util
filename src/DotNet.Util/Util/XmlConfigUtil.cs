@@ -94,7 +94,15 @@ namespace DotNet.Util
 
                 // 配置XML设置以防止XXE
                 _doc.XmlResolver = null;
-                _doc.Load(_fullName);
+                var settings = new XmlReaderSettings
+                {
+                    DtdProcessing = DtdProcessing.Prohibit,
+                    XmlResolver = null
+                };
+                using (var reader = XmlReader.Create(_fullName, settings))
+                {
+                    _doc.Load(reader);
+                }
             }
             finally
             {

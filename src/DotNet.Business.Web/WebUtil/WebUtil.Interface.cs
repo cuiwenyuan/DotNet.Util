@@ -27,17 +27,19 @@ namespace DotNet.Business
         /// <returns></returns>
         public static string BuildUrl(string url, string paramText, string paramValue)
         {
-            var reg = new Regex($"{paramText}=[^&]*", RegexOptions.IgnoreCase);
-            var reg1 = new Regex("[&]{2,}", RegexOptions.IgnoreCase);
+            //修复：paramText 需 Regex.Escape 防止参数名含正则元字符时替换失效；paramValue 需 URL 编码避免破坏 URL 结构；Regex 加超时防 ReDoS
+            var reg = new Regex($"{Regex.Escape(paramText)}=[^&]*", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
+            var reg1 = new Regex("[&]{2,}", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
             var _url = reg.Replace(url, "");
             //_url = reg1.Replace(_url, "");
+            var paramValueEncoded = Uri.EscapeDataString(paramValue ?? string.Empty);
             if (_url.IndexOf("?", StringComparison.Ordinal) == -1)
             {
-                _url += $"?{paramText}={paramValue}";//?
+                _url += $"?{paramText}={paramValueEncoded}";//?
             }
             else
             {
-                _url += $"&{paramText}={paramValue}";//&
+                _url += $"&{paramText}={paramValueEncoded}";//&
             }
             _url = reg1.Replace(_url, "&");
             _url = _url.Replace("?&", "?");

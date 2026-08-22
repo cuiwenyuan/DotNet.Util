@@ -157,7 +157,7 @@ namespace DotNet.Util
             }
             foreach (var key in keys)
             {
-                if (key != null && System.Text.RegularExpressions.Regex.IsMatch(key, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                if (key != null && System.Text.RegularExpressions.Regex.IsMatch(key, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
                 {
                     redisClient.Remove(key);
                 }

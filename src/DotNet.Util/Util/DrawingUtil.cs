@@ -15,7 +15,8 @@ namespace DotNet.Util
     public static class DrawingUtil
     {//颜色列表，用于验证码、噪线、噪点 
         private static readonly Color[] _colors = new[] { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
-        private static readonly Random _cryptoRandom = new Random();
+        // 仅用于验证码噪线/噪点坐标的普通随机数（验证码值本身由 RandomUtil 加密安全随机源生成）
+        private static readonly Random _noiseRandom = new Random();
 
         /// <summary>
         /// 绘制验证码图片，返回图片的字节数组
@@ -31,7 +32,7 @@ namespace DotNet.Util
             //字体
             var font = new Font("Times New Roman", 16);
 
-            var r = _cryptoRandom;
+            var r = _noiseRandom;
 
             var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
@@ -93,7 +94,7 @@ namespace DotNet.Util
             if (arr == null || !arr.Any())
                 return default(T);
 
-            var r = _cryptoRandom;
+            var r = _noiseRandom;
 
             return arr[r.Next(arr.Length)];
         }

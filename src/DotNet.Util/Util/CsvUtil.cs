@@ -328,11 +328,12 @@ namespace DotNet.Util
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataTable dt, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
         {
-            var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8);
-            sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
-            sw.Flush();
-            sw.Close();
-            sw.TryDispose();
+            //修复：使用 using 确保 StreamWriter 在异常路径也释放
+            using (var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8))
+            {
+                sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
+                sw.Flush();
+            }
         }
         #endregion
 
@@ -347,10 +348,12 @@ namespace DotNet.Util
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataSet dataSet, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
         {
-            var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8);
-            sw.WriteLine(GetCsvFormatData(dataSet, fieldList: fieldList, separator: separator).ToString());
-            sw.Flush();
-            sw.Close();
+            //修复：使用 using 确保 StreamWriter 在异常路径也释放
+            using (var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8))
+            {
+                sw.WriteLine(GetCsvFormatData(dataSet, fieldList: fieldList, separator: separator).ToString());
+                sw.Flush();
+            }
         }
         #endregion
 

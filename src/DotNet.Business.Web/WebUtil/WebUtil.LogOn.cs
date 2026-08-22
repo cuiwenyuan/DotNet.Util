@@ -559,23 +559,26 @@ namespace DotNet.Business
             if (useUserCenterHost)
             {
                 var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
-                var webClient = new WebClient();
-                var postValues = new NameValueCollection();
-                postValues.Add("function", "LogonByOpenId");
-                postValues.Add("userInfo", BaseSystemInfo.UserInfo.Serialize());
-                postValues.Add("systemCode", BaseSystemInfo.SystemCode);
-                // 若ip地址没有传递过来，就获取BS客户端ip地址
-                postValues.Add("ipAddress", Utils.GetIp());
-                // BS 登录容易引起混乱，
-                // postValues.Add("macAddress", BaseSystemInfo.UserInfo.MACAddress);
-                postValues.Add("securityKey", BaseSystemInfo.SecurityKey);
-                postValues.Add("openId", openId);
-                // 向服务器发送POST数据
-                var responseArray = webClient.UploadValues(url, postValues);
-                var response = Encoding.UTF8.GetString(responseArray);
-                if (!response.IsNullOrEmpty())
+                //修复：using 确保 WebClient 释放
+                using (var webClient = new WebClient())
                 {
-                    userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
+                    var postValues = new NameValueCollection();
+                    postValues.Add("function", "LogonByOpenId");
+                    postValues.Add("userInfo", BaseSystemInfo.UserInfo.Serialize());
+                    postValues.Add("systemCode", BaseSystemInfo.SystemCode);
+                    // 若ip地址没有传递过来，就获取BS客户端ip地址
+                    postValues.Add("ipAddress", Utils.GetIp());
+                    // BS 登录容易引起混乱，
+                    // postValues.Add("macAddress", BaseSystemInfo.UserInfo.MACAddress);
+                    postValues.Add("securityKey", BaseSystemInfo.SecurityKey);
+                    postValues.Add("openId", openId);
+                    // 向服务器发送POST数据
+                    var responseArray = webClient.UploadValues(url, postValues);
+                    var response = Encoding.UTF8.GetString(responseArray);
+                    if (!response.IsNullOrEmpty())
+                    {
+                        userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
+                    }
                 }
                 // 检查身份
                 if (userLogonResult != null && userLogonResult.Status == Status.Ok)

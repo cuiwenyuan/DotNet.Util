@@ -67,13 +67,13 @@ namespace DotNet.Util
             {
                 pattern = @"^([\da-f]{1,4}:){7}[\da-f]{1,4}$";
 
-                var regex = new Regex(pattern);
+                var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
                 return regex.IsMatch(ipAddress);
             }
             else
             {
                 pattern = @"^([\da-f]{1,4}:){0,5}::([\da-f]{1,4}:){0,5}[\da-f]{1,4}$";
-                var regex1 = new Regex(pattern);
+                var regex1 = new Regex(pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
                 return regex1.IsMatch(ipAddress);
             }
         }
@@ -150,7 +150,7 @@ namespace DotNet.Util
             var result = false;
             if (!string.IsNullOrWhiteSpace(expression))
             {
-                result = Regex.IsMatch(expression.Trim(), @"^[0-9]*$");
+                result = Regex.IsMatch(expression.Trim(), @"^[0-9]*$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -166,7 +166,7 @@ namespace DotNet.Util
             if (!string.IsNullOrWhiteSpace(expression))
             {
                 //修复：原正则 ^[1-9]*$ 不包含 0，导致 IsLong("10")/IsLong("0") 等返回 false
-                result = Regex.IsMatch(expression.Trim(), @"^[0-9]+$");
+                result = Regex.IsMatch(expression.Trim(), @"^[0-9]+$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -239,7 +239,7 @@ namespace DotNet.Util
             var result = false;
             if (expression != null)
             {
-                result = Regex.IsMatch(expression.ToString(), @"^[0-9]+(\.[0-9]+)?$");
+                result = Regex.IsMatch(expression.ToString(), @"^[0-9]+(\.[0-9]+)?$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -305,7 +305,7 @@ namespace DotNet.Util
                     @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
                 // const string regexString =
                 //    @"^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
-                var regex = new Regex(regexString);
+                var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
                 result = regex.IsMatch(email);
             }
             return result;
@@ -325,7 +325,7 @@ namespace DotNet.Util
             }
             else
             {
-                var regex = new Regex("[\\w-]+@([\\w-]+\\.)+[\\w-]+");
+                var regex = new Regex("[\\w-]+@([\\w-]+\\.)+[\\w-]+", RegexOptions.None, TimeSpan.FromSeconds(1));
                 if (!regex.IsMatch(email))
                 {
                     result = false;
@@ -351,7 +351,7 @@ namespace DotNet.Util
                 //根据最新号码段更新 https://www.qqzeng.com/article/phone.html 2021.07.22
                 //const string regexString = @"^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$";
                 const string regexString = @"^1(3[0-9]|4[56789]|5[0-35-9]|6[2567]|7[012345678]|8[0123456789]|9[1389])\d{8}$";
-                var regex = new Regex(regexString);
+                var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
                 result = regex.IsMatch(mobile);
             }
 
@@ -374,7 +374,7 @@ namespace DotNet.Util
             // 15位身份证（旧版）：6位地区码 + 6位出生日期YYMMDD + 3位顺序码
             if (idCard.Length == 15)
             {
-                if (!Regex.IsMatch(idCard, @"^\d{15}$"))
+                if (!Regex.IsMatch(idCard, @"^\d{15}$", RegexOptions.None, TimeSpan.FromSeconds(1)))
                 {
                     return false;
                 }
@@ -389,7 +389,7 @@ namespace DotNet.Util
             // 18位身份证（新版）：6位地区码 + 8位出生日期YYYYMMDD + 3位顺序码 + 1位校验码
             if (idCard.Length == 18)
             {
-                if (!Regex.IsMatch(idCard, @"^\d{17}[\dXx]$"))
+                if (!Regex.IsMatch(idCard, @"^\d{17}[\dXx]$", RegexOptions.None, TimeSpan.FromSeconds(1)))
                 {
                     return false;
                 }
@@ -588,7 +588,7 @@ namespace DotNet.Util
         {
             // 最多10位
             var format = @"^[1-9]*[1-9][0-9]*$";
-            return Regex.IsMatch(qq, format);
+            return Regex.IsMatch(qq, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 
         #region UPC-A
@@ -803,7 +803,7 @@ namespace DotNet.Util
             if (!plateNumber.IsNullOrEmpty() && plateNumber.Length == 7)
             {
                 const string pattern = @"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
-                result = Regex.IsMatch(plateNumber, pattern);
+                result = Regex.IsMatch(plateNumber, pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }

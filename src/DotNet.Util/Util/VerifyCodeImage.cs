@@ -377,20 +377,22 @@ namespace DotNet.Util
         {
             try
             {
-                var ms = new MemoryStream();
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                var arr = new byte[ms.Length];
-                ms.Position = 0;
-                // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
-                var vcBytesRead = 0;
-                while (vcBytesRead < arr.Length)
+                //修复：使用 using 确保 MemoryStream 在异常路径也释放
+                using (var ms = new MemoryStream())
                 {
-                    var n = ms.Read(arr, vcBytesRead, arr.Length - vcBytesRead);
-                    if (n == 0) break;
-                    vcBytesRead += n;
+                    bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    var arr = new byte[ms.Length];
+                    ms.Position = 0;
+                    // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                    var vcBytesRead = 0;
+                    while (vcBytesRead < arr.Length)
+                    {
+                        var n = ms.Read(arr, vcBytesRead, arr.Length - vcBytesRead);
+                        if (n == 0) break;
+                        vcBytesRead += n;
+                    }
+                    return Convert.ToBase64String(arr);
                 }
-                ms.Close();
-                return Convert.ToBase64String(arr);
             }
             catch (Exception ex)
             {
@@ -409,10 +411,15 @@ namespace DotNet.Util
             try
             {
                 var array = Convert.FromBase64String(inputStr);
-                var ms = new MemoryStream(array);
-                var bitmap = new Bitmap(ms);
-                ms.Close();
-                return bitmap;
+                //修复：复制为独立 Bitmap，避免返回依赖已关闭流的 Bitmap（GDI+ 隐患），同时 using 释放临时流
+                using (var ms = new MemoryStream(array))
+                {
+                    using (var temp = new Bitmap(ms))
+                    {
+                        var bitmap = new Bitmap(temp);
+                        return bitmap;
+                    }
+                }
             }
             catch (Exception ex)
             {

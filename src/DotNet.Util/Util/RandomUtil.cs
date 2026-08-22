@@ -81,17 +81,18 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetString(int length = 0)
         {
-            var result = string.Empty;
             if (length <= 0)
             {
                 length = RandomLength;
             }
+            //修复：用 StringBuilder 替代循环字符串拼接，避免 O(n²)
+            var result = new System.Text.StringBuilder(length);
             for (var i = 0; i < length; i++)
             {
                 var r = NextInt(0, _randomString.Length);
-                result += _randomString[r];
+                result.Append(_randomString[r]);
             }
-            return result;
+            return result.ToString();
         }
         #endregion
 
@@ -102,17 +103,18 @@ namespace DotNet.Util
         /// <returns>整数字符串</returns>
         public static string GetNumber(int length = 0)
         {
-            var result = string.Empty;
             if (length <= 0)
             {
                 length = RandomLength;
             }
+            //修复：用 StringBuilder 替代循环字符串拼接，避免 O(n²)
+            var result = new System.Text.StringBuilder(length);
             for (var i = 0; i < length; i++)
             {
                 var r = NextInt(0, _randomNumber.Length);
-                result += _randomNumber[r];
+                result.Append(_randomNumber[r]);
             }
-            return result;
+            return result.ToString();
         }
         #endregion
 
