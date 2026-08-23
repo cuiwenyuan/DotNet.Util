@@ -90,7 +90,8 @@ namespace DotNet.Util
             //向cacheKey对象插入项,使用此方法改写具有相同cacheKey的现有cacheKey项。
 #if NET46_OR_GREATER
             Cache.Insert(cacheKey, cacheValue);
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            //修复：原分支漏写 || NET5_0_OR_GREATER，导致 net5.0+（含 net8.0）下该方法体为空、Set 静默不生效
             Cache.Set(cacheKey, cacheValue);
 #endif
         }

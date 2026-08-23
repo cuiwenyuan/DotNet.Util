@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DotNet.Util
 {
@@ -149,14 +150,12 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string Capital(string numstr)
         {
-            try
-            {
-                return Capital(numstr.ToDecimal());
-            }
-            catch
+            //修复：原实现依赖 ToDecimal 抛异常（实际返回默认值 0 不抛），导致无效输入静默转换为"零元整"；改用 TryParse 显式校验
+            if (!decimal.TryParse(numstr, NumberStyles.Number, CultureInfo.InvariantCulture, out var num))
             {
                 return "非数字形式！";
             }
+            return Capital(num);
         }
     }
 }

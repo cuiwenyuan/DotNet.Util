@@ -94,6 +94,10 @@ namespace DotNet.Util
         static Encoding DetectInternal(Byte[] data)
         {
             Encoding encoding = null;
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            // 修复：.NET Core 默认不支持 GBK/GB2312（936 等 ANSI 代码页），需注册 CodePagesEncodingProvider 后 GetEncoding 才可用
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
             // 最笨的办法尝试
             var encs = new Encoding[] {
                 // 常用

@@ -87,10 +87,11 @@ namespace DotNet.Util
         /// </summary>
         /// <remarks>
         /// 修复：非扩展静态方法。原扩展方法会劫持 "x".Split() 无参调用（.NET 原生无此重载），
-        /// 静默改变行为，现改为显式调用 StringUtil.Split(value, separators)
+        /// 静默改变行为，现改为显式调用 StringUtil.Split(value, separators)。
+        /// 注意：不传分隔符时不拆分（NewLife 实现无默认分隔符）。
         /// </remarks>
         /// <param name="value">字符串</param>
-        /// <param name="separators">分组分隔符，默认逗号分号</param>
+        /// <param name="separators">分组分隔符，需显式传入，如 ";" 或 ","</param>
         /// <returns></returns>
         public static string[] Split(string value, params string[] separators)
         {
