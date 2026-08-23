@@ -83,7 +83,8 @@ namespace DotNet.Util
 
             var buf = returnResult ? ms.ToArray() : null;
 
-            Pool.MemoryStream.Return(ms);
+            //修复：归还到本类自定义池 PoolUtil.MemoryStream（原误用 NewLife 默认全局池 Pool.MemoryStream，导致自定义池策略失效）
+            PoolUtil.MemoryStream.Return(ms);
 
             return buf;
         }
