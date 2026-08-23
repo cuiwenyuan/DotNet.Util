@@ -35,7 +35,7 @@
 		<ExtensionsVersion>8.0.0</ExtensionsVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-		<ExtensionsVersion>9.0.9</ExtensionsVersion>
+		<ExtensionsVersion>10.0.11</ExtensionsVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -55,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NewLife.Redis" Version="6.3.2025.1001" />
+	  <PackageReference Include="NewLife.Redis" Version="6.6.2026.801" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -51,8 +51,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-		<PackageReference Include="System.ValueTuple" Version="4.6.1" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
+		<PackageReference Include="System.ValueTuple" Version="4.6.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net461'">
@@ -60,7 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
-		<PackageReference Include="System.ValueTuple" Version="4.6.1" />
+		<PackageReference Include="System.ValueTuple" Version="4.6.2" />
 	</ItemGroup>
 
 	<ItemGroup>

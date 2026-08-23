@@ -39,30 +39,37 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.3.4" />
+		<!--2.3.12：满足 Microsoft.AspNetCore.Http 2.3.12 对 Net.Http.Headers >= 2.3.11 的要求-->
+		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.3.12" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.3.4" />
+		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.3.12" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.20" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.9" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<!--10.0.11 仅支持 net10.0，net9.0 保持 9.0.9-->
+		<PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.11" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="NPOI" Version="2.7.5" />
-		<PackageReference Include="System.DirectoryServices" Version="9.0.9" />
+		<!--NPOI 2.8.0 起改为 OSMF EULA 商业许可，保持 Apache-2.0 免费版最高 2.7.6-->
+		<PackageReference Include="NPOI" Version="2.7.6" />
+		<PackageReference Include="System.DirectoryServices" Version="10.0.11" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0'">
-		<PackageReference Include="NPOI" Version="2.7.5" />
-		<PackageReference Include="System.DirectoryServices" Version="9.0.9" />
+		<PackageReference Include="NPOI" Version="2.7.6" />
+		<PackageReference Include="System.DirectoryServices" Version="10.0.11" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 	</ItemGroup>
 
@@ -80,7 +87,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net472' or '$(TargetFramework)'=='net48'">
-		<!--NPOI暂时不升级-->
+		<!--NPOI 2.7.6 的 net472 资产缺少 SetUnderline/CellType.Unknown 等 API（与 ns2.0/net8.0 资产不一致），故 net472/net48 保持 2.5.6-->
 		<PackageReference Include="NPOI" Version="2.5.6" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 	</ItemGroup>
