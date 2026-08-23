@@ -574,7 +574,7 @@ namespace DotNet.Util
                     {
                         if (arr[j].EndsWith("\""))
                         {
-                            txt = arr.Skip(i).Take(j - i + 1).Join(separator + "").Trim('\"');
+                            txt = StringUtil.Join(arr.Skip(i).Take(j - i + 1), separator + "").Trim('\"');
                             // 跳过去一大步
                             i = j;
                             break;

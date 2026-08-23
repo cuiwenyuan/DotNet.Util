@@ -67,7 +67,7 @@ namespace DotNet.Util
                 {
                     foreach (var skipFolder in skipFolders)
                     {
-                        var subFolders = file.Split("\\");
+                        var subFolders = StringUtil.Split(file, "\\");
                         foreach (var subFolder in subFolders)
                         {
                             if (subFolder.Equals(skipFolder, StringComparison.OrdinalIgnoreCase))

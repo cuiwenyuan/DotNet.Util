@@ -10,6 +10,7 @@ namespace DotNet.Util
     /// <summary>安全算法 - 来自NewLife</summary>
     /// <remarks>
     /// 文档 https://www.yuque.com/smartstone/nx/security_helper
+    /// 注意：本类扩展方法与 NewLife.Core 自带的同名扩展（NewLife 命名空间）签名一致；若调用方同时 using NewLife; 与 using DotNet.Util; 可能触发 CS0121 方法歧义，可用全限定名或按需去掉其中一个 using。
     /// </remarks>
     public static class SecurityUtil
     {

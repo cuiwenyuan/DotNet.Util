@@ -10,6 +10,7 @@ namespace DotNet.Util
     /// <summary>安全算法 - 来自NewLife</summary>
     /// <remarks>
     /// 文档 https://newlifex.com/core/utility 采用静态架构，允许外部重载工具类的各种实现System.DefaultConvert。 所有类型转换均支持默认值，默认值为该default(T)，在转换失败时返回默认值。
+    /// 注意：本类扩展方法与 NewLife.Core 自带的同名扩展（NewLife 命名空间）签名一致；若调用方同时 using NewLife; 与 using DotNet.Util; 可能触发 CS0121 方法歧义，可用全限定名或按需去掉其中一个 using。
     /// </remarks>
     public static class DataUtil
     {

@@ -85,10 +85,14 @@ namespace DotNet.Util
         /// <summary>
         /// 拆分字符串，过滤空格，无效时返回空数组
         /// </summary>
+        /// <remarks>
+        /// 修复：非扩展静态方法。原扩展方法会劫持 "x".Split() 无参调用（.NET 原生无此重载），
+        /// 静默改变行为，现改为显式调用 StringUtil.Split(value, separators)
+        /// </remarks>
         /// <param name="value">字符串</param>
         /// <param name="separators">分组分隔符，默认逗号分号</param>
         /// <returns></returns>
-        public static string[] Split(this string value, params string[] separators)
+        public static string[] Split(string value, params string[] separators)
         {
             return NewLife.StringHelper.Split(value, separators);
         }
@@ -100,10 +104,13 @@ namespace DotNet.Util
         /// <summary>
         /// 把一个列表组合成为一个字符串，默认逗号分隔
         /// </summary>
+        /// <remarks>
+        /// 修复：非扩展静态方法（同 Split，避免扩展劫持隐式行为）
+        /// </remarks>
         /// <param name="value">值</param>
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <returns></returns>
-        public static string Join(this IEnumerable value, string separator = ",")
+        public static string Join(IEnumerable value, string separator = ",")
         {
             return NewLife.StringHelper.Join(value, separator);
         }
@@ -116,7 +123,7 @@ namespace DotNet.Util
         /// <param name="separator">组合分隔符，默认逗号</param>
         /// <param name="func">把对象转为字符串的委托</param>
         /// <returns></returns>
-        public static string Join<T>(this IEnumerable<T> value, string separator = ",", Func<T, object> func = null)
+        public static string Join<T>(IEnumerable<T> value, string separator = ",", Func<T, object> func = null)
         {
             return NewLife.StringHelper.Join(value, separator, func);
         }
