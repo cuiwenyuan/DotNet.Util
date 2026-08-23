@@ -25,6 +25,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
     <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
+    <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
+    <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" />
   </ItemGroup>
 
 </Project>
