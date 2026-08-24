@@ -5,7 +5,6 @@
 using System;
 using System.Data;
 using System.IO;
-using System.Web;
 using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -33,8 +32,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WordUtil
     {
-#if NET46_OR_GREATER
-
+        //修复：解除 NET46_OR_GREATER 守卫——本类仅依赖 NPOI/System.IO（无 System.Web），net6+ 亦应可用
         //在NPOI中，每厘米对应的长度数值
         private const int NPOI_PICTURE_LENGTH_EVERY_CM = 360144;
 
@@ -478,7 +476,13 @@ namespace DotNet.Util
                                 tarR.IsItalic = srcR.IsItalic;
                                 tarR.IsCapitalized = srcR.IsCapitalized;
                                 tarR.SetColor(srcR.GetColor());
+#if NET6_0_OR_GREATER
+                                // NPOI 2.7.x（.NET Core / 5+）：XWPFRun.Underline 为可写属性（SetUnderline 方法已移除）
+                                tarR.Underline = srcR.Underline;
+#else
+                                // NPOI 2.5.x（.NET Framework）：Underline 为只读属性，使用 SetUnderline 方法
                                 tarR.SetUnderline(srcR.Underline);
+#endif
                                 tarR.CharacterSpacing = srcR.CharacterSpacing;
                             }
                         }
@@ -663,6 +667,5 @@ namespace DotNet.Util
             WPG
         }
         #endregion
-#endif
     }
 }

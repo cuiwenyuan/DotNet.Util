@@ -11,8 +11,10 @@ namespace DotNet.Util.Tests.Util
     {
         static SecretUtilTests()
         {
+#if NET8_0_OR_GREATER
             // .NET Core 需要注册 CodePagesEncodingProvider 才能使用 GBK 等代码页
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         }
 
         [Fact]

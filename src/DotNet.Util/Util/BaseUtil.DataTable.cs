@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -156,6 +157,9 @@ namespace DotNet.Util
         /// <returns>数据权限</returns>
         public static DataTable SetFilter(DataTable dt, string fieldName, string fieldValue, bool equals = false)
         {
+            // 先收集待删除行，避免在 foreach (dt.Rows) 枚举期间调用 dr.Delete()
+            // 触发 InvalidOperationException: Collection was modified; enumeration operation might not execute
+            var toDelete = new List<DataRow>();
             foreach (DataRow dr in dt.Rows)
             {
                 // 要求把相等的删除掉
@@ -165,14 +169,14 @@ namespace DotNet.Util
                     {
                         if ((dr[fieldName].ToString()).IsNullOrEmpty())
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                     else
                     {
                         if (dr[fieldName].ToString().Equals(fieldValue, StringComparison.OrdinalIgnoreCase))
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                 }
@@ -182,17 +186,21 @@ namespace DotNet.Util
                     {
                         if (!(dr[fieldName].ToString()).IsNullOrEmpty())
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                     else
                     {
                         if (!dr[fieldName].ToString().Equals(fieldValue, StringComparison.OrdinalIgnoreCase))
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                 }
+            }
+            foreach (var dr in toDelete)
+            {
+                dr.Delete();
             }
             dt.AcceptChanges();
             return dt;

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <!-- net48 目标用于覆盖 #if NET46_OR_GREATER 代码（CaptchaUtil/SessionUtil/ImageUtil/Utils 大段等 net8 不编译的部分） -->
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -10,23 +11,40 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <!-- net8.0：Test.Sdk 18.x + coverlet（覆盖率收集） -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageReference Include="coverlet.collector" Version="10.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
+  <!-- net48：Test.Sdk 16.11 自带完整 net462 testhost（17+/18+ 的 net462 资产为空占位，SDK 自带 testhost.net48.exe 有 0xC0000005 崩溃风险） -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
-    <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" />
-    <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
-    <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" />
+    <!-- net48 时只构建库的 net48 资产（避免旧 SDK 无法面向 net9/net10）；net8.0 用默认（引用 net8 资产） -->
+    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
+    <!-- net8.0 默认引用（多 TFM 库自动选 net8 资产） -->
+    <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" Condition="'$(TargetFramework)' != 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" Condition="'$(TargetFramework)' != 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" Condition="'$(TargetFramework)' != 'net48'" />
+    <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" Condition="'$(TargetFramework)' != 'net48'" />
   </ItemGroup>
 
 </Project>
