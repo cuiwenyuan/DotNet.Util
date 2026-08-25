@@ -32,7 +32,7 @@
 
 	<!-- 修复：net6.0/net7.0 不支持 Microsoft.Extensions.Caching.Memory 9.0.9（无对应 TFM 资产），按 TFM 条件引用兼容版本 -->
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
-		<ExtensionsVersion>8.0.0</ExtensionsVersion>
+		<ExtensionsVersion>8.0.1</ExtensionsVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
 		<ExtensionsVersion>10.0.11</ExtensionsVersion>

@@ -36,7 +36,7 @@
 	     故 net6/net7 的 Extensions 包须用 8.0.0（含 netstandard2.0 资产，兼容 net6/net7）；
 	     System.* 包无此约束，用 6.0.0（原生支持 net6.0）。 -->
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
-		<ExtensionsVersion>8.0.0</ExtensionsVersion>
+		<ExtensionsVersion>8.0.1</ExtensionsVersion>
 		<SystemVersion>8.0.30</SystemVersion>
 		<SystemVersionLegacy>8.0.0</SystemVersionLegacy>
 	</PropertyGroup>
