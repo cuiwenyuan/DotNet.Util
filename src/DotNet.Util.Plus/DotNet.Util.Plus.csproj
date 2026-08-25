@@ -28,7 +28,8 @@
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-	</PropertyGroup>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="logo.128.png" Pack="true" PackagePath="\" />
@@ -96,4 +97,7 @@
 		<ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

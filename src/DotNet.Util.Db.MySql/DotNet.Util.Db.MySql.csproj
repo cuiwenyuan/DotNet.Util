@@ -28,7 +28,8 @@
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-	</PropertyGroup>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,4 +72,7 @@
 		<ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

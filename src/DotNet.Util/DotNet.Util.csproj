@@ -28,7 +28,8 @@
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-	</PropertyGroup>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
 
 	<!-- 修复：net6.0/net7.0 不支持 Microsoft.Extensions.* 及 System.* 的 9.0.9 包（无对应 TFM 资产）。
 	     按 TFM 条件引用兼容版本，真正消除 NU1701 而非抑制。
@@ -102,4 +103,7 @@
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>
