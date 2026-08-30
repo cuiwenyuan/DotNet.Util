@@ -453,18 +453,19 @@ namespace DotNet.Util
                             var dc = new DataColumn(field.Value);
                             dt.Columns.Add(dc);
                             //映射CSV的字段列索引
-                            for (var i = 0; i < headColumnCount; i++)
+                            for (var i = 0; i < arr.Length; i++)
                             {
-                                if (ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, i);
+                                var columnIndex = i;
+                                if (ConvertColumnName(ReadSpecialCharacter(arr, ref i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, columnIndex);
                             }
                         }
                     }
                     else
                     {
                         //根据第一行实际列数，进行匹配映射来创建
-                        for (var i = 0; i < headColumnCount; i++)
+                        for (var i = 0; i < arr.Length; i++)
                         {
-                            var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList));
+                            var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, ref i, separator), fieldList: fieldList));
                             dt.Columns.Add(dc);
                         }
                     }
@@ -513,11 +514,14 @@ namespace DotNet.Util
                             var dr = dt.NewRow();
                             foreach (var d in dicFieldIndex)
                             {
-                                for (var j = 0; j < lineColumnCount; j++)
+                                for (var j = 0; j < arr.Length; j++)
                                 {
-                                    if (j == d.Value)
+                                    // 修复：必须始终取值以推进 j（合并字段时 j 会跳跃），否则后续索引错位
+                                    var columnIndex = j;
+                                    var cellValue = ReadSpecialCharacter(arr, ref j, separator);
+                                    if (columnIndex == d.Value)
                                     {
-                                        dr[d.Key] = ReadSpecialCharacter(arr, j, separator);
+                                        dr[d.Key] = cellValue;
                                     }
                                 }
                             }
@@ -530,9 +534,11 @@ namespace DotNet.Util
                         if (lineColumnCount == headColumnCount)
                         {
                             var dr = dt.NewRow();
-                            for (var j = 0; j < lineColumnCount; j++)
+                            // 修复：j 是 arr(拆分后)索引，合并字段时会跳跃，列索引必须独立计数
+                            var columnIndex = 0;
+                            for (var j = 0; j < arr.Length && columnIndex < lineColumnCount; j++)
                             {
-                                dr[j] = ReadSpecialCharacter(arr, j, separator);
+                                dr[columnIndex++] = ReadSpecialCharacter(arr, ref j, separator);
                             }
                             dt.Rows.Add(dr);
                         }
@@ -557,7 +563,7 @@ namespace DotNet.Util
         /// <param name="i"></param>
         /// <param name="separator"></param>
         /// <returns></returns>
-        private static string ReadSpecialCharacter(string[] arr, int i, string separator)
+        private static string ReadSpecialCharacter(string[] arr, ref int i, string separator)
         {
             var str = (arr[i] + "").Trim();
             if (str.StartsWith("\""))
@@ -619,8 +625,9 @@ namespace DotNet.Util
                             {
                                 //txt = arr.Skip(i).Take(j - i + 1).Join(separator + "").Trim('\"');
                                 // 跳过去一大步
-                                i = j;
+                                // 修复：先按合并前的 i 计算跳过的项数，再推进 i（原顺序颠倒导致 j-i 恒为 0，列数合并失效）
                                 result -= (j - i);
+                                i = j;
                                 break;
                             }
                         }

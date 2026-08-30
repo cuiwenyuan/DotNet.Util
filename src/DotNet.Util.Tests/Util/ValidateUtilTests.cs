@@ -88,5 +88,46 @@ namespace DotNet.Util.Tests.Util
             Assert.False(ValidateUtil.IsUserName("ab")); // 小于 3 位
             Assert.False(ValidateUtil.IsUserName("名字带中文"));
         }
+
+        [Theory]
+        [InlineData("192.168.1.1", true)]
+        [InlineData("0.0.0.0", true)] // 修复：原正则误判为 false
+        [InlineData("0.1.2.3", true)] // 修复：首段 0 原正则不支持
+        [InlineData("255.255.255.255", true)]
+        [InlineData("127.0.0.1", true)]
+        [InlineData("256.1.1.1", false)] // 超出 255
+        [InlineData("1.2.3", false)] // 不足 4 段
+        [InlineData("abc", false)]
+        [InlineData("", false)]
+        [InlineData("::1", false)] // IPv6 不是 IPv4（严格判定，不再回退 IsIpv6）
+        [InlineData("2001:db8::ff00:42:8329", false)]
+        public void IsIpv4_ReturnsExpected(string input, bool expected)
+        {
+            Assert.Equal(expected, ValidateUtil.IsIpv4(input));
+        }
+
+        [Fact]
+        public void IsIpv4_Null_DoesNotThrow()
+        {
+            // 修复：原实现 match.IsMatch(null) 会抛 ArgumentNullException
+            Assert.False(ValidateUtil.IsIpv4(null));
+        }
+
+        [Theory]
+        [InlineData("2001:0db8:85a3:0000:0000:8a2e:0370:7334", true)] // 完整 8 段
+        [InlineData("::1", true)] // 压缩写法（双冒号）
+        [InlineData("abc", false)]
+        [InlineData("", false)]
+        public void IsIpv6_ReturnsExpected(string input, bool expected)
+        {
+            Assert.Equal(expected, ValidateUtil.IsIpv6(input));
+        }
+
+        [Fact]
+        public void IsIpv6_Null_DoesNotThrow()
+        {
+            // 修复：原实现 ipAddress.Split 会抛 NullReferenceException
+            Assert.False(ValidateUtil.IsIpv6(null));
+        }
     }
 }

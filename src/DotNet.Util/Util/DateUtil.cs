@@ -172,6 +172,12 @@ namespace DotNet.Util
         public static int GetDaysOfMonth(int iYear, int month)
         {
             var days = 0;
+            // 修复：原实现 switch 无 default，非法月份（0/13/负数）会静默返回 0，
+            // 调用方难以察觉错误。改为显式抛 ArgumentOutOfRangeException（快速失败）。
+            if (month < 1 || month > 12)
+            {
+                throw new ArgumentOutOfRangeException(nameof(month), "月份必须在 1 到 12 之间。");
+            }
             switch (month)
             {
                 case 1:
@@ -536,11 +542,17 @@ namespace DotNet.Util
 
         #region 获取 本周、本月、本季度、本年 的开始时间或结束时间
         /// <summary>
-        /// 获取结束时间
+        /// 获取开始时间
         /// </summary>
         /// <param name="TimeType">Week、Month、Season、Year</param>
-        /// <param name="now"></param>
-        /// <returns></returns>
+        /// <param name="now">基准时间</param>
+        /// <returns>周期首日，但时分秒沿用 now 的时刻（未归零）</returns>
+        /// <remarks>
+        /// 注意：本方法不处理时分秒，返回值沿用入参 now 的时刻，并非周期首日的 00:00:00。
+        /// 若用于 BETWEEN 区间查询，会漏掉周期首日 00:00:00 至该时刻之间的数据。
+        /// 新代码请改用 <see cref="GetStartTimeOfDay"/>。
+        /// </remarks>
+        [Obsolete("本方法不归零时分秒，返回值沿用入参时刻，用于区间查询易漏数据。请改用 GetStartTimeOfDay。")]
         public static DateTime GetStartTime(DateTime now, string TimeType)
         {
             switch (TimeType)
@@ -563,9 +575,15 @@ namespace DotNet.Util
         /// <summary>
         /// 获取结束时间
         /// </summary>
-        /// <param name="now"></param>
+        /// <param name="now">基准时间</param>
         /// <param name="timeType">Week、Month、Season、Year</param>
-        /// <returns></returns>
+        /// <returns>周期末日，但时分秒沿用 now 的时刻（未补到 23:59:59）</returns>
+        /// <remarks>
+        /// 注意：本方法不处理时分秒，返回值沿用入参 now 的时刻，并非周期末日的 23:59:59。
+        /// 若用于 BETWEEN 区间查询，会漏掉周期末日该时刻之后的数据。
+        /// 新代码请改用 <see cref="GetEndTimeOfDay"/>。
+        /// </remarks>
+        [Obsolete("本方法不补满时分秒，返回值沿用入参时刻，用于区间查询易漏数据。请改用 GetEndTimeOfDay。")]
         public static DateTime GetEndTime(DateTime now, string timeType)
         {
             switch (timeType)
@@ -584,6 +602,42 @@ namespace DotNet.Util
                 default:
                     return now.AddDays(7 - GetMondayOffset(now));
             }
+        }
+
+        /// <summary>
+        /// 获取 本周/本月/本季度/本年 的开始时间（归零到 00:00:00）
+        /// </summary>
+        /// <param name="now">基准时间</param>
+        /// <param name="timeType">Week、Month、Season、Year</param>
+        /// <returns>周期首日的 00:00:00</returns>
+        /// <remarks>
+        /// 与 <see cref="GetStartTime"/> 的区别：本方法将时分秒归零为 00:00:00，
+        /// 可直接用于 BETWEEN 区间查询而不会漏掉周期首日零点之后的数据。
+        /// </remarks>
+        public static DateTime GetStartTimeOfDay(DateTime now, string timeType)
+        {
+            #pragma warning disable CS0618 // 复用旧实现，避免重复逻辑
+            return GetStartTime(now, timeType).Date;
+            #pragma warning restore CS0618
+        }
+
+        /// <summary>
+        /// 获取 本周/本月/本季度/本年 的结束时间（补满到 23:59:59）
+        /// </summary>
+        /// <param name="now">基准时间</param>
+        /// <param name="timeType">Week、Month、Season、Year</param>
+        /// <returns>周期末日的 23:59:59（精度到秒）</returns>
+        /// <remarks>
+        /// 与 <see cref="GetEndTime"/> 的区别：本方法将时间补满到当日 23:59:59，
+        /// 用于 BETWEEN 区间查询不会漏掉周期末日的数据。
+        /// 注意返回值为 23:59:59.000（秒级精度）；若需毫秒级精确，建议使用半开区间
+        /// [起始, 次日起始) 并以 &lt; 比较，可规避精度问题。
+        /// </remarks>
+        public static DateTime GetEndTimeOfDay(DateTime now, string timeType)
+        {
+            #pragma warning disable CS0618 // 复用旧实现，避免重复逻辑
+            return GetEndTime(now, timeType).Date.AddDays(1).AddSeconds(-1);
+            #pragma warning restore CS0618
         }
 
         /// <summary>

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace DotNet.Util
@@ -35,13 +37,26 @@ namespace DotNet.Util
         /// <returns>是返回 true 不是返回false</returns>
         public static bool IsIpv4(string ipAddress)
         {
-            var match =
-               new Regex(@"^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])$");
-            if (!match.IsMatch(ipAddress))
+            // 修复：原正则首段缺少对 0 的处理（如 0.0.0.0 / 0.1.2.3 会被误判为 false），
+            // 且 ipAddress 为 null 时 match.IsMatch 会抛出 ArgumentNullException。
+            // 改用 IPAddress.TryParse 严格判定 IPv4（AddressFamily == InterNetwork），
+            // 并要求标准“四段点分”格式（恰好 3 个点），避免 .NET 对 1.2.3 这类宽松写法的误判；
+            // 不再回退到 IsIpv6（方法名即“是否为 IPv4”，回退会导致语义与名称不符）。
+            if (ipAddress == null)
             {
-                return (IsIpv6(ipAddress));
+                return false;
             }
-            return true;
+            var dotCount = 0;
+            foreach (var c in ipAddress)
+            {
+                if (c == '.') dotCount++;
+            }
+            if (dotCount != 3)
+            {
+                return false;
+            }
+            return IPAddress.TryParse(ipAddress, out var address)
+                && address.AddressFamily == AddressFamily.InterNetwork;
         }
 
         /// <summary>
@@ -51,6 +66,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsIpv6(string ipAddress)
         {
+            // 修复：原实现未处理 null，调用方传入 null 会抛 NullReferenceException
+            if (ipAddress == null)
+            {
+                return false;
+            }
             var pattern = "";
             var temp = ipAddress;
             var strs = temp.Split(':');
@@ -378,7 +398,7 @@ namespace DotNet.Util
                 {
                     return false;
                 }
-                // 出生日期（第7-12位），15位身份证默认补足为19世纪
+                // 出生日期（第7-12位），15位身份证默认补足为 19xx 年（即 20 世纪）
                 if (!DateTime.TryParseExact("19" + idCard.Substring(6, 6), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                 {
                     return false;
