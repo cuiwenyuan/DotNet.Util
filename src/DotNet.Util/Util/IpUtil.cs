@@ -218,7 +218,7 @@ namespace DotNet.Util
             if (!ipAddress.IsNullOrEmpty())
             {
                 if (ipAddress.StartsWith("192.168.")
-                    || ipAddress.StartsWith("172.")
+                    || IsPrivate172(ipAddress)
                     || ipAddress.StartsWith("10.")
                     || ipAddress.StartsWith("127."))
                 {
@@ -243,6 +243,26 @@ namespace DotNet.Util
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 是否处于 RFC1918 私网 172.16.0.0/12 段（即 172.16.x.x ~ 172.31.x.x）
+        /// 修正 R8-10：原 StartsWith("172.") 误覆盖整个 172.0.0.0/8，会把公网 172.32.x.x 等误判为本地
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        private static bool IsPrivate172(string ipAddress)
+        {
+            if (!ipAddress.StartsWith("172."))
+            {
+                return false;
+            }
+            var segments = ipAddress.Split('.');
+            if (segments.Length < 2)
+            {
+                return false;
+            }
+            return int.TryParse(segments[1], out var second) && second >= 16 && second <= 31;
         }
     }
 }

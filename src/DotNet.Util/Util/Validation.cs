@@ -63,7 +63,9 @@ namespace DotNet.Util
             var returnValue = true;
             if (password.IsNullOrEmpty())
             {
+                // 修复 R8-1：原仅置 false 但未 return，后续 password.Length 对 null/空串抛 NRE
                 returnValue = false;
+                return returnValue;
             }
             var isDigit = false;
             var isLetter = false;
@@ -140,7 +142,9 @@ namespace DotNet.Util
         /// <returns>成功与否</returns>
         public static bool IsMobile(string mobile)
         {
-            var format = @"^(13[0-9]{9}|15[012356789][0-9]{8}|18[0256789][0-9]{8}|147[0-9]{8})$";
+            // 修复 R8-5：原白名单仅覆盖 13/15/18/147，缺少 14/16/17/19 号段，导致大量合法号码被拒。
+            // 中国大陆手机号共 11 位，第 1 位为 1、第 2 位为 3-9，覆盖全部已分配号段。
+            var format = @"^1[3-9][0-9]{9}$";
             return Regex.IsMatch(mobile, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 

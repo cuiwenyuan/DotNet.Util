@@ -40,10 +40,10 @@ namespace DotNet.Util.Tests.Util
         }
 
         [Fact]
-        public void GetSearchString_Brackets_ReplacedWithUnderscore()
+        public void GetSearchString_Brackets_EscapedForLike()
         {
-            // [ ] 替换为 _ 后含下划线，不再包裹 %
-            Assert.Equal("a_b_", StringUtil.GetSearchString("a[b]"));
+            // 修正 R8-11：字面 [ ] 转义为 LIKE 通配符形式 [[] / []]，不再误变成下划线，且整体包裹 %
+            Assert.Equal("%a[[]b[]]%", StringUtil.GetSearchString("a[b]"));
         }
 
         [Fact]

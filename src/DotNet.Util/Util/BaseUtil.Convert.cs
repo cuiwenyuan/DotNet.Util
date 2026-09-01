@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------
 
 using System;
+using System.Globalization;
 
 namespace DotNet.Util
 {
@@ -34,7 +35,7 @@ namespace DotNet.Util
             {
                 return false;
             }
-            var value = targetValue.ToString();
+            var value = Convert.ToString(targetValue, CultureInfo.InvariantCulture);
             return value.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase) || value.Equals("1");
         }
         /// <summary>
@@ -57,7 +58,7 @@ namespace DotNet.Util
             var returnValue = defaultValue;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (int.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -71,7 +72,7 @@ namespace DotNet.Util
             int? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (int.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -85,7 +86,7 @@ namespace DotNet.Util
             Byte returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Byte.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -99,7 +100,7 @@ namespace DotNet.Util
             Byte? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Byte.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -113,7 +114,7 @@ namespace DotNet.Util
             var returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int32.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -127,7 +128,7 @@ namespace DotNet.Util
             Int32? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int32.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -141,7 +142,7 @@ namespace DotNet.Util
             Int64 returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int64.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -155,7 +156,7 @@ namespace DotNet.Util
             Int64? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int64.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -169,7 +170,7 @@ namespace DotNet.Util
             long returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (long.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -183,7 +184,7 @@ namespace DotNet.Util
             long? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (long.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -197,7 +198,7 @@ namespace DotNet.Util
             Double returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Double.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -211,7 +212,7 @@ namespace DotNet.Util
             Double? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Double.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -225,7 +226,7 @@ namespace DotNet.Util
             float returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (float.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -239,7 +240,7 @@ namespace DotNet.Util
             float? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (float.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -253,7 +254,7 @@ namespace DotNet.Util
             decimal returnValue = 0;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (decimal.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -267,7 +268,7 @@ namespace DotNet.Util
             decimal? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (decimal.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -283,7 +284,7 @@ namespace DotNet.Util
             if (targetValue != null && targetValue != DBNull.Value)
             {
                 DateTime dt;
-                if (DateTime.TryParse(targetValue.ToString(), out dt))
+                if (DateTime.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
                 {
                     returnValue = dt;
                 }
@@ -301,7 +302,7 @@ namespace DotNet.Util
             DateTime? returnValue = null;
             if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (DateTime.TryParse(targetValue.ToString(), out var dt)) returnValue = dt;
+                if (DateTime.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt)) returnValue = dt;
             }
 
             return returnValue;

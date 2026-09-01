@@ -36,10 +36,22 @@ namespace DotNet.Util
         /// <returns>表达式</returns>
         public static string GetLike(string field, string search)
         {
+            // 修复 R8-8：原空 search 返回非法 SQL "()"；且未转义 LIKE 通配符与单引号。
+            if (string.IsNullOrEmpty(search))
+            {
+                return string.Empty;
+            }
+
             var result = string.Empty;
             foreach (var t in search)
             {
-                result += field + " LIKE '%" + t + "%' AND ";
+                // 转义 LIKE 通配符 [% _] 与单引号，避免语法错误/注入
+                var ch = t.ToString()
+                    .Replace("[", "[[]")
+                    .Replace("%", "[%]")
+                    .Replace("_", "[_]")
+                    .Replace("'", "''");
+                result += field + " LIKE '%" + ch + "%' AND ";
             }
 
             if (!result.IsNullOrEmpty())
@@ -68,8 +80,24 @@ namespace DotNet.Util
                 searchKey = SecretUtil.SqlSafe(searchKey);
                 if (searchKey.Length > 0)
                 {
-                    searchKey = searchKey.Replace('[', '_');
-                    searchKey = searchKey.Replace(']', '_');
+                    // 修正 R8-11：转义 LIKE 通配符，字面 '[' -> '[[]'，字面 ']' -> '[]]'，避免改变查询语义
+                    var likeSb = new System.Text.StringBuilder(searchKey.Length);
+                    foreach (var c in searchKey)
+                    {
+                        if (c == '[')
+                        {
+                            likeSb.Append("[[]");
+                        }
+                        else if (c == ']')
+                        {
+                            likeSb.Append("[]]");
+                        }
+                        else
+                        {
+                            likeSb.Append(c);
+                        }
+                    }
+                    searchKey = likeSb.ToString();
                 }
 
                 if (searchKey == "%")
@@ -254,9 +282,17 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string StringToInList(string id, string separativeSign = ",", string newSeparativeSign = "','")
         {
+            // 修复 R8-7：原 id 为 null 直接 NRE；且值内单引号未转义，生成 'O'Brien' 导致 SQL 语法错误/注入。
+            // 契约保持：调用方负责在外层包裹引号，本方法产出 "a','b','c" 形式（仅转义值内单引号为 ''）。
+            if (string.IsNullOrEmpty(id))
+            {
+                return string.Empty;
+            }
             //var ids = id.Split(separativeSign.ToCharArray());
             //return ArrayToList(ids, string.Empty);
-            return id.TrimEnd(separativeSign.ToCharArray()).Replace(separativeSign, newSeparativeSign);
+            return id.TrimEnd(separativeSign.ToCharArray())
+                .Replace("'", "''")
+                .Replace(separativeSign, newSeparativeSign);
 
         }
 
@@ -324,6 +360,10 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DeleteUnVisibleChar(string sourceString)
         {
+            if (sourceString == null)
+            {
+                return string.Empty;
+            }
             var sb = PoolUtil.StringBuilder.Get();
             foreach (var t in sourceString)
             {

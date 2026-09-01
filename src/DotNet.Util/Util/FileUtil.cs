@@ -150,7 +150,9 @@ namespace DotNet.Util
         public static void SaveFile(byte[] file, string fileName)
         {
             var directoryName = Path.GetDirectoryName(fileName);
-            if (!Directory.Exists(directoryName))
+            // 修复 R8-3：裸文件名（无目录）时 GetDirectoryName 返回 ""，CreateDirectory("") 会抛 ArgumentException。
+            // 仅当目录名非空且不存在时才创建。
+            if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);
             }
@@ -548,35 +550,34 @@ namespace DotNet.Util
         /// <param name="deleteSourceFile">是否删除源文件</param>
         public static void CopyDirectory(string sourceDir, string targetDir, bool deleteExistingFile = true, bool overWrite = false, bool deleteSourceFile = true)
         {
-            var folderName = sourceDir.Substring(sourceDir.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-
-            var desfolderdir = targetDir + "\\" + folderName;
-
-            if (targetDir.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) == (targetDir.Length - 1))
+            if (string.IsNullOrWhiteSpace(sourceDir) || string.IsNullOrWhiteSpace(targetDir))
             {
-                desfolderdir = targetDir + folderName;
+                return;
             }
+
+            // 代码审查 R8-9：保留既有默认行为（deleteSourceFile=true，即 Copy 实为 Move+删源），
+            // 旧调用依赖此语义，故不改默认值；仅用 Path.Combine / Path.GetFileName 取代硬编码 "\\"，
+            // 兼容非 Windows 与正斜杠路径。调用方若需纯复制，请显式传 deleteSourceFile: false。
+            var folderName = Path.GetFileName(sourceDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            var desfolderdir = Path.Combine(targetDir, folderName);
+
+            if (!Directory.Exists(desfolderdir))
+            {
+                Directory.CreateDirectory(desfolderdir);
+            }
+
             var fileNames = Directory.GetFileSystemEntries(sourceDir);
 
             foreach (var sourceFileName in fileNames)// 遍历所有的文件和目录
             {
                 if (Directory.Exists(sourceFileName))// 先当作目录处理如果存在这个目录就递归Copy该目录下面的文件
                 {
-
-                    var currentdir = desfolderdir + "\\" + sourceFileName.Substring(sourceFileName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-                    if (!Directory.Exists(currentdir))
-                    {
-                        Directory.CreateDirectory(currentdir);
-                    }
-
-                    CopyDirectory(sourceFileName, desfolderdir);
+                    CopyDirectory(sourceFileName, desfolderdir, deleteExistingFile, overWrite, deleteSourceFile);
                 }
 
                 else // 否则直接copy文件
                 {
-                    var destFileName = sourceFileName.Substring(sourceFileName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-
-                    destFileName = desfolderdir + "\\" + destFileName;
+                    var destFileName = Path.Combine(desfolderdir, Path.GetFileName(sourceFileName));
                     if (File.Exists(destFileName))
                     {
                         if (deleteExistingFile)
@@ -585,10 +586,6 @@ namespace DotNet.Util
                         }
                     }
 
-                    if (!Directory.Exists(desfolderdir))
-                    {
-                        Directory.CreateDirectory(desfolderdir);
-                    }
                     try
                     {
                         File.Copy(sourceFileName, destFileName, overWrite);
@@ -604,8 +601,6 @@ namespace DotNet.Util
                     {
                         File.Delete(sourceFileName);
                     }
-
-
                 }
             }
         }

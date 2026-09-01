@@ -121,6 +121,75 @@ namespace DotNet.Util.Tests.Util
 #pragma warning restore CS0618
         }
 
+        #region WeekRange 周区间
+
+        [Theory]
+        [InlineData(2023)] // 1/1 是周日（原实现会漏掉 1/1）
+        [InlineData(2017)] // 1/1 是周日
+        [InlineData(2024)] // 1/1 是周一
+        [InlineData(2026)] // 1/1 是周四
+        [InlineData(2022)] // 1/1 是周六
+        [InlineData(2021)] // 1/1 是周五
+        [InlineData(2025)] // 1/1 是周三
+        public void WeekRange_FirstWeekCoversJan1(int year)
+        {
+            var first = default(DateTime);
+            var last = default(DateTime);
+            DateUtil.WeekRange(year, 1, ref first, ref last);
+
+            var jan1 = new DateTime(year, 1, 1);
+
+            // 第 1 周必须覆盖 1/1：原实现 dayDiff=(-1)*firstOfWeek+1 在 1/1 为周日时算得 +1，
+            // 导致第 1 周从 1/2 开始，1/1 不属于任何一周。
+            Assert.True(first <= jan1 && jan1 <= last,
+                $"{year}-01-01 未被第 1 周覆盖：{first:yyyy-MM-dd} ~ {last:yyyy-MM-dd}");
+            // 一周必须正好 7 天
+            Assert.Equal(6, (last - first).Days);
+        }
+
+        [Fact]
+        public void WeekRange_Jan1IsSunday_ReturnsPreviousMondayToJan1()
+        {
+            // 2023-01-01 是星期日：第 1 周应为 2022-12-26(周一) ~ 2023-01-01(周日)
+            var first = default(DateTime);
+            var last = default(DateTime);
+            DateUtil.WeekRange(2023, 1, ref first, ref last);
+
+            Assert.Equal(new DateTime(2022, 12, 26), first);
+            Assert.Equal(new DateTime(2023, 1, 1), last);
+        }
+
+        [Fact]
+        public void WeekRange_FirstWeek_ConsistentWithGetWeekOfYear()
+        {
+            // GetWeekOfYear 按「周一为一周首日」计算，1/1 恒返回 1；
+            // WeekRange 的第 1 周区间必须能覆盖 1/1，否则两个 API 自相矛盾。
+            var first = default(DateTime);
+            var last = default(DateTime);
+            DateUtil.WeekRange(2023, 1, ref first, ref last);
+
+            var jan1 = new DateTime(2023, 1, 1);
+            Assert.Equal(1, DateUtil.GetWeekOfYear(jan1));
+            Assert.True(jan1 >= first && jan1 <= last);
+        }
+
+        [Fact]
+        public void WeekRange_WeekOrder2_ShiftsBy7Days()
+        {
+            var first1 = default(DateTime);
+            var last1 = default(DateTime);
+            DateUtil.WeekRange(2026, 1, ref first1, ref last1);
+
+            var first2 = default(DateTime);
+            var last2 = default(DateTime);
+            DateUtil.WeekRange(2026, 2, ref first2, ref last2);
+
+            Assert.Equal(first1.AddDays(7), first2);
+            Assert.Equal(last1.AddDays(7), last2);
+        }
+
+        #endregion
+
         #endregion
     }
 }

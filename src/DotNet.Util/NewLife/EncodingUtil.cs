@@ -37,6 +37,26 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Encoding Detect(this Stream stream, Int64 sampleSize = 0x400)
         {
+            // 修正 R8-15：非 seekable 流（网络流等）不支持 Position/Length，无法回溯，直接按当前可读内容做 BOM 启发式
+            if (!stream.CanSeek)
+            {
+                var buf = new Byte[sampleSize];
+                var read = 0;
+                while (read < buf.Length)
+                {
+                    var n = stream.Read(buf, read, buf.Length - read);
+                    if (n == 0) break;
+                    read += n;
+                }
+                if (read == 0)
+                {
+                    return Encoding.UTF8;
+                }
+                var slice = new Byte[read];
+                Array.Copy(buf, slice, read);
+                return DetectBOM(slice) ?? DetectInternal(slice);
+            }
+
             // 记录数据流原始位置，后面需要复原
             var pos = stream.Position;
             stream.Position = 0;

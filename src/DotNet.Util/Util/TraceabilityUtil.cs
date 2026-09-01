@@ -12,40 +12,50 @@ namespace DotNet.Util
     /// </summary>
     public class TraceabilityUtil
     {
+        // 共享 Random 实例，避免高频调用时因种子相同（DateTime.Now.Ticks）生成重复序列；Random 非线程安全，访问加锁
+        private static readonly Random SharedRandom = new Random();
+        private static readonly object RandomLock = new object();
+        private const string Alphabet = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
+
         /// <summary>
         /// 生成随机的62位字符串，包含0-9a-zA-Z
         /// </summary>
         /// <returns></returns>
         public static string GenerateKey()
         {
-            var chars = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".Split(',');
-            var seed = unchecked((int)DateTime.Now.Ticks);
-            var random = new Random(seed);
-            for (var i = 0; i < 100000; i++)
-            {
-                var r = random.Next(1, chars.Length);
-                var f = chars[0];
-                chars[0] = chars[r - 1];
-                chars[r - 1] = f;
-            }
-            return string.Join("", chars);
+            return GenerateShuffledKey(1);
         }
 
         /// <summary>
         /// 根据传入的random，生成随机的62位字符串，包含0-9a-zA-Z
         /// </summary>
+        /// <param name="random">额外洗牌轮数（建议 >= 1）</param>
         /// <returns></returns>
         public static string GenerateKey(int random)
         {
-            var chars = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".Split(',');
-            var seed = unchecked((int)DateTime.Now.Ticks + random);
-            var randomSeed = new Random(seed);
-            for (var i = 0; i < random; i++)
+            if (random < 0) random = 0; // 保留 random=0 返回默认顺序的契约；仅纠负数
+            return GenerateShuffledKey(random);
+        }
+
+        /// <summary>
+        /// 基于共享 Random 做 Fisher-Yates 全洗牌，random 为洗牌轮数；每次调用返回 62 位字母表的均匀置换
+        /// 修正 R8-16：原 new Random(DateTime.Now.Ticks) 高频调用种子相同导致重复 key；原洗牌仅交换下标 0 分布不均
+        /// </summary>
+        private static string GenerateShuffledKey(int rounds)
+        {
+            var chars = Alphabet.Split(',');
+            lock (RandomLock)
             {
-                var r = randomSeed.Next(1, chars.Length);
-                var f = chars[0];
-                chars[0] = chars[r - 1];
-                chars[r - 1] = f;
+                for (var round = 0; round < rounds; round++)
+                {
+                    for (var i = chars.Length - 1; i > 0; i--)
+                    {
+                        var j = SharedRandom.Next(i + 1);
+                        var tmp = chars[i];
+                        chars[i] = chars[j];
+                        chars[j] = tmp;
+                    }
+                }
             }
             return string.Join("", chars);
         }

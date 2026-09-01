@@ -18,7 +18,8 @@ namespace DotNet.Util
         /// <summary>
         /// BindingFlags
         /// </summary>
-        public static BindingFlags Bf = BindingFlags.DeclaredOnly | BindingFlags.Public |
+        // 修正 R8-14：去掉 DeclaredOnly，使 GetProperty/GetField/SetProperty/SetField 能取到基类继承成员（如父类 Id）
+        public static BindingFlags Bf = BindingFlags.Public |
                                         BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         /// <summary>

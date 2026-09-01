@@ -156,7 +156,10 @@ namespace DotNet.Util
 
         /// <summary>本年有多少天</summary>
         /// <param name="dt">日期</param>
-        /// <returns>本天在当年的天数</returns>
+        /// <returns>该日期所在年份的总天数（平年 365，闰年 366）</returns>
+        /// <remarks>注意：本方法返回的是「年总天数」，并非「该日期是当年的第几天」。
+        /// 原 XML 注释误写为「本天在当年的天数」，与实现不符，易导致调用方取到静默错误的结果；
+        /// 若需要「第几天」请直接使用 dt.DayOfYear。</remarks>
         public static int GetDaysOfYear(DateTime dt)
         {
             return IsRuYear(dt.Year) ? 366 : 365;
@@ -388,12 +391,15 @@ namespace DotNet.Util
             //当年的第一天
             var firstDay = new DateTime(year, 1, 1);
 
-            //当年的第一天是星期几
+            //当年的第一天是星期几（DayOfWeek：周日=0，周一=1，...，周六=6）
             var firstOfWeek = firstDay.DayOfWeek.ToInt();
 
             //计算当年第一周的起止日期，可能跨年
-            var dayDiff = (-1) * firstOfWeek + 1;
-            var dayAdd = 7 - firstOfWeek;
+            //修复：原公式 dayDiff = (-1) * firstOfWeek + 1 在 1/1 为周日（firstOfWeek=0）时算得 +1，
+            //导致第 1 周从 1/2 开始，1/1 不属于任何一周；而 GetWeekOfYear(1/1) 却返回 1，两者自相矛盾。
+            //改为统一「以周一为一周首日」回退：周日(0)回退 6 天，周一(0)，周二回退 1 天 ... 周六回退 5 天。
+            var dayDiff = -((firstOfWeek + 6) % 7);
+            var dayAdd = dayDiff + 6;
 
             firstDate = firstDay.AddDays(dayDiff).Date;
             lastDate = firstDay.AddDays(dayAdd).Date;

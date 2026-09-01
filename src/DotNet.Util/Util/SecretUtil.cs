@@ -181,10 +181,19 @@ namespace DotNet.Util
         /// 基于Md5的自定义加密字符串方法：输入一个字符串，返回一个由32个字符组成的十六进制的哈希散列（字符串）。
         /// </summary>
         /// <param name="password">密码</param>
-        /// <param name="length">多少位</param>
+        /// <param name="length">散列长度，仅支持 16 位或 32 位</param>
         /// <returns>加密密码</returns>
+        /// <exception cref="ArgumentOutOfRangeException">当 length 不是 16 或 32 时抛出</exception>
         public static string Md5(string password, int length)
         {
+            // 修复：原实现仅当 length==16 时截断，其余任意值（8/20/0/64/负数）一律静默返回 32 位，
+            // 不抛异常也不告警，调用方按参数期望的长度做截断或比对会静默出错。
+            // 改为显式校验参数，非法值快速失败（与 DateUtil.GetDaysOfMonth 的处理方式一致）。
+            if (length != 16 && length != 32)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), length, "Md5 散列长度仅支持 16 位或 32 位。");
+            }
+
             var result = string.Empty;
             if (!password.IsNullOrEmpty())
             {

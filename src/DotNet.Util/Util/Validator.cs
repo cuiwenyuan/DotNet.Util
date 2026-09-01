@@ -25,7 +25,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 判断对象是否为Int32类型的数字
+        /// 判断字符串是否为数值（支持整数与小数，兼容负号；长度上限 11）
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
@@ -34,7 +34,7 @@ namespace DotNet.Util
             if (expression != null)
             {
                 var str = expression;
-                if (str.Length > 0 && str.Length <= 11 && Regex.IsMatch(str, @"^[-]?[0-9]*[.]?[0-9]*$"))
+                if (str.Length > 0 && str.Length <= 11 && Regex.IsMatch(str, @"^[-]?[0-9]+(\.[0-9]+)?$"))
                 {
                     if ((str.Length < 10) || (str.Length == 10 && str[0] == '1') || (str.Length == 11 && str[0] == '-' && str[1] == '1'))
                         return true;
@@ -51,7 +51,9 @@ namespace DotNet.Util
         public static bool IsDouble(object expression)
         {
             if (expression != null)
-                return Regex.IsMatch(expression.ToString(), @"^([0-9])[0-9]*(\.\w*)?$");
+                // 修复 R8-4：原正则 (\.\w*)? 中 \w* 匹配字母，导致 "123.abc" 被误判为 Double。
+                // 改为 (\.[0-9]+)? 仅允许数字小数位。
+                return Regex.IsMatch(expression.ToString(), @"^([0-9])[0-9]*(\.[0-9]+)?$");
 
             return false;
         }

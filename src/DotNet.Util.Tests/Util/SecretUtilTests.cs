@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using DotNet.Util;
 using Xunit;
@@ -32,6 +33,28 @@ namespace DotNet.Util.Tests.Util
         {
             Assert.Equal(16, SecretUtil.Md5("abc", 16).Length);
             Assert.Equal(32, SecretUtil.Md5("abc", 32).Length);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(8)]
+        [InlineData(20)]
+        [InlineData(31)]
+        [InlineData(64)]
+        [InlineData(-1)]
+        public void Md5_InvalidLength_Throws(int length)
+        {
+            // 修复：原实现仅 length==16 生效，其余任意值一律静默返回 32 位，
+            // 调用方按期望长度截断/比对会静默出错。改为非法值快速失败。
+            Assert.Throws<ArgumentOutOfRangeException>(() => SecretUtil.Md5("abc", length));
+        }
+
+        [Fact]
+        public void Md5_16Bit_EqualsMiddleOf32Bit()
+        {
+            // 16 位应取自 32 位结果的第 9~24 个字符（Substring(8,16)）
+            var full = SecretUtil.Md5("abc", 32);
+            Assert.Equal(full.Substring(8, 16), SecretUtil.Md5("abc", 16));
         }
 
         [Fact]

@@ -1,7 +1,7 @@
 # DotNet.Util 第 7 轮 Code Review · 隐藏 Bug 清单
 
 > 审查范围：聚焦**隐藏逻辑 bug**（非代码风格、非重复代码）。方法 = 源码深读 + **临时验证程序实测复现**（`C:\Temp\bugcheck`，net8.0 引用 DotNet.Util 实跑），所有结论均有实测输出佐证，非静态推测。
-> 状态：**仅审查，未修改任何仓库代码**，等你确认修复范围。
+> 状态：**全部 7 项 Bug + P2 4 项 + 补充发现的 Bug 8 均已修复并通过仓内单测验证**（2026-09-01 收尾），改动**均未提交**，等你确认后提交。
 
 ---
 
@@ -68,6 +68,33 @@ Year  : start=2026-01-01 10:30:45  end=2026-12-31 10:30:45  end是23:59:59? Fals
 
 ---
 
+### Bug 8 · `CsvUtil` 字段以转义双引号结尾时被清空（Bug 2 修复未尽，2026-09-01 补充发现）
+**位置**：`src/DotNet.Util/Util/CsvUtil.cs:572`（`ReadSpecialCharacter`）、`:615`（`GetLength`）
+```csharp
+if (str.EndsWith("\"") && !str.EndsWith("\"\""))   // ← 判据本身不可靠
+```
+**后果**：当字段内容**以转义双引号结尾**时，末尾形如 `"""`，`EndsWith("\"\"")` 为真 → 误判为「字段未闭合」→ 走 else 分支向后寻找结束项 → 找不到则 `txt` 保持 `""` → **该字段被静默清空，且后续列整体错位**。
+
+**实测**（复刻修复后方法体，`C:\Temp\verify_csv`）：
+```
+PASS | Tom,"hello,world",20      -> [hello,world]
+PASS | Tom,"hello",20            -> [hello]
+FAIL | Tom,"He said ""hi""",20   -> []   ← 期望 [He said "hi"]，字段被清空
+FAIL | Tom,"He said ""hi"""      -> []   ← 同上
+```
+另发现 `str.Trim('"')` 会裁剪掉首尾**所有**引号（而非恰好一对），对以引号开头/结尾的内容同样有害。
+
+**修复**：不再「先 `Split`、再靠启发式还原」，改为新增 `SplitCsvLine`，按 **RFC 4180 逐字符状态机**一次性正确拆分：
+- 引号态内遇 `""` → 字面量引号并跳过 2 字符；遇单独 `"` → 字段结束
+- 未加引号字段保留原 `Trim()` 行为；引号字段内容原样保留（含首尾空格）
+- 正确处理空字段、`a,,b` 连续分隔符、`a,` 行尾分隔符
+
+改造后 `arr` 已是正确字段数组，故 `GetLength` 简化为 `arr.Length`、`ReadSpecialCharacter` 简化为直接取值 —— **两者不再需要各自的合并启发式，从根上消除了「列数与实际字段数不一致导致整行被丢」的风险**。
+
+> ✅ **已修复（2026-09-01）**：14 个场景独立实测全绿；仓内**启用了原先 Skip 的** `ToDataTable_EscapedDoubleQuoteInsideQuotedField`，并新增 `ToDataTable_EscapedDoubleQuoteAtEndOfLastColumn`、`ToDataTable_EscapedDoubleQuoteInMiddleOfField`。
+
+---
+
 ## 二、🟠 P1 · 逻辑/契约错误（4 项）
 
 ### Bug 4 · `ValidateUtil.IsIpv4` 拒绝 `0.x.x.x`（正则首段缺 `|0`）
@@ -110,6 +137,9 @@ var dayAdd  = 7 - firstOfWeek;
 ```
 **修复**：`dayDiff = -((firstOfWeek + 6) % 7)`（周一为一周首日，周日则回退 6 天），保证 1/1 必被覆盖，并与 `GetWeekOfYear` 语义对齐。
 
+> ✅ **已修复（2026-09-01）**：改为 `dayDiff = -((firstOfWeek + 6) % 7)`、`dayAdd = dayDiff + 6`。该公式**仅改变 1/1 为周日这一种情况**（`0 -> -6`，第 1 周变为上年 12/26 ~ 1/1），周一/周二/…/周六的结果与原实现完全一致，属于最小改动。
+> 新增 10 个用例：`WeekRange_FirstWeekCoversJan1`（7 个年份覆盖全部星期情况）、`WeekRange_Jan1IsSunday_ReturnsPreviousMondayToJan1`、`WeekRange_FirstWeek_ConsistentWithGetWeekOfYear`、`WeekRange_WeekOrder2_ShiftsBy7Days`，全绿。
+
 ---
 
 ### Bug 6 · `SecretUtil.Md5(password, length)` 除 16 外静默忽略 length
@@ -128,6 +158,10 @@ Md5("abc",  0) -> 长度 32: ...                                ← 参数非法
 Md5("abc", 64) -> 长度 32: ...                                ← 越界无提示
 ```
 **修复**：加参数校验（仅允许 16/32，或 1..32 内截断），非法值抛 `ArgumentOutOfRangeException`；至少补 XML 注释说明"仅 16/32 有效"。
+
+> ✅ **已修复（2026-09-01）**：方法入口加校验 `if (length != 16 && length != 32) throw new ArgumentOutOfRangeException(...)`，并更新 XML 注释（`<param>` 改为「仅支持 16 位或 32 位」，补 `<exception>`）。
+> ⚠️ **行为变更**：原先传入 8/20/0/64/负数会**静默返回 32 位**，现在改为抛异常（快速失败）。仓库内全部调用点均使用 32（`BaseUserManager.Manual.SetPassword`、`ServiceUtil` 用单参重载 → 32），已核查无影响。
+> 新增 7 个用例：`Md5_InvalidLength_Throws`（6 个 Theory 值）、`Md5_16Bit_EqualsMiddleOf32Bit`，全绿。
 
 ---
 
@@ -148,6 +182,8 @@ public static int GetDaysOfYear(DateTime dt)
 GetDaysOfYear(2026-03-01) = 365   (DateTime.DayOfYear = 60)
 ```
 **修复**：二选一 —— ① 改实现为 `return dt.DayOfYear;`（与注释一致）；② 改注释为"返回该年的总天数"（与实现一致）。建议 ②（保持向后兼容）+ 另加 `DayOfYear` 语义的新方法。
+
+> ✅ **已修复（2026-09-01）**：采纳方案 ②，注释改为「该日期所在年份的总天数（平年 365，闰年 366）」，并用 `<remarks>` 明确指出**不是**「第几天」、需要时用 `dt.DayOfYear`。实现保持 365/366 不变，零行为变更、完全向后兼容。
 
 ---
 
@@ -186,4 +222,10 @@ GetDaysOfYear(2026-03-01) = 365   (DateTime.DayOfYear = 60)
 
 ---
 
-_审查日期：2026-08-29 · 验证环境：net8.0（本机 net48 testhost 崩溃，周期逻辑为框架无关代码，结论适用全 TFM）· 修复进度：Bug 1+2（CsvUtil）、Bug 3（DateUtil 时分秒）、Bug 4（IsIpv4）、P2 全部 4 项（#8/#9/#10/#11）均已修，均未提交。行为验证：`GetDaysOfMonth` 抛出异常逻辑以独立控制台（C:\Temp\verify_p2，复制原方法体）实测全绿；仓库内 xunit 单测因本机 IDE 锁 obj 目录暂未能在仓内跑通，待锁释放后 `dotnet test -f net8.0` 可验证。_
+_审查日期：2026-08-29 · 验证环境：net8.0（周期逻辑为框架无关代码，结论适用全 TFM）· **修复进度：全部 7 项 Bug + P2 全部 4 项 + 补充发现的 Bug 8 均已修复**，均未提交。_
+
+_本轮（2026-09-01）收尾验证：_
+- _**仓内 xunit 已可跑通**：绕开 IDE obj 锁的命令为 `dotnet test src/DotNet.Util.Tests/DotNet.Util.Tests.csproj -c Debug -f net8.0 -p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false --filter "FullyQualifiedName!~IntegrationTests"`。_
+- _结果：**1089 通过 / 0 失败（排除集成测试）**。另有 1 个 `HttpUtilTests` 用例在全套并行时偶发失败（本机临时端口 `HttpListener` 争用，单独复跑 8/8 通过、且每次失败的用例不同），与本次改动无关。_
+- _多 TFM 编译验证：`net48`、`netstandard2.0`、`net8.0` 均 **0 错误**（老框架兼容性确认）。_
+- _测试数变化：1071 -> 1090（新增 19 个用例 + 启用 1 个原 Skip 用例）。_

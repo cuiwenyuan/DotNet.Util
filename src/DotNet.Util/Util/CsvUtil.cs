@@ -437,7 +437,10 @@ namespace DotNet.Util
             while ((line = sr.ReadLine()) != null)
             {
                 var spr = separator.ToCharArray();
-                arr = line.Split(spr);
+                // 修复：原先先 line.Split 拆分、再靠「是否以引号结尾」的启发式还原带引号字段，
+                // 该启发式不可靠——字段内容以转义双引号 "" 结尾时（如 "He said ""hi"""）会被误判为未闭合，
+                // 导致该字段被清空且后续列错位。改为按 RFC 4180 逐字符状态机一次性正确拆分。
+                arr = SplitCsvLine(line, spr).ToArray();
 
                 if (firstLineIsHeader)
                 {
@@ -565,34 +568,10 @@ namespace DotNet.Util
         /// <returns></returns>
         private static string ReadSpecialCharacter(string[] arr, ref int i, string separator)
         {
-            var str = (arr[i] + "").Trim();
-            if (str.StartsWith("\""))
-            {
-                var txt = "";
-                if (str.EndsWith("\"") && !str.EndsWith("\"\""))
-                {
-                    txt = str.Trim('\"');
-                }
-                else
-                {
-                    // 找到下一个以引号结尾的项
-                    for (var j = i + 1; j < arr.Length; j++)
-                    {
-                        if (arr[j].EndsWith("\""))
-                        {
-                            txt = StringUtil.Join(arr.Skip(i).Take(j - i + 1), separator + "").Trim('\"');
-                            // 跳过去一大步
-                            i = j;
-                            break;
-                        }
-                    }
-                }
-
-                // 两个引号是一个引号的转义
-                txt = txt.Replace("\"\"", "\"");
-                str = txt;
-            }
-            return str;
+            // 修复：arr 已由 SplitCsvLine 按 RFC 4180 正确拆分，引号包裹与 "" 转义均已处理完毕，
+            // 此处不再需要合并片段（原合并启发式的缺陷见 SplitCsvLine 注释）。
+            // 保留 ref int i 仅为了兼容既有调用点签名，不再修改其值。
+            return i >= 0 && i < arr.Length ? arr[i] : string.Empty;
         }
         #endregion
 
@@ -605,37 +584,130 @@ namespace DotNet.Util
         /// <returns></returns>
         private static int GetLength(string[] arr, string separator)
         {
-            var result = arr.Length;
-            for (var i = 0; i < arr.Length; i++)
+            // 修复：arr 已由 SplitCsvLine 正确拆分，字段数即列数，无需再扣减合并项。
+            // （原实现在此靠启发式扣减列数，必须与 ReadSpecialCharacter 的合并逻辑严格一致，
+            //   两者任一出错都会导致列数与实际字段数不符 -> 整行被静默丢弃，仅写日志。）
+            return arr == null ? 0 : arr.Length;
+        }
+
+        #region SplitCsvLine 按 RFC 4180 拆分单行 CSV
+        /// <summary>
+        /// 按 RFC 4180 规则将一行 CSV 正确拆分为字段列表。
+        /// 支持：引号包裹字段、字段内含分隔符、两个连续双引号 "" 表示一个字面量双引号的转义。
+        /// </summary>
+        /// <param name="line">单行内容（不含换行符）</param>
+        /// <param name="separators">分隔符字符集合</param>
+        /// <returns>字段列表；引号已去除、"" 已还原为单个引号</returns>
+        private static List<string> SplitCsvLine(string line, char[] separators)
+        {
+            var result = new List<string>();
+            if (line == null)
             {
-                var str = (arr[i] + "").Trim();
-                if (str.StartsWith("\""))
+                return result;
+            }
+            if (line.Length == 0)
+            {
+                result.Add(string.Empty);
+                return result;
+            }
+
+            var sb = PoolUtil.StringBuilder.Get();
+            var i = 0;
+            while (i <= line.Length)
+            {
+                // 跳过后导/前导空白（分隔符本身不算空白）
+                while (i < line.Length && char.IsWhiteSpace(line[i]) && !IsSeparator(line[i], separators))
                 {
-                    //var txt = "";
-                    if (str.EndsWith("\"") && !str.EndsWith("\"\""))
+                    i++;
+                }
+
+                string value;
+                if (i < line.Length && line[i] == '"')
+                {
+                    // 引号包裹字段：内容原样保留（含首尾空格），"" 还原为单个引号
+                    i++;
+                    sb.Clear();
+                    while (i < line.Length)
                     {
-                        //txt = str.Trim('\"');
-                    }
-                    else
-                    {
-                        // 找到下一个以引号结尾的项
-                        for (var j = i + 1; j < arr.Length; j++)
+                        var c = line[i];
+                        if (c == '"')
                         {
-                            if (arr[j].EndsWith("\""))
+                            // 连续两个引号是转义，表示一个字面量引号
+                            if (i + 1 < line.Length && line[i + 1] == '"')
                             {
-                                //txt = arr.Skip(i).Take(j - i + 1).Join(separator + "").Trim('\"');
-                                // 跳过去一大步
-                                // 修复：先按合并前的 i 计算跳过的项数，再推进 i（原顺序颠倒导致 j-i 恒为 0，列数合并失效）
-                                result -= (j - i);
-                                i = j;
-                                break;
+                                sb.Append('"');
+                                i += 2;
+                                continue;
                             }
+                            // 单个引号 = 字段结束
+                            i++;
+                            break;
                         }
+                        sb.Append(c);
+                        i++;
+                    }
+                    value = sb.ToString();
+                    // 跳过闭合引号之后、分隔符之前的空白
+                    while (i < line.Length && !IsSeparator(line[i], separators) && char.IsWhiteSpace(line[i]))
+                    {
+                        i++;
                     }
                 }
+                else
+                {
+                    // 未加引号字段：取到下一个分隔符，并去除首尾空白
+                    var start = i;
+                    while (i < line.Length && !IsSeparator(line[i], separators))
+                    {
+                        i++;
+                    }
+                    value = start >= i ? string.Empty : line.Substring(start, i - start).Trim();
+                }
+
+                result.Add(value);
+
+                if (i < line.Length && IsSeparator(line[i], separators))
+                {
+                    i++;
+                    // 行尾分隔符 -> 末尾还有一个空字段
+                    if (i == line.Length)
+                    {
+                        result.Add(string.Empty);
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
+
+            sb.Return(false);
             return result;
         }
+
+        /// <summary>
+        /// 判断字符是否为分隔符
+        /// </summary>
+        /// <param name="c">待判断字符</param>
+        /// <param name="separators">分隔符字符集合</param>
+        /// <returns>是分隔符返回 true，否则返回 false</returns>
+        private static bool IsSeparator(char c, char[] separators)
+        {
+            if (separators == null)
+            {
+                return false;
+            }
+            for (var k = 0; k < separators.Length; k++)
+            {
+                if (separators[k] == c)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
         #endregion
 
         #region 列名转换

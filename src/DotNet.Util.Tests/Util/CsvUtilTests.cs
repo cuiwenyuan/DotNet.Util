@@ -111,7 +111,10 @@ namespace DotNet.Util.Tests.Util
             Assert.Equal("20", dt.Rows[0]["Age"]!.ToString());
         }
 
-        [Fact(Skip = "已知遗留缺陷：字段内的转义双引号 (\"\") 会被误判为「字段未闭合」而触发跨字段合并，解析结果为空。需重构 CSV 转义状态机后启用。")]
+        // 修复：原实现用「是否以引号结尾」的启发式判断字段闭合，字段以转义双引号结尾时
+        // （"say ""hi""" 末尾是三个引号）会被误判为未闭合 -> 字段被清空、后续列错位。
+        // 已改为 RFC 4180 逐字符状态机（CsvUtil.SplitCsvLine），故启用本用例。
+        [Fact]
         public void ToDataTable_EscapedDoubleQuoteInsideQuotedField()
         {
             File.WriteAllText(_tempFile, "Name,Desc,Age\nTom,\"say \"\"hi\"\"\",20\n", new System.Text.UTF8Encoding(false));
@@ -119,6 +122,35 @@ namespace DotNet.Util.Tests.Util
             var dt = CsvUtil.ToDataTable(_tempFile, ",", firstLineIsHeader: true);
 
             Assert.Equal("say \"hi\"", dt!.Rows[0]["Desc"]!.ToString());
+        }
+
+        [Fact]
+        public void ToDataTable_EscapedDoubleQuoteAtEndOfLastColumn()
+        {
+            // 转义双引号位于最后一个字段的结尾（行尾），原实现同样会误判为未闭包
+            File.WriteAllText(_tempFile, "Name,Desc\nTom,\"He said \"\"hi\"\"\"\n", new System.Text.UTF8Encoding(false));
+
+            var dt = CsvUtil.ToDataTable(_tempFile, ",", firstLineIsHeader: true);
+
+            Assert.NotNull(dt);
+            Assert.Equal(2, dt!.Columns.Count);
+            Assert.Equal(1, dt.Rows.Count);
+            Assert.Equal("He said \"hi\"", dt.Rows[0]["Desc"]!.ToString());
+        }
+
+        [Fact]
+        public void ToDataTable_EscapedDoubleQuoteInMiddleOfField()
+        {
+            // 转义双引号位于字段中间（两侧还有其他内容），验证不会吞掉后续字符
+            File.WriteAllText(_tempFile, "Name,Desc,Age\nTom,\"a \"\"b\"\" c\",20\n", new System.Text.UTF8Encoding(false));
+
+            var dt = CsvUtil.ToDataTable(_tempFile, ",", firstLineIsHeader: true);
+
+            Assert.NotNull(dt);
+            Assert.Equal(3, dt!.Columns.Count);
+            Assert.Equal(1, dt.Rows.Count);
+            Assert.Equal("a \"b\" c", dt.Rows[0]["Desc"]!.ToString());
+            Assert.Equal("20", dt.Rows[0]["Age"]!.ToString());
         }
 
         #endregion
