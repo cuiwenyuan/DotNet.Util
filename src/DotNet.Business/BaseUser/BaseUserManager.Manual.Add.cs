@@ -117,12 +117,12 @@ namespace DotNet.Business
                 userLogonEntity.CheckIpAddress = BaseSystemInfo.CheckIpAddress ? 1 : 0;
                 //此处设置密码强度级别
                 userLogonEntity.PasswordStrength = SecretUtil.GetUserPassWordRate(userLogonEntity.UserPassword);
-                //密码盐
-                userLogonEntity.Salt = RandomUtil.GetString(20);
+                //密码盐（R9-1：新格式盐内嵌于哈希字符串，Salt 列置空）
+                userLogonEntity.Salt = string.Empty;
                 // 若是系统需要用加密的密码，这里需要加密密码。
-                if (BaseSystemInfo.ServerEncryptPassword)
+                if (BaseSystemInfo.ServerEncryptPassword && !userLogonEntity.UserPassword.IsNullOrEmpty())
                 {
-                    userLogonEntity.UserPassword = EncryptUserPassword(userLogonEntity.UserPassword, userLogonEntity.Salt);
+                    userLogonEntity.UserPassword = SecretUtil.HashPassword(userLogonEntity.UserPassword);
                     // 安全通讯密码、交易密码也生成好
                     // userLogonEntity.UserPassword = this.EncryptUserPassword(entity.CommunicationPassword);
                 }

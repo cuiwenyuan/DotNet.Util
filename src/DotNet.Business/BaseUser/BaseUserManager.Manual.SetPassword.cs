@@ -53,6 +53,57 @@ namespace DotNet.Business
         }
 
         /// <summary>
+        /// 校验用户输入口令与存储哈希是否匹配（R9-1 双路径）。
+        /// 新格式（pbkdf2$ 前缀）走 PBKDF2 校验；老格式（MD5，有盐/无盐）走 EncryptUserPassword 兼容校验。
+        /// </summary>
+        /// <param name="enteredPassword">用户输入的原始口令</param>
+        /// <param name="storedHash">存储的口令哈希（UserPassword 字段）</param>
+        /// <param name="storedSalt">存储的盐（Salt 字段，老格式使用；新格式盐已内嵌，可传 null/空）</param>
+        /// <param name="isLegacyFormat">传出：存储哈希是否为老格式（用于触发惰性升级）</param>
+        /// <returns>匹配返回 true</returns>
+        public virtual bool VerifyUserPassword(string enteredPassword, string storedHash, string storedSalt, out bool isLegacyFormat)
+        {
+            isLegacyFormat = false;
+            if (storedHash.IsNullOrEmpty())
+            {
+                // 库里无密码：仅当输入也为空才算匹配
+                return enteredPassword.IsNullOrEmpty();
+            }
+            // 新格式：PBKDF2（盐内嵌）
+            if (storedHash.StartsWith(SecretUtil.PasswordHashPrefix, StringComparison.Ordinal))
+            {
+                return SecretUtil.VerifyPassword(enteredPassword, storedHash);
+            }
+            // 老格式（MD5，有盐或无盐），保持向后兼容
+            isLegacyFormat = true;
+            var legacy = EncryptUserPassword(enteredPassword, storedSalt);
+            return string.Equals(legacy, storedHash, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// 惰性升级老格式口令哈希为 PBKDF2（R9-1）。best-effort：升级失败不阻断登录。
+        /// </summary>
+        private void UpgradeUserPasswordHash(int userId, string plainPassword)
+        {
+            try
+            {
+                var newHash = SecretUtil.HashPassword(plainPassword);
+                var parameters = new List<KeyValuePair<string, object>>
+                {
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserPassword, newHash),
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldSalt, string.Empty),
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldChangePasswordTime, DateTime.Now)
+                };
+                new BaseUserLogonManager(DbHelper, UserInfo).Update(
+                    new KeyValuePair<string, object>(BaseUserLogonEntity.FieldUserId, userId), parameters);
+            }
+            catch
+            {
+                // 惰性升级失败不应阻断登录；下次成功登录会再次尝试
+            }
+        }
+
+        /// <summary>
         /// 设置密码
         /// </summary>
         /// <param name="userId">被设置的用户主键</param>
@@ -91,11 +142,11 @@ namespace DotNet.Business
             */
             var encryptPassword = newPassword;
             var salt = string.Empty;
-            // 加密密码
-            if (BaseSystemInfo.ServerEncryptPassword)
+            // 加密密码：R9-1 改用加盐 PBKDF2，盐内嵌于哈希字符串，不再单独写 Salt 列
+            // 口令为空时与原 Md5 行为一致（返回空），不抛异常
+            if (BaseSystemInfo.ServerEncryptPassword && !newPassword.IsNullOrEmpty())
             {
-                salt = RandomUtil.GetString(20);
-                encryptPassword = EncryptUserPassword(newPassword, salt);
+                encryptPassword = SecretUtil.HashPassword(newPassword);
             }
             // 设置密码字段
             var parameters = new List<KeyValuePair<string, object>>

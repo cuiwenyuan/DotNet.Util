@@ -46,6 +46,12 @@ namespace DotNet.Util
         public static bool ServerEncryptPassword = true;
 
         /// <summary>
+        /// 登录时自动把老格式（MD5）口令哈希惰性升级为新的 PBKDF2 哈希（R9-1）。
+        /// 存量用户首次成功登录后无感升级，无需批量迁移脚本。关闭则仅兼容校验、不重写。
+        /// </summary>
+        public static bool AutoUpgradePasswordHash = true;
+
+        /// <summary>
         /// 密码最小长度
         /// </summary>
         public static int PasswordMiniLength = 6;

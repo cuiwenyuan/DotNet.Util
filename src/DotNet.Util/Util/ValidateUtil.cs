@@ -132,6 +132,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool UnsafeCharacter(string expression)
         {
+            // 修复 R9-3：null 直接返回 false（不含任何不安全字符），避免 IndexOf 抛 NRE
+            if (expression == null)
+            {
+                return false;
+            }
             var result = false;
             if (!result)
             {
@@ -321,8 +326,10 @@ namespace DotNet.Util
             if (!string.IsNullOrWhiteSpace(email))
             {
                 email = email.Trim();
+                // R9-15：修复 TLD 长度上限 [a-zA-Z]{2,4} 误拒长 TLD（.travel/.engineering/.management 等）
+                // 及国际化域名（IDN，如 .中国）；放宽 TLD 为 [\p{L}]{2,} 并允许域名标签/TLD 含 Unicode 字母
                 const string regexString =
-                    @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                    @"^([\p{L}0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\p{L}0-9\-]+\.)+))([\p{L}]{2,}|[0-9]{1,3})(\]?)$";
                 // const string regexString =
                 //    @"^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
                 var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
@@ -337,6 +344,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool CheckEmail(string email)
         {
+            // 修复 R9-3：null 不是合法邮箱，返回 false，避免 email.Trim() 抛 NRE
+            if (email == null)
+            {
+                return false;
+            }
             var result = true;
             if (email.Trim().Length == 0)
             {
@@ -606,6 +618,11 @@ namespace DotNet.Util
         /// <returns>成功与否</returns>
         public static bool IsQq(string qq)
         {
+            // 修复 R9-3：null 直接返回 false，避免 Regex.IsMatch(null) 抛 ArgumentNullException
+            if (qq == null)
+            {
+                return false;
+            }
             // 最多10位
             var format = @"^[1-9]*[1-9][0-9]*$";
             return Regex.IsMatch(qq, format, RegexOptions.None, TimeSpan.FromSeconds(1));

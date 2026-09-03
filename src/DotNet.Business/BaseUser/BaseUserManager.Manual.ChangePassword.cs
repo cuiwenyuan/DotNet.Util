@@ -40,7 +40,6 @@ namespace DotNet.Business
                 var milliStart = Environment.TickCount;
             #endif
 
-            var encryptOldPassword = oldPassword;
             var encryptNewPassword = newPassword;
 
             BaseUserInfo userInfo = null;
@@ -61,14 +60,13 @@ namespace DotNet.Business
                 entity.UserPassword = string.Empty;
             }
 
-            // 加密密码
-            if (BaseSystemInfo.ServerEncryptPassword)
-            {
-                encryptOldPassword = EncryptUserPassword(oldPassword, entity.Salt);
-            }
+            // 校验原密码是否正确（R9-1 双路径：新 PBKDF2 / 老 MD5 兼容）
+            var oldPasswordOk = BaseSystemInfo.ServerEncryptPassword
+                ? VerifyUserPassword(oldPassword, entity.UserPassword, entity.Salt, out _)
+                : string.Equals(entity.UserPassword, oldPassword, StringComparison.CurrentCultureIgnoreCase);
 
             // 密码错误
-            if (!entity.UserPassword.Equals(encryptOldPassword, StringComparison.CurrentCultureIgnoreCase))
+            if (!oldPasswordOk)
             {
                 Status = Status.OldPasswordError;
                 StatusCode = Status.OldPasswordError.ToString();
@@ -102,17 +100,16 @@ namespace DotNet.Business
             }
             
             // 更改密码，同时修改密码的修改时间，这里需要兼容多数据库
-            var salt = string.Empty;
-            if (BaseSystemInfo.ServerEncryptPassword)
+            if (BaseSystemInfo.ServerEncryptPassword && !newPassword.IsNullOrEmpty())
             {
-                salt = RandomUtil.GetString(20);
-                encryptNewPassword = EncryptUserPassword(newPassword, salt);
+                // R9-1 改用加盐 PBKDF2，盐内嵌于哈希字符串，Salt 列置空
+                encryptNewPassword = SecretUtil.HashPassword(newPassword);
             }
             var sqlBuilder = new SqlBuilder(DbHelper);
             sqlBuilder.BeginUpdate(BaseUserLogonEntity.CurrentTableName);
             if (BaseSystemInfo.ServerEncryptPassword)
             {
-                sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, salt);
+                sqlBuilder.SetValue(BaseUserLogonEntity.FieldSalt, string.Empty);
             }
             // 宋彪：此处增加更新密码强度级别
             sqlBuilder.SetValue(BaseUserLogonEntity.FieldPasswordStrength, SecretUtil.GetUserPassWordRate(newPassword));

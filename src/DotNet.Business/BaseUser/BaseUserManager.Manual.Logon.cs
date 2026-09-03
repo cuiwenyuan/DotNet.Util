@@ -1438,11 +1438,17 @@ namespace DotNet.Business
                     // 2015-11-11 吉日嘎拉 是否检查密码，还有其他方式的登录、例如验证码登录，OpenId登录等
                     if (checkUserPassword)
                     {
-                        if (BaseSystemInfo.ServerEncryptPassword && SystemEncryptPassword)
+                    if (BaseSystemInfo.ServerEncryptPassword && SystemEncryptPassword)
+                    {
+                        errorMark = 20;
+                        // R9-1 双路径校验：新 PBKDF2 / 老 MD5 兼容；老格式校验通过则惰性升级
+                        var matched = VerifyUserPassword(password, userLogonEntity.UserPassword, userLogonEntity.Salt, out var isLegacyHash);
+                        if (matched && isLegacyHash && BaseSystemInfo.AutoUpgradePasswordHash)
                         {
-                            errorMark = 20;
-                            password = EncryptUserPassword(password, userLogonEntity.Salt);
+                            UpgradeUserPasswordHash(userLogonEntity.UserId, password);
                         }
+                        password = matched ? userLogonEntity.UserPassword : null;
+                    }
 
                         // 11. 密码是否正确(null 与空看成是相等的)
                         if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
@@ -1742,7 +1748,13 @@ namespace DotNet.Business
                 // 03. 系统是否采用了密码加密策略？
                 if (BaseSystemInfo.ServerEncryptPassword)
                 {
-                    password = EncryptUserPassword(password, userLogonEntity.Salt);
+                    // R9-1 双路径校验：新 PBKDF2 / 老 MD5 兼容；老格式校验通过则惰性升级
+                    var matched = VerifyUserPassword(password, userLogonEntity.UserPassword, userLogonEntity.Salt, out var isLegacyHash);
+                    if (matched && isLegacyHash && BaseSystemInfo.AutoUpgradePasswordHash)
+                    {
+                        UpgradeUserPasswordHash(userLogonEntity.UserId, password);
+                    }
+                    password = matched ? userLogonEntity.UserPassword : null;
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)

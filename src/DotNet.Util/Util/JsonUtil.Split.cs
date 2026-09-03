@@ -57,7 +57,9 @@ namespace DotNet.Util
 
                 if (!json.IsNullOrEmpty())
                 {
-                    var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    // 修复 R9-5：JSON 键大小写敏感，原 OrdinalIgnoreCase 会导致 "Id"/"id" 这类
+                    // 大小写变体键被 ContainsKey 判重而静默丢数据；改用 Ordinal。
+                    var dic = new Dictionary<string, string>(StringComparer.Ordinal);
                     var key = string.Empty;
                     var value = PoolUtil.StringBuilder.Get();
                     var cs = new CharState();
@@ -127,7 +129,8 @@ namespace DotNet.Util
                                 result.Add(dic);
                                 if (cs.ArrayStart)//�������顣
                                 {
-                                    dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                                    // 修复 R9-5：数组内每个对象同样用 Ordinal（见上）
+                                    dic = new Dictionary<string, string>(StringComparer.Ordinal);
                                 }
                             }
                         }

@@ -22,25 +22,9 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetJsonStr(Dictionary<string, string> jsonDict)
         {
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("{");
-            var i = 0;
-            foreach (var jd in jsonDict)
-            {
-                if (i != (jsonDict.Count - 1))
-                {
-                    sb.Append("\"" + jd.Key + "\":\"" + jd.Value + "\",");
-                }
-                else
-                {
-                    sb.Append("\"" + jd.Key + "\":\"" + jd.Value + "\"");
-                }
-
-                i++;
-            }
-
-            sb.Append("}");
-            return sb.Return();
+            // 修复 R9-6：原实现字符串拼接且不转义，键值含 " \ 控制字符时产出非法 JSON；
+            // 改用 Newtonsoft 序列化（自动正确转义），并兼容 null 入参。
+            return JsonConvert.SerializeObject(jsonDict ?? new Dictionary<string, string>());
         }
 
         /// <summary>
@@ -104,7 +88,8 @@ namespace DotNet.Util
                 {
                     #region 字符串截取
                     key = "\"" + key.Trim('"') + "\"";
-                    var index = json.IndexOf(key, StringComparison.OrdinalIgnoreCase) + key.Length + 1;
+                    // 修复 R9-5：JSON 键大小写敏感，回退字符串截取也用 Ordinal（与 Split 一致）
+                    var index = json.IndexOf(key, StringComparison.Ordinal) + key.Length + 1;
                     if (index > key.Length + 1)
                     {
                         var end = 0;

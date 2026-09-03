@@ -39,6 +39,20 @@ namespace DotNet.Util.Tests.Util
         }
 
         [Fact]
+        public void IsEmail_AcceptsLongTldAndIdn()
+        {
+            // R9-15：原正则 [a-zA-Z]{2,4} 误拒长 TLD 与国际化域名（IDN）
+            Assert.True(ValidateUtil.IsEmail("user@example.travel"));       // 6 字母 TLD
+            Assert.True(ValidateUtil.IsEmail("user@example.engineering"));  // 11 字母 TLD
+            Assert.True(ValidateUtil.IsEmail("user@example.management"));   // 10 字母 TLD
+            Assert.True(ValidateUtil.IsEmail("用户@例子.中国"));              // IDN 域名 + TLD
+            Assert.True(ValidateUtil.IsEmail("user@example.photography"));  // 11 字母 TLD
+            // 仍应拒绝非法格式
+            Assert.False(ValidateUtil.IsEmail("abc"));
+            Assert.False(ValidateUtil.IsEmail("user@.com"));
+        }
+
+        [Fact]
         public void IsMobile_Works()
         {
             Assert.True(ValidateUtil.IsMobile("13800138000"));
@@ -129,5 +143,40 @@ namespace DotNet.Util.Tests.Util
             // 修复：原实现 ipAddress.Split 会抛 NullReferenceException
             Assert.False(ValidateUtil.IsIpv6(null));
         }
+
+        #region R9-3 公共校验方法 null 守卫（避免 NRE / ArgumentNullException）
+        [Fact]
+        public void UnsafeCharacter_Null_DoesNotThrow()
+        {
+            // 修复 R9-3：expression.IndexOf 对 null 会抛 NRE
+            Assert.False(ValidateUtil.UnsafeCharacter(null));
+            // 正常行为仍正确
+            Assert.True(ValidateUtil.UnsafeCharacter("a'b"));
+            Assert.True(ValidateUtil.UnsafeCharacter("a<b"));
+            Assert.False(ValidateUtil.UnsafeCharacter("abc"));
+        }
+
+        [Fact]
+        public void CheckEmail_Null_DoesNotThrow()
+        {
+            // 修复 R9-3：email.Trim() 对 null 会抛 NRE；null 不是合法邮箱 → false
+            Assert.False(ValidateUtil.CheckEmail(null));
+            // 正常行为仍正确
+            Assert.True(ValidateUtil.CheckEmail("troy.cui@qq.com"));
+            Assert.True(ValidateUtil.CheckEmail(""));
+            Assert.False(ValidateUtil.CheckEmail("abc"));
+        }
+
+        [Fact]
+        public void IsQq_Null_DoesNotThrow()
+        {
+            // 修复 R9-3：Regex.IsMatch(null) 会抛 ArgumentNullException
+            Assert.False(ValidateUtil.IsQq(null));
+            // 正常行为仍正确
+            Assert.True(ValidateUtil.IsQq("123456"));
+            Assert.False(ValidateUtil.IsQq("0"));
+            Assert.False(ValidateUtil.IsQq("abc"));
+        }
+        #endregion
     }
 }

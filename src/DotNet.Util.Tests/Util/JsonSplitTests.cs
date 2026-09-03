@@ -64,13 +64,16 @@ namespace DotNet.Util.Tests.Util
         }
 
         [Fact]
-        public void Split_KeyIsCaseInsensitive()
+        public void Split_KeyIsCaseSensitive()
         {
+            // 修复 R9-5：JSON 键大小写敏感，原测试把 OrdinalIgnoreCase 误当预期；
+            // 实际应严格按 "Name" 存储，大小写变体不应互相覆盖、也不应被查到。
             var result = Split("{\"Name\":\"Troy\"}");
 
             Assert.Single(result);
-            Assert.Equal("Troy", result[0]["name"]);
-            Assert.Equal("Troy", result[0]["NAME"]);
+            Assert.Equal("Troy", result[0]["Name"]);
+            Assert.False(result[0].ContainsKey("name"));
+            Assert.False(result[0].ContainsKey("NAME"));
         }
 
         [Fact]

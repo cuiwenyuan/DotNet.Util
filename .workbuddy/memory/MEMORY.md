@@ -26,6 +26,11 @@ dotnet build src/DotNet.Util/DotNet.Util.csproj -c Debug \
 - `dotnet build-server shutdown` 对此锁无效（持锁者是 IDE，不是构建服务器）。
 - 已知 flaky：`HttpUtilTests` 在全套并行执行时偶发 1 个失败（本机临时端口
   `HttpListener` 争用），单独复跑 8/8 通过，与业务改动无关，不必排查。
+- ⚠️ **另有一类更严重的环境故障（与 obj 锁无关）**：本机 SDK 10.0.400 在
+  `restore` 阶段即报 `NuGet.targets(782): error : Value cannot be null (Parameter 'path1')`，
+  连 `dotnet new console` 全新项目都失败；`build-server shutdown`/`nuget locals` 同样报错；
+  上述 `Generate*=false` 参数**对此无效**（它是 NuGet 故障，非 obj 锁）。疑似 Agent 模式 IDE
+  持整方案所致。需在**未开本方案的独立终端**或重启 SDK/IDE 后验证；改动往往只能在用户正常终端编译。
 
 ## 基线数据
 - 测试数基线（2026-09-01 收尾后）：**1090 个（1089 通过 / 0 失败 / 0 跳过，排除集成测试）**。

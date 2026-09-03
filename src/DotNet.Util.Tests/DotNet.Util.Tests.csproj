@@ -40,11 +40,13 @@
     <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
     <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
     <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
+    <ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj" SetTargetFramework="TargetFramework=net48" Condition="'$(TargetFramework)' == 'net48'" />
     <!-- net8.0 默认引用（多 TFM 库自动选 net8 资产） -->
     <ProjectReference Include="..\DotNet.Util\DotNet.Util.csproj" Condition="'$(TargetFramework)' != 'net48'" />
     <ProjectReference Include="..\DotNet.Util.Cache\DotNet.Util.Cache.csproj" Condition="'$(TargetFramework)' != 'net48'" />
     <ProjectReference Include="..\DotNet.Util.Db\DotNet.Util.Db.csproj" Condition="'$(TargetFramework)' != 'net48'" />
     <ProjectReference Include="..\DotNet.Util.Plus\DotNet.Util.Plus.csproj" Condition="'$(TargetFramework)' != 'net48'" />
+    <ProjectReference Include="..\DotNet.Business\DotNet.Business.csproj" Condition="'$(TargetFramework)' != 'net48'" />
   </ItemGroup>
 
 </Project>

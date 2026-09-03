@@ -168,5 +168,55 @@ namespace DotNet.Util.Tests.Util
         }
 
         #endregion
+
+        #region R9-5 / R9-6 回归
+
+        [Fact]
+        public void Split_PreservesCaseVariantKeys()
+        {
+            // 修复 R9-5：原 OrdinalIgnoreCase 会把 "Id"/"id" 判重而静默丢数据
+            var dict = JsonUtil.Split("{\"Id\":\"1\",\"id\":\"2\"}");
+
+            Assert.NotNull(dict);
+            Assert.True(dict!.ContainsKey("Id"));
+            Assert.True(dict.ContainsKey("id"));
+            Assert.Equal("1", dict["Id"]);
+            Assert.Equal("2", dict["id"]);
+        }
+
+        [Fact]
+        public void GetJosnValue_CaseSensitiveLookup()
+        {
+            // 修复 R9-5：按 "id" 取应得 2，而非被 "Id" 覆盖
+            var value = JsonUtil.GetJosnValue("{\"Id\":\"1\",\"id\":\"2\"}", "id");
+
+            Assert.Equal("2", value);
+        }
+
+        [Fact]
+        public void GetJsonStr_EscapesSpecialChars()
+        {
+            // 修复 R9-6：键值含 " \ 换行时必须产出合法 JSON（可反序列化回去）
+            var dict = new Dictionary<string, string>
+            {
+                { "k", "a\"b\\c" },
+                { "note", "line1\nline2" }
+            };
+            var json = JsonUtil.GetJsonStr(dict);
+
+            var back = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            Assert.NotNull(back);
+            Assert.Equal("a\"b\\c", back!["k"]);
+            Assert.Equal("line1\nline2", back["note"]);
+        }
+
+        [Fact]
+        public void GetJsonStr_NullDict_ReturnsEmptyObject()
+        {
+            // 修复 R9-6：null 入参不再 NRE，返回 "{}"
+            Assert.Equal("{}", JsonUtil.GetJsonStr(null));
+        }
+
+        #endregion
     }
 }
