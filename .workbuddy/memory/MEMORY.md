@@ -26,11 +26,18 @@ dotnet build src/DotNet.Util/DotNet.Util.csproj -c Debug \
 - `dotnet build-server shutdown` 对此锁无效（持锁者是 IDE，不是构建服务器）。
 - 已知 flaky：`HttpUtilTests` 在全套并行执行时偶发 1 个失败（本机临时端口
   `HttpListener` 争用），单独复跑 8/8 通过，与业务改动无关，不必排查。
-- ⚠️ **另有一类更严重的环境故障（与 obj 锁无关）**：本机 SDK 10.0.400 在
-  `restore` 阶段即报 `NuGet.targets(782): error : Value cannot be null (Parameter 'path1')`，
-  连 `dotnet new console` 全新项目都失败；`build-server shutdown`/`nuget locals` 同样报错；
-  上述 `Generate*=false` 参数**对此无效**（它是 NuGet 故障，非 obj 锁）。疑似 Agent 模式 IDE
-  持整方案所致。需在**未开本方案的独立终端**或重启 SDK/IDE 后验证；改动往往只能在用户正常终端编译。
+- ⚠️ **另有一类更严重的环境故障（与 obj 锁无关）**：沙箱 Git Bash 会话中 `PROGRAMDATA`/`APPDATA`/`USERPROFILE`/`NUGET_PACKAGES` 等被清空 → `NuGet.targets(782) GetRestoreSettingsTask → NuGetEnvironment.GetFolderPath → Path.Combine(null)` 抛 `Value cannot be null (Parameter 'path1')`；`dotnet restore`/`build`/`test`/`nuget locals` 全面报此错（连 `dotnet new console` 也失败）。`cmd.exe`/`powershell.exe`/`reg.exe` 被沙箱安全策略拦截，不能借它们补环境。
+  **已验证可用的绕过法**（在 bash 内补全 env + 跳过 restore）：
+  ```bash
+  export NUGET_PACKAGES='C:/Users/Troy/.nuget/packages' APPDATA='C:/Users/Troy/AppData/Roaming' \
+         LOCALAPPDATA='C:/Users/Troy/AppData/Local' USERPROFILE='C:/Users/Troy' \
+         PROGRAMDATA='C:/ProgramData' ALLUSERSPROFILE='C:/ProgramData' HOME='C:/Users/Troy'
+  # 项目 obj/project.assets.json 已存在 → 用 --no-restore 跳过崩溃的 restore 设置求值阶段
+  dotnet build <proj>.csproj -c Debug -f net8.0 --no-restore \
+    -p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false
+  ```
+  注：`--no-restore` 仅绕 restore，**不**解决"全方案无 --no-restore 编译"（那仍会触发 path1）。本机（非沙箱）VS/PowerShell 无此故障。
+- ⚠️ **CS0579 坑（多 TFM 验证编译时）**：SDK 风格工程默认 glob `**/*.cs`（仅排除 obj/bin）。**绝不要把自定义 `OutputPath`/`IntermediateOutputPath` 指向工程目录树下**（如 `verify_obj/`）——其内自动生成的 `*.AssemblyAttributes.cs`/`*.AssemblyInfo.cs` 声明 `[assembly: TargetFrameworkAttribute(...)]`，会被当成源码一起编 → 与 SDK 生成的重复 → `CS0579 Duplicate TargetFrameworkAttribute`，且多工程批量爆发。临时验证输出目录必须建在**工程树之外**（如 `/tmp/verify`）并及时清理。
 
 ## 基线数据
 - 测试数基线（2026-09-01 收尾后）：**1090 个（1089 通过 / 0 失败 / 0 跳过，排除集成测试）**。

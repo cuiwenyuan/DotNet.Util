@@ -476,12 +476,12 @@ namespace DotNet.Util
                                 tarR.IsItalic = srcR.IsItalic;
                                 tarR.IsCapitalized = srcR.IsCapitalized;
                                 tarR.SetColor(srcR.GetColor());
-#if NET6_0_OR_GREATER
-                                // NPOI 2.7.x（.NET Core / 5+）：XWPFRun.Underline 为可写属性（SetUnderline 方法已移除）
-                                tarR.Underline = srcR.Underline;
-#else
-                                // NPOI 2.5.x（.NET Framework）：Underline 为只读属性，使用 SetUnderline 方法
+#if NETFRAMEWORK
+                                // .NET Framework（NPOI 2.5.6）：Underline 为只读属性，使用 SetUnderline 方法
                                 tarR.SetUnderline(srcR.Underline);
+#else
+                                // 非 Framework（netstandard / .NET 5+，NPOI 2.7.6）：XWPFRun.Underline 为可写属性（SetUnderline 已移除）
+                                tarR.Underline = srcR.Underline;
 #endif
                                 tarR.CharacterSpacing = srcR.CharacterSpacing;
                             }
