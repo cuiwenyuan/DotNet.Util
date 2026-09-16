@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -673,131 +673,131 @@ namespace DotNet.Business
             switch (statusCode)
             {
                 case Status.AccessDeny:
-                    result = Msg.Get("Msg0800");
+                    result = Msg.Get("System.AccessDenied");
                     break;
                 case Status.DbError:
-                    result = Msg.Get("Msg0002");
+                    result = Msg.Get("System.DbConnectionFailed");
                     break;
                 case Status.Error:
-                    result = Msg.Get("Msg0001");
+                    result = Msg.Get("Common.UnknownError");
                     break;
                 case Status.Ok:
-                    result = Msg.Get("Msg9965");
+                    result = Msg.Get("Result.ExecuteSuccess");
                     break;
                 case Status.UserNotFound:
-                    result = Msg.Get("Msg9966");
+                    result = Msg.Get("Logon.UserNotFoundCaseSensitive");
                     break;
                 case Status.PasswordError:
-                    result = Msg.Get("Msg9967");
+                    result = Msg.Get("Logon.PasswordIncorrectCaseSensitive");
                     break;
                 case Status.LogonDeny:
-                    result = Msg.Get("Msg9968");
+                    result = Msg.Get("Logon.AccountDisabled");
                     break;
                 case Status.ErrorOnline:
-                    result = Msg.Get("Msg0048");
+                    result = Msg.Get("Logon.UserAlreadyOnline");
                     break;
                 case Status.ErrorMacAddress:
-                    result = Msg.Get("Msg0049");
+                    result = Msg.Get("Logon.MacAddressNotAllowed");
                     break;
                 case Status.ErrorIpAddress:
-                    result = Msg.Format("Msg0050", UserInfo.IpAddress);
+                    result = Msg.Format("Logon.IpAddressRestricted", UserInfo.IpAddress);
                     break;
                 case Status.ErrorOnlineLimit:
-                    result = Msg.Get("Msg0051");
+                    result = Msg.Get("Logon.MaxOnlineUsersReached");
                     break;
                 case Status.PasswordCanNotBeNull:
-                    result = Msg.Format("Msg0007", Msg.Get("Msg9961"));
+                    result = Msg.Format("Common.ParameterRequired", Msg.Get("Common.OldPassword"));
                     break;
                 case Status.PasswordCanNotBeRepeat:
-                    result = Msg.Format("Msg0102");
+                    result = Msg.Format("Logon.PasswordSequentialNotAllowed");
                     break;
                 case Status.ErrorDeleted:
-                    result = Msg.Get("Msg0005");
+                    result = Msg.Get("Common.RecordNotFound");
                     break;
                 case Status.SetPasswordOk:
-                    result = Msg.Format("Msg9963", Msg.Get("Msg9964"));
+                    result = Msg.Format("Result.SetSuccess", Msg.Get("Common.Password"));
                     break;
                 case Status.OldPasswordError:
-                    result = Msg.Format("Msg0040", Msg.Get("Msg9961"));
+                    result = Msg.Format("Common.ItemError", Msg.Get("Common.OldPassword"));
                     break;
                 case Status.ChangePasswordOk:
-                    result = Msg.Format("Msg9962", Msg.Get("Msg9964"));
+                    result = Msg.Format("Result.ModifySuccess", Msg.Get("Common.Password"));
                     break;
                 case Status.OkAdd:
-                    result = Msg.Get("Msg0009");
+                    result = Msg.Get("Result.AddSuccess");
                     break;
                 case Status.CanNotLock:
-                    result = Msg.Get("Msg0043");
+                    result = Msg.Get("Common.LockFailed");
                     break;
                 case Status.LockOk:
-                    result = Msg.Get("Msg0044");
+                    result = Msg.Get("Common.LockSuccess");
                     break;
                 case Status.OkUpdate:
-                    result = Msg.Get("Msg0010");
+                    result = Msg.Get("Result.UpdateSuccess");
                     break;
                 case Status.OkDelete:
-                    result = Msg.Get("Msg0013");
+                    result = Msg.Get("Result.DeleteSuccess");
                     break;
                 case Status.Exist:
                     // "编号已存在,不可以重复."
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9955"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Data"));
                     break;
                 case Status.ErrorCodeExist:
                     // "编号已存在,不可以重复."
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9977"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Code"));
                     break;
                 case Status.ErrorNameExist:
                     // "名称已存在,不可以重复."
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9978"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Name"));
                     break;
                 case Status.ErrorValueExist:
                     // "值已存在,不可以重复."
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9800"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Value"));
                     break;
                 case Status.ErrorUserExist:
                     // "用户名已存在,不可以重复."
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9957"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.UserName"));
                     break;
                 case Status.ErrorDataRelated:
-                    result = Msg.Get("Msg0033");
+                    result = Msg.Get("Common.DataReferenced");
                     break;
                 case Status.ErrorChanged:
-                    result = Msg.Get("Msg0006");
+                    result = Msg.Get("Common.DataChangedByOthers");
                     break;
 
                 case Status.UserNotEmail:
-                    result = Msg.Get("Msg9910");
+                    result = Msg.Get("Logon.EmailNotConfigured");
                     break;
 
                 case Status.UserLocked:
-                    result = Msg.Get("Msg9911");
+                    result = Msg.Get("Logon.AccountLockedRetryAfterOneMinute");
                     break;
 
                 case Status.WaitForAudit:
                 case Status.UserNotActive:
-                    result = Msg.Get("Msg9912");
+                    result = Msg.Get("Logon.AccountNotActivated");
                     break;
 
                 case Status.UserIsActivate:
-                    result = Msg.Get("Msg9913");
+                    result = Msg.Get("Logon.AccountAlreadyActivated");
                     break;
 
                 case Status.NotFound:
-                    result = Msg.Get("Msg9956");
+                    result = Msg.Get("Common.NoRecordMatched");
                     break;
 
                 case Status.ErrorLogon:
-                    result = Msg.Get("Msg9000");
+                    result = Msg.Get("Logon.UserNameOrPasswordIncorrect");
                     break;
 
                 case Status.UserDuplicate:
-                    result = Msg.Format("Msg0008", Msg.Get("Msg9957"));
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.UserName"));
                     break;
                 case Status.ServiceNotStart:
-                    result = Msg.Get("Msg9660");
+                    result = Msg.Get("System.ServiceNotStarted");
                     break;
                 case Status.ServiceExpired:
-                    result = Msg.Get("Msg9665");
+                    result = Msg.Get("System.ServiceExpired");
                     break;
             }
             StatusMessage = result;

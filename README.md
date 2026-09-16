@@ -34,7 +34,8 @@ Repository layout (overview)
 
 Localization (multi-language output messages)
 - Output messages support multiple languages. **Default is Chinese (zh-CN)**, with **English (en)** as the first built-in language pack.
-- Access localized text via the `Msg` layer: `Msg.Get("Msg0001")`, `Msg.Format("Msg0007", arg)`, switch with `Msg.CurrentLanguage = "en"`.
+- Access localized text via the `Msg` layer: `Msg.Get("Common.UnknownError")`, `Msg.Format("Common.ParameterRequired", arg)`, switch with `Msg.CurrentLanguage = "en"`.
+- Keys are semantic (`<Prefix>.<PascalCase>`, e.g. `Common.*` / `Logon.*` / `Validation.*`); the legacy `Msg####` numbered keys were renamed on 2026-09-16 (see `Msg-Key-Rename-Map.md`).
 - Full guide (key naming, fallback chain, enum descriptions, adding languages, JSON overrides): see [`Localization.md`](Localization.md).
 
 Documentation and next steps
@@ -69,9 +70,9 @@ https://www.nuget.org/packages?q=wangcaisoft
 输出消息已支持多语言，**默认中文（zh-CN）**，内置第一语言包**英文（en）**。
 
 ```csharp
-Msg.Get("Msg0001");              // 发生未知错误。
+Msg.Get("Common.UnknownError");              // 发生未知错误。
 Msg.CurrentLanguage = "en";
-Msg.Get("Msg0001");              // An unknown error occurred.
+Msg.Get("Common.UnknownError");              // An unknown error occurred.
 ```
 
 适用范围：异常消息、业务状态消息、日志、控制台输出、`AppMessage` 消息键、枚举描述。

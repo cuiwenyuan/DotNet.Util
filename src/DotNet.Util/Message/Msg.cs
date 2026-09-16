@@ -78,7 +78,7 @@ namespace DotNet.Util
         /// 按当前语言取得消息。缺失时依次回退：中性语言 → 默认语言(zh-CN) → 键本身。
         /// 键区分大小写，须与语言包中的键完全一致。
         /// </summary>
-        /// <param name="key">消息键，如 Msg0001、Enum.Status.DbError</param>
+        /// <param name="key">消息键，如 Common.UnknownError、Enum.Status.DbError</param>
         /// <returns>消息文本</returns>
         public static string Get(string key)
         {
@@ -329,7 +329,7 @@ namespace DotNet.Util
 
             // 内层键字典用 Ordinal：键由代码生成、调用点也是精确字面量，无需忽略大小写，
             // 且可避免 hash 开销；外层语言名（culture）仍用 OrdinalIgnoreCase 容忍 "en-us"。
-            // 注意：这意味着消息键区分大小写，Msg.Get("msg0001") 不会命中 "Msg0001"。
+            // 注意：这意味着消息键区分大小写，Msg.Get("common.unknownerror") 不会命中 "Common.UnknownError"。
             var pack = Packs.GetOrAdd(culture,
                 _ => new ConcurrentDictionary<string, string>(StringComparer.Ordinal));
 
@@ -349,7 +349,7 @@ namespace DotNet.Util
         /// JSON 中的键须与语言包键大小写完全一致，否则不会覆盖到目标词条。
         /// </summary>
         /// <param name="culture">语言，如 en</param>
-        /// <param name="path">JSON 文件绝对路径，内容形如 {"Msg0001":"..."}</param>
+        /// <param name="path">JSON 文件绝对路径，内容形如 {"Common.UnknownError":"..."}</param>
         public static void LoadJsonOverride(string culture, string path)
         {
             if (string.IsNullOrEmpty(culture) || string.IsNullOrEmpty(path) || !File.Exists(path))

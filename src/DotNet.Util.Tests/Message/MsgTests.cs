@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -202,7 +202,16 @@ namespace DotNet.Util.Tests.Message
         {
             Msg.Clear();
 
-            // 中文包词条由 AppMessage.MsgXXXX 字段同步而来，若字段被修改而未同步语言包，此用例会失败
+            // 语言包键已于 2026-09-16 由 Msg#### 编号改为语义键（Common.* / Logon.* …），
+            // 而 AppMessage.MsgXXXX 字段名保持不变（二进制兼容），因此不能再用字段名查语言包。
+            // 改为校验：每个 AppMessage 字段的中文取值，都必须在中文语言包里存在。
+            // 若字段值被修改而未同步语言包，此用例会失败。
+            var packValues = new HashSet<string>();
+            foreach (var key in Msg.GetKeys("zh-CN"))
+            {
+                packValues.Add(Msg.Get(key));
+            }
+
             var fields = typeof(AppMessage).GetFields(BindingFlags.Public | BindingFlags.Static);
             var count = 0;
             foreach (var field in fields)
@@ -213,7 +222,8 @@ namespace DotNet.Util.Tests.Message
                 }
 
                 var expected = (string)field.GetValue(null);
-                Assert.Equal(expected, Msg.Get(field.Name));
+                Assert.True(packValues.Contains(expected),
+                    "AppMessage." + field.Name + " 的值「" + expected + "」未同步到中文语言包。");
                 count++;
             }
 
@@ -229,16 +239,21 @@ namespace DotNet.Util.Tests.Message
             var zhKeys = new List<string>(Msg.GetKeys("zh-CN"));
             var enKeys = new List<string>(Msg.GetKeys("en"));
 
-            // 3 个通用键 + 248 个 AppMessage 键 + 70 个枚举描述键 + 16 个异常/状态消息键
-            // + 12 个日志键 + 4 个控制台键 + 33 个 Service 功能名键
-            // + 20 个 P5 补漏键（Logon 10 + Business 6 + Rmb 2 + Qqwry 1 + Sms 1）= 406
-            Assert.Equal(406, zhKeys.Count);
+            // 键命名体系（2026-09-16 改造后）：11 个业务前缀 + 基础设施前缀
+            // Common 74 / Logon 55 / Validation 35 / Confirm 30 / Result 21 / Ip 11
+            // System 8 / Org 7 / Workflow 6 / Sequence 5 / Sign 5 / File 3 = 260
+            // + Enum 70 + Service 33 + Log 12 + Exception 11 + Business 6 + Console 4 + Rmb 2 + Qqwry 1 + Sms 1 = 140
+            // 合计 400（原 406 键中 6 个因与已有语义键同值而被合并删除）
+            Assert.Equal(400, zhKeys.Count);
             Assert.Equal(zhKeys.Count, enKeys.Count);
-            Assert.Equal(248, zhKeys.Count(k => k.StartsWith("Msg", StringComparison.Ordinal)));
+            // 编号键已全部消失
+            Assert.Equal(0, zhKeys.Count(k => k.StartsWith("Msg", StringComparison.Ordinal)));
             Assert.Equal(70, zhKeys.Count(k => k.StartsWith(Msg.EnumKeyPrefix, StringComparison.Ordinal)));
             Assert.Equal(12, zhKeys.Count(k => k.StartsWith("Log.", StringComparison.Ordinal)));
             Assert.Equal(4, zhKeys.Count(k => k.StartsWith("Console.", StringComparison.Ordinal)));
             Assert.Equal(33, zhKeys.Count(k => k.StartsWith("Service.", StringComparison.Ordinal)));
+            // 每个键都必须含语义前缀，杜绝再次出现无含义编号
+            Assert.Equal(zhKeys.Count, zhKeys.Count(k => k.IndexOf('.') > 0));
         }
 
         [Fact]
@@ -246,12 +261,12 @@ namespace DotNet.Util.Tests.Message
         {
             Msg.Clear();
 
-            Assert.Equal("提示信息", Msg.Get("Msg0000"));
-            Assert.Equal("发生未知错误。", Msg.Get("Msg0001"));
+            Assert.Equal("提示信息", Msg.Get("Common.Prompt"));
+            Assert.Equal("发生未知错误。", Msg.Get("Common.UnknownError"));
 
             Msg.CurrentLanguage = "en";
-            Assert.Equal("Information", Msg.Get("Msg0000"));
-            Assert.Equal("An unknown error occurred.", Msg.Get("Msg0001"));
+            Assert.Equal("Information", Msg.Get("Common.Prompt"));
+            Assert.Equal("An unknown error occurred.", Msg.Get("Common.UnknownError"));
         }
 
         [Fact]
@@ -259,12 +274,12 @@ namespace DotNet.Util.Tests.Message
         {
             Msg.Clear();
 
-            // Msg0007 = "请输入{0}，不允许为空。"，Msg9961 = "原密码"
-            Assert.Equal("请输入原密码，不允许为空。", Msg.Format("Msg0007", Msg.Get("Msg9961")));
+            // Common.ParameterRequired = "请输入{0}，不允许为空。"，Common.OldPassword = "原密码"
+            Assert.Equal("请输入原密码，不允许为空。", Msg.Format("Common.ParameterRequired", Msg.Get("Common.OldPassword")));
 
             Msg.CurrentLanguage = "en";
             Assert.Equal("Please enter Current password; it cannot be empty.",
-                Msg.Format("Msg0007", Msg.Get("Msg9961")));
+                Msg.Format("Common.ParameterRequired", Msg.Get("Common.OldPassword")));
         }
 
         #endregion
@@ -584,8 +599,8 @@ namespace DotNet.Util.Tests.Message
         {
             Msg.Clear();
             // 内层消息键字典用 Ordinal：大小写不一致视为缺失，回退返回键本身
-            Assert.Equal("发生未知错误。", Msg.Get("Msg0001"));
-            Assert.Equal("msg0001", Msg.Get("msg0001"));
+            Assert.Equal("发生未知错误。", Msg.Get("Common.UnknownError"));
+            Assert.Equal("common.unknownerror", Msg.Get("common.unknownerror"));
         }
 
         [Fact]
@@ -593,8 +608,8 @@ namespace DotNet.Util.Tests.Message
         {
             Msg.Clear();
             // 外层语言名（culture）仍用 OrdinalIgnoreCase，容忍 "zh-cn" / "EN" 写法
-            Assert.Equal("发生未知错误。", Msg.Get("Msg0001", "zh-cn"));
-            Assert.Equal("An unknown error occurred.", Msg.Get("Msg0001", "EN"));
+            Assert.Equal("发生未知错误。", Msg.Get("Common.UnknownError", "zh-cn"));
+            Assert.Equal("An unknown error occurred.", Msg.Get("Common.UnknownError", "EN"));
         }
 
         #endregion
