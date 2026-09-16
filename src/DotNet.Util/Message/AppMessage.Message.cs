@@ -16,6 +16,14 @@ namespace DotNet.Util
     ///		<date>2007.05.17</date>
     /// </author> 
     /// </summary>
+    /// <remarks>
+    /// 多语言说明（2026-09-15）：
+    /// 本文件中的 Msg0000~Msg9999 静态字段<b>保持原样不变</b>（值固定为中文），以保证对外的二进制兼容性。
+    /// 需要随语言切换的输出消息，请改用 <see cref="Msg.Get(string)"/> / <see cref="Msg.Format(string, object[])"/>，
+    /// 例如 Msg.Get("Msg0001")、Msg.Format("Msg0007", "用户名")。
+    /// 语言包见 DotNet.Util.Resources.MsgPack：zh-CN 为默认语言，en 为第一个语言包。
+    /// 中文包词条由本文件的字段值同步而来，由单元测试 MsgTests.ZhCnPack_MatchesAppMessageFields 校验一致性。
+    /// </remarks>
     public partial class AppMessage
     {
         /// <summary>

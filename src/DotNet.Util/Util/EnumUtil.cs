@@ -19,13 +19,16 @@ namespace DotNet.Util
         public static string ToDescription(this Enum enumeration)
         {
             var type = enumeration.GetType();
-            var memInfo = type.GetMember(enumeration.ToString());
+            var name = enumeration.ToString();
+            var memInfo = type.GetMember(name);
             if (null != memInfo && memInfo.Length > 0)
             {
                 var attrs = memInfo[0].GetCustomAttributes(typeof(EnumDescription), false);
                 if (attrs != null && attrs.Length > 0)
                 {
-                    return ((EnumDescription)attrs[0]).Text;
+                    var text = ((EnumDescription)attrs[0]).Text;
+                    // 多语言：以特性文本为默认值，按 Enum.<类型>.<成员> 查语言包（键缺失时原样返回）
+                    return Msg.GetEnumDescription(type, name, text);
                 }
             }
             return enumeration.ToString();
@@ -98,6 +101,8 @@ namespace DotNet.Util
                     {
                         var temp = (EnumDescription)array[0];
                         description = temp.Text;
+                        // 多语言：以特性文本为默认值，按 Enum.<类型>.<成员> 查语言包（键缺失时原样返回）
+                        description = Msg.GetEnumDescription(enumType, field.Name, description);
                     }
                     else
                     {
