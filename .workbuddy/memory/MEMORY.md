@@ -59,6 +59,10 @@ dotnet build src/DotNet.Util/DotNet.Util.csproj -c Debug \
   注：stderr 里的 `shim/shell-runtime-bash-env.sh: line 3: dirname: command not found`
   是无害噪音，只要 stdout 有正常输出即可忽略。
 - ⚠️ **CS0579 坑（多 TFM 验证编译时）**：SDK 风格工程默认 glob `**/*.cs`（仅排除 obj/bin）。**绝不要把自定义 `OutputPath`/`IntermediateOutputPath` 指向工程目录树下**（如 `verify_obj/`）——其内自动生成的 `*.AssemblyAttributes.cs`/`*.AssemblyInfo.cs` 声明 `[assembly: TargetFrameworkAttribute(...)]`，会被当成源码一起编 → 与 SDK 生成的重复 → `CS0579 Duplicate TargetFrameworkAttribute`，且多工程批量爆发。临时验证输出目录必须建在**工程树之外**（如 `/tmp/verify`）并及时清理。
+- ⚠️ **Edit 工具绝不能并行改同一个文件**：同一条消息里对同一个文件发多个 Edit 调用，
+  会各自基于原始内容写入、后写覆盖前写，**只有一处改动存活，其余静默丢失**
+  （2026-09-16 改 `Msg.cs` 三处注释，丢了 2 处，且工具仍返回 success）。
+  → 同一文件的多处编辑必须**串行**逐个调用；改完立即 grep 复核。
 
 ## 多语言改造（P0~P5，2026-09-15 ~ 09-16 完成，未提交）
 - 消息层 `src/DotNet.Util/Message/Msg.cs` + 内嵌语言包 `src/DotNet.Util/Resources/MsgPack*.cs`；
@@ -86,6 +90,22 @@ dotnet build src/DotNet.Util/DotNet.Util.csproj -c Debug \
 - **锁外静态字段已全部 volatile**：`Msg._initialized`（bool）与 `Msg._language`（string）
   均加锁外读写，2026-09-16 已都改为 `volatile`（`volatile string` 在 net46 起即支持，已验证）。
   后续新增锁外读写的静态字段沿用此约定。
+
+## 键命名语义化（2026-09-16，方案 C，已完成未提交）
+- **248 个 `Msg####` 编号键全部重命名为 11 个业务前缀的语义键**，编号键清零；
+  词条 406 → **400**（6 个与已有语义键同值的编号键合并删除）。
+- 前缀：`Common` 74 / `Logon` 55 / `Validation` 35 / `Confirm` 30 / `Result` 21 / `Ip` 11 /
+  `System` 8 / `Org` 7 / `Workflow` 6 / `Sequence` 5 / `Sign` 5 / `File` 3
+  （另基础设施前缀 Enum 70 / Service 33 / Log 12 / Exception 11 / Business 6 / Console 4 /
+  Rmb 2 / Qqwry 1 / Sms 1）。
+- **⚠️ 字段名 ≠ 语言包键**：`AppMessage.Msg####` 字段名与字段数（248）保持不变（二进制兼容），
+  但 `Msg.Get("Msg0001")` 已失效，会静默回退返回 `"Msg0001"` 字符串。
+  查语义请按 `Msg-Key-Rename-Map.md`（项目根）对应，如 `Msg0001` → `Common.UnknownError`。
+- 一致性测试已改口径：`ZhCnPack_MatchesAppMessageFields` 不再按字段名查，
+  改为「每个 AppMessage 字段的中文取值都存在于 zh-CN 包 value 集合」。
+  另加断言「以 `Msg` 开头的键数为 0」「每个键都含 `.`」锁死编号键不再回归。
+- 批量改名做法：写一次性 Python 脚本（放 `%TEMP%`，跑完删）解析映射表 + 重写语言包与调用点，
+  脚本内建断言（旧键全覆盖、中英键序一致、丢弃项一致、残留编号键为 0、键无重复）。
 
 ## 基线数据
 - 测试数基线（2026-09-01 收尾后）：**1090 个（1089 通过 / 0 失败 / 0 跳过，排除集成测试）**。
