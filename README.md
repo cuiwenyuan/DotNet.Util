@@ -32,6 +32,11 @@ Repository layout (overview)
 - `src/DotNet.Business*` — example business projects and web demo
 - `src/DotNet.Model` — common models and entities
 
+Localization (multi-language output messages)
+- Output messages support multiple languages. **Default is Chinese (zh-CN)**, with **English (en)** as the first built-in language pack.
+- Access localized text via the `Msg` layer: `Msg.Get("Msg0001")`, `Msg.Format("Msg0007", arg)`, switch with `Msg.CurrentLanguage = "en"`.
+- Full guide (key naming, fallback chain, enum descriptions, adding languages, JSON overrides): see [`Localization.md`](Localization.md).
+
 Documentation and next steps
 - This repository includes source XML documentation generation. Key documentation files to add or review: `CONTRIBUTING.md`, `INSTALL.md`, `CHANGELOG.md`, and `API_PROTECTION.md` (present in repo).
 
@@ -59,6 +64,18 @@ DotNet.Util是一系列.NET6 + .NET5 + Standard 2.0/2.1组件工具，绝大部�
 ## Nuget
 因为DotNet.被占用，目前NuGet的包以WangCaiSoft.开头。 
 https://www.nuget.org/packages?q=wangcaisoft
+
+## 多语言（输出消息）
+输出消息已支持多语言，**默认中文（zh-CN）**，内置第一语言包**英文（en）**。
+
+```csharp
+Msg.Get("Msg0001");              // 发生未知错误。
+Msg.CurrentLanguage = "en";
+Msg.Get("Msg0001");              // An unknown error occurred.
+```
+
+适用范围：异常消息、业务状态消息、日志、控制台输出、`AppMessage` 消息键、枚举描述。
+完整说明（键命名规范、回退链、扩展新语言、JSON 覆盖）见 [`Localization.md`](Localization.md)。
 
 ## 中文简介（简要）
 `DotNet.Util` 是一套多目标的 C# 工具库，包含常用的工具函数、文档导出与数据库适配器，支持 .NET Framework 和现代 .NET 平台。更多使用与构建说明请参考 `INSTALL.md` 和 `CONTRIBUTING.md`。
