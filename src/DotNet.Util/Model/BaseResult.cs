@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -45,7 +45,7 @@ namespace DotNet.Util
         /// <summary>
         /// 返回消息内容
         /// </summary>
-        public string StatusMessage = "未知错误";
+        public string StatusMessage = Msg.Get("Result.UnknownError");
 
         /// <summary>
         /// 查询分页数据时返回记录条数用

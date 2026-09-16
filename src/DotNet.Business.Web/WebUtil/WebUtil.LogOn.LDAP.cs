@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -99,25 +99,25 @@ namespace DotNet.Business
 
                             userLogonResult.Status = Status.Ok;
                             userLogonResult.StatusCode = Status.Ok.ToString();
-                            userLogonResult.StatusMessage = "登录成功";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.Success");
                             status = Status.Ok;
-                            statusMessage = "登录成功";
+                            statusMessage = Msg.Get("Logon.Success");
                             baseUserInfo = userLogonResult.UserInfo;
                         }
                         else
                         {
                             userLogonResult.Status = Status.LogonDeny;
                             userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                            userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                             status = Status.LogonDeny;
-                            statusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                            statusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                             baseUserInfo = userLogonResult.UserInfo;
                         }
                     }
                     else
                     {
                         status = Status.LogonDeny;
-                        statusMessage = "应用系统用户不存在，请联系管理员。";
+                        statusMessage = Msg.Get("Logon.AppUserNotFound");
                     }
                 }
             }
@@ -125,7 +125,7 @@ namespace DotNet.Business
             {
                 //Logon failure: unknown user name or bad password.
                 status = Status.LogonDeny;
-                statusMessage = "域服务器返回信息" + e.Message.Replace("\r\n", "");
+                statusMessage = Msg.Format("Logon.DomainServerResponse", e.Message.Replace("\r\n", ""));
             }
 
             return baseUserInfo;
@@ -193,18 +193,18 @@ namespace DotNet.Business
                     Logon(userLogonResult.UserInfo, formsAuthentication);
                     userLogonResult.Status = Status.Ok;
                     userLogonResult.StatusCode = Status.Ok.ToString();
-                    userLogonResult.StatusMessage = "登录成功";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.Success");
                     status = Status.Ok;
-                    statusMessage = "登录成功";
+                    statusMessage = Msg.Get("Logon.Success");
                     baseUserInfo = userLogonResult.UserInfo;
                 }
                 else
                 {
                     userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                     status = Status.LogonDeny;
-                    statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                    statusMessage = Msg.Get("Logon.AccessDenied");
                     baseUserInfo = userLogonResult.UserInfo;
                 }
             }
@@ -212,9 +212,9 @@ namespace DotNet.Business
             {
                 userLogonResult.Status = Status.LogonDeny;
                 userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                 status = Status.LogonDeny;
-                statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                statusMessage = Msg.Get("Logon.AccessDenied");
                 baseUserInfo = userLogonResult.UserInfo;
             }
             return baseUserInfo;

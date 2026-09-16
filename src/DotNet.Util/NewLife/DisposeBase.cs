@@ -128,7 +128,7 @@ namespace DotNet.Util
                         catch (Exception ex)
                         {
                             //修复：Dispose 不应向上抛异常（破坏 using 语义），但失败需记录日志
-                            LogUtil.WriteLog(ex, "Dispose 释放成员对象失败: " + item);
+                            LogUtil.WriteLog(ex, Msg.Format("Log.DisposeMemberFailed", item));
                         }
                     }
                 }
@@ -143,7 +143,7 @@ namespace DotNet.Util
                 catch (Exception ex)
                 {
                     //修复：Dispose 不应向上抛异常（破坏 using 语义），但失败需记录日志
-                    LogUtil.WriteLog(ex, "Dispose 释放对象失败: " + obj);
+                    LogUtil.WriteLog(ex, Msg.Format("Log.DisposeFailed", obj));
                 }
             }
 

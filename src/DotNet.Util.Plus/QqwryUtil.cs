@@ -105,7 +105,7 @@ namespace DotNet.Util
             {
                 var areaOffset = ReadLong(offset + 1, 3);
                 if (areaOffset == 0)
-                    return "未知";
+                    return Msg.Get("Qqwry.Unknown");
 
                 else _fs.Position = areaOffset;
             }
@@ -177,7 +177,7 @@ namespace DotNet.Util
         /// <returns></returns>  
         private static int CompareIp(byte[] buffIp1, byte[] buffIp2)
         {
-            if (buffIp1.Length > 4 || buffIp2.Length > 4) throw new Exception("无效IP");
+            if (buffIp1.Length > 4 || buffIp2.Length > 4) throw new Exception(Msg.Get("Exception.InvalidIp"));
 
             for (var i = 0; i < 4; i++)
             {
@@ -257,7 +257,7 @@ namespace DotNet.Util
             Init(null);
 
             IPAddress ipAddress = null;
-            if (!IPAddress.TryParse(ip, out ipAddress)) throw new Exception("无效IP");
+            if (!IPAddress.TryParse(ip, out ipAddress)) throw new Exception(Msg.Get("Exception.InvalidIp"));
 
             var buffLocalIp = ipAddress.GetAddressBytes();
 

@@ -6,6 +6,11 @@ namespace DotNet.Util.Tests.Util
     /// <summary>
     /// BaseResult 与 JsonResult&lt;T&gt; 测试（纯逻辑 POCO）
     /// </summary>
+    /// <remarks>
+    /// StatusMessage 的默认值取自消息层，因此归入 MsgTestCollection 与消息层测试串行执行，
+    /// 避免 Msg.CurrentLanguage 被并行测试改成英文导致中文断言偶发失败。
+    /// </remarks>
+    [Collection(MsgTestCollection.Name)]
     public class BaseResultTests
     {
         [Fact]

@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -32,7 +32,7 @@ namespace DotNet.Business
         {
             BaseUserInfo result = null;
             status = Status.Error;
-            statusMessage = "登录失败";
+            statusMessage = Msg.Get("Logon.Failed");
             var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId, systemCode);
             if (entity != null)
             {
@@ -85,18 +85,18 @@ namespace DotNet.Business
 
                             userLogonResult.Status = Status.Ok;
                             userLogonResult.StatusCode = Status.Ok.ToString();
-                            userLogonResult.StatusMessage = "登录成功";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.Success");
                             status = Status.Ok;
-                            statusMessage = "登录成功";
+                            statusMessage = Msg.Get("Logon.Success");
                             result = userLogonResult.UserInfo;
                         }
                         else
                         {
                             userLogonResult.Status = Status.LogonDeny;
                             userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                            userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                             status = Status.LogonDeny;
-                            statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                            statusMessage = Msg.Get("Logon.AccessDenied");
                             result = userLogonResult.UserInfo;
                         }
                     }
@@ -104,9 +104,9 @@ namespace DotNet.Business
                     {
                         userLogonResult.Status = Status.LogonDeny;
                         userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                        userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                        userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                         status = Status.LogonDeny;
-                        statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                        statusMessage = Msg.Get("Logon.AccessDenied");
                         result = userLogonResult.UserInfo;
                     }
                 }

@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -694,7 +694,7 @@ namespace DotNet.Business
                 {
                     userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                 }
                 result = userLogonResult.UserInfo;
             }
@@ -766,7 +766,7 @@ namespace DotNet.Business
                 {
                     userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                 }
             }
             return userLogonResult.UserInfo;
@@ -914,7 +914,7 @@ namespace DotNet.Business
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
             status = Status.UserNotFound;
-            statusMessage = "未找到对应的用户";
+            statusMessage = Msg.Get("Logon.UserNotFound");
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
             var userContactManager = new BaseUserContactManager();
@@ -943,12 +943,12 @@ namespace DotNet.Business
                         {
                             result = true;
                             status = Status.Ok;
-                            statusMessage = "新密码已发送到您的注册邮箱" + email + "，请注意查收。";
+                            statusMessage = Msg.Format("Logon.PasswordResetMailSent", email);
                         }
                         else
                         {
                             status = Status.ErrorUpdate;
-                            statusMessage = "更新数据库失败，请重试！";
+                            statusMessage = Msg.Get("Logon.UpdateDatabaseFailed");
                         }
                     }
                     else
@@ -956,7 +956,7 @@ namespace DotNet.Business
                         if (userEntity.Enabled == 0)
                         {
                             status = Status.UserLocked;
-                            statusMessage = "用户被锁定，不允许重置密码。";
+                            statusMessage = Msg.Get("Logon.UserLockedCannotResetPassword");
                         }
                     }
                 }
@@ -979,7 +979,7 @@ namespace DotNet.Business
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
             status = Status.UserNotFound;
-            statusMessage = "用户未找到，请重新输入用户名。";
+            statusMessage = Msg.Get("Logon.UserNotFoundRetry");
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
             var userManager = new BaseUserManager();
@@ -1018,12 +1018,12 @@ namespace DotNet.Business
                     if (userEntity.Enabled == 0)
                     {
                         status = Status.UserLocked;
-                        statusMessage = "用户被锁定，不允许设置密码。";
+                        statusMessage = Msg.Get("Logon.UserLockedCannotSetPassword");
                     }
                     else
                     {
                         status = Status.UserNotActive;
-                        statusMessage = "用户还未被激活，不允许设置密码。";
+                        statusMessage = Msg.Get("Logon.UserNotActivated");
                     }
                 }
             }

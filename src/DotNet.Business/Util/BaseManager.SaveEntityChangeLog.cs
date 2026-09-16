@@ -80,7 +80,7 @@ namespace DotNet.Business
             }
             else
             {
-                LogUtil.WriteLog("比较的实体类型不一样或非实体类型", "SaveEntityChangeLog");
+                LogUtil.WriteLog(Msg.Get("Log.SaveEntityChangeLogTypeMismatch"), "SaveEntityChangeLog");
                 //throw new ArgumentException();
             }
         }

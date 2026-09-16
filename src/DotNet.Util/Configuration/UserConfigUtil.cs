@@ -473,7 +473,7 @@ namespace DotNet.Util
                 var portValue = GetValue(_xmlDocument, "Port");
                 if (!int.TryParse(portValue, out BaseSystemInfo.Port))
                 {
-                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：Port=" + portValue + "，已使用默认值。");
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "Port", portValue));
                 }
             }
             if (Exists("MobileHost"))
@@ -752,7 +752,7 @@ namespace DotNet.Util
                 var onlineLimitValue = GetValue(_xmlDocument, "OnlineLimit");
                 if (!int.TryParse(onlineLimitValue, out BaseSystemInfo.OnlineLimit))
                 {
-                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：OnlineLimit=" + onlineLimitValue + "，已使用默认值。");
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "OnlineLimit", onlineLimitValue));
                 }
             }
             if (Exists("SlowQueryMilliseconds"))
@@ -760,7 +760,7 @@ namespace DotNet.Util
                 var slowQueryValue = GetValue(_xmlDocument, "SlowQueryMilliseconds");
                 if (!int.TryParse(slowQueryValue, out BaseSystemInfo.SlowQueryMilliseconds))
                 {
-                    LogUtil.WriteLog("UserConfigUtil 配置解析失败：SlowQueryMilliseconds=" + slowQueryValue + "，已使用默认值。");
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "SlowQueryMilliseconds", slowQueryValue));
                 }
             }
             if (Exists("UserCenterDbType"))
@@ -1549,7 +1549,7 @@ namespace DotNet.Util
             catch (UnauthorizedAccessException uae)
             {
                 //如果报没有权限异常
-                throw new Exception("当前操作系统用户没有权限写入文件 " + fileName, uae);
+                throw new Exception(Msg.Format("Exception.NoWritePermission", fileName), uae);
             }
             catch (Exception ex)
             {

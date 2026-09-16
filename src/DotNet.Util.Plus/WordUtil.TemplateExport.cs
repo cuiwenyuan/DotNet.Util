@@ -47,7 +47,7 @@ namespace DotNet.Util
 
             if (!File.Exists(filePath))
             {
-                LogUtil.WriteLog("找不到模板文件");
+                LogUtil.WriteLog(Msg.Get("Log.TemplateFileNotFound"));
             }
             else
             {
@@ -60,7 +60,7 @@ namespace DotNet.Util
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.WriteException(ex, "打开模板文件失败");
+                    LogUtil.WriteException(ex, Msg.Get("Log.OpenTemplateFailed"));
                 }
             }
 

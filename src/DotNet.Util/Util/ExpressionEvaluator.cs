@@ -21,7 +21,7 @@ namespace DotNet.Util
             // 安全校验：仅允许数字、四则运算符、括号和小数点，防止注入任意字符
             if (string.IsNullOrWhiteSpace(expression) || !Regex.IsMatch(expression, @"^[0-9+\-*/(). ]+$"))
             {
-                throw new ArgumentException("表达式包含非法字符。");
+                throw new ArgumentException(Msg.Get("Exception.ExpressionIllegalChar"));
             }
 
             var parser = new ExpressionParser(expression);
@@ -60,13 +60,13 @@ namespace DotNet.Util
         {
             if (_text.Length == 0)
             {
-                throw new ArgumentException("表达式不能为空。");
+                throw new ArgumentException(Msg.Get("Exception.ExpressionEmpty"));
             }
             var value = ParseAdditive();
             SkipWhitespace();
             if (_pos < _text.Length)
             {
-                throw new ArgumentException("表达式语法错误。");
+                throw new ArgumentException(Msg.Get("Exception.ExpressionSyntaxError"));
             }
             return value;
         }
@@ -111,7 +111,7 @@ namespace DotNet.Util
                     var divisor = ParseUnary();
                     if (divisor == 0)
                     {
-                        throw new DivideByZeroException("除数不能为零。");
+                        throw new DivideByZeroException(Msg.Get("Exception.DivideByZero"));
                     }
                     //浮点除法，与原实现用 *1.0/ 的效果一致
                     left /= divisor;
@@ -139,7 +139,7 @@ namespace DotNet.Util
                 SkipWhitespace();
                 if (_pos >= _text.Length || _text[_pos] != ')')
                 {
-                    throw new ArgumentException("括号不匹配。");
+                    throw new ArgumentException(Msg.Get("Exception.BracketMismatch"));
                 }
                 _pos++;
                 return value;
@@ -157,12 +157,12 @@ namespace DotNet.Util
             }
             if (start == _pos)
             {
-                throw new ArgumentException("表达式语法错误。");
+                throw new ArgumentException(Msg.Get("Exception.ExpressionSyntaxError"));
             }
             var token = _text.Substring(start, _pos - start);
             if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
             {
-                throw new ArgumentException("表达式包含非法数字。");
+                throw new ArgumentException(Msg.Get("Exception.ExpressionIllegalNumber"));
             }
             return value;
         }

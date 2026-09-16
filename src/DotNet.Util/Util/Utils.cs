@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
@@ -1528,7 +1528,7 @@ namespace DotNet.Util
         public static bool BackupFile(string sourceFileName, string destFileName, bool overwrite)
         {
             if (!File.Exists(sourceFileName))
-                throw new FileNotFoundException(sourceFileName + "文件不存在！");
+                throw new FileNotFoundException(Msg.Format("Exception.FileNotFound", sourceFileName));
 
             if (!overwrite && File.Exists(destFileName))
                 return false;
@@ -1569,12 +1569,12 @@ namespace DotNet.Util
             try
             {
                 if (!File.Exists(backupFileName))
-                    throw new FileNotFoundException(backupFileName + "文件不存在！");
+                    throw new FileNotFoundException(Msg.Format("Exception.FileNotFound", backupFileName));
 
                 if (backupTargetFileName != null)
                 {
                     if (!File.Exists(targetFileName))
-                        throw new FileNotFoundException(targetFileName + "文件不存在！无法备份此文件！");
+                        throw new FileNotFoundException(Msg.Format("Exception.BackupFileNotFound", targetFileName));
                     else
                         File.Copy(targetFileName, backupTargetFileName, true);
                 }
@@ -1815,7 +1815,7 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 //修复：记录日志而非静默吞掉，调用方仍可通过空串区分失败
-                LogUtil.WriteLog(ex, "GetSourceTextByUrl 获取URL内容失败: " + url);
+                LogUtil.WriteLog(ex, Msg.Format("Log.GetSourceTextByUrlFailed", url));
                 return "";
             }
         }
@@ -1958,7 +1958,7 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 //修复：重启 IIS（重写 web.config）失败不能静默忽略，记录日志
-                LogUtil.WriteLog(ex, "RestartIisProcess 重写 web.config 失败");
+                LogUtil.WriteLog(ex, Msg.Get("Log.RestartIisFailed"));
             }
         }
 

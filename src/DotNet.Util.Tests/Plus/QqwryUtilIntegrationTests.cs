@@ -29,7 +29,10 @@ namespace DotNet.Util.Tests.Plus
             }
 
             // 纯真库地区名为 GBK，确保 CodePages 编码提供程序已注册（库本身也可能已注册）
+#if !NETFRAMEWORK
+            // CodePagesEncodingProvider 仅在 .NET Core / .NET 5+ 可用；.NET Framework 自带 GBK 代码页无需注册
             try { Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); } catch { }
+#endif
 
             // 复制到 QqwryUtil 实际加载的路径（与 GetLocation 内部调用保持一致）
             var target = Utils.GetMapPath("/plus/qqwry.dat");
@@ -54,7 +57,10 @@ namespace DotNet.Util.Tests.Plus
                 Assert.Fail($"QqwryUtil 集成测试：指定的 qqwry.dat 不存在：{src}");
             }
 
+#if !NETFRAMEWORK
+            // CodePagesEncodingProvider 仅在 .NET Core / .NET 5+ 可用；.NET Framework 自带 GBK 代码页无需注册
             try { Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); } catch { }
+#endif
 
             var target = Utils.GetMapPath("/plus/qqwry.dat");
             Directory.CreateDirectory(Path.GetDirectoryName(target));

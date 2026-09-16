@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+﻿//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -541,7 +541,7 @@ namespace DotNet.Business
             {
                 Status = Status.Error,
                 StatusCode = "Error",
-                StatusMessage = "请用唯一用户名登录、若不知道唯一用户名、请向公司的管理员索取。"
+                StatusMessage = Msg.Get("Logon.RequireUniqueUserName")
             };
 
             if (companyName.IsNullOrEmpty() || userName.IsNullOrEmpty())

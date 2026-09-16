@@ -30,7 +30,7 @@ namespace DotNet.Util
             num = Math.Round(Math.Abs(num), 2, MidpointRounding.AwayFromZero);    //将num取绝对值并四舍五入取2位小数（四舍五入，而非银行家舍入）
             str4 = ((long)(num * 100)).ToString();        //将num乘100并转换成字符串形式
             j = str4.Length;      //找出最高位
-            if (j > 15) { return "溢出"; }
+            if (j > 15) { return Msg.Get("Rmb.Overflow"); }
             str2 = str2.Substring(15 - j);   //取出对应位数的str2的值。如：200.55,j为5所以str2=佰拾元角分
 
             //循环取出每一位需要转换的值
@@ -153,7 +153,7 @@ namespace DotNet.Util
             //修复：原实现依赖 ToDecimal 抛异常（实际返回默认值 0 不抛），导致无效输入静默转换为"零元整"；改用 TryParse 显式校验
             if (!decimal.TryParse(numstr, NumberStyles.Number, CultureInfo.InvariantCulture, out var num))
             {
-                return "非数字形式！";
+                return Msg.Get("Rmb.NotNumeric");
             }
             return Capital(num);
         }

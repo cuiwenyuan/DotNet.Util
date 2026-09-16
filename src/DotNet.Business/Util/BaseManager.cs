@@ -673,131 +673,131 @@ namespace DotNet.Business
             switch (statusCode)
             {
                 case Status.AccessDeny:
-                    result = AppMessage.Msg0800;
+                    result = Msg.Get("Msg0800");
                     break;
                 case Status.DbError:
-                    result = AppMessage.Msg0002;
+                    result = Msg.Get("Msg0002");
                     break;
                 case Status.Error:
-                    result = AppMessage.Msg0001;
+                    result = Msg.Get("Msg0001");
                     break;
                 case Status.Ok:
-                    result = AppMessage.Msg9965;
+                    result = Msg.Get("Msg9965");
                     break;
                 case Status.UserNotFound:
-                    result = AppMessage.Msg9966;
+                    result = Msg.Get("Msg9966");
                     break;
                 case Status.PasswordError:
-                    result = AppMessage.Msg9967;
+                    result = Msg.Get("Msg9967");
                     break;
                 case Status.LogonDeny:
-                    result = AppMessage.Msg9968;
+                    result = Msg.Get("Msg9968");
                     break;
                 case Status.ErrorOnline:
-                    result = AppMessage.Msg0048;
+                    result = Msg.Get("Msg0048");
                     break;
                 case Status.ErrorMacAddress:
-                    result = AppMessage.Msg0049;
+                    result = Msg.Get("Msg0049");
                     break;
                 case Status.ErrorIpAddress:
-                    result = string.Format(AppMessage.Msg0050, UserInfo.IpAddress);
+                    result = Msg.Format("Msg0050", UserInfo.IpAddress);
                     break;
                 case Status.ErrorOnlineLimit:
-                    result = AppMessage.Msg0051;
+                    result = Msg.Get("Msg0051");
                     break;
                 case Status.PasswordCanNotBeNull:
-                    result = AppMessage.Format(AppMessage.Msg0007, AppMessage.Msg9961);
+                    result = Msg.Format("Msg0007", Msg.Get("Msg9961"));
                     break;
                 case Status.PasswordCanNotBeRepeat:
-                    result = AppMessage.Format(AppMessage.Msg0102);
+                    result = Msg.Format("Msg0102");
                     break;
                 case Status.ErrorDeleted:
-                    result = AppMessage.Msg0005;
+                    result = Msg.Get("Msg0005");
                     break;
                 case Status.SetPasswordOk:
-                    result = AppMessage.Format(AppMessage.Msg9963, AppMessage.Msg9964);
+                    result = Msg.Format("Msg9963", Msg.Get("Msg9964"));
                     break;
                 case Status.OldPasswordError:
-                    result = AppMessage.Format(AppMessage.Msg0040, AppMessage.Msg9961);
+                    result = Msg.Format("Msg0040", Msg.Get("Msg9961"));
                     break;
                 case Status.ChangePasswordOk:
-                    result = AppMessage.Format(AppMessage.Msg9962, AppMessage.Msg9964);
+                    result = Msg.Format("Msg9962", Msg.Get("Msg9964"));
                     break;
                 case Status.OkAdd:
-                    result = AppMessage.Msg0009;
+                    result = Msg.Get("Msg0009");
                     break;
                 case Status.CanNotLock:
-                    result = AppMessage.Msg0043;
+                    result = Msg.Get("Msg0043");
                     break;
                 case Status.LockOk:
-                    result = AppMessage.Msg0044;
+                    result = Msg.Get("Msg0044");
                     break;
                 case Status.OkUpdate:
-                    result = AppMessage.Msg0010;
+                    result = Msg.Get("Msg0010");
                     break;
                 case Status.OkDelete:
-                    result = AppMessage.Msg0013;
+                    result = Msg.Get("Msg0013");
                     break;
                 case Status.Exist:
                     // "编号已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9955);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9955"));
                     break;
                 case Status.ErrorCodeExist:
                     // "编号已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9977);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9977"));
                     break;
                 case Status.ErrorNameExist:
                     // "名称已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9978);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9978"));
                     break;
                 case Status.ErrorValueExist:
                     // "值已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9800);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9800"));
                     break;
                 case Status.ErrorUserExist:
                     // "用户名已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9957);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9957"));
                     break;
                 case Status.ErrorDataRelated:
-                    result = AppMessage.Msg0033;
+                    result = Msg.Get("Msg0033");
                     break;
                 case Status.ErrorChanged:
-                    result = AppMessage.Msg0006;
+                    result = Msg.Get("Msg0006");
                     break;
 
                 case Status.UserNotEmail:
-                    result = AppMessage.Msg9910;
+                    result = Msg.Get("Msg9910");
                     break;
 
                 case Status.UserLocked:
-                    result = AppMessage.Msg9911;
+                    result = Msg.Get("Msg9911");
                     break;
 
                 case Status.WaitForAudit:
                 case Status.UserNotActive:
-                    result = AppMessage.Msg9912;
+                    result = Msg.Get("Msg9912");
                     break;
 
                 case Status.UserIsActivate:
-                    result = AppMessage.Msg9913;
+                    result = Msg.Get("Msg9913");
                     break;
 
                 case Status.NotFound:
-                    result = AppMessage.Msg9956;
+                    result = Msg.Get("Msg9956");
                     break;
 
                 case Status.ErrorLogon:
-                    result = AppMessage.Msg9000;
+                    result = Msg.Get("Msg9000");
                     break;
 
                 case Status.UserDuplicate:
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9957);
+                    result = Msg.Format("Msg0008", Msg.Get("Msg9957"));
                     break;
                 case Status.ServiceNotStart:
-                    result = AppMessage.Msg9660;
+                    result = Msg.Get("Msg9660");
                     break;
                 case Status.ServiceExpired:
-                    result = AppMessage.Msg9665;
+                    result = Msg.Get("Msg9665");
                     break;
             }
             StatusMessage = result;

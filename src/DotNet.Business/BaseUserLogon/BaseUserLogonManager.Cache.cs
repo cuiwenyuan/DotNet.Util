@@ -131,7 +131,7 @@ namespace DotNet.Business
                 dataReader.Close();
             }
 
-            Console.WriteLine(result + " : 完成 ");
+            Console.WriteLine(Msg.Format("Console.Completed", result));
 
             return result;
         }

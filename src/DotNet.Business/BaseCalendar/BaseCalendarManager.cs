@@ -115,11 +115,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 0 || entity.Deleted == 1)
                 {
-                    errorMessage = @"数据已被删除，无需再次删除";
+                    errorMessage = Msg.Get("Business.DataAlreadyDeleted");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = "系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -128,7 +128,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = "非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -151,11 +151,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 0 || entity.Deleted == 1)
                     {
-                        errorMessage = @"数据已被删除，无需再次删除";
+                        errorMessage = Msg.Get("Business.DataAlreadyDeleted");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -164,7 +164,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -190,11 +190,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 1 || entity.Deleted == 0)
                 {
-                    errorMessage = @"数据未被删除，无需撤销";
+                    errorMessage = Msg.Get("Business.DataNotDeleted");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = @"系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -203,7 +203,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = @"非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -226,11 +226,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 1 || entity.Deleted == 0)
                     {
-                        errorMessage = @"数据未被删除，无需撤销";
+                        errorMessage = Msg.Get("Business.DataNotDeleted");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -239,7 +239,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -264,11 +264,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 1)
                 {
-                    errorMessage = @"数据已启用，无需再次启用";
+                    errorMessage = Msg.Get("Business.DataAlreadyEnabled");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = "系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -277,7 +277,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = "非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -300,11 +300,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 1)
                     {
-                        errorMessage = @"数据已启用，无需再次启用";
+                        errorMessage = Msg.Get("Business.DataAlreadyEnabled");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -313,7 +313,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -339,11 +339,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 0)
                 {
-                    errorMessage = @"数据已禁用，无需再次禁用";
+                    errorMessage = Msg.Get("Business.DataAlreadyDisabled");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = @"系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -352,7 +352,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = @"非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -375,11 +375,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 0)
                     {
-                        errorMessage = @"数据已禁用，无需再次禁用";
+                        errorMessage = Msg.Get("Business.DataAlreadyDisabled");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -388,7 +388,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }

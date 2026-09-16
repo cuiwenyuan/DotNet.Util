@@ -330,7 +330,7 @@ namespace DotNet.Util
             catch (Exception ex)
             {
                 //修复：记录日志而非静默吞掉（原裸 catch 会吞掉下载失败等异常）
-                LogUtil.WriteLog(ex, "RemoteSaveAs 下载远程文件失败: " + fileUri);
+                LogUtil.WriteLog(ex, Msg.Format("Log.RemoteSaveAsFailed", fileUri));
                 return string.Empty;
             }
             return newFilePath;

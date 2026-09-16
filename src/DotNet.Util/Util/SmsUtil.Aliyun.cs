@@ -34,7 +34,7 @@ namespace DotNet.Util
             var result = false;
             if (!ValidateUtil.IsMobile(mobile))
             {
-                message = "手机号码有误！";
+                message = Msg.Get("Sms.InvalidMobile");
                 return false;
             }
             var xmlConfigUtil = new XmlConfigUtil("XmlConfig\\Sms.config");

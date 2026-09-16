@@ -132,7 +132,7 @@ namespace DotNet.Util
             var response = (HttpWebResponse)request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             var result = reader.ReadToEnd();
-            Console.WriteLine("通用文字识别:");
+            Console.WriteLine(Msg.Get("Console.OcrGeneral"));
             Console.WriteLine(result);
             return result;
         }

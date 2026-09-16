@@ -391,9 +391,8 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                LogUtil.WriteLog("AddLogTask: 异常信息:" + ex.Message + "userName:" + userEntity.UserName
-                                 + Environment.NewLine + "错误源:" + ex.Source
-                                 + Environment.NewLine + "堆栈信息:" + ex.StackTrace, "Log");
+                LogUtil.WriteLog(Msg.Format("Log.AddLogTaskFailedWithUser", ex.Message, userEntity.UserName,
+                                 Environment.NewLine, ex.Source, ex.StackTrace), "Log");
             }
 
             return result;
@@ -503,9 +502,8 @@ namespace DotNet.Business
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.WriteLog("AddLogTask: 异常信息:" + ex.Message
-                                                             + Environment.NewLine + "错误源:" + ex.Source
-                                                             + Environment.NewLine + "堆栈信息:" + ex.StackTrace, "Log");
+                        LogUtil.WriteLog(Msg.Format("Log.AddLogTaskFailed", ex.Message,
+                                                             Environment.NewLine, ex.Source, ex.StackTrace), "Log");
                     }
                 }
             }
