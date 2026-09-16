@@ -66,7 +66,7 @@ namespace DotNet.Test._452
             Parallel.For(1, 5000, (i) =>
             {
                 Console.WriteLine(i);
-                Console.WriteLine("Parallel任务" + i + "开始工作……");
+                Console.WriteLine(Msg.Format("Console.ParallelTaskStart", i));
                 //var entity3 = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
                 var entity3 = new BaseCalendarManager().GetEntity(i);
                 var sb = PoolUtil.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity3));
@@ -76,7 +76,7 @@ namespace DotNet.Test._452
             for (var i = 1; i <= 10000; i++)
             {
                 Console.WriteLine(i);
-                Console.WriteLine("任务" + i + "开始工作……");
+                Console.WriteLine(Msg.Format("Console.TaskStart", i));
                 //var entity = new BaseCalendarManager().GetEntity<BaseCalendarEntity>(i);
                 var entity = new BaseCalendarManager().GetEntity(i);
                 var sb = PoolUtil.StringBuilder.Get().Append(JsonUtil.ObjectToJson(entity));
