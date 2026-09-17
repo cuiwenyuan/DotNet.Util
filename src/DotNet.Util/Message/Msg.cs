@@ -15,6 +15,9 @@ namespace DotNet.Util
     ///	Msg
     /// 多语言消息层：按当前语言取得输出消息。
     /// 
+    /// 推荐调用：Msg.Common.UnknownError、Msg.Common.ParameterRequired("用户名")。
+    /// 动态键仍可用 Msg.Get("Common.UnknownError") / Msg.Format(...)。
+    /// 
     /// 默认语言为 zh-CN（与 BaseSystemInfo.CurrentLanguage 保持一致），en 为第一个语言包。
     /// 取值回退链：精确语言(en-US) → 中性语言(en) → 默认语言(zh-CN) → 返回键本身。
     /// 
@@ -32,7 +35,7 @@ namespace DotNet.Util
     ///		<date>2026.09.15</date>
     /// </author> 
     /// </summary>
-    public static class Msg
+    public static partial class Msg
     {
         /// <summary>
         /// 默认语言，与 BaseSystemInfo.CurrentLanguage 的初始值保持一致
@@ -352,14 +355,14 @@ namespace DotNet.Util
         /// <param name="path">JSON 文件绝对路径，内容形如 {"Common.UnknownError":"..."}</param>
         public static void LoadJsonOverride(string culture, string path)
         {
-            if (string.IsNullOrEmpty(culture) || string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (string.IsNullOrEmpty(culture) || string.IsNullOrEmpty(path) || !global::System.IO.File.Exists(path))
             {
                 return;
             }
 
             try
             {
-                var json = File.ReadAllText(path);
+                var json = global::System.IO.File.ReadAllText(path);
                 var messages = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 if (messages != null)
                 {

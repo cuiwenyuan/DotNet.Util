@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -610,6 +610,115 @@ namespace DotNet.Util.Tests.Message
             // 外层语言名（culture）仍用 OrdinalIgnoreCase，容忍 "zh-cn" / "EN" 写法
             Assert.Equal("发生未知错误。", Msg.Get("Common.UnknownError", "zh-cn"));
             Assert.Equal("An unknown error occurred.", Msg.Get("Common.UnknownError", "EN"));
+        }
+
+        #endregion
+
+        #region 强类型调用入口
+
+        [Fact]
+        public void Typed_Property_SwitchesLanguage()
+        {
+            Msg.Clear();
+            Assert.Equal("发生未知错误。", Msg.Common.UnknownError);
+
+            Msg.CurrentLanguage = "en";
+            Assert.Equal("An unknown error occurred.", Msg.Common.UnknownError);
+        }
+
+        [Fact]
+        public void Typed_Method_FormatsPlaceholder()
+        {
+            Msg.Clear();
+            Assert.Equal("请输入用户名，不允许为空。", Msg.Common.ParameterRequired("用户名"));
+
+            Msg.CurrentLanguage = "en";
+            Assert.Equal("Please enter UserName; it cannot be empty.", Msg.Common.ParameterRequired("UserName"));
+        }
+
+        [Fact]
+        public void Typed_EnumNested_MatchesGet()
+        {
+            Msg.Clear();
+            Assert.Equal(Msg.Get("Enum.Status.Ok"), Msg.Enum.Status.Ok);
+            Assert.Equal(Msg.Get("Enum.AuditStatus.WaitForAudit"), Msg.Enum.AuditStatus.WaitForAudit);
+        }
+
+        [Fact]
+        public void TypedMembers_MatchAllPackKeys()
+        {
+            Msg.Clear();
+
+            var packKeys = new HashSet<string>(Msg.GetKeys("zh-CN"));
+            var typedKeys = new HashSet<string>(CollectTypedKeys(typeof(Msg)));
+
+            foreach (var key in packKeys)
+            {
+                Assert.True(typedKeys.Contains(key), "语言包键缺少强类型入口: " + key);
+            }
+
+            foreach (var key in typedKeys)
+            {
+                Assert.True(packKeys.Contains(key), "强类型入口不在语言包中: " + key);
+            }
+
+            foreach (var key in packKeys)
+            {
+                var parts = key.Split('.');
+                var type = typeof(Msg);
+                for (var i = 0; i < parts.Length - 1; i++)
+                {
+                    type = type.GetNestedType(parts[i], BindingFlags.Public);
+                    Assert.NotNull(type);
+                }
+
+                var name = parts[parts.Length - 1];
+                var property = type.GetProperty(name, BindingFlags.Public | BindingFlags.Static);
+                if (property != null)
+                {
+                    Assert.Equal(Msg.Get(key), (string)property.GetValue(null));
+                    continue;
+                }
+
+                var method = type.GetMethod(name, BindingFlags.Public | BindingFlags.Static);
+                Assert.NotNull(method);
+                Assert.Equal(Msg.Format(key), (string)method.Invoke(null, new object[] { new object[0] }));
+            }
+        }
+
+        private static List<string> CollectTypedKeys(Type root)
+        {
+            var keys = new List<string>();
+            CollectTypedKeys(root, string.Empty, keys);
+            return keys;
+        }
+
+        private static void CollectTypedKeys(Type type, string prefix, List<string> keys)
+        {
+            foreach (var nested in type.GetNestedTypes(BindingFlags.Public))
+            {
+                CollectTypedKeys(nested, prefix + nested.Name + ".", keys);
+            }
+
+            if (prefix.Length == 0)
+            {
+                return;
+            }
+
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            {
+                keys.Add(prefix + property.Name);
+            }
+
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            {
+                if (method.IsSpecialName)
+                {
+                    continue;
+                }
+
+                keys.Add(prefix + method.Name);
+            }
         }
 
         #endregion
