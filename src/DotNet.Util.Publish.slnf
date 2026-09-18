@@ -1,0 +1,20 @@
+{
+  "solution": {
+    "path": "DotNet.Util.sln",
+    "projects": [
+      "DotNet.Business\\DotNet.Business.csproj",
+      "DotNet.Business.Web\\DotNet.Business.Web.csproj",
+      "DotNet.Model\\DotNet.Model.csproj",
+      "DotNet.Util\\DotNet.Util.csproj",
+      "DotNet.Util.Cache\\DotNet.Util.Cache.csproj",
+      "DotNet.Util.Db\\DotNet.Util.Db.csproj",
+      "DotNet.Util.Db.MySql\\DotNet.Util.Db.MySql.csproj",
+      "DotNet.Util.Db.OleDb\\DotNet.Util.Db.OleDb.csproj",
+      "DotNet.Util.Db.Oracle\\DotNet.Util.Db.Oracle.csproj",
+      "DotNet.Util.Db.PostgreSql\\DotNet.Util.Db.PostgreSql.csproj",
+      "DotNet.Util.Db.SQLite\\DotNet.Util.Db.SQLite.csproj",
+      "DotNet.Util.Plus\\DotNet.Util.Plus.csproj",
+      "DotNet.Web.UI.BasePage\\DotNet.Web.UI.BasePage.csproj"
+    ]
+  }
+}
