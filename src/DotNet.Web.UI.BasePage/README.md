@@ -31,7 +31,7 @@ net46 · net47 · net48（仅 .NET Framework）
 - `Wangcaisoft.DotNet.Model`
 - `Wangcaisoft.DotNet.Util.Cache`
 - `Wangcaisoft.DotNet.Util`
-- [JWT](https://www.nuget.org/packages/JWT) `11.0.0`
+- [JWT](https://www.nuget.org/packages/JWT) `11.1.0`
 
 ## 快速使用 / Quick Start
 

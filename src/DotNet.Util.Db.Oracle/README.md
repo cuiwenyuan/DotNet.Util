@@ -26,7 +26,7 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 ## 依赖 / Dependencies
 
 - `Wangcaisoft.DotNet.Util.Db`
-- [Oracle.ManagedDataAccess](https://www.nuget.org/packages/Oracle.ManagedDataAccess) / [Oracle.ManagedDataAccess.Core](https://www.nuget.org/packages/Oracle.ManagedDataAccess.Core)（按框架：`19.22.0` / `21.20.0` / `23.9.1` / `2.19.290`）
+- [Oracle.ManagedDataAccess](https://www.nuget.org/packages/Oracle.ManagedDataAccess) / [Oracle.ManagedDataAccess.Core](https://www.nuget.org/packages/Oracle.ManagedDataAccess.Core)（按框架：`19.22.0` / `21.20.0` / `23.26.300` / `2.19.290`）
 
 ## 快速使用 / Quick Start
 

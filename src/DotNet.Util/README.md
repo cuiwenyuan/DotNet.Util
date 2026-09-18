@@ -29,9 +29,9 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 
 ## 依赖 / Dependencies
 
-- [NewLife.Core](https://www.nuget.org/packages/NewLife.Core) `11.7.2025.1001`
+- [NewLife.Core](https://www.nuget.org/packages/NewLife.Core) `11.19.2026.901`
 - [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json) `13.0.4`
-- （现代框架）Microsoft.AspNetCore.* `2.3.0`、Microsoft.CSharp `4.7.0`、Microsoft.Extensions.*（net6/7 用 `8.0.0`，其余 `9.0.9`）、Microsoft.Windows.Compatibility / System.Drawing.Common / System.Management（net6/7 用 `6.0.0`，其余 `9.0.9`）、System.Runtime.Loader `4.3.0`、System.ComponentModel.Annotations `5.0.0`
+- （现代框架）Microsoft.AspNetCore.* `2.3.12`、Microsoft.CSharp `4.7.0`、Microsoft.Extensions.*（net6/7 用 `8.0.1`，其余 `10.0.11`）、Microsoft.Windows.Compatibility / System.Drawing.Common（net6/7 用 `8.0.30`，其余 `10.0.11`）、System.Management / System.Text.Encoding.CodePages（net6/7 用 `8.0.0`，其余 `10.0.11`）、System.Runtime.Loader `4.3.0`、System.ComponentModel.Annotations `5.0.0`
 
 ## 快速使用 / Quick Start
 

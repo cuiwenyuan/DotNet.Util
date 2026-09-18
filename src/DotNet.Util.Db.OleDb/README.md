@@ -26,7 +26,7 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 ## 依赖 / Dependencies
 
 - `Wangcaisoft.DotNet.Util.Db`
-- [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple) `4.5.0` / `4.6.1`（按框架）
+- [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple) `4.5.0` / `4.6.2`（按框架）
 
 ## 快速使用 / Quick Start
 
