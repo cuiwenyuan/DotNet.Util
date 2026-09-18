@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,15 +11,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -38,11 +38,12 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName + " WHERE " + GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional));
 
-            if (!string.IsNullOrEmpty(parameter.Key))
+            if (!(parameter.Key).IsNullOrEmpty())
             {
                 if (parameter.Value != null)
                 {
-                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " <> '" + parameter.Value + "' ");
+                    //修复：对值进行转义，防止 SQL 注入
+                    sb.Append(BaseUtil.SqlLogicConditional + parameter.Key + " <> '" + SqlSafe(Convert.ToString(parameter.Value)) + "' ");
                 }
                 else
                 {
@@ -87,7 +88,7 @@ namespace DotNet.Util
                 currentIndex = string.Empty;
             }
             sb.Append("SELECT " + currentIndex + " COUNT(*) FROM " + tableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -125,9 +126,14 @@ namespace DotNet.Util
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM information_schema.TABLES WHERE table_name = '{0}'", tableName));
             }
-            else if (dbHelper.CurrentDbType == CurrentDbType.SqLite)
+            else if (dbHelper.CurrentDbType == CurrentDbType.SQLite)
             {
                 sb.Append(string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = '{0}'", tableName));
+            }
+            //其他方言（PostgreSql/Db2/Ase/Access）不支持时不执行空SQL，避免抛异常
+            if (sb.Length == 0)
+            {
+                return false;
             }
             var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)
@@ -158,6 +164,11 @@ namespace DotNet.Util
             else if (dbHelper.CurrentDbType == CurrentDbType.Db2)
             {
                 // TODO
+            }
+            //其他方言不支持时不执行空SQL，避免抛异常
+            if (sb.Length == 0)
+            {
+                return false;
             }
             var obj = dbHelper.ExecuteScalar(sb.Return());
             if (obj != null && obj != DBNull.Value)

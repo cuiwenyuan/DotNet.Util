@@ -1,10 +1,13 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace DotNet.Util
@@ -34,13 +37,26 @@ namespace DotNet.Util
         /// <returns>是返回 true 不是返回false</returns>
         public static bool IsIpv4(string ipAddress)
         {
-            var match =
-               new Regex(@"^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])$");
-            if (!match.IsMatch(ipAddress))
+            // 修复：原正则首段缺少对 0 的处理（如 0.0.0.0 / 0.1.2.3 会被误判为 false），
+            // 且 ipAddress 为 null 时 match.IsMatch 会抛出 ArgumentNullException。
+            // 改用 IPAddress.TryParse 严格判定 IPv4（AddressFamily == InterNetwork），
+            // 并要求标准“四段点分”格式（恰好 3 个点），避免 .NET 对 1.2.3 这类宽松写法的误判；
+            // 不再回退到 IsIpv6（方法名即“是否为 IPv4”，回退会导致语义与名称不符）。
+            if (ipAddress == null)
             {
-                return (IsIpv6(ipAddress));
+                return false;
             }
-            return true;
+            var dotCount = 0;
+            foreach (var c in ipAddress)
+            {
+                if (c == '.') dotCount++;
+            }
+            if (dotCount != 3)
+            {
+                return false;
+            }
+            return IPAddress.TryParse(ipAddress, out var address)
+                && address.AddressFamily == AddressFamily.InterNetwork;
         }
 
         /// <summary>
@@ -50,6 +66,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsIpv6(string ipAddress)
         {
+            // 修复：原实现未处理 null，调用方传入 null 会抛 NullReferenceException
+            if (ipAddress == null)
+            {
+                return false;
+            }
             var pattern = "";
             var temp = ipAddress;
             var strs = temp.Split(':');
@@ -66,13 +87,13 @@ namespace DotNet.Util
             {
                 pattern = @"^([\da-f]{1,4}:){7}[\da-f]{1,4}$";
 
-                var regex = new Regex(pattern);
+                var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
                 return regex.IsMatch(ipAddress);
             }
             else
             {
                 pattern = @"^([\da-f]{1,4}:){0,5}::([\da-f]{1,4}:){0,5}[\da-f]{1,4}$";
-                var regex1 = new Regex(pattern);
+                var regex1 = new Regex(pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
                 return regex1.IsMatch(ipAddress);
             }
         }
@@ -111,6 +132,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool UnsafeCharacter(string expression)
         {
+            // 修复 R9-3：null 直接返回 false（不含任何不安全字符），避免 IndexOf 抛 NRE
+            if (expression == null)
+            {
+                return false;
+            }
             var result = false;
             if (!result)
             {
@@ -149,7 +175,7 @@ namespace DotNet.Util
             var result = false;
             if (!string.IsNullOrWhiteSpace(expression))
             {
-                result = Regex.IsMatch(expression.Trim(), @"^[0-9]*$");
+                result = Regex.IsMatch(expression.Trim(), @"^[0-9]*$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -164,7 +190,8 @@ namespace DotNet.Util
             var result = false;
             if (!string.IsNullOrWhiteSpace(expression))
             {
-                result = Regex.IsMatch(expression.Trim(), @"^[1-9]*$");
+                //修复：原正则 ^[1-9]*$ 不包含 0，导致 IsLong("10")/IsLong("0") 等返回 false
+                result = Regex.IsMatch(expression.Trim(), @"^[0-9]+$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -219,7 +246,7 @@ namespace DotNet.Util
         /// <returns>true/false</returns>
         public static bool IsNumeric(string inputNumeric)
         {
-            if (string.IsNullOrEmpty(inputNumeric))
+            if (inputNumeric.IsNullOrEmpty())
             {
                 return false;
             }
@@ -237,7 +264,7 @@ namespace DotNet.Util
             var result = false;
             if (expression != null)
             {
-                result = Regex.IsMatch(expression.ToString(), @"^([0-9])[0-9]*(\.\w*)?$");
+                result = Regex.IsMatch(expression.ToString(), @"^[0-9]+(\.[0-9]+)?$", RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }
@@ -282,15 +309,7 @@ namespace DotNet.Util
                 //加强判断 Troy.Cui 2016-07-02
                 if (!result)
                 {
-                    try
-                    {
-                        DateTime.Parse(expression);
-                        result = true;
-                    }
-                    catch
-                    {
-                        result = false;
-                    }
+                    result = DateTime.TryParse(expression, out _) || DateTime.TryParse(expression, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
                 }
             }
             return result;
@@ -307,11 +326,13 @@ namespace DotNet.Util
             if (!string.IsNullOrWhiteSpace(email))
             {
                 email = email.Trim();
+                // R9-15：修复 TLD 长度上限 [a-zA-Z]{2,4} 误拒长 TLD（.travel/.engineering/.management 等）
+                // 及国际化域名（IDN，如 .中国）；放宽 TLD 为 [\p{L}]{2,} 并允许域名标签/TLD 含 Unicode 字母
                 const string regexString =
-                    @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                    @"^([\p{L}0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\p{L}0-9\-]+\.)+))([\p{L}]{2,}|[0-9]{1,3})(\]?)$";
                 // const string regexString =
                 //    @"^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
-                var regex = new Regex(regexString);
+                var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
                 result = regex.IsMatch(email);
             }
             return result;
@@ -323,6 +344,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool CheckEmail(string email)
         {
+            // 修复 R9-3：null 不是合法邮箱，返回 false，避免 email.Trim() 抛 NRE
+            if (email == null)
+            {
+                return false;
+            }
             var result = true;
             if (email.Trim().Length == 0)
             {
@@ -331,7 +357,7 @@ namespace DotNet.Util
             }
             else
             {
-                var regex = new Regex("[\\w-]+@([\\w-]+\\.)+[\\w-]+");
+                var regex = new Regex("[\\w-]+@([\\w-]+\\.)+[\\w-]+", RegexOptions.None, TimeSpan.FromSeconds(1));
                 if (!regex.IsMatch(email))
                 {
                     result = false;
@@ -350,14 +376,14 @@ namespace DotNet.Util
             var result = false;
 
             // 2015-12-12 吉日嘎拉 手机号码是空的，认为不准确就可以了
-            if (!string.IsNullOrEmpty(mobile))
+            if (!mobile.IsNullOrEmpty())
             {
                 mobile = mobile.Trim();
                 //const string regexString = @"^(1(([34578][0-9])|(47)|[8][01236789]))\d{8}$";
                 //根据最新号码段更新 https://www.qqzeng.com/article/phone.html 2021.07.22
                 //const string regexString = @"^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$";
-                const string regexString = @"^1(3[0-9]|4[56789]|5[0-3,5-9]|6[2567]|7[012345678]|8[0123456789]|9[1389])\d{8}$";
-                var regex = new Regex(regexString);
+                const string regexString = @"^1(3[0-9]|4[56789]|5[0-35-9]|6[2567]|7[012345678]|8[0123456789]|9[1389])\d{8}$";
+                var regex = new Regex(regexString, RegexOptions.None, TimeSpan.FromSeconds(1));
                 result = regex.IsMatch(mobile);
             }
 
@@ -365,17 +391,57 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 是否身份证号码
+        /// 是否身份证号码（15位/18位，18位含 GB 11643-1999 校验码验证）
         /// </summary>
-        /// <param name="idCard"></param>
-        /// <returns></returns>
+        /// <param name="idCard">身份证号码</param>
+        /// <returns>格式正确</returns>
         public static bool IsIdCard(string idCard)
         {
-            idCard = idCard.Trim();
-            if (idCard.Length == 15 || idCard.Length == 18)
+            if (idCard.IsNullOrEmpty())
             {
+                return false;
+            }
+            idCard = idCard.Trim();
+
+            // 15位身份证（旧版）：6位地区码 + 6位出生日期YYMMDD + 3位顺序码
+            if (idCard.Length == 15)
+            {
+                if (!Regex.IsMatch(idCard, @"^\d{15}$", RegexOptions.None, TimeSpan.FromSeconds(1)))
+                {
+                    return false;
+                }
+                // 出生日期（第7-12位），15位身份证默认补足为 19xx 年（即 20 世纪）
+                if (!DateTime.TryParseExact("19" + idCard.Substring(6, 6), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    return false;
+                }
                 return true;
             }
+
+            // 18位身份证（新版）：6位地区码 + 8位出生日期YYYYMMDD + 3位顺序码 + 1位校验码
+            if (idCard.Length == 18)
+            {
+                if (!Regex.IsMatch(idCard, @"^\d{17}[\dXx]$", RegexOptions.None, TimeSpan.FromSeconds(1)))
+                {
+                    return false;
+                }
+                // 出生日期（第7-14位）
+                if (!DateTime.TryParseExact(idCard.Substring(6, 8), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    return false;
+                }
+                // 校验码验证（GB 11643-1999）
+                var weights = new[] { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+                const string checkChars = "10X98765432";
+                var sum = 0;
+                for (var i = 0; i < 17; i++)
+                {
+                    sum += (idCard[i] - '0') * weights[i];
+                }
+                var checkChar = checkChars[sum % 11];
+                return char.ToUpperInvariant(idCard[17]) == checkChar;
+            }
+
             return false;
             // const string regexString = @"[\d]{6}(19|20)*[\d]{2}((0[1-9])|(11|12))*[\d]{2}((0[1-9])|^2[\d]{1}([0-9])|(30|31))*[\d]{3}[xX]|[\d]{4}";
             // const string regexString = @"^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$";
@@ -390,7 +456,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsUserName(string userName)
         {
-            if (string.IsNullOrEmpty(userName))
+            if (userName.IsNullOrEmpty())
             {
                 userName = string.Empty;
             }
@@ -406,7 +472,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsLetterOrIsDigit(string letterOrIsDigit)
         {
-            if (string.IsNullOrEmpty(letterOrIsDigit))
+            if (letterOrIsDigit.IsNullOrEmpty())
             {
                 letterOrIsDigit = string.Empty;
             }
@@ -423,21 +489,13 @@ namespace DotNet.Util
         public static bool IsTelephone(string telephone)
         {
             var result = true;
-            if (string.IsNullOrEmpty(telephone))
+            //修正：原实现条件写反（IsNullOrEmpty 时反而执行校验），导致永远返回 true
+            if (!telephone.IsNullOrEmpty())
             {
                 foreach (var t in telephone)
                 {
-                    if (t.Equals("-")
-                        || t.Equals("0")
-                        || t.Equals("1")
-                        || t.Equals("2")
-                        || t.Equals("3")
-                        || t.Equals("4")
-                        || t.Equals("5")
-                        || t.Equals("6")
-                        || t.Equals("7")
-                        || t.Equals("8")
-                        || t.Equals("9"))
+                    //修正：char.Equals(string) 恒为 false，需改为字符直接比较
+                    if (t == '-' || (t >= '0' && t <= '9'))
                     {
                         result = true;
                     }
@@ -458,7 +516,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool IsChineseCharacters(string realName)
         {
-            if (string.IsNullOrEmpty(realName))
+            if (realName.IsNullOrEmpty())
             {
                 return false;
             }
@@ -499,13 +557,8 @@ namespace DotNet.Util
         public static bool CheckPasswordStrength(string password, string userName = null)
         {
             var result = true;
-            if (!string.IsNullOrEmpty(password))
+            if (!password.IsNullOrEmpty())
             {
-
-                if (password.IndexOf("123", StringComparison.OrdinalIgnoreCase) > -1)
-                {
-                    result = false;
-                }
 
                 var isDigit = false;
                 var isLetter = false;
@@ -522,7 +575,8 @@ namespace DotNet.Util
                     }
                 }
 
-                result = (isDigit && isLetter);
+                //修复：原代码中“包含123”的判断会被下面的赋值覆盖（死代码），需要合并进最终结果
+                result = (isDigit && isLetter && password.IndexOf("123", StringComparison.OrdinalIgnoreCase) < 0);
                 // 密码至少为8位，为数字加字母
                 if (password.Length < 8)
                 {
@@ -564,9 +618,14 @@ namespace DotNet.Util
         /// <returns>成功与否</returns>
         public static bool IsQq(string qq)
         {
+            // 修复 R9-3：null 直接返回 false，避免 Regex.IsMatch(null) 抛 ArgumentNullException
+            if (qq == null)
+            {
+                return false;
+            }
             // 最多10位
             var format = @"^[1-9]*[1-9][0-9]*$";
-            return Regex.IsMatch(qq, format);
+            return Regex.IsMatch(qq, format, RegexOptions.None, TimeSpan.FromSeconds(1));
         }
 
         #region UPC-A
@@ -578,27 +637,16 @@ namespace DotNet.Util
         public static bool IsUPCA(string code)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(code))
+            if (!code.IsNullOrEmpty())
             {
-                var checkDigit = 0;
                 var isDigitsOnly = IsDigitsOnly(code);
-                if (code.Length == 11 && isDigitsOnly)
+                //UPC-A 编码固定为12位数字（11位数据 + 1位校验码）
+                //修正：12位时校验码应取最后一位数字（code[11] - '0'），
+                //原实现直接取 char 的 ASCII 值导致合法编码永远校验失败；
+                //同时移除了“11位自动补校验码后必然通过”的无意义逻辑。
+                if (isDigitsOnly && code.Length == 12)
                 {
-                    // Add Fake CheckSum
-                    checkDigit = CalculateUPCACheckDigit(code);
-                    code += checkDigit.ToString();
-                }
-                else if (code.Length == 12)
-                {
-                    checkDigit = code[11];
-                }
-                if (code.Length == 12 && isDigitsOnly)
-                {
-                    //60984399883
-                    //Check digit calculation is based on modulus 10 with digits in an odd
-                    //position (from right to left) being weighted 1 and even position digits
-                    //being weighted 3. 
-                    //Implementation based on http://stackoverflow.com/questions/10143547/how-do-i-validate-a-upc-or-ean-code
+                    var checkDigit = code[11] - '0';
                     result = checkDigit == CalculateUPCACheckDigit(code);
                 }
             }
@@ -669,9 +717,14 @@ namespace DotNet.Util
         public static bool IsVIN(string vin)
         {
             var result = false;
+            //修复：空值直接返回，避免 vin.ToUpper() 抛 NullReferenceException
+            if (vin.IsNullOrEmpty())
+            {
+                return result;
+            }
             var upperVin = vin.ToUpper();
             //排除字母I、O、Q
-            if (!string.IsNullOrEmpty(vin) && vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (vin.Length == 17 && !(upperVin.IndexOf("I", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("O", StringComparison.OrdinalIgnoreCase) >= 0 || upperVin.IndexOf("Q", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 // VIN码从第1位到第17位的“加权值”：
                 var vinMapWeighting = new Dictionary<int, int>
@@ -784,10 +837,10 @@ namespace DotNet.Util
         public static bool IsPlateNumber(string plateNumber)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(plateNumber) && plateNumber.Length == 7)
+            if (!plateNumber.IsNullOrEmpty() && plateNumber.Length == 7)
             {
                 const string pattern = @"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
-                result = Regex.IsMatch(plateNumber, pattern);
+                result = Regex.IsMatch(plateNumber, pattern, RegexOptions.None, TimeSpan.FromSeconds(1));
             }
             return result;
         }

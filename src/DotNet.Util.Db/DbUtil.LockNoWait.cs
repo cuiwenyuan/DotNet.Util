@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace DotNet.Util
         /// <param name="dbHelper"></param>
         /// <param name="tableName"></param>
         /// <param name="parameters">参数</param>
-        /// <returns></returns>
+        /// <returns>锁定的行数，执行失败返回 -1</returns>
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         {
             var parametersList = new List<KeyValuePair<string, object>>();
@@ -51,7 +51,7 @@ namespace DotNet.Util
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">参数</param>
-        /// <returns>锁定的行数</returns>
+        /// <returns>锁定的行数，执行失败返回 -1</returns>
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters)
         {
             var result = 0;
@@ -61,8 +61,12 @@ namespace DotNet.Util
             try
             {
                 var dt = new DataTable("ForUpdateNoWait");
-                dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(parameters));
-                result = dt.Rows.Count;
+                // 必须接收 Fill 的返回值：DbHelper.Fill 内部捕获异常后会把
+                // 它自己的局部变量置 null 并返回，传入的 dt 并不会被改写，
+                // 此时若继续用原 dt，异常就被静默吞掉、结果恒为 0。
+                var filled = dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(parameters));
+                // 返回 null 表示执行失败（Oracle 下多为锁冲突）
+                result = filled == null ? -1 : filled.Rows.Count;
             }
             catch
             {

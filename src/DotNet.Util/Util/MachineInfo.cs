@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -105,7 +105,7 @@ namespace DotNet.Util
             var macAddressList = GetMacAddressList().OrderBy(ip => ip).Take(2).ToList();
             foreach (var mac in macAddressList)
             {
-                if (!string.IsNullOrEmpty(mac))
+                if (!mac.IsNullOrEmpty())
                 {
                     macAddress = mac;
                     // 格式化
@@ -155,7 +155,7 @@ namespace DotNet.Util
                     && ni.OperationalStatus == OperationalStatus.Up)
                 {
                     var macAddress = ni.GetPhysicalAddress().ToString();
-                    if (!string.IsNullOrEmpty(macAddress) && !macAddress.StartsWith("000000000000") && macAddress.Length == 12)
+                    if (!macAddress.IsNullOrEmpty() && !macAddress.StartsWith("000000000000") && macAddress.Length == 12)
                     {
                         result.Add(ni.GetPhysicalAddress().ToString());
                     }
@@ -191,7 +191,7 @@ namespace DotNet.Util
         public static string GetCpuSerialNo()
         {
             var cpuSerialNo = string.Empty;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             var managementClass = new ManagementClass("Win32_Processor");
             var managementObjectCollection = managementClass.GetInstances();
             foreach (var o in managementObjectCollection)
@@ -224,7 +224,7 @@ namespace DotNet.Util
         public static string GetHardDiskInfo()
         {
             var hardDisk = string.Empty;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             var managementClass = new ManagementClass("Win32_DiskDrive");
             var managementObjectCollection = managementClass.GetInstances();
             foreach (var o in managementObjectCollection)
@@ -335,7 +335,7 @@ namespace DotNet.Util
                 var webRequest = WebRequest.Create(uri);
                 using (var stream = webRequest.GetResponse().GetResponseStream())
                 {
-                    var sr = new System.IO.StreamReader(stream, System.Text.Encoding.Default);
+                    var sr = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
                     result = sr.ReadToEnd();
                 }
             }

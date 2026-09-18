@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -34,7 +34,7 @@ namespace DotNet.Util
                 {
                     _ldapPath = ConfigurationManager.AppSettings["LDAPPath"];
                 }
-                if (string.IsNullOrEmpty(_ldapPath))
+                if (_ldapPath.IsNullOrEmpty())
                 {
                     _ldapPath = "LDAP://DC=CORP,DC=wangcaisoft,DC=com";
                 }
@@ -52,13 +52,13 @@ namespace DotNet.Util
         {
             get
             {
-                if (string.IsNullOrEmpty(_ldapDomain))
+                if (_ldapDomain.IsNullOrEmpty())
                 {
-                    if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LDAPDomain"]))
+                    if (!ConfigurationManager.AppSettings["LDAPDomain"].IsNullOrEmpty())
                     {
                         _ldapDomain = ConfigurationManager.AppSettings["LDAPDomain"];
                     }
-                    if (string.IsNullOrEmpty(_ldapDomain))
+                    if (_ldapDomain.IsNullOrEmpty())
                     {
                         _ldapDomain = "wangcaisoft";
                     }

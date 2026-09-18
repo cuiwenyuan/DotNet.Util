@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -46,11 +46,6 @@ namespace DotNet.Util
         /// 数据库类型：MySql
         /// </summary>
         MySql,
-
-        /// <summary>
-        /// 数据库类型：SQLite
-        /// </summary>
-        SqLite,
 
         /// <summary>
         /// 数据库类型：SQLite

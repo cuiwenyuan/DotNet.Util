@@ -1,24 +1,25 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
+using System.Globalization;
 
 namespace DotNet.Util
 {
     /// <summary>
     ///	BaseUtil
     /// 通用基类
-    /// 
-    /// 
+    ///
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2021.12.31 版本：5.1   Troy.Cui重构
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2021.12.31</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseUtil
     {
@@ -30,7 +31,12 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Boolean ConvertToBoolean(Object targetValue)
         {
-            return targetValue != DBNull.Value && (targetValue.ToString().Equals(true.ToString()) || targetValue.ToString().Equals("1"));
+            if (targetValue == null || targetValue == DBNull.Value)
+            {
+                return false;
+            }
+            var value = Convert.ToString(targetValue, CultureInfo.InvariantCulture);
+            return value.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase) || value.Equals("1");
         }
         /// <summary>
         /// 转为字符串
@@ -50,9 +56,9 @@ namespace DotNet.Util
         public static int ConvertToInt(Object targetValue, int defaultValue = 0)
         {
             var returnValue = defaultValue;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (int.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -64,9 +70,9 @@ namespace DotNet.Util
         public static int? ConvertToNullableInt(Object targetValue)
         {
             int? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (int.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (int.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -78,9 +84,9 @@ namespace DotNet.Util
         public static Byte ConvertToByteInt(Object targetValue)
         {
             Byte returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Byte.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -92,9 +98,9 @@ namespace DotNet.Util
         public static Byte? ConvertToNullableByteInt(Object targetValue)
         {
             Byte? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Byte.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Byte.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -106,9 +112,9 @@ namespace DotNet.Util
         public static Int32 ConvertToInt32(Object targetValue)
         {
             var returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int32.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -120,9 +126,9 @@ namespace DotNet.Util
         public static Int32? ConvertToNullableInt32(Object targetValue)
         {
             Int32? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int32.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int32.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -134,9 +140,9 @@ namespace DotNet.Util
         public static Int64 ConvertToInt64(Object targetValue)
         {
             Int64 returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int64.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -148,9 +154,9 @@ namespace DotNet.Util
         public static Int64? ConvertToNullableInt64(Object targetValue)
         {
             Int64? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Int64.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Int64.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -162,9 +168,9 @@ namespace DotNet.Util
         public static long ConvertToLong(Object targetValue)
         {
             long returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (long.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -176,9 +182,9 @@ namespace DotNet.Util
         public static long? ConvertToNullableLong(Object targetValue)
         {
             long? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (long.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (long.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -190,9 +196,9 @@ namespace DotNet.Util
         public static Double ConvertToDouble(Object targetValue)
         {
             Double returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Double.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -204,9 +210,9 @@ namespace DotNet.Util
         public static Double? ConvertToNullableDouble(Object targetValue)
         {
             Double? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (Double.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (Double.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -218,9 +224,9 @@ namespace DotNet.Util
         public static float ConvertToFloat(Object targetValue)
         {
             float returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (float.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -232,9 +238,9 @@ namespace DotNet.Util
         public static float? ConvertToNullableFloat(Object targetValue)
         {
             float? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (float.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (float.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -246,9 +252,9 @@ namespace DotNet.Util
         public static decimal ConvertToDecimal(Object targetValue)
         {
             decimal returnValue = 0;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (decimal.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -260,9 +266,9 @@ namespace DotNet.Util
         public static decimal? ConvertToNullableDecimal(Object targetValue)
         {
             decimal? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (decimal.TryParse(targetValue.ToString(), out var result)) returnValue = result;
+                if (decimal.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)) returnValue = result;
             }
             return returnValue;
         }
@@ -275,9 +281,13 @@ namespace DotNet.Util
         {
             var returnValue = DateTime.MinValue;
 
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                returnValue = Convert.ToDateTime(targetValue.ToString());
+                DateTime dt;
+                if (DateTime.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+                {
+                    returnValue = dt;
+                }
             }
 
             return returnValue;
@@ -290,9 +300,9 @@ namespace DotNet.Util
         public static DateTime? ConvertToNullableDateTime(Object targetValue)
         {
             DateTime? returnValue = null;
-            if (targetValue != DBNull.Value)
+            if (targetValue != null && targetValue != DBNull.Value)
             {
-                if (DateTime.TryParse(targetValue.ToString(), out var dt)) returnValue = dt;
+                if (DateTime.TryParse(Convert.ToString(targetValue, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt)) returnValue = dt;
             }
 
             return returnValue;

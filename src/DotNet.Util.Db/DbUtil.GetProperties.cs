@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,15 +11,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -36,10 +36,30 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
         {
+            if (values == null || values.Length == 0)
+            {
+                return new string[0];
+            }
+            var parameters = new List<KeyValuePair<string, object>>();
+            var placeholders = new List<string>();
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (values[i] == null)
+                {
+                    continue;
+                }
+                var parameterName = "Value" + i;
+                placeholders.Add(dbHelper.GetParameter(parameterName));
+                parameters.Add(new KeyValuePair<string, object>(parameterName, values[i]));
+            }
+            if (placeholders.Count == 0)
+            {
+                return new string[0];
+            }
             var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", values) + ")");
-            var dt = dbHelper.Fill(sb.Return());
-            return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", placeholders) + ")");
+            var dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
+            return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -57,14 +77,15 @@ namespace DotNet.Util
         {
             var result = new List<string>();
 
-            if (string.IsNullOrEmpty(targetField))
+            if (targetField.IsNullOrEmpty())
             {
                 targetField = BaseUtil.FieldId;
             }
-            // 这里是需要完善的功能，完善了这个，是一次重大突破           
+            // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT DISTINCT " + targetField + " FROM " + tableName);
             var whereSql = string.Empty;
+            var appendLimit = false;
             if (topLimit != null && topLimit > 0)
             {
                 switch (dbHelper.CurrentDbType)
@@ -75,10 +96,12 @@ namespace DotNet.Util
                         sb.Append("SELECT TOP " + topLimit + " " + targetField + " FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
-                        whereSql = " ROWNUM < = " + topLimit;
+                        whereSql = " ROWNUM <= " + topLimit;
                         break;
                     case CurrentDbType.MySql:
-                        sb.Append(" LIMIT 0, " + topLimit);
+                    case CurrentDbType.SQLite:
+                        //修复：LIMIT 必须放在 WHERE 之后，这里先标记，最后再追加（同时补上 SQLite 支持）
+                        appendLimit = true;
                         break;
                 }
             }
@@ -97,6 +120,10 @@ namespace DotNet.Util
             if (whereSql.Length > 0)
             {
                 sb.Append(" WHERE " + whereSql);
+            }
+            if (appendLimit)
+            {
+                sb.Append(" LIMIT 0, " + topLimit);
             }
 
             // 20151008 吉日嘎拉 优化为 DataReader 读取数据，大量数据读取时，效率高，节约内存，提高处理效率

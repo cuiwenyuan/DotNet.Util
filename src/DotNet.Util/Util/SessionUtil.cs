@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 #elif NETSTANDARD2_0_OR_GREATER
 using Microsoft.AspNetCore.Session;
@@ -22,7 +22,7 @@ namespace DotNet.Util
         //    options.CookieHttpOnly = true;
         //});
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region Set
         /// <summary>
         /// 设置Session值

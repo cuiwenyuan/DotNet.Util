@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,11 +38,11 @@ namespace DotNet.Business
                 if (userContactEntity != null)
                 {
                     var emailAddress = userContactEntity.Email;
-                    if (string.IsNullOrEmpty(emailAddress))
+                    if (emailAddress.IsNullOrEmpty())
                     {
                         emailAddress = BaseSystemInfo.ErrorReportTo;
                     }
-                    if (!string.IsNullOrEmpty(emailAddress))
+                    if (!emailAddress.IsNullOrEmpty())
                     {
                         // 没有邮箱则给管理员发邮件
                         // 使用线程发送邮件

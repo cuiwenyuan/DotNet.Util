@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -29,12 +29,12 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection OpenAsync()
         {
-            if (string.IsNullOrEmpty(ConnectionString))
+            if (ConnectionString.IsNullOrEmpty())
             {
                 BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
                 // 读取不到，就用用户中心数据库
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
+                if ((BaseSystemInfo.BusinessDbConnection).IsNullOrEmpty())
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
                 }
@@ -58,6 +58,23 @@ namespace DotNet.Util
         {
             //若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
+            //修复：重复调用 OpenAsync 时先释放旧连接，避免连接泄漏/连接池耗尽（与同步 Open 保持一致）
+            if (_dbConnection != null)
+            {
+                try
+                {
+                    if (_dbConnection.State != ConnectionState.Closed)
+                    {
+                        _dbConnection.Close();
+                    }
+                    _dbConnection.Dispose();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "close old connection error");
+                }
+                _dbConnection = null;
+            }
             _dbConnection = GetInstance().CreateConnection();
             //var dbConnection = _dbConnection;
             if (_dbConnection != null)
@@ -65,11 +82,14 @@ namespace DotNet.Util
                 _dbConnection.ConnectionString = ConnectionString;
                 try
                 {
-                    _dbConnection.OpenAsync();
+                    _dbConnection.OpenAsync().GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, "open connection error");
+                    _dbConnection.Dispose();
+                    _dbConnection = null;
+                    throw;
                 }
                 if (_dbConnection.State == ConnectionState.Open)
                 {
@@ -100,7 +120,7 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection GetDbConnectionAsync(string connectionString)
         {
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!connectionString.IsNullOrEmpty())
             {
                 OpenAsync(connectionString);
             }

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System.Data;
@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// 资源权限范围
     ///
     ///     2012.08.06 版本：1.0 JiRiGaLa 主键进行了绝对的优化，这是个好东西啊，平时要多用，用得要灵活些。
-    ///     
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.08.06</date>
@@ -37,7 +37,7 @@ namespace DotNet.Business
             string[] result = null;
             var permissionScopeTableName = GetPermissionScopeTableName(systemCode);
             var permissionId = new BaseModuleManager().GetIdByCodeByCache(systemCode, permissionCode);
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 var sb = PoolUtil.StringBuilder.Get();
                 sb.Append("(SELECT ResourceId, TargetId FROM " + permissionScopeTableName + " WHERE " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND SystemCode = '" + systemCode + "' AND ResourceCategory = '" + BaseUserEntity.CurrentTableName + "' AND TargetCategory = '" + BaseUserEntity.CurrentTableName + "' AND PermissionId = " + permissionId + ") T");
@@ -85,26 +85,27 @@ namespace DotNet.Business
         {
             DataTable dt = null;
             string[] result = null;
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 var permissionScopeTableName = GetPermissionScopeTableName(systemCode);
                 var sb = PoolUtil.StringBuilder.Get();
 
                 // 1.本人直接就有某个操作权限的。
-                sb.Append("SELECT ResourceId FROM " + permissionScopeTableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
+                //修复：对拼入 SQL 的值转义，防止 SQL 注入
+                sb.Append("SELECT ResourceId FROM " + permissionScopeTableName + " WHERE (ResourceCategory = 'BaseUser') AND (PermissionId = " + DbHelper.SqlSafe(permissionId) + ") AND TargetCategory='BaseOrganization' AND TargetId = " + DbHelper.SqlSafe(organizationId) + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + DbHelper.SqlSafe(systemCode) + "'");
                 dt = Fill(sb.Return());
-                var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var userIds = BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 2.角色本身就有某个操作权限的。
                 sb = PoolUtil.StringBuilder.Get();
-                sb.Append("SELECT ResourceId FROM " + permissionScopeTableName + " WHERE (ResourceCategory = '" + GetRoleTableName(systemCode) + "') AND (PermissionId = " + permissionId + ") AND TargetCategory='BaseOrganization' AND TargetId = " + organizationId + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
+                sb.Append("SELECT ResourceId FROM " + permissionScopeTableName + " WHERE (ResourceCategory = '" + GetRoleTableName(systemCode) + "') AND (PermissionId = " + DbHelper.SqlSafe(permissionId) + ") AND TargetCategory='BaseOrganization' AND TargetId = " + DbHelper.SqlSafe(organizationId) + " AND " + BasePermissionScopeEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + DbHelper.SqlSafe(systemCode) + "'");
                 dt = Fill(sb.Return());
-                var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                var roleIds = StringUtil.Concat(result, BaseUtil.FieldToArray(dt, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 3.组织机构有某个操作权限。
                 // sb.Append("SELECT ResourceId FROM " + permissionScopeTableName + " WHERE ResourceCategory = '" + GetRoleOrganizationTableName(systemCode) + "' AND PermissionId = " + result + " AND " + BaseContactEntity.FieldDeleted + " = 0 AND " + BasePermissionScopeEntity.FieldEnabled + " = 1 AND " + BasePermissionScopeEntity.FieldSystemCode + " = '" + systemCode + "'");
                 // result = this.Fill(sb.Return());
-                // string[] ids = StringUtil.Concat(result, BaseUtil.FieldToArray(result, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                // string[] ids = StringUtil.Concat(result, BaseUtil.FieldToArray(result, BasePermissionEntity.FieldResourceId)).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
                 // 4.获取所有有这个操作权限的用户Id，而且这些用户是有效的。
                 var userManager = new BaseUserManager(UserInfo);

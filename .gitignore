@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Alternative build intermediate/output dirs (e.g. produced by `dotnet build -p:BaseIntermediateOutputPath=verify_obj/`)
+# 与标准 [Bb]in/、[Oo]bj/ 同类，均为可再生的构建产物，不应纳入版本控制
+verify_obj/
+verify_bin/

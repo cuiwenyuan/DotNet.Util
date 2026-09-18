@@ -1,7 +1,7 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
 //-----------------------------------------------------------------
-#if NET452_OR_GREATER
+// All Rights Reserved. Copyright (c) 2026, DotNet.
+//-----------------------------------------------------------------
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 
@@ -14,7 +14,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region public static void Logout(bool useSso, BaseUserInfo userInfo)
         /// <summary>
         /// <param name="useSso">是否使用SSO</param>
@@ -83,7 +83,7 @@ namespace DotNet.Business
                 //// 向服务器发送POST数据
                 //var responseArray = webClient.UploadValues(url, postValues);
                 // string response = Encoding.UTF8.GetString(responseArray);
-                // if (!string.IsNullOrEmpty(response))
+                // if (!response.IsNullOrEmpty())
                 // {
                 //      result = response.Equals(true.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 // }

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -50,7 +50,7 @@ namespace DotNet.Business
         {
             BaseUserLogonEntity result = null;
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 var key = "UserLogon:" + id;
                 result = CacheUtil.Cache(key, () => GetCacheByKey(key), true);
@@ -131,7 +131,7 @@ namespace DotNet.Business
                 dataReader.Close();
             }
 
-            Console.WriteLine(result + " : 完成 ");
+            Console.WriteLine(Msg.Format("Console.Completed", result));
 
             return result;
         }

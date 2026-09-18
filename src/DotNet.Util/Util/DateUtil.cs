@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -95,53 +95,53 @@ namespace DotNet.Util
 
 
         /*
-        //1.1 取当前年月日时分秒 
+        //1.1 取当前年月日时分秒
                 currentTime=System.DateTime.Now;
-        //1.2 取当前年 
-                int 年=currentTime.Year; 
-        //1.3 取当前月 
-                int 月=currentTime.Month; 
-        //1.4 取当前日 
-                int 日=currentTime.Day; 
-        //1.5 取当前时 
-                int 时=currentTime.Hour; 
-        //1.6 取当前分 
-                int 分=currentTime.Minute; 
-        //1.7 取当前秒 
-                int 秒=currentTime.Second; 
-        //1.8 取当前毫秒 
-                int 毫秒=currentTime.Millisecond; 
-        //（变量可用中文） 
+        //1.2 取当前年
+                int 年=currentTime.Year;
+        //1.3 取当前月
+                int 月=currentTime.Month;
+        //1.4 取当前日
+                int 日=currentTime.Day;
+        //1.5 取当前时
+                int 时=currentTime.Hour;
+        //1.6 取当前分
+                int 分=currentTime.Minute;
+        //1.7 取当前秒
+                int 秒=currentTime.Second;
+        //1.8 取当前毫秒
+                int 毫秒=currentTime.Millisecond;
+        //（变量可用中文）
 
-        //1.9 取中文日期显示——年月日时分 
-                         string strY=currentTime.ToString("f"); //不显示秒 
+        //1.9 取中文日期显示——年月日时分
+                         string strY=currentTime.ToString("f"); //不显示秒
 
-        //1.10 取中文日期显示_年月 
-                 string strYM=currentTime.ToString("y"); 
+        //1.10 取中文日期显示_年月
+                 string strYM=currentTime.ToString("y");
 
-        //1.11 取中文日期显示_月日 
-                 string strMD=currentTime.ToString("m"); 
+        //1.11 取中文日期显示_月日
+                 string strMD=currentTime.ToString("m");
 
-        //1.12 取中文年月日 
-                 string strYMD=currentTime.ToString("D"); 
+        //1.12 取中文年月日
+                 string strYMD=currentTime.ToString("D");
 
-        /1.13 取当前时分，格式为：14：24 
-        string strT=currentTime.ToString("t"); 
+        /1.13 取当前时分，格式为：14：24
+        string strT=currentTime.ToString("t");
 
-        //1.14 取当前时间，格式为：2003-09-23T14:46:48 
-        string strT=currentTime.ToString("s"); 
+        //1.14 取当前时间，格式为：2003-09-23T14:46:48
+        string strT=currentTime.ToString("s");
 
-        //1.15 取当前时间，格式为：2003-09-23 14:48:30Z 
-                                              string strT=currentTime.ToString("u"); 
+        //1.15 取当前时间，格式为：2003-09-23 14:48:30Z
+                                              string strT=currentTime.ToString("u");
 
-        //1.16 取当前时间，格式为：2003-09-23 14:48 
-        string strT=currentTime.ToString("g"); 
+        //1.16 取当前时间，格式为：2003-09-23 14:48
+        string strT=currentTime.ToString("g");
 
-        //1.17 取当前时间，格式为：Tue, 23 Sep 2003 14:52:40 GMT 
-                                                     string strT=currentTime.ToString("r"); 
+        //1.17 取当前时间，格式为：Tue, 23 Sep 2003 14:52:40 GMT
+                                                     string strT=currentTime.ToString("r");
 
-        //1.18获得当前时间 n 天后的日期时间 
-            DateTime newDay = DateTime.Now.AddDays(100); 
+        //1.18获得当前时间 n 天后的日期时间
+            DateTime newDay = DateTime.Now.AddDays(100);
         */
 
         #region 返回本年有多少天
@@ -156,7 +156,10 @@ namespace DotNet.Util
 
         /// <summary>本年有多少天</summary>
         /// <param name="dt">日期</param>
-        /// <returns>本天在当年的天数</returns>
+        /// <returns>该日期所在年份的总天数（平年 365，闰年 366）</returns>
+        /// <remarks>注意：本方法返回的是「年总天数」，并非「该日期是当年的第几天」。
+        /// 原 XML 注释误写为「本天在当年的天数」，与实现不符，易导致调用方取到静默错误的结果；
+        /// 若需要「第几天」请直接使用 dt.DayOfYear。</remarks>
         public static int GetDaysOfYear(DateTime dt)
         {
             return IsRuYear(dt.Year) ? 366 : 365;
@@ -172,6 +175,12 @@ namespace DotNet.Util
         public static int GetDaysOfMonth(int iYear, int month)
         {
             var days = 0;
+            // 修复：原实现 switch 无 default，非法月份（0/13/负数）会静默返回 0，
+            // 调用方难以察觉错误。改为显式抛 ArgumentOutOfRangeException（快速失败）。
+            if (month < 1 || month > 12)
+            {
+                throw new ArgumentOutOfRangeException(nameof(month), "月份必须在 1 到 12 之间。");
+            }
             switch (month)
             {
                 case 1:
@@ -382,12 +391,15 @@ namespace DotNet.Util
             //当年的第一天
             var firstDay = new DateTime(year, 1, 1);
 
-            //当年的第一天是星期几
+            //当年的第一天是星期几（DayOfWeek：周日=0，周一=1，...，周六=6）
             var firstOfWeek = firstDay.DayOfWeek.ToInt();
 
             //计算当年第一周的起止日期，可能跨年
-            var dayDiff = (-1) * firstOfWeek + 1;
-            var dayAdd = 7 - firstOfWeek;
+            //修复：原公式 dayDiff = (-1) * firstOfWeek + 1 在 1/1 为周日（firstOfWeek=0）时算得 +1，
+            //导致第 1 周从 1/2 开始，1/1 不属于任何一周；而 GetWeekOfYear(1/1) 却返回 1，两者自相矛盾。
+            //改为统一「以周一为一周首日」回退：周日(0)回退 6 天，周一(0)，周二回退 1 天 ... 周六回退 5 天。
+            var dayDiff = -((firstOfWeek + 6) % 7);
+            var dayAdd = dayDiff + 6;
 
             firstDate = firstDay.AddDays(dayDiff).Date;
             lastDate = firstDay.AddDays(dayAdd).Date;
@@ -437,18 +449,12 @@ namespace DotNet.Util
         /// <returns>日期对象</returns>
         public static DateTime ToDate(string strInput)
         {
-            DateTime oDateTime;
-
-            try
+            if (DateTime.TryParse(strInput, out var oDateTime) || DateTime.TryParse(strInput, CultureInfo.InvariantCulture, DateTimeStyles.None, out oDateTime))
             {
-                oDateTime = DateTime.Parse(strInput);
-            }
-            catch (Exception)
-            {
-                oDateTime = DateTime.Today;
+                return oDateTime;
             }
 
-            return oDateTime;
+            return DateTime.Today;
         }
         #endregion
 
@@ -516,8 +522,8 @@ namespace DotNet.Util
             //WeekStart
             //1表示 周一至周日 为一周
             //2表示 周日至周六 为一周
-            DateTime FirstofMonth;
-            FirstofMonth = Convert.ToDateTime(day.Date.Year + "-" + day.Date.Month + "-" + 1);
+            //修复：直接用 new DateTime 构造，避免字符串解析的依赖与开销
+            var FirstofMonth = new DateTime(day.Year, day.Month, 1);
 
             var i = (int)FirstofMonth.Date.DayOfWeek;
             if (i == 0)
@@ -531,7 +537,8 @@ namespace DotNet.Util
             }
             if (WeekStart == 2)
             {
-                return (day.Date.Day + i - 1) / 7;
+                //修复：与 WeekStart == 1 保持一致，第一个不完整周返回 1 而不是 0
+                return (day.Date.Day + i - 1) / 7 + 1;
 
             }
             return 0;
@@ -541,17 +548,24 @@ namespace DotNet.Util
 
         #region 获取 本周、本月、本季度、本年 的开始时间或结束时间
         /// <summary>
-        /// 获取结束时间
+        /// 获取开始时间
         /// </summary>
         /// <param name="TimeType">Week、Month、Season、Year</param>
-        /// <param name="now"></param>
-        /// <returns></returns>
+        /// <param name="now">基准时间</param>
+        /// <returns>周期首日，但时分秒沿用 now 的时刻（未归零）</returns>
+        /// <remarks>
+        /// 注意：本方法不处理时分秒，返回值沿用入参 now 的时刻，并非周期首日的 00:00:00。
+        /// 若用于 BETWEEN 区间查询，会漏掉周期首日 00:00:00 至该时刻之间的数据。
+        /// 新代码请改用 <see cref="GetStartTimeOfDay"/>。
+        /// </remarks>
+        [Obsolete("本方法不归零时分秒，返回值沿用入参时刻，用于区间查询易漏数据。请改用 GetStartTimeOfDay。")]
         public static DateTime GetStartTime(DateTime now, string TimeType)
         {
             switch (TimeType)
             {
                 case "Week":
-                    return now.AddDays(-(int)now.DayOfWeek + 1);
+                    //修复：周日（DayOfWeek=0）原来会取到下周一，改为当前周周一
+                    return now.AddDays(-GetMondayOffset(now) + 1);
                 case "Month":
                     return now.AddDays(-now.Day + 1);
                 case "Season":
@@ -560,22 +574,29 @@ namespace DotNet.Util
                 case "Year":
                     return now.AddDays(-now.DayOfYear + 1);
                 default:
-                    return now.AddDays(-(int)now.DayOfWeek + 1);
+                    return now.AddDays(-GetMondayOffset(now) + 1);
             }
         }
 
         /// <summary>
         /// 获取结束时间
         /// </summary>
-        /// <param name="now"></param>
+        /// <param name="now">基准时间</param>
         /// <param name="timeType">Week、Month、Season、Year</param>
-        /// <returns></returns>
+        /// <returns>周期末日，但时分秒沿用 now 的时刻（未补到 23:59:59）</returns>
+        /// <remarks>
+        /// 注意：本方法不处理时分秒，返回值沿用入参 now 的时刻，并非周期末日的 23:59:59。
+        /// 若用于 BETWEEN 区间查询，会漏掉周期末日该时刻之后的数据。
+        /// 新代码请改用 <see cref="GetEndTimeOfDay"/>。
+        /// </remarks>
+        [Obsolete("本方法不补满时分秒，返回值沿用入参时刻，用于区间查询易漏数据。请改用 GetEndTimeOfDay。")]
         public static DateTime GetEndTime(DateTime now, string timeType)
         {
             switch (timeType)
             {
                 case "Week":
-                    return now.AddDays(7 - (int)now.DayOfWeek);
+                    //修复：周日（DayOfWeek=0）原来会取到下周日，改为当天
+                    return now.AddDays(7 - GetMondayOffset(now));
                 case "Month":
                     return now.AddMonths(1).AddDays(-now.AddMonths(1).Day + 1).AddDays(-1);
                 case "Season":
@@ -585,8 +606,53 @@ namespace DotNet.Util
                     var time2 = now.AddYears(1);
                     return time2.AddDays(-time2.DayOfYear);
                 default:
-                    return now.AddDays(7 - (int)now.DayOfWeek);
+                    return now.AddDays(7 - GetMondayOffset(now));
             }
+        }
+
+        /// <summary>
+        /// 获取 本周/本月/本季度/本年 的开始时间（归零到 00:00:00）
+        /// </summary>
+        /// <param name="now">基准时间</param>
+        /// <param name="timeType">Week、Month、Season、Year</param>
+        /// <returns>周期首日的 00:00:00</returns>
+        /// <remarks>
+        /// 与 <see cref="GetStartTime"/> 的区别：本方法将时分秒归零为 00:00:00，
+        /// 可直接用于 BETWEEN 区间查询而不会漏掉周期首日零点之后的数据。
+        /// </remarks>
+        public static DateTime GetStartTimeOfDay(DateTime now, string timeType)
+        {
+            #pragma warning disable CS0618 // 复用旧实现，避免重复逻辑
+            return GetStartTime(now, timeType).Date;
+            #pragma warning restore CS0618
+        }
+
+        /// <summary>
+        /// 获取 本周/本月/本季度/本年 的结束时间（补满到 23:59:59）
+        /// </summary>
+        /// <param name="now">基准时间</param>
+        /// <param name="timeType">Week、Month、Season、Year</param>
+        /// <returns>周期末日的 23:59:59（精度到秒）</returns>
+        /// <remarks>
+        /// 与 <see cref="GetEndTime"/> 的区别：本方法将时间补满到当日 23:59:59，
+        /// 用于 BETWEEN 区间查询不会漏掉周期末日的数据。
+        /// 注意返回值为 23:59:59.000（秒级精度）；若需毫秒级精确，建议使用半开区间
+        /// [起始, 次日起始) 并以 &lt; 比较，可规避精度问题。
+        /// </remarks>
+        public static DateTime GetEndTimeOfDay(DateTime now, string timeType)
+        {
+            #pragma warning disable CS0618 // 复用旧实现，避免重复逻辑
+            return GetEndTime(now, timeType).Date.AddDays(1).AddSeconds(-1);
+            #pragma warning restore CS0618
+        }
+
+        /// <summary>
+        /// 获取一周内周一至周日的偏移（周一=1 ... 周日=7）
+        /// </summary>
+        private static int GetMondayOffset(DateTime now)
+        {
+            var dayOfWeek = (int)now.DayOfWeek;
+            return dayOfWeek == 0 ? 7 : dayOfWeek;
         }
         #endregion
 

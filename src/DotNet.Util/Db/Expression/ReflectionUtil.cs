@@ -240,6 +240,8 @@ namespace DotNet.Util
             if (CacheDictionary.TryGetValue(key, out var func))
             {
                 ((Delegate)func).DynamicInvoke(model, value);
+                //修复：命中缓存后直接返回，避免重复赋值并每次都重新编译表达式树
+                return;
             }
 
             var modelExpression = Expression.Parameter(type, "model");

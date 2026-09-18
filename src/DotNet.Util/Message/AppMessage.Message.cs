@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 namespace DotNet.Util
@@ -16,6 +16,15 @@ namespace DotNet.Util
     ///		<date>2007.05.17</date>
     /// </author> 
     /// </summary>
+    /// <remarks>
+    /// 多语言说明（2026-09-15）：
+    /// 本文件中的 Msg0000~Msg9999 静态字段<b>保持原样不变</b>（值固定为中文），以保证对外的二进制兼容性。
+    /// 需要随语言切换的输出消息，请改用 <see cref="Msg.Get(string)"/> / <see cref="Msg.Format(string, object[])"/>，
+    /// 例如 Msg.Get("Common.UnknownError")、Msg.Format("Common.ParameterRequired", "用户名")。
+    /// 语言包见 DotNet.Util.Resources.MsgPack：zh-CN 为默认语言，en 为第一个语言包。
+    /// 2026-09-16 起语言包键已由 Msg#### 编号改为语义键（Common.* / Logon.* / Validation.* 等 11 个前缀），
+    /// 本文件的字段名与字段值保持不变，字段值由单元测试 MsgTests.ZhCnPack_MatchesAppMessageFields 校验与中文包一致。
+    /// </remarks>
     public partial class AppMessage
     {
         /// <summary>
@@ -262,7 +271,7 @@ namespace DotNet.Util
         /// <summary>
         /// 最近 {0} 次内密码不能重复。。
         /// </summary>
-        public static string Msg0046 = "最近{0}次内密码不能重复。。";
+        public static string Msg0046 = "最近{0}次内密码不能重复。";
 
         /// <summary>
         /// 密码已过期，账号被锁定，请联系系统管理员。
@@ -1052,7 +1061,7 @@ namespace DotNet.Util
         /// <summary>
         /// 姓名
         /// </summary>
-        public static string Msg0233 = "姓名";
+        public static string Msg0233 = "真实姓名";
 
         /// <summary>
         /// E-mail 格式不正确，请重新输入。
@@ -1157,7 +1166,7 @@ namespace DotNet.Util
         /// <summary>
         /// 编号产生成功
         /// </summary>
-        public static string Msg0283 = "编号产生成功";
+        public static string Msg0283 = "编号产生成功。";
 
         /// <summary>
         /// 已修改配置信息，需要保存吗？

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -13,16 +13,16 @@ namespace DotNet.Util
     /// <summary>
     ///	StringUtil
     /// 字符串辅助类
-    /// 
-    /// 
+    ///
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2016.01.12 版本：1.0	SongBiao
-    ///	
+    ///
     /// <author>
     ///		<name>SongBiao</name>
     ///		<date>2016.01.12</date>
-    /// </author> 
+    /// </author>
     /// </summary>
 
     public static partial class StringUtil
@@ -36,13 +36,25 @@ namespace DotNet.Util
         /// <returns>表达式</returns>
         public static string GetLike(string field, string search)
         {
+            // 修复 R8-8：原空 search 返回非法 SQL "()"；且未转义 LIKE 通配符与单引号。
+            if (string.IsNullOrEmpty(search))
+            {
+                return string.Empty;
+            }
+
             var result = string.Empty;
             foreach (var t in search)
             {
-                result += field + " LIKE '%" + t + "%' AND ";
+                // 转义 LIKE 通配符 [% _] 与单引号，避免语法错误/注入
+                var ch = t.ToString()
+                    .Replace("[", "[[]")
+                    .Replace("%", "[%]")
+                    .Replace("_", "[_]")
+                    .Replace("'", "''");
+                result += field + " LIKE '%" + ch + "%' AND ";
             }
 
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(0, result.Length - 5);
             }
@@ -62,14 +74,30 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetSearchString(string searchKey, bool allLike = false)
         {
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = searchKey.Trim();
                 searchKey = SecretUtil.SqlSafe(searchKey);
                 if (searchKey.Length > 0)
                 {
-                    searchKey = searchKey.Replace('[', '_');
-                    searchKey = searchKey.Replace(']', '_');
+                    // 修正 R8-11：转义 LIKE 通配符，字面 '[' -> '[[]'，字面 ']' -> '[]]'，避免改变查询语义
+                    var likeSb = new System.Text.StringBuilder(searchKey.Length);
+                    foreach (var c in searchKey)
+                    {
+                        if (c == '[')
+                        {
+                            likeSb.Append("[[]");
+                        }
+                        else if (c == ']')
+                        {
+                            likeSb.Append("[]]");
+                        }
+                        else
+                        {
+                            likeSb.Append(c);
+                        }
+                    }
+                    searchKey = likeSb.ToString();
                 }
 
                 if (searchKey == "%")
@@ -110,7 +138,7 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetLikeSearchKey(string searchKey)
         {
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 //必须[放在%替换前面
                 searchKey = searchKey.Replace("[", "[[]");
@@ -137,7 +165,7 @@ namespace DotNet.Util
         {
             var result = false;
 
-            if (ids != null && !string.IsNullOrEmpty(targetString))
+            if (ids != null && !targetString.IsNullOrEmpty())
             {
                 foreach (var i in ids)
                 {
@@ -183,7 +211,7 @@ namespace DotNet.Util
                     {
                         for (var j = 0; j < i.Length; j++)
                         {
-                            if (!string.IsNullOrEmpty(i[j]))
+                            if (!i[j].IsNullOrEmpty())
                             {
                                 if (!result.Contains(i[j]))
                                 {
@@ -235,7 +263,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string[] Remove(string[] ids, string id)
         {
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 return Remove(ids, new string[] { id });
             }
@@ -254,9 +282,17 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string StringToInList(string id, string separativeSign = ",", string newSeparativeSign = "','")
         {
+            // 修复 R8-7：原 id 为 null 直接 NRE；且值内单引号未转义，生成 'O'Brien' 导致 SQL 语法错误/注入。
+            // 契约保持：调用方负责在外层包裹引号，本方法产出 "a','b','c" 形式（仅转义值内单引号为 ''）。
+            if (string.IsNullOrEmpty(id))
+            {
+                return string.Empty;
+            }
             //var ids = id.Split(separativeSign.ToCharArray());
             //return ArrayToList(ids, string.Empty);
-            return id.TrimEnd(separativeSign.ToCharArray()).Replace(separativeSign, newSeparativeSign);
+            return id.TrimEnd(separativeSign.ToCharArray())
+                .Replace("'", "''")
+                .Replace(separativeSign, newSeparativeSign);
 
         }
 
@@ -324,6 +360,10 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DeleteUnVisibleChar(string sourceString)
         {
+            if (sourceString == null)
+            {
+                return string.Empty;
+            }
             var sb = PoolUtil.StringBuilder.Get();
             foreach (var t in sourceString)
             {
@@ -354,7 +394,7 @@ namespace DotNet.Util
             foreach (var cellPhone in mobile)
             {
                 var phones = cellPhone.Trim();
-                if (!string.IsNullOrEmpty(phones))
+                if (!phones.IsNullOrEmpty())
                 {
                     // 用回车分割，然后再用,符号分割
                     var phone = phones.Split(',');
@@ -367,7 +407,7 @@ namespace DotNet.Util
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(p.Trim()))
+                            if (!(p.Trim()).IsNullOrEmpty())
                             {
                                 mobileList.Add(p.Trim());
                             }
@@ -379,22 +419,22 @@ namespace DotNet.Util
             // 去掉重复，不要空的，有时候需要发重复的短信的，因为有多个包裹时，需要有重复的信息
             if (distinct)
             {
-                mobile = mobileList.Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                mobile = mobileList.Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             else
             {
-                mobile = mobileList.Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                mobile = mobileList.Where(t => !t.IsNullOrEmpty()).ToArray();
             }
 
             return mobile;
         }
 
-        /// <summary>  
-        /// 字符串转为UniCode码字符串  
+        /// <summary>
+        /// 字符串转为UniCode码字符串
         /// 避免生成的json中有特殊字符造成的问题
-        /// </summary>  
-        /// <param name="target"></param>  
-        /// <returns></returns>  
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static string StringToUnicode(string target)
         {
             target = string.Equals(target, "N/A", StringComparison.OrdinalIgnoreCase) ? "" : target;
@@ -420,36 +460,26 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string CutString(string inputString, int len)
         {
-            var ascii = new ASCIIEncoding();
+            if (inputString == null)
+            {
+                return string.Empty;
+            }
             var tempLen = 0;
             var tempString = "";
-            var s = ascii.GetBytes(inputString);
-            for (var i = 0; i < s.Length; i++)
+            //修复：原实现用 ASCII 字节数当作字符下标，遇到中文会越界或截断错位；
+            //改为按字符遍历，非 ASCII（中文等）按 2 个宽度计，与原逻辑一致
+            for (var i = 0; i < inputString.Length; i++)
             {
-                if ((int)s[i] == 63)
-                {
-                    tempLen += 2;
-                }
-                else
-                {
-                    tempLen += 1;
-                }
-
-                try
-                {
-                    tempString += inputString.Substring(i, 1);
-                }
-                catch
-                {
-                    break;
-                }
-
+                var ch = inputString[i];
+                //非 ASCII 字符按 3 个宽度计（UTF-8）
+                tempLen += ch > 255 ? 3 : 1;
+                tempString += ch;
                 if (tempLen > len)
                     break;
             }
 
             //如果截过则加上半个省略号
-            var mybyte = Encoding.Default.GetBytes(inputString);
+            var mybyte = Encoding.UTF8.GetBytes(inputString);
             if (mybyte.Length > len)
                 tempString += "..";
             return tempString;
@@ -494,7 +524,7 @@ namespace DotNet.Util
 
             for (var i = 0; i < hex.Length / 2; i++)
             {
-                result[i] = byte.Parse(hex.Substring(2 * i, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+                result[i] = byte.TryParse(hex.Substring(2 * i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out var hexByte) ? hexByte : (byte)0;
             }
 
             return result;
@@ -508,7 +538,7 @@ namespace DotNet.Util
         /// <returns>合并空格后的字符串</returns>
         public static string MergeSpace(string str)
         {
-            if (!string.IsNullOrEmpty(str) && str.Length > 0)
+            if (!str.IsNullOrEmpty() && str.Length > 0)
             {
                 str = new System.Text.RegularExpressions.Regex("[\\s]+").Replace(str, " ");
             }
@@ -527,7 +557,7 @@ namespace DotNet.Util
         public static string CutString(string source, string start, string end)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(source) && source.Contains(start) && source.Contains(end))
+            if (!source.IsNullOrEmpty() && source.Contains(start) && source.Contains(end))
             {
                 int startIndex, endIndex;
                 try
@@ -562,7 +592,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideSensitiveInfo(this string info, int left, int right, bool basedOnLeft = true)
         {
-            if (string.IsNullOrEmpty(info))
+            if (info.IsNullOrEmpty())
             {
                 return "";
             }
@@ -616,7 +646,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideSensitiveInfo(this string info, int ratio = 3, bool basedOnLeft = true)
         {
-            if (string.IsNullOrEmpty(info))
+            if (info.IsNullOrEmpty())
             {
                 return "";
             }
@@ -653,7 +683,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string HideEmailDetails(this string email, int left = 3)
         {
-            if (string.IsNullOrEmpty(email))
+            if (email.IsNullOrEmpty())
             {
                 return "";
             }

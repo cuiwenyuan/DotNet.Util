@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -12,7 +12,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region OAuth登录
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace DotNet.Business
         {
             BaseUserInfo result = null;
             status = Status.Error;
-            statusMessage = "登录失败";
+            statusMessage = Msg.Get("Logon.Failed");
             var entity = new BaseUserOAuthManager(UserInfo).GetEntity(oAuthName, oAuthOpenId, oAuthUnionId, systemCode);
             if (entity != null)
             {
@@ -42,15 +42,15 @@ namespace DotNet.Business
                     // 统一的登录服务
                     var taskId = Guid.NewGuid().ToString("N");
                     var userInfo = GetUserInfo();
-                    if (string.IsNullOrEmpty(systemCode))
+                    if (systemCode.IsNullOrEmpty())
                     {
                         systemCode = BaseSystemInfo.SystemCode;
-                        if (string.IsNullOrEmpty(systemCode))
+                        if (systemCode.IsNullOrEmpty())
                         {
                             systemCode = userInfo.SystemCode;
                         }
                     }
-                    if (string.IsNullOrEmpty(userInfo.IpAddress))
+                    if ((userInfo.IpAddress).IsNullOrEmpty())
                     {
                         userInfo.IpAddress = Utils.GetIp();
                     }
@@ -62,10 +62,10 @@ namespace DotNet.Business
                     {
                         var isAuthorized = true;
                         // 用户是否有哪个相应的权限
-                        if (!string.IsNullOrEmpty(permissionCode))
+                        if (!permissionCode.IsNullOrEmpty())
                         {
                             var permissionManager = new BasePermissionManager(userInfo);
-                            isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                            isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.Id.ToString(), permissionCode, null);
                         }
                         // 有相应的权限才可以登录
                         if (isAuthorized)
@@ -75,7 +75,7 @@ namespace DotNet.Business
                                 // 相对安全的方式保存登录状态
                                 //SaveCookie(userName, password);
                                 // 内部单点登录方式 Troy.Cui 2016.12.26
-                                SaveCookie(userInfo);
+                                SaveCookie(userLogonResult.UserInfo);
                             }
                             else
                             {
@@ -85,18 +85,18 @@ namespace DotNet.Business
 
                             userLogonResult.Status = Status.Ok;
                             userLogonResult.StatusCode = Status.Ok.ToString();
-                            userLogonResult.StatusMessage = "登录成功";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.Success");
                             status = Status.Ok;
-                            statusMessage = "登录成功";
+                            statusMessage = Msg.Get("Logon.Success");
                             result = userLogonResult.UserInfo;
                         }
                         else
                         {
                             userLogonResult.Status = Status.LogonDeny;
                             userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                            userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                            userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                             status = Status.LogonDeny;
-                            statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                            statusMessage = Msg.Get("Logon.AccessDenied");
                             result = userLogonResult.UserInfo;
                         }
                     }
@@ -104,9 +104,9 @@ namespace DotNet.Business
                     {
                         userLogonResult.Status = Status.LogonDeny;
                         userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                        userLogonResult.StatusMessage = "访问被拒绝、您的账户没有访问权限。";
+                        userLogonResult.StatusMessage = Msg.Get("Logon.AccessDenied");
                         status = Status.LogonDeny;
-                        statusMessage = "访问被拒绝、您的账户没有访问权限。";
+                        statusMessage = Msg.Get("Logon.AccessDenied");
                         result = userLogonResult.UserInfo;
                     }
                 }

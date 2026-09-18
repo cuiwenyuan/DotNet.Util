@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -13,9 +13,9 @@ namespace DotNet.Util
     /// <summary>
     /// BaseSystemInfo
     /// 这是系统的核心基础信息部分
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2014.07.31 版本：3.9 lhy        增加历史登录用户属性
     ///     2012.02.02 版本：3.8 zhangyi    修改OrganizationDynamicLoading = true。
     ///     2011.10.07 版本：2.3 JiRihGaLa  每个数据库都支持多类型数据库。
@@ -26,7 +26,7 @@ namespace DotNet.Util
     ///		2007.01.02 版本：1.1 JiRiGaLa   进行主键优化。
     ///		2006.02.05 版本：1.1 JiRiGaLa	重新调整主键的规范化。
     ///		2004.11.19 版本：1.0 JiRiGaLa	主键创建。
-    ///		
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2011.10.07</date>
@@ -43,7 +43,7 @@ namespace DotNet.Util
         /// 登录信息实时统计
         /// </summary>
         public static bool LogonStatistics = true;
-       
+
         /// <summary>
         /// 用户是否已经成功登录系统
         /// </summary>
@@ -115,7 +115,7 @@ namespace DotNet.Util
         public static string AppIco = "Resources\\Form.ico";
 
         /// <summary>
-        /// RegistryKey、Configuration、UserConfig 注册表或者配置文件读取参数
+        /// RegistryKey、Configuration、UserConfig 注册表或者配置文件获取参数
         /// </summary>
         public static ConfigurationCategory ConfigurationFrom = ConfigurationCategory.Configuration;
 
@@ -128,16 +128,19 @@ namespace DotNet.Util
         /// </summary>
         private static void CreateOpenId()
         {
-            Thread.Sleep(10000);
+            //修复：移除无意义的 10 秒硬编码延迟（前后无任何等待条件），OpenId 应立即获取，不再阻塞后台线程 10 秒
             var openId = string.Empty;
             var url = WebHost + @"/UserCenter/LogonService.ashx";
-            var webClient = new WebClient();
-            var postValues = new NameValueCollection();
-            postValues.Add("function", "CreateOpenId");
-            postValues.Add("userInfo", UserInfo.Serialize());
-            //向服务器发送POST数据
-            var responseArray = webClient.UploadValues(url, postValues);
-            openId = Encoding.UTF8.GetString(responseArray);
+            //修复：WebClient 实现了 IDisposable，需释放避免句柄/连接泄漏
+            using (var webClient = new WebClient())
+            {
+                var postValues = new NameValueCollection();
+                postValues.Add("function", "CreateOpenId");
+                postValues.Add("userInfo", UserInfo.Serialize());
+                //向服务器发送POST数据
+                var responseArray = webClient.UploadValues(url, postValues);
+                openId = Encoding.UTF8.GetString(responseArray);
+            }
             if (!string.IsNullOrWhiteSpace(openId))
             {
                 UserInfo.OpenId = openId;

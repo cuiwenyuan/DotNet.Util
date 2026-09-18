@@ -1,19 +1,20 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace DotNet.Util
 {
     /// <summary>
     /// BaseRandom
     /// 产生随机数
-    /// 
+    ///
     /// 随机数管理，最大值、最小值可以自己进行设定。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2021.08.05 版本：4.0 Troy.Cui	简化方法名，去掉Random。
     ///     2009.07.08 版本：3.0 JiRiGaLa	更新完善程序，将方法修改为静态方法。
     ///		2007.06.30 版本：3.2 JiRiGaLa   产生随机字符。
@@ -22,12 +23,15 @@ namespace DotNet.Util
     ///	    2004.11.12 版本：3.0 JiRiGaLa   一些方法改进，主键格式优化，基本上看上去还过得去了。
     ///     2005.03.07 版本：2.0 JiRiGaLa   2005.03.07 更新程序排版。
     ///     2005.08.13 版本：1.0 JiRiGaLa   参数格式标准化。
-    ///     
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2007.06.30</date>
-    /// </author> 
+    /// </author>
     /// </summary>
+    /// <remarks>
+    /// 使用加密安全的随机数源（RandomNumberGenerator），线程安全。
+    /// </remarks>
     public partial class RandomUtil
     {
         /// <summary>
@@ -43,9 +47,32 @@ namespace DotNet.Util
         /// </summary>
         public static int RandomLength = 6;
 
-        private const string _randomString = "0123456789ABCDEFGHIJKMLNPQRSTUVWXYZ";
+        private const string _randomString = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
         private const string _randomNumber = "0123456789";
-        private static Random _random = new Random(DateTime.Now.Millisecond);
+        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+
+        /// <summary>
+        /// 生成 [minInclusive, maxExclusive) 范围内的加密安全随机整数。
+        /// RandomNumberGenerator.GetInt32 仅 net6+ 可用，此处用字节重采样以兼容 net46/netstandard2.0。
+        /// </summary>
+        private static int NextInt(int minInclusive, int maxExclusive)
+        {
+            if (minInclusive >= maxExclusive)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxExclusive), "max must be greater than min.");
+            }
+            var range = (uint)(maxExclusive - minInclusive);
+            var buffer = new byte[4];
+            uint value;
+            // 拒绝采样以避免取模偏差
+            var limit = uint.MaxValue - (uint.MaxValue % range);
+            do
+            {
+                _rng.GetBytes(buffer);
+                value = BitConverter.ToUInt32(buffer, 0);
+            } while (value >= limit);
+            return (int)(minInclusive + (value % range));
+        }
 
         #region public static string GetString() 产生随机字符
         /// <summary>
@@ -54,17 +81,18 @@ namespace DotNet.Util
         /// <returns>字符串</returns>
         public static string GetString(int length = 0)
         {
-            var result = string.Empty;
             if (length <= 0)
             {
                 length = RandomLength;
             }
+            //修复：用 StringBuilder 替代循环字符串拼接，避免 O(n²)
+            var result = new System.Text.StringBuilder(length);
             for (var i = 0; i < length; i++)
             {
-                var r = _random.Next(0, _randomString.Length - 1);
-                result += _randomString[r];
+                var r = NextInt(0, _randomString.Length);
+                result.Append(_randomString[r]);
             }
-            return result;
+            return result.ToString();
         }
         #endregion
 
@@ -75,17 +103,18 @@ namespace DotNet.Util
         /// <returns>整数字符串</returns>
         public static string GetNumber(int length = 0)
         {
-            var result = string.Empty;
             if (length <= 0)
             {
                 length = RandomLength;
             }
+            //修复：用 StringBuilder 替代循环字符串拼接，避免 O(n²)
+            var result = new System.Text.StringBuilder(length);
             for (var i = 0; i < length; i++)
             {
-                var r = _random.Next(0, _randomNumber.Length - 1);
-                result += _randomNumber[r];
+                var r = NextInt(0, _randomNumber.Length);
+                result.Append(_randomNumber[r]);
             }
-            return result;
+            return result.ToString();
         }
         #endregion
 
@@ -96,7 +125,8 @@ namespace DotNet.Util
         /// <returns>随机数</returns>
         public static int GetRandom()
         {
-            return _random.Next(Minimum, Maximal);
+            //修复：NextInt 上界为开区间，需 +1 才能取到 Maximal（如 999999）
+            return NextInt(Minimum, Maximal + 1);
         }
         #endregion
 
@@ -109,7 +139,8 @@ namespace DotNet.Util
         /// <returns>随机数</returns>
         public static int GetRandom(int minimum, int maximal)
         {
-            return _random.Next(minimum, maximal);
+            //修复：maximal 按文档含义为最大值（包含），NextInt 上界为开区间需 +1
+            return NextInt(minimum, maximal + 1);
         }
         #endregion
     }

@@ -19,13 +19,16 @@ namespace DotNet.Util
         public static string ToDescription(this Enum enumeration)
         {
             var type = enumeration.GetType();
-            var memInfo = type.GetMember(enumeration.ToString());
+            var name = enumeration.ToString();
+            var memInfo = type.GetMember(name);
             if (null != memInfo && memInfo.Length > 0)
             {
                 var attrs = memInfo[0].GetCustomAttributes(typeof(EnumDescription), false);
                 if (attrs != null && attrs.Length > 0)
                 {
-                    return ((EnumDescription)attrs[0]).Text;
+                    var text = ((EnumDescription)attrs[0]).Text;
+                    // 多语言：以特性文本为默认值，按 Enum.<类型>.<成员> 查语言包（键缺失时原样返回）
+                    return Msg.GetEnumDescription(type, name, text);
                 }
             }
             return enumeration.ToString();
@@ -39,22 +42,34 @@ namespace DotNet.Util
         /// </summary>
         public static DataTable EnumToDataTable(Type enumType, string nameColumnName = "key", string valueColumnName = "value", string descriptionColumnName = "description")
         {
-            var names = Enum.GetNames(enumType);
-            var values = Enum.GetValues(enumType);
             var descriptions = GetEnumDescriptions(enumType);
 
             var dt = new DataTable();
-            dt.Columns.Add(valueColumnName, Type.GetType("System.Int32"));
+            // 修复 R8-6：原列固定为 System.Int32，底层为 long/ulong 且值 > Int32.MaxValue 时
+            // Convert.ToInt32 抛 OverflowException（注释谎称兼容 long/ulong）。改为按枚举底层类型建列。
+            dt.Columns.Add(valueColumnName, Enum.GetUnderlyingType(enumType));
             dt.Columns.Add(nameColumnName, Type.GetType("System.String"));
             dt.Columns.Add(descriptionColumnName, Type.GetType("System.String"));
             dt.Columns[nameColumnName].Unique = true;
-            for (var i = 0; i < values.Length; i++)
+
+            //修复：Enum.GetNames/GetValues 按值排序，而 GetEnumDescriptions 按声明顺序返回，
+            //对于未按值递增声明的枚举会错位；这里改为按声明顺序遍历字段，与描述一一对应。
+            var fields = enumType.GetFields();
+            var descriptionIndex = 0;
+            foreach (var field in fields)
             {
-                var dr = dt.NewRow();
-                dr[valueColumnName] = (int)values.GetValue(i);
-                dr[nameColumnName] = names[i];
-                dr[descriptionColumnName] = descriptions[i];
-                dt.Rows.Add(dr);
+                if (field.FieldType.IsEnum)
+                {
+                    var dr = dt.NewRow();
+                    dr[valueColumnName] = enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null);
+                    dr[nameColumnName] = field.Name;
+                    if (descriptionIndex < descriptions.Count)
+                    {
+                        dr[descriptionColumnName] = descriptions[descriptionIndex];
+                    }
+                    dt.Rows.Add(dr);
+                    descriptionIndex++;
+                }
             }
             return dt;
         }
@@ -78,12 +93,16 @@ namespace DotNet.Util
             {
                 if (field.FieldType.IsEnum)
                 {
-                    value = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
+                    //修复 R8-6：原 Convert.ToInt32 在底层为 long/ulong 且值 > Int32.MaxValue 时溢出。
+                    //改为直接取底层值并 ToString，避免溢出（描述表仅用于展示值）。
+                    value = enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null).ToString();
                     var array = field.GetCustomAttributes(enumDescription, true);
                     if (array.Length > 0)
                     {
                         var temp = (EnumDescription)array[0];
                         description = temp.Text;
+                        // 多语言：以特性文本为默认值，按 Enum.<类型>.<成员> 查语言包（键缺失时原样返回）
+                        description = Msg.GetEnumDescription(enumType, field.Name, description);
                     }
                     else
                     {

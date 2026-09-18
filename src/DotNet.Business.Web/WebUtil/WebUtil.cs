@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -13,7 +13,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 namespace DotNet.Business
@@ -30,7 +30,7 @@ namespace DotNet.Business
 
         /// <summary>
         /// 是否显示提示信息
-        /// </summary> 
+        /// </summary>
         public static bool ShowInformation = true;
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace DotNet.Business
         /// </summary>
         public static string UserIsNotAdminPage = @"~/Modules/Common/System/AccessDeny.aspx";
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region GetOpenId
         /// <summary>
         /// 获取OpenId
@@ -161,7 +161,11 @@ namespace DotNet.Business
                 // 当前日期
                 // string dateTime = DateTime.Now.ToString(BaseSystemInfo.DateFormat).ToString();
                 // loadDirectory = categoryId + "\\" + dateTime + "\\" + objectId;
-                loadDirectory = categoryId + "\\" + objectId;
+                //修复：categoryId/objectId 可能来自用户输入，消毒后再拼目录，防 ..\ 目录穿越
+                var safeCategoryId = SanitizePathSegment(categoryId);
+                var safeObjectId = SanitizePathSegment(objectId);
+                loadDirectory = (safeCategoryId.IsNullOrEmpty() ? "Default" : safeCategoryId) + "\\" +
+                                (safeObjectId.IsNullOrEmpty() ? "Default" : safeObjectId);
             }
             // 需要创建的目录，图片放在这里，为了保存历史纪录，使用了当前日期做为目录
             var makeDirectory = rootPath + loadDirectory;
@@ -176,13 +180,14 @@ namespace DotNet.Business
             Directory.CreateDirectory(makeDirectory);
             // 获得文件名
             var postedFileName = string.Empty;
-            if (string.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 postedFileName = HttpContext.Current.Server.HtmlEncode(Path.GetFileName(httpPostedFile.FileName));
             }
             else
             {
-                postedFileName = fileName;
+                //修复：fileName 参数同样可能含路径（..\），统一取纯文件名防目录穿越
+                postedFileName = Path.GetFileName(fileName);
             }
             // 图片重新指定，虚拟的路径
             // 这里还需要更新学生的最新照片
@@ -193,6 +198,32 @@ namespace DotNet.Business
             return fileUrl;
         }
         #endregion
+
+        /// <summary>
+        /// 消毒路径段：去除目录穿越（..\、../）与非法文件名字符，仅保留单个安全目录名
+        /// </summary>
+        /// <param name="value">原始输入</param>
+        /// <returns>安全目录名；输入非法时返回空串</returns>
+        private static string SanitizePathSegment(string value)
+        {
+            if (value.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+            // 只取最后一个路径段，去掉 ..\、../ 等前缀
+            var safe = Path.GetFileName(value);
+            if (safe.IsNullOrEmpty() || safe == "." || safe == "..")
+            {
+                return string.Empty;
+            }
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sb = new System.Text.StringBuilder(safe.Length);
+            foreach (var c in safe)
+            {
+                sb.Append(Array.IndexOf(invalidChars, c) >= 0 ? '_' : c);
+            }
+            return sb.ToString();
+        }
 
         #region public static string UpLoadFile(string categoryId, string objectId, string loadDirectory, bool deleteFile) 上传文件
         /// <summary>
@@ -315,7 +346,7 @@ namespace DotNet.Business
                         {
                             // 把选中的ID保存到字符串
                             var id = string.Empty;
-                            if (string.IsNullOrEmpty(key))
+                            if (key.IsNullOrEmpty())
                             {
                                 id = gv.DataKeys[gv.Rows[i].RowIndex].Value.ToString();
                             }
@@ -336,7 +367,7 @@ namespace DotNet.Business
             if (idList.Length > 1)
             {
                 idList = idList.Substring(0, idList.Length - 1);
-                ids = idList.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                ids = idList.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return ids;
         }
@@ -418,13 +449,13 @@ namespace DotNet.Business
                 if (checkBox.Checked == isChecked)
                 {
                     // 把选中的ID保存到字符串
-                    if (string.IsNullOrEmpty(key))
+                    if (key.IsNullOrEmpty())
                     {
-                        id = ((HiddenField)repeater.Items[i].FindControl(key)).Value;
+                        id = ((HiddenField)repeater.Items[i].FindControl("hidId")).Value;
                     }
                     else
                     {
-                        id = ((HiddenField)repeater.Items[i].FindControl("hidId")).Value;
+                        id = ((HiddenField)repeater.Items[i].FindControl(key)).Value;
                     }
                     if (id.Length > 0)
                     {
@@ -436,7 +467,7 @@ namespace DotNet.Business
             if (idList.Length > 1)
             {
                 idList = idList.Substring(0, idList.Length - 1);
-                ids = idList.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                ids = idList.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return ids;
         }
@@ -517,7 +548,7 @@ namespace DotNet.Business
             if (ds.Length > 1)
             {
                 ds = ds.Substring(0, ds.Length - 1);
-                paramIDs = ds.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                paramIDs = ds.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return paramIDs;
         }

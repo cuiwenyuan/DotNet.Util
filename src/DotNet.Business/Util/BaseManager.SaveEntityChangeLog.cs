@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -45,11 +45,11 @@ namespace DotNet.Business
 
             if (newType.Equals(oldType) && oldType.IsClass && newType.IsClass)
             {
-                if (string.IsNullOrEmpty(systemCode))
+                if (systemCode.IsNullOrEmpty())
                 {
                     systemCode = BaseSystemInfo.SystemCode;
                 }
-                if (string.IsNullOrEmpty(tableName))
+                if (tableName.IsNullOrEmpty())
                 {
                     tableName = BaseChangeLogEntity.CurrentTableName;
                 }
@@ -80,7 +80,7 @@ namespace DotNet.Business
             }
             else
             {
-                LogUtil.WriteLog("比较的实体类型不一样或非实体类型", "SaveEntityChangeLog");
+                LogUtil.WriteLog(Msg.Get("Log.SaveEntityChangeLogTypeMismatch"), "SaveEntityChangeLog");
                 //throw new ArgumentException();
             }
         }

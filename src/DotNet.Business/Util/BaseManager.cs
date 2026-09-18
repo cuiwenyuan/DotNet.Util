@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -16,10 +16,10 @@ namespace DotNet.Business
     /// <summary>
     ///	BaseManager
     /// 通用基类部分
-    /// 
+    ///
     /// 总觉得自己写的程序不上档次，这些新技术也玩玩，也许做出来的东西更专业了。
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.04 版本：1.5 JiRiGaLa 文件进行分割，简化处理。
     ///		2010.06.23 版本：1.4 JiRiGaLa 删除简化了一些重复的函数功能。
     ///		2007.11.22 版本：1.3 JiRiGaLa 创建没有BaseSystemInfo的构造函数。
@@ -30,7 +30,7 @@ namespace DotNet.Business
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.04</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseManager : IBaseManager
     {
@@ -438,7 +438,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual int DeleteEntity(object id)
         {
-            return DeleteEntity(new KeyValuePair<string, object>(BaseUtil.FieldId, id));
+            return DeleteEntity(new KeyValuePair<string, object>(PrimaryKey, id));
         }
 
         #endregion
@@ -646,12 +646,16 @@ namespace DotNet.Business
         /// <returns></returns>
         public string GetStateMessage(string statusCode)
         {
-            if (string.IsNullOrEmpty(statusCode))
+            if (statusCode.IsNullOrEmpty())
             {
                 return string.Empty;
             }
-            var status = (Status)Enum.Parse(typeof(Status), statusCode, true);
-            return GetStateMessage(status);
+            //修复：未知状态码时 Enum.Parse 会抛 ArgumentException，改为安全解析并回退到 Error
+            if (Enum.TryParse(statusCode, true, out Status status))
+            {
+                return GetStateMessage(status);
+            }
+            return GetStateMessage(Status.Error);
         }
 
         #endregion
@@ -669,131 +673,131 @@ namespace DotNet.Business
             switch (statusCode)
             {
                 case Status.AccessDeny:
-                    result = AppMessage.Msg0800;
+                    result = Msg.Get("System.AccessDenied");
                     break;
                 case Status.DbError:
-                    result = AppMessage.Msg0002;
+                    result = Msg.Get("System.DbConnectionFailed");
                     break;
                 case Status.Error:
-                    result = AppMessage.Msg0001;
+                    result = Msg.Get("Common.UnknownError");
                     break;
                 case Status.Ok:
-                    result = AppMessage.Msg9965;
+                    result = Msg.Get("Result.ExecuteSuccess");
                     break;
                 case Status.UserNotFound:
-                    result = AppMessage.Msg9966;
+                    result = Msg.Get("Logon.UserNotFoundCaseSensitive");
                     break;
                 case Status.PasswordError:
-                    result = AppMessage.Msg9967;
+                    result = Msg.Get("Logon.PasswordIncorrectCaseSensitive");
                     break;
                 case Status.LogonDeny:
-                    result = AppMessage.Msg9968;
+                    result = Msg.Get("Logon.AccountDisabled");
                     break;
                 case Status.ErrorOnline:
-                    result = AppMessage.Msg0048;
+                    result = Msg.Get("Logon.UserAlreadyOnline");
                     break;
                 case Status.ErrorMacAddress:
-                    result = AppMessage.Msg0049;
+                    result = Msg.Get("Logon.MacAddressNotAllowed");
                     break;
                 case Status.ErrorIpAddress:
-                    result = string.Format(AppMessage.Msg0050, UserInfo.IpAddress);
+                    result = Msg.Format("Logon.IpAddressRestricted", UserInfo.IpAddress);
                     break;
                 case Status.ErrorOnlineLimit:
-                    result = AppMessage.Msg0051;
+                    result = Msg.Get("Logon.MaxOnlineUsersReached");
                     break;
                 case Status.PasswordCanNotBeNull:
-                    result = AppMessage.Format(AppMessage.Msg0007, AppMessage.Msg9961);
+                    result = Msg.Format("Common.ParameterRequired", Msg.Get("Common.OldPassword"));
                     break;
                 case Status.PasswordCanNotBeRepeat:
-                    result = AppMessage.Format(AppMessage.Msg0102);
+                    result = Msg.Format("Logon.PasswordSequentialNotAllowed");
                     break;
                 case Status.ErrorDeleted:
-                    result = AppMessage.Msg0005;
+                    result = Msg.Get("Common.RecordNotFound");
                     break;
                 case Status.SetPasswordOk:
-                    result = AppMessage.Format(AppMessage.Msg9963, AppMessage.Msg9964);
+                    result = Msg.Format("Result.SetSuccess", Msg.Get("Common.Password"));
                     break;
                 case Status.OldPasswordError:
-                    result = AppMessage.Format(AppMessage.Msg0040, AppMessage.Msg9961);
+                    result = Msg.Format("Common.ItemError", Msg.Get("Common.OldPassword"));
                     break;
                 case Status.ChangePasswordOk:
-                    result = AppMessage.Format(AppMessage.Msg9962, AppMessage.Msg9964);
+                    result = Msg.Format("Result.ModifySuccess", Msg.Get("Common.Password"));
                     break;
                 case Status.OkAdd:
-                    result = AppMessage.Msg0009;
+                    result = Msg.Get("Result.AddSuccess");
                     break;
                 case Status.CanNotLock:
-                    result = AppMessage.Msg0043;
+                    result = Msg.Get("Common.LockFailed");
                     break;
                 case Status.LockOk:
-                    result = AppMessage.Msg0044;
+                    result = Msg.Get("Common.LockSuccess");
                     break;
                 case Status.OkUpdate:
-                    result = AppMessage.Msg0010;
+                    result = Msg.Get("Result.UpdateSuccess");
                     break;
                 case Status.OkDelete:
-                    result = AppMessage.Msg0013;
+                    result = Msg.Get("Result.DeleteSuccess");
                     break;
                 case Status.Exist:
                     // "编号已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9955);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Data"));
                     break;
                 case Status.ErrorCodeExist:
                     // "编号已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9977);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Code"));
                     break;
                 case Status.ErrorNameExist:
                     // "名称已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9978);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Name"));
                     break;
                 case Status.ErrorValueExist:
                     // "值已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9800);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.Value"));
                     break;
                 case Status.ErrorUserExist:
                     // "用户名已存在,不可以重复."
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9957);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.UserName"));
                     break;
                 case Status.ErrorDataRelated:
-                    result = AppMessage.Msg0033;
+                    result = Msg.Get("Common.DataReferenced");
                     break;
                 case Status.ErrorChanged:
-                    result = AppMessage.Msg0006;
+                    result = Msg.Get("Common.DataChangedByOthers");
                     break;
 
                 case Status.UserNotEmail:
-                    result = AppMessage.Msg9910;
+                    result = Msg.Get("Logon.EmailNotConfigured");
                     break;
 
                 case Status.UserLocked:
-                    result = AppMessage.Msg9911;
+                    result = Msg.Get("Logon.AccountLockedRetryAfterOneMinute");
                     break;
 
                 case Status.WaitForAudit:
                 case Status.UserNotActive:
-                    result = AppMessage.Msg9912;
+                    result = Msg.Get("Logon.AccountNotActivated");
                     break;
 
                 case Status.UserIsActivate:
-                    result = AppMessage.Msg9913;
+                    result = Msg.Get("Logon.AccountAlreadyActivated");
                     break;
 
                 case Status.NotFound:
-                    result = AppMessage.Msg9956;
+                    result = Msg.Get("Common.NoRecordMatched");
                     break;
 
                 case Status.ErrorLogon:
-                    result = AppMessage.Msg9000;
+                    result = Msg.Get("Logon.UserNameOrPasswordIncorrect");
                     break;
 
                 case Status.UserDuplicate:
-                    result = AppMessage.Format(AppMessage.Msg0008, AppMessage.Msg9957);
+                    result = Msg.Format("Validation.Duplicated", Msg.Get("Common.UserName"));
                     break;
                 case Status.ServiceNotStart:
-                    result = AppMessage.Msg9660;
+                    result = Msg.Get("System.ServiceNotStarted");
                     break;
                 case Status.ServiceExpired:
-                    result = AppMessage.Msg9665;
+                    result = Msg.Get("System.ServiceExpired");
                     break;
             }
             StatusMessage = result;
@@ -1037,9 +1041,9 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.CreateTime = DateTime.Now;
-                entity.CreateIp = !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp();
+                entity.CreateIp = !createIp.IsNullOrEmpty() ? createIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldCreateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, !string.IsNullOrEmpty(createIp) ? createIp : Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldCreateIp, !createIp.IsNullOrEmpty() ? createIp : Utils.GetIp());
             }
         }
         #endregion
@@ -1079,9 +1083,9 @@ namespace DotNet.Business
                 }
                 // 取数据库时间，还是UTC时间，还是本机时间？
                 entity.UpdateTime = DateTime.Now;
-                entity.UpdateIp = !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp();
+                entity.UpdateIp = !updateIp.IsNullOrEmpty() ? updateIp : Utils.GetIp();
                 sqlBuilder.SetDbNow(BaseEntity.FieldUpdateTime);
-                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, !string.IsNullOrEmpty(updateIp) ? updateIp : Utils.GetIp());
+                sqlBuilder.SetValue(BaseEntity.FieldUpdateIp, !updateIp.IsNullOrEmpty() ? updateIp : Utils.GetIp());
             }
         }
         #endregion
@@ -1135,7 +1139,7 @@ namespace DotNet.Business
             }
             return result;
         }
-        #endregion        
+        #endregion
 
     }
 }

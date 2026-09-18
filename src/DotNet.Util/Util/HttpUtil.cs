@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,10 +26,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求（不再全局跳过证书校验，避免影响整个进程的 TLS 安全）
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -61,9 +58,11 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -72,19 +71,14 @@ namespace DotNet.Util
             }
             finally
             {
-                request = null;
-                sw = null;
-                response = null;
+                sw?.Dispose();
+                response?.Dispose();
             }
 
             return responseStr;
         }
 
 
-        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
-        {
-            return true; //总是接受  
-        }
         /// <summary>
         /// 创建请求
         /// </summary>
@@ -96,9 +90,16 @@ namespace DotNet.Util
         {
             var contentType = "image/jpeg";
             //待请求参数数组
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var PicByte = new byte[fs.Length];
-            fs.Read(PicByte, 0, PicByte.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var picBytesRead = 0;
+            while (picBytesRead < PicByte.Length)
+            {
+                var n = fs.Read(PicByte, picBytesRead, PicByte.Length - picBytesRead);
+                if (n == 0) break;
+                picBytesRead += n;
+            }
             var lengthFile = PicByte.Length;
 
             //构造请求地址
@@ -110,7 +111,7 @@ namespace DotNet.Util
             //设置boundaryValue
             var boundaryValue = DateTime.Now.Ticks.ToString("x");
             var boundary = "--" + boundaryValue;
-            request.ContentType = "\r\nmultipart/form-data; boundary=" + boundaryValue;
+            request.ContentType = "multipart/form-data; boundary=" + boundaryValue;
             //设置KeepAlive
             request.KeepAlive = true;
             //设置请求数据，拼接成字符串
@@ -132,43 +133,40 @@ namespace DotNet.Util
             request.ContentLength = length;
 
             //请求远程HTTP
-            var rs = request.GetRequestStream();
-            Stream s = null;
-            try
+            using (var rs = request.GetRequestStream())
             {
-                //发送数据请求服务器
-                rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
-                rs.Write(PicByte, 0, lengthFile);
-                rs.Write(boundayBytes, 0, boundayBytes.Length);
-                var HttpWResp = (HttpWebResponse)request.GetResponse();
-                s = HttpWResp.GetResponseStream();
-            }
-            catch //(WebException e)
-            {
-                //LogResult(e.Message);
-                return "";
-            }
-            finally
-            {
-                if (rs != null)
+                try
                 {
-                    rs.Close();
+                    //发送数据请求服务器
+                    rs.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+                    rs.Write(PicByte, 0, lengthFile);
+                    rs.Write(boundayBytes, 0, boundayBytes.Length);
+                    using (var httpWResp = (HttpWebResponse)request.GetResponse())
+                    {
+                        //在响应释放之前完成读取，避免从已释放的流中读取导致 ObjectDisposedException
+                        using (var s = httpWResp.GetResponseStream())
+                        {
+                            if (s == null)
+                            {
+                                return "";
+                            }
+                            using var sr = new StreamReader(s, code);
+                            var responseData = PoolUtil.StringBuilder.Get();
+                            string line;
+                            while ((line = sr.ReadLine()) != null)
+                            {
+                                responseData.Append(line);
+                            }
+                            return responseData.Return();
+                        }
+                    }
+                }
+                catch //(WebException e)
+                {
+                    //LogResult(e.Message);
+                    return "";
                 }
             }
-
-            //读取处理结果
-            var sr = new StreamReader(s, code);
-            var responseData = PoolUtil.StringBuilder.Get();
-
-            String line;
-            while ((line = sr.ReadLine()) != null)
-            {
-                responseData.Append(line);
-            }
-            s.Close();
-            fs.Close();
-
-            return responseData.Return();
         }
         #endregion
 
@@ -183,10 +181,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -213,9 +210,11 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -224,9 +223,8 @@ namespace DotNet.Util
             }
             finally
             {
-                request = null;
-                sw = null;
-                response = null;
+                sw?.Dispose();
+                response?.Dispose();
             }
 
             return responseStr;
@@ -244,10 +242,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -274,14 +271,20 @@ namespace DotNet.Util
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                response?.Dispose();
             }
             return responseStr;
         }
@@ -298,10 +301,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -330,14 +332,20 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                response?.Dispose();
             }
             return responseStr;
         }
@@ -352,10 +360,9 @@ namespace DotNet.Util
         {
             HttpWebRequest request;
 
-            //如果是发送HTTPS请求  
+            //如果是发送HTTPS请求（不再全局跳过证书校验，避免影响整个进程的 TLS 安全）
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
                 request.ProtocolVersion = HttpVersion.Version10;
             }
@@ -384,9 +391,11 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), encodeing);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), encodeing))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -401,14 +410,28 @@ namespace DotNet.Util
         /// <summary>
         /// HTTP POST方式请求数据(带图片)
         /// </summary>
-        /// <param name="url">URL</param>        
+        /// <param name="url">URL</param>
         /// <param name="param">POST的数据</param>
         /// <param name="fileByte">图片</param>
         /// <returns></returns>
         public static string Post(string url, IDictionary<object, object> param, byte[] fileByte)
         {
+            return Post(url, param, fileByte, "upload.bin", "application/octet-stream");
+        }
+
+        /// <summary>
+        /// HTTP POST方式请求数据(带图片)
+        /// </summary>
+        /// <param name="url">URL</param>
+        /// <param name="param">POST的数据</param>
+        /// <param name="fileByte">图片</param>
+        /// <param name="fileName">上传文件名</param>
+        /// <param name="contentType">文件内容类型</param>
+        /// <returns></returns>
+        public static string Post(string url, IDictionary<object, object> param, byte[] fileByte, string fileName, string contentType = "application/octet-stream")
+        {
             var boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            var boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+            var boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
 
             var wr = (HttpWebRequest)WebRequest.Create(url);
             wr.ContentType = "multipart/form-data; boundary=" + boundary;
@@ -416,55 +439,42 @@ namespace DotNet.Util
             wr.KeepAlive = true;
             wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
 
-            var rs = wr.GetRequestStream();
-            string responseStr = null;
-
-            var formdataTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
-            foreach (string key in param.Keys)
+            string responseStr;
+            using (var rs = wr.GetRequestStream())
             {
-                rs.Write(boundarybytes, 0, boundarybytes.Length);
-                var formitem = string.Format(formdataTemplate, key, param[key]);
-                var formitembytes = System.Text.Encoding.UTF8.GetBytes(formitem);
-                rs.Write(formitembytes, 0, formitembytes.Length);
-            }
-            rs.Write(boundarybytes, 0, boundarybytes.Length);
-
-            var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
-            var header = string.Format(headerTemplate, "pic", fileByte, "text/plain");//image/jpeg
-            var headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
-            rs.Write(headerbytes, 0, headerbytes.Length);
-
-            rs.Write(fileByte, 0, fileByte.Length);
-
-            var trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-            rs.Write(trailer, 0, trailer.Length);
-            rs.Close();
-
-            WebResponse wresp = null;
-            try
-            {
-                wresp = wr.GetResponse();
-                var stream2 = wresp.GetResponseStream();
-                var sr = new StreamReader(stream2);
-                responseStr = sr.ReadToEnd();
-                // logger.Error(string.Format("File uploaded, server response is: {0}", responseStr));
-            }
-            catch //(Exception ex)
-            {
-                //logger.Error("Error uploading file", ex);
-                if (wresp != null)
+                var formdataTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+                foreach (string key in param.Keys)
                 {
-                    wresp.Close();
-                    wresp = null;
+                    rs.Write(boundarybytes, 0, boundarybytes.Length);
+                    var formitem = string.Format(formdataTemplate, key, param[key]);
+                    var formitembytes = Encoding.UTF8.GetBytes(formitem);
+                    rs.Write(formitembytes, 0, formitembytes.Length);
                 }
-                throw;
+                rs.Write(boundarybytes, 0, boundarybytes.Length);
+
+                var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
+                var header = string.Format(headerTemplate, "pic", fileName, contentType);
+                var headerbytes = Encoding.UTF8.GetBytes(header);
+                rs.Write(headerbytes, 0, headerbytes.Length);
+
+                rs.Write(fileByte, 0, fileByte.Length);
+
+                var trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                rs.Write(trailer, 0, trailer.Length);
+            }
+
+            using (var wresp = wr.GetResponse())
+            using (var stream2 = wresp.GetResponseStream())
+            using (var sr = new StreamReader(stream2))
+            {
+                responseStr = sr.ReadToEnd();
             }
             return responseStr;
         }
         #endregion
 
         #region 下载图片 DownloadPicture
-        
+
         /// <summary>
         /// 下载图片
         /// </summary>
@@ -477,7 +487,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool DownloadPicture(string pictureUrl, out string filePath, string folder = "WeChat", string fileName = null, string fileExtension = ".png", int timeOut = -1)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 fileName = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             }
@@ -549,38 +559,40 @@ namespace DotNet.Util
         /// <param name="timeOut"></param>
         /// <param name="headers"></param>
         /// <returns></returns>
-        public static Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
+        public static async Task<string> HttpPostAsync(string url, string postData = null, string contentType = null, int timeOut = 30, Dictionary<string, string> headers = null)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                request.ContentType = contentType;
-            }
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                    request.Headers[header.Key] = header.Value;
-            }
-
             try
             {
-                var bytes = Encoding.UTF8.GetBytes(postData ?? "");
-                using (var sendStream = request.GetRequestStream())
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                if (!contentType.IsNullOrEmpty())
                 {
-                    sendStream.Write(bytes, 0, bytes.Length);
+                    request.ContentType = contentType;
+                }
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                        request.Headers[header.Key] = header.Value;
+                }
+                request.Timeout = timeOut * 1000;
+
+                var bytes = Encoding.UTF8.GetBytes(postData ?? "");
+                using (var sendStream = await request.GetRequestStreamAsync())
+                {
+                    await sendStream.WriteAsync(bytes, 0, bytes.Length);
                 }
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    var responseStream = response.GetResponseStream();
-                    var sr = new StreamReader(responseStream, Encoding.UTF8);
-                    return sr.ReadToEndAsync();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message);
+                return ex.Message;
             }
 
         }
@@ -590,7 +602,7 @@ namespace DotNet.Util
         /// <param name="url"></param>
         /// <param name="headers"></param>
         /// <returns></returns>
-        public static Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null)
+        public static async Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null)
         {
             try
             {
@@ -600,16 +612,17 @@ namespace DotNet.Util
                     foreach (var header in headers)
                         request.Headers[header.Key] = header.Value;
                 }
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    var responseStream = response.GetResponseStream();
-                    var sr = new StreamReader(responseStream, Encoding.UTF8);
-                    return sr.ReadToEndAsync();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message);
+                return ex.Message;
             }
         }
 #endif

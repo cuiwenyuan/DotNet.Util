@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -25,7 +25,7 @@ namespace DotNet.Util
             string tmpStr;
             string[] tmpArr;
 
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 for (i = 0; i < targetValue.Length; i++)
                 {
@@ -60,7 +60,7 @@ namespace DotNet.Util
             }
 
             // 返回处理结果字符串，以，分隔每个拼音组合
-            return result;   
+            return result;
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace DotNet.Util
         {
             var result = string.Empty;
 
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 foreach (var c in targetValue)
                 {
                     var pinyin = GetPinyin(c);
-                    if (!string.IsNullOrEmpty(pinyin))
+                    if (!pinyin.IsNullOrEmpty())
                     {
                         result += pinyin.Substring(0, 1);
                     }
@@ -215,9 +215,9 @@ namespace DotNet.Util
 
             var reg = new Regex("^[\u4e00-\u9fa5]$");//验证是否输入汉字
             var arr = new byte[2];
-            
+
             int asc = 0, m1 = 0, m2 = 0;
-            if (!string.IsNullOrEmpty(targetValue))
+            if (!targetValue.IsNullOrEmpty())
             {
                 try
                 {
@@ -227,7 +227,8 @@ namespace DotNet.Util
                         // 如果输入的是汉字
                         if (reg.IsMatch(mChar[j].ToString()))
                         {
-                            arr = System.Text.Encoding.Default.GetBytes(mChar[j].ToString());
+                            //修复：拼音依赖 GBK 双字节区位码，显式 GBK（Encoding.Default 在 .NET Core 上是 UTF-8，拼音将全错）
+                            arr = Utils.GbkEncoding.GetBytes(mChar[j].ToString());
                             m1 = (short)(arr[0]);
                             m2 = (short)(arr[1]);
                             asc = m1 * 256 + m2 - 65536;
@@ -281,10 +282,10 @@ namespace DotNet.Util
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     // 2015-11-26 吉日嘎拉 空时处理一下，问题出在那里，暂时没空就先把程序注释上，不要出异常就好。
-                    Console.WriteLine(targetValue + ":" + ex.Message);
+                    LogUtil.WriteLog(targetValue + ":" + ex.Message, "Exception");
                 }
             }
 

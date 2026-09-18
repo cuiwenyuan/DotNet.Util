@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -14,7 +14,7 @@ namespace DotNet.Util
     /// <summary>
     /// UserConfigUtil
     /// 访问用户配置文件的类
-    /// 
+    ///
     /// 修改记录
     ///     2021.03.17 版本：4.0 Troy Cui  新增MQTT、FTP、WebApi的相关配置，并分类获取代码
     ///     2015.07.31 版本：1.5 lhy      增加保存多个历史登录用户的记录功能。
@@ -23,13 +23,13 @@ namespace DotNet.Util
     ///		2008.04.22 版本：1.2 JiRiGaLa 从指定的文件读取配置项。
     ///		2007.07.31 版本：1.1 JiRiGaLa 规范化 FielName 变量。
     ///		2007.04.14 版本：1.0 JiRiGaLa 专门读取注册表的类，主键书写格式改进。
-    ///		
+    ///
     ///	版本：1.2
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2008.04.22</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class UserConfigUtil
     {
@@ -53,7 +53,7 @@ namespace DotNet.Util
             get
             {
                 var fileName = FileName;
-                if (!string.IsNullOrEmpty(BaseSystemInfo.StartupPath))
+                if (!(BaseSystemInfo.StartupPath).IsNullOrEmpty())
                 {
                     fileName = BaseSystemInfo.StartupPath + "\\" + FileName;
                 }
@@ -70,19 +70,25 @@ namespace DotNet.Util
         public static Dictionary<String, String> GetLogonTo()
         {
             var result = new Dictionary<String, String>();
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(ConfigFileName);
+            var xmlDocument = LoadXmlDocument(ConfigFileName);
             var xmlNodeList = xmlDocument.SelectNodes(SelectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals("LogonTo".ToUpper()))
+                //修复：原代码使用拼错的属性名 "dispaly"，且未对缺失属性做空判断
+                var key = xmlNode.Attributes["key"]?.Value;
+                if (key != null && key.Equals("LogonTo", StringComparison.OrdinalIgnoreCase))
                 {
-                    result.Add(xmlNode.Attributes["value"].Value, xmlNode.Attributes["dispaly"].Value);
+                    var value = xmlNode.Attributes["value"]?.Value;
+                    if (value != null && !result.ContainsKey(value))
+                    {
+                        //兼容拼写：优先 display，其次 dispaly
+                        result.Add(value, xmlNode.Attributes["display"]?.Value ?? xmlNode.Attributes["dispaly"]?.Value);
+                    }
                 }
             }
             return result;
         }
-        #endregion      
+        #endregion
 
         /// <summary>
         /// 是否存在
@@ -91,7 +97,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Exists(string key)
         {
-            return !string.IsNullOrEmpty(GetValue(key));
+            return !GetValue(key).IsNullOrEmpty();
         }
         /// <summary>
         /// 获取选项值
@@ -101,10 +107,9 @@ namespace DotNet.Util
         public static string[] GetOptions(string key)
         {
             var option = string.Empty;
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(ConfigFileName);
+            var xmlDocument = LoadXmlDocument(ConfigFileName);
             option = GetOption(xmlDocument, SelectPath, key);
-            return option.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return option.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
 
         #region public static string GetOption(XmlDocument xmlDocument, string selectPath, string key) 设置配置项
@@ -121,7 +126,8 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(selectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals(key.ToUpper()))
+                //修复：缺失 key 属性时避免 NullReferenceException
+                if (xmlNode.Attributes["key"]?.Value.Equals(key, StringComparison.OrdinalIgnoreCase) == true)
                 {
                     if (xmlNode.Attributes["Options"] != null)
                     {
@@ -146,7 +152,7 @@ namespace DotNet.Util
         {
             var result = string.Empty;
             result = GetValue(_xmlDocument, SelectPath, key);
-            if (!string.IsNullOrEmpty(result) && encrypt)
+            if (!result.IsNullOrEmpty() && encrypt)
             {
                 result = SecretUtil.DesDecrypt(result);
             }
@@ -177,8 +183,7 @@ namespace DotNet.Util
         /// <returns>值</returns>
         public static string GetValue(string fileName, string selectPath, string key)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(fileName);
+            var xmlDocument = LoadXmlDocument(fileName);
             return GetValue(xmlDocument, selectPath, key);
         }
         #endregion
@@ -210,9 +215,10 @@ namespace DotNet.Util
             var xmlNodeList = xmlDocument.SelectNodes(selectPath);
             foreach (XmlNode xmlNode in xmlNodeList)
             {
-                if (xmlNode.Attributes["key"].Value.ToUpper().Equals(key.ToUpper()))
+                //修复：缺失 key/value 属性时避免 NullReferenceException
+                if (xmlNode.Attributes["key"]?.Value.Equals(key, StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    result = xmlNode.Attributes["value"].Value;
+                    result = xmlNode.Attributes["value"]?.Value ?? string.Empty;
                     break;
                 }
             }
@@ -237,17 +243,45 @@ namespace DotNet.Util
         {
             if (Exists())
             {
-                var fileName = ConfigFileName;
-                if (!string.IsNullOrEmpty(BaseSystemInfo.StartupPath))
-                {
-                    fileName = BaseSystemInfo.StartupPath + "\\" + ConfigFileName;
-                }
-                GetConfig(fileName);
+                //修复：ConfigFileName 已经拼接了 StartupPath，这里不能再次拼接，否则路径变成 StartupPath\StartupPath\Config.xml
+                GetConfig(ConfigFileName);
             }
         }
         #endregion
 
         private static XmlDocument _xmlDocument = new XmlDocument();
+
+        private static XmlDocument LoadXmlDocument(string fileName)
+        {
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+            using var reader = XmlReader.Create(fileName, settings);
+            doc.Load(reader);
+            return doc;
+        }
+
+        private static XmlDocument LoadXmlDocument(Stream stream)
+        {
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+            using var reader = XmlReader.Create(stream, settings);
+            doc.Load(reader);
+            return doc;
+        }
 
         /// <summary>
         /// 获取配置
@@ -255,7 +289,7 @@ namespace DotNet.Util
         /// <param name="stream"></param>
         public static void GetConfig(Stream stream)
         {
-            _xmlDocument.Load(stream);
+            _xmlDocument = LoadXmlDocument(stream);
             GetConfig(_xmlDocument);
         }
 
@@ -265,7 +299,7 @@ namespace DotNet.Util
         /// <param name="fileName">配置文件</param>
         public static void GetConfig(string fileName)
         {
-            _xmlDocument.Load(fileName);
+            _xmlDocument = LoadXmlDocument(fileName);
             GetConfig(_xmlDocument);
         }
 
@@ -278,6 +312,11 @@ namespace DotNet.Util
             _xmlDocument = document;
 
             #region 获取Redis配置
+            //修复：RedisEnabled 之前只写不读，保存后重新加载会丢失开关状态
+            if (Exists("RedisEnabled"))
+            {
+                BaseSystemInfo.RedisEnabled = GetValue(_xmlDocument, "RedisEnabled").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
             if (Exists("RedisServer"))
             {
                 BaseSystemInfo.RedisServer = GetValue(_xmlDocument, "RedisServer");
@@ -431,7 +470,11 @@ namespace DotNet.Util
             }
             if (Exists("Port"))
             {
-                int.TryParse(GetValue(_xmlDocument, "Port"), out BaseSystemInfo.Port);
+                var portValue = GetValue(_xmlDocument, "Port");
+                if (!int.TryParse(portValue, out BaseSystemInfo.Port))
+                {
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "Port", portValue));
+                }
             }
             if (Exists("MobileHost"))
             {
@@ -496,6 +539,33 @@ namespace DotNet.Util
             if (Exists("ServerEncryptPassword"))
             {
                 BaseSystemInfo.ServerEncryptPassword = (string.Compare(GetValue(_xmlDocument, "ServerEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+            }
+
+            //修复：密码策略配置之前只写不读，保存后重新加载会丢失
+            if (Exists("PasswordMiniLength"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "PasswordMiniLength")))
+                {
+                    BaseSystemInfo.PasswordMiniLength = GetValue(_xmlDocument, "PasswordMiniLength").ToInt();
+                }
+            }
+            if (Exists("NumericCharacters"))
+            {
+                BaseSystemInfo.NumericCharacters = GetValue(_xmlDocument, "NumericCharacters").Equals(true.ToString(), StringComparison.OrdinalIgnoreCase);
+            }
+            if (Exists("PasswordChangeCycle"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "PasswordChangeCycle")))
+                {
+                    BaseSystemInfo.PasswordChangeCycle = GetValue(_xmlDocument, "PasswordChangeCycle").ToInt();
+                }
+            }
+            if (Exists("AccountMinimumLength"))
+            {
+                if (ValidateUtil.IsInt(GetValue(_xmlDocument, "AccountMinimumLength")))
+                {
+                    BaseSystemInfo.AccountMinimumLength = GetValue(_xmlDocument, "AccountMinimumLength").ToInt();
+                }
             }
 
             if (Exists("OpenNewWebWindow"))
@@ -679,11 +749,19 @@ namespace DotNet.Util
             }
             if (Exists("OnlineLimit"))
             {
-                int.TryParse(GetValue(_xmlDocument, "OnlineLimit"), out BaseSystemInfo.OnlineLimit);
+                var onlineLimitValue = GetValue(_xmlDocument, "OnlineLimit");
+                if (!int.TryParse(onlineLimitValue, out BaseSystemInfo.OnlineLimit))
+                {
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "OnlineLimit", onlineLimitValue));
+                }
             }
             if (Exists("SlowQueryMilliseconds"))
             {
-                int.TryParse(GetValue(_xmlDocument, "SlowQueryMilliseconds"), out BaseSystemInfo.SlowQueryMilliseconds);
+                var slowQueryValue = GetValue(_xmlDocument, "SlowQueryMilliseconds");
+                if (!int.TryParse(slowQueryValue, out BaseSystemInfo.SlowQueryMilliseconds))
+                {
+                    LogUtil.WriteLog(Msg.Format("Log.ConfigParseFailed", "SlowQueryMilliseconds", slowQueryValue));
+                }
             }
             if (Exists("UserCenterDbType"))
             {
@@ -988,15 +1066,15 @@ namespace DotNet.Util
             // 若是本地模式运行，然后还缺少数据库配置？
             if (BaseSystemInfo.Service.Equals("DotNet.Business"))
             {
-                if (string.IsNullOrEmpty(BaseSystemInfo.UserCenterDbConnection))
+                if ((BaseSystemInfo.UserCenterDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.LogonLogDbConnection))
+                if ((BaseSystemInfo.LogonLogDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.LogonLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if (string.IsNullOrEmpty(BaseSystemInfo.MessageDbConnection))
+                if ((BaseSystemInfo.MessageDbConnection).IsNullOrEmpty())
                 {
                     BaseSystemInfo.MessageDbConnection = BaseSystemInfo.UserCenterDbConnection;
                 }
@@ -1196,8 +1274,7 @@ namespace DotNet.Util
         {
             if (File.Exists(ConfigFileName))
             {
-                var xmlDocument = new XmlDocument();
-                xmlDocument.Load(ConfigFileName);
+                var xmlDocument = LoadXmlDocument(ConfigFileName);
                 SetValue(xmlDocument, key, keyValue, checkExists);
                 xmlDocument.Save(ConfigFileName);
             }
@@ -1275,8 +1352,7 @@ namespace DotNet.Util
         /// <param name="fileName">配置文件</param>
         public static void SaveConfig(string fileName)
         {
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(fileName);
+            var xmlDocument = LoadXmlDocument(fileName);
 
             #region 写入Redis配置
             SetValue(xmlDocument, "RedisEnabled", BaseSystemInfo.RedisEnabled.ToString());
@@ -1308,7 +1384,10 @@ namespace DotNet.Util
 
             #region 写入WebApi配置
             SetValue(xmlDocument, "WebApiMonitorEnabled", BaseSystemInfo.WebApiMonitorEnabled.ToString());
+            //修复：这两个目录之前只读不写，补充写入
+            SetValue(xmlDocument, "WebApiMonitorFolder", BaseSystemInfo.WebApiMonitorFolder);
             SetValue(xmlDocument, "WebApiSlowMonitorEnabled", BaseSystemInfo.WebApiSlowMonitorEnabled.ToString());
+            SetValue(xmlDocument, "WebApiSlowMonitorFolder", BaseSystemInfo.WebApiSlowMonitorFolder);
             SetValue(xmlDocument, "WebApiSlowResponseMilliseconds", BaseSystemInfo.WebApiSlowResponseMilliseconds.ToString());
             #endregion
 
@@ -1470,7 +1549,7 @@ namespace DotNet.Util
             catch (UnauthorizedAccessException uae)
             {
                 //如果报没有权限异常
-                throw new Exception("当前操作系统用户没有权限写入文件 " + fileName, uae);
+                throw new Exception(Msg.Format("Exception.NoWritePermission", fileName), uae);
             }
             catch (Exception ex)
             {

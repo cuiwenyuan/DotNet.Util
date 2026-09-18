@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseUserContactManager.Auto.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ namespace DotNet.Business
             {
                 dbHelper = DbHelperFactory.Create(BaseSystemInfo.UserCenterDbType, BaseSystemInfo.UserCenterDbConnection);
             }
-            if (string.IsNullOrEmpty(CurrentTableName))
+            if (CurrentTableName.IsNullOrEmpty())
             {
                 CurrentTableName = BaseUserContactEntity.CurrentTableName;
                 //按用户公司分表

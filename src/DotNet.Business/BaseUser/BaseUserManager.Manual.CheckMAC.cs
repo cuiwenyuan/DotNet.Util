@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -51,7 +51,7 @@ namespace DotNet.Business
             {
                 return result;
             }
-            if (string.IsNullOrEmpty(macAddress))
+            if (macAddress.IsNullOrEmpty())
             {
                 return result;
             }
@@ -79,7 +79,7 @@ namespace DotNet.Business
             //                var parameterManager = new BaseParameterManager();
             //                for (var i = 0; i < mac.Length; i++)
             //                {
-            //                    if (!string.IsNullOrEmpty(mac[i]))
+            //                    if (!mac[i].IsNullOrEmpty())
             //                    {
             //                        // 把收集过来的mac地址需要保存起来
             //                        var parameterEntity = new BaseParameterEntity();
@@ -104,7 +104,7 @@ namespace DotNet.Business
             //            for (var i = 0; i < mac.Length; i++)
             //            {
             //                // 这里对数据还不放心，进行优化处理
-            //                if (!string.IsNullOrEmpty(mac[i]))
+            //                if (!mac[i].IsNullOrEmpty())
             //                {
             //                    mac[i] = mac[i].Trim();
             //                    result = redisClient.SetContainsItem(key, mac[i]);
@@ -126,7 +126,7 @@ namespace DotNet.Business
             //        }
             //    }
             //}
-            //TODO
+
             result = true;
             return result;
         }
@@ -201,7 +201,7 @@ namespace DotNet.Business
             // 把缓存里的先清理掉
             ResetMacAddressByCache(userId);
 
-            //TODO 吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
+            //吉日嘎拉 这个操作应该增加个操作日志、谁什么时间，把什么数据删除了？ 把登录日志按操作日志、系统日志来看待？
             var commandText = "UPDATE " + BaseParameterEntity.CurrentTableName
                         + "   SET " + BaseParameterEntity.FieldDeleted + " = 1"
                         + "     , " + BaseParameterEntity.FieldEnabled + " = 0"
@@ -256,7 +256,7 @@ namespace DotNet.Business
                 {
                     for (int i = 0; i < mac.Length; i++)
                     {
-                        if (!string.IsNullOrEmpty(mac[i]))
+                        if (!mac[i].IsNullOrEmpty())
                         {
                             // 把收集过来的mac地址需要保存起来
                             BaseParameterEntity parameterEntity = new BaseParameterEntity();

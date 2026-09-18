@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -125,7 +125,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BasePermissionEntity.FieldPermissionId, permissionId)
                 };
                 result = permissionManager.GetId(whereParameters);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     var parameters = new List<KeyValuePair<string, object>>
                     {
@@ -137,7 +137,7 @@ namespace DotNet.Business
                 }
             }
 
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 var permissionEntity = new BasePermissionEntity
                 {
@@ -249,7 +249,7 @@ namespace DotNet.Business
         public int RevokeRole(string systemCode, string roleId, string permissionId)
         {
             var result = 0;
-            if (!ValidateUtil.IsInt(roleId) && string.IsNullOrEmpty(permissionId))
+            if (!ValidateUtil.IsInt(roleId) && permissionId.IsNullOrEmpty())
             {
                 return result;
             }

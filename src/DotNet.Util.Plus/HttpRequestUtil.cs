@@ -23,9 +23,12 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string WcGet(string url)
         {
-            var wc = new WebClient();
-            wc.Encoding = Encoding.UTF8;
-            return wc.DownloadString(url);
+            //修复：using 确保 WebClient 释放，与 WebUpload.RemoteSaveAs 一致
+            using (var wc = new WebClient())
+            {
+                wc.Encoding = Encoding.UTF8;
+                return wc.DownloadString(url);
+            }
         }
         #endregion
 
@@ -39,11 +42,14 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string WcPost(string url, string data)
         {
-            var wc = new WebClient();
-            wc.Encoding = Encoding.UTF8;
-            //也可以向表头中添加一些其他东西
-            wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            return wc.UploadString(url, data);
+            //修复：using 确保 WebClient 释放
+            using (var wc = new WebClient())
+            {
+                wc.Encoding = Encoding.UTF8;
+                //也可以向表头中添加一些其他东西
+                wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                return wc.UploadString(url, data);
+            }
         }
         #endregion
 
@@ -57,11 +63,14 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string WcPostJson(string url, object data)
         {
-            var wc = new WebClient();
-            wc.Encoding = Encoding.UTF8;
-            //也可以向表头中添加一些其他东西
-            wc.Headers.Add("Content-Type", "application/json");
-            return wc.UploadString(url, JsonConvert.SerializeObject(data));
+            //修复：using 确保 WebClient 释放
+            using (var wc = new WebClient())
+            {
+                wc.Encoding = Encoding.UTF8;
+                //也可以向表头中添加一些其他东西
+                wc.Headers.Add("Content-Type", "application/json");
+                return wc.UploadString(url, JsonConvert.SerializeObject(data));
+            }
         }
         #endregion
 

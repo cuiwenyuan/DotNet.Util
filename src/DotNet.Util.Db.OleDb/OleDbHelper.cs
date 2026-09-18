@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -14,7 +14,7 @@ namespace DotNet.Util
     /// <summary>
     /// OleDbHelper
     /// 有关数据库连接的方法。
-    /// 
+    ///
     /// 修改记录
     ///
     ///		2011.01.22 版本：5.6 JiRiGaLa 参数首字母大小写规范化。
@@ -56,7 +56,7 @@ namespace DotNet.Util
     ///		2004.08.22 版本：2.0 JiRiGaLa 增加空的构造方法。
     ///		2004.07.30 版本：1.9 JiRiGaLa 改进数据库连接池功能。
     ///		2004.06.09 版本：1.8 JiRiGaLa 改进数据库了连接池功能，得经过一段时间的测试比较好。
-    ///		2004.03.21 版本：1.7 JiRiGaLa 改进读取注册表的方法，可以不从注册表读取参数，可以指定参数。
+    ///		2004.03.21 版本：1.7 JiRiGaLa 改进读取注册表的方法，可以不从注册表获取参数，可以指定参数。
     ///		2004.02.17 版本：1.6 JiRiGaLa 重新整理一些方法，命名方式等适当修改，全局变量，局部变量等重新命名。
     ///		2004.02.17 版本：1.5 JiRiGaLa 将变量名字中的_符号尽量去掉了，局部变量采用_开头的变量名。
     ///		2004.02.17 版本：1.4 JiRiGaLa 并且采用了 String.Format 方法，字符串看起来更顺眼，加强了抛出异常throw的方法。
@@ -64,11 +64,11 @@ namespace DotNet.Util
     ///		2003.10.24 版本：1.2 JiRiGaLa 数据库不采用保持连接的方式，注释文件的编写方式改变。
     ///		2003.10.24 版本：1.1 JiRiGaLa 将类改进为静太方式，不用创建新的类，就可以获得数据库连接。
     ///		2003.10.14 版本：1.0 JiRiGaLa 改进成以后可以扩展到多种数据库的结构形式。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2008.08.26</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public class OleDbHelper : DbHelper, IDbHelper
     {
@@ -151,9 +151,14 @@ namespace DotNet.Util
                 commandText += " FROM DUAL ";
             }
             Open();
-            var dateTime = ExecuteScalar(commandText, null, CommandType.Text).ToString();
-            Close();
-            return dateTime;
+            try
+            {
+                return ExecuteScalar(commandText, null, CommandType.Text)?.ToString() ?? string.Empty;
+            }
+            finally
+            {
+                Close();
+            }
         }
         #endregion
 
@@ -166,7 +171,7 @@ namespace DotNet.Util
         /// <returns>参数</returns>
         public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
         {
-            return new OleDbParameter(targetFiled, targetValue);
+            return new OleDbParameter(targetFiled, targetValue ?? DBNull.Value);
         }
         #endregion
 
@@ -200,9 +205,13 @@ namespace DotNet.Util
             var dbParameters = new List<IDbDataParameter>();
             if (targetFileds != null && targetValues != null)
             {
+                if (targetFileds.Length != targetValues.Length)
+                {
+                    throw new ArgumentException("Parameter names and values must have the same length.");
+                }
                 for (var i = 0; i < targetFileds.Length; i++)
                 {
-                    if (targetFileds[i] != null && targetValues[i] != null)
+                    if (targetFileds[i] != null && !(targetValues[i] is Array))
                     {
                         dbParameters.Add(MakeInParam(targetFileds[i], targetValues[i]));
                     }
@@ -301,18 +310,19 @@ namespace DotNet.Util
         /// <returns></returns>
         public override IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
         {
-            OleDbParameter parameter;
-
+            //修复：不能将 System.Data.DbType 数值直接强转为 OleDbType（两者枚举值完全不对应），
+            //应通过 OleDbParameter.DbType 属性由提供程序正确映射类型
+            var parameter = new OleDbParameter
+            {
+                ParameterName = parameterName,
+                DbType = dbType,
+                Direction = parameterDirection
+            };
             if (parameterSize > 0)
             {
-                parameter = new OleDbParameter(parameterName, (OleDbType)dbType, parameterSize);
-            }
-            else
-            {
-                parameter = new OleDbParameter(parameterName, (OleDbType)dbType);
+                parameter.Size = parameterSize;
             }
 
-            parameter.Direction = parameterDirection;
             if (!(parameterDirection == ParameterDirection.Output && parameterValue == null))
             {
                 parameter.Value = parameterValue;
@@ -347,7 +357,7 @@ namespace DotNet.Util
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    if (!String.IsNullOrEmpty(result))
+                    if (!result.IsNullOrEmpty())
                     {
                         result = result.Substring(0, result.Length - 3);
                     }
@@ -370,7 +380,7 @@ namespace DotNet.Util
                     {
                         result += values[i] + " || ";
                     }
-                    if (!String.IsNullOrEmpty(result))
+                    if (!result.IsNullOrEmpty())
                     {
                         result = result.Substring(0, result.Length - 4);
                     }

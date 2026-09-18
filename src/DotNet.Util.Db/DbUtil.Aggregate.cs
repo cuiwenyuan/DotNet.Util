@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -43,7 +43,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:
@@ -55,7 +55,7 @@ namespace DotNet.Util
 
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -88,7 +88,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:
@@ -99,7 +99,7 @@ namespace DotNet.Util
                     break;
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -142,7 +142,7 @@ namespace DotNet.Util
                     sb.Append("SELECT ISNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT IFNULL(" + function + "(" + fieldName + "),0) FROM " + tableName);
                     break;
                 case CurrentDbType.Oracle:
@@ -153,7 +153,7 @@ namespace DotNet.Util
                     break;
             }
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

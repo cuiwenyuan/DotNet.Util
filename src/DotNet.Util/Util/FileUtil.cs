@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -14,19 +14,19 @@ namespace DotNet.Util
     /// <summary>
     ///	FileUtil
     /// 文件帮助类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2015.03.22 版本：1.4    JiRiGaLa 异常数据记录更多信息。
     ///		2012.05.03 版本：1.3    Pcsky增加一个读取文本文件内容的方法(GetTextFileContent)
     ///		2011.07.31 版本：1.2    Sunplay增加一个删除文件的方法(DeleteFile)。
     ///		2011.07.31 版本：1.1    Sunplay增加一个获取文件大小的方法(GetFileSize)。
     ///		2010.07.10 版本：1.0	JiRiGaLa 创建。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2015.03.22</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class FileUtil
     {
@@ -72,7 +72,7 @@ namespace DotNet.Util
         /// <returns>自动压缩后的图片</returns>
         public static Bitmap GetThumbnailImageFromFile(string fileName, int maxHeightWidth = 0)
         {
-            var image = Image.FromFile(fileName);
+            using var image = Image.FromFile(fileName);
             var height = image.Height;
             var width = image.Width;
             if (maxHeightWidth != 0)
@@ -88,7 +88,8 @@ namespace DotNet.Util
                     width = (maxHeightWidth * image.Width) / image.Height;
                 }
             }
-            return new Bitmap(image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero));
+            using var thumbnail = image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero);
+            return new Bitmap(thumbnail);
         }
 
         #region public static string GetFriendlyFileSize(double fileSize) 有善的文件大小现实方式
@@ -136,12 +137,9 @@ namespace DotNet.Util
         /// <returns>字节</returns>
         public static byte[] GetFile(string fileName)
         {
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var br = new BinaryReader(fs);
-            var file = br.ReadBytes(((int)fs.Length));
-            br.Close();
-            fs.Close();
-            return file;
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            using var br = new BinaryReader(fs);
+            return br.ReadBytes(checked((int)fs.Length));
         }
 
         /// <summary>
@@ -152,13 +150,14 @@ namespace DotNet.Util
         public static void SaveFile(byte[] file, string fileName)
         {
             var directoryName = Path.GetDirectoryName(fileName);
-            if (!Directory.Exists(directoryName))
+            // 修复 R8-3：裸文件名（无目录）时 GetDirectoryName 返回 ""，CreateDirectory("") 会抛 ArgumentException。
+            // 仅当目录名非空且不存在时才创建。
+            if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);
             }
-            var fs = new FileStream(fileName, FileMode.Create);
+            using var fs = new FileStream(fileName, FileMode.Create);
             fs.Write(file, 0, file.Length);
-            fs.Close();
         }
         /// <summary>
         /// 图片转字节
@@ -167,11 +166,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static byte[] ImageToByte(Image image)
         {
-            var ms = new MemoryStream();
-            image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-            var file = ms.GetBuffer();
-            ms.Close();
-            return file;
+            using (var ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+                return ms.ToArray();
+            }
         }
         /// <summary>
         /// 字节转图片
@@ -180,13 +179,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Image ByteToImage(byte[] buffer)
         {
-            Image image;
             using (var ms = new MemoryStream(buffer))
             {
-                image = Image.FromStream(ms);
-                ms.Close();
+                using var image = Image.FromStream(ms);
+                return new Bitmap(image);
             }
-            return image;
         }
 
         /// <summary>
@@ -196,7 +193,7 @@ namespace DotNet.Util
         /// <param name="message">文件文本内容</param>
         public static void WriteBinaryFile(string fileName, string message)
         {
-            Console.WriteLine(@"写入二进制文件信息开始。");
+            //Console.WriteLine(@"写入二进制文件信息开始。");
             FileStream fs = null;
             BinaryWriter bw = null;
             try
@@ -312,8 +309,16 @@ namespace DotNet.Util
                 //完整的读取文件类容需要获取文件的长度
                 var count = (int)fs.Length;
                 var buffer = new byte[count];
-                br.Read(buffer, 0, buffer.Length);
-                message = Encoding.Default.GetString(buffer);
+                // 修复：BinaryReader.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                var fileBytesRead = 0;
+                while (fileBytesRead < buffer.Length)
+                {
+                    var n = br.Read(buffer, fileBytesRead, buffer.Length - fileBytesRead);
+                    if (n == 0) break;
+                    fileBytesRead += n;
+                }
+                //修复：与 WriteBinaryFile 写入的 UTF-8 保持一致，避免非 ASCII 内容乱码（原 Encoding.Default 在 .NET Framework 上是 ANSI）
+                message = Encoding.UTF8.GetString(buffer);
                 // message = br.ReadString();
 
                 // 读取完毕，关闭.
@@ -361,7 +366,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 删除文件 
+        /// 删除文件
         /// </summary>
         /// <param name="fileName">文件全路径</param>
         /// <returns>bool 是否删除成功</returns>
@@ -470,7 +475,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName)
         {
-            var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
+            //修复：使用 using 释放 StreamReader/文件句柄
+            using var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
             return sr.ReadToEnd();
         }
 
@@ -510,8 +516,9 @@ namespace DotNet.Util
                 case ".bmp": mime = "image/bmp"; break;
                 case ".jpeg":
                 case ".jpg":
-                case ".jpe":
-                case ".png": mime = "image/jpeg"; break;
+                case ".jpe": mime = "image/jpeg"; break;
+                //修复：.png 之前错误地返回了 image/jpeg
+                case ".png": mime = "image/png"; break;
                 case ".mpeg":
                 case ".mpg":
                 case ".mpe":
@@ -543,35 +550,34 @@ namespace DotNet.Util
         /// <param name="deleteSourceFile">是否删除源文件</param>
         public static void CopyDirectory(string sourceDir, string targetDir, bool deleteExistingFile = true, bool overWrite = false, bool deleteSourceFile = true)
         {
-            var folderName = sourceDir.Substring(sourceDir.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-
-            var desfolderdir = targetDir + "\\" + folderName;
-
-            if (targetDir.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) == (targetDir.Length - 1))
+            if (string.IsNullOrWhiteSpace(sourceDir) || string.IsNullOrWhiteSpace(targetDir))
             {
-                desfolderdir = targetDir + folderName;
+                return;
             }
+
+            // 代码审查 R8-9：保留既有默认行为（deleteSourceFile=true，即 Copy 实为 Move+删源），
+            // 旧调用依赖此语义，故不改默认值；仅用 Path.Combine / Path.GetFileName 取代硬编码 "\\"，
+            // 兼容非 Windows 与正斜杠路径。调用方若需纯复制，请显式传 deleteSourceFile: false。
+            var folderName = Path.GetFileName(sourceDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            var desfolderdir = Path.Combine(targetDir, folderName);
+
+            if (!Directory.Exists(desfolderdir))
+            {
+                Directory.CreateDirectory(desfolderdir);
+            }
+
             var fileNames = Directory.GetFileSystemEntries(sourceDir);
 
             foreach (var sourceFileName in fileNames)// 遍历所有的文件和目录
             {
                 if (Directory.Exists(sourceFileName))// 先当作目录处理如果存在这个目录就递归Copy该目录下面的文件
                 {
-
-                    var currentdir = desfolderdir + "\\" + sourceFileName.Substring(sourceFileName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-                    if (!Directory.Exists(currentdir))
-                    {
-                        Directory.CreateDirectory(currentdir);
-                    }
-
-                    CopyDirectory(sourceFileName, desfolderdir);
+                    CopyDirectory(sourceFileName, desfolderdir, deleteExistingFile, overWrite, deleteSourceFile);
                 }
 
                 else // 否则直接copy文件
                 {
-                    var destFileName = sourceFileName.Substring(sourceFileName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
-
-                    destFileName = desfolderdir + "\\" + destFileName;
+                    var destFileName = Path.Combine(desfolderdir, Path.GetFileName(sourceFileName));
                     if (File.Exists(destFileName))
                     {
                         if (deleteExistingFile)
@@ -580,10 +586,6 @@ namespace DotNet.Util
                         }
                     }
 
-                    if (!Directory.Exists(desfolderdir))
-                    {
-                        Directory.CreateDirectory(desfolderdir);
-                    }
                     try
                     {
                         File.Copy(sourceFileName, destFileName, overWrite);
@@ -599,8 +601,6 @@ namespace DotNet.Util
                     {
                         File.Delete(sourceFileName);
                     }
-
-
                 }
             }
         }
@@ -652,13 +652,25 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string GetTextFileContent(string fileName, string encoding = "gb2312")
         {
-            //var sr = new StreamReader(fileName, Encoding.GetEncoding("utf-8"));
-            var sr = new StreamReader(fileName, Encoding.GetEncoding(encoding));
-            var message = sr.ReadToEnd();
-            // 及时关闭
-            sr.Close();
-
-            return message;
+            //修复：.NET Core 默认不支持 gb2312（需注册 CodePagesEncodingProvider）；sr 用 using 确保释放
+            Encoding enc;
+            try
+            {
+#if NET46_OR_GREATER
+                // .NET Framework 原生支持 GB2312
+                enc = Encoding.GetEncoding(encoding);
+#else
+                // .NET Core 需注册 CodePagesEncodingProvider 后获取
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                enc = Encoding.GetEncoding(encoding);
+#endif
+            }
+            catch (Exception)
+            {
+                enc = Encoding.UTF8; // 获取失败兜底，避免崩溃
+            }
+            using var sr = new StreamReader(fileName, enc);
+            return sr.ReadToEnd();
         }
         #endregion
     }

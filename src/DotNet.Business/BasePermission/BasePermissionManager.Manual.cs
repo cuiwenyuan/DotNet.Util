@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BasePermissionManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -31,6 +31,9 @@ namespace DotNet.Business
     /// </summary>
     public partial class BasePermissionManager : BaseManager
     {
+        // 修复：原共用全局 BaseSystemInfo.UserLock，与缓存/人员等互不相关操作互相阻塞；改为本类独立锁
+        private static readonly object _permissionLock = new object();
+
         #region public bool IsAuthorized(string permissionCode, string permissionName = null) 是否有相应的权限
 
         /// <summary>
@@ -45,11 +48,11 @@ namespace DotNet.Business
             {
                 return true;
             }
-            if (UserInfo != null && string.IsNullOrEmpty(userId))
+            if (UserInfo != null && userId.IsNullOrEmpty())
             {
                 userId = UserInfo.Id.ToString();
             }
-            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
         }
         #endregion
 
@@ -62,18 +65,18 @@ namespace DotNet.Business
         /// <param name="systemCode">子系统编码</param>
         public List<BaseModuleEntity> GetUserPermissionList(BaseUserInfo userInfo, string userId = null, string systemCode = null)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId.IsNullOrEmpty())
             {
                 userId = userInfo.Id.ToString();
             }
-            if (string.IsNullOrEmpty(systemCode))
+            if (systemCode.IsNullOrEmpty())
             {
                 systemCode = BaseSystemInfo.SystemCode;
             }
             var cacheKey = "P." + systemCode + "." + userId;
             List<BaseModuleEntity> ls = null;
             // 这里是控制用户并发的，减少框架等重复读取数据库的效率问题
-            lock (BaseSystemInfo.UserLock)
+            lock (_permissionLock)
             {
                 var cacheTime = TimeSpan.FromMilliseconds(86400000);
                 ls = CacheUtil.Cache(cacheKey, () => GetPermissionListByUser(systemCode, userInfo.Id, companyId: userInfo.CompanyId, fromCache: true), true);
@@ -127,7 +130,7 @@ namespace DotNet.Business
             else
             {
                 result = AddEntity(entity);
-                if (!string.IsNullOrEmpty(result))
+                if (!result.IsNullOrEmpty())
                 {
                     #region 记录日志
 
@@ -237,7 +240,7 @@ namespace DotNet.Business
         {
             string[] result = null;
 
-            if (!string.IsNullOrEmpty(permissionId))
+            if (!permissionId.IsNullOrEmpty())
             {
                 var parameters = new List<KeyValuePair<string, object>>
                 {
@@ -251,7 +254,7 @@ namespace DotNet.Business
                 // 20130605 JiRiGaLa 这个运行效率更高一些
                 result = GetProperties(parameters, BasePermissionScopeEntity.FieldTargetId);
                 // var result = this.GetDataTable(parameters);
-                // result = BaseUtil.FieldToArray(result, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                // result = BaseUtil.FieldToArray(result, BasePermissionScopeEntity.FieldTargetId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
             }
             return result;
         }
@@ -271,7 +274,7 @@ namespace DotNet.Business
             var dt = new DataTable(BaseOrganizationEntity.CurrentTableName);
 
             // 若权限是空的，直接返回所有数据
-            if (string.IsNullOrEmpty(permissionCode))
+            if (permissionCode.IsNullOrEmpty())
             {
                 var organizationManager = new BaseOrganizationManager(userInfo);
                 dt = organizationManager.GetDataTable();

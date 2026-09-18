@@ -8,7 +8,7 @@ namespace DotNet.Util
 {
     /// <summary>对象池</summary>
     /// <remarks>
-    /// 文档 https://newlifex.com/core/object_pool
+    /// 文档 https://www.yuque.com/smartstone/nx/object_pool
     /// </remarks>
     public static partial class PoolUtil
     {
@@ -83,7 +83,8 @@ namespace DotNet.Util
 
             var buf = returnResult ? ms.ToArray() : null;
 
-            Pool.MemoryStream.Return(ms);
+            //修复：归还到本类自定义池 PoolUtil.MemoryStream（原误用 NewLife 默认全局池 Pool.MemoryStream，导致自定义池策略失效）
+            PoolUtil.MemoryStream.Return(ms);
 
             return buf;
         }

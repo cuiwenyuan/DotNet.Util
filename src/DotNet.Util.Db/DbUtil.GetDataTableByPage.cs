@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,7 +11,7 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
     ///     2022-10-12 版本：5.0    Troy.Cui 优化
     ///     2015-11-13 宋彪    增加输出最大数量，增加是否输出分页数的方法
@@ -20,11 +20,11 @@ namespace DotNet.Util
     ///     2014.01.23 版本：2.o    JiRiGaLa 整理 Oracle 分页功能
     ///     2013.11.03 版本：1.1    HongMing 获取分页数据 增加MySQL
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -45,14 +45,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
-            if (string.IsNullOrEmpty(sortExpression))
-            {
-                sortExpression = BaseUtil.FieldCreateTime;
-            }
-            if (string.IsNullOrEmpty(sortDirection))
-            {
-                sortDirection = " DESC";
-            }
+            sortExpression = GetSafeSortExpression(sortExpression);
+            sortDirection = GetSafeSortDirection(sortDirection);
             var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
@@ -68,7 +62,7 @@ namespace DotNet.Util
                         sql = "(" + sql + ") T ";
                     }
                     //Troy 20160605 将条件放在内部，解决ROWNUM的筛选不到的bug。
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sql = "(SELECT * FROM " + sql + " WHERE " + condition + ") T";
                     }
@@ -93,8 +87,9 @@ namespace DotNet.Util
                     {
                         sql = " (" + sql + ") ";
                     }
+                    //修复：内层 TOP 应取到当前页末尾（sqlEnd），否则会返回上一页的数据
                     commandText = string.Format("SELECT * FROM (SELECT TOP {0} * FROM (SELECT TOP {1} * FROM {2} T ORDER BY {3} " + sortDirection + ") T1 ORDER BY {4} DESC ) T2 ORDER BY {5} " + sortDirection
-                                    , sqlCount, sqlStart, sql, sortExpression, sortExpression, sortExpression);
+                                    , sqlCount, sqlEnd, sql, sortExpression, sortExpression, sortExpression);
                     break;
                 case CurrentDbType.Oracle:
                     //commandText = string.Format(@"SELECT T.*, ROWNUM RN FROM ({0} AND ROWNUM <= {1} ORDER BY {2}) T WHERE ROWNUM > {3}", sql, sqlEnd, sortExpression, sqlStart);
@@ -102,11 +97,11 @@ namespace DotNet.Util
                     if (sql.ToUpper().Trim().StartsWith("SELECT") && !sql.ToUpper().Trim().EndsWith(")T"))
                     {
                         //将条件放在内部，解决筛选不到的bug
-                        if (!string.IsNullOrEmpty(condition))
+                        if (!condition.IsNullOrEmpty())
                         {
                             sql += " AND " + condition + "";
                         }
-                        if (!string.IsNullOrEmpty(sortExpression) && !string.IsNullOrEmpty(sortDirection))
+                        if (!sortExpression.IsNullOrEmpty() && !sortDirection.IsNullOrEmpty())
                         {
                             sql += " ORDER BY " + sortExpression + " " + sortDirection + "";
                         }
@@ -115,11 +110,11 @@ namespace DotNet.Util
                     else
                     {
                         //将条件放在内部，解决筛选不到的bug
-                        if (!string.IsNullOrEmpty(condition))
+                        if (!condition.IsNullOrEmpty())
                         {
                             sql += " WHERE " + condition + "";
                         }
-                        if (!string.IsNullOrEmpty(sortExpression) && !string.IsNullOrEmpty(sortDirection))
+                        if (!sortExpression.IsNullOrEmpty() && !sortDirection.IsNullOrEmpty())
                         {
                             sql += " ORDER BY " + sortExpression + " " + sortDirection + "";
                         }
@@ -129,13 +124,21 @@ namespace DotNet.Util
                     commandText = string.Format(@"SELECT * FROM (SELECT T.*, ROWNUM RN FROM {0} WHERE ROWNUM <= {2}) T WHERE RN > {1}", sql, sqlStart, sqlEnd);
                     break;
                 case CurrentDbType.MySql:
+                case CurrentDbType.SQLite:
                     if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         sql = " (" + sql + ") ";
                     }
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
-                    sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, sqlEnd);
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, pageSize);
+                    break;
+                case CurrentDbType.PostgreSql:
+                    if (sql.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sql = " (" + sql + ") ";
+                    }
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
             return dbHelper.Fill(commandText, dbParameters);
@@ -161,11 +164,11 @@ namespace DotNet.Util
             tableName = tableName.ToTableName();
             DataTable dt = null;
             recordCount = 0;
-            if (string.IsNullOrEmpty(selectField))
+            if (selectField.IsNullOrEmpty())
             {
                 selectField = "*";
             }
-            if (string.IsNullOrEmpty(condition))
+            if (condition.IsNullOrEmpty())
             {
                 condition = string.Empty;
             }
@@ -180,7 +183,8 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
             dt = dbHelper.Fill("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure);
-            recordCount = int.Parse(dbDataParameter.Value.ToString());
+            //修复：输出参数可能为 null/空，避免 int.Parse 抛 FormatException/NullReferenceException
+            recordCount = dbDataParameter.Value.ToInt();
             return dt;
         }
         #endregion
@@ -202,14 +206,8 @@ namespace DotNet.Util
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
         {
             sql = sql.ToTableName();
-            if (string.IsNullOrEmpty(sortExpression))
-            {
-                sortExpression = BaseUtil.FieldCreateTime;
-            }
-            if (string.IsNullOrEmpty(sortDirection))
-            {
-                sortDirection = " DESC";
-            }
+            sortExpression = GetSafeSortExpression(sortExpression);
+            sortDirection = GetSafeSortDirection(sortDirection);
             var sqlCount = recordCount - ((pageNo - 1) * pageSize) > pageSize ? pageSize.ToString() : (recordCount - ((pageNo - 1) * pageSize)).ToString();
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
@@ -222,19 +220,35 @@ namespace DotNet.Util
                 case CurrentDbType.Db2:
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
                     sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + " " + sortDirection + ") AS ROWNUM, " + sql.Substring(7) + " ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
+                    //修复：sql 可能已被 ToTableName() 包裹为 "(SELECT ...)"，需先还原再去掉 SELECT 前缀
+                    var rowNumberSql = sql;
+                    if (rowNumberSql.StartsWith("(", StringComparison.Ordinal) && rowNumberSql.EndsWith(")", StringComparison.Ordinal))
+                    {
+                        rowNumberSql = rowNumberSql.Substring(1, rowNumberSql.Length - 2);
+                    }
+                    rowNumberSql = rowNumberSql.TrimStart();
+                    if (rowNumberSql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        rowNumberSql = rowNumberSql.Substring(6);
+                    }
+                    commandText = "SELECT * FROM ( " + "SELECT ROW_NUMBER() OVER (ORDER BY " + sortExpression + " " + sortDirection + ") AS ROWNUM, " + rowNumberSql + " ) A " + " WHERE ROWNUM > " + sqlStart + " AND ROWNUM <= " + sqlEnd;
                     break;
                 case CurrentDbType.Access:
+                    //修复：内层 TOP 应取到当前页末尾（sqlEnd），否则会返回上一页的数据
                     commandText = string.Format("SELECT * FROM (SELECT TOP {0} * FROM (SELECT TOP {1} * FROM {2} T ORDER BY {3} " + sortDirection + ") T1 ORDER BY {4} DESC) T2 ORDER BY {5} " + sortDirection
-                                    , sqlCount, sqlStart, sql, sortExpression, sortExpression, sortExpression);
+                                    , sqlCount, sqlEnd, sql, sortExpression, sortExpression, sortExpression);
                     break;
                 case CurrentDbType.Oracle:
                     commandText = string.Format(@"SELECT T.*, ROWNUM RN FROM ({0} AND ROWNUM <= {1} ORDER BY {2}) T WHERE ROWNUM > {3}", sql, sqlEnd, sortExpression, sqlStart);
                     break;
                 case CurrentDbType.MySql:
+                case CurrentDbType.SQLite:
                     sqlStart = ((pageNo - 1) * pageSize).ToString();
-                    sqlEnd = (pageNo * pageSize).ToString();
-                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, sqlEnd);
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3},{4}", sql, sortExpression, sortDirection, sqlStart, pageSize);
+                    break;
+                case CurrentDbType.PostgreSql:
+                    sqlStart = ((pageNo - 1) * pageSize).ToString();
+                    commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
             return dbHelper.Fill(commandText, dbParameters);
@@ -276,13 +290,14 @@ namespace DotNet.Util
         public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
         {
             tableName = tableName.ToTableName();
+            orderBy = GetSafeSortExpression(orderBy);
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
             var sqlEnd = (pageNo * pageSize).ToString();
             if (currentIndex == null)
             {
                 currentIndex = string.Empty;
             }
-            if (!string.IsNullOrEmpty(conditions))
+            if (!conditions.IsNullOrEmpty())
             {
                 conditions = "WHERE " + conditions;
             }
@@ -294,7 +309,7 @@ namespace DotNet.Util
                 {
                     orderBy = " ORDER BY " + orderBy;
                 }
-                // 2014.08.08 宋彪修改 
+                // 2014.08.08 宋彪修改
                 sb.Append(string.Format("SELECT * FROM (SELECT ROWNUM RN, TT.* FROM ((SELECT " + currentIndex + " " + selectField + " FROM {0} {1} {2} )TT)) ZZ WHERE ZZ.RN <={3} AND ZZ.RN >{4} ", tableName, conditions, orderBy, sqlEnd, sqlStart));
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
@@ -303,9 +318,13 @@ namespace DotNet.Util
                     , orderBy, tableName, conditions, sqlEnd, sqlStart));
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.MySql
-                || dbHelper.CurrentDbType == CurrentDbType.SqLite)
+                || dbHelper.CurrentDbType == CurrentDbType.SQLite)
             {
                 sb.Append(string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4}, {5}", selectField, tableName, conditions, orderBy, sqlStart, pageSize));
+            }
+            else if (dbHelper.CurrentDbType == CurrentDbType.PostgreSql)
+            {
+                sb.Append(string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4} OFFSET {5}", selectField, tableName, conditions, orderBy, pageSize, sqlStart));
             }
 
             var dt = new DataTable(tableName);
@@ -324,7 +343,7 @@ namespace DotNet.Util
 
         #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
         /// <summary>
-        /// 获取分页数据（防注入功能的） 
+        /// 获取分页数据（防注入功能的）
         /// </summary>
         /// <param name="recordCount">记录条数</param>
         /// <param name="dbHelper">dbHelper</param>

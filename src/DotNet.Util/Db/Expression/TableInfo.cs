@@ -24,7 +24,7 @@ namespace DotNet.Util
             var type = typeof(T);
             if (type.IsGenericType)
             {
-                throw new Exception("不支持泛型,必须为基础实体类");
+                throw new Exception(Msg.Get("Exception.GenericNotSupported"));
             }
             ColumnInfos = new List<ColumnInfo>();
 

@@ -1,12 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web.UI.WebControls;
 #endif
 
@@ -19,7 +19,7 @@ namespace DotNet.Business
     {
         #region public static string BuildUrl(string url, string paramText, string paramValue)
         /// <summary>
-        /// url里有key的值，就替换为value,没有的话就追加.构造Url的参数 
+        /// url里有key的值，就替换为value,没有的话就追加.构造Url的参数
         /// </summary>
         /// <param name="url"></param>
         /// <param name="paramText"></param>
@@ -27,17 +27,19 @@ namespace DotNet.Business
         /// <returns></returns>
         public static string BuildUrl(string url, string paramText, string paramValue)
         {
-            var reg = new Regex($"{paramText}=[^&]*", RegexOptions.IgnoreCase);
-            var reg1 = new Regex("[&]{2,}", RegexOptions.IgnoreCase);
+            //修复：paramText 需 Regex.Escape 防止参数名含正则元字符时替换失效；paramValue 需 URL 编码避免破坏 URL 结构；Regex 加超时防 ReDoS
+            var reg = new Regex($"{Regex.Escape(paramText)}=[^&]*", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
+            var reg1 = new Regex("[&]{2,}", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
             var _url = reg.Replace(url, "");
             //_url = reg1.Replace(_url, "");
+            var paramValueEncoded = Uri.EscapeDataString(paramValue ?? string.Empty);
             if (_url.IndexOf("?", StringComparison.Ordinal) == -1)
             {
-                _url += $"?{paramText}={paramValue}";//?
+                _url += $"?{paramText}={paramValueEncoded}";//?
             }
             else
             {
-                _url += $"&{paramText}={paramValue}";//&
+                _url += $"&{paramText}={paramValueEncoded}";//&
             }
             _url = reg1.Replace(_url, "&");
             _url = _url.Replace("?&", "?");
@@ -45,7 +47,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         #region public static bool SetDropDownListValue(DropDownList dropDownList, string selectedValue)
         /// <summary>
@@ -86,6 +88,7 @@ namespace DotNet.Business
             {
                 // 设置为被选中状态
                 listItem.Selected = true;
+                result = true;
             }
             return result;
         }

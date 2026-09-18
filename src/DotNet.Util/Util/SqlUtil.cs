@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -58,7 +58,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ");
             }
-            if (!string.IsNullOrEmpty(statisticsText))
+            if (!statisticsText.IsNullOrEmpty())
             {
                 sb.Append(statisticsText);
             }

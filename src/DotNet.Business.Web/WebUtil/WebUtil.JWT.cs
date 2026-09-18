@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -64,7 +64,7 @@ namespace DotNet.Business
             json = string.Empty;
             userId = 0;
             openId = string.Empty;
-            if (!string.IsNullOrEmpty(token))
+            if (!token.IsNullOrEmpty())
             {
                 try
                 {

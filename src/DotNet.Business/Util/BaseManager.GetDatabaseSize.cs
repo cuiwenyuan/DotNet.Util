@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,7 +38,7 @@ namespace DotNet.Business
             {
                 case CurrentDbType.Access:
                     break;
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     break;
                 case CurrentDbType.SqlServer:
                     sb.Append("EXEC sp_spaceused");
@@ -54,7 +54,7 @@ namespace DotNet.Business
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     //database_name,database_size
-                    result = decimal.Parse(dt.Rows[0][1].ToString().Replace("MB", "").Trim()) / 1024;
+                    result = decimal.TryParse(dt.Rows[0][1].ToString().Replace("MB", "").Trim(), out var databaseSize) ? databaseSize / 1024 : 0;
                 }
             }
             catch (Exception ex)

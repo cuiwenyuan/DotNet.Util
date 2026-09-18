@@ -1,12 +1,13 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-#if NET452_OR_GREATER
+using System.Security.Cryptography;
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 #if NETSTANDARD2_0_OR_GREATER
@@ -193,6 +194,30 @@ namespace DotNet.Util
         /// <param name="code"></param>
         /// <param name="multValue"></param>
         /// <returns></returns>
+        private static readonly RandomNumberGenerator _cryptoRandom = RandomNumberGenerator.Create();
+
+        private static int GetRandomInt(int minValue, int maxValue)
+        {
+            if (maxValue <= minValue)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxValue));
+            }
+
+            var range = (long)maxValue - minValue;
+            var limit = uint.MaxValue / range * range;
+            uint randomValue;
+
+            do
+            {
+                var buffer = new byte[4];
+                _cryptoRandom.GetBytes(buffer);
+                randomValue = BitConverter.ToUInt32(buffer, 0);
+            }
+            while (randomValue >= limit);
+
+            return minValue + (int)(randomValue % range);
+        }
+
         public Bitmap CreateImage(string code, double multValue)
         {
             var fSize = FontSize;
@@ -207,8 +232,6 @@ namespace DotNet.Util
 
             graphics.Clear(BackgroundColor);
 
-            var rand = new Random();
-
             // 给背景添加随机生成的燥点
             if (Chaos)
             {
@@ -218,8 +241,8 @@ namespace DotNet.Util
 
                 for (var i = 0; i < c; i++)
                 {
-                    var x = rand.Next(bitmap.Width);
-                    var y = rand.Next(bitmap.Height);
+                    var x = GetRandomInt(0, bitmap.Width);
+                    var y = GetRandomInt(0, bitmap.Height);
 
                     graphics.DrawRectangle(pen, x, y, 1, 1);
                 }
@@ -240,8 +263,8 @@ namespace DotNet.Util
             // 随机字体和颜色的验证码字符
             for (var i = 0; i < code.Length; i++)
             {
-                cindex = rand.Next(Colors.Length - 1);
-                findex = rand.Next(Fonts.Length - 1);
+                cindex = GetRandomInt(0, Colors.Length);
+                findex = GetRandomInt(0, Fonts.Length);
 
                 font = new Font(Fonts[findex], fSize, FontStyle.Bold);
                 brush = new SolidBrush(Colors[cindex]);
@@ -283,13 +306,17 @@ namespace DotNet.Util
             {
                 codeLength = Length;
             }
-            var arr = CodeSerial.Split(',').Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+
+            var arr = CodeSerial.Split(',').Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            if (arr.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var code = "";
-            var randValue = -1;
-            var random = new Random(unchecked((int)DateTime.Now.Ticks));
             for (var i = 0; i < codeLength; i++)
             {
-                randValue = random.Next(0, arr.Length - 1);
+                var randValue = GetRandomInt(0, arr.Length);
                 code += arr[randValue];
             }
             return code;
@@ -316,12 +343,12 @@ namespace DotNet.Util
             var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
             bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             httpContext.Response.ClearContent();
             httpContext.Response.ContentType = "image/Jpeg";
-            httpContext.Response.BinaryWrite(memoryStream.GetBuffer());
+            httpContext.Response.BinaryWrite(memoryStream.ToArray());
 #elif NETSTANDARD2_0_OR_GREATER
-            //TODO:.NET STANDARD 2.0的实现方式
+            //.NET STANDARD 2.0的实现方式
 #endif
 
             memoryStream.Close();
@@ -350,13 +377,22 @@ namespace DotNet.Util
         {
             try
             {
-                var ms = new MemoryStream();
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                var arr = new byte[ms.Length];
-                ms.Position = 0;
-                ms.Read(arr, 0, (int)ms.Length);
-                ms.Close();
-                return Convert.ToBase64String(arr);
+                //修复：使用 using 确保 MemoryStream 在异常路径也释放
+                using (var ms = new MemoryStream())
+                {
+                    bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    var arr = new byte[ms.Length];
+                    ms.Position = 0;
+                    // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                    var vcBytesRead = 0;
+                    while (vcBytesRead < arr.Length)
+                    {
+                        var n = ms.Read(arr, vcBytesRead, arr.Length - vcBytesRead);
+                        if (n == 0) break;
+                        vcBytesRead += n;
+                    }
+                    return Convert.ToBase64String(arr);
+                }
             }
             catch (Exception ex)
             {
@@ -375,10 +411,15 @@ namespace DotNet.Util
             try
             {
                 var array = Convert.FromBase64String(inputStr);
-                var ms = new MemoryStream(array);
-                var bitmap = new Bitmap(ms);
-                ms.Close();
-                return bitmap;
+                //修复：复制为独立 Bitmap，避免返回依赖已关闭流的 Bitmap（GDI+ 隐患），同时 using 释放临时流
+                using (var ms = new MemoryStream(array))
+                {
+                    using (var temp = new Bitmap(ms))
+                    {
+                        var bitmap = new Bitmap(temp);
+                        return bitmap;
+                    }
+                }
             }
             catch (Exception ex)
             {

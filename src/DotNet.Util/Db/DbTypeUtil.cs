@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -35,7 +35,7 @@ namespace DotNet.Util
         {
             var result = defaultDbType;
 
-            if (!string.IsNullOrEmpty(dbType))
+            if (!dbType.IsNullOrEmpty())
             {
                 foreach (CurrentDbType currentDbType in Enum.GetValues(typeof(CurrentDbType)))
                 {

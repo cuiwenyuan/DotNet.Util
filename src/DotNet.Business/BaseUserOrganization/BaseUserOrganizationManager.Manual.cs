@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseUserOrganizationManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUserOrganizationEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseUserOrganizationEntity.FieldUserId + " LIKE N'%" + searchKey + "%' OR " + BaseUserOrganizationEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");

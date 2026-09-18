@@ -7,7 +7,7 @@ namespace DotNet.Util
     public partial class JsonUtil
     {
         /// <summary>
-        /// ·Ö¸ôJson×Ö·û´®Îª×Öµä¼¯ºÏ¡£
+        /// ï¿½Ö¸ï¿½Jsonï¿½Ö·ï¿½ï¿½ï¿½Îªï¿½Öµä¼¯ï¿½Ï¡ï¿½
         /// </summary>
         internal class JsonSplit
         {
@@ -19,7 +19,7 @@ namespace DotNet.Util
             internal static bool IsJson(string json, out int errIndex)
             {
                 errIndex = 0;
-                if (!string.IsNullOrEmpty(json) && json.Length > 1 &&
+                if (!json.IsNullOrEmpty() && json.Length > 1 &&
                     ((json[0] == '{' && json[json.Length - 1] == '}') || (json[0] == '[' && json[json.Length - 1] == ']')))
                 {
                     var cs = new CharState();
@@ -27,7 +27,7 @@ namespace DotNet.Util
                     for (var i = 0; i < json.Length; i++)
                     {
                         c = json[i];
-                        if (SetCharState(c, ref cs) && cs.ChildrenStart)//ÉèÖÃ¹Ø¼ü·ûºÅ×´Ì¬¡£
+                        if (SetCharState(c, ref cs) && cs.ChildrenStart)//ï¿½ï¿½ï¿½Ã¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
                         {
                             var item = json.Substring(i);
                             int err;
@@ -55,22 +55,24 @@ namespace DotNet.Util
             {
                 var result = new List<Dictionary<string, string>>();
 
-                if (!string.IsNullOrEmpty(json))
+                if (!json.IsNullOrEmpty())
                 {
-                    var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    // ä¿®å¤ R9-5ï¼šJSON é”®å¤§å°å†™æ•æ„Ÿï¼ŒåŸ OrdinalIgnoreCase ä¼šå¯¼è‡´ "Id"/"id" è¿™ç±»
+                    // å¤§å°å†™å˜ä½“é”®è¢« ContainsKey åˆ¤é‡è€Œé™é»˜ä¸¢æ•°æ®ï¼›æ”¹ç”¨ Ordinalã€‚
+                    var dic = new Dictionary<string, string>(StringComparer.Ordinal);
                     var key = string.Empty;
                     var value = PoolUtil.StringBuilder.Get();
                     var cs = new CharState();
                     try
                     {
-                        #region ºËĞÄÂß¼­
+                        #region ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
                         char c;
                         for (var i = 0; i < json.Length; i++)
                         {
                             c = json[i];
-                            if (!SetCharState(c, ref cs))//ÉèÖÃ¹Ø¼ü·ûºÅ×´Ì¬¡£
+                            if (!SetCharState(c, ref cs))//ï¿½ï¿½ï¿½Ã¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
                             {
-                                if (cs.JsonStart)//Json½øĞĞÖĞ¡£¡£¡£
+                                if (cs.JsonStart)//Jsonï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½ï¿½
                                 {
                                     if (cs.KeyStart > 0)
                                     {
@@ -82,12 +84,12 @@ namespace DotNet.Util
                                         //value += c;
                                     }
                                 }
-                                else if (!cs.ArrayStart)//json½áÊø£¬ÓÖ²»ÊÇÊı×é£¬ÔòÍË³ö¡£
+                                else if (!cs.ArrayStart)//jsonï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
                                 {
                                     break;
                                 }
                             }
-                            else if (cs.ChildrenStart)//Õı³£×Ö·û£¬Öµ×´Ì¬ÏÂ¡£
+                            else if (cs.ChildrenStart)//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Öµ×´Ì¬ï¿½Â¡ï¿½
                             {
                                 var item = json.Substring(i);
                                 int temp;
@@ -101,13 +103,14 @@ namespace DotNet.Util
                                 cs.SetDicValue = true;
                                 i = i + length - 1;
                             }
-                            if (cs.SetDicValue)//ÉèÖÃ¼üÖµ¶Ô¡£
+                            if (cs.SetDicValue)//ï¿½ï¿½ï¿½Ã¼ï¿½Öµï¿½Ô¡ï¿½
                             {
-                                if (!string.IsNullOrEmpty(key) && !dic.ContainsKey(key))
+                                if (!key.IsNullOrEmpty() && !dic.ContainsKey(key))
                                 {
                                     //if (value != string.Empty)
                                     //{
-                                    var isNull = json[i - 5] == ':' && json[i] != '"' && value.Length == 4 && value.ToString() == "null";
+                                    //i >= 5 é˜²æ­¢è¶Šç•Œè®¿é—® json[i - 5] å¯¼è‡´ IndexOutOfRangeException
+                                    var isNull = i >= 5 && json[i - 5] == ':' && json[i] != '"' && value.Length == 4 && value.ToString() == "null";
                                     if (isNull)
                                     {
                                         value.Length = 0;
@@ -124,9 +127,10 @@ namespace DotNet.Util
                             if (!cs.JsonStart && dic.Count > 0)
                             {
                                 result.Add(dic);
-                                if (cs.ArrayStart)//´¦ÀíÊı×é¡£
+                                if (cs.ArrayStart)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¡£
                                 {
-                                    dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                                    // ä¿®å¤ R9-5ï¼šæ•°ç»„å†…æ¯ä¸ªå¯¹è±¡åŒæ ·ç”¨ Ordinalï¼ˆè§ä¸Šï¼‰
+                                    dic = new Dictionary<string, string>(StringComparer.Ordinal);
                                 }
                             }
                         }
@@ -147,29 +151,29 @@ namespace DotNet.Util
                 return result;
             }
             /// <summary>
-            /// »ñÈ¡ÖµµÄ³¤¶È£¨µ±JsonÖµÇ¶Ì×ÒÔ"{"»ò"["¿ªÍ·Ê±£©
+            /// ï¿½ï¿½È¡Öµï¿½Ä³ï¿½ï¿½È£ï¿½ï¿½ï¿½JsonÖµÇ¶ï¿½ï¿½ï¿½ï¿½"{"ï¿½ï¿½"["ï¿½ï¿½Í·Ê±ï¿½ï¿½
             /// </summary>
             private static int GetValueLength(string json, bool breakOnErr, out int errIndex)
             {
                 errIndex = 0;
                 var len = 0;
-                if (!string.IsNullOrEmpty(json))
+                if (!json.IsNullOrEmpty())
                 {
                     var cs = new CharState();
                     char c;
                     for (var i = 0; i < json.Length; i++)
                     {
                         c = json[i];
-                        if (!SetCharState(c, ref cs))//ÉèÖÃ¹Ø¼ü·ûºÅ×´Ì¬¡£
+                        if (!SetCharState(c, ref cs))//ï¿½ï¿½ï¿½Ã¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
                         {
-                            if (!cs.JsonStart && !cs.ArrayStart)//json½áÊø£¬ÓÖ²»ÊÇÊı×é£¬ÔòÍË³ö¡£
+                            if (!cs.JsonStart && !cs.ArrayStart)//jsonï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
                             {
                                 break;
                             }
                         }
-                        else if (cs.ChildrenStart)//Õı³£×Ö·û£¬Öµ×´Ì¬ÏÂ¡£
+                        else if (cs.ChildrenStart)//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Öµ×´Ì¬ï¿½Â¡ï¿½
                         {
-                            var length = GetValueLength(json.Substring(i), breakOnErr, out errIndex);//µİ¹é×ÓÖµ£¬·µ»ØÒ»¸ö³¤¶È¡£¡£¡£
+                            var length = GetValueLength(json.Substring(i), breakOnErr, out errIndex);//ï¿½İ¹ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½
                             cs.ChildrenStart = false;
                             cs.ValueStart = 0;
                             //cs.state = 0;
@@ -180,9 +184,9 @@ namespace DotNet.Util
                             errIndex = i;
                             return i;
                         }
-                        if (!cs.JsonStart && !cs.ArrayStart)//¼ÇÂ¼µ±Ç°½áÊøÎ»ÖÃ¡£
+                        if (!cs.JsonStart && !cs.ArrayStart)//ï¿½ï¿½Â¼ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¡ï¿½
                         {
-                            len = i + 1;//³¤¶È±ÈË÷Òı+1
+                            len = i + 1;//ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½ï¿½ï¿½+1
                             break;
                         }
                     }
@@ -190,60 +194,60 @@ namespace DotNet.Util
                 return len;
             }
             /// <summary>
-            /// ×Ö·û×´Ì¬
+            /// ï¿½Ö·ï¿½×´Ì¬
             /// </summary>
             private class CharState
             {
-                internal bool JsonStart = false;//ÒÔ "{"¿ªÊ¼ÁË...
-                internal bool SetDicValue = false;// ¿ÉÒÔÉèÖÃ×ÖµäÖµÁË¡£
-                internal bool EscapeChar = false;//ÒÔ"\"×ªÒå·ûºÅ¿ªÊ¼ÁË
+                internal bool JsonStart = false;//ï¿½ï¿½ "{"ï¿½ï¿½Ê¼ï¿½ï¿½...
+                internal bool SetDicValue = false;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Öµï¿½Ë¡ï¿½
+                internal bool EscapeChar = false;//ï¿½ï¿½"\"×ªï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½
                 /// <summary>
-                /// Êı×é¿ªÊ¼¡¾½öµÚÒ»¿ªÍ·²ÅËã¡¿£¬ÖµÇ¶Ì×µÄÒÔ¡¾childrenStart¡¿À´±êÊ¶¡£
+                /// ï¿½ï¿½ï¿½é¿ªÊ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Í·ï¿½ï¿½ï¿½ã¡¿ï¿½ï¿½ÖµÇ¶ï¿½×µï¿½ï¿½Ô¡ï¿½childrenStartï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½
                 /// </summary>
-                internal bool ArrayStart = false;//ÒÔ"[" ·ûºÅ¿ªÊ¼ÁË
-                internal bool ChildrenStart = false;//×Ó¼¶Ç¶Ì×¿ªÊ¼ÁË¡£
+                internal bool ArrayStart = false;//ï¿½ï¿½"[" ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½
+                internal bool ChildrenStart = false;//ï¿½Ó¼ï¿½Ç¶ï¿½×¿ï¿½Ê¼ï¿½Ë¡ï¿½
                 /// <summary>
-                /// ¡¾0 È¡Ãû³ÆÖĞ¡¿£»¡¾1 È¡ÖµÖĞ¡¿
+                /// ï¿½ï¿½0 È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½ï¿½1 È¡Öµï¿½Ğ¡ï¿½
                 /// </summary>
                 internal int State = -1;
 
                 /// <summary>
-                /// ¡¾-1 Î´³õÊ¼»¯¡¿¡¾0 Î´¿ªÊ¼¡¿¡¾1 ÎŞÒıºÅ¿ªÊ¼¡¿¡¾2 µ¥ÒıºÅ¿ªÊ¼¡¿¡¾3 Ë«ÒıºÅ¿ªÊ¼¡¿
+                /// ï¿½ï¿½-1 Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0 Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½2 ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½3 Ë«ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½
                 /// </summary>
                 internal int KeyStart = -1;
                 /// <summary>
-                /// ¡¾-1 Î´³õÊ¼»¯¡¿¡¾0 Î´¿ªÊ¼¡¿¡¾1 ÎŞÒıºÅ¿ªÊ¼¡¿¡¾2 µ¥ÒıºÅ¿ªÊ¼¡¿¡¾3 Ë«ÒıºÅ¿ªÊ¼¡¿
+                /// ï¿½ï¿½-1 Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0 Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½2 ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½3 Ë«ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½
                 /// </summary>
                 internal int ValueStart = -1;
-                internal bool IsError = false;//ÊÇ·ñÓï·¨´íÎó¡£
+                internal bool IsError = false;//ï¿½Ç·ï¿½ï¿½ï·¨ï¿½ï¿½ï¿½ï¿½
 
-                internal void CheckIsError(char c)//Ö»µ±³ÉÒ»¼¶´¦Àí£¨ÒòÎªGetLength»áµİ¹éµ½Ã¿Ò»¸ö×ÓÏî´¦Àí£©
+                internal void CheckIsError(char c)//Ö»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªGetLengthï¿½ï¿½İ¹éµ½Ã¿Ò»ï¿½ï¿½ï¿½ï¿½ï¿½î´¦ï¿½ï¿½ï¿½ï¿½
                 {
                     switch (c)
                     {
                         case '{'://[{ "[{A}]":[{"[{B}]":3,"m":"C"}]}]
-                            IsError = JsonStart && State == 0;//ÖØ¸´¿ªÊ¼´íÎó Í¬Ê±²»ÊÇÖµ´¦Àí¡£
+                            IsError = JsonStart && State == 0;//ï¿½Ø¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ Í¬Ê±ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                             break;
                         case '}':
-                            IsError = !JsonStart || (KeyStart > -1 && State == 0);//ÖØ¸´½áÊø´íÎó »òÕß ÌáÇ°½áÊø¡£
+                            IsError = !JsonStart || (KeyStart > -1 && State == 0);//ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                             break;
                         case '[':
-                            IsError = ArrayStart && State == 0;//ÖØ¸´¿ªÊ¼´íÎó
+                            IsError = ArrayStart && State == 0;//ï¿½Ø¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
                             break;
                         case ']':
-                            IsError = !ArrayStart;//ÖØ¸´¿ªÊ¼´íÎó
+                            IsError = !ArrayStart;//ï¿½Ø¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
                             break;
                         case '"':
                         case '\'':
-                            IsError = !JsonStart;//Î´¿ªÊ¼Json
+                            IsError = !JsonStart;//Î´ï¿½ï¿½Ê¼Json
                             break;
                         case ':':
-                            IsError = !JsonStart || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 1);//Î´¿ªÊ¼Json Í¬Ê± Ö»ÄÜ´¦ÀíÔÚÈ¡ÖµÖ®Ç°¡£
+                            IsError = !JsonStart || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 1);//Î´ï¿½ï¿½Ê¼Json Í¬Ê± Ö»ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½È¡ÖµÖ®Ç°ï¿½ï¿½
                             break;
                         case ',':
-                            IsError = (!JsonStart && !ArrayStart) || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 0);//Î´¿ªÊ¼Json Í¬Ê± Ö»ÄÜ´¦ÀíÔÚÈ¡ÖµÖ®ºó¡£
+                            IsError = (!JsonStart && !ArrayStart) || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 0);//Î´ï¿½ï¿½Ê¼Json Í¬Ê± Ö»ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½È¡ÖµÖ®ï¿½ï¿½
                             break;
-                        default: //Öµ¿ªÍ·¡£¡£
+                        default: //Öµï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½
                             IsError = !JsonStart || (KeyStart == 0 && ValueStart == 0 && State == 0);//
                             break;
                     }
@@ -254,14 +258,14 @@ namespace DotNet.Util
                 }
             }
             /// <summary>
-            /// ÉèÖÃ×Ö·û×´Ì¬(·µ»ØtrueÔòÎª¹Ø¼ü´Ê£¬·µ»ØfalseÔòµ±ÎªÆÕÍ¨×Ö·û´¦Àí£©
+            /// ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½×´Ì¬(ï¿½ï¿½ï¿½ï¿½trueï¿½ï¿½Îªï¿½Ø¼ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½falseï¿½ï¿½Îªï¿½ï¿½Í¨ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             /// </summary>
             private static bool SetCharState(char c, ref CharState cs)
             {
                 switch (c)
                 {
                     case '{'://[{ "[{A}]":[{"[{B}]":3,"m":"C"}]}]
-                        #region ´óÀ¨ºÅ
+                        #region ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
                             cs.CheckIsError(c);
@@ -274,19 +278,19 @@ namespace DotNet.Util
                             {
                                 cs.State = 0;
                             }
-                            cs.JsonStart = true;//¿ªÊ¼¡£
+                            cs.JsonStart = true;//ï¿½ï¿½Ê¼ï¿½ï¿½
                             return true;
                         }
                         #endregion
                         break;
                     case '}':
-                        #region ´óÀ¨ºÅ½áÊø
+                        #region ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½ï¿½ï¿½
                         if (cs.KeyStart <= 0 && cs.ValueStart < 2)
                         {
                             cs.CheckIsError(c);
                             if (cs.JsonStart)
                             {
-                                cs.JsonStart = false;//Õı³£½áÊø¡£
+                                cs.JsonStart = false;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                 cs.ValueStart = 0;
                                 cs.SetDicValue = true;
                             }
@@ -296,7 +300,7 @@ namespace DotNet.Util
                         #endregion
                         break;
                     case '[':
-                        #region ÖĞÀ¨ºÅ¿ªÊ¼
+                        #region ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼
                         if (!cs.JsonStart)
                         {
                             cs.CheckIsError(c);
@@ -313,7 +317,7 @@ namespace DotNet.Util
                         #endregion
                         break;
                     case ']':
-                        #region ÖĞÀ¨ºÅ½áÊø
+                        #region ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½ï¿½ï¿½
                         if (!cs.JsonStart && cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
                             cs.CheckIsError(c);
@@ -328,15 +332,15 @@ namespace DotNet.Util
                     case '"':
                     case '\'':
                         cs.CheckIsError(c);
-                        #region ÒıºÅ
+                        #region ï¿½ï¿½ï¿½ï¿½
                         if (cs.JsonStart)
                         {
-                            if (cs.State == 0)//key½×¶Î
+                            if (cs.State == 0)//keyï¿½×¶ï¿½
                             {
                                 cs.KeyStart = (cs.KeyStart <= 0 ? (c == '"' ? 3 : 2) : 0);
                                 return true;
                             }
-                            else if (cs.State == 1)//Öµ½×¶Î
+                            else if (cs.State == 1)//Öµï¿½×¶ï¿½
                             {
                                 if (cs.ValueStart <= 0)
                                 {
@@ -362,7 +366,7 @@ namespace DotNet.Util
                         break;
                     case ':':
                         cs.CheckIsError(c);
-                        #region Ã°ºÅ
+                        #region Ã°ï¿½ï¿½
                         if (cs.JsonStart && cs.KeyStart < 2 && cs.ValueStart < 2 && cs.State == 0)
                         {
                             cs.KeyStart = 0;
@@ -374,7 +378,7 @@ namespace DotNet.Util
                         break;
                     case ',':
                         cs.CheckIsError(c);
-                        #region ¶ººÅ
+                        #region ï¿½ï¿½ï¿½ï¿½
                         if (cs.JsonStart && cs.KeyStart < 2 && cs.ValueStart < 2 && cs.State == 1)
                         {
                             cs.State = 0;
@@ -393,12 +397,12 @@ namespace DotNet.Util
                     case '\n':
                         if (cs.JsonStart && cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
-                            return true;//Ìø¹ı¿Õ¸ñ¡£
+                            return true;//ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½
                         }
                         break;
-                    default: //Öµ¿ªÍ·¡£¡£
+                    default: //Öµï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½
                         cs.CheckIsError(c);
-                        if (c == '\\') //×ªÒå·ûºÅ
+                        if (c == '\\') //×ªï¿½ï¿½ï¿½ï¿½ï¿½
                         {
                             if (cs.EscapeChar)
                             {
@@ -418,11 +422,11 @@ namespace DotNet.Util
                         {
                             if (cs.KeyStart <= 0 && cs.State <= 0)
                             {
-                                cs.KeyStart = 1;//ÎŞÒıºÅµÄ
+                                cs.KeyStart = 1;//ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½
                             }
                             else if (cs.ValueStart <= 0 && cs.State == 1)
                             {
-                                cs.ValueStart = 1;//ÎŞÒıºÅµÄ
+                                cs.ValueStart = 1;//ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½
                             }
                         }
                         break;
