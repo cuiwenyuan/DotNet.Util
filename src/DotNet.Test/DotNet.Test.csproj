@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- 示例/调试用控制台程序，不发布到 NuGet（dotnet pack 解决方案时会连带打包） -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

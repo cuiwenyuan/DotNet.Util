@@ -184,4 +184,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- 本示例项目（老式 packages.config 工程）不参与 NuGet 发布。
+       提供空 Pack 目标，避免对解决方案执行 dotnet pack 时报 MSB4057「该项目中不存在目标 Pack」。 -->
+  <Target Name="Pack" />
 </Project>

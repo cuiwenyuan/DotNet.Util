@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on "Keep a Changelog" and follows Semantic Versioning.
 
-## [Unreleased]
+## [1.2.2026.918] - 2026-09-18
 
 ### Added
 - New features.
@@ -52,7 +52,7 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 
 ---
 
-## [vX.Y.Z] - YYYY-MM-DD
+## [Unreleased]
 
 ### Added
 - 
