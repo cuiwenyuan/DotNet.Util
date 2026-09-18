@@ -112,6 +112,63 @@ dotnet build src/DotNet.Util/DotNet.Util.csproj -c Debug \
 - 测试数基线（2026-09-16 多语言 P0~P5 + 性能优化 2 项后）：**1204 个**（排除集成测试），
   其中 `MsgTests` 相关集合 40 个。全量 net8.0 跑一次约 25~38s。
 - 集成测试 `IntegrationTests`（SQL Server / Redis / QQWry）无外部依赖时必 FAIL，属预期。
+- ✅ **SQL Server 集成测试已可用（2026-09-18 实测）**：用户本机 1433/1434 均在监听，
+  Windows 集成认证直连即通，无需密码：
+  ```bash
+  export DUP_TEST_SQLSERVER='Server=127.0.0.1,1433;Database=master;Trusted_Connection=True;TrustServerCertificate=True;'
+  dotnet test src/DotNet.Util.Tests/DotNet.Util.Tests.csproj -c Debug -f net8.0 --no-restore \
+    -p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false \
+    --filter "FullyQualifiedName~DbHelperIntegrationTests"   # 双档均 4/4
+  ```
+  （Bash 会话级 env；持久化需 `[Environment]::SetEnvironmentVariable(...)` 或系统设置）
+- ⚠️ **net48 档不要一次跑整个 Db 命名空间全量（217 例）**：会被会话 SIGTERM，stdout 全空、
+  退出码 1，重跑两次都一样。拆成 filter 分跑即可（例：只跑集成部分 52 例 1s 通过）。
+  net8.0 无此限制（217 例 704ms）。→ **net48 验证一律拆分 filter。**
+- 📌 **Db 测试补齐进度（计划见 `Db-Test-Coverage-Plan.md`）**：P1 基建 26 例、P2 核心执行
+  22 例、P3 查询类 24 例、P4 写入类 27 例、P5 高级 20 例**已完成（累计 119，计划收官）**。
+  - **环境依赖（P5）**：`GetRecordByPage` sp 需手工建；`DupTestUserList`/`DupTestUserGetById`
+    由 fixture 的 `EnsureProcedures()` 幂等建（`CREATE PROCEDURE` 须为批处理首语句 → 用 `EXEC('')` 包裹）。
+    调 sp 分页重载**必须显式传 sortExpression**，否则 sp 内拼接出 NULL 后 `EXECUTE(NULL)` 报错。
+  - ⚠️ **两个待修缺陷（已上报未改）**：① `DbUtil.LockNoWait.cs:64` 丢弃 `Fill` 返回值，
+    `DbHelper.Fill` 内部 catch 后把自身局部变量置 null → 异常被吞、恒返回 0，`-1` 分支不可达；
+    ② **net48 下 `object.ToDecimal()`（NewLife.Core 11.18.2026.801）会让测试宿主进程崩溃**
+    （复现 2 次，ToInt/ToDateTime 正常）→ `AggregateDecimal` 用例在 net48 档用 `#if NET48 Skip` 跳过。
+  P4 新坑：`Delete(table, null)` 存在 `List<KeyValuePair>` / `string` 重载二义性，必须显式强转；
+  `SqlBuilder.SetWhere(List)` 传 null 会 NRE（`SetProperty` 的 whereParameters 不可为 null）；
+  `BatchDelete` 无返回值、靠 `AggregateInt(MIN(Id))` 递归终止，只能断言剩余行数；
+  `Truncate` 会重置 IDENTITY 种子。护栏实测：连接串指向 master 时全部 Fail 且不执行 SQL。
+  - **`GetRecordByPage` 存储过程依赖**：`DbUtil.GetDataTableByPage.cs:162` 那个分页重载
+    与 `GetFromProcedure` 都调 sp，测试前需先建存储过程 → 归入 P5。
+  - `DbUtil` 里**不带 connectionString 的重载**（含 `MakeParameter`、`ExecuteCommandWithSplitter`）
+    一律读 public static 字段 `DbUtil.ConnectionString`/`CurrentDbType`（`DbUtil.cs:179/184`）
+    → 测试必须用 `_fixture.UseStaticConnection()` 作用域包裹，用完还原。
+  - `DbHelper.ExecuteReader` 用 `CommandBehavior.CloseConnection` → **reader 必须 Dispose**。
+
+## 🔴 net48 测试宿主下禁用 NewLife.Core 的 `ToDecimal` / `ToDouble`（2026-09-18 定位 + 升级验证）
+- `object.ToDecimal()` / `object.ToDouble()` 在 **net48 的 xunit/VSTest 测试宿主**下会让宿主在
+  用例通过后崩溃（返回值本身正确）。`ToInt`、`System.Convert.ToDecimal` 正常；net8.0 正常。
+- ⚠️ **仅限测试宿主**：工程树外的独立 net48 控制台调用完全正常（EXITCODE=0）
+  → **生产/net4x 终端用户不受影响**，严重度 🟡（只影响 net48 档测试可执行性）。
+- 升级 `NewLife.Core` 到 11.19.2026.901 后**仍崩**（未修复），但该升级本身健康：10 TFM + 14 项目
+  构建 0 错误、net8.0 全量 1225 / Db 288 / net48 集成 105+1 全绿，无 NU1605。
+- 遗留：net48 全量回归碰到这两条路径（产品 9 处 + 测试 7 处）仍会崩 → 需按 filter 规避，
+  或改用本库自有安全转换（注意 `Convert.ToDecimal(DBNull.Value)` 会抛，不能裸换，需包一层）。
+- 崩溃与输入类型无关，绕开扩展方法直调 `DefaultConvert.ToDecimal` 照样崩 → 问题在该层。
+  上游实现 string 分支含 `stackalloc` + `Span<Char>` + Range 切片（`tmp[..rs]`），
+  net4x 依赖 System.Memory 垫片，为首要嫌疑（定性待 dump）。
+- 本仓库 `.ToDecimal(` 9 处 + `.ToDouble(` 7 处，产品代码 9 处（`RequestUtil.cs`×2、
+  `NewLife/DataUtil.cs`×2、`DbUtil.Aggregate.cs`×1、`ExcelUtil.Export.cs`×4）。
+  → **net48 全量回归只要跑到这些用例就会宿主崩溃**（不止 P5 跳过的那一例）。
+- 处置方案待用户定：A 规避（换 `Convert.ToXxx`）/ B 升级 NewLife.Core / C 抓 dump 报上游。
+
+## ⚠️ DbHelper.Fill 的"返回值"坑（2026-09-18 修复 LockNoWait 时确立）
+- `DbHelper.Fill(DataTable dt, ...)` 内部 catch 异常后把**它自己的局部** `dt` 置 null 返回，
+  调用方传入的 `dt` 不受影响 → **必须接收 `Fill` 的返回值并判空**，否则异常被静默吞掉
+  （表现为"空表 + 不报错"）。`DbUtil.LockNoWait` 已按此修复（null → 返回 -1）。
+- 源码里仍有 12 处沿用旧写法（丢弃返回值继续用传入 dt）：`SQLBuilder.cs:660`、
+  `DbUtil.Common.cs:356,377`、`DbUtil.Method.cs:162`、`DbUtil.ParentChildrens.cs:70,112,140,238,291`、
+  `BaseExceptionManager.Manual.cs:159`、`BaseManager.PreviousNext.cs:53`。成功路径等价，
+  失败路径静默。彻底修需改 `Fill` 语义（抛异常或加 `TryFill`），属行为变更，待评估。
 
 ## 用户约定
 - **禁止自动 `git commit` / `push` / 打 tag**：改动只在本机完成，汇报后等用户明确确认，

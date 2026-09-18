@@ -65,7 +65,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NewLife.Core" Version="11.18.2026.801" />
+		<PackageReference Include="NewLife.Core" Version="11.19.2026.901" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 

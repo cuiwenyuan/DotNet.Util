@@ -27,6 +27,11 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 - **`EnumUtil.ToDescription` / `GetEnumDescriptions` 改为本地化读取**：先取 `[EnumDescription]` 特性文本作默认值，
   再查语言包键 `Enum.<类型>.<成员>`；未登记词条回退特性原文。`Status.cs` / `AuditStatus.cs` 定义文件零改动。
 - 异常/状态/日志/控制台消息调用点改为走 `Msg` 层（共 190 余处），对外行为在默认语言下不变。
+- **依赖升级：`NewLife.Core` 11.18.2026.801 → 11.19.2026.901**（MIT，声明支持 .NET Framework 4.5 ~ .NET 10）。
+  - 验证：`DotNet.Util` 10 个 TFM（net46/47/48、net6.0~net10.0、netstandard2.0/2.1）逐档构建 **0 错误**；
+    其余 13 个项目同档构建 **0 错误**；net8.0 全量回归 **1225 全绿**、Db 集成 **288 全绿**、net48 集成 **105 通过 + 1 跳过**。
+  - ⚠️ 该版本**未修复** net48 测试宿主下 `object.ToDecimal()` / `object.ToDouble()` 导致的宿主崩溃
+    （见 Fixed 之后说明与 `Db-Test-Coverage-Plan.md` 缺陷 2）。
 
 ### Deprecated
 - Soon-to-be removed features.
@@ -36,6 +41,11 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 
 ### Fixed
 - Bug fixes.
+- **修复 `DbUtil.LockNoWait` 静默吞异常、恒返回 0**：`DbHelper.Fill` 内部捕获异常后会把
+  它自己的局部变量置 `null` 并返回（`DbHelper.Method.cs`），而 `LockNoWait` 丢弃了 `Fill` 的返回值、
+  继续使用自己 `new` 出来的空表，导致异常被吞掉、`catch` 分支的 `-1` 永远不可达。
+  现改为接收 `Fill` 返回值，`null` 即视为执行失败并返回 `-1`（Oracle 锁冲突场景语义正确）。
+  修复后 SQL Server（不支持 `FOR UPDATE NOWAIT`）上由"恒返回 0"变为"返回 -1"。
 
 ### Security
 - Vulnerability fixes.
