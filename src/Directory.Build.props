@@ -6,4 +6,12 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
+
+  <!-- CI（windows-latest 只装 .NET 10 SDK、无 VS）缺 .NET Framework 4.6.0 参考程序集
+       （runner 仅带 4.6.2+），导致 net46 目标无法编译、打包报“DLL not found”。
+       引入官方参考程序集包，让 net46/47/48 在无 VS 环境也能构建；
+       本地有 VS 参考程序集时不冲突（解析到同一程序集）。 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+  </ItemGroup>
 </Project>

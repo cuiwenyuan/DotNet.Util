@@ -28,8 +28,14 @@ jobs:
       - name: Restore
         run: dotnet restore src/DotNet.Util.sln
 
+      # 关键：先独立 build，让全部 TFM（含 net10.0 / net4x）按依赖顺序真正编译出来。
+      # 直接 `dotnet pack` 整个 solution 会在 net10.0 等 TFM 上因构建/TFM 顺序问题
+      # 编不出 DLL，最终只报“to be packed was not found on disk”而藏住真实编译错误。
+      - name: Build
+        run: dotnet build src/DotNet.Util.sln -c Release --no-restore
+
       - name: Pack
-        run: dotnet pack src/DotNet.Util.sln -c Release -o ./artifacts
+        run: dotnet pack src/DotNet.Util.sln -c Release --no-build -o ./artifacts
 
       - name: Push packages to NuGet.org
         env:
