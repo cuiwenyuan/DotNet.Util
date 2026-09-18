@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 using System.Web.Caching;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
@@ -19,7 +19,7 @@ namespace DotNet.Util
     /// </summary>
     public static class MemoryUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         //HttpRuntime.Cache可用于Web和WinForm
         static readonly Cache Cache = HttpRuntime.Cache;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
@@ -32,18 +32,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
-#if NET452_OR_GREATER
-            if (!string.IsNullOrEmpty(cacheKey) && Cache[cacheKey] == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+#if NET46_OR_GREATER
+            return !cacheKey.IsNullOrEmpty() && Cache[cacheKey] != null;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
-            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+            if (!cacheKey.IsNullOrEmpty() && Cache.TryGetValue(cacheKey, out obj))
             {
                 return true;
             }
@@ -61,11 +54,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static object Get(string cacheKey)
         {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             return Cache[cacheKey];
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
-            if (!string.IsNullOrEmpty(cacheKey) && Cache.TryGetValue(cacheKey, out obj))
+            if (!cacheKey.IsNullOrEmpty() && Cache.TryGetValue(cacheKey, out obj))
             {
                 return obj;
             }
@@ -95,13 +88,14 @@ namespace DotNet.Util
         public static void Set(string cacheKey, object cacheValue)
         {
             //向cacheKey对象插入项,使用此方法改写具有相同cacheKey的现有cacheKey项。
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             Cache.Insert(cacheKey, cacheValue);
-#elif NETSTANDARD2_0_OR_GREATER
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            //修复：原分支漏写 || NET5_0_OR_GREATER，导致 net5.0+（含 net8.0）下该方法体为空、Set 静默不生效
             Cache.Set(cacheKey, cacheValue);
 #endif
         }
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 设置当前应用程序指定CacheKey的Cache值
         /// </summary>
@@ -110,9 +104,8 @@ namespace DotNet.Util
         /// <param name="slidingExpiration">弹性过期</param>
         public static void Set(string cacheKey, object cacheValue, TimeSpan slidingExpiration)
         {
-            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Insert(cacheKey, cacheValue, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
+            //注意两种过期策略只能使用其中一种
+            Cache.Insert(cacheKey, cacheValue, null, Cache.NoAbsoluteExpiration, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
         }
 
         /// <summary>
@@ -123,9 +116,8 @@ namespace DotNet.Util
         /// <param name="slidingExpiration">弹性过期</param>
         public static void Set<T>(string cacheKey, T t, TimeSpan slidingExpiration)
         {
-            //注意两种过期策略只能使用其中一种，使用了NoAbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把NoAbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Insert(cacheKey, t, null, DateTime.MaxValue, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
+            //注意两种过期策略只能使用其中一种
+            Cache.Insert(cacheKey, t, null, Cache.NoAbsoluteExpiration, slidingExpiration, CacheItemPriority.High, CacheItemRemovedCallback);
         }
 
         /// <summary>
@@ -198,15 +190,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //注意两种过期策略只能使用其中一种，使用了AbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把AbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.MaxValue,
-                SlidingExpiration = slidingExpiration,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
-
+            Cache.Set(cacheKey, cacheValue, CreateSlidingOptions(slidingExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -218,14 +202,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set<T>(string cacheKey, T t, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //注意两种过期策略只能使用其中一种，使用了AbsoluteExpiration 参数就得把NoSlidingExpiration参数置为TimeSpan.Zero
-            //使用了NoSlidingExpiration参数就得把AbsoluteExpiration 参数置为 DateTime.MaxValues
-            Cache.Set(cacheKey, t, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.MaxValue,
-                SlidingExpiration = slidingExpiration,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            Cache.Set(cacheKey, t, CreateSlidingOptions(slidingExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -237,12 +214,7 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, DateTime absoluteExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = absoluteExpiration,
-                SlidingExpiration = TimeSpan.Zero,
-                Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            Cache.Set(cacheKey, cacheValue, CreateAbsoluteOptions(absoluteExpiration, cacheItemPriority));
         }
 
         /// <summary>
@@ -255,13 +227,43 @@ namespace DotNet.Util
         /// <param name="cacheItemPriority">优先级</param>
         public static void Set(string cacheKey, object cacheValue, DateTime absoluteExpiration, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority = CacheItemPriority.High)
         {
-            //将指定项添加到 Cache 对象，该对象具有依赖项、过期和优先级策略以及一个委托（可用于在从 Cache 移除插入项时通知应用程序）。如果 Cache 中已保存了具有相同 key 参数的项，则对此方法的调用将失败。若要使用相同的 key 参数改写现有的 Cache 项，请使用 Insert 方法.
-            Cache.Set(cacheKey, cacheValue, new MemoryCacheEntryOptions()
+            Cache.Set(cacheKey, cacheValue, CreateExpirationOptions(absoluteExpiration, slidingExpiration, cacheItemPriority));
+        }
+
+        private static MemoryCacheEntryOptions CreateSlidingOptions(TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority)
+        {
+            var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = absoluteExpiration,
-                SlidingExpiration = slidingExpiration,
                 Priority = cacheItemPriority
-            }.RegisterPostEvictionCallback(MyCallback));
+            };
+            if (slidingExpiration > TimeSpan.Zero)
+            {
+                options.SlidingExpiration = slidingExpiration;
+            }
+            return options.RegisterPostEvictionCallback(MyCallback);
+        }
+
+        private static MemoryCacheEntryOptions CreateAbsoluteOptions(DateTime absoluteExpiration, CacheItemPriority cacheItemPriority)
+        {
+            return CreateExpirationOptions(absoluteExpiration, TimeSpan.Zero, cacheItemPriority);
+        }
+
+        private static MemoryCacheEntryOptions CreateExpirationOptions(DateTime absoluteExpiration, TimeSpan slidingExpiration, CacheItemPriority cacheItemPriority)
+        {
+            var options = new MemoryCacheEntryOptions
+            {
+                Priority = cacheItemPriority
+            };
+            if (slidingExpiration > TimeSpan.Zero)
+            {
+                options.SlidingExpiration = slidingExpiration;
+            }
+            if (absoluteExpiration != DateTime.MaxValue && absoluteExpiration != DateTime.MinValue)
+            {
+                var kind = absoluteExpiration.Kind == DateTimeKind.Unspecified ? DateTimeKind.Local : absoluteExpiration.Kind;
+                options.AbsoluteExpiration = new DateTimeOffset(DateTime.SpecifyKind(absoluteExpiration, kind));
+            }
+            return options.RegisterPostEvictionCallback(MyCallback);
         }
 
         /// <summary>
@@ -307,24 +309,14 @@ namespace DotNet.Util
         /// </summary>
         public static void RemoveAll()
         {
-            var keys = new List<string>();
-#if NET452_OR_GREATER
-            var iDictionaryEnumerator = Cache.GetEnumerator();
-            while (iDictionaryEnumerator.MoveNext())
+#if NET46_OR_GREATER
+            var keys = GetAllKeys();
+            foreach (var key in keys)
             {
-                Cache.Remove(Convert.ToString(iDictionaryEnumerator.Key));
+                Cache.Remove(key);
             }
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
-            var cacheItems = entries as IDictionary;
-            if (cacheItems != null)
-            {
-                foreach (DictionaryEntry cacheItem in cacheItems)
-                {
-                    keys.Add(cacheItem.Key.ToString());
-                }
-            }
+            Cache.Compact(1.0);
 #endif
         }
         /// <summary>
@@ -360,19 +352,17 @@ namespace DotNet.Util
         public static List<string> GetAllKeys()
         {
             var keys = new List<string>();
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             var iDictionaryEnumerator = Cache.GetEnumerator();
             while (iDictionaryEnumerator.MoveNext())
             {
                 keys.Add(Convert.ToString(iDictionaryEnumerator.Key));
             }
-#elif NETSTANDARD2_0_OR_GREATER
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            var entries = Cache.GetType().GetField("_entries", flags).GetValue(Cache);
-            var cacheItems = entries as IDictionary;
-            if (cacheItems != null)
+#elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            var entries = GetMemoryCacheEntries();
+            if (entries != null)
             {
-                foreach (DictionaryEntry cacheItem in cacheItems)
+                foreach (DictionaryEntry cacheItem in entries)
                 {
                     keys.Add(cacheItem.Key.ToString());
                 }
@@ -380,5 +370,28 @@ namespace DotNet.Util
 #endif
             return keys;
         }
+
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+        private static IDictionary GetMemoryCacheEntries()
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var cacheType = Cache.GetType();
+            var entriesField = cacheType.GetField("_entries", flags);
+            if (entriesField != null)
+            {
+                return entriesField.GetValue(Cache) as IDictionary;
+            }
+            var coherentStateField = cacheType.GetField("_coherentState", flags);
+            var coherentState = coherentStateField?.GetValue(Cache);
+            if (coherentState == null)
+            {
+                return null;
+            }
+            var coherentType = coherentState.GetType();
+            var coherentEntries = coherentType.GetField("_entries", flags)?.GetValue(coherentState)
+                                  ?? coherentType.GetProperty("EntriesCollection", flags)?.GetValue(coherentState);
+            return coherentEntries as IDictionary;
+        }
+#endif
     }
 }

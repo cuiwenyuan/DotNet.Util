@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -13,9 +13,9 @@ using DotNet.Util;
 /// <remarks>
 /// BasePage
 /// 基础网页类
-/// 
+///
 /// 修改记录
-/// 
+///
 /// 版本：4.1 2017.05.09    Troy Cui    完善代码。
 /// 版本：2.6 2011.06.19    zgl         修改dbHelper，_userCenterDbHelper的属性为protected->private
 ///                                     增加protected  string  GetSequence(string tableName) 根据表名，取得序列号
@@ -25,12 +25,12 @@ using DotNet.Util;
 ///	版本：2.2 2007.12.09    JiRiGaLa    获得页面权限的 GetPermission 函数改进。
 ///	版本：2.1 2007.12.08    JiRiGaLa    单点登录功能完善。
 ///	版本：2.0 2006.02.02    JiRiGaLa    页面注释都修改好。
-///	
+///
 /// 版本：4.1
-/// <author>  
+/// <author>
 ///		<name>Troy.Cui</name>
 ///		<date>2017.05.09</date>
-/// </author> 
+/// </author>
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
@@ -111,7 +111,7 @@ public partial class BasePage : System.Web.UI.Page
         // string applicationPath = HttpContext.Current.Request.ApplicationPath;
         // ApplicationPath	"/DotNet.WebForm"	string
         // 这个是在调试环境里的优化功能
-        if (!string.IsNullOrEmpty(url))
+        if (!url.IsNullOrEmpty())
         {
             url = url.ToLower();
             if (!(url == "leftmenu.aspx"
@@ -148,16 +148,16 @@ public partial class BasePage : System.Web.UI.Page
     {
         if (Page.Request["OpenId"] != null)
         {
-            // 读取参数
+            // 获取参数
             OpenId = Page.Request["OpenId"];
             // 看看是远程的还是本地的登录方式
             if (ConfigurationManager.AppSettings["SSOVerify"] != null)
             {
-                // 通过远程方式进行登录                
+                // 通过远程方式进行登录
                 // string url = "http://localhost/GetSignin.ashx?OpenId=" + UserInfo.OpenId;
-                var url = ConfigurationManager.AppSettings["SSOVerify"] + "?OpenId=" + UserInfo.OpenId;
+                var url = ConfigurationManager.AppSettings["SSOVerify"] + "?OpenId=" + OpenId;
                 var jsonUserInfo = RequestUtil.GetResponse(url);
-                if (!string.IsNullOrEmpty(jsonUserInfo))
+                if (!jsonUserInfo.IsNullOrEmpty())
                 {
                     var userInfoJ = JsonUtil.JsonToObject<BaseUserInfo>(jsonUserInfo);
                     Page.Response.Write(userInfoJ.UserName);
@@ -167,9 +167,9 @@ public partial class BasePage : System.Web.UI.Page
             {
                 // 通过本地登录方式进行登录
                 // 若没登录或者登录的标识不一致，需要重新登录
-                if (!WebUtil.UserIsLogon() || !UserInfo.OpenId.Equals(OpenId))
+                if (!WebUtil.UserIsLogon() || (UserInfo != null && !UserInfo.OpenId.Equals(OpenId)))
                 {
-                    UserInfo = new CurrentUserInfo(WebUtil.LogonByOpenId(OpenId).UserInfo);
+                    UserInfo = new CurrentUserInfo(WebUtil.LogonByOpenId(OpenId)?.UserInfo);
                 }
             }
         }

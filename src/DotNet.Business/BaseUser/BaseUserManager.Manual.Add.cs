@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -35,7 +35,7 @@ namespace DotNet.Business
             // 检测成功，可以添加用户
             Status = Status.OkAdd;
             StatusCode = Status.OkAdd.ToString();
-            if (!string.IsNullOrEmpty(entity.UserName)
+            if (!(entity.UserName).IsNullOrEmpty()
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldUserName, entity.UserName)
                 , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
             {
@@ -46,7 +46,7 @@ namespace DotNet.Business
             else
             {
                 // 检查编号是否重复
-                if (checkCodeExist && !string.IsNullOrEmpty(entity.Code)
+                if (checkCodeExist && !(entity.Code).IsNullOrEmpty()
                     && Exists(new KeyValuePair<string, object>(BaseUserEntity.FieldCode, entity.Code)
                     , new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0)))
                 {
@@ -68,7 +68,7 @@ namespace DotNet.Business
                         Status = Status.ErrorNameExist;
                         StatusCode = Status.ErrorNameExist.ToString();
                     }
-                    if (!string.IsNullOrEmpty(entity.Code))
+                    if (!(entity.Code).IsNullOrEmpty())
                     {
                         parameters = new List<KeyValuePair<string, object>>
                         {
@@ -117,12 +117,12 @@ namespace DotNet.Business
                 userLogonEntity.CheckIpAddress = BaseSystemInfo.CheckIpAddress ? 1 : 0;
                 //此处设置密码强度级别
                 userLogonEntity.PasswordStrength = SecretUtil.GetUserPassWordRate(userLogonEntity.UserPassword);
-                //密码盐
-                userLogonEntity.Salt = RandomUtil.GetString(20);
+                //密码盐（R9-1：新格式盐内嵌于哈希字符串，Salt 列置空）
+                userLogonEntity.Salt = string.Empty;
                 // 若是系统需要用加密的密码，这里需要加密密码。
-                if (BaseSystemInfo.ServerEncryptPassword)
+                if (BaseSystemInfo.ServerEncryptPassword && !userLogonEntity.UserPassword.IsNullOrEmpty())
                 {
-                    userLogonEntity.UserPassword = EncryptUserPassword(userLogonEntity.UserPassword, userLogonEntity.Salt);
+                    userLogonEntity.UserPassword = SecretUtil.HashPassword(userLogonEntity.UserPassword);
                     // 安全通讯密码、交易密码也生成好
                     // userLogonEntity.UserPassword = this.EncryptUserPassword(entity.CommunicationPassword);
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewLife.Caching;
@@ -132,11 +132,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveAll()
         {
-            var keys = redisClient.Keys;
-            foreach (var key in keys)
-            {
-                redisClient.Remove(key);
-            }
+            //修复：Clear() 一次 FLUSHDB 清空当前库，避免 Keys 全量枚举阻塞 Redis
+            redisClient.Clear();
         }
 
         /// <summary>
@@ -146,13 +143,27 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void RemoveByRegex(string pattern)
         {
-            if (!string.IsNullOrWhiteSpace(pattern))
+            if (string.IsNullOrWhiteSpace(pattern))
             {
-                var keys = redisClient.Keys;
-                foreach (var key in keys)
+                return;
+            }
+            var keys = redisClient.Keys;
+            if (keys == null)
+            {
+                return;
+            }
+            //修复：先收集匹配的键，再批量 Remove(string[]) 一次删除，避免逐 key 多次往返
+            var matchedKeys = new List<string>();
+            foreach (var key in keys)
+            {
+                if (key != null && System.Text.RegularExpressions.Regex.IsMatch(key, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
                 {
-                    redisClient.Remove(key);
+                    matchedKeys.Add(key);
                 }
+            }
+            if (matchedKeys.Count > 0)
+            {
+                redisClient.Remove(matchedKeys.ToArray());
             }
         }
 
@@ -162,7 +173,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string[] GetAllKeys()
         {
-            return redisClient.Keys.ToArray<string>();
+            //修复：Keys 可能为 null，避免 NRE
+            return redisClient.Keys?.ToArray() ?? new string[0];
         }
 
         #endregion

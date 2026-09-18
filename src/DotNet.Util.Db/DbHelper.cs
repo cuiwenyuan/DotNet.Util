@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -15,16 +15,16 @@ namespace DotNet.Util
     /// <summary>
     /// DbHelper
     /// 数据库访问层基础类。
-    /// 
+    ///
     /// 修改记录
-    ///     
+    ///
     ///     2013.02.04 版本：3.3 JiRiGaLa 解决并发问题。
     ///     2011.02.20 版本：3.2 JiRiGaLa 重新排版代码。
     ///     2011.01.29 版本：3.1 JiRiGaLa 实现IDisposable接口。
     ///     2010.06.13 版本：3.0 JiRiGaLa 改进为支持静态方法，不用数据库Open、Close的方式，AutoOpenClose开关。
     ///		2010.03.14 版本：2.0 JiRiGaLa 无法彻底释放、并发时出现异常问题解决。
     ///		2009.11.25 版本：1.0 JiRiGaLa 改进ConnectionString。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2011.02.20</date>
@@ -136,7 +136,7 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public virtual string SqlSafe(string value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 value = value.Replace("'", "''");
             }
@@ -168,7 +168,7 @@ namespace DotNet.Util
             {
                 result += t + PlusSign();
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(0, result.Length - 3);
             }
@@ -187,12 +187,12 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection Open()
         {
-            if (string.IsNullOrEmpty(ConnectionString))
+            if (ConnectionString.IsNullOrEmpty())
             {
                 BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
                 // 读取不到，就用用户中心数据库
-                if (string.IsNullOrEmpty(BaseSystemInfo.BusinessDbConnection))
+                if ((BaseSystemInfo.BusinessDbConnection).IsNullOrEmpty())
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
                 }
@@ -216,6 +216,23 @@ namespace DotNet.Util
         {
             // 若是空的话才打开，不可以，每次应该打开新的数据库连接才对，这样才能保证不是一个数据库连接上执行的
             ConnectionString = connectionString;
+            //修复：重复调用 Open 时先释放旧的连接，避免连接泄漏/连接池耗尽
+            if (_dbConnection != null)
+            {
+                try
+                {
+                    if (_dbConnection.State != ConnectionState.Closed)
+                    {
+                        _dbConnection.Close();
+                    }
+                    _dbConnection.Dispose();
+                }
+                catch (Exception e)
+                {
+                    LogUtil.WriteException(e, "close old connection error");
+                }
+                _dbConnection = null;
+            }
             _dbConnection = GetInstance().CreateConnection();
             if (_dbConnection != null)
             {
@@ -227,6 +244,9 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, "open connection error");
+                    _dbConnection.Dispose();
+                    _dbConnection = null;
+                    throw;
                 }
                 if (_dbConnection.State == ConnectionState.Open)
                 {
@@ -257,7 +277,7 @@ namespace DotNet.Util
         /// <returns>数据库连接</returns>
         public virtual IDbConnection GetDbConnection(string connectionString)
         {
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!connectionString.IsNullOrEmpty())
             {
                 Open(connectionString);
             }
@@ -319,12 +339,17 @@ namespace DotNet.Util
         {
             if (InTransaction)
             {
-                // 事务已经完成了，一定要更新标志信息
-                InTransaction = false;
-                MustCloseConnection = true;
-                _dbTransaction.Commit();
-                //释放掉 Troy.Cui 2018.07.02
-                _dbTransaction.Dispose();
+                try
+                {
+                    _dbTransaction.Commit();
+                }
+                finally
+                {
+                    InTransaction = false;
+                    MustCloseConnection = true;
+                    _dbTransaction?.Dispose();
+                    _dbTransaction = null;
+                }
             }
         }
         #endregion
@@ -337,10 +362,17 @@ namespace DotNet.Util
         {
             if (InTransaction)
             {
-                InTransaction = false;
-                _dbTransaction.Rollback();
-                //释放掉 Troy.Cui 2018.07.02
-                _dbTransaction.Dispose();
+                try
+                {
+                    _dbTransaction.Rollback();
+                }
+                finally
+                {
+                    InTransaction = false;
+                    MustCloseConnection = true;
+                    _dbTransaction?.Dispose();
+                    _dbTransaction = null;
+                }
             }
         }
         #endregion
@@ -351,18 +383,16 @@ namespace DotNet.Util
         /// </summary>
         public virtual void Close()
         {
+#if (DEBUG)
             if (_dbConnection != null)
             {
-                _dbConnection.Close();
-                _dbConnection.Dispose();
-#if (DEBUG)
-                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
-#endif
+                Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + _dbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
             }
+#endif
             //Troy Cui 2018.01.02启用，解决应用程序池的问题
             Dispose();
         }
-        #endregion        
+        #endregion
 
         #region public virtual void Dispose() 内存回收
         /// <summary>
@@ -394,19 +424,19 @@ namespace DotNet.Util
                 _dbTransaction.Dispose();
                 _dbTransaction = null;
             }
-            // 关闭数据库连接
-            if (_dbConnection != null)
+            // 关闭数据库连接（事务进行中不关闭，交由事务提交/回滚处理，避免事务状态不一致）
+            if (_dbConnection != null && !InTransaction)
             {
 #if (DEBUG)
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)
                 {
-                    _dbConnection.Close();                    
+                    _dbConnection.Close();
                 }
                 _dbConnection.Dispose();
                 _dbConnection = null;
-            }            
+            }
         }
         #endregion
 
@@ -425,6 +455,6 @@ namespace DotNet.Util
             // 各自数据集需要自行覆盖实现此处逻辑
             return result;
         }
-        #endregion        
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 
@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <returns></returns>
         public virtual DataTable GetDataTableLatest(string condition, string tableName = null, int rows = 1, string sortField = BaseUtil.FieldId)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (tableName.IsNullOrEmpty())
             {
                 tableName = CurrentTableName;
             }
@@ -46,10 +46,10 @@ namespace DotNet.Business
             switch (DbHelper.CurrentDbType)
             {
                 case CurrentDbType.Access:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                 case CurrentDbType.SqlServer:
                     sb.Append("SELECT TOP " + rows + " * FROM " + tableName);
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }
@@ -57,7 +57,7 @@ namespace DotNet.Business
                     break;
                 case CurrentDbType.Oracle:
                     sb.Append("SELECT * FROM " + tableName);
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }
@@ -65,7 +65,7 @@ namespace DotNet.Business
                     break;
                 case CurrentDbType.MySql:
                     sb.Append("SELECT * FROM " + tableName);
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }

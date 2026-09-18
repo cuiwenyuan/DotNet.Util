@@ -1,21 +1,23 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotNet.Util
 {
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 这个类可是修改了很多次啊，已经比较经典了，随着专业的提升，人也会不断提高，技术也会越来越精湛。
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2011.08.09 版本：4.9    张广梁   修改 public static bool IsModifed(DataRow dr, string oldUpdateUserId, DateTime? oldUpdateTime)的逻辑
     ///		2010.07.08 版本：4.8	JiRiGaLa 增加 Insert 方法。
     ///		2009.01.15 版本：4.7	JiRiGaLa 将方法修改为 static 静态的，提高运行速度。
@@ -40,17 +42,17 @@ namespace DotNet.Util
     ///		2006.02.05 版本：1.1	JiRiGaLa 重新调整主键的规范化。
     ///		2005.12.30 版本：1.0	JiRiGaLa 数据库连接方式都进行改进
     ///		2005.09.04 版本：1.0	JiRiGaLa 执行数据库脚本
-    ///		2005.08.19 版本：1.0	JiRiGaLa 整理一下编排	
+    ///		2005.08.19 版本：1.0	JiRiGaLa 整理一下编排
     ///		2005.07.10 版本：1.0	JiRiGaLa 修改了程序，格式以及理念都有些提高，应该是一次大突破
     ///		2004.11.12 版本：1.0	JiRiGaLa 添加了最新的GetParent、GetChildren、GetParentChildren 方法
     ///		2004.07.21 版本：1.0	JiRiGaLa UpdateRecord、Delete、SetProperty、GetProperty、ExecuteNonQuery、GetRecord 方法进行改进。
     ///								还删除一些重复的主键，提取了最优化的方法，有时候写的主键真的是垃圾，可能自己也没有注意时就写出了垃圾。
     ///								GetRepeat、GetDayOfWeek、ExecuteProcedure、GetFromProcedure 方法进行改进，基本上把所有的方法都重新写了一遍。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2009.01.15</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -63,7 +65,7 @@ namespace DotNet.Util
         public static string ToTableName(this string tableName)
         {
             var result = tableName;
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 if (!result.StartsWith("(") && !result.EndsWith(")") && result.IndexOf("SELECT", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
@@ -82,8 +84,72 @@ namespace DotNet.Util
         /// <returns>安全的参数</returns>
         public static string SqlSafe(string value)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
             value = value.Replace("'", "''");
             // value = value.Replace("%", "'%");
+            return value;
+        }
+        #endregion
+
+        #region public static string GetSafeSortDirection(string sortDirection) 校验排序方向
+        /// <summary>
+        /// 仅允许 ASC / DESC，其他值回退为 DESC。
+        /// </summary>
+        /// <param name="sortDirection">排序方向</param>
+        /// <returns>安全的排序方向</returns>
+        public static string GetSafeSortDirection(string sortDirection)
+        {
+            if (sortDirection.IsNullOrEmpty())
+            {
+                return "DESC";
+            }
+            var value = sortDirection.Trim();
+            if (value.Equals("ASC", StringComparison.OrdinalIgnoreCase))
+            {
+                return "ASC";
+            }
+            if (value.Equals("DESC", StringComparison.OrdinalIgnoreCase))
+            {
+                return "DESC";
+            }
+            return "DESC";
+        }
+        #endregion
+
+        #region public static string GetSafeSortExpression(string sortExpression, string defaultExpression = null) 校验排序字段
+        /// <summary>
+        /// 校验排序字段，阻止将任意 SQL 拼进 ORDER BY。
+        /// </summary>
+        /// <param name="sortExpression">排序字段</param>
+        /// <param name="defaultExpression">非法时的回退字段</param>
+        /// <returns>安全的排序字段</returns>
+        public static string GetSafeSortExpression(string sortExpression, string defaultExpression = null)
+        {
+            var fallback = defaultExpression.IsNullOrEmpty() ? BaseUtil.FieldCreateTime : defaultExpression;
+            if (sortExpression.IsNullOrEmpty())
+            {
+                return fallback;
+            }
+            var value = sortExpression.Trim();
+            if (value.IndexOf(';') >= 0
+                || value.IndexOf("--", StringComparison.Ordinal) >= 0
+                || value.IndexOf("/*", StringComparison.Ordinal) >= 0
+                || value.IndexOf("*/", StringComparison.Ordinal) >= 0
+                || value.IndexOf('\'') >= 0)
+            {
+                return fallback;
+            }
+            for (var i = 0; i < value.Length; i++)
+            {
+                var ch = value[i];
+                if (!(char.IsLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == ',' || ch == ' ' || ch == '[' || ch == ']'))
+                {
+                    return fallback;
+                }
+            }
             return value;
         }
         #endregion
@@ -103,48 +169,42 @@ namespace DotNet.Util
             {
                 return result;
             }
-            var subSqlQuery = string.Empty;
+
             foreach (var parameter in parameters)
             {
-                if (!string.IsNullOrEmpty(parameter.Key))
+                if (parameter.Key.IsNullOrEmpty())
                 {
-                    //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
-                    if (parameter.Value == null)
+                    continue;
+                }
+
+                if (parameter.Value == null)
+                {
+                    result += parameter.Key + " IS NULL" + relation;
+                    continue;
+                }
+
+                if (parameter.Value is IEnumerable enumerable && !(parameter.Value is string))
+                {
+                    var values = enumerable.Cast<object>().Where(t => t != null).ToList();
+                    if (values.Count > 0)
                     {
-                        subSqlQuery = "" + parameter.Key + " IS NULL";
+                        var safeValues = values
+                            .Select(t => SqlSafe(Convert.ToString(t)))
+                            .Select(t => "'" + t + "'")
+                            .ToList();
+                        result += parameter.Key + " IN (" + string.Join(",", safeValues) + ")" + relation;
                     }
                     else
                     {
-                        if (parameter.Value is Array)
-                        {
-                            if (((Array)parameter.Value).Length > 0)
-                            {
-                                subSqlQuery = "" + parameter.Key + " IN (" + StringUtil.ArrayToList((string[])parameter.Value, "'") + ")";
-                            }
-                            else
-                            {
-                                subSqlQuery = "" + parameter.Key + " IS NULL";
-                            }
-                        }
-                        else
-                        {
-                            subSqlQuery = "" + parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + "";
-                            //if ((values[i].ToString().IndexOf('[') >= 0) || (values[i].ToString().IndexOf(']') >= 0))
-                            //{
-                            //    values[i] = values[i].ToString().Replace("[", "/[");
-                            //    values[i] = values[i].ToString().Replace("]", "/]");
-                            //    values[i] = SqlSafe(values[i].ToString());
-                            //    subSqlQuery = " (" + names[i] + " LIKE '" + values[i] + "' ESCAPE '/') ";
-                            //    values[i] = null;
-                            //    subSqlQuery = " (" + names[i] + " LIKE ? ESCAPE '/') ";
-                            //}
-                        }
-                        // 这里操作，就会有些重复了，不应该进行处理
-                        // values[i] = this.SqlSafe(values[i].ToString());
+                        result += parameter.Key + " IS NULL" + relation;
                     }
-                    result += subSqlQuery + relation;
+                    continue;
                 }
+
+                result += parameter.Key + " = " + dbHelper.GetParameter(parameter.Key) + relation;
+
             }
+
             if (result.Length > 0)
             {
                 result = result.Substring(0, result.Length - relation.Length);
@@ -156,7 +216,19 @@ namespace DotNet.Util
         #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
         /// <summary>
         /// 获得条件语句
-        /// 20110523 吉日嘎拉，改进空数组 
+        /// 20110523 吉日嘎拉，改进空数组
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="names">字段名</param>
+        /// <param name="values">字段值</param>
+        /// <param name="relation">逻辑关系</param>
+        /// <returns>字符串</returns>
+        #endregion
+
+        #region public static string GetWhereString(this IDbHelper dbHelper, string[] names, ref Object[] values, string relation) 获得条件语句
+        /// <summary>
+        /// 获得条件语句
+        /// 20110523 吉日嘎拉，改进空数组
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="names">字段名</param>
@@ -171,7 +243,7 @@ namespace DotNet.Util
             {
                 if ((names[i] != null) && (names[i].Length > 0))
                 {
-                    //if (values[i] == null || string.IsNullOrEmpty(values[i].ToString()))
+                    //if (values[i] == null || (values[i].ToString()).IsNullOrEmpty())
                     if (values[i] == null)
                     {
                         subSqlQuery = "" + names[i] + " IS NULL";
@@ -182,9 +254,15 @@ namespace DotNet.Util
                     {
                         if (values[i] is Array)
                         {
-                            if (((Array)values[i]).Length > 0)
+                            //修复：不再强转 string[]（其他数组类型会抛 InvalidCastException），
+                            //并对每个值转义，防止 SQL 注入
+                            var arrayValues = ((Array)values[i]).Cast<object>()
+                                .Where(t => t != null)
+                                .Select(t => "'" + SqlSafe(Convert.ToString(t)) + "'")
+                                .ToList();
+                            if (arrayValues.Count > 0)
                             {
-                                subSqlQuery = "" + names[i] + " IN (" + StringUtil.ArrayToList((string[])values[i], "'") + ")";
+                                subSqlQuery = "" + names[i] + " IN (" + string.Join(",", arrayValues) + ")";
                             }
                             else
                             {

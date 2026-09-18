@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ namespace DotNet.Business
         public bool ApplicationRestart()
         {
             var result = false;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             //发送邮件，写入数据库
             var entity = new BaseMessageQueueEntity
             {
@@ -49,7 +49,7 @@ namespace DotNet.Business
                        + "<br>ApplicationID：" + BaseSystemInfo.ApplicationId + "<br>ApplicationPhysicalPath：" + System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath + "<br>ApplicationVirtualPath：" + System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath + "<br><br>" + Environment.NewLine + BaseSystemInfo.SoftFullName + "<br>自动发送" + "<br>" + DateTime.Now,
                 SortCode = 1
             };
-            if (!string.IsNullOrEmpty(Add(entity)))
+            if (!Add(entity).IsNullOrEmpty())
             {
                 result = true;
             }

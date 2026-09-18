@@ -1,11 +1,14 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+#if !NET46_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 
 namespace DotNet.Business
 {
@@ -15,15 +18,15 @@ namespace DotNet.Business
     /// <summary>
     /// BaseExceptionManager
     /// 异常管理
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2016.09.23 版本：1.0 Troy.Cui	新增。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.09.23</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseExceptionManager : BaseManager
     {
@@ -39,7 +42,6 @@ namespace DotNet.Business
         {
             var entity = new BaseExceptionEntity
             {
-
                 //出错源地址，暂时放Title中
                 Title = url,
                 //异常消息
@@ -53,12 +55,6 @@ namespace DotNet.Business
                 //异常堆栈
                 FormattedMessage = ex.StackTrace
             };
-            if (UserInfo != null)
-            {
-                entity.IpAddress = UserInfo.IpAddress;
-                entity.CreateUserId = UserInfo.UserId;
-                entity.CreateBy = UserInfo.RealName;
-            }
 
             return AddEntity(entity);
         }
@@ -91,7 +87,12 @@ namespace DotNet.Business
                 return result;
             }
             // Windows系统异常中
+            //修复：EventLog 仅 Windows 支持，非 Windows 平台（net6.0+ on Linux）调用会抛 PlatformNotSupportedException
+#if NET46_OR_GREATER
             if (BaseSystemInfo.EventLog)
+#else
+            if (BaseSystemInfo.EventLog && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
             {
                 if (!EventLog.SourceExists(BaseSystemInfo.SoftName))
                 {
@@ -124,27 +125,38 @@ namespace DotNet.Business
             sb.Append("SELECT * FROM " + BaseExceptionEntity.CurrentTableName + " WHERE 1 = 1");
 
             var dbParameters = new List<IDbDataParameter>();
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
-                sb.Append(string.Format(" AND ({0} LIKE {1}", BaseExceptionEntity.FieldIpAddress, DbHelper.GetParameter(BaseExceptionEntity.FieldIpAddress)));
-                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldFormattedMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldFormattedMessage)));
-                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldProcessName, DbHelper.GetParameter(BaseExceptionEntity.FieldProcessName)));
-                sb.Append(string.Format(" OR {0} LIKE {1}", BaseExceptionEntity.FieldMachineName, DbHelper.GetParameter(BaseExceptionEntity.FieldMachineName)));
-                sb.Append(string.Format(" OR {0} LIKE {1})", BaseExceptionEntity.FieldMessage, DbHelper.GetParameter(BaseExceptionEntity.FieldMessage)));
+                // prepare search key with wildcards
                 searchKey = searchKey.Trim();
                 if (searchKey.IndexOf("%") < 0)
                 {
                     searchKey = string.Format("%{0}%", searchKey);
                 }
-                dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldIpAddress, searchKey));
-                dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldFormattedMessage, searchKey));
-                dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldProcessName, searchKey));
-                dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMachineName, searchKey));
-                dbParameters.Add(DbHelper.MakeParameter(BaseExceptionEntity.FieldMessage, searchKey));
+
+                // use explicit parameter names to avoid accidental collisions
+                var pIp = BaseExceptionEntity.FieldIpAddress + "_search";
+                var pFormatted = BaseExceptionEntity.FieldFormattedMessage + "_search";
+                var pProcess = BaseExceptionEntity.FieldProcessName + "_search";
+                var pMachine = BaseExceptionEntity.FieldMachineName + "_search";
+                var pMessage = BaseExceptionEntity.FieldMessage + "_search";
+
+                sb.Append(" AND (" + BaseExceptionEntity.FieldIpAddress + " LIKE " + DbHelper.GetParameter(pIp));
+                sb.Append(" OR " + BaseExceptionEntity.FieldFormattedMessage + " LIKE " + DbHelper.GetParameter(pFormatted));
+                sb.Append(" OR " + BaseExceptionEntity.FieldProcessName + " LIKE " + DbHelper.GetParameter(pProcess));
+                sb.Append(" OR " + BaseExceptionEntity.FieldMachineName + " LIKE " + DbHelper.GetParameter(pMachine));
+                sb.Append(" OR " + BaseExceptionEntity.FieldMessage + " LIKE " + DbHelper.GetParameter(pMessage) + ")");
+
+                dbParameters.Add(DbHelper.MakeParameter(pIp, searchKey));
+                dbParameters.Add(DbHelper.MakeParameter(pFormatted, searchKey));
+                dbParameters.Add(DbHelper.MakeParameter(pProcess, searchKey));
+                dbParameters.Add(DbHelper.MakeParameter(pMachine, searchKey));
+                dbParameters.Add(DbHelper.MakeParameter(pMessage, searchKey));
             }
+
             var dt = new DataTable(BaseExceptionEntity.CurrentTableName);
             sb.Replace(" 1 = 1 AND ", " ");
-            DbHelper.Fill(dt, sb.Return(), dbParameters.ToArray());
+            DbHelper.Fill(dt, sb.Return(), dbParameters.Count > 0 ? dbParameters.ToArray() : null);
             return dt;
         }
         #endregion
@@ -167,17 +179,17 @@ namespace DotNet.Business
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             ////子系统
-            //if (!string.IsNullOrEmpty(processId))
+            //if (!processId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.field + " = N'" + systemCode + "'");
             //}
             ////用户主键
-            //if (!string.IsNullOrEmpty(userId))
+            //if (!userId.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserId + " = N'" + userId + "'");
             //}
             ////用户名
-            //if (!string.IsNullOrEmpty(userName))
+            //if (!userName.IsNullOrEmpty())
             //{
             //    sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldUserName + " = N'" + userName + "'");
             //}
@@ -191,7 +203,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseExceptionEntity.CurrentTableName + "." + BaseExceptionEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseExceptionEntity.FieldMessage + " LIKE N'%" + searchKey + "%' OR " + BaseExceptionEntity.FieldId + " LIKE N'%" + searchKey + "%')");

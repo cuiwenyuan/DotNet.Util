@@ -1,5 +1,5 @@
-﻿using System;
-#if NET452_OR_GREATER
+using System;
+#if NET46_OR_GREATER
 using System.Web;
 #endif
 using System.Drawing;
@@ -14,7 +14,7 @@ namespace DotNet.Util
     /// </summary>
     public class WatermarkUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 图片水印来自DTcms
         /// </summary>

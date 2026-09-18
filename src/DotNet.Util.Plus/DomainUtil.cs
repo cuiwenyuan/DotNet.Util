@@ -22,7 +22,7 @@ namespace DotNet.Util
         {
             try
             {
-                if (string.IsNullOrEmpty(domainUserName))
+                if (domainUserName.IsNullOrEmpty())
                 {
                     return null;
                 }

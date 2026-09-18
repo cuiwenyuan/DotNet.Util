@@ -1,8 +1,9 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -12,15 +13,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2012.02.05 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2012.02.05</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -57,7 +58,7 @@ namespace DotNet.Util
                     sb.Append(" WHERE (SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + ")) = " + fieldCode + ") ");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -100,7 +101,7 @@ namespace DotNet.Util
                 sb.Append(" FROM " + tableName
                          + "    START WITH " + fieldParentId + " = " + dbHelper.GetParameter(fieldId)
                          + "  CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
-                if (!string.IsNullOrEmpty(order))
+                if (!order.IsNullOrEmpty())
                 {
                     sb.Append(" ORDER BY " + order);
                 }
@@ -116,7 +117,7 @@ namespace DotNet.Util
                 {
                     sb.Append(" WITH Tree AS (SELECT " + fieldId
                              + " FROM " + tableName
-                             + "       WHERE " + fieldParentId + " IN ('" + id + "') "
+                             + "       WHERE " + fieldParentId + " IN ('" + SqlSafe(id) + "') "
                              + "       UNION ALL "
                              + "      SELECT ResourceTree." + fieldId
                              + " FROM " + tableName + " AS ResourceTree INNER JOIN "
@@ -128,7 +129,7 @@ namespace DotNet.Util
                 {
                     sb.Append(" WITH Tree AS (SELECT * "
                              + " FROM " + tableName
-                             + "       WHERE Id IN ('" + id + "') "
+                             + "       WHERE Id IN ('" + SqlSafe(id) + "') "
                              + "       UNION ALL "
                              + "      SELECT ResourceTree.* "
                              + " FROM " + tableName + " AS ResourceTree INNER JOIN "
@@ -165,12 +166,32 @@ namespace DotNet.Util
             {
                 sb.Append("SELECT * ");
             }
-            sb.Append(" FROM " + tableName
-                     + " START WITH " + fieldId + " IN (" + string.Join(",", ids) + ")"
-                     + " CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
-            if (!string.IsNullOrEmpty(order))
+            var parameters = new List<KeyValuePair<string, object>>();
+            var placeholders = new List<string>();
+            if (ids != null)
             {
-                sb.Append(" ORDER BY " + order);
+                for (var i = 0; i < ids.Length; i++)
+                {
+                    if (ids[i].IsNullOrEmpty())
+                    {
+                        continue;
+                    }
+                    var parameterName = "Id" + i;
+                    placeholders.Add(dbHelper.GetParameter(parameterName));
+                    parameters.Add(new KeyValuePair<string, object>(parameterName, ids[i]));
+                }
+            }
+            var inClause = placeholders.Count > 0 ? string.Join(",", placeholders) : "NULL";
+            sb.Append(" FROM " + tableName
+                     + " START WITH " + fieldId + " IN (" + inClause + ")"
+                     + " CONNECT BY PRIOR " + fieldId + " = " + fieldParentId);
+            if (!order.IsNullOrEmpty())
+            {
+                sb.Append(" ORDER BY " + GetSafeSortExpression(order));
+            }
+            if (parameters.Count > 0)
+            {
+                return dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
             }
             return dbHelper.Fill(sb.Return());
         }
@@ -203,13 +224,13 @@ namespace DotNet.Util
             {
                 case CurrentDbType.Access:
                 case CurrentDbType.SqlServer:
-                    sb.Append(" WHERE (LEFT(" + fieldCode + ", LEN('" + code + "')) = '" + code + "') ");
+                    sb.Append(" WHERE (LEFT(" + fieldCode + ", LEN('" + SqlSafe(code) + "')) = '" + SqlSafe(code) + "') ");
                     break;
                 case CurrentDbType.Oracle:
-                    sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH('" + code + "')) = '" + code + "') ");
+                    sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH('" + SqlSafe(code) + "')) = '" + SqlSafe(code) + "') ");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -251,10 +272,10 @@ namespace DotNet.Util
                     break;
                 case CurrentDbType.Oracle:
                     sb.Append(" WHERE (SUBSTR(" + fieldCode + ", 1, LENGTH(" + dbHelper.GetParameter(fieldCode) + ")) = " + dbHelper.GetParameter(fieldCode) + ") ");
-                    sb.Append(" OR (" + fieldCode + " = SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + "))) ");
+                    sb.Append(" OR (" + fieldCode + " = SUBSTR(" + dbHelper.GetParameter(fieldCode) + ", 1, LENGTH(" + fieldCode + ")))");
                     break;
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -284,7 +305,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -301,7 +322,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order)
         {
-            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -317,7 +338,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -333,7 +354,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
         {
-            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 

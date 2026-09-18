@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net452;net46;net47;net48;net6.0;net7.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Description>A set of .NET 9/8/7/6/5/Standard 2.1/Standard 2.0 utilities(partial but great majority support .net framework 4.52/4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
+		<TargetFrameworks>net46;net47;net48;net6.0;net7.0;net8.0;net9.0;net10.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Description>A set of .NET 10/9/8/7/6/5/Standard 2.1/Standard 2.0 utilities(partial but great majority support .net framework 4.6/4.7/4.8). Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.cn</Company>
-		<Copyright>©2008-2025 Wangcaisoft</Copyright>
+		<Copyright>©2008-2026 Wangcaisoft</Copyright>
 		<Authors>崔文远Troy Cui</Authors>
 		<PackageReleaseNotes>Please visit https://github.com/cuiwenyuan/DotNet.Util for details</PackageReleaseNotes>
 		<PackageTags>DotNet Util Utilities</PackageTags>
@@ -28,7 +28,23 @@
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		<LangVersion>latest</LangVersion>
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-		
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
+
+	<!-- 修复：net6.0/net7.0 不支持 Microsoft.Extensions.* 及 System.* 的 9.0.9 包（无对应 TFM 资产）。
+	     按 TFM 条件引用兼容版本，真正消除 NU1701 而非抑制。
+	     注意：Microsoft.AspNetCore.Hosting 2.3.0 间接要求 Microsoft.Extensions.* >= 8.0.0，
+	     故 net6/net7 的 Extensions 包须用 8.0.0（含 netstandard2.0 资产，兼容 net6/net7）；
+	     System.* 包无此约束，用 6.0.0（原生支持 net6.0）。 -->
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
+		<ExtensionsVersion>8.0.1</ExtensionsVersion>
+		<SystemVersion>8.0.30</SystemVersion>
+		<SystemVersionLegacy>8.0.0</SystemVersionLegacy>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+		<ExtensionsVersion>10.0.11</ExtensionsVersion>
+		<SystemVersion>10.0.11</SystemVersion>
+		<SystemVersionLegacy>10.0.11</SystemVersionLegacy>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -49,32 +65,33 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NewLife.Core" Version="11.7.2025.1001" />
+		<PackageReference Include="NewLife.Core" Version="11.19.2026.901" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows' or '$(TargetFramework)'=='net8.0-windows' or '$(TargetFramework)'=='net9.0-windows' or '$(TargetFramework)'=='net10.0-windows'">
 		<DefineConstants>$(DefineConstants);__WIN__</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Microsoft.AspNetCore" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.12" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.9" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.9" />
-		<PackageReference Include="System.Management" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="$(SystemVersion)" />
+		<PackageReference Include="System.Drawing.Common" Version="$(SystemVersion)" />
+		<PackageReference Include="System.Management" Version="$(SystemVersionLegacy)" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemVersionLegacy)" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net452' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net46' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Configuration" />
 		<Reference Include="System.Management" />
@@ -86,4 +103,7 @@
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

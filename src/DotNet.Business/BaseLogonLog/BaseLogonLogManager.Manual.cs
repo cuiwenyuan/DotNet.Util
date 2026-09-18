@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 using System;
 using System.Data;
@@ -59,7 +59,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.FieldDeleted + " = 0");
             }
             //子系统
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldSystemCode + " = N'" + systemCode + "'");
             }
@@ -69,12 +69,12 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldUserId + " = N'" + userId + "'");
             }
             //用户名
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldUserName + " = N'" + userName + "'");
             }
             //公司名称
-            if (!string.IsNullOrEmpty(companyName))
+            if (!companyName.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCompanyName + " = N'" + companyName + "'");
             }
@@ -93,7 +93,7 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //关键词
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
@@ -166,23 +166,23 @@ namespace DotNet.Business
                 sb.Append(" AND " + BaseLogonLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
             //子系统编码
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseLogonLogEntity.CurrentTableName + "." + BaseLogonLogEntity.FieldSystemCode + " = N'" + systemCode + "'");
             }
             //用户名
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 userName = dbHelper.SqlSafe(userName);
                 sb.Append(" AND " + BaseLogonLogEntity.FieldUserName + " = N'" + userName + "'");
             }
             //操作状态
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = dbHelper.SqlSafe(result);
                 sb.Append(" AND " + BaseLogonLogEntity.FieldResult + " = N'" + result + "'");
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogonLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldCompanyName + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldOperationType + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldIpAddress + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldLogonStatus + " LIKE N'%" + searchKey + "%' OR " + BaseLogonLogEntity.FieldRealName + " LIKE N'%" + searchKey + "%')");
@@ -308,7 +308,8 @@ namespace DotNet.Business
             if (BaseSystemInfo.RecordLogonLog)
             {
                 // 抛出一个线程，现在主库的性能有问题，临时屏蔽一下
-                new Thread(AddLogTaskByBaseUserInfo).Start(new Tuple<string, BaseUserInfo, string, string, string, string>(systemCode, userInfo, ipAddress, ipAddressName, macAddress, loginStatus));
+                //修复：new Thread 每次调用创建新线程（高并发线程风暴），改用线程池 Task.Run
+                System.Threading.Tasks.Task.Run(() => AddLogTaskByBaseUserInfo(new Tuple<string, BaseUserInfo, string, string, string, string>(systemCode, userInfo, ipAddress, ipAddressName, macAddress, loginStatus)));
             }
         }
 
@@ -390,9 +391,8 @@ namespace DotNet.Business
             }
             catch (Exception ex)
             {
-                LogUtil.WriteLog("AddLogTask: 异常信息:" + ex.Message + "userName:" + userEntity.UserName
-                                 + Environment.NewLine + "错误源:" + ex.Source
-                                 + Environment.NewLine + "堆栈信息:" + ex.StackTrace, "Log");
+                LogUtil.WriteLog(Msg.Format("Log.AddLogTaskFailedWithUser", ex.Message, userEntity.UserName,
+                                 Environment.NewLine, ex.Source, ex.StackTrace), "Log");
             }
 
             return result;
@@ -412,7 +412,7 @@ namespace DotNet.Business
             // 
             var result = 1;
 
-            if (!string.IsNullOrEmpty(loginStatus))
+            if (!loginStatus.IsNullOrEmpty())
             {
                 if (loginStatus == "用户登录")
                 {
@@ -502,9 +502,8 @@ namespace DotNet.Business
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.WriteLog("AddLogTask: 异常信息:" + ex.Message
-                                                             + Environment.NewLine + "错误源:" + ex.Source
-                                                             + Environment.NewLine + "堆栈信息:" + ex.StackTrace, "Log");
+                        LogUtil.WriteLog(Msg.Format("Log.AddLogTaskFailed", ex.Message,
+                                                             Environment.NewLine, ex.Source, ex.StackTrace), "Log");
                     }
                 }
             }
@@ -531,7 +530,8 @@ namespace DotNet.Business
             if (BaseSystemInfo.RecordLogonLog)
             {
                 // 抛出一个线程
-                new Thread(AddLogTask).Start(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(systemCode, userId, userName, nickName, ipAddress, ipAddressName, macAddress, new Tuple<string>(loginStatus)));
+                //修复：new Thread 每次调用创建新线程（高并发线程风暴），改用线程池 Task.Run
+                System.Threading.Tasks.Task.Run(() => AddLogTask(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(systemCode, userId, userName, nickName, ipAddress, ipAddressName, macAddress, new Tuple<string>(loginStatus))));
             }
         }
 

@@ -34,7 +34,7 @@ namespace DotNet.Util
             {
                 res = "";
             }
-            if (!string.IsNullOrEmpty(res))
+            if (!res.IsNullOrEmpty())
             {
                 return res;
             }

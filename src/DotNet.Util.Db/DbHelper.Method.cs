@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -16,18 +16,18 @@ namespace DotNet.Util
     /// <summary>
     /// DbHelper
     /// 数据库访问层基础类。
-    /// 
+    ///
     /// 修改记录
-    ///     
+    ///
     ///     2017.11.05 版本：1.1 Troy Cui 所有方法增加：记录日志
     ///     2016.11.13 版本：1.1 LiuHaiyang 所有使用到自动关闭连接的地方，都加上try{}finally{}，在finally里关闭连接，
     ///                                     防止出现异常时，连接不能自动关闭，导致异常多时连接池占满。
     ///		2013.02.04 版本：1.0 JiRiGaLa 分离改进。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2013.02.04</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public abstract partial class DbHelper : IDbHelper
     {
@@ -140,6 +140,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {
@@ -283,15 +284,15 @@ namespace DotNet.Util
                         DbCommand.Parameters.Clear();
                         for (var i = 0; i < dbParameters.Length; i++)
                         {
-                            // 启用非空判断 2022-05-10 Troy.Cui
-                            //if (dbParameters[i] != null)
-                            //{
-                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                            //}
+                            //修复：与 ExecuteScalar/ExecuteReader 保持一致，忽略 null 参数，避免 NullReferenceException
+                            if (dbParameters[i] != null)
+                            {
+                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            }
                         }
                     }
 
-                    //写入日志 
+                    //写入日志
                     //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
                     WriteSqlLog(commandText, commandType.ToString(), dbParameters);
                     if (DbConnection.State != ConnectionState.Open)
@@ -308,6 +309,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {
@@ -343,14 +345,23 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         private void SetBackParamValue(IDbDataParameter[] dbParameters)
         {
-            if (dbParameters != null)
+            if (dbParameters == null || DbCommand == null)
             {
-                for (var i = 0; i <= dbParameters.Length - 1; i++)
+                return;
+            }
+
+            foreach (var dbParameter in dbParameters)
+            {
+                if (dbParameter == null || dbParameter.Direction == ParameterDirection.Input)
                 {
-                    if (dbParameters[i].Direction != ParameterDirection.Input)
-                    {
-                        dbParameters[i].Value = DbCommand.Parameters[i].Value;
-                    }
+                    continue;
+                }
+
+                var commandParameter = DbCommand.Parameters.Cast<IDataParameter>()
+                    .FirstOrDefault(t => t.ParameterName.Equals(dbParameter.ParameterName, StringComparison.OrdinalIgnoreCase));
+                if (commandParameter != null)
+                {
+                    dbParameter.Value = commandParameter.Value;
                 }
             }
         }
@@ -453,7 +464,7 @@ namespace DotNet.Util
                         }
                     }
 
-                    //写入日志 
+                    //写入日志
                     //SqlUtil.WriteLog(commandText, commandType.ToString(), dbParameters);
                     WriteSqlLog(commandText, commandType.ToString(), dbParameters);
 
@@ -472,6 +483,7 @@ namespace DotNet.Util
                 catch (Exception e)
                 {
                     LogUtil.WriteException(e, GetSql(commandText, commandType.ToString(), dbParameters));
+                    throw;
                 }
                 finally
                 {
@@ -959,7 +971,7 @@ namespace DotNet.Util
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(GetSql(commandText, commandType, dbParameters));
-            if (!string.IsNullOrEmpty(statisticsText))
+            if (!statisticsText.IsNullOrEmpty())
             {
                 sb.Append($" [{statisticsText}]");
             }

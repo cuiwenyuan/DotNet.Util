@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseUploadLogManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseUploadLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (FileName LIKE N'%" + searchKey + "%' OR FilePath LIKE N'%" + searchKey + "%')");
@@ -114,11 +114,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 0 || entity.Deleted == 1)
                 {
-                    errorMessage = @"数据已被删除，无需再次删除";
+                    errorMessage = Msg.Get("Business.DataAlreadyDeleted");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = "系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -127,7 +127,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = "非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -150,11 +150,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 0 || entity.Deleted == 1)
                     {
-                        errorMessage = @"数据已被删除，无需再次删除";
+                        errorMessage = Msg.Get("Business.DataAlreadyDeleted");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -163,7 +163,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -189,11 +189,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 1 || entity.Deleted == 0)
                 {
-                    errorMessage = @"数据未被删除，无需撤销";
+                    errorMessage = Msg.Get("Business.DataNotDeleted");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = @"系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -202,7 +202,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = @"非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -225,11 +225,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 1 || entity.Deleted == 0)
                     {
-                        errorMessage = @"数据未被删除，无需撤销";
+                        errorMessage = Msg.Get("Business.DataNotDeleted");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -238,7 +238,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -264,11 +264,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 1)
                 {
-                    errorMessage = @"数据已启用，无需再次启用";
+                    errorMessage = Msg.Get("Business.DataAlreadyEnabled");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = "系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -277,7 +277,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = "非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -300,11 +300,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 1)
                     {
-                        errorMessage = @"数据已启用，无需再次启用";
+                        errorMessage = Msg.Get("Business.DataAlreadyEnabled");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -313,7 +313,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -339,11 +339,11 @@ namespace DotNet.Business
             {
                 if (entity.Enabled == 0)
                 {
-                    errorMessage = @"数据已禁用，无需再次禁用";
+                    errorMessage = Msg.Get("Business.DataAlreadyDisabled");
                 }
                 else if (entity.UserCompanyId == 0)
                 {
-                    errorMessage = @"系统数据无权操作";
+                    errorMessage = Msg.Get("Business.SystemDataNoPermission");
                 }
                 //检查是否为自己公司的数据
                 else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -352,7 +352,7 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    errorMessage = @"非本公司数据无权操作";
+                    errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                 }
             }
             return result;
@@ -375,11 +375,11 @@ namespace DotNet.Business
                 {
                     if (entity.Enabled == 0)
                     {
-                        errorMessage = @"数据已禁用，无需再次禁用";
+                        errorMessage = Msg.Get("Business.DataAlreadyDisabled");
                     }
                     else if (entity.UserCompanyId == 0)
                     {
-                        errorMessage = @"系统数据无权操作";
+                        errorMessage = Msg.Get("Business.SystemDataNoPermission");
                     }
                     //检查是否为自己公司的数据
                     else if ((UserInfo.IsAdministrator && BaseSystemInfo.AdministratorEnabled) || entity.UserCompanyId.ToString().Equals(UserInfo.CompanyId))
@@ -388,7 +388,7 @@ namespace DotNet.Business
                     }
                     else
                     {
-                        errorMessage = @"非本公司数据无权操作";
+                        errorMessage = Msg.Get("Business.OtherCompanyDataNoPermission");
                     }
                 }
             }
@@ -411,7 +411,7 @@ namespace DotNet.Business
                 sb.Append("(" + BaseUploadLogEntity.FieldUserCompanyId + " = 0 OR " + BaseUploadLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUploadLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUploadLogEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUploadLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUploadLogEntity.FieldDeleted, 0)), true, false, cacheTime);

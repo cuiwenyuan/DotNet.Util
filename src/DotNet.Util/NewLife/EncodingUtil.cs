@@ -37,13 +37,40 @@ namespace DotNet.Util
         /// <returns></returns>
         public static Encoding Detect(this Stream stream, Int64 sampleSize = 0x400)
         {
+            // 修正 R8-15：非 seekable 流（网络流等）不支持 Position/Length，无法回溯，直接按当前可读内容做 BOM 启发式
+            if (!stream.CanSeek)
+            {
+                var buf = new Byte[sampleSize];
+                var read = 0;
+                while (read < buf.Length)
+                {
+                    var n = stream.Read(buf, read, buf.Length - read);
+                    if (n == 0) break;
+                    read += n;
+                }
+                if (read == 0)
+                {
+                    return Encoding.UTF8;
+                }
+                var slice = new Byte[read];
+                Array.Copy(buf, slice, read);
+                return DetectBOM(slice) ?? DetectInternal(slice);
+            }
+
             // 记录数据流原始位置，后面需要复原
             var pos = stream.Position;
             stream.Position = 0;
 
             // 首先检查BOM
             var boms = new Byte[stream.Length > 4 ? 4 : stream.Length];
-            stream.Read(boms, 0, boms.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var bomRead = 0;
+            while (bomRead < boms.Length)
+            {
+                var n = stream.Read(boms, bomRead, boms.Length - bomRead);
+                if (n == 0) break;
+                bomRead += n;
+            }
 
             var encoding = DetectBOM(boms);
             if (encoding != null)
@@ -56,7 +83,17 @@ namespace DotNet.Util
             // 抽查一段字节数组
             var data = new Byte[sampleSize > stream.Length ? stream.Length : sampleSize];
             Array.Copy(boms, data, boms.Length);
-            if (stream.Length > boms.Length) stream.Read(data, boms.Length, data.Length - boms.Length);
+            if (stream.Length > boms.Length)
+            {
+                // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                var dataRead = boms.Length;
+                while (dataRead < data.Length)
+                {
+                    var n = stream.Read(data, dataRead, data.Length - dataRead);
+                    if (n == 0) break;
+                    dataRead += n;
+                }
+            }
             stream.Position = pos;
 
             return DetectInternal(data);
@@ -77,6 +114,10 @@ namespace DotNet.Util
         static Encoding DetectInternal(Byte[] data)
         {
             Encoding encoding = null;
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+            // 修复：.NET Core 默认不支持 GBK/GB2312（936 等 ANSI 代码页），需注册 CodePagesEncodingProvider 后 GetEncoding 才可用
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
             // 最笨的办法尝试
             var encs = new Encoding[] {
                 // 常用
@@ -174,7 +215,11 @@ namespace DotNet.Util
 
                 //return data.CompareTo(buf) == 0;
             }
-            catch { }
+            catch (Exception)
+            {
+                // 编码不匹配时解码必然抛异常，属探测的正常失败路径，视为不匹配；
+                // 明确捕获 Exception 而非裸 catch，避免吞掉致命异常
+            }
 
             return false;
         }

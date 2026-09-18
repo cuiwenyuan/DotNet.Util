@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved , Copyright (c) 2024 , DotNet. 
+//-----------------------------------------------------------------
+// All Rights Reserved , Copyright (c) 2024 , DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -14,17 +14,17 @@ namespace DotNet.Util
 	/// <summary>
     /// PostgreSqlHelper
 	/// 有关数据库连接的方法。
-	/// 
+	///
 	/// 修改纪录
 	///
     ///		2013.01.15 版本：1.0 kings 创建。
-	/// 
+	///
 	/// 版本：1.0
-	/// 
+	///
 	/// <author>
     ///		<name>kings</name>
     ///		<date>2013.01.15</date>
-	/// </author> 
+	/// </author>
 	/// </summary>
 	public class PostgreSqlHelper : DbHelper, IDbHelper
 	{
@@ -107,9 +107,14 @@ namespace DotNet.Util
 		{
 			string commandText = " SELECT " + this.GetDbNow();
 			this.Open();
-			string dateTime = this.ExecuteScalar(commandText, null, CommandType.Text).ToString();
-			this.Close();
-			return dateTime;
+			try
+			{
+				return this.ExecuteScalar(commandText, null, CommandType.Text)?.ToString() ?? string.Empty;
+			}
+			finally
+			{
+				this.Close();
+			}
 		}
 		#endregion
 
@@ -122,7 +127,8 @@ namespace DotNet.Util
 		/// <returns>参数</returns>
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
-			return (IDbDataParameter)(new NpgsqlParameter(targetFiled, targetValue));
+			//统一使用 @ 前缀，与 GetParameter 及静态 DbUtil.GetParameter(PostgreSql) 保持一致
+			return (IDbDataParameter)(new NpgsqlParameter("@" + targetFiled, targetValue ?? DBNull.Value));
 		}
 		#endregion
 
@@ -156,9 +162,13 @@ namespace DotNet.Util
 			List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
 			if (targetFileds != null && targetValues != null)
 			{
+				if (targetFileds.Length != targetValues.Length)
+				{
+					throw new ArgumentException("Parameter names and values must have the same length.");
+				}
 				for (int i = 0; i < targetFileds.Length; i++)
 				{
-					if (targetFileds[i] != null && targetValues[i] != null)
+					if (targetFileds[i] != null && !(targetValues[i] is Array))
 					{
 						dbParameters.Add(this.MakeInParam(targetFileds[i], targetValues[i]));
 					}
@@ -228,7 +238,7 @@ namespace DotNet.Util
 		{
 			return MakeParameter(paramName, null, DbType, Size, ParameterDirection.Output);
 		}
-		#endregion 
+		#endregion
 
 		#region public IDbDataParameter MakeInParam(string paramName, DbType dbType, int size, object value) 获取输入参数
 		/// <summary>
@@ -243,7 +253,7 @@ namespace DotNet.Util
 		{
 			return MakeParameter(paramName, value, dbType, size, ParameterDirection.Input);
 		}
-		#endregion 
+		#endregion
 
 		#region public IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection) 获取参数
 		/// <summary>
@@ -257,26 +267,27 @@ namespace DotNet.Util
 		/// <returns>参数集</returns>
 		public override IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
 		{
-			NpgsqlParameter parameter;
-
+			//修复：不能将 System.Data.DbType 数值直接强转为 NpgsqlDbType（两者枚举值完全不对应），
+			//应通过 NpgsqlParameter.DbType 属性由提供程序正确映射类型
+			var parameter = new NpgsqlParameter
+			{
+				ParameterName = parameterName,
+				DbType = dbType,
+				Direction = parameterDirection
+			};
 			if (parameterSize > 0)
 			{
-                parameter = new NpgsqlParameter(parameterName, (NpgsqlTypes.NpgsqlDbType)dbType, parameterSize);
-			}
-			else
-			{
-                parameter = new NpgsqlParameter(parameterName, (NpgsqlTypes.NpgsqlDbType)dbType);
+				parameter.Size = parameterSize;
 			}
 
-			parameter.Direction = parameterDirection;
 			if (!(parameterDirection == ParameterDirection.Output && parameterValue == null))
 			{
 				parameter.Value = parameterValue;
 			}
-			
+
 			return (IDbDataParameter)parameter;
 		}
-		#endregion 
+		#endregion
 
 		#region public string GetParameter(string parameter) 获得参数Sql表达式
 		/// <summary>
@@ -286,7 +297,8 @@ namespace DotNet.Util
 		/// <returns>字符串</returns>
 		public override string GetParameter(string parameter)
 		{
-            return " :" + parameter + " ";
+            //统一使用 @ 前缀，与静态 DbUtil.GetParameter(CurrentDbType.PostgreSql) 保持一致
+            return "@" + parameter;
 		}
         #endregion
 

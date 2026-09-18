@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -42,29 +42,29 @@ namespace DotNet.Util
         public static bool Send(string to, string subject, string body, string attachmentPaths = null, string encoding = "UTF-8", bool isBodyHtml = true)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(to))
+            if (!to.IsNullOrEmpty())
             {
                 try
                 {
                     if (BaseSystemInfo.MailServerSslEnabled && BaseSystemInfo.MailServerPort == 465)
                     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                         var message = new System.Web.Mail.MailMessage();
                         //接收人邮箱地址
                         message.To = to;
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
                         {
                             message.Bcc = BaseSystemInfo.MailBcc;
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
                         {
                             message.From = BaseSystemInfo.MailFrom;
                         }
 
                         //在有附件的情况下添加附件
-                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        if (!attachmentPaths.IsNullOrEmpty())
                         {
                             message.Attachments.Clear();
                             try
@@ -133,7 +133,7 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailBcc))
+                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
                         {
                             //message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
                             if (!BaseSystemInfo.MailBcc.Contains(",") && !BaseSystemInfo.MailBcc.Contains(";"))
@@ -162,13 +162,13 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(BaseSystemInfo.MailFrom))
+                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
                         {
                             message.From = new MailAddress(BaseSystemInfo.MailFrom);
                         }
 
                         //在有附件的情况下添加附件
-                        if (!string.IsNullOrEmpty(attachmentPaths))
+                        if (!attachmentPaths.IsNullOrEmpty())
                         {
                             message.Attachments.Clear();
                             try
@@ -208,7 +208,7 @@ namespace DotNet.Util
 
                     result = true;
                 }
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                 catch (System.Web.HttpException ex)
                 {
                     LogUtil.WriteException(ex);
@@ -289,7 +289,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static void SendByThread(string to, string title, string body, int port = 25)
         {
-            new Thread(new ThreadStart(delegate ()
+            //修复：new Thread 每次调用创建新线程（高并发线程风暴），改用线程池 Task.Run
+            System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
@@ -324,8 +325,7 @@ namespace DotNet.Util
                 {
                     LogUtil.WriteException(ex);
                 }
-
-            })).Start();
+            });
         }
     }
 }

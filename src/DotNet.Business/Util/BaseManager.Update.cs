@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -261,7 +261,7 @@ namespace DotNet.Business
                 }
                 if (parameters.FindAll(t => t.Key.Equals(BaseUtil.FieldUpdateIp)).Count == 0)
                 {
-                    parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !string.IsNullOrEmpty(clientIp) ? clientIp : Utils.GetIp()));
+                    parameters.Add(new KeyValuePair<string, object>(BaseUtil.FieldUpdateIp, !clientIp.IsNullOrEmpty() ? clientIp : Utils.GetIp()));
                 }
             }
         }

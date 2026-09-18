@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -66,7 +66,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 var systemCodes = GetSystemCodesByCache();
                 if (systemCodes != null && systemCodes.Count > 0)

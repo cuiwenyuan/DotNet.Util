@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,10 +55,11 @@ namespace DotNet.Util
             var secretKey = "";
 
             var filePath = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), @"xmlconfig\BaiduAI.config");
-            var doc = new XmlDocument();
+            XmlDocument doc = null;
             try
             {
-                doc.Load(filePath);
+                doc = XmlUtil.LoadXmlDocSafe(filePath);
+                if (doc == null) return token;
                 apiKey = doc.SelectSingleNode(@"Root/apiKey")?.InnerText;
                 secretKey = doc.SelectSingleNode(@"Root/secretKey")?.InnerText;
 
@@ -69,12 +70,11 @@ namespace DotNet.Util
                     expirationTime = expirationTimeString.ToDateTime();
                 }
 
-                if (!string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(secretKey) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+                if (!apiKey.IsNullOrEmpty() && !secretKey.IsNullOrEmpty() && (token.IsNullOrEmpty() || DateTime.Now > expirationTime))
                 {
                     expirationTime = DateTime.Now;
 
                     var authHost = "https://aip.baidubce.com/oauth/2.0/token";
-                    var client = new HttpClient();
                     var paraList = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("grant_type", "client_credentials"),
@@ -82,20 +82,24 @@ namespace DotNet.Util
                         new KeyValuePair<string, string>("client_secret", clientSecret)
                     };
 
-                    var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).Result;
-                    var returnContent = response.Content.ReadAsStringAsync().Result;
+                    // 修复：同步方法中阻塞异步调用，使用 ConfigureAwait(false)+GetAwaiter().GetResult() 避免 ASP.NET 同步上下文死锁；using 释放 HttpClient 与响应，避免正常路径泄漏
+                    using (var client = new HttpClient())
+                    using (var response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).ConfigureAwait(false).GetAwaiter().GetResult())
+                    {
+                        var returnContent = response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
-                    var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
+                        var accessToken = JsonUtil.JsonToObject<AccessToken>(returnContent);
 
-                    var model = new AccessToken();
-                    model.access_token = accessToken.access_token;
-                    model.expires_in = accessToken.expires_in;
+                        var model = new AccessToken();
+                        model.access_token = accessToken.access_token;
+                        model.expires_in = accessToken.expires_in;
 
-                    doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
-                    expirationTime = expirationTime.AddSeconds(int.Parse(model.expires_in));
-                    doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                    doc.Save(filePath);
-                    token = model.access_token;
+                        doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
+                        expirationTime = expirationTime.AddSeconds(int.TryParse(model.expires_in, out var expiresIn) ? expiresIn : 2592000);
+                        doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                        doc.Save(filePath);
+                        token = model.access_token;
+                    }
 
                 }
             }
@@ -115,7 +119,7 @@ namespace DotNet.Util
         {
             var token = GetAccessToken();
             var host = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + token;
-            var encoding = Encoding.Default;
+            var encoding = Encoding.UTF8;
             var request = (HttpWebRequest)WebRequest.Create(host);
             request.Method = "post";
             request.KeepAlive = true;
@@ -128,7 +132,7 @@ namespace DotNet.Util
             var response = (HttpWebResponse)request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             var result = reader.ReadToEnd();
-            Console.WriteLine("通用文字识别:");
+            Console.WriteLine(Msg.Get("Console.OcrGeneral"));
             Console.WriteLine(result);
             return result;
         }
@@ -142,7 +146,7 @@ namespace DotNet.Util
         {
             var token = GetAccessToken();
             var host = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=" + token;
-            var encoding = Encoding.Default;
+            var encoding = Encoding.UTF8;
             var request = (HttpWebRequest)WebRequest.Create(host);
             request.Method = "post";
             request.KeepAlive = true;
@@ -155,8 +159,8 @@ namespace DotNet.Util
             var response = (HttpWebResponse)request.GetResponse();
             var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             var result = reader.ReadToEnd();
-            Console.WriteLine("通用文字识别（高精度版）:");
-            Console.WriteLine(result);
+            //Console.WriteLine("通用文字识别（高精度版）:");
+            //Console.WriteLine(result);
             return result;
         }
         /// <summary>
@@ -168,7 +172,14 @@ namespace DotNet.Util
         {
             var fs = new FileStream(filePath, FileMode.Open);
             var bytes = new byte[fs.Length];
-            fs.Read(bytes, 0, (int)fs.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var baiduBytesRead = 0;
+            while (baiduBytesRead < bytes.Length)
+            {
+                var n = fs.Read(bytes, baiduBytesRead, bytes.Length - baiduBytesRead);
+                if (n == 0) break;
+                baiduBytesRead += n;
+            }
             // 转Base64
             var baser64 = Convert.ToBase64String(bytes);
             fs.Close();

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -14,20 +14,23 @@ using DotNet.Util;
 /// <remarks>
 /// BasePage
 /// 基础网页类
-/// 
+///
 /// 修改记录
-/// 
+///
 /// 版本：4.1 2017.05.09    Troy Cui    完善代码。
 ///	版本：1.0 2012.11.10    JiRiGaLa    整理代码。
-///	
+///
 /// 版本：4.1
-/// <author>  
+/// <author>
 ///		<name>Troy.Cui</name>
 ///		<date>2017.05.09</date>
-/// </author> 
+/// </author>
 /// </remarks>
 public partial class BasePage : System.Web.UI.Page
 {
+    // 修复：原共用全局 BaseSystemInfo.UserLock，与缓存/人员等互不相关操作互相阻塞；改为本页面类独立实例锁
+    private static readonly object _permissionClearLock = new object();
+
     #region 常用操作权限项定义
 
     /// <summary>
@@ -264,9 +267,10 @@ public partial class BasePage : System.Web.UI.Page
         PermissionList = IsAuthorized(module + ".List");
         PermissionListAll = IsAuthorized(module + ".ListAll");
         PermissionShow = IsAuthorized(module + ".Show");
+        PermissionShow = IsAuthorized(module + ".Display");
         PermissionView = IsAuthorized(module + ".View");
         PermissionViewAll = IsAuthorized(module + ".ViewAll");
-        PermissionShow = IsAuthorized(module + ".Display");
+        PermissionDisplay = IsAuthorized(module + ".Display");
         PermissionAudit = IsAuthorized(module + ".Audit");
         PermissionUndoAudit = IsAuthorized(module + ".UndoAudit");
         PermissionDelete = IsAuthorized(module + ".Delete");
@@ -348,8 +352,6 @@ public partial class BasePage : System.Web.UI.Page
     }
     #endregion
 
-    // 用户操作权限常用判断函数
-
     #region public void Authorized(string permissionCode, string accessDenyUrl = null) 是否有相应权限，同时若没权限会重新定位到某个页面
     /// <summary>
     /// 是否有相应权限，同时若没权限会重新定位到某个页面
@@ -361,7 +363,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsAuthorized(permissionCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -387,11 +389,11 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (UserInfo != null && string.IsNullOrEmpty(userId))
+        if (UserInfo != null && userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
     }
     #endregion
 
@@ -406,7 +408,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsUrlAuthorized(url))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -432,12 +434,12 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (string.IsNullOrEmpty(userId))
+        if (userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
 
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.NavigateUrl) && (entity.NavigateUrl.Equals(moduleUrl, StringComparison.OrdinalIgnoreCase) || moduleUrl.StartsWith(entity.NavigateUrl))) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.NavigateUrl).IsNullOrEmpty() && (entity.NavigateUrl.Equals(moduleUrl, StringComparison.OrdinalIgnoreCase) || moduleUrl.StartsWith(entity.NavigateUrl))) > 0;
     }
     #endregion
 
@@ -452,7 +454,7 @@ public partial class BasePage : System.Web.UI.Page
         // 若没有相应的权限，那就跳转到没有权限的页面里
         if (!WebUtil.UserIsLogon() || !IsModuleAuthorized(moduleCode))
         {
-            if (!string.IsNullOrEmpty(accessDenyUrl))
+            if (!accessDenyUrl.IsNullOrEmpty())
             {
                 HttpContext.Current.Response.Redirect(accessDenyUrl);
             }
@@ -478,11 +480,11 @@ public partial class BasePage : System.Web.UI.Page
         {
             return true;
         }
-        if (string.IsNullOrEmpty(userId))
+        if (userId.IsNullOrEmpty())
         {
             userId = UserInfo.Id.ToString();
         }
-        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !string.IsNullOrEmpty(entity.Code) && entity.Code.Equals(moduleCode, StringComparison.OrdinalIgnoreCase)) > 0;
+        return WebUtil.GetUserPermissionList(UserInfo, userId)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(moduleCode, StringComparison.OrdinalIgnoreCase)) > 0;
     }
     #endregion
 
@@ -492,7 +494,7 @@ public partial class BasePage : System.Web.UI.Page
     /// </summary>
     protected void ClearPermissionCache()
     {
-        lock (BaseSystemInfo.UserLock)
+        lock (_permissionClearLock)
         {
             // 清除模块菜单权限
             var cacheKey = string.Empty;

@@ -1,11 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace DotNet.Util
     /// <summary>
     /// SQLBuilder
     /// SQL语句生成器（适合简单的添加、删除、更新等语句，可以写出编译时强类型检查的效果）
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2022.05.12 版本：5.0 Troy.Cui    完善描述和Region。
@@ -37,11 +38,11 @@ namespace DotNet.Util
     ///		2005.08.08 版本：1.2 JiRiGaLa   修改主键，修改格式。
     ///		2005.12.30 版本：1.1 JiRiGaLa   数据库连接进行优化。
     ///		2005.12.29 版本：1.0 JiRiGaLa   主键创建。
-    ///		
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2022.05.12</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class SqlBuilder
     {
@@ -468,7 +469,16 @@ namespace DotNet.Util
             }
             else
             {
-                _whereSql.Append(whereSql);
+                //修复：多次 SetWhere 时用 AND 连接，避免生成无分隔符的无效SQL
+                _whereSql.Append(" AND ");
+                if (whereSql.TrimStart().StartsWith("AND", StringComparison.OrdinalIgnoreCase))
+                {
+                    _whereSql.Append(whereSql.CutStart("AND"));
+                }
+                else
+                {
+                    _whereSql.Append(whereSql);
+                }
             }
         }
         #endregion
@@ -485,15 +495,21 @@ namespace DotNet.Util
         /// <returns>条件语句</returns>
         public void SetWhere(string targetFiled, object targetValue, string targetFiledName = null, string relation = " AND ")
         {
-            if (string.IsNullOrEmpty(targetFiledName))
+            if (targetFiledName.IsNullOrEmpty())
             {
                 targetFiledName = targetFiled;
             }
-            //whereParameters Troy Cui 12.06.2017
-            //fix the issue - The variable name '%.*ls' has already been declared. Variable names must be unique within a query batch or stored procedure. 
-            //IdWhere就是Id这个字段的WHERE语句中的参数名
-            //NameWhere就是Name这个字段的WHERE语句中的参数名，Troy Cui 2019.07.02补充说明
-            targetFiledName += "Where";
+
+            var parameterName = targetFiledName + "Where";
+            if (DbParameters.Any(t => t.Key.Equals(parameterName, StringComparison.OrdinalIgnoreCase)))
+            {
+                var index = 1;
+                while (DbParameters.Any(t => t.Key.Equals(parameterName + index, StringComparison.OrdinalIgnoreCase)))
+                {
+                    index++;
+                }
+                parameterName += index;
+            }
 
             if (_whereSql.Length == 0)
             {
@@ -506,7 +522,26 @@ namespace DotNet.Util
             }
             if (targetValue is Array)
             {
-                _whereSql.Append(targetFiled + " IN (" + ObjectUtil.ToList((object[])targetValue, "'") + ")");
+                var values = ((Array)targetValue).Cast<object>().Where(t => t != null).Select(t => t.ToString()).ToList();
+                if (values.Count > 0)
+                {
+                    var parameterNames = new List<string>();
+                    for (var i = 0; i < values.Count; i++)
+                    {
+                        var itemParameterName = parameterName + "_" + i;
+                        while (DbParameters.Any(t => t.Key.Equals(itemParameterName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            itemParameterName = parameterName + "_" + i + "_" + Guid.NewGuid().ToString("N").Substring(0, 4);
+                        }
+                        parameterNames.Add(DbUtil.GetParameter(_dbType, itemParameterName));
+                        AddParameter(itemParameterName, values[i]);
+                    }
+                    _whereSql.Append(targetFiled + " IN (" + string.Join(",", parameterNames) + ")");
+                }
+                else
+                {
+                    _whereSql.Append(targetFiled + " IS NULL ");
+                }
                 return;
             }
             // NULL值
@@ -515,14 +550,14 @@ namespace DotNet.Util
                 _whereSql.Append(targetFiled + " IS NULL ");
             }
             // 空值
-            else if (targetValue != null && (targetValue is string) && string.IsNullOrEmpty((string)targetValue))
+            else if (targetValue != null && (targetValue is string) && ((string)targetValue).IsNullOrEmpty())
             {
                 _whereSql.Append(targetFiled + " = '' ");
             }
             else
             {
-                _whereSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, targetFiledName));
-                AddParameter(targetFiledName, targetValue);
+                _whereSql.Append(targetFiled + " = " + DbUtil.GetParameter(_dbType, parameterName));
+                AddParameter(parameterName, targetValue);
             }
             // return this.WhereSql;
         }
@@ -536,7 +571,7 @@ namespace DotNet.Util
         /// <returns>排序</returns>
         public string SetOrderBy(string orderBy)
         {
-            if (string.IsNullOrEmpty(_orderBy))
+            if (_orderBy.IsNullOrEmpty())
             {
                 _orderBy = " ORDER BY ";
             }
@@ -553,11 +588,15 @@ namespace DotNet.Util
         /// <returns>随机排序函数</returns>
         public string SetOrderByRandom()
         {
-            if (string.IsNullOrEmpty(_orderBy))
+            if (_orderBy.IsNullOrEmpty())
             {
                 _orderBy = " ORDER BY ";
             }
-            switch (_dbHelper.CurrentDbType)
+            else if (!_orderBy.TrimEnd().EndsWith(",", StringComparison.Ordinal))
+            {
+                _orderBy += ", ";
+            }
+            switch (_dbType)
             {
                 case CurrentDbType.Oracle:
                     _orderBy += "DBMS_RANDOM.VALUE()";
@@ -568,6 +607,10 @@ namespace DotNet.Util
                     break;
                 case CurrentDbType.MySql:
                     _orderBy += "Rand()";
+                    break;
+                case CurrentDbType.SQLite:
+                case CurrentDbType.PostgreSql:
+                    _orderBy += "RANDOM()";
                     break;
             }
             return _orderBy;
@@ -585,18 +628,21 @@ namespace DotNet.Util
             var dt = new DataTable(_tableName);
             if (_topN != null)
             {
-                switch (_dbHelper.CurrentDbType)
+                switch (_dbType)
                 {
                     case CurrentDbType.Oracle:
-                        // 这里还需要把条件进行优化
-                        CommandText = "SELECT * FROM " + _tableName + " WHERE ROWNUM <= " + _topN + _orderBy;
+                        CommandText = "SELECT * FROM (SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + ") WHERE ROWNUM <= " + _topN;
                         break;
                     case CurrentDbType.SqlServer:
                     case CurrentDbType.Access:
                         CommandText = "SELECT TOP " + _topN + " * FROM " + _tableName + _whereSql.Return() + _orderBy;
                         break;
                     case CurrentDbType.MySql:
-                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT 1 , " + _topN;
+                    case CurrentDbType.SQLite:
+                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT 0 , " + _topN;
+                        break;
+                    case CurrentDbType.PostgreSql:
+                        CommandText = "SELECT * FROM " + _tableName + _whereSql.Return() + _orderBy + " LIMIT " + _topN;
                         break;
                 }
             }
@@ -675,11 +721,18 @@ namespace DotNet.Util
             if (_sqlOperation == DbOperation.Insert || _sqlOperation == DbOperation.ReplaceInto)
             {
                 var sbField = PoolUtil.StringBuilder.Get();
-                sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
+                //修复：未调用 SetValue 时避免 Substring(0, -2) 越界
+                if (_insertField.Length >= 2)
+                {
+                    sbField.Append(_insertField.ToString().Substring(0, _insertField.Length - 2));
+                }
                 //归还
                 _insertField.Return();
                 var sbValue = PoolUtil.StringBuilder.Get();
-                sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
+                if (_insertValue.Length >= 2)
+                {
+                    sbValue.Append(_insertValue.ToString().Substring(0, _insertValue.Length - 2));
+                }
                 //归还
                 _insertValue.Return();
                 if (_sqlOperation == DbOperation.ReplaceInto)
@@ -716,8 +769,8 @@ namespace DotNet.Util
                                 CommandText += "; SELECT LAST_INSERT_ID();";
                             }
                             break;
-                        // SqLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
-                        case CurrentDbType.SqLite:
+                        // SQLite 返回自增主键 Troy.Cui 崔文远 2022-06-06
+                        case CurrentDbType.SQLite:
                             if (ReturnId)
                             {
                                 CommandText += "; SELECT last_insert_rowid() newid;";
@@ -740,7 +793,7 @@ namespace DotNet.Util
                                     //以下代码不好用！！！
                                     //var sb = PoolUtil.StringBuilder.Get();
                                     //sb.AppendLine("BEGIN");
-                                    //if (!string.IsNullOrEmpty(CommandText))
+                                    //if (!CommandText.IsNullOrEmpty())
                                     //{
                                     //    sb.AppendLine(CommandText.TrimEnd(";") + ";");
                                     //    sb.AppendLine($"SELECT {sequenceName}.CURRVAL FROM DUAL;");
@@ -758,7 +811,11 @@ namespace DotNet.Util
             else if (_sqlOperation == DbOperation.Update)
             {
                 var sbUpdate = PoolUtil.StringBuilder.Get();
-                sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
+                //修复：未调用 SetValue 时避免 Substring(0, -2) 越界
+                if (_updateSql.Length >= 2)
+                {
+                    sbUpdate.Append(_updateSql.ToString().Substring(0, _updateSql.Length - 2));
+                }
                 _updateSql.Return();
                 CommandText = "UPDATE " + _tableName + " SET " + sbUpdate.Return() + _whereSql.Return();
             }
@@ -796,20 +853,35 @@ namespace DotNet.Util
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
 
-            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SqLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
+            if (Identity && _sqlOperation == DbOperation.Insert && (_dbHelper.CurrentDbType == CurrentDbType.SqlServer || _dbHelper.CurrentDbType == CurrentDbType.Access || _dbHelper.CurrentDbType == CurrentDbType.MySql || _dbHelper.CurrentDbType == CurrentDbType.SQLite || _dbHelper.CurrentDbType == CurrentDbType.Oracle))
             {
                 // 读取返回值
                 if (ReturnId)
                 {
                     if (_dbHelper.CurrentDbType == CurrentDbType.Oracle)
                     {
-                        // 执行语句
-                        result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
-                        if (result > 0 && !string.IsNullOrEmpty(identitySql) && !PreIdentity && ReturnId)
+                        //修复：在同一会话中执行 INSERT 与 CURRVAL，
+                        //避免 ExecuteNonQuery 关闭连接后重新打开新会话导致 ORA-08002: CURRVAL is not yet defined
+                        var originalMustCloseConnection = _dbHelper.MustCloseConnection;
+                        try
                         {
-                            // 获取当前序列主键
-                            var obj = _dbHelper.ExecuteScalar(identitySql);
-                            result = obj.ToInt();
+                            _dbHelper.MustCloseConnection = false;
+                            // 执行语句
+                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                            if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
+                            {
+                                // 获取当前序列主键
+                                var obj = _dbHelper.ExecuteScalar(identitySql);
+                                result = obj.ToInt();
+                            }
+                        }
+                        finally
+                        {
+                            _dbHelper.MustCloseConnection = originalMustCloseConnection;
+                            if (originalMustCloseConnection)
+                            {
+                                _dbHelper.Close();
+                            }
                         }
                     }
                     else

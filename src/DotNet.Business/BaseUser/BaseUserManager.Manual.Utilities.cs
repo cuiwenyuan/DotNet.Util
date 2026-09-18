@@ -1,11 +1,12 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
 
 namespace DotNet.Business
 {
+    using Util;
     using Model;
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace DotNet.Business
             {
                 result += "," + entity.RealName;
             }
-            if (!string.IsNullOrEmpty(result))
+            if (!result.IsNullOrEmpty())
             {
                 result = result.Substring(1);
             }

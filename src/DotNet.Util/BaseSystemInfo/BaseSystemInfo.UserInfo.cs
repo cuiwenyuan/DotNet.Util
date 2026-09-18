@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -34,27 +34,27 @@ namespace DotNet.Util
                 {
                     _userInfo = new BaseUserInfo();
                     //IP地址
-                    if (string.IsNullOrEmpty(_userInfo.IpAddress))
+                    if ((_userInfo.IpAddress).IsNullOrEmpty())
                     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                         //按照Web应用获取IP地址
                         _userInfo.IpAddress = Utils.GetIp();
 #endif
                     }
                     //Mac地址  add by zgl
-                    if (string.IsNullOrEmpty(_userInfo.MacAddress))
+                    if ((_userInfo.MacAddress).IsNullOrEmpty())
                     {
                         // 获取所有的 mac 地址
                         _userInfo.MacAddress = MachineInfo.GetMacAddress(false);
                     }
 
                     //用户名
-                    if (string.IsNullOrEmpty(_userInfo.UserName))
+                    if ((_userInfo.UserName).IsNullOrEmpty())
                     {
                         _userInfo.UserName = Environment.MachineName;
                     }
                     //真实姓名
-                    if (string.IsNullOrEmpty(_userInfo.RealName))
+                    if ((_userInfo.RealName).IsNullOrEmpty())
                     {
                         _userInfo.RealName = Environment.UserName;
                     }
@@ -82,25 +82,25 @@ namespace DotNet.Util
 
             if (userInfo == null)
             {
-                LogUtil.WriteLog("服务调用失败，请检查：userInfo", "ServiceFail");
+                LogUtil.WriteLog(Msg.Format("Log.ServiceFail", "userInfo"), "ServiceFail");
                 result = false;
             }
             // 若系统设置的用户名是空的，那就不用判断了
             if (userInfo != null && !ServiceUserName.Equals(userInfo.ServiceUserName))
             {
-                LogUtil.WriteLog("服务调用失败，请检查：ServiceUserName", "ServiceFail");
+                LogUtil.WriteLog(Msg.Format("Log.ServiceFail", "ServiceUserName"), "ServiceFail");
                 result = false;
             }
             // 若系统设置的用密码是空的，那就不用判断了
             if (userInfo != null && !ServicePassword.Equals(userInfo.ServicePassword))
             {
-                LogUtil.WriteLog("服务调用失败，请检查：ServicePassword", "ServiceFail");
+                LogUtil.WriteLog(Msg.Format("Log.ServiceFail", "ServicePassword"), "ServiceFail");
                 result = false;
             }
             // 检查参数是否合法，防止注入攻击
             if (userInfo != null && !string.IsNullOrWhiteSpace(userInfo.Id) && !ValidateUtil.IsInt(userInfo.Id))
             {
-                LogUtil.WriteLog("服务调用失败，请检查：userInfo.Id", "ServiceFail");
+                LogUtil.WriteLog(Msg.Format("Log.ServiceFail", "userInfo.Id"), "ServiceFail");
                 result = false;
             }
             // 调用服务器的用户名、密码都对了，才可以调用服务程序，否则认为是非授权的操作

@@ -1,0 +1,9 @@
+<Project>
+  <!-- 统一抑制 CS1591（公开类型/成员缺 XML 注释）。
+       本库开启 GenerateDocumentationFile 但并未为全部公开 API 补 /// 文档，
+       CS1591 仅影响 IntelliSense 文档完整性、不影响编译正确性，按惯例抑制为警告噪音。
+       若希望驱动补文档，可删除本文件或移除 1591。 -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+</Project>

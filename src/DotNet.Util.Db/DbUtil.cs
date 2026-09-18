@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using NewLife.Log;
@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <returns>数据库访问类</returns>
         public static IDbHelper GetDbHelper(CurrentDbType dbType = CurrentDbType.SqlServer, string connectionString = null)
         {
-            if (string.IsNullOrEmpty(connectionString))
+            if (connectionString.IsNullOrEmpty())
             {
                 connectionString = BaseSystemInfo.UserCenterDbConnection;
             }
@@ -116,9 +116,6 @@ namespace DotNet.Util
                 case CurrentDbType.Db2:
                     result = "DotNet.Util.DB2Helper";
                     break;
-                case CurrentDbType.SqLite:
-                    result = "DotNet.Util.SqLiteHelper";
-                    break;
                 case CurrentDbType.SQLite:
                     result = "DotNet.Util.SQLiteHelper";
                     break;
@@ -160,7 +157,6 @@ namespace DotNet.Util
                 case CurrentDbType.Db2:
                     result = "DotNet.Util.Db.DB2";
                     break;
-                case CurrentDbType.SqLite:
                 case CurrentDbType.SQLite:
                     result = "DotNet.Util.Db.SQLite";
                     break;
@@ -209,7 +205,7 @@ namespace DotNet.Util
             {
                 sb.Append(" NOW() ");
             }
-            else if (dbType == CurrentDbType.SqLite)
+            else if (dbType == CurrentDbType.SQLite)
             {
                 sb.Append(" datetime(CURRENT_TIMESTAMP, 'localtime') ");
             }
@@ -263,7 +259,7 @@ namespace DotNet.Util
                     case CurrentDbType.Access:
                     case CurrentDbType.Ase:
                     case CurrentDbType.PostgreSql:
-                    case CurrentDbType.SqLite:
+                    case CurrentDbType.SQLite:
                         sb.Append("'" + dateTime + "'");
                         break;
                     case CurrentDbType.Db2:
@@ -308,7 +304,7 @@ namespace DotNet.Util
                 case CurrentDbType.Access:
                 case CurrentDbType.Ase:
                 case CurrentDbType.PostgreSql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     parameter = "@" + parameter;
                     break;
                 case CurrentDbType.Db2:

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,7 +38,7 @@ namespace DotNet.Business
         public virtual DataTable GetDataTable(string condition, List<KeyValuePair<string, object>> parameters, string order)
         {
             var subSql = dbHelper.GetWhereString(parameters, BaseUtil.SqlLogicConditional);
-            if (!string.IsNullOrEmpty(subSql))
+            if (!subSql.IsNullOrEmpty())
             {
                 if (!string.IsNullOrWhiteSpace(condition))
                 {
@@ -52,7 +52,7 @@ namespace DotNet.Business
 
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }
@@ -98,7 +98,7 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + CurrentTableName);
-            if (!string.IsNullOrEmpty(condition))
+            if (!condition.IsNullOrEmpty())
             {
                 sb.Append(" WHERE " + condition);
             }

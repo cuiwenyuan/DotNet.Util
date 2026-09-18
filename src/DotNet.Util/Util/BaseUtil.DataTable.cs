@@ -1,8 +1,9 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -93,7 +94,7 @@ namespace DotNet.Util
         /// <returns>字段值数组</returns>
         public static string[] FieldToArray(DataTable dt, string field)
         {
-            return dt.Select().Select(n => n[field].ToString()).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            return dt.Select().Select(n => n[field].ToString()).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -108,7 +109,7 @@ namespace DotNet.Util
         {
             var dtNew = dt.Clone();
             var filterExpression = string.Empty;
-            if (!string.IsNullOrEmpty(where))
+            if (!where.IsNullOrEmpty())
             {
                 var row = dt.Select(where);
                 for (var i = 0; i < row.Length; i++)
@@ -132,7 +133,7 @@ namespace DotNet.Util
         {
             var dtNew = dt.Clone();
             var filterExpression = string.Empty;
-            if (!string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
+            if (!fieldName.IsNullOrEmpty() && !fieldValue.IsNullOrEmpty())
             {
                 filterExpression = fieldName + " = '" + fieldValue + "'";
                 var row = dt.Select(filterExpression);
@@ -140,7 +141,7 @@ namespace DotNet.Util
                 {
                     dtNew.ImportRow(row[i]);
                 }
-            }            
+            }
             return dtNew;
         }
         #endregion
@@ -156,43 +157,50 @@ namespace DotNet.Util
         /// <returns>数据权限</returns>
         public static DataTable SetFilter(DataTable dt, string fieldName, string fieldValue, bool equals = false)
         {
+            // 先收集待删除行，避免在 foreach (dt.Rows) 枚举期间调用 dr.Delete()
+            // 触发 InvalidOperationException: Collection was modified; enumeration operation might not execute
+            var toDelete = new List<DataRow>();
             foreach (DataRow dr in dt.Rows)
             {
                 // 要求把相等的删除掉
                 if (equals)
                 {
-                    if (string.IsNullOrEmpty(fieldValue))
+                    if (fieldValue.IsNullOrEmpty())
                     {
-                        if (string.IsNullOrEmpty(dr[fieldName].ToString()))
+                        if ((dr[fieldName].ToString()).IsNullOrEmpty())
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                     else
                     {
                         if (dr[fieldName].ToString().Equals(fieldValue, StringComparison.OrdinalIgnoreCase))
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(fieldValue))
+                    if (fieldValue.IsNullOrEmpty())
                     {
-                        if (!string.IsNullOrEmpty(dr[fieldName].ToString()))
+                        if (!(dr[fieldName].ToString()).IsNullOrEmpty())
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                     else
                     {
                         if (!dr[fieldName].ToString().Equals(fieldValue, StringComparison.OrdinalIgnoreCase))
                         {
-                            dr.Delete();
+                            toDelete.Add(dr);
                         }
                     }
                 }
+            }
+            foreach (var dr in toDelete)
+            {
+                dr.Delete();
             }
             dt.AcceptChanges();
             return dt;

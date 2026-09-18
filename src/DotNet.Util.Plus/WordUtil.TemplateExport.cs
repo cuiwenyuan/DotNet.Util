@@ -1,11 +1,10 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
 using System.Data;
 using System.IO;
-using System.Web;
 using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -33,8 +32,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WordUtil
     {
-#if NET452_OR_GREATER
-
+        //修复：解除 NET46_OR_GREATER 守卫——本类仅依赖 NPOI/System.IO（无 System.Web），net6+ 亦应可用
         //在NPOI中，每厘米对应的长度数值
         private const int NPOI_PICTURE_LENGTH_EVERY_CM = 360144;
 
@@ -49,7 +47,7 @@ namespace DotNet.Util
 
             if (!File.Exists(filePath))
             {
-                LogUtil.WriteLog("找不到模板文件");
+                LogUtil.WriteLog(Msg.Get("Log.TemplateFileNotFound"));
             }
             else
             {
@@ -62,7 +60,7 @@ namespace DotNet.Util
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.WriteException(ex, "打开模板文件失败");
+                    LogUtil.WriteException(ex, Msg.Get("Log.OpenTemplateFailed"));
                 }
             }
 
@@ -201,7 +199,7 @@ namespace DotNet.Util
                     //不含有占位符
                     var first_cell_text = tmplRowCells[0].GetText();
                     string regEx = @"\{.+?\}";
-                    Regex r = new Regex(regEx);
+                    Regex r = new Regex(regEx, RegexOptions.None, TimeSpan.FromSeconds(1));
                     var matched = r.IsMatch(first_cell_text);
                     if (!matched) continue;
 
@@ -275,7 +273,7 @@ namespace DotNet.Util
 
             //用正则判断段落里是否含有占位符
             string regEx = @"\{.+?\}";
-            Regex r = new Regex(regEx);
+            Regex r = new Regex(regEx, RegexOptions.None, TimeSpan.FromSeconds(1));
             var matched = r.IsMatch(paragraph.Text);
             if (!matched)
             {
@@ -478,7 +476,13 @@ namespace DotNet.Util
                                 tarR.IsItalic = srcR.IsItalic;
                                 tarR.IsCapitalized = srcR.IsCapitalized;
                                 tarR.SetColor(srcR.GetColor());
+#if NETFRAMEWORK
+                                // .NET Framework（NPOI 2.5.6）：Underline 为只读属性，使用 SetUnderline 方法
                                 tarR.SetUnderline(srcR.Underline);
+#else
+                                // 非 Framework（netstandard / .NET 5+，NPOI 2.7.6）：XWPFRun.Underline 为可写属性（SetUnderline 已移除）
+                                tarR.Underline = srcR.Underline;
+#endif
                                 tarR.CharacterSpacing = srcR.CharacterSpacing;
                             }
                         }
@@ -663,6 +667,5 @@ namespace DotNet.Util
             WPG
         }
         #endregion
-#endif
     }
 }

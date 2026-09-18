@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseLogManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ namespace DotNet.Business
             {
                 sb.Append(" AND " + BaseLogEntity.FieldCreateTime + " <= " + dbHelper.ToDbTime(endTime.ToDateTime().Date.AddDays(1).AddMilliseconds(-1)));
             }
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!searchKey.IsNullOrEmpty())
             {
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseLogEntity.FieldUserName + " LIKE N'%" + searchKey + "%' OR " + BaseLogEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
@@ -121,7 +121,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseLogEntity.FieldUserCompanyId + " = 0 OR " + BaseLogEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0));
-            var companyId = string.IsNullOrEmpty(BaseSystemInfo.CustomerCompanyId) ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseLogEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseLogEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -191,18 +191,24 @@ namespace DotNet.Business
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName + " WHERE 1 = 1");
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 sb.Append(string.Format(" AND {0} = '{1}' ", name, value));
             }
-            if (!string.IsNullOrEmpty(processId))
+            if (!processId.IsNullOrEmpty())
             {
                 // sb.Append(string.Format(" AND {0} = '{1}' ", BaseLogEntity.FieldProcessId, processId));
             }
-            if (!string.IsNullOrEmpty(beginDate) && !string.IsNullOrEmpty(endDate))
+            if (!beginDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
             {
-                beginDate = DateTime.Parse(beginDate).ToShortDateString();
-                endDate = DateTime.Parse(endDate).AddDays(1).ToShortDateString();
+                if (DateTime.TryParse(beginDate, out var beginDateTime) || DateTime.TryParse(beginDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out beginDateTime))
+                {
+                    beginDate = beginDateTime.ToShortDateString();
+                }
+                if (DateTime.TryParse(endDate, out var endDateTime) || DateTime.TryParse(endDate, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out endDateTime))
+                {
+                    endDate = endDateTime.AddDays(1).ToShortDateString();
+                }
             }
             // 注意安全问题
             if (userIds != null)
@@ -235,11 +241,11 @@ namespace DotNet.Business
                 case CurrentDbType.Oracle:
                     if (beginDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= TO_DATE( '{0}','yyyy-mm-dd hh24-mi-ss') ", beginDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " >= TO_DATE( '{0}','yyyy-mm-dd hh24:mi:ss') ", beginDate));
                     }
                     if (endDate.Trim().Length > 0)
                     {
-                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= TO_DATE('{0}','yyyy-mm-dd hh24-mi-ss')", endDate));
+                        sb.Append(string.Format(" AND " + BaseUtil.FieldCreateTime + " <= TO_DATE('{0}','yyyy-mm-dd hh24:mi:ss')", endDate));
                     }
                     break;
             }
@@ -265,44 +271,17 @@ namespace DotNet.Business
         }
         #endregion
 
-        #region public DataTable GetDataTableByDate(string createOn, string processId, string createUserId)
-        /// <summary>
-        /// 按日期查询
-        /// </summary>
-        /// <param name="createOn">记录日期 yyyy/mm/dd</param>
-        /// <param name="processName">模块主键</param>
-        /// <param name="createUserId">用户主键</param>
-        /// <returns>数据表</returns>
-        public DataTable GetDataTableByDate(string createOn, string processName, string createUserId)
-        {
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT * FROM " + BaseLogEntity.CurrentTableName
-                    + " WHERE CONVERT(NVARCHAR, " + BaseLogEntity.FieldStartTime + ", 111) = " + dbHelper.GetParameter(BaseLogEntity.FieldStartTime)
-                    + " AND " + BaseLogEntity.FieldUserId + " = " + dbHelper.GetParameter(BaseLogEntity.FieldUserId));
-            sb.Append(" ORDER BY " + BaseLogEntity.FieldStartTime);
-            var names = new string[2];
-            names[0] = BaseLogEntity.FieldStartTime;
-            names[1] = BaseLogEntity.FieldUserId;
-            var values = new Object[2];
-            values[0] = createOn;
-            values[1] = createUserId;
-            var dt = new DataTable(BaseLogEntity.CurrentTableName);
-            dbHelper.Fill(dt, sb.Return(), DbHelper.MakeParameters(names, values));
-            return dt;
-        }
-        #endregion
-
         /// <summary>
         /// 搜索
         /// </summary>
-        /// <param name="userIds"></param>
-        /// <param name="search"></param>
-        /// <param name="enabled"></param>
-        /// <param name="onlyOnline"></param>
-        /// <returns></returns>
+        /// <param name="userIds">用户编号</param>
+        /// <param name="search">搜索关键字</param>
+        /// <param name="enabled">是否启用</param>
+        /// <param name="onlyOnline">是否仅显示在线用户</param>
+        /// <returns>数据表</returns>
         public DataTable Search(string[] userIds, string search, bool? enabled, bool onlyOnline)
         {
-            //TODO 吉日嘎拉，这里需要从2个表读取，2013-04-21
+            //这里需要从2个表读取，2013-04-21
             search = StringUtil.GetSearchString(search);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + BaseUserEntity.CurrentTableName + ".* "

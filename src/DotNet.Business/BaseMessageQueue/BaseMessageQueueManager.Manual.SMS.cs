@@ -1,6 +1,6 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BaseMessageQueueManager.cs" company="DotNet">
-//     Copyright (c) 2025, All rights reserved.
+//     Copyright (c) 2026, All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ namespace DotNet.Business
                         SortCode = 1
                     };
                     //entityFailed.Error = "";
-                    if (!string.IsNullOrEmpty(new BaseMessageFailedManager(UserInfo).Add(entityFailed)))
+                    if (!(new BaseMessageFailedManager(UserInfo).Add(entityFailed)).IsNullOrEmpty())
                     {
                         //删除MessageQueue表中的数据
                         Delete(entity.Id);
@@ -79,7 +79,7 @@ namespace DotNet.Business
                             CreateTime = entity.CreateTime,
                             SortCode = 1
                         };
-                        if (!string.IsNullOrEmpty(new BaseMessageSucceedManager(UserInfo).Add(entitySucceed)))
+                        if (!(new BaseMessageSucceedManager(UserInfo).Add(entitySucceed)).IsNullOrEmpty())
                         {
                             //删除MessageQueue表中的数据
                             Delete(entity.Id);

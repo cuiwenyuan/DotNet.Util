@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -71,20 +71,27 @@ namespace DotNet.Util
         {
             try
             {
-                if (!string.IsNullOrEmpty(filePath))
+                if (!filePath.IsNullOrEmpty())
                 {
                     _ipBinaryFilePath = filePath;
                 }
                 else
                 {
-                    _ipBinaryFilePath = AppDomain.CurrentDomain.BaseDirectory + "\\DataBase\\17monipdb.dat";
+                    _ipBinaryFilePath = AppDomain.CurrentDomain.BaseDirectory + "\\Database\\17monipdb.dat";
                 }
 
                 var file = new FileInfo(_ipBinaryFilePath);
                 _dataBuffer = new byte[file.Length];
                 using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
                 {
-                    fs.Read(_dataBuffer, 0, _dataBuffer.Length);
+                    // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+                    var ipBytesRead = 0;
+                    while (ipBytesRead < _dataBuffer.Length)
+                    {
+                        var n = fs.Read(_dataBuffer, ipBytesRead, _dataBuffer.Length - ipBytesRead);
+                        if (n == 0) break;
+                        ipBytesRead += n;
+                    }
                 }
 
                 var indexLength = BytesToLong(_dataBuffer[0], _dataBuffer[1], _dataBuffer[2], _dataBuffer[3]);
@@ -123,7 +130,11 @@ namespace DotNet.Util
             var ips = ip.Split('.');
             
             var ipPrefixValue = ips[0].ToInt();
-            long ip2LongValue = BytesToLong(byte.Parse(ips[0]), byte.Parse(ips[1]), byte.Parse(ips[2]), byte.Parse(ips[3]));
+            if (!(byte.TryParse(ips[0], out var ipByte0) && byte.TryParse(ips[1], out var ipByte1) && byte.TryParse(ips[2], out var ipByte2) && byte.TryParse(ips[3], out var ipByte3)))
+            {
+                return new[] { "", "", "", "" };
+            }
+            long ip2LongValue = BytesToLong(ipByte0, ipByte1, ipByte2, ipByte3);
             var start = _index[ipPrefixValue];
             var maxCompLen = _offset - 1028;
             long indexOffset = -1;
@@ -165,7 +176,7 @@ namespace DotNet.Util
             {
                 return null;
             }
-            else if (string.IsNullOrEmpty(location[2]))
+            else if (location[2].IsNullOrEmpty())
             {
                 location[2] = location[1];
             }
@@ -182,10 +193,10 @@ namespace DotNet.Util
             var ipInfo = FindIp(ip);
             if (ipInfo != null)
             {
-                if (!string.IsNullOrEmpty(ipInfo.Province))
+                if (!(ipInfo.Province).IsNullOrEmpty())
                 {
                     result = ipInfo.Province;
-                    if (!string.IsNullOrEmpty(ipInfo.City))
+                    if (!(ipInfo.City).IsNullOrEmpty())
                     {
                         if (!ipInfo.Province.Equals(ipInfo.City))
                         {
@@ -204,10 +215,10 @@ namespace DotNet.Util
         public static bool IsLocalIp(string ipAddress)
         {
             var result = false;
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
                 if (ipAddress.StartsWith("192.168.")
-                    || ipAddress.StartsWith("172.")
+                    || IsPrivate172(ipAddress)
                     || ipAddress.StartsWith("10.")
                     || ipAddress.StartsWith("127."))
                 {
@@ -216,7 +227,7 @@ namespace DotNet.Util
                 // 检查是否在公司新任的列表里
                 if (!result)
                 {
-                    if (!string.IsNullOrEmpty(BaseSystemInfo.WhiteList))
+                    if (!(BaseSystemInfo.WhiteList).IsNullOrEmpty())
                     {
                         var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                         for (var i = 0; i < whiteLists.Length; i++)
@@ -232,6 +243,26 @@ namespace DotNet.Util
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 是否处于 RFC1918 私网 172.16.0.0/12 段（即 172.16.x.x ~ 172.31.x.x）
+        /// 修正 R8-10：原 StartsWith("172.") 误覆盖整个 172.0.0.0/8，会把公网 172.32.x.x 等误判为本地
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        private static bool IsPrivate172(string ipAddress)
+        {
+            if (!ipAddress.StartsWith("172."))
+            {
+                return false;
+            }
+            var segments = ipAddress.Split('.');
+            if (segments.Length < 2)
+            {
+                return false;
+            }
+            return int.TryParse(segments[1], out var second) && second >= 16 && second <= 31;
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -17,19 +17,19 @@ namespace DotNet.Util
     /// <summary>
     /// BaseExportCSV
     /// 导出CSV格式数据
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///     2021.12.31 版本：5.0 Troy.Cui	ToDataTable方法增加fieldList和fieldListOnly用于读取控制
     ///     2021.09.21 版本：4.0 Troy.Cui	增加ToDataTable方法，并增加fieldList字典控制csv输出
     ///     2009.07.08 版本：3.0 JiRiGaLa	更新完善程序，将方法修改为静态方法。
     ///     2007.08.11 版本：2.0 JiRiGaLa	更新完善程序。
     ///     2006.12.01 版本：1.0 JiRiGaLa	新创建。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2009.07.08</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class CsvUtil
     {
@@ -95,9 +95,10 @@ namespace DotNet.Util
             while (dataReader.Read())
             {
                 sb = PoolUtil.StringBuilder.Get();
-                for (var index = 0; index < dataReader.FieldCount - 1; index++)
+                for (var index = 0; index < dataReader.FieldCount; index++)
                 {
-                    if (sb.Length > 0)
+                    // 除第一列外，其余列前面都要加上分隔符，避免空值导致列错位
+                    if (index > 0)
                     {
                         sb.Append(separator);
                     }
@@ -113,11 +114,6 @@ namespace DotNet.Util
                             sb.Append(value);
                         }
                     }
-                }
-                // 最后一个逗号用空来替代
-                if (!dataReader.IsDBNull(dataReader.FieldCount - 1))
-                {
-                    sb.Append(dataReader.GetValue(dataReader.FieldCount - 1).ToString().Replace(separator, ""));
                 }
                 csvRows.AppendLine(sb.Return());
             }
@@ -234,12 +230,12 @@ namespace DotNet.Util
                             {
                                 if (fieldList.ContainsKey(dc.ColumnName))
                                 {
-                                    i++;
                                     WriteSpecialCharacter(drv[dc.ColumnName]?.ToString(), sb, separator);
                                     if (i < fieldList.Count)
                                     {
                                         sb.Append(separator);
                                     }
+                                    i++;
                                 }
                                 //LogUtil.WriteLog(j + "," + i + "," + dt.Columns.Count + "," + fieldList?.Count + ":" + drv[dc.ColumnName]?.ToString());
                             }
@@ -280,7 +276,7 @@ namespace DotNet.Util
         /// <param name="separator"></param>
         private static void WriteSpecialCharacter(string content, StringBuilder sb, string separator)
         {
-            if (!string.IsNullOrEmpty(content))
+            if (!content.IsNullOrEmpty())
             {
                 if (content.Contains("\""))
                 {
@@ -332,11 +328,12 @@ namespace DotNet.Util
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataTable dt, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
         {
-            var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8);
-            sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
-            sw.Flush();
-            sw.Close();
-            sw.TryDispose();
+            //修复：使用 using 确保 StreamWriter 在异常路径也释放
+            using (var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8))
+            {
+                sw.WriteLine(GetCsvFormatData(dt, fieldList: fieldList, separator: separator).Return());
+                sw.Flush();
+            }
         }
         #endregion
 
@@ -351,14 +348,16 @@ namespace DotNet.Util
         /// <param name="separator">分隔符</param>
         public static void ExportCsv(DataSet dataSet, string fileName, Dictionary<string, string> fieldList = null, Encoding encoding = null, string separator = ",")
         {
-            var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8);
-            sw.WriteLine(GetCsvFormatData(dataSet, fieldList: fieldList, separator: separator).ToString());
-            sw.Flush();
-            sw.Close();
+            //修复：使用 using 确保 StreamWriter 在异常路径也释放
+            using (var sw = new StreamWriter(fileName, false, encoding ?? Encoding.UTF8))
+            {
+                sw.WriteLine(GetCsvFormatData(dataSet, fieldList: fieldList, separator: separator).ToString());
+                sw.Flush();
+            }
         }
         #endregion
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         #region GetResponseCsv 在浏览器中获得CSV格式文件
         /// <summary>
@@ -419,8 +418,9 @@ namespace DotNet.Util
         public static DataTable ToDataTable(string fileName, string separator = ",", bool firstLineIsHeader = false, Encoding encoding = null, Dictionary<string, string> fieldList = null, bool fieldListOnly = false)
         {
             var dt = new DataTable();
-            var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            var sr = new StreamReader(fs, encoding ?? EncodingUtil.Detect(fs));
+            //修复：使用 using 确保异常路径也释放文件句柄（原 Close 在方法尾、无 try/finally 保护）
+            using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            using var sr = new StreamReader(fs, encoding ?? EncodingUtil.Detect(fs));
             //记录每次读取的一行记录
             var line = "";
             //记录每行记录中的各字段内容
@@ -437,7 +437,10 @@ namespace DotNet.Util
             while ((line = sr.ReadLine()) != null)
             {
                 var spr = separator.ToCharArray();
-                arr = line.Split(spr);
+                // 修复：原先先 line.Split 拆分、再靠「是否以引号结尾」的启发式还原带引号字段，
+                // 该启发式不可靠——字段内容以转义双引号 "" 结尾时（如 "He said ""hi"""）会被误判为未闭合，
+                // 导致该字段被清空且后续列错位。改为按 RFC 4180 逐字符状态机一次性正确拆分。
+                arr = SplitCsvLine(line, spr).ToArray();
 
                 if (firstLineIsHeader)
                 {
@@ -453,18 +456,19 @@ namespace DotNet.Util
                             var dc = new DataColumn(field.Value);
                             dt.Columns.Add(dc);
                             //映射CSV的字段列索引
-                            for (var i = 0; i < headColumnCount; i++)
+                            for (var i = 0; i < arr.Length; i++)
                             {
-                                if (ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, i);
+                                var columnIndex = i;
+                                if (ConvertColumnName(ReadSpecialCharacter(arr, ref i, separator), fieldList: fieldList).Equals(field.Value, StringComparison.OrdinalIgnoreCase)) dicFieldIndex.Add(field.Value, columnIndex);
                             }
                         }
                     }
                     else
                     {
                         //根据第一行实际列数，进行匹配映射来创建
-                        for (var i = 0; i < headColumnCount; i++)
+                        for (var i = 0; i < arr.Length; i++)
                         {
-                            var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, i, separator), fieldList: fieldList));
+                            var dc = new DataColumn(ConvertColumnName(ReadSpecialCharacter(arr, ref i, separator), fieldList: fieldList));
                             dt.Columns.Add(dc);
                         }
                     }
@@ -513,11 +517,14 @@ namespace DotNet.Util
                             var dr = dt.NewRow();
                             foreach (var d in dicFieldIndex)
                             {
-                                for (var j = 0; j < lineColumnCount; j++)
+                                for (var j = 0; j < arr.Length; j++)
                                 {
-                                    if (j == d.Value)
+                                    // 修复：必须始终取值以推进 j（合并字段时 j 会跳跃），否则后续索引错位
+                                    var columnIndex = j;
+                                    var cellValue = ReadSpecialCharacter(arr, ref j, separator);
+                                    if (columnIndex == d.Value)
                                     {
-                                        dr[d.Key] = ReadSpecialCharacter(arr, j, separator);
+                                        dr[d.Key] = cellValue;
                                     }
                                 }
                             }
@@ -530,9 +537,11 @@ namespace DotNet.Util
                         if (lineColumnCount == headColumnCount)
                         {
                             var dr = dt.NewRow();
-                            for (var j = 0; j < lineColumnCount; j++)
+                            // 修复：j 是 arr(拆分后)索引，合并字段时会跳跃，列索引必须独立计数
+                            var columnIndex = 0;
+                            for (var j = 0; j < arr.Length && columnIndex < lineColumnCount; j++)
                             {
-                                dr[j] = ReadSpecialCharacter(arr, j, separator);
+                                dr[columnIndex++] = ReadSpecialCharacter(arr, ref j, separator);
                             }
                             dt.Rows.Add(dr);
                         }
@@ -545,8 +554,6 @@ namespace DotNet.Util
                 }
             }
 
-            sr.Close();
-            fs.Close();
             return dt;
         }
         #endregion
@@ -559,36 +566,12 @@ namespace DotNet.Util
         /// <param name="i"></param>
         /// <param name="separator"></param>
         /// <returns></returns>
-        private static string ReadSpecialCharacter(string[] arr, int i, string separator)
+        private static string ReadSpecialCharacter(string[] arr, ref int i, string separator)
         {
-            var str = (arr[i] + "").Trim();
-            if (str.StartsWith("\""))
-            {
-                var txt = "";
-                if (str.EndsWith("\"") && !str.EndsWith("\"\""))
-                {
-                    txt = str.Trim('\"');
-                }
-                else
-                {
-                    // 找到下一个以引号结尾的项
-                    for (var j = i + 1; j < arr.Length; j++)
-                    {
-                        if (arr[j].EndsWith("\""))
-                        {
-                            txt = arr.Skip(i).Take(j - i + 1).Join(separator + "").Trim('\"');
-                            // 跳过去一大步
-                            i = j;
-                            break;
-                        }
-                    }
-                }
-
-                // 两个引号是一个引号的转义
-                txt = txt.Replace("\"\"", "\"");
-                str = txt;
-            }
-            return str;
+            // 修复：arr 已由 SplitCsvLine 按 RFC 4180 正确拆分，引号包裹与 "" 转义均已处理完毕，
+            // 此处不再需要合并片段（原合并启发式的缺陷见 SplitCsvLine 注释）。
+            // 保留 ref int i 仅为了兼容既有调用点签名，不再修改其值。
+            return i >= 0 && i < arr.Length ? arr[i] : string.Empty;
         }
         #endregion
 
@@ -601,36 +584,130 @@ namespace DotNet.Util
         /// <returns></returns>
         private static int GetLength(string[] arr, string separator)
         {
-            var result = arr.Length;
-            for (var i = 0; i < arr.Length; i++)
+            // 修复：arr 已由 SplitCsvLine 正确拆分，字段数即列数，无需再扣减合并项。
+            // （原实现在此靠启发式扣减列数，必须与 ReadSpecialCharacter 的合并逻辑严格一致，
+            //   两者任一出错都会导致列数与实际字段数不符 -> 整行被静默丢弃，仅写日志。）
+            return arr == null ? 0 : arr.Length;
+        }
+
+        #region SplitCsvLine 按 RFC 4180 拆分单行 CSV
+        /// <summary>
+        /// 按 RFC 4180 规则将一行 CSV 正确拆分为字段列表。
+        /// 支持：引号包裹字段、字段内含分隔符、两个连续双引号 "" 表示一个字面量双引号的转义。
+        /// </summary>
+        /// <param name="line">单行内容（不含换行符）</param>
+        /// <param name="separators">分隔符字符集合</param>
+        /// <returns>字段列表；引号已去除、"" 已还原为单个引号</returns>
+        private static List<string> SplitCsvLine(string line, char[] separators)
+        {
+            var result = new List<string>();
+            if (line == null)
             {
-                var str = (arr[i] + "").Trim();
-                if (str.StartsWith("\""))
+                return result;
+            }
+            if (line.Length == 0)
+            {
+                result.Add(string.Empty);
+                return result;
+            }
+
+            var sb = PoolUtil.StringBuilder.Get();
+            var i = 0;
+            while (i <= line.Length)
+            {
+                // 跳过后导/前导空白（分隔符本身不算空白）
+                while (i < line.Length && char.IsWhiteSpace(line[i]) && !IsSeparator(line[i], separators))
                 {
-                    //var txt = "";
-                    if (str.EndsWith("\"") && !str.EndsWith("\"\""))
+                    i++;
+                }
+
+                string value;
+                if (i < line.Length && line[i] == '"')
+                {
+                    // 引号包裹字段：内容原样保留（含首尾空格），"" 还原为单个引号
+                    i++;
+                    sb.Clear();
+                    while (i < line.Length)
                     {
-                        //txt = str.Trim('\"');
-                    }
-                    else
-                    {
-                        // 找到下一个以引号结尾的项
-                        for (var j = i + 1; j < arr.Length; j++)
+                        var c = line[i];
+                        if (c == '"')
                         {
-                            if (arr[j].EndsWith("\""))
+                            // 连续两个引号是转义，表示一个字面量引号
+                            if (i + 1 < line.Length && line[i + 1] == '"')
                             {
-                                //txt = arr.Skip(i).Take(j - i + 1).Join(separator + "").Trim('\"');
-                                // 跳过去一大步
-                                i = j;
-                                result -= (j - i);
-                                break;
+                                sb.Append('"');
+                                i += 2;
+                                continue;
                             }
+                            // 单个引号 = 字段结束
+                            i++;
+                            break;
                         }
+                        sb.Append(c);
+                        i++;
+                    }
+                    value = sb.ToString();
+                    // 跳过闭合引号之后、分隔符之前的空白
+                    while (i < line.Length && !IsSeparator(line[i], separators) && char.IsWhiteSpace(line[i]))
+                    {
+                        i++;
                     }
                 }
+                else
+                {
+                    // 未加引号字段：取到下一个分隔符，并去除首尾空白
+                    var start = i;
+                    while (i < line.Length && !IsSeparator(line[i], separators))
+                    {
+                        i++;
+                    }
+                    value = start >= i ? string.Empty : line.Substring(start, i - start).Trim();
+                }
+
+                result.Add(value);
+
+                if (i < line.Length && IsSeparator(line[i], separators))
+                {
+                    i++;
+                    // 行尾分隔符 -> 末尾还有一个空字段
+                    if (i == line.Length)
+                    {
+                        result.Add(string.Empty);
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
+
+            sb.Return(false);
             return result;
         }
+
+        /// <summary>
+        /// 判断字符是否为分隔符
+        /// </summary>
+        /// <param name="c">待判断字符</param>
+        /// <param name="separators">分隔符字符集合</param>
+        /// <returns>是分隔符返回 true，否则返回 false</returns>
+        private static bool IsSeparator(char c, char[] separators)
+        {
+            if (separators == null)
+            {
+                return false;
+            }
+            for (var k = 0; k < separators.Length; k++)
+            {
+                if (separators[k] == c)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
         #endregion
 
         #region 列名转换

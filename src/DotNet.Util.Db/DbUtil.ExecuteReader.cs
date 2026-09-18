@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -11,15 +11,15 @@ namespace DotNet.Util
     /// <summary>
     ///	DbUtil
     /// 通用基类
-    /// 
+    ///
     /// 修改记录
-    /// 
+    ///
     ///		2015.06.16 版本：1.0	JiRiGaLa 分离程序。
-    ///	
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2015.06.16</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class DbUtil
     {
@@ -36,6 +36,7 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
+            var dbParameters = new List<IDbDataParameter>();
             sb.Append("SELECT * FROM " + tableName);
             if (values == null || values.Length == 0)
             {
@@ -43,13 +44,24 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append(" WHERE " + name + " IN (" + ObjectUtil.ToList(values, "'") + ")");
+                sb.Append(" WHERE " + name + " IN (");
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sb.Append(",");
+                    }
+                    var parameterName = "value" + i;
+                    sb.Append(DbUtil.GetParameter(dbHelper.CurrentDbType, parameterName));
+                    dbParameters.Add(dbHelper.MakeParameter(parameterName, values[i]));
+                }
+                sb.Append(")");
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
         }
         /// <summary>
         /// ExecuteReader
@@ -79,7 +91,7 @@ namespace DotNet.Util
         /// <returns></returns>
         private static string AddWhere(string condition, string appendWhere)
         {
-            if (string.IsNullOrEmpty(condition))
+            if (condition.IsNullOrEmpty())
             {
                 return appendWhere;
             }
@@ -134,7 +146,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
         {
-            // 这里是需要完善的功能，完善了这个，是一次重大突破 
+            // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
             return dbHelper.ExecuteReader(sql);
         }
@@ -189,17 +201,19 @@ namespace DotNet.Util
                     {
                         sb.Append(" FROM " + tableName);
                     }
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }
-                    if (!string.IsNullOrEmpty(order))
+                    if (!order.IsNullOrEmpty())
                     {
                         sb.Append(" ORDER BY " + order);
                     }
                     if (topLimit > 0)
                     {
-                        sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                        var innerQuery = sb.ToString();
+                        sb.Clear();
+                        sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM <= " + topLimit);
                     }
                     break;
 
@@ -222,18 +236,18 @@ namespace DotNet.Util
                     {
                         sb.Append(" FROM " + tableName);
                     }
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }
-                    if (!string.IsNullOrEmpty(order))
+                    if (!order.IsNullOrEmpty())
                     {
                         sb.Append(" ORDER BY " + order);
                     }
                     break;
 
                 case CurrentDbType.MySql:
-                case CurrentDbType.SqLite:
+                case CurrentDbType.SQLite:
                     sb.Append("SELECT " + selectFields);
                     if (tableName.Trim().IndexOf(" ", StringComparison.OrdinalIgnoreCase) > 0)
                     {
@@ -243,11 +257,11 @@ namespace DotNet.Util
                     {
                         sb.Append(" FROM " + tableName);
                     }
-                    if (!string.IsNullOrEmpty(condition))
+                    if (!condition.IsNullOrEmpty())
                     {
                         sb.Append(" WHERE " + condition);
                     }
-                    if (!string.IsNullOrEmpty(order))
+                    if (!order.IsNullOrEmpty())
                     {
                         sb.Append(" ORDER BY " + order);
                     }
@@ -278,6 +292,7 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
         {
             var sb = PoolUtil.StringBuilder.Get();
+            var dbParameters = new List<IDbDataParameter>();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
 
             if (values == null || values.Length == 0)
@@ -286,13 +301,24 @@ namespace DotNet.Util
             }
             else
             {
-                sb.Append(" WHERE " + name + " IN (" + string.Join(",", values) + ")");
+                sb.Append(" WHERE " + name + " IN (");
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sb.Append(",");
+                    }
+                    var parameterName = "value" + i;
+                    sb.Append(DbUtil.GetParameter(dbHelper.CurrentDbType, parameterName));
+                    dbParameters.Add(dbHelper.MakeParameter(parameterName, values[i]));
+                }
+                sb.Append(")");
             }
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
         }
         /// <summary>
         /// ExecuteReader
@@ -361,7 +387,7 @@ namespace DotNet.Util
         #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
 
         /// <summary>
-        /// 参数化查询 
+        /// 参数化查询
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">表名</param>
@@ -382,23 +408,24 @@ namespace DotNet.Util
                 {
                     case CurrentDbType.Access:
                     case CurrentDbType.SqlServer:
+                        sb.Clear();
                         sb.Append("SELECT TOP " + topLimit + selectField + " FROM " + tableName);
                         break;
                     case CurrentDbType.Oracle:
-                        if (string.IsNullOrEmpty(order))
+                        if (order.IsNullOrEmpty())
                         {
-                            whereSql = AddWhere(whereSql, " ROWNUM < = " + topLimit);
+                            whereSql = AddWhere(whereSql, " ROWNUM <= " + topLimit);
                         }
                         break;
                 }
             }
             // 要传入 conditions
-            if (!string.IsNullOrEmpty(conditions))
+            if (!conditions.IsNullOrEmpty())
             {
                 conditions = " WHERE " + conditions;
             }
             sb.Append(conditions + whereSql);
-            if (!string.IsNullOrEmpty(order))
+            if (!order.IsNullOrEmpty())
             {
                 sb.Append(" ORDER BY " + order);
             }
@@ -410,9 +437,11 @@ namespace DotNet.Util
                         sb.Append(" LIMIT 0, " + topLimit);
                         break;
                     case CurrentDbType.Oracle:
-                        if (!string.IsNullOrEmpty(order))
+                        if (!order.IsNullOrEmpty())
                         {
-                            sb.Append("SELECT * FROM (" + sb.ToString() + ") WHERE ROWNUM < = " + topLimit);
+                            var innerQuery = sb.ToString();
+                            sb.Clear();
+                            sb.Append("SELECT * FROM (" + innerQuery + ") WHERE ROWNUM <= " + topLimit);
                         }
                         break;
                 }

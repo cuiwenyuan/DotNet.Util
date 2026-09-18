@@ -1,4 +1,4 @@
-﻿#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System;
 using System.Collections;
 using System.Web;
@@ -285,7 +285,8 @@ namespace DotNet.Util
         /// <returns>上传后的路径</returns>
         public string RemoteSaveAs(string fileUri)
         {
-            var client = new WebClient();
+            //修复：using 确保异常路径也释放 WebClient（原 client.Dispose() 在 catch 的 early-return 之后不会执行）
+            using var client = new WebClient();
             var fileExt = string.Empty; //文件扩展名，不含“.”
             if (fileUri.LastIndexOf(".", StringComparison.Ordinal) == -1)
             {
@@ -326,11 +327,12 @@ namespace DotNet.Util
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                //修复：记录日志而非静默吞掉（原裸 catch 会吞掉下载失败等异常）
+                LogUtil.WriteLog(ex, Msg.Format("Log.RemoteSaveAsFailed", fileUri));
                 return string.Empty;
             }
-            client.Dispose();
             return newFilePath;
         }
 
@@ -359,7 +361,7 @@ namespace DotNet.Util
         /// <returns>保存文件是否成功 </returns>  
         public string Base64SaveAs(string base64String, out string uploadedFileName, string subFolder = @"ItemPhoto", bool isThumbnail = true, string thumbnailMode = "W", bool isAutoRotate = false, bool keepExif = false, bool createThumbnail = true, bool createIcon = true, bool createMiddle = false, bool createLarge = true, int thumbnailWidth = 180, int thumbnailHeight = 180, int iconWidth = 90, int iconHeight = 90, int middleWidth = 500, int middleHeight = 500, int largeWidth = 700, int largeHeight = 700)
         {
-            if (string.IsNullOrEmpty(thumbnailMode))
+            if (thumbnailMode.IsNullOrEmpty())
             {
                 thumbnailMode = "W";
             }
@@ -396,7 +398,7 @@ namespace DotNet.Util
             }
             var fileSize = 0L;
             // 创建文件
-            if (!string.IsNullOrEmpty(base64String) && !File.Exists(newPhysicalFilePath))
+            if (!base64String.IsNullOrEmpty() && !File.Exists(newPhysicalFilePath))
             {
                 try
                 {
@@ -490,6 +492,7 @@ namespace DotNet.Util
                                 {
                                     { "status", 1 },
                                     { "msg", "上传文件成功！" },
+                                    { "message", "上传文件成功！" },
                                     { "name", "" + newFileName + "" },
                                     { "path", "" + newFilePath + "" },
                                     { "thumbnail", "" + newThumbnailPath + "" },
@@ -529,7 +532,7 @@ namespace DotNet.Util
         private string GetUpLoadPath(string subFolder = null)
         {
             var path = _webpath + _filepath + "/"; //站点目录+上传目录
-            if (!string.IsNullOrEmpty(subFolder))
+            if (!subFolder.IsNullOrEmpty())
             {
                 path += subFolder + "/";
             }
@@ -560,7 +563,8 @@ namespace DotNet.Util
                 al.Add("jpeg");
                 al.Add("jpg");
                 al.Add("png");
-                if (al.Contains(fileExt.ToLower()))
+                // 修复 #12b：fileExt 为 null/空时 fileExt.ToLower() 会抛 NullReferenceException，先判空
+                if (!string.IsNullOrEmpty(fileExt) && al.Contains(fileExt.ToLower()))
                 {
                     return true;
                 }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -9,7 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Net;
 using System.Text;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 using System.Web.Security;
 #endif
@@ -70,7 +70,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
         #region public static bool CheckIsLogon(string accessDenyUrl = null) 检查是否已登录
         /// <summary>
@@ -83,7 +83,7 @@ namespace DotNet.Business
         {
             if (!UserIsLogon())
             {
-                if (string.IsNullOrEmpty(accessDenyUrl))
+                if (accessDenyUrl.IsNullOrEmpty())
                 {
                     //获取设置的当点登录页面
                     if (ConfigurationManager.AppSettings["SSO"] != null)
@@ -95,7 +95,7 @@ namespace DotNet.Business
                     {
                         //获取当前页面
                         returnUrl = HttpUtility.UrlEncode(HttpContext.Current.Request.Url.ToString());
-                        //returnUrl = Server.UrlEncode(HttpContext.Current.Request.Url.ToString()); 
+                        //returnUrl = Server.UrlEncode(HttpContext.Current.Request.Url.ToString());
                     }
                     var js = @"<script language='JavaScript'>top.window.location.replace('{0}');</script>";
                     js = string.Format(js, UserLogonPage + "?ReturnUrl=" + returnUrl);
@@ -202,7 +202,7 @@ namespace DotNet.Business
         {
             //这里要考虑，从来没登录过的情况
             var userInfo = GetUserCookie();
-            if (userInfo != null && !string.IsNullOrEmpty(userInfo.IpAddress) && !userInfo.IpAddress.Equals(GetUserInfo().IpAddress))
+            if (userInfo != null && !(userInfo.IpAddress).IsNullOrEmpty() && !userInfo.IpAddress.Equals(GetUserInfo().IpAddress))
             {
                 userInfo = null;
             }
@@ -226,7 +226,7 @@ namespace DotNet.Business
         {
             var userInfo = GetUserInfo();
             // 已经登录的用户IP地址是否有变化了
-            if (!string.IsNullOrEmpty(userInfo.OpenId))
+            if (!(userInfo.OpenId).IsNullOrEmpty())
             {
                 var userManager = new BaseUserManager(userInfo);
                 //userInfo = userManager.LogonByOpenId(userInfo.OpenId, userInfo.IPAddress).UserInfo;
@@ -251,13 +251,13 @@ namespace DotNet.Business
             if (httpCookie != null)
             {
                 // 读取用户名
-                if (!string.IsNullOrEmpty(httpCookie.Values[CookieUserName]))
+                if (!httpCookie.Values[CookieUserName].IsNullOrEmpty())
                 {
                     // 2012.11.03 Pcsky修改，解决中文用户名无法自动登录的问题。
                     var username = httpCookie.Values[CookieUserName];
                     username = HttpContext.Current.Server.UrlDecode(username);
 
-                    if (string.IsNullOrEmpty(BaseSystemInfo.UserCenterDbConnection))
+                    if ((BaseSystemInfo.UserCenterDbConnection).IsNullOrEmpty())
                     {
                         // 若没有能连接数据库，就直接从Cookie读取用户，这里应该重新定位一下用户信息那里，判断用户是否有效等等，密码是否修改了等等。
                         userInfo = GetUserCookie();
@@ -268,11 +268,11 @@ namespace DotNet.Business
                         {
                             //if (BaseSystemInfo.CheckIPAddress)
                             //{
-                            //    if (!string.IsNullOrEmpty(httpCookie.Values["IPAddress"]))
+                            //    if (!httpCookie.Values["IPAddress"].IsNullOrEmpty())
                             //    {
                             //        string ipAddress = httpCookie.Values["IPAddress"];
                             //        // 若IP地址变了，也需要重新登录，从数据库获取用户的登录信息
-                            //        if (!string.IsNullOrEmpty(result.IPAddress))
+                            //        if (!(result.IPAddress).IsNullOrEmpty())
                             //        {
                             //            if (!ipAddress.Equals(result.IPAddress))
                             //            {
@@ -285,7 +285,7 @@ namespace DotNet.Business
 
                             // 读取密码
                             var password = string.Empty;
-                            if (!string.IsNullOrEmpty(httpCookie.Values[CookiePassword]))
+                            if (!httpCookie.Values[CookiePassword].IsNullOrEmpty())
                             {
                                 password = httpCookie.Values[CookiePassword];
                                 password = Decrypt(password);
@@ -340,7 +340,7 @@ namespace DotNet.Business
                 //result.StaffId = httpCookie.Values["StaffId"];
 
                 userInfo.CompanyCode = httpCookie.Values["CompanyCode"];
-                if (!string.IsNullOrEmpty(httpCookie.Values["CompanyId"]))
+                if (!httpCookie.Values["CompanyId"].IsNullOrEmpty())
                 {
                     userInfo.CompanyId = httpCookie.Values["CompanyId"];
                 }
@@ -350,7 +350,7 @@ namespace DotNet.Business
                 }
                 userInfo.CompanyName = HttpUtility.UrlDecode(httpCookie.Values["CompanyName"]);
 
-                if (!string.IsNullOrEmpty(httpCookie.Values["DepartmentId"]))
+                if (!httpCookie.Values["DepartmentId"].IsNullOrEmpty())
                 {
                     userInfo.DepartmentId = httpCookie.Values["DepartmentId"];
                 }
@@ -361,7 +361,7 @@ namespace DotNet.Business
                 userInfo.DepartmentCode = httpCookie.Values["DepartmentCode"];
                 userInfo.DepartmentName = HttpUtility.UrlDecode(httpCookie.Values["DepartmentName"]);
 
-                //if (!string.IsNullOrEmpty(httpCookie.Values["WorkgroupId"]))
+                //if (!httpCookie.Values["WorkgroupId"].IsNullOrEmpty())
                 //{
                 //    result.WorkgroupId = httpCookie.Values["WorkgroupId"];
                 //}
@@ -372,11 +372,11 @@ namespace DotNet.Business
                 //result.WorkgroupCode = httpCookie.Values["WorkgroupCode"];
                 //result.WorkgroupName = HttpUtility.UrlDecode(httpCookie.Values["WorkgroupName"]);
 
-                if (!string.IsNullOrEmpty(httpCookie.Values["IsAdministrator"]))
+                if (!httpCookie.Values["IsAdministrator"].IsNullOrEmpty())
                 {
                     userInfo.IsAdministrator = httpCookie.Values["IsAdministrator"].Equals(true.ToString());
                 }
-                //if (!string.IsNullOrEmpty(httpCookie.Values["SecurityLevel"]))
+                //if (!httpCookie.Values["SecurityLevel"].IsNullOrEmpty())
                 //{
                 //    result.SecurityLevel = int.Parse(httpCookie.Values["SecurityLevel"]);
                 //}
@@ -410,7 +410,7 @@ namespace DotNet.Business
             // userName = Encrypt(userName);
             password = Encrypt(password);
             var httpCookie = new HttpCookie(CookieName);
-            if (!string.IsNullOrEmpty(CookieDomain))
+            if (!CookieDomain.IsNullOrEmpty())
             {
                 httpCookie.Domain = CookieDomain;
             }
@@ -439,7 +439,7 @@ namespace DotNet.Business
         {
             //var password = Encrypt(userInfo.Password);
             var httpCookie = new HttpCookie(CookieName);
-            if (!string.IsNullOrEmpty(CookieDomain))
+            if (!CookieDomain.IsNullOrEmpty())
             {
                 httpCookie.Domain = CookieDomain;
             }
@@ -519,29 +519,6 @@ namespace DotNet.Business
         #endregion
 
         #region 用OpenId登录部分
-        /// <summary>
-        /// 授权码登录
-        /// </summary>
-        /// <param name="authorizationCode"></param>
-        /// <param name="transparent"></param>
-        /// <param name="useCaching"></param>
-        /// <param name="useDatabase"></param>
-        /// <param name="useUserCenterHost"></param>
-        /// <returns></returns>
-        public static UserLogonResult LogonByAuthorizationCode(string authorizationCode, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
-        {
-            // 统一的登录服务
-            UserLogonResult result = null;
-            var openId = string.Empty;
-
-            if (BaseUserManager.VerifyAuthorizationCode(null, authorizationCode, out openId))
-            {
-                result = LogonByOpenId(openId, transparent, useCaching, useDatabase, useUserCenterHost);
-            }
-
-            return result;
-        }
-
 
         #region public static UserLogonResult LogonByOpenId(string openId, bool transparent = false, bool useCaching = true, bool useDatabase = true, bool useUserCenterHost = true)
         /// <summary>
@@ -582,23 +559,26 @@ namespace DotNet.Business
             if (useUserCenterHost)
             {
                 var url = BaseSystemInfo.UserCenterHost + "/UserCenterV42/LogonService.ashx";
-                var webClient = new WebClient();
-                var postValues = new NameValueCollection();
-                postValues.Add("function", "LogonByOpenId");
-                postValues.Add("userInfo", BaseSystemInfo.UserInfo.Serialize());
-                postValues.Add("systemCode", BaseSystemInfo.SystemCode);
-                // 若ip地址没有传递过来，就获取BS客户端ip地址
-                postValues.Add("ipAddress", Utils.GetIp());
-                // BS 登录容易引起混乱，
-                // postValues.Add("macAddress", BaseSystemInfo.UserInfo.MACAddress);
-                postValues.Add("securityKey", BaseSystemInfo.SecurityKey);
-                postValues.Add("openId", openId);
-                // 向服务器发送POST数据
-                var responseArray = webClient.UploadValues(url, postValues);
-                var response = Encoding.UTF8.GetString(responseArray);
-                if (!string.IsNullOrEmpty(response))
+                //修复：using 确保 WebClient 释放
+                using (var webClient = new WebClient())
                 {
-                    userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
+                    var postValues = new NameValueCollection();
+                    postValues.Add("function", "LogonByOpenId");
+                    postValues.Add("userInfo", BaseSystemInfo.UserInfo.Serialize());
+                    postValues.Add("systemCode", BaseSystemInfo.SystemCode);
+                    // 若ip地址没有传递过来，就获取BS客户端ip地址
+                    postValues.Add("ipAddress", Utils.GetIp());
+                    // BS 登录容易引起混乱，
+                    // postValues.Add("macAddress", BaseSystemInfo.UserInfo.MACAddress);
+                    postValues.Add("securityKey", BaseSystemInfo.SecurityKey);
+                    postValues.Add("openId", openId);
+                    // 向服务器发送POST数据
+                    var responseArray = webClient.UploadValues(url, postValues);
+                    var response = Encoding.UTF8.GetString(responseArray);
+                    if (!response.IsNullOrEmpty())
+                    {
+                        userLogonResult = JsonUtil.JsonToObject<UserLogonResult>(response);
+                    }
                 }
                 // 检查身份
                 if (userLogonResult != null && userLogonResult.Status == Status.Ok)
@@ -653,15 +633,15 @@ namespace DotNet.Business
             statusMessage = Status.UserNotFound.ToDescription();
 
             var userInfo = GetUserInfo();
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
                 userInfo.IpAddress = ipAddress;
             }
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 userInfo.SystemCode = systemCode;
             }
-            if (string.IsNullOrEmpty(userInfo.IpAddress))
+            if ((userInfo.IpAddress).IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
@@ -688,7 +668,7 @@ namespace DotNet.Business
 
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
-                if (!string.IsNullOrEmpty(permissionCode))
+                if (!permissionCode.IsNullOrEmpty())
                 {
                     //isAuthorized = dotNetService.PermissionService.IsAuthorized(userLogonResult.UserInfo, permissionCode, null);
                     var permissionManager = new BasePermissionManager(userInfo);
@@ -714,7 +694,7 @@ namespace DotNet.Business
                 {
                     userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                 }
                 result = userLogonResult.UserInfo;
             }
@@ -742,29 +722,29 @@ namespace DotNet.Business
             var taskId = Guid.NewGuid().ToString("N");
             // 统一的登录服务
             var userInfo = GetUserInfo();
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
                 userInfo.IpAddress = ipAddress;
             }
-            if (!string.IsNullOrEmpty(systemCode))
+            if (!systemCode.IsNullOrEmpty())
             {
                 userInfo.SystemCode = systemCode;
             }
-            if (!string.IsNullOrEmpty(userInfo.IpAddress))
+            if ((userInfo.IpAddress).IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
             var userManager = new BaseUserManager(userInfo) { CheckIsAdministrator = true };
-            var userLogonResult = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, Utils.GetIp());
+            var userLogonResult = userManager.LogonByCompany(companyName, userName, password, openId, userInfo.SystemCode, userInfo.IpAddress);
             // 检查身份
             if (userLogonResult.Status == Status.Ok)
             {
                 var isAuthorized = true;
                 // 用户是否有哪个相应的权限
-                if (!string.IsNullOrEmpty(permissionCode))
+                if (!permissionCode.IsNullOrEmpty())
                 {
                     var permissionManager = new BasePermissionManager(userInfo);
-                    isAuthorized = permissionManager.IsAuthorized(systemCode, userInfo.Id.ToString(), permissionCode, null);
+                    isAuthorized = permissionManager.IsAuthorized(systemCode, userLogonResult.UserInfo.Id.ToString(), permissionCode, null);
                 }
                 // 有相应的权限才可以登录
                 if (isAuthorized)
@@ -786,7 +766,7 @@ namespace DotNet.Business
                 {
                     userLogonResult.Status = Status.LogonDeny;
                     userLogonResult.StatusCode = Status.LogonDeny.ToString();
-                    userLogonResult.StatusMessage = "访问被拒绝、您的账户没有后台管理访问权限。";
+                    userLogonResult.StatusMessage = Msg.Get("Logon.AccessDeniedAdmin");
                 }
             }
             return userLogonResult.UserInfo;
@@ -831,7 +811,7 @@ namespace DotNet.Business
             var httpCookie = new HttpCookie(CookieName);
             // 设置过期时间，1秒钟后删除cookie就不对了,得时间很长才可以服务器时间与客户时间的差距得考虑好
             httpCookie.Expires = DateTime.Now.AddYears(-50);
-            if (!string.IsNullOrEmpty(CookieDomain))
+            if (!CookieDomain.IsNullOrEmpty())
             {
                 httpCookie.Domain = CookieDomain;
             }
@@ -907,7 +887,7 @@ namespace DotNet.Business
             //var responseArray = webClient.UploadValues(url, postValues);
 
             // string response = Encoding.UTF8.GetString(responseArray);
-            // if (!string.IsNullOrEmpty(response))
+            // if (!response.IsNullOrEmpty())
             // {
             //      result = response.Equals(true.ToString(), StringComparison.InvariantCultureIgnoreCase);
             // }
@@ -934,7 +914,7 @@ namespace DotNet.Business
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
             status = Status.UserNotFound;
-            statusMessage = "未找到对应的用户";
+            statusMessage = Msg.Get("Logon.UserNotFound");
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
             var userContactManager = new BaseUserContactManager();
@@ -963,12 +943,12 @@ namespace DotNet.Business
                         {
                             result = true;
                             status = Status.Ok;
-                            statusMessage = "新密码已发送到您的注册邮箱" + email + "，请注意查收。";
+                            statusMessage = Msg.Format("Logon.PasswordResetMailSent", email);
                         }
                         else
                         {
                             status = Status.ErrorUpdate;
-                            statusMessage = "更新数据库失败，请重试！";
+                            statusMessage = Msg.Get("Logon.UpdateDatabaseFailed");
                         }
                     }
                     else
@@ -976,7 +956,7 @@ namespace DotNet.Business
                         if (userEntity.Enabled == 0)
                         {
                             status = Status.UserLocked;
-                            statusMessage = "用户被锁定，不允许重置密码。";
+                            statusMessage = Msg.Get("Logon.UserLockedCannotResetPassword");
                         }
                     }
                 }
@@ -999,7 +979,7 @@ namespace DotNet.Business
             var result = false;
             // 1.用户是否找到？默认是未找到用户状态
             status = Status.UserNotFound;
-            statusMessage = "用户未找到，请重新输入用户名。";
+            statusMessage = Msg.Get("Logon.UserNotFoundRetry");
             newPassword = RandomUtil.GetRandom(100000, 999999).ToString();
 
             var userManager = new BaseUserManager();
@@ -1016,7 +996,7 @@ namespace DotNet.Business
                 if (userEntity.Enabled == 1)
                 {
 
-                    //if (!string.IsNullOrEmpty(userEntity.Email))
+                    //if (!(userEntity.Email).IsNullOrEmpty())
                     //{
                     //    // 5.重新产生随机密码？
                     //    // 6.发送邮件给用户？
@@ -1038,12 +1018,12 @@ namespace DotNet.Business
                     if (userEntity.Enabled == 0)
                     {
                         status = Status.UserLocked;
-                        statusMessage = "用户被锁定，不允许设置密码。";
+                        statusMessage = Msg.Get("Logon.UserLockedCannotSetPassword");
                     }
                     else
                     {
                         status = Status.UserNotActive;
-                        statusMessage = "用户还未被激活，不允许设置密码。";
+                        statusMessage = Msg.Get("Logon.UserNotActivated");
                     }
                 }
             }

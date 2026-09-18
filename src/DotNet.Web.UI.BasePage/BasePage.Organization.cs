@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -61,14 +61,14 @@ public partial class BasePage : System.Web.UI.Page
     {
         //dropDownList.Items.Clear();
         var manager = new BaseOrganizationManager(UserInfo);
-        var dtOrganization = manager.GetOrganizationDataTable(parentId, false, categoryCode);
+        var dt = manager.GetOrganizationDataTable(parentId, false, categoryCode);
         dropDownList.SelectedValue = null;
-        if (dtOrganization != null && dtOrganization.Rows.Count > 0)
+        if (dt != null && dt.Rows.Count > 0)
         {
-            dtOrganization.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
+            dt.DefaultView.Sort = BaseOrganizationEntity.FieldSortCode;
             dropDownList.DataValueField = BaseOrganizationEntity.FieldId;
             dropDownList.DataTextField = BaseOrganizationEntity.FieldName;
-            dropDownList.DataSource = dtOrganization;
+            dropDownList.DataSource = dt;
         }
         dropDownList.DataBind();
         if (insertBlank)
@@ -178,7 +178,7 @@ public partial class BasePage : System.Web.UI.Page
         // 至少要列出自己的部门的(其实这里还看是否存在了)
         if (userDepartment)
         {
-            if (!string.IsNullOrEmpty(UserInfo.DepartmentId))
+            if (!(UserInfo.DepartmentId).IsNullOrEmpty())
             {
                 if (!BaseUtil.Exists(dt, BaseOrganizationEntity.FieldId, UserInfo.DepartmentId))
                 {
@@ -266,7 +266,7 @@ public partial class BasePage : System.Web.UI.Page
     public string GetOrganizationCategory(string itemValue)
     {
         var result = string.Empty;
-        if (!string.IsNullOrEmpty(itemValue))
+        if (!itemValue.IsNullOrEmpty())
         {
             var entity = new BaseDictionaryItemManager(UserInfo).GetEntity("BaseOrganizationCategory", itemValue, itemValue);
             if (entity != null)

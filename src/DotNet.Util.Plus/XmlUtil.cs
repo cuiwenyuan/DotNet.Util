@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 #else
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +17,69 @@ namespace DotNet.Util
     /// </summary>
     public static class XmlUtil
     {
+        public static XmlDocument LoadXmlDocumentSecure(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
+
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null,
+                IgnoreComments = false,
+                IgnoreWhitespace = false
+            };
+
+            var document = new XmlDocument { XmlResolver = null };
+            using (var reader = XmlReader.Create(filePath, settings))
+            {
+                document.Load(reader);
+            }
+            return document;
+        }
+
+        public static XmlDocument LoadXmlDocSafe(string filePath)
+        {
+            return LoadXmlDocumentSecure(filePath);
+        }
+
+#if NET46_OR_GREATER
+#else
+        /// <summary>
+        /// If set, XmlUtil will use this IFileProvider to resolve relative file paths.
+        /// Consumers (e.g., during app startup) can set XmlUtil.FileProvider = hostEnvironment.ContentRootFileProvider;
+        /// </summary>
+        public static IFileProvider FileProvider { get; set; }
+
+        /// <summary>
+        /// Optional host environment that may expose a ContentRootFileProvider property.
+        /// </summary>
+        public static IHostEnvironment HostEnvironment { get; set; }
+
+        private static IFileProvider ResolveFileProvider()
+        {
+            if (FileProvider != null) return FileProvider;
+            if (HostEnvironment != null)
+            {
+                try
+                {
+                    var prop = HostEnvironment.GetType().GetProperty("ContentRootFileProvider");
+                    if (prop != null)
+                    {
+                        var val = prop.GetValue(HostEnvironment) as IFileProvider;
+                        if (val != null) return val;
+                    }
+                }
+                catch
+                {
+                    // ignore and fall back
+                }
+            }
+            return new PhysicalFileProvider(AppContext.BaseDirectory);
+        }
+#endif
         #region 增、删、改操作==============================================
 
         /// <summary>
@@ -28,22 +91,21 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool AppendChild(string filePath, string xPath, XmlNode xmlNode)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(xPath);
                     var n = doc.ImportNode(xmlNode, true);
                     xn?.AppendChild(n);
@@ -69,21 +131,20 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool AppendChild(string filePath, string xPath, string toFilePath, string toXPath)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(toFilePath);
+                    var doc = LoadXmlDocumentSecure(toFilePath);
                     var xn = doc.SelectSingleNode(toXPath);
 
                     var xnList = ReadNodes(filePath, xPath);
@@ -116,21 +177,20 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool UpdateNodeInnerText(string filePath, string xPath, string value)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    //IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(xPath);
                     var xe = (XmlElement)xn;
                     if (xe != null) xe.InnerText = value;
@@ -153,22 +213,20 @@ namespace DotNet.Util
         /// <returns></returns>
         public static XmlDocument LoadXmlDoc(string filePath)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
-                    return doc;
+                    return LoadXmlDocumentSecure(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -191,12 +249,11 @@ namespace DotNet.Util
         {
             try
             {
-                var doc = new XmlDocument();
-                doc.Load(filePath);
+                var doc = LoadXmlDocumentSecure(filePath);
                 var xn = doc.SelectSingleNode(xPath);
                 if (xn != null)
                 {
-                    var xnList = xn.ChildNodes;  //得到该节点的子节点
+                    var xnList = xn.ChildNodes;
                     return xnList;
                 }
                 return null;
@@ -221,21 +278,21 @@ namespace DotNet.Util
         public static string GetTemplate(string filePath)
         {
             var result = string.Empty;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
                     using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (var sr = new StreamReader(fs, Encoding.Default))
+                    using (var sr = new StreamReader(fs, Encoding.UTF8))
                     {
                         result = sr.ReadToEnd();
                     }
@@ -264,14 +321,14 @@ namespace DotNet.Util
         public static bool CreateXmlFile(string filePath, string fileContent, string templatePath, bool overwrite = true)
         {
             var result = overwrite;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
@@ -293,7 +350,7 @@ namespace DotNet.Util
                     using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 }
                 using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
-                if (string.IsNullOrEmpty(fileContent))
+                if (fileContent.IsNullOrEmpty())
                 {
                     fileContent = GetTemplate(templatePath);
                 }
@@ -321,23 +378,22 @@ namespace DotNet.Util
         public static string Read(string filePath, string node, string attribute, string nameSpace = "")
         {
             var value = string.Empty;
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -348,7 +404,7 @@ namespace DotNet.Util
                     {
                         if (xn.Attributes != null)
                         {
-                            value = (string.IsNullOrEmpty(attribute) ? xn.InnerText : xn.Attributes[attribute].Value);
+                            value = (attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value);
                         }
                     }
                 }
@@ -381,23 +437,22 @@ namespace DotNet.Util
          ************************************************/
         public static void Insert(string filePath, string node, string element, string attribute, string value, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -405,9 +460,9 @@ namespace DotNet.Util
                         xn = doc.SelectSingleNode(node, xmlnam);
                     }
 
-                    if (string.IsNullOrEmpty(element))
+                    if (element.IsNullOrEmpty())
                     {
-                        if (!string.IsNullOrEmpty(attribute))
+                        if (!attribute.IsNullOrEmpty())
                         {
                             var xe = (XmlElement)xn;
                             xe?.SetAttribute(attribute, value);
@@ -416,7 +471,7 @@ namespace DotNet.Util
                     else
                     {
                         var xe = doc.CreateElement(element);
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xe.InnerText = value;
 
@@ -466,23 +521,22 @@ namespace DotNet.Util
          ************************************************/
         public static void Update(string filePath, string node, string attribute, string value, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -493,7 +547,7 @@ namespace DotNet.Util
                     var xe = (XmlElement)xn;
                     if (xe != null)
                     {
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xe.InnerText = value;
                         }
@@ -539,23 +593,22 @@ namespace DotNet.Util
          ************************************************/
         public static void Delete(string filePath, string node, string attribute, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    var fileProvider = ResolveFileProvider();
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     var xn = doc.SelectSingleNode(node);
-                    if (!string.IsNullOrEmpty(nameSpace))
+                    if (!nameSpace.IsNullOrEmpty())
                     {
                         var xmlnam = new XmlNamespaceManager(doc.NameTable);
                         xmlnam.AddNamespace("a", nameSpace);
@@ -565,7 +618,7 @@ namespace DotNet.Util
                     var xe = (XmlElement)xn;
                     if (xn != null)
                     {
-                        if (string.IsNullOrEmpty(attribute))
+                        if (attribute.IsNullOrEmpty())
                         {
                             xn.ParentNode?.RemoveChild(xn);
                         }
@@ -599,31 +652,30 @@ namespace DotNet.Util
          ************************************************/
         public static void BatchUpdateNodeValue(string filePath, List<KeyValuePair<string, string>> parameters, string nameSpace = "")
         {
-            if (!string.IsNullOrEmpty(filePath))
+            if (!filePath.IsNullOrEmpty())
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
-                    IFileProvider fileProvider = Microsoft.Extensions.Configuration.ConfigurationBuilder.GetFileProvider();
+                    IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
                     filePath = fileProvider.GetFileInfo(filePath).PhysicalPath;
 #endif
                 }
                 try
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(filePath);
+                    var doc = LoadXmlDocumentSecure(filePath);
                     if (parameters != null && parameters.Count > 0)
                     {
                         foreach (var parameter in parameters)
                         {
-                            if (!string.IsNullOrEmpty(parameter.Key) && !string.IsNullOrEmpty(parameter.Value))
+                            if (!(parameter.Key).IsNullOrEmpty() && !(parameter.Value).IsNullOrEmpty())
                             {
                                 var node = parameter.Key;
                                 var value = parameter.Value;
                                 var xn = doc.SelectSingleNode(node);
-                                if (!string.IsNullOrEmpty(nameSpace))
+                                if (!nameSpace.IsNullOrEmpty())
                                 {
                                     var xmlnam = new XmlNamespaceManager(doc.NameTable);
                                     xmlnam.AddNamespace("a", nameSpace);

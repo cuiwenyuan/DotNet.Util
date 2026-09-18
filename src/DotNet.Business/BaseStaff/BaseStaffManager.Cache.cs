@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -35,7 +35,7 @@ namespace DotNet.Business
         /// </summary>
         public static void ClearCache()
         {
-            lock (BaseSystemInfo.UserLock)
+            lock (_locker)
             {
                 CacheUtil.Remove(BaseStaffEntity.CurrentTableName);
             }
@@ -64,7 +64,7 @@ namespace DotNet.Business
         public static string GetRealName(string id)
         {
             var result = id;
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 var entityList = GetEntities();
                 var staffEntity = entityList.FirstOrDefault(entity => entity.Id.ToString() == id);
@@ -86,7 +86,7 @@ namespace DotNet.Business
         public static BaseStaffEntity GetEntityByEmployeeNumberByCache(string employeeNumber)
         {
             BaseStaffEntity result = null;
-            if (!string.IsNullOrEmpty(employeeNumber))
+            if (!employeeNumber.IsNullOrEmpty())
             {
                 var cacheKey = "StaffByEmployeeNumber" + employeeNumber;
                 result = CacheUtil.Cache(cacheKey, () => new BaseStaffManager().GetEntityByEmployeeNumber(employeeNumber), true);

@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -76,7 +76,7 @@ namespace DotNet.Business
         {
             var result = string.Empty;
 
-            if (!string.IsNullOrEmpty(tableName) && !string.IsNullOrEmpty(categoryCode) && !string.IsNullOrEmpty(parameterId) && !string.IsNullOrEmpty(parameterCode))
+            if (!tableName.IsNullOrEmpty() && !categoryCode.IsNullOrEmpty() && !parameterId.IsNullOrEmpty() && !parameterCode.IsNullOrEmpty())
             {
                 var key = "Parameter:" + tableName + ":" + categoryCode + ":" + parameterId + ":" + parameterCode;
                 result = CacheUtil.Cache(key, () => new BaseParameterManager(tableName).GetParameter(tableName, categoryCode, parameterId, parameterCode), true, refreshCache);

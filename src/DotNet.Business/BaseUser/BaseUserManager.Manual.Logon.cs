@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -15,7 +15,7 @@ namespace DotNet.Business
     /// <summary>
     /// BaseUserManager
     /// 用户管理
-    /// 
+    ///
     /// 修改记录
     ///
     ///     2020.12.08 版本：1.5 Troy.Cui 使用CacheUtil缓存
@@ -27,11 +27,11 @@ namespace DotNet.Business
     ///		2014.03.25 版本：3.0 JiRiGaLa CheckIsAdministrator 不是所有系统都需要验证是否超级管理员，去掉效率会更高，特别是针对登录接口可以优化了。
     ///		2013.10.20 版本：2.0 JiRiGaLa 集成K8物流系统的登录功能。
     ///		2011.10.17 版本：1.0 JiRiGaLa 主键整理。
-    /// 
+    ///
     /// <author>
     ///		<name>Troy.Cui</name>
     ///		<date>2016.01.28</date>
-    /// </author> 
+    /// </author>
     /// </summary>
     public partial class BaseUserManager : BaseManager
     {
@@ -68,7 +68,7 @@ namespace DotNet.Business
         #region GetAuthorizationCode
         /// <summary>
         /// 获取登录操作的验证码
-        /// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。 
+        /// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。
         /// </summary>
         /// <param name="userInfo">用户信息</param>
         /// <returns>操作码</returns>
@@ -118,10 +118,10 @@ namespace DotNet.Business
             // 2016-03-03 吉日嘎拉 让缓存早点儿失效
             var key = "code:" + code;
             openId = CacheUtil.Get<string>(key);
-            if (!string.IsNullOrEmpty(openId))
+            if (!openId.IsNullOrEmpty())
             {
                 result = true;
-                if (userInfo != null && !string.IsNullOrEmpty(userInfo.OpenId))
+                if (userInfo != null && !(userInfo.OpenId).IsNullOrEmpty())
                 {
                     result = userInfo.OpenId.Equals(openId);
                 }
@@ -146,11 +146,11 @@ namespace DotNet.Business
             UserLogonResult result = null;
 
             // 2016-04-13 吉日嘎拉 IP登录限制，防止暴力破解
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
             }
 
-            if (!string.IsNullOrEmpty(userName))
+            if (!userName.IsNullOrEmpty())
             {
                 ////Troy.Cui 2016.12.28
                 //if (BaseSystemInfo.RedisEnabled)
@@ -166,7 +166,7 @@ namespace DotNet.Business
                 //}
             }
 
-            if (!string.IsNullOrEmpty(password))
+            if (!password.IsNullOrEmpty())
             {
                 ////Troy.Cui 2016.12.28
                 //if (BaseSystemInfo.RedisEnabled)
@@ -213,7 +213,7 @@ namespace DotNet.Business
 
             try
             {
-                if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+                if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
                 {
                     //errorMark = 1;
                     ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
@@ -229,12 +229,12 @@ namespace DotNet.Business
 
                 if (UserInfo != null)
                 {
-                    if (string.IsNullOrEmpty(ipAddress))
+                    if (ipAddress.IsNullOrEmpty())
                     {
                         ipAddress = UserInfo.IpAddress;
                     }
                     // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                    if (string.IsNullOrEmpty(macAddress))
+                    if (macAddress.IsNullOrEmpty())
                     {
                         macAddress = UserInfo.MacAddress;
                     }
@@ -342,7 +342,7 @@ namespace DotNet.Business
 
             try
             {
-                if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+                if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
                 {
                     errorMark = 1;
                     ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
@@ -358,12 +358,12 @@ namespace DotNet.Business
 
                 if (UserInfo != null)
                 {
-                    if (string.IsNullOrEmpty(ipAddress))
+                    if (ipAddress.IsNullOrEmpty())
                     {
                         ipAddress = UserInfo.IpAddress;
                     }
                     // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                    if (string.IsNullOrEmpty(macAddress))
+                    if (macAddress.IsNullOrEmpty())
                     {
                         macAddress = UserInfo.MacAddress;
                     }
@@ -441,7 +441,7 @@ namespace DotNet.Business
                 result.Status = Status.UserNotFound;
                 result.StatusCode = Status.UserNotFound.ToString();
                 result.StatusMessage = GetStateMessage(result.StatusCode);
-                if (string.IsNullOrEmpty(companyCode) || string.IsNullOrEmpty(userCode))
+                if (companyCode.IsNullOrEmpty() || userCode.IsNullOrEmpty())
                 {
                     return result;
                 }
@@ -457,7 +457,7 @@ namespace DotNet.Business
 
                 errorMark = 1;
                 companyId = BaseOrganizationManager.GetIdByCodeByCache(companyCode);
-                if (string.IsNullOrEmpty(companyId))
+                if (companyId.IsNullOrEmpty())
                 {
                     result.Status = Status.CompanyNotFound;
                     result.StatusCode = Status.CompanyNotFound.ToString();
@@ -532,7 +532,7 @@ namespace DotNet.Business
         public UserLogonResult LogonByCompany(string companyName, string userName, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
-            if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+            if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
@@ -541,10 +541,10 @@ namespace DotNet.Business
             {
                 Status = Status.Error,
                 StatusCode = "Error",
-                StatusMessage = "请用唯一用户名登录、若不知道唯一用户名、请向公司的管理员索取。"
+                StatusMessage = Msg.Get("Logon.RequireUniqueUserName")
             };
 
-            if (string.IsNullOrEmpty(companyName) || string.IsNullOrEmpty(userName))
+            if (companyName.IsNullOrEmpty() || userName.IsNullOrEmpty())
             {
                 return result;
             }
@@ -559,12 +559,12 @@ namespace DotNet.Business
             userName = SecretUtil.SqlSafe(userName);
             if (UserInfo != null)
             {
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -587,11 +587,11 @@ namespace DotNet.Business
             sb.Append("SELECT * FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseUserEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserEntity.FieldDeleted));
 
             dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldDeleted, 0));
-            if (!string.IsNullOrEmpty(companyName))
+            if (!companyName.IsNullOrEmpty())
             {
                 sb.Append(" AND " + BaseUserEntity.FieldCompanyName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyName));
                 dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldCompanyName, companyName));
-                if (!string.IsNullOrEmpty(userName))
+                if (!userName.IsNullOrEmpty())
                 {
                     sb.Append(" AND " + BaseUserEntity.FieldUserName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldUserName));
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldUserName, userName));
@@ -599,7 +599,7 @@ namespace DotNet.Business
             }
             else
             {
-                if (!string.IsNullOrEmpty(userName))
+                if (!userName.IsNullOrEmpty())
                 {
                     sb.Append(" AND " + BaseUserEntity.FieldNickName + " = " + DbHelper.GetParameter(BaseUserEntity.FieldNickName));
                     dbParameters.Add(DbHelper.MakeParameter(BaseUserEntity.FieldNickName, userName));
@@ -703,18 +703,18 @@ namespace DotNet.Business
             var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
-            if (!string.IsNullOrEmpty(ipAddress) && BaseSystemInfo.OnInternet)
+            if (!ipAddress.IsNullOrEmpty() && BaseSystemInfo.OnInternet)
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
             if (UserInfo != null)
             {
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -778,18 +778,18 @@ namespace DotNet.Business
             var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
-            if (!string.IsNullOrEmpty(ipAddress) && BaseSystemInfo.OnInternet)
+            if (!ipAddress.IsNullOrEmpty() && BaseSystemInfo.OnInternet)
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
             if (UserInfo != null)
             {
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -800,15 +800,9 @@ namespace DotNet.Business
             result = LogonByCompanyByCode(companyCode, userCode, out userEntity);
             if (userEntity != null)
             {
-                // 2015-11-11 吉日嘎拉 进行手机验证
-                var mobileValidate = false;
-                var mobile = BaseUserContactManager.GetMobileByCache(userEntity.Id);
-                //if (ValidateUtil.IsMobile(mobile))
-                //{
-                //    var mobileService = new MobileService();
-                //    mobileValidate = mobileService.ValidateVerificationCode(UserInfo, mobile, verificationCode);
-                //}
-                if (!mobileValidate)
+                //修复：原代码引用了不存在的 MobileService（被注释掉），导致 mobileValidate 恒为 false、验证码登录永远失败。
+                //改为使用本类内置的 Verify() 校验数据库中保存的验证码
+                if (!Verify(userEntity.Id.ToString(), verificationCode))
                 {
                     result.Status = Status.VerificationCodeError;
                     result.StatusCode = Status.VerificationCodeError.ToString();
@@ -890,7 +884,7 @@ namespace DotNet.Business
             }
 
             var ipAddressName = string.Empty;
-            if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+            if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
@@ -899,12 +893,12 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 realName = UserInfo.RealName;
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -934,7 +928,7 @@ namespace DotNet.Business
             // 服务器上、本地都需要能登录才可以
             if (dt != null && dt.Rows.Count == 0)
             {
-                if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SqLite)
+                if (DbHelper.CurrentDbType == CurrentDbType.Oracle || DbHelper.CurrentDbType == CurrentDbType.SQLite)
                 {
                     where = " Id > 0 AND " + BaseUserEntity.FieldUserName + " = '" + userName + "' AND " + BaseUserEntity.FieldDeleted + " = 0";
                     dt = GetDataTable(where);
@@ -1027,7 +1021,7 @@ namespace DotNet.Business
         public UserLogonResult LogonByEmail(string email, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
-            if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+            if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
@@ -1037,12 +1031,12 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 realname = UserInfo.RealName;
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -1072,7 +1066,7 @@ namespace DotNet.Business
             // parameters.Add(new KeyValuePair<string, object>(BaseUserContactEntity.FieldEmailValiated, 1));
             var id = manager.GetId(parameters);
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 var userEntity = GetEntity(id);
@@ -1100,7 +1094,7 @@ namespace DotNet.Business
         public UserLogonResult LogonByMobile(string mobile, string password, string openId = null, string systemCode = null, string ipAddress = null, string macAddress = null, string computerName = null, bool checkUserPassword = true, bool validateUserOnly = false, bool checkMacAddress = true)
         {
             var ipAddressName = string.Empty;
-            if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+            if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
@@ -1110,12 +1104,12 @@ namespace DotNet.Business
             if (UserInfo != null)
             {
                 realname = UserInfo.RealName;
-                if (string.IsNullOrEmpty(ipAddress))
+                if (ipAddress.IsNullOrEmpty())
                 {
                     ipAddress = UserInfo.IpAddress;
                 }
                 // 得到MAC地址，否则会导致后面的MAC地址判断无效 赵秉杰 2012-09-02
-                if (string.IsNullOrEmpty(macAddress))
+                if (macAddress.IsNullOrEmpty())
                 {
                     macAddress = UserInfo.MacAddress;
                 }
@@ -1146,7 +1140,7 @@ namespace DotNet.Business
             // parameters.Add(new KeyValuePair<string, object>(BaseUserContactEntity.FieldMobileValiated, 1));
             var id = manager.GetId(parameters);
 
-            if (!string.IsNullOrEmpty(id))
+            if (!id.IsNullOrEmpty())
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 var userEntity = GetEntity(id);
@@ -1171,7 +1165,7 @@ namespace DotNet.Business
             var result = new UserLogonResult();
 
             var ipAddressName = string.Empty;
-            if (BaseSystemInfo.OnInternet && !string.IsNullOrEmpty(ipAddress))
+            if (BaseSystemInfo.OnInternet && !ipAddress.IsNullOrEmpty())
             {
                 ipAddressName = IpUtil.GetInstance().FindName(ipAddress);
             }
@@ -1183,21 +1177,21 @@ namespace DotNet.Business
             result.StatusCode = Status.UserNotFound.ToString();
             result.StatusMessage = GetStateMessage(result.StatusCode);
             // 检查是否有效的合法的参数
-            if (!string.IsNullOrEmpty(openId))
+            if (!openId.IsNullOrEmpty())
             {
                 var parameters = new List<KeyValuePair<string, object>>();
                 // parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldEnabled, 1));
                 // parameters.Add(new KeyValuePair<string, object>(BaseUserEntity.FieldDeleted, 0));
-                if (!string.IsNullOrEmpty(openId))
+                if (!openId.IsNullOrEmpty())
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldOpenId, openId));
                 }
                 // 若是单点登录，那就不能判断ip地址，因为不是直接登录，是间接登录
-                if (!string.IsNullOrEmpty(ipAddress))
+                if (!ipAddress.IsNullOrEmpty())
                 {
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                 }
-                if (!string.IsNullOrEmpty(macAddress))
+                if (!macAddress.IsNullOrEmpty())
                 {
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
                 }
@@ -1256,17 +1250,17 @@ namespace DotNet.Business
             var result = new UserLogonResult();
 
             // 2016-01-22 吉日嘎拉 这里是处理，多个mac的问题，处理外部传递过来的参数不正确，不只是自己的系统，还有外部调用的系统的问题
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!ipAddress.IsNullOrEmpty())
             {
                 var ips = ipAddress.Split(';');
-                ips = ips.Where(t => !string.IsNullOrEmpty(t) && !t.Equals("127.0.0.01")).OrderBy(ip => ip).Take(1).ToArray();
+                ips = ips.Where(t => !t.IsNullOrEmpty() && !t.Equals("127.0.0.01")).OrderBy(ip => ip).Take(1).ToArray();
                 ipAddress = string.Join(";", ips);
             }
-            if (!string.IsNullOrEmpty(macAddress))
+            if (!macAddress.IsNullOrEmpty())
             {
                 // 2016-04-28 pda 的 sn 编码也需要能保存起来 t.Length == 17。
                 var mac = macAddress.Split(';');
-                mac = mac.Where(t => !string.IsNullOrEmpty(t) && !t.Equals("00-00-00-00-00-00")).OrderBy(ip => ip).Take(2).ToArray();
+                mac = mac.Where(t => !t.IsNullOrEmpty() && !t.Equals("00-00-00-00-00-00")).OrderBy(ip => ip).Take(2).ToArray();
                 macAddress = string.Join(";", mac);
             }
 
@@ -1299,7 +1293,6 @@ namespace DotNet.Business
                         {
                             if (!ipAddressName.Equals("局域网") && !userLogonEntity.IpAddressName.Equals(ipAddressName))
                             {
-                                // TODO 开启手机验证功能！, 三天验证一次也可以了
                                 errorMark = 10;
                                 BaseUserContactEntity userContactEntity = null;
                                 // 2015-12-08 吉日嘎拉 提高效率、从缓存获取数据
@@ -1358,7 +1351,7 @@ namespace DotNet.Business
 
                     /*
 
-                    if (!string.IsNullOrEmpty(ipAddress))
+                    if (!ipAddress.IsNullOrEmpty())
                     {
                         parameters = new List<KeyValuePair<string, object>>();
                         parameters.Add(new KeyValuePair<string, object>(BaseParameterEntity.FieldParameterId, userEntity.Id));
@@ -1387,7 +1380,7 @@ namespace DotNet.Business
                     */
 
                     // 没有设置MAC地址时不检查
-                    if (checkMacAddress && !string.IsNullOrEmpty(macAddress))
+                    if (checkMacAddress && !macAddress.IsNullOrEmpty())
                     {
                         // if (!CheckMACAddress(userLogonEntity.Id, macAddress))
                         if (!CheckMacAddressByCache(userLogonEntity.UserId.ToString(), macAddress))
@@ -1414,9 +1407,9 @@ namespace DotNet.Business
                             {
                                 // 自己是否登录了2次，在没下线的情况下
                                 var isSelf = false;
-                                if (!string.IsNullOrEmpty(openId))
+                                if (!openId.IsNullOrEmpty())
                                 {
-                                    if (!string.IsNullOrEmpty(userLogonEntity.OpenId))
+                                    if (!(userLogonEntity.OpenId).IsNullOrEmpty())
                                     {
                                         if (userLogonEntity.OpenId.Equals(openId))
                                         {
@@ -1445,22 +1438,28 @@ namespace DotNet.Business
                     // 2015-11-11 吉日嘎拉 是否检查密码，还有其他方式的登录、例如验证码登录，OpenId登录等
                     if (checkUserPassword)
                     {
-                        if (BaseSystemInfo.ServerEncryptPassword && SystemEncryptPassword)
+                    if (BaseSystemInfo.ServerEncryptPassword && SystemEncryptPassword)
+                    {
+                        errorMark = 20;
+                        // R9-1 双路径校验：新 PBKDF2 / 老 MD5 兼容；老格式校验通过则惰性升级
+                        var matched = VerifyUserPassword(password, userLogonEntity.UserPassword, userLogonEntity.Salt, out var isLegacyHash);
+                        if (matched && isLegacyHash && BaseSystemInfo.AutoUpgradePasswordHash)
                         {
-                            errorMark = 20;
-                            password = EncryptUserPassword(password, userLogonEntity.Salt);
+                            UpgradeUserPasswordHash(userLogonEntity.UserId, password);
                         }
+                        password = matched ? userLogonEntity.UserPassword : null;
+                    }
 
                         // 11. 密码是否正确(null 与空看成是相等的)
-                        if (!(string.IsNullOrEmpty(userLogonEntity.UserPassword) && string.IsNullOrEmpty(password)))
+                        if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
                         {
                             var userPasswordOk = true;
                             errorMark = 201;
                             // 用户密码是空的
-                            if (string.IsNullOrEmpty(userLogonEntity.UserPassword))
+                            if ((userLogonEntity.UserPassword).IsNullOrEmpty())
                             {
                                 // 但是输入了不为空的密码
-                                if (!string.IsNullOrEmpty(password))
+                                if (!password.IsNullOrEmpty())
                                 {
                                     userPasswordOk = false;
                                 }
@@ -1468,7 +1467,7 @@ namespace DotNet.Business
                             else
                             {
                                 // 用户的密码不为空，但是用户是输入了密码
-                                if (string.IsNullOrEmpty(password))
+                                if (password.IsNullOrEmpty())
                                 {
                                     userPasswordOk = false;
                                 }
@@ -1521,9 +1520,6 @@ namespace DotNet.Business
                                 // 密码错误后 1：应该记录日志
                                 errorMark = 24;
                                 BaseLogonLogManager.AddLog(systemCode, userEntity, ipAddress, ipAddressName, macAddress, Status.PasswordError.ToDescription(), 1, 0, sourceType, targetApplication, targetIp);
-                                // TODO: 密码错误后 2：看最近1个小时输入了几次错误了？24小时里。
-                                // TODO: 密码错误后 3：若错误密码数量已经超过了指定的限制，那用户就需要被锁定1个小时。
-                                // TODO: 密码错误后 4：同时需要处理返回值，是由于密码次数过多导致的被锁定，登录时也应该能读取这个状态比较，时间过期了，也应该进行处理一下状态。
                                 // 密码强度检查，若是要有安全要求比较高的，返回的提醒消息要进行特殊处理，不能返回非常明确的提示信息。
                                 if (BaseSystemInfo.CheckPasswordStrength)
                                 {
@@ -1559,12 +1555,12 @@ namespace DotNet.Business
                 // 09. 更新IP地址，更新MAC地址，这里是为只执行一次更新优化数据库I/O，若登录成功自然连续输入密码错误就是0了。
                 // parameters = new List<KeyValuePair<string, object>>();
                 // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldPasswordErrorCount, 0));
-                if (!string.IsNullOrEmpty(ipAddress))
+                if (!ipAddress.IsNullOrEmpty())
                 {
                     userLogonEntity.IpAddress = ipAddress;
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldIPAddress, ipAddress));
                 }
-                if (!string.IsNullOrEmpty(macAddress))
+                if (!macAddress.IsNullOrEmpty())
                 {
                     userLogonEntity.MacAddress = macAddress;
                     // parameters.Add(new KeyValuePair<string, object>(BaseUserLogonEntity.FieldMACAddress, macAddress));
@@ -1603,7 +1599,7 @@ namespace DotNet.Business
                 }
 
                 // 14. 记录系统访问日志
-                if (result.StatusCode == Status.Ok.ToString() && !string.IsNullOrEmpty(systemCode))
+                if (result.StatusCode == Status.Ok.ToString() && !systemCode.IsNullOrEmpty())
                 {
                     userLogonEntity.SystemCode = systemCode;
                     userLogonEntity.ComputerName = computerName;
@@ -1703,14 +1699,14 @@ namespace DotNet.Business
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 userEntity = BaseEntity.Create<BaseUserEntity>(dt.Rows[0]);
-                if (!string.IsNullOrEmpty(userEntity.AuditStatus)
+                if (!(userEntity.AuditStatus).IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString()))
                 {
                     return false;
                 }
                 var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
                 userLogonEntity = userLogonManager.GetEntityByUserId(userEntity.Id);
-                if (!string.IsNullOrEmpty(userEntity.AuditStatus)
+                if (!(userEntity.AuditStatus).IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString())
                     && userLogonEntity.PasswordErrorCount == 0)
                 {
@@ -1739,19 +1735,11 @@ namespace DotNet.Business
                 }
 
                 // 07. 锁定日期是否有限制
-                if (userLogonEntity.LockStartTime != null)
+                if (userLogonEntity.LockStartTime != null || userLogonEntity.LockEndTime != null)
                 {
-                    if (DateTime.Now > userLogonEntity.LockStartTime)
-                    {
-                        if (userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime)
-                        {
-                            return false;
-                        }
-                    }
-                }
-                if (userLogonEntity.LockEndTime != null)
-                {
-                    if (DateTime.Now < userLogonEntity.LockEndTime)
+                    var afterStart = userLogonEntity.LockStartTime == null || DateTime.Now > userLogonEntity.LockStartTime;
+                    var beforeEnd = userLogonEntity.LockEndTime == null || DateTime.Now < userLogonEntity.LockEndTime;
+                    if (afterStart && beforeEnd)
                     {
                         return false;
                     }
@@ -1760,18 +1748,24 @@ namespace DotNet.Business
                 // 03. 系统是否采用了密码加密策略？
                 if (BaseSystemInfo.ServerEncryptPassword)
                 {
-                    password = EncryptUserPassword(password);
+                    // R9-1 双路径校验：新 PBKDF2 / 老 MD5 兼容；老格式校验通过则惰性升级
+                    var matched = VerifyUserPassword(password, userLogonEntity.UserPassword, userLogonEntity.Salt, out var isLegacyHash);
+                    if (matched && isLegacyHash && BaseSystemInfo.AutoUpgradePasswordHash)
+                    {
+                        UpgradeUserPasswordHash(userLogonEntity.UserId, password);
+                    }
+                    password = matched ? userLogonEntity.UserPassword : null;
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)
-                if (!(string.IsNullOrEmpty(userLogonEntity.UserPassword) && string.IsNullOrEmpty(password)))
+                if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
                 {
                     var userPasswordOk = true;
                     // 用户密码是空的
-                    if (string.IsNullOrEmpty(userLogonEntity.UserPassword))
+                    if ((userLogonEntity.UserPassword).IsNullOrEmpty())
                     {
                         // 但是输入了不为空的密码
-                        if (!string.IsNullOrEmpty(password))
+                        if (!password.IsNullOrEmpty())
                         {
                             userPasswordOk = false;
                         }
@@ -1779,7 +1773,7 @@ namespace DotNet.Business
                     else
                     {
                         // 用户的密码不为空，但是用户是输入了密码
-                        if (string.IsNullOrEmpty(password))
+                        if (password.IsNullOrEmpty())
                         {
                             userPasswordOk = false;
                         }

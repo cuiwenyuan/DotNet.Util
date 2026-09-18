@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -38,7 +38,7 @@ public partial class BasePage : System.Web.UI.Page
     protected void GetModuleTree(string systemCode, DropDownList ddlModule, bool insertBlank = true, string isMenu = null)
     {
         ddlModule.Items.Clear();
-        if (string.IsNullOrEmpty(systemCode))
+        if (systemCode.IsNullOrEmpty())
         {
             systemCode = "Base";
         }
@@ -67,7 +67,7 @@ public partial class BasePage : System.Web.UI.Page
     public string GetModuleCategory(string itemValue)
     {
         var result = string.Empty;
-        if (!string.IsNullOrEmpty(itemValue))
+        if (!itemValue.IsNullOrEmpty())
         {
             var entity = new BaseDictionaryItemManager(UserInfo).GetEntity("BaseModuleCategory", itemValue, itemValue);
             if (entity != null)

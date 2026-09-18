@@ -35,20 +35,20 @@ namespace DotNet.Util
             var result = string.Empty;
             var accessToken = GetAccessToken();
 
-            if (string.IsNullOrEmpty(lineColorR))
+            if (lineColorR.IsNullOrEmpty())
             {
                 lineColorR = "0";
             }
-            if (string.IsNullOrEmpty(lineColorG))
+            if (lineColorG.IsNullOrEmpty())
             {
                 lineColorG = "0";
             }
-            if (string.IsNullOrEmpty(lineColorB))
+            if (lineColorB.IsNullOrEmpty())
             {
                 lineColorB = "0";
             }
 
-            if (!string.IsNullOrEmpty(accessToken))
+            if (!accessToken.IsNullOrEmpty())
             {
                 //默认1：普通微信二维码
                 var postUrl = $"https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token={accessToken}";
@@ -95,7 +95,8 @@ namespace DotNet.Util
                             is_hyaline = isHyaline
                         };
                         var json3 = JsonConvert.SerializeObject(data3);
-                        result = DownloadBufferImage(postUrl, JsonConvert.SerializeObject(json3));
+                        //修复：json3 已是 JSON 字符串，再次序列化会将其转义成带引号的字符串导致请求体非法
+                        result = DownloadBufferImage(postUrl, json3);
                         break;
                 }
             }
@@ -104,7 +105,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 根据当前日期 判断Access_Token 是否超期  如果超期返回新的Access_Token，否则返回之前的Access_Token  
+        /// 根据当前日期 判断Access_Token 是否超期  如果超期返回新的Access_Token，否则返回之前的Access_Token
         /// </summary>
         /// <returns></returns>
         public static string GetAccessToken()
@@ -118,10 +119,11 @@ namespace DotNet.Util
             var secret = "";
             // 路径需要修改下
             var filePath = Utils.GetMapPath("~/xmlconfig/WeChatMiniProgram.config");
-            var doc = new XmlDocument();
+            XmlDocument doc = null;
             try
             {
-                doc.Load(filePath);
+                doc = XmlUtil.LoadXmlDocSafe(filePath);
+                if (doc == null) return token;
                 appid = doc.SelectSingleNode(@"Root/appid")?.InnerText;
                 secret = doc.SelectSingleNode(@"Root/secret")?.InnerText;
 
@@ -132,7 +134,7 @@ namespace DotNet.Util
                     expirationTime = Convert.ToDateTime(expirationTimeString);
                 }
 
-                if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret) && (string.IsNullOrEmpty(token) || DateTime.Now > expirationTime))
+                if (!appid.IsNullOrEmpty() && !secret.IsNullOrEmpty() && (token.IsNullOrEmpty() || DateTime.Now > expirationTime))
                 {
                     expirationTime = DateTime.Now;
                     var strUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
@@ -145,7 +147,7 @@ namespace DotNet.Util
                     model.expires_in = accessToken.expires_in;
 
                     doc.SelectSingleNode(@"Root/Access_Token").InnerText = model.access_token;
-                    expirationTime = expirationTime.AddSeconds(int.Parse(model.expires_in));
+                    expirationTime = expirationTime.AddSeconds(int.TryParse(model.expires_in, out var expiresIn) ? expiresIn : 7200);
                     doc.SelectSingleNode(@"Root/Access_ExpirationTime").InnerText = expirationTime.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                     doc.Save(filePath);
                     token = model.access_token;
@@ -181,18 +183,18 @@ namespace DotNet.Util
                     httpClient.PostAsync(requestUri, httpContent).ContinueWith(
                        (requestTask) =>
                        {
-                           var response = requestTask.Result;
+                           var response = requestTask.GetAwaiter().GetResult();
 
                            response.EnsureSuccessStatusCode();
 
                            var contentType = response.Content.Headers.ContentType;
-                           if (string.IsNullOrEmpty(contentType.CharSet))
+                           if ((contentType.CharSet).IsNullOrEmpty())
                            {
                                contentType.CharSet = "utf-8";
                            }
-                           LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().Result.LongLength.ToString(), "QRCode");
+                           LogUtil.WriteLog(response.Content.ReadAsByteArrayAsync().ConfigureAwait(false).GetAwaiter().GetResult().LongLength.ToString(), "QRCode");
 
-                           var data = response.Content.ReadAsByteArrayAsync().Result;
+                           var data = response.Content.ReadAsByteArrayAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                            var fileName = string.Empty;
 
@@ -220,7 +222,7 @@ namespace DotNet.Util
                            }
                            else
                            {
-                               LogUtil.WriteLog(Encoding.Default.GetString(data), "QRCode");
+                               LogUtil.WriteLog(Encoding.UTF8.GetString(data), "QRCode");
                            }
 
                        }).Wait(5000);
@@ -234,19 +236,19 @@ namespace DotNet.Util
             return result;
         }
 
-        /// <summary>  
-        ///Access_token 的摘要说明  
-        /// </summary>  
+        /// <summary>
+        ///Access_token 的摘要说明
+        /// </summary>
         public class AccessToken
         {
-            /// <summary>  
-            /// 获取到的凭证   
-            /// </summary>  
+            /// <summary>
+            /// 获取到的凭证
+            /// </summary>
             public string access_token { get; set; }
 
-            /// <summary>  
-            /// 凭证有效时间，单位：秒  
-            /// </summary>  
+            /// <summary>
+            /// 凭证有效时间，单位：秒
+            /// </summary>
             public string expires_in { get; set; }
         }
         #endregion

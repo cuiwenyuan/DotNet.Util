@@ -105,7 +105,7 @@ namespace DotNet.Util
             {
                 var areaOffset = ReadLong(offset + 1, 3);
                 if (areaOffset == 0)
-                    return "未知";
+                    return Msg.Get("Qqwry.Unknown");
 
                 else _fs.Position = areaOffset;
             }
@@ -121,7 +121,8 @@ namespace DotNet.Util
             {
             }
 
-            if (i > 0) return Encoding.Default.GetString(buf.ToArray(), 0, i);
+            //修复：纯真 IP 库地区名为 GBK 编码，显式使用 GBK（原 Encoding.Default 在 .NET Core 上是 UTF-8，会乱码）
+            if (i > 0) return Utils.GbkEncoding.GetString(buf.ToArray(), 0, i);
             else return "";
         }
 
@@ -151,7 +152,14 @@ namespace DotNet.Util
         private static void ReadIp(long offset, ref byte[] buffIp)
         {
             _fs.Position = offset;
-            _fs.Read(buffIp, 0, buffIp.Length);
+            // 修复：Stream.Read 不保证一次读满缓冲区，循环读取直到读满或到达文件尾
+            var qqBytesRead = 0;
+            while (qqBytesRead < buffIp.Length)
+            {
+                var n = _fs.Read(buffIp, qqBytesRead, buffIp.Length - qqBytesRead);
+                if (n == 0) break;
+                qqBytesRead += n;
+            }
 
             for (var i = 0; i < buffIp.Length / 2; i++)
             {
@@ -169,7 +177,7 @@ namespace DotNet.Util
         /// <returns></returns>  
         private static int CompareIp(byte[] buffIp1, byte[] buffIp2)
         {
-            if (buffIp1.Length > 4 || buffIp2.Length > 4) throw new Exception("无效IP");
+            if (buffIp1.Length > 4 || buffIp2.Length > 4) throw new Exception(Msg.Get("Exception.InvalidIp"));
 
             for (var i = 0; i < 4; i++)
             {
@@ -231,7 +239,7 @@ namespace DotNet.Util
         /// <returns></returns>  
         private static void Init(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (path.IsNullOrEmpty())
             {
                 path = Utils.GetMapPath("/plus/qqwry.dat");
             }
@@ -249,7 +257,7 @@ namespace DotNet.Util
             Init(null);
 
             IPAddress ipAddress = null;
-            if (!IPAddress.TryParse(ip, out ipAddress)) throw new Exception("无效IP");
+            if (!IPAddress.TryParse(ip, out ipAddress)) throw new Exception(Msg.Get("Exception.InvalidIp"));
 
             var buffLocalIp = ipAddress.GetAddressBytes();
 

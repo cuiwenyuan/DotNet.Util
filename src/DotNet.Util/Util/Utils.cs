@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
 using System.Web;
 using System.Web.UI;
 using System.Collections;
@@ -26,7 +26,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class Utils
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         /// <summary>
         /// 得到正则编译参数设置
         /// </summary>
@@ -37,12 +37,12 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 返回字符串真实长度, 1个汉字长度为2
+        /// 返回字符串真实长度, 1个汉字长度为3（UTF-8）
         /// </summary>
         /// <returns>字符长度</returns>
         public static int GetStringLength(string str)
         {
-            return Encoding.Default.GetBytes(str).Length;
+            return Encoding.UTF8.GetBytes(str).Length;
         }
         /// <summary>
         /// 是否是压缩
@@ -96,7 +96,7 @@ namespace DotNet.Util
         /// </summary>
         /// <param name="strSearch">字符串</param>
         /// <param name="stringArray">字符串数组</param>
-        /// <returns>字符串在指定字符串数组中的位置, 如不存在则返回-1</returns>		
+        /// <returns>字符串在指定字符串数组中的位置, 如不存在则返回-1</returns>
         public static int GetInArrayId(string strSearch, string[] stringArray)
         {
             return GetInArrayId(strSearch, stringArray, true);
@@ -169,14 +169,11 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string RTrim(string str)
         {
-            for (var i = str.Length; i >= 0; i--)
+            if (str == null)
             {
-                if (str[i].Equals(" ") || str[i].Equals("\r") || str[i].Equals("\n"))
-                {
-                    str.Remove(i, 1);
-                }
+                return null;
             }
-            return str;
+            return str.TrimEnd(' ', '\r', '\n');
         }
 
 
@@ -292,7 +289,8 @@ namespace DotNet.Util
             return Convert.ToString(intValue);
         }
         /// <summary>
-        /// MD5函数
+        /// MD5函数（注意：MD5 已被证明不安全，仅适用于校验和等非安全场景；
+        /// 口令等敏感数据请勿使用，建议使用 SecretUtil（加盐）或 SHA256）
         /// </summary>
         /// <param name="str">原始字符串</param>
         /// <returns>MD5结果</returns>
@@ -342,7 +340,7 @@ namespace DotNet.Util
         {
             str = str.TrimEnd();
             var result = string.Empty;// 最终返回的结果
-            var byteLen = Encoding.Default.GetByteCount(str);// 单字节字符长度
+            var byteLen = Encoding.UTF8.GetByteCount(str);// 单字节字符长度（UTF-8，中文3字节）
             var charLen = str.Length;// 把字符平等对待时的字符串长度
             var byteCount = 0;// 记录读取进度
             var pos = 0;// 记录截取位置
@@ -350,8 +348,8 @@ namespace DotNet.Util
             {
                 for (var i = 0; i < charLen; i++)
                 {
-                    if (Convert.ToInt32(str.ToCharArray()[i]) > 255)// 按中文字符计算加2
-                        byteCount += 2;
+                    if (Convert.ToInt32(str.ToCharArray()[i]) > 255)// 按中文字符计算加3（UTF-8）
+                        byteCount += 3;
                     else// 按英文字符计算加1
                         byteCount += 1;
                     if (byteCount > len)// 超出时只记下上一个有效位置
@@ -387,6 +385,12 @@ namespace DotNet.Util
         {
             var myResult = pSrcString;
 
+            // 参数校验：防止负长度/负起始位置/空字符串导致的索引越界
+            if (pSrcString == null || pStartIndex < 0 || pLength <= 0)
+            {
+                return string.Empty;
+            }
+
             var bComments = Encoding.UTF8.GetBytes(pSrcString);
             foreach (var c in Encoding.UTF8.GetChars(bComments))
             {    //当是日文或韩文时(注:中文的范围:\u4e00 - \u9fa5, 日文在\u0800 - \u4e00, 韩文为\xAC00-\xD7A3)
@@ -404,7 +408,7 @@ namespace DotNet.Util
 
             if (pLength >= 0)
             {
-                var bsSrcString = Encoding.Default.GetBytes(pSrcString);
+                var bsSrcString = Encoding.UTF8.GetBytes(pSrcString);
 
                 //当字符串长度大于起始位置
                 if (bsSrcString.Length > pStartIndex)
@@ -439,17 +443,23 @@ namespace DotNet.Util
                         else
                             nFlag = 0;
 
-                        anResultFlag[i] = nFlag;
+                        anResultFlag[i - pStartIndex] = nFlag;
                     }
 
                     if ((bsSrcString[pEndIndex - 1] > 127) && (anResultFlag[pLength - 1] == 1))
                         nRealLength = pLength + 1;
 
+                    //防止截取越界（当最后一个字节是3字节UTF-8字符的首字节时会多取1字节）
+                    if (nRealLength > bsSrcString.Length - pStartIndex)
+                    {
+                        nRealLength = bsSrcString.Length - pStartIndex;
+                    }
+
                     bsResult = new byte[nRealLength];
 
                     Array.Copy(bsSrcString, pStartIndex, bsResult, 0, nRealLength);
 
-                    myResult = Encoding.Default.GetString(bsResult);
+                    myResult = Encoding.UTF8.GetString(bsResult);
                     myResult = myResult + pTailString;
                 }
             }
@@ -528,7 +538,7 @@ namespace DotNet.Util
         public static bool IsBase64String(string str)
         {
             //A-Z, a-z, 0-9, +, /, =
-            return Regex.IsMatch(str, @"[A-Za-z0-9\+\/\=]");
+            return Regex.IsMatch(str, @"^[A-Za-z0-9\+\/\=]+$");
         }
         /// <summary>
         /// 检测是否有Sql危险字符
@@ -560,7 +570,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 返回URL中结尾的文件名
-        /// </summary>		
+        /// </summary>
         public static string GetFilename(string url)
         {
             if (url == null)
@@ -573,7 +583,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 根据阿拉伯数字返回月份的名称(可更改为某种语言)
-        /// </summary>	
+        /// </summary>
         public static string[] Monthes
         {
             get
@@ -621,11 +631,12 @@ namespace DotNet.Util
             if (datetimestr.Equals(""))
                 return replacestr;
 
-            try
+            //修复：使用 DateTime.TryParse 替代 Convert.ToDateTime + try/catch 静默吞异常
+            if (DateTime.TryParse(datetimestr, out var dt))
             {
-                datetimestr = Convert.ToDateTime(datetimestr).ToString("yyyy-MM-dd").Replace("1900-01-01", replacestr);
+                datetimestr = dt.ToString("yyyy-MM-dd").Replace("1900-01-01", replacestr);
             }
-            catch
+            else
             {
                 return replacestr;
             }
@@ -703,7 +714,7 @@ namespace DotNet.Util
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public static bool IsTime(string timeval)
@@ -719,11 +730,11 @@ namespace DotNet.Util
         public static bool IsInWhiteList(string ip = null)
         {
             var result = false;
-            if (string.IsNullOrEmpty(ip))
+            if (ip.IsNullOrEmpty())
             {
                 ip = GetIp();
             }
-            if (!string.IsNullOrEmpty(ip) && !string.IsNullOrEmpty(BaseSystemInfo.WhiteList))
+            if (!ip.IsNullOrEmpty() && !(BaseSystemInfo.WhiteList).IsNullOrEmpty())
             {
                 var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                 for (var i = 0; i < whiteLists.Length; i++)
@@ -773,7 +784,7 @@ namespace DotNet.Util
             {
                 fs = File.Create(page.Server.MapPath("") + "\\" + outpath);
             }
-            var bt = Encoding.Default.GetBytes(writer.ToString());
+            var bt = Encoding.UTF8.GetBytes(writer.ToString());
             fs.Write(bt, 0, bt.Length);
             fs.Close();
         }
@@ -787,8 +798,19 @@ namespace DotNet.Util
             var textArray1 = SplitString(bantext, "\r\n");
             for (var num1 = 0; num1 < textArray1.Length; num1++)
             {
-                text1 = textArray1[num1].Substring(0, textArray1[num1].IndexOf("="));
-                text2 = textArray1[num1].Substring(textArray1[num1].IndexOf("=") + 1);
+                var line = textArray1[num1];
+                if (line == null)
+                {
+                    continue;
+                }
+                var equalsIndex = line.IndexOf('=');
+                //跳过不含“=”的行，避免 Substring 越界导致崩溃
+                if (equalsIndex <= 0)
+                {
+                    continue;
+                }
+                text1 = line.Substring(0, equalsIndex);
+                text2 = line.Substring(equalsIndex + 1);
                 str = str.Replace(text1, text2);
             }
             return str;
@@ -1043,13 +1065,14 @@ namespace DotNet.Util
             var startPage = 1;
             var endPage = 1;
 
-            if (url.IndexOf("?") > 0)
+            // 修复 #12a：url 为 null 时 url.IndexOf 会抛 NullReferenceException，先判空
+            if (!string.IsNullOrEmpty(url) && url.IndexOf("?") >= 0)
                 url += "&";
             else
                 url += "?";
 
-            var t1 = "<a href=\"" + url + "&" + pagetag + "=1";
-            var t2 = "<a href=\"" + url + "&" + pagetag + "=" + countPage;
+            var t1 = "<a href=\"" + url + pagetag + "=1";
+            var t2 = "<a href=\"" + url + pagetag + "=" + countPage;
             if (anchor != null)
             {
                 t1 += anchor;
@@ -1181,13 +1204,15 @@ namespace DotNet.Util
             {
                 if (subFiles[j].Extension.ToLower().Equals(".htm"))
                 {
-                    var fs = new FileStream(subFiles[j].FullName, FileMode.Open, FileAccess.Read);
-                    var bUtf8 = IsUtf8(fs);
-                    fs.Close();
-                    if (!bUtf8)
+                    //修复：使用 using 确保 FileStream 在异常路径也释放
+                    using (var fs = new FileStream(subFiles[j].FullName, FileMode.Open, FileAccess.Read))
                     {
-                        sb.Append(subFiles[j].FullName);
-                        sb.Append("\r\n");
+                        var bUtf8 = IsUtf8(fs);
+                        if (!bUtf8)
+                        {
+                            sb.Append(subFiles[j].FullName);
+                            sb.Append("\r\n");
+                        }
                     }
                 }
             }
@@ -1207,7 +1232,7 @@ namespace DotNet.Util
         private static bool IsUtf8(FileStream sbInputStream)
         {
             int i;
-            byte cOctets;  // octets to go in this UTF-8 encoded character 
+            byte cOctets;  // octets to go in this UTF-8 encoded character
             byte chr;
             var bAllAscii = true;
             var iLen = sbInputStream.Length;
@@ -1261,13 +1286,13 @@ namespace DotNet.Util
         public static string FormatBytesStr(int bytes)
         {
             if (bytes > 1073741824)
-                return ((double)(bytes / 1073741824)).ToString("0") + "G";
+                return (bytes / 1073741824.0).ToString("0") + "G";
 
             if (bytes > 1048576)
-                return ((double)(bytes / 1048576)).ToString("0") + "M";
+                return (bytes / 1048576.0).ToString("0") + "M";
 
             if (bytes > 1024)
-                return ((double)(bytes / 1024)).ToString("0") + "K";
+                return (bytes / 1024.0).ToString("0") + "K";
 
             return bytes + "Bytes";
         }
@@ -1329,8 +1354,12 @@ namespace DotNet.Util
                 var r = 0;
                 for (var i = 0; i < tmpip.Length; i++)
                 {
+                    // * 表示该IP段任意，匹配该段并继续检查后续段
                     if (tmpip[i] == "*")
-                        return true;
+                    {
+                        r++;
+                        continue;
+                    }
 
                     if (userip.Length > i)
                     {
@@ -1462,7 +1491,8 @@ namespace DotNet.Util
 
                                 case "timesect":
                                     var splitetime = strs.Split('-');
-                                    if (IsTime(splitetime[1]) == false || IsTime(splitetime[0]) == false)
+                                    // 修复 #11：strs 不含 '-' 时 splitetime 长度为 1，访问 [1] 会 IndexOutOfRangeException，先判长度
+                                    if (splitetime.Length < 2 || IsTime(splitetime[1]) == false || IsTime(splitetime[0]) == false)
                                         throw new Exception();
                                     break;
                             }
@@ -1484,7 +1514,8 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string ClearLastChar(string str)
         {
-            return (str == "") ? "" : str.Substring(0, str.Length - 1);
+            // 修复 #10：str 为 null 时 str.Substring 会抛 NullReferenceException，改为 IsNullOrEmpty 守护
+            return string.IsNullOrEmpty(str) ? string.Empty : str.Substring(0, str.Length - 1);
         }
 
         /// <summary>
@@ -1497,7 +1528,7 @@ namespace DotNet.Util
         public static bool BackupFile(string sourceFileName, string destFileName, bool overwrite)
         {
             if (!File.Exists(sourceFileName))
-                throw new FileNotFoundException(sourceFileName + "文件不存在！");
+                throw new FileNotFoundException(Msg.Format("Exception.FileNotFound", sourceFileName));
 
             if (!overwrite && File.Exists(destFileName))
                 return false;
@@ -1538,12 +1569,12 @@ namespace DotNet.Util
             try
             {
                 if (!File.Exists(backupFileName))
-                    throw new FileNotFoundException(backupFileName + "文件不存在！");
+                    throw new FileNotFoundException(Msg.Format("Exception.FileNotFound", backupFileName));
 
                 if (backupTargetFileName != null)
                 {
                     if (!File.Exists(targetFileName))
-                        throw new FileNotFoundException(targetFileName + "文件不存在！无法备份此文件！");
+                        throw new FileNotFoundException(Msg.Format("Exception.BackupFileNotFound", targetFileName));
                     else
                         File.Copy(targetFileName, backupTargetFileName, true);
                 }
@@ -1607,15 +1638,16 @@ namespace DotNet.Util
             {
                 case 3:
                     rgb = color.ToCharArray();
-                    red = (rgb[0] + rgb[0].ToString(), 16).ToInt();
-                    green = (rgb[1] + rgb[1].ToString(), 16).ToInt();
-                    blue = (rgb[2] + rgb[2].ToString(), 16).ToInt();
+                    //3位颜色 #rgb 等价于 #rrggbb，分别将两位相同字符按16进制转换
+                    red = Convert.ToInt32(rgb[0].ToString() + rgb[0].ToString(), 16);
+                    green = Convert.ToInt32(rgb[1].ToString() + rgb[1].ToString(), 16);
+                    blue = Convert.ToInt32(rgb[2].ToString() + rgb[2].ToString(), 16);
                     return Color.FromArgb(red, green, blue);
                 case 6:
                     rgb = color.ToCharArray();
-                    red = (rgb[0] + rgb[1].ToString(), 16).ToInt();
-                    green = (rgb[2] + rgb[3].ToString(), 16).ToInt();
-                    blue = (rgb[4] + rgb[5].ToString(), 16).ToInt();
+                    red = Convert.ToInt32(rgb[0].ToString() + rgb[1].ToString(), 16);
+                    green = Convert.ToInt32(rgb[2].ToString() + rgb[3].ToString(), 16);
+                    blue = Convert.ToInt32(rgb[4].ToString() + rgb[5].ToString(), 16);
                     return Color.FromArgb(red, green, blue);
                 default:
                     return Color.FromName(color);
@@ -1773,13 +1805,19 @@ namespace DotNet.Util
             {
                 var request = WebRequest.Create(url);
                 request.Timeout = 20000;//20秒超时
-                var response = request.GetResponse();
-
-                var resStream = response.GetResponseStream();
-                var sr = new StreamReader(resStream);
-                return sr.ReadToEnd();
+                //修复：使用 using 确保 response/响应流在异常路径也释放（原实现 response/resStream/sr 均未释放）
+                using (var response = request.GetResponse())
+                using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                {
+                    return sr.ReadToEnd();
+                }
             }
-            catch { return ""; }
+            catch (Exception ex)
+            {
+                //修复：记录日志而非静默吞掉，调用方仍可通过空串区分失败
+                LogUtil.WriteLog(ex, Msg.Format("Log.GetSourceTextByUrlFailed", url));
+                return "";
+            }
         }
 
         /// <summary>
@@ -1917,8 +1955,11 @@ namespace DotNet.Util
                 writer.Flush();
                 writer.Close();
             }
-            catch
-            {; }
+            catch (Exception ex)
+            {
+                //修复：重启 IIS（重写 web.config）失败不能静默忽略，记录日志
+                LogUtil.WriteLog(ex, Msg.Get("Log.RestartIisFailed"));
+            }
         }
 
         /// <summary>
@@ -1953,7 +1994,7 @@ namespace DotNet.Util
         /// <returns>string</returns>
         public static string GetFileExt(string filepath)
         {
-            if (string.IsNullOrEmpty(filepath))
+            if (filepath.IsNullOrEmpty())
             {
                 return "";
             }
@@ -1972,7 +2013,7 @@ namespace DotNet.Util
         /// <param name="filepath"></param>
         public static void DeleteUpFile(string filepath)
         {
-            if (string.IsNullOrEmpty(filepath))
+            if (filepath.IsNullOrEmpty())
             {
                 return;
             }
@@ -2006,7 +2047,7 @@ namespace DotNet.Util
         public static void EmptyFolder(string dir, string fileExtension = null, int days = 0, int hours = 0, string[] skipFileExtensions = null)
         {
             var dt = DateTime.Now;
-            if (!string.IsNullOrEmpty(fileExtension))
+            if (!fileExtension.IsNullOrEmpty())
             {
                 fileExtension = "*." + fileExtension.Replace(".", "");
             }
@@ -2114,10 +2155,10 @@ namespace DotNet.Util
         /// <returns></returns>
         public static string DropHtml(string htmlstring)
         {
-            if (string.IsNullOrEmpty(htmlstring)) return "";
-            //删除脚本  
+            if (htmlstring.IsNullOrEmpty()) return "";
+            //删除脚本
             htmlstring = Regex.Replace(htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
-            //删除HTML  
+            //删除HTML
             htmlstring = Regex.Replace(htmlstring, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);
             htmlstring = Regex.Replace(htmlstring, @"([\r\n])[\s]+", "", RegexOptions.IgnoreCase);
             htmlstring = Regex.Replace(htmlstring, @"-->", "", RegexOptions.IgnoreCase);
@@ -2133,11 +2174,13 @@ namespace DotNet.Util
             htmlstring = Regex.Replace(htmlstring, @"&(copy|#169);", "\xa9", RegexOptions.IgnoreCase);
 
             htmlstring = Regex.Replace(htmlstring, @"&#(\d+);", "", RegexOptions.IgnoreCase);
-            htmlstring.Replace("<", "");
-            htmlstring.Replace(">", "");
-            htmlstring.Replace("\r\n", "");
-            htmlstring.Replace("&emsp;", "");
-            htmlstring = HttpContext.Current.Server.HtmlEncode(htmlstring).Trim();
+            htmlstring = htmlstring.Replace("<", "").Replace(">", "").Replace("\r\n", "").Replace("&emsp;", "");
+            //非Web环境下 HttpContext.Current 可能为 null，避免空引用
+            if (HttpContext.Current != null)
+            {
+                htmlstring = HttpContext.Current.Server.HtmlEncode(htmlstring);
+            }
+            htmlstring = htmlstring.Trim();
             return htmlstring;
         }
         #endregion
@@ -2166,8 +2209,9 @@ namespace DotNet.Util
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append(input);
-            sb.Replace("'", "&apos;");
+            //注意：必须先替换 &，否则后面插入的 &apos;/&lt;/&gt; 中的 & 会被二次转义
             sb.Replace("&", "&amp;");
+            sb.Replace("'", "&apos;");
             sb.Replace("<", "&lt;");
             sb.Replace(">", "&gt;");
             sb.Replace("\r\n", "<br />");
@@ -2217,22 +2261,24 @@ namespace DotNet.Util
             request.Timeout = 15000;
             request.AllowAutoRedirect = false;
 
-            StreamWriter sw = null;
             WebResponse response = null;
             string responseStr = null;
 
             try
             {
-                sw = new StreamWriter(request.GetRequestStream());
-                sw.Write(param);
-                sw.Close();
+                //修复：使用 using 确保 StreamWriter/StreamReader 在异常路径也释放
+                using (var sw = new StreamWriter(request.GetRequestStream()))
+                {
+                    sw.Write(param);
+                }
 
                 response = request.GetResponse();
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -2242,7 +2288,6 @@ namespace DotNet.Util
             finally
             {
                 request = null;
-                sw = null;
                 response = null;
             }
 
@@ -2272,9 +2317,11 @@ namespace DotNet.Util
 
                 if (response != null)
                 {
-                    var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = sr.ReadToEnd();
-                    sr.Close();
+                    //修复：使用 using 确保 StreamReader 在异常路径也释放
+                    using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        responseStr = sr.ReadToEnd();
+                    }
                 }
             }
             catch (Exception)
@@ -2295,7 +2342,7 @@ namespace DotNet.Util
         /// </summary>
         public static string UrlExecute(string urlPath)
         {
-            if (string.IsNullOrEmpty(urlPath))
+            if (urlPath.IsNullOrEmpty())
             {
                 return "error";
             }
@@ -2319,23 +2366,47 @@ namespace DotNet.Util
 #endif
 
         /// <summary>
+        /// GB2312/GBK 编码（兼容 .NET Framework 与 .NET Core；Core 下自动注册 CodePagesEncodingProvider）
+        /// </summary>
+        public static readonly Encoding GbkEncoding = CreateGbkEncoding();
+
+        private static Encoding CreateGbkEncoding()
+        {
+            try
+            {
+#if NET46_OR_GREATER
+                // .NET Framework 原生支持 GB2312
+                return Encoding.GetEncoding("gb2312");
+#else
+                // .NET Core 默认不支持 gb2312，需注册 CodePagesEncodingProvider
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                return Encoding.GetEncoding("gb2312");
+#endif
+            }
+            catch (Exception)
+            {
+                return Encoding.UTF8; // 获取失败兜底，避免崩溃
+            }
+        }
+
+        /// <summary>
         /// 推荐使用的获取IP方式
         /// </summary>
         /// <returns></returns>
         public static string GetIp()
         {
             var result = string.Empty;
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             //优先使用GetRealIp
             result = RequestUtil.GetRealIp();
             //其次使用GetIp
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 result = RequestUtil.GetIp();
             }
 #endif
             //最后使用MachineInfo
-            if (string.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 result = MachineInfo.GetIpAddress();
             }
@@ -2527,7 +2598,7 @@ namespace DotNet.Util
         /// <returns>绝对路径</returns>
         public static string GetMapPath(string virtualPath)
         {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
             //HttpContext.Current并非无处不在
             if (HttpContext.Current != null)
             {

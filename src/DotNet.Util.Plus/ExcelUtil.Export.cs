@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -34,7 +34,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
-#if NET452_OR_GREATER
+#if NET46_OR_GREATER
         #region private void DeleteExistFile(string fileName) 删除已经存在的文件
         /// <summary>
         /// 删除已经存在的文件
@@ -118,7 +118,7 @@ namespace DotNet.Util
                                 dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : dr[i]));
                                 break;
                             case "System.DateTime":
-                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : DateTime.TryParse(dr[i].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                 break;
                             case "System.Int16":
                             case "System.Int32":
@@ -152,7 +152,7 @@ namespace DotNet.Util
                                             );
                                         break;
                                     case "System.DateTime":
-                                        dataRow.CreateCell(j).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        dataRow.CreateCell(j).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : DateTime.TryParse(dr[field.Key].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                         break;
                                     case "System.Int16":
                                     case "System.Int32":
@@ -165,7 +165,7 @@ namespace DotNet.Util
                                     case "System.Double":
                                         dataRow.CreateCell(j).SetCellValue(Convert.IsDBNull(dr[field.Key]) ? 0D : dr[field.Key].ToDouble());
                                         break;
-                                }                                
+                                }
                             }
                             else
                             {
@@ -303,7 +303,7 @@ namespace DotNet.Util
                                     }
                                     break;
                                 case "System.DateTime":
-                                    dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : ValidateUtil.IsDateTime(dr[i].ToString()) ? DateTime.Parse(dr[i].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                    dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[i]) ? "" : DateTime.TryParse(dr[i].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                     break;
                                 case "System.Int16":
                                 case "System.Int32":
@@ -353,7 +353,7 @@ namespace DotNet.Util
                                         if (exportPicture && (suffix.Equals("jpg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("bmp", StringComparison.OrdinalIgnoreCase) || suffix.Equals("jpeg", StringComparison.OrdinalIgnoreCase) || suffix.Equals("gif", StringComparison.OrdinalIgnoreCase) || suffix.Equals("png", StringComparison.OrdinalIgnoreCase)))
                                         {
                                             hasPicture = true;
-                                            
+
                                             if (squarePicture)
                                             {
                                                 //正方形的例子50*20 x 10*256
@@ -375,7 +375,7 @@ namespace DotNet.Util
                                         }
                                         break;
                                     case "System.DateTime":
-                                        dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : ValidateUtil.IsDateTime(dr[field.Key].ToString()) ? DateTime.Parse(dr[field.Key].ToString()).ToString(BaseSystemInfo.DateTimeFormat) : ""));
+                                        dataRow.CreateCell(i).SetCellValue(Convert.ToString(Convert.IsDBNull(dr[field.Key]) ? "" : DateTime.TryParse(dr[field.Key].ToString(), out var cellValue) ? cellValue.ToString(BaseSystemInfo.DateTimeFormat) : ""));
                                         break;
                                     case "System.Int16":
                                     case "System.Int32":
@@ -393,7 +393,7 @@ namespace DotNet.Util
                                 if (exportPicture && hasPicture && sheet.GetColumnWidth(i) != 20 * 256)
                                 {
                                     sheet.AutoSizeColumn(i);
-                                }                                
+                                }
                             }
                             else
                             {
@@ -439,7 +439,7 @@ namespace DotNet.Util
         {
             try
             {
-                if (!string.IsNullOrEmpty(filePath))
+                if (!filePath.IsNullOrEmpty())
                 {
                     //转为本地路径
                     filePath = HttpContext.Current.Server.MapPath(filePath);

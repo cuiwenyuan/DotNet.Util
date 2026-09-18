@@ -1,5 +1,5 @@
-﻿//-----------------------------------------------------------------
-// All Rights Reserved. Copyright (c) 2025, DotNet.
+//-----------------------------------------------------------------
+// All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace DotNet.Business
 
             // 2015-12-08 吉日嘎拉 提高效率参数化执行
             // var dt = DbHelper.Fill(sql, dbParameters.ToArray());
-            // BaseUtil.FieldToArray(dt, BaseRoleOrganizationEntity.FieldOrganizationId).Distinct<string>().Where(t => !string.IsNullOrEmpty(t)).ToArray();
+            // BaseUtil.FieldToArray(dt, BaseRoleOrganizationEntity.FieldOrganizationId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
 
             return result;
         }
