@@ -40,12 +40,59 @@ jobs:
       - name: Pack
         run: dotnet pack src/DotNet.Util.Publish.slnf -c Release --no-build -o ./artifacts
 
+      # 诊断：先把产物列出来。
+      # 「包没生成」与「推送命令写法不对」都只会报一模一样的 "File does not exist"，
+      # 不先列出产物就无法区分。本次 CI 失败的真正原因是后者。
+      - name: List artifacts
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem -Path ./artifacts -File -ErrorAction SilentlyContinue)
+          if ($files.Count -eq 0) {
+            Write-Host "::error::./artifacts 为空 —— Pack 步骤没有产出任何包，请检查上一步日志"
+            exit 1
+          }
+          Write-Host "artifacts 目录共 $($files.Count) 个文件："
+          $files | ForEach-Object { Write-Host ("  {0}  ({1:N0} bytes)" -f $_.Name, $_.Length) }
+
+      # 坑：`dotnet nuget push "目录/*.nupkg"` 不会展开「带目录路径」的通配符，
+      # 会把整串当字面文件名 → 报 "File does not exist (./artifacts/*.nupkg)"。
+      # 实测只有「不带目录部分的 *.nupkg（在当前目录下）」或「带 ** 的模式」才会被展开。
+      # 这里显式枚举逐个推送，最稳且日志可读；--skip-duplicate 让重复跑不会因
+      # 版本已存在而失败（版本号是日期制，同一天重跑必然重复）。
       - name: Push packages to NuGet.org
+        shell: pwsh
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $packages = @(Get-ChildItem -Path ./artifacts -Filter *.nupkg -File)
+          if ($packages.Count -eq 0) {
+            Write-Host "::error::./artifacts 下没有 .nupkg，请先修 Pack 步骤"
+            exit 1
+          }
+          $failed = $false
+          foreach ($p in $packages) {
+            Write-Host "==> pushing $($p.Name)"
+            dotnet nuget push $p.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { $failed = $true }
+          }
+          if ($failed) { Write-Host "::error::有包推送失败，见上方日志"; exit 1 }
 
       - name: Push symbols to NuGet.org
+        shell: pwsh
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: dotnet nuget push "./artifacts/*.snupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $symbols = @(Get-ChildItem -Path ./artifacts -Filter *.snupkg -File)
+          if ($symbols.Count -eq 0) {
+            Write-Host "没有 .snupkg，跳过符号包推送"
+            exit 0
+          }
+          $failed = $false
+          foreach ($s in $symbols) {
+            Write-Host "==> pushing symbols $($s.Name)"
+            dotnet nuget push $s.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { $failed = $true }
+          }
+          if ($failed) { Write-Host "::error::有符号包推送失败，见上方日志"; exit 1 }
