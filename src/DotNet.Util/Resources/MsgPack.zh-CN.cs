@@ -137,7 +137,7 @@ namespace DotNet.Util
                 { "Result.ApplyAccountUpdateSuccess", "申请账号更新成功，请等待审核。" },
                 { "Validation.PasswordMismatch", "密码不等于确认密码，请确认后重新输入。" },
                 { "Common.UserFullName", "用户名称" },
-                { "Common.RealName", "姓名" },
+                { "Common.RealName", "真实姓名" },
                 { "Validation.InvalidEmail", "E-mail 格式不正确，请重新输入。" },
                 { "Result.ApplyAccountSuccess", "申请账号成功，请等待审核。" },
                 { "Confirm.OverwriteExportFile", "导出的目标文件已存在，要覆盖 \"{0}\" 吗？" },

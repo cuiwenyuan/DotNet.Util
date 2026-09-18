@@ -1061,7 +1061,7 @@ namespace DotNet.Util
         /// <summary>
         /// 姓名
         /// </summary>
-        public static string Msg0233 = "姓名";
+        public static string Msg0233 = "真实姓名";
 
         /// <summary>
         /// E-mail 格式不正确，请重新输入。
