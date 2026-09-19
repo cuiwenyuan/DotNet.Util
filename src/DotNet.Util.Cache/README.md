@@ -27,8 +27,8 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 ## 依赖 / Dependencies
 
 - `Wangcaisoft.DotNet.Util`
-- [Microsoft.Extensions.Caching.Memory](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Memory)（net6/7 用 `8.0.0`，其余 `9.0.9`）
-- [NewLife.Redis](https://www.nuget.org/packages/NewLife.Redis) `6.3.2025.1001`
+- [Microsoft.Extensions.Caching.Memory](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Memory) `10.0.11`
+- [NewLife.Redis](https://www.nuget.org/packages/NewLife.Redis) `6.6.2026.901`
 
 ## 快速使用 / Quick Start
 

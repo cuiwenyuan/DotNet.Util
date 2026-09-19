@@ -64,22 +64,37 @@
 
 ### 3.1 消息层核心 API（新建 `DotNet.Util/Message/Msg.cs`）
 
+> ✅ **已实现**。下表为**落地后的真实签名**，与当初的设计稿有 3 处偏差，已在「偏差说明」中标注。
+
 ```csharp
-public static class Msg
+public static partial class Msg
 {
     // 当前语言，默认读 BaseSystemInfo.CurrentLanguage（"zh-CN"）
     public static string CurrentLanguage { get; set; }
 
     public static string Get(string key);                       // 按当前语言取值
-    public static string Get(string key, params object[] args); // 带 {0} 占位符格式化
     public static string Get(string key, string culture);       // 指定语言
+    public static string GetOrDefault(string key, string defaultValue);
+    public static string GetOrDefault(string key, string culture, string defaultValue);
+    public static string GetEnumDescription(Type enumType, string memberName, string defaultValue);
+    public static string Format(string key, params object[] args);   // 带 {0} 占位符格式化
 
     public static void Register(string culture, IDictionary<string, string> messages); // 注册语言包
-    public static void LoadJsonOverride(string path);           // 外部 JSON 覆盖（可选）
+    public static void LoadJsonOverride(string culture, string path); // 外部 JSON 覆盖（可选）
+    public static IReadOnlyCollection<string> GetKeys(string culture);
+    public static void Clear();                                 // 复位（测试隔离用）
 }
 ```
 
 **回退链**：精确匹配（`en-US`）→ 中性语言（`en`）→ 默认 `zh-CN` → 键不存在返回 `key` 本身（**绝不抛异常**）。
+
+**与设计稿的偏差（2026-09-18 核对）**
+
+| # | 设计稿 | 实际落地 | 原因 |
+|---|---|---|---|
+| 1 | `Get(string key, params object[] args)` | 拆为独立 `Format(string key, params object[] args)` | `Get(key)` 与 `Get(key, args)` 在 `args` 为空时产生重载二义，拆分后语义清晰 |
+| 2 | `LoadJsonOverride(string path)` | `LoadJsonOverride(string culture, string path)` | 必须指定要覆盖哪个语言包，否则无处写入 |
+| 3 | `Msg` 为单一 `static class` | `static partial class`，另增 `Msg.Typed.cs` 强类型层 | 见 3.7 |
 
 ### 3.2 语言包载体：代码内嵌字典（已与用户确认）
 
@@ -96,11 +111,38 @@ src/DotNet.Util/Resources/
 
 ### 3.3 键命名规范
 
-| 来源 | 键格式 | 示例 |
-|---|---|---|
-| 现有 AppMessage | 沿用原键 | `Msg0001`、`Msg0239` |
-| 新增（工具类） | `模块.类.场景` | `Util.ExpressionEvaluator.IllegalChars` |
-| 枚举描述 | `Enum.<枚举类型>.<成员>` | `Enum.Status.DbError`、`Enum.AuditStatus.Pause` |
+> ⚠️ **2026-09-16 起已变更**：`Msg0001` 一类**编号键已全部从语言包移除**，不存在「沿用原键」这回事。
+> 现行体系：全部键为 `<前缀>.<PascalCase>`，共 400 条，12 个业务前缀 + `Enum.*` + 若干工具类前缀。
+> 编号键 → 语义键的完整映射见 [`Msg-Key-Rename-Map.md`](./Msg-Key-Rename-Map.md)。
+
+| 来源 | 键格式 | 示例 | 强类型入口 |
+|---|---|---|---|
+| ~~现有 AppMessage~~ | ~~沿用原键~~ **已废弃** | ~~`Msg0001`~~ → `Common.UnknownError` | `Msg.Common.UnknownError` |
+| 新增（工具类） | `模块.类.场景` | `Util.ExpressionEvaluator.IllegalChars` → `Exception.*` / `Validation.*` | `Msg.Exception.*` |
+| 枚举描述 | `Enum.<枚举类型>.<成员>` | `Enum.Status.DbError`、`Enum.AuditStatus.Pause` | `Msg.Enum.Status.DbError` |
+
+### 3.7 强类型层（2026-09-18 新增，P6）
+
+语言包键是字符串，编译期无法校验、IDE 无补全、拼错后**静默回退返回键名**（不抛异常，难排查）。
+为此新增 `src/DotNet.Util/Message/Msg.Typed.cs`，把 `Msg` 改为 `static partial class`，
+按键前缀生成嵌套静态类，**每个词条一个成员**：
+
+```csharp
+// 语言包文本不含 {n} → 属性
+public static string UnknownError => Get("Common.UnknownError");
+
+// 语言包文本含 {n} → 方法
+public static string ParameterRequired(params object[] args)
+    => Format("Common.ParameterRequired", args);
+```
+
+约定：
+
+1. **400 条词条 100% 覆盖**（342 属性 + 58 方法），由脚本比对语言包键与强类型成员，双向零差集；
+2. 强类型**只按当前语言取值**，不提供 `culture` 重载——需指定语言时仍用 `Msg.Get(key, culture)`；
+3. 强类型成员**只持有键、不缓存文本**，每次取值都走语言包，因此 `Register` / `LoadJsonOverride`
+   的增量覆盖对强类型**自动生效**，无需改动 `Msg.Typed.cs`；
+4. 库内新写调用点一律用强类型；字符串键保留给「键在编译期未知」的场景。
 
 ### 3.4 枚举描述本地化（关键技术点）
 
@@ -149,6 +191,7 @@ result = Msg.Format("Msg0007", Msg.Get("Msg9961"));
 | **P3** ✅ | 异常消息 14 处 + 业务状态消息 12 处改调 `Msg.Get`/`Msg.Format`（16 个新键） | `ExpressionEvaluator.cs`、`Utils.cs`、`QqwryUtil.cs`、`BaseResult.cs`、3 个 `WebUtil.LogOn*.cs`、`BaseUserManager.Manual.Logon.cs`、`MsgTestCollection.cs` | ✅ 4 工程 × 4 档 0 错误；MsgTests 28/28 双档；回归 1192 |
 | **P4** | 日志 17 处 + 控制台 4 处 + `AppMessage.Service` 33 常量 | 各点改 `Msg.Get/Format` + 49 条词条 | ✅ **已完成**（2026-09-16）：改造 21 处调用点（日志 17 + 控制台 4），新增 49 键（Log 12 / Console 4 / Service 33），字段保留不动；`DotNet.Util` 10 档 + Business/Plus 各 4 档 0 错误，全量非集成回归 1197 通过 / 0 失败 |
 | **P5** | 全库扫描补齐 + 文档（README/CHANGELOG）+ 全 TFM 验证 + 全量回归 | 文档、补漏 | ✅ **已完成**（2026-09-16）：扫描查漏再修 142 处（errorMessage 120 / statusMessage 18 / return 3 / message 1）+ 20 个新键；新增 `Localization.md`，README（中英）与 CHANGELOG 已更新；`DotNet.Util` 10 档 + Business/Business.Web/Plus 各 4 档 0 错误，全量非集成回归 1202 通过 / 0 失败 |
+| **P6** | 强类型调用层 `Msg.Typed.cs`：400 词条全部生成 `Msg.<分组>.<成员>` 入口 + 文档同步 | `Msg.Typed.cs`、`Localization.md`、README（根 + 主包）、CHANGELOG | ✅ **已完成**（2026-09-18）：21 个分组、342 属性 + 58 方法，与语言包键**双向零差集**（脚本比对 100% 覆盖）；`DotNet.Util` 10 档 + Business/Business.Web/Plus 各 4 档 0 错误，`MsgTests` 双档 40/40；全量非集成回归 1225 全绿 |
 
 **每个阶段结束**：10 档 TFM 编译验证 0 错误 + 跑全量非集成测试 + 汇报，确认后再进下一阶段。
 
@@ -169,17 +212,27 @@ result = Msg.Format("Msg0007", Msg.Get("Msg9961"));
 
 | 风险 | 影响 | 应对 |
 |---|---|---|
-| 字段→属性**二进制不兼容** | 已编译下游需重编 | 若在意，改方案 B（字段不动，新层独立） |
+| 字段→属性**二进制不兼容** | 已编译下游需重编 | 若在意，改方案 B（字段不动，新层独立）→ **已采用方案 B** |
 | 测试中硬编码中文断言 | 切换语言后测试失败 | 测试基类固定 `zh-CN`；新增英文断言测试 |
-| 翻译工作量（约 435 条） | 工期 | 分阶段提交；P1 可只翻被引用 42 键先行（待你确认） |
+| 翻译工作量（约 435 条） | 工期 | 分阶段提交；P1 可只翻被引用 42 键先行（待你确认）→ **已全量翻译 400 条** |
 | 中文一词多义 | 英文翻译不准确 | 键带模块前缀（`模块.类.场景`）消歧 |
 | 语言切换线程安全 | 并发读取不一致 | 只读字典 + `volatile` 当前语言，切换为整体替换引用 |
+| **字符串键拼错静默回退** | 不抛异常、返回键名，难排查 | **P6 强类型层**（2026-09-18）：编译期可查 + IDE 补全 + 400 条全覆盖 |
+| **`DotNet.Util.Msg` 与 `DotNet.Web.UI.BasePage.Msg` 同名**（2026-09-15 引入） | 两包同时引用时 `Msg` 二义（`CS0104`/`CS0433`）；`MessageBox.cs` 现报 `CS0436` 警告 | 文档已给命名空间别名方案；根治需把 WebForm 弹窗类改名 `WebMsg` 并留 `[Obsolete]` 转发，**属破坏性变更，待大版本** |
 
 ---
 
-## 七、待确认清单（确认后开工）
+## 七、待确认清单（**已全部确认并落地**，留档备查）
 
-- [ ] 1.3-1：测试代码中文断言处理方式（建议测试固定 `zh-CN`）
-- [ ] 1.3-2：240 个 Msg 键是否全量翻译（建议全量，分批提交）
-- [ ] 3.5：字段→属性的二进制不兼容是否可接受（备选：静态字段不动）
-- [ ] 四：分阶段粒度是否认可（P0→P5 逐阶段确认）
+- [x] 1.3-1：测试代码中文断言处理方式 → **采用建议**：测试固定 `zh-CN` + 新增英文断言，
+  语言切换测试统一挂 `[Collection(MsgTestCollection.Name)]`（`DisableParallelization = true`）。
+- [x] 1.3-2：240 个 Msg 键是否全量翻译 → **全量翻译**（最终 400 条，中英键集合完全一致并由单测断言）。
+- [x] 3.5：字段→属性的二进制不兼容是否可接受 → **采用方案 B**（静态字段不动，新层独立）。
+- [x] 四：分阶段粒度是否认可 → **P0→P5 逐阶段确认完成**，另追加 **P6 强类型层**（2026-09-18 完成）。
+
+## 八、当前状态（2026-09-18）
+
+- 实施阶段 **P0 ~ P6 全部完成**，语言包 400 条（zh-CN / en 键集合一致）。
+- 强类型层 `Msg.Typed.cs` **400 成员全覆盖**，`Localization.md` 已改为强类型优先的写法。
+- 遗留项 1：**`DotNet.Util.Msg` 同名冲突**（见风险表），待大版本改名。
+- 遗留项 2：本计划中 3.1 / 3.3 的设计稿描述已与实现不符，**已在对应小节就地标注偏差**，勿再按旧稿实施。
