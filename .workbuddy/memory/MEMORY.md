@@ -59,28 +59,27 @@ dotnet 在 `/c/Program Files/dotnet`（10.0.401）。stderr 的 `shell-runtime-b
 
 ## 四、CI 发版（.github/workflows/publish-nuget.yml）
 
-- 触发：`push: tags: v*` + `workflow_dispatch`（用户当前走**手动触发、不打 tag** 方案 B）。Secret：`NUGET_API_KEY`（勿打印）。
-- 版本号自动算：`VersionPrefix=1.2` + `VersionSuffix=$([DateTime]::Now.ToString('yyyy.MMdd'))` → 今日 **1.2.2026.918**；
-  **`DotNet.Util.Db.PostgreSql` 的 VersionPrefix=1.1**（是否统一 1.2 待定）。
-- 流程：`restore src/DotNet.Util.Publish.slnf` → `build -c Release --no-restore` → `pack -c Release --no-build -o ./artifacts`
-  → `List artifacts` → Push nupkg → Push snupkg。
-- **必须先 build 再 pack --no-build**：直接 `dotnet pack` 打 solution 在 net10.0 等 TFM 上编不出 DLL，
-  只报 `to be packed was not found on disk`，会**藏住真实编译错误**。
-- **用 solution filter 而非整个 sln**：`src/DotNet.Util.Publish.slnf` 只含 13 个库工程，排除示例工程
-  `DotNet.Test`(net6.0) 与 `DotNet.Test.452`(工程名 `DotNet.Test.46`，老式 packages.config 硬引用本地 `..\packages\` 的
-  **Aspose.Words 25.9.0 + FreeSpire.Doc 12.2.0** 商业库，不入 Git → CI 编不过）。`dotnet pack` 支持 `.slnf`；
-  `.slnf` 里 `solution.path` 相对 slnf 自身、projects 相对 .sln 目录，用反斜杠。
-- **CI 编 net46/47/48 需参考程序集**（windows-latest 只有 4.6.2+，无 4.6.0）：`src/Directory.Build.props` 给 net4x 条件加
-  `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3（本地有 VS 参考程序集，不冲突）。
-- ⚠️ **`dotnet nuget push` 的通配符只在"不带目录部分"时展开**：`"artifacts/*.nupkg"` / `"./artifacts/*.nupkg"`
-  **不展开**，整串当字面文件名 → `error: File does not exist (./artifacts/*.nupkg).`，**报错文字与"包没生成"完全一样**，
-  极易误判。可用：`"./artifacts/**/*.nupkg"`（带 `**`）、cwd 即目录时的 `"*.nupkg"`、或显式枚举。
-  现行做法：pwsh `Get-ChildItem ./artifacts -Filter *.nupkg | ForEach-Object { dotnet nuget push $_.FullName ... }`
-  + `--skip-duplicate`（日期制版本号同一天重跑必然重复，否则重跑必失败）。
-  GitHub 的 pwsh 默认 `$ErrorActionPreference='stop'`，脚本内改回 `'Continue'`，失败靠 `$LASTEXITCODE` 判后 `exit 1`。
-- 发版前置改动：`DotNet.Test` 加 `<IsPackable>false</IsPackable>`；`DotNet.Test.46.csproj` 末尾加空 `<Target Name="Pack" />`
-  （否则 MSB4057）；`CHANGELOG.md` 收口 `## [1.2.2026.918] - 2026-09-18`。
-- **验证 pack 必须抓退出码**，只看"已成功创建包"会漏 MSB4057（在输出前段，tail 会截断）。
+- 触发：`push: tags: v*` + `workflow_dispatch`（用户走**手动触发、不打 tag**）。Secret `NUGET_API_KEY`（勿打印）。
+- 版本号 `VersionPrefix=1.2` + `VersionSuffix=$([DateTime]::Now.ToString('yyyy.MMdd'))`；**PostgreSql 是 1.1**（待定统一）。
+  同一版本号**不能覆盖重推** → 改动要重发只能等次日。
+- 流程：`restore src/DotNet.Util.Publish.slnf` → `build -c Release --no-restore` → `pack --no-build -o ./artifacts`
+  → 列产物 → push nupkg/snupkg。**必须先 build 再 pack --no-build**（直接 pack 整个 solution 会在 net10.0 等 TFM 上
+  编不出 DLL，只报 `not found on disk`，**藏住真实编译错误**）。✅ 2026-09-18 首发成功（13 包，上一个是 1.2.2025.1011）。
+- **用 `.slnf` 而非整个 sln**：只含 13 个库工程，排除示例工程 `DotNet.Test`(net6.0) 与 `DotNet.Test.452`(工程名
+  `DotNet.Test.46`，硬引用不入 Git 的 Aspose/Spire 商业库 → CI 编不过)。`solution.path` 相对 slnf 自身、projects 相对
+  .sln 目录、用反斜杠。
+- **CI 编 net4x 需参考程序集**（windows-latest 只有 4.6.2+）：`Directory.Build.props` 给 net46/47/48 加
+  `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3 + **必须带 `PrivateAssets="all"`**（否则泄漏进 nuspec 依赖分组；
+  `1.2.2026.918` 13 包已中招、源码已补待重发）。改该文件后**必须重新 restore**，否则 `pack --no-build` 沿用旧 nuspec。
+- ⚠️ **`dotnet nuget push` 通配符只在"不带目录部分"时展开**：`"./artifacts/*.nupkg"` 不展开 → `File does not exist`，
+  **报错文字与"包没生成"完全一样**，极易误判。可用 `"./artifacts/**/*.nupkg"` 或 pwsh 显式枚举 + `--skip-duplicate`。
+- ⚠️ **"NuGet 图标不显示"先查网络再查包**：本机 `api.nuget.org` 被 302 到 `nuget.azure.cn`，镜像 icon 端点返回
+  `application/octet-stream` + `nosniff` → 浏览器拒渲染 → onerror 换默认图。**上游实为 `image/png`、包内 icon 与上一版
+  md5 相同、已签名 → 包侧无问题、勿改 csproj**。独立通道验证：`wsrv.nl/?url=api.nuget.org/v3-flatcontainer/<id>/<ver>/icon`。
+- **包内 README（`PackageReadmeFile`）会在 nuget.org 渲染**，"依赖"段版本须与 csproj `PackageReference` 同步——曾整体
+  落后一年（NewLife.Core `11.7.2025.1001`→`11.19.2026.901` 等），已修 11 个 README。
+- 发版前置一次性改动（已完成）：`DotNet.Test` 加 `IsPackable=false`；`DotNet.Test.46.csproj` 加空 `<Target Name="Pack" />`
+  （否则 MSB4057）；CHANGELOG 收口版本段。**验证 pack 必须抓退出码**。
 
 ## 五、多语言层（Msg）现状
 
@@ -92,9 +91,20 @@ dotnet 在 `/c/Program Files/dotnet`（10.0.401）。stderr 的 `shell-runtime-b
 - 兼容决策（用户明确要求）：`AppMessage.Msg####` 与 `AppMessage.Service.*` 静态字段保持不动，多语言只改调用点。
 - 枚举本地化改**读取端**：`[EnumDescription]` 须编译期常量 → 改 `EnumUtil.ToDescription`/`GetEnumDescriptions`，
   未登记词条回退特性原文（不能返回键名）；`Status.cs`/`AuditStatus.cs` 零改动。
+- **2026-09-18 新增强类型层** `src/DotNet.Util/Message/Msg.Typed.cs`：400 个成员（21 分组、342 属性 + 58 方法），
+  与语言包键**双向零差集**。判定：语言包文本含 `{n}` → `params object[] args` 方法，否则 → 只读属性。
+  ⚠️ 强类型**不提供 culture 重载**（只跟当前语言），需指定语言仍用 `Msg.Get(key, culture)`；
+  成员只持有键、不缓存文本 → `Register`/`LoadJsonOverride` 覆盖对其**自动生效**，无需改 Typed 层。
+- ⚠️ **`DotNet.Util.Msg` 同名冲突（2026-09-15 引入，未修）**：`DotNet.Web.UI.BasePage` 包内另有同名同命名空间
+  `DotNet.Util.Msg`（WebForm 弹窗 `Msg.Alert`/`ShowConfirmAlert`）。partial 不跨程序集 →
+  本包编译出 **`CS0436` 警告**（`MessageBox.cs:24`），消费端同时引用两包时 `Msg` **二义**（CS0104/CS0433）。
+  文档已给命名空间别名方案；根治要把弹窗类改名 `WebMsg`（破坏性变更，待大版本）。
 - 键**区分大小写**（内层 `StringComparer.Ordinal`，外层 culture 字典仍 OrdinalIgnoreCase 以容忍 `"en-us"`）；
-  锁外静态字段（`_initialized`/`_language`）一律 `volatile`。`Msg.Get` 64~93ns，319 个调用点全在异常/日志/失败分支，无热路径。
+  锁外静态字段（`_initialized`/`_language`）一律 `volatile`。`Msg.Get` 64~93ns，调用点全在异常/日志/失败分支，无热路径。
 - 扫描遗留中文必须**大小写不敏感**（曾漏 `errorMessage` 120 处 / `statusMessage` 18 处）。
+- **文档编码**：`src/doc/*.md` 曾为 **GBK + CRLF**，2026-09-18 已全部转 **UTF-8 无 BOM**（换行保持原样）。
+  全仓 598 个文本文件现**非 UTF-8 = 0**。⚠️ Edit 工具会**保持目标文件原编码**，改非 UTF-8 文件后必须解码验证。
+  换行符 CRLF/LF 并存（md: 17 CRLF / 23 LF）→ **不要加 `.gitattributes` 的 `eol=crlf`**，否则 LF 文件被整体改写。
 
 ## 六、Db 测试补齐进度
 

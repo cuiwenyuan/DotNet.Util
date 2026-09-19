@@ -1,9 +1,23 @@
 # Msg#### 键语义化重命名映射表
 
 > 方案：**C（直接改名）** —— 编号键从语言包彻底移除，只保留语义键。
-> 前缀体系：11 个（`Label.*` 不单独成类，界面标签并入 `Common.*`）。
+> 前缀体系：**12 个**（`Label.*` 不单独成类，界面标签并入 `Common.*`）。
 > 范围：248 个编号键全部处理。
 > 状态：**已执行（2026-09-16）**，见文末「执行结果」。
+>
+> **2026-09-18 追加**：全部语义键已生成 **强类型入口**（`Msg.Typed.cs`）。
+> 查到新键后，直接用 `Msg.<前缀>.<成员>` 即可，无需再写字符串键：
+
+```
+旧键  Msg0007
+  ↓  （本表查得）
+新键  Common.ParameterRequired
+  ↓  （语言包文本含 {0}，故为方法）
+强类型  Msg.Common.ParameterRequired("用户名")
+```
+
+> 判定规则：语言包文本**不含** `{n}` → 属性（`Msg.Common.UnknownError`）；
+> **含** `{n}` → 方法（`Msg.Common.ParameterRequired(x)`）。
 
 ## 一、命名规则
 
@@ -383,3 +397,30 @@ src/DotNet.Business/Util/BaseManager.cs         48 处调用点改语义键
 src/DotNet.Util.Tests/Message/MsgTests.cs       调用点 + 反射校验改为「字段值存在于中文包值集合」+ 词条数 400
 Localization.md / README.md / CHANGELOG.md      键命名规范、词条数、示例同步
 ```
+
+---
+
+## 追加执行结果：强类型层（2026-09-18）
+
+语义键虽已可读，但仍是**字符串**——拼错时 `Msg.Get` 会静默回退返回键名本身（不抛异常），
+编译期与 IDE 都无法发现。为此新增 `src/DotNet.Util/Message/Msg.Typed.cs`，
+把上表 400 个语义键**全部**转成强类型成员。
+
+| 项 | 结果 |
+|---|---|
+| 强类型成员 | **400**（属性 342 + 方法 58） |
+| 与语言包键比对 | **双向零差集**（语言包有而强类型无：0；强类型有而语言包无：0） |
+| 分组数 | 21 个顶层分组，`Enum` 下嵌套 `AuditStatus` / `Status` |
+| 成员形态判定 | 语言包文本含 `{n}` → `params object[] args` 方法；否则 → 只读属性 |
+| `culture` 重载 | **不提供**（强类型只按当前语言取值；需指定语言仍用 `Msg.Get(key, culture)`） |
+| 增量覆盖 | 成员只持有键、不缓存文本，`Msg.Register` / `Msg.LoadJsonOverride` 对强类型**自动生效** |
+
+### 迁移速查（本表 → 强类型）
+
+| 若旧代码写法 | 改为 |
+|---|---|
+| `Msg.Get("Msg0001")` / `Msg.Get("Common.UnknownError")` | `Msg.Common.UnknownError` |
+| `Msg.Format("Msg0007", x)` / `Msg.Format("Common.ParameterRequired", x)` | `Msg.Common.ParameterRequired(x)` |
+| `AppMessage.Msg0001`（字段，恒中文） | 需随语言切换时改 `Msg.Common.UnknownError`；字段本身保留不动 |
+| `Msg.Get("Enum.Status.Ok")` | `Msg.Enum.Status.Ok` |
+| `Status.Ok.ToDescription()` | 不变（读取端已本地化） |

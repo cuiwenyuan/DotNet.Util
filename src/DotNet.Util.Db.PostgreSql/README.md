@@ -27,7 +27,7 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 ## 依赖 / Dependencies
 
 - `Wangcaisoft.DotNet.Util.Db`
-- [Npgsql](https://www.nuget.org/packages/Npgsql) `4.0.17` / `4.1.14` / `8.0.3` / `9.0.4`（按框架）
+- [Npgsql](https://www.nuget.org/packages/Npgsql) `4.0.17` / `4.1.14` / `8.0.3` / `9.0.4` / `10.0.3`（按框架）
 
 ## 快速使用 / Quick Start
 
