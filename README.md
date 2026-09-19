@@ -34,9 +34,12 @@ Repository layout (overview)
 
 Localization (multi-language output messages)
 - Output messages support multiple languages. **Default is Chinese (zh-CN)**, with **English (en)** as the first built-in language pack.
-- Access localized text via the `Msg` layer: `Msg.Get("Common.UnknownError")`, `Msg.Format("Common.ParameterRequired", arg)`, switch with `Msg.CurrentLanguage = "en"`.
-- Keys are semantic (`<Prefix>.<PascalCase>`, e.g. `Common.*` / `Logon.*` / `Validation.*`); the legacy `Msg####` numbered keys were renamed on 2026-09-16 (see `Msg-Key-Rename-Map.md`).
-- Full guide (key naming, fallback chain, enum descriptions, adding languages, JSON overrides): see [`Localization.md`](Localization.md).
+- **Preferred: strongly-typed members** — `Msg.Common.UnknownError`, `Msg.Common.ParameterRequired("UserName")`, `Msg.Enum.Status.Ok`. Switch language with `Msg.CurrentLanguage = "en"`; members follow the current language.
+- String keys remain available for compile-time-unknown keys or explicit cultures: `Msg.Get("Common.UnknownError")`, `Msg.Get("Common.UnknownError", "en")`, `Msg.Format("Common.ParameterRequired", arg)`.
+- 400 entries, fully covered by the typed layer (342 properties + 58 methods for `{n}` placeholders).
+- Keys are semantic (`<Prefix>.<PascalCase>`, e.g. `Common.*` / `Logon.*` / `Validation.*`); the legacy `Msg####` numbered keys were removed on 2026-09-16 (see `Msg-Key-Rename-Map.md`).
+- ⚠️ `DotNet.Web.UI.BasePage` ships a **different** type also named `DotNet.Util.Msg` (WebForm JS alerts); use a namespace alias when both packages are referenced.
+- Full guide (typed members, key naming, fallback chain, enum descriptions, adding languages, JSON overrides): see [`Localization.md`](Localization.md).
 
 Documentation and next steps
 - This repository includes source XML documentation generation. Key documentation files to add or review: `CONTRIBUTING.md`, `INSTALL.md`, `CHANGELOG.md`, and `API_PROTECTION.md` (present in repo).
@@ -69,14 +72,28 @@ https://www.nuget.org/packages?q=wangcaisoft
 ## 多语言（输出消息）
 输出消息已支持多语言，**默认中文（zh-CN）**，内置第一语言包**英文（en）**。
 
+**推荐强类型写法**（400 个词条全覆盖，编译期可查、IntelliSense 可补全）：
+
 ```csharp
-Msg.Get("Common.UnknownError");              // 发生未知错误。
+Msg.Common.UnknownError              // 发生未知错误。
+Msg.Common.ParameterRequired("用户名") // 请输入用户名，不允许为空。
+Msg.Enum.Status.Ok                   // 运行成功
+
 Msg.CurrentLanguage = "en";
-Msg.Get("Common.UnknownError");              // An unknown error occurred.
+Msg.Common.UnknownError              // An unknown error occurred.
+Msg.Common.ParameterRequired("UserName")
+                                     // Please enter UserName; it cannot be empty.
 ```
 
+键在编译期未知、或需显式指定语言时用字符串键：
+`Msg.Get("Common.UnknownError")`、`Msg.Get("Common.UnknownError", "en")`、`Msg.Format("Common.ParameterRequired", arg)`。
+
 适用范围：异常消息、业务状态消息、日志、控制台输出、`AppMessage` 消息键、枚举描述。
-完整说明（键命名规范、回退链、扩展新语言、JSON 覆盖）见 [`Localization.md`](Localization.md)。
+
+> ⚠️ `DotNet.Web.UI.BasePage` 包内另有一个同名类型 `DotNet.Util.Msg`（WebForm 的 JS 弹窗辅助类），
+> 与多语言层**不是同一个类型**；两个包同时引用时请用命名空间别名区分。
+
+完整说明（强类型成员表、键命名规范、回退链、扩展新语言、JSON 覆盖）见 [`Localization.md`](Localization.md)。
 
 ## 中文简介（简要）
 `DotNet.Util` 是一套多目标的 C# 工具库，包含常用的工具函数、文档导出与数据库适配器，支持 .NET Framework 和现代 .NET 平台。更多使用与构建说明请参考 `INSTALL.md` 和 `CONTRIBUTING.md`。

@@ -10,15 +10,23 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 - New features.
 - **多语言（输出消息本地化）**：新增 `Msg` 消息层（`src/DotNet.Util/Message/Msg.cs`）与内嵌语言包
   `MsgPack.zh-CN.cs` / `MsgPack.en.cs`，**默认中文（zh-CN）**，内置第一语言包**英文（en）**，共 400 条词条。
-  - 支持 `Msg.Get` / `Msg.Format`（占位符）/ `Msg.Register`（代码注册）/ `Msg.LoadJsonOverride`（外部 JSON 覆盖）。
+  - **强类型调用层（`src/DotNet.Util/Message/Msg.Typed.cs`）**：为全部 400 条词条生成 `Msg.<分组>.<成员>` 入口
+    （21 个分组、342 个属性 + 58 个含 `{n}` 占位符的方法），与语言包键**一一对应、零遗漏**。
+    推荐写法 `Msg.Common.UnknownError`、`Msg.Common.ParameterRequired("用户名")`、`Msg.Enum.Status.Ok`；
+    字符串键 `Msg.Get` / `Msg.Format` 保留用于键在编译期未知或需显式指定语言的场景。
+  - 支持 `Msg.Get` / `Msg.GetOrDefault` / `Msg.GetEnumDescription` / `Msg.Format`（占位符）/
+    `Msg.Register`（代码注册）/ `Msg.LoadJsonOverride(culture, path)`（外部 JSON 覆盖）/ `Msg.GetKeys` / `Msg.Clear`。
   - 回退链 `en-US → en → zh-CN → 键名本身`，任何情况不抛异常；`GetOrDefault` 可指定默认值。
   - 覆盖：异常消息、业务状态消息、日志、控制台输出、`AppMessage` 消息（248 条，键已语义化）、
     `AppMessage.Service`（33 键）、枚举描述（70 条）。
-  - 新增 `Localization.md` 使用文档，README 增加中英文多语言说明。
+  - 新增 `Localization.md` 使用文档，README（根 + 主包，中英）增加多语言说明。
   - **键命名语义化**：原 248 个 `Msg####` 编号键（`Msg0001` / `Msg9999` / `Msgs965` 等）全部按中文语义
-    重命名为 11 个业务前缀（`Common` / `Logon` / `Validation` / `Confirm` / `Result` / `Ip` / `System` /
+    重命名为 12 个业务前缀（`Common` / `Logon` / `Validation` / `Confirm` / `Result` / `Ip` / `System` /
     `Org` / `Workflow` / `Sequence` / `Sign` / `File`），其中 6 个与已有语义键同值的编号键合并删除
     （406 → 400）。完整映射见 `Msg-Key-Rename-Map.md`。字段名 `AppMessage.Msg####` 与字段数（248）不变。
+  - ⚠️ **已知冲突（待后续大版本修复）**：`DotNet.Web.UI.BasePage` 包内另有同名类型 `DotNet.Util.Msg`
+    （WebForm 的 JS 弹窗辅助类），与多语言层不同类型；两包同时引用时 `Msg` 会二义
+    （`DotNet.Web.UI.BasePage/MessageBox.cs` 产生 `CS0436` 警告），需用命名空间别名区分。
 
 ### Changed
 - Changes in existing functionality.

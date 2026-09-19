@@ -91,9 +91,20 @@ dotnet 在 `/c/Program Files/dotnet`（10.0.401）。stderr 的 `shell-runtime-b
 - 兼容决策（用户明确要求）：`AppMessage.Msg####` 与 `AppMessage.Service.*` 静态字段保持不动，多语言只改调用点。
 - 枚举本地化改**读取端**：`[EnumDescription]` 须编译期常量 → 改 `EnumUtil.ToDescription`/`GetEnumDescriptions`，
   未登记词条回退特性原文（不能返回键名）；`Status.cs`/`AuditStatus.cs` 零改动。
+- **2026-09-18 新增强类型层** `src/DotNet.Util/Message/Msg.Typed.cs`：400 个成员（21 分组、342 属性 + 58 方法），
+  与语言包键**双向零差集**。判定：语言包文本含 `{n}` → `params object[] args` 方法，否则 → 只读属性。
+  ⚠️ 强类型**不提供 culture 重载**（只跟当前语言），需指定语言仍用 `Msg.Get(key, culture)`；
+  成员只持有键、不缓存文本 → `Register`/`LoadJsonOverride` 覆盖对其**自动生效**，无需改 Typed 层。
+- ⚠️ **`DotNet.Util.Msg` 同名冲突（2026-09-15 引入，未修）**：`DotNet.Web.UI.BasePage` 包内另有同名同命名空间
+  `DotNet.Util.Msg`（WebForm 弹窗 `Msg.Alert`/`ShowConfirmAlert`）。partial 不跨程序集 →
+  本包编译出 **`CS0436` 警告**（`MessageBox.cs:24`），消费端同时引用两包时 `Msg` **二义**（CS0104/CS0433）。
+  文档已给命名空间别名方案；根治要把弹窗类改名 `WebMsg`（破坏性变更，待大版本）。
 - 键**区分大小写**（内层 `StringComparer.Ordinal`，外层 culture 字典仍 OrdinalIgnoreCase 以容忍 `"en-us"`）；
-  锁外静态字段（`_initialized`/`_language`）一律 `volatile`。`Msg.Get` 64~93ns，319 个调用点全在异常/日志/失败分支，无热路径。
+  锁外静态字段（`_initialized`/`_language`）一律 `volatile`。`Msg.Get` 64~93ns，调用点全在异常/日志/失败分支，无热路径。
 - 扫描遗留中文必须**大小写不敏感**（曾漏 `errorMessage` 120 处 / `statusMessage` 18 处）。
+- **文档编码**：`src/doc/*.md` 曾为 **GBK + CRLF**，2026-09-18 已全部转 **UTF-8 无 BOM**（换行保持原样）。
+  全仓 598 个文本文件现**非 UTF-8 = 0**。⚠️ Edit 工具会**保持目标文件原编码**，改非 UTF-8 文件后必须解码验证。
+  换行符 CRLF/LF 并存（md: 17 CRLF / 23 LF）→ **不要加 `.gitattributes` 的 `eol=crlf`**，否则 LF 文件被整体改写。
 
 ## 六、Db 测试补齐进度
 
