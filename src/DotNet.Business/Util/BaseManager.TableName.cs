@@ -67,29 +67,6 @@ namespace DotNet.Business
 
         #endregion
 
-        #region 获取PermissionScope表名
-
-        /// <summary>
-        /// 获取PermissionScope表名
-        /// </summary>
-        /// <returns>表名</returns>
-        public static string GetPermissionScopeTableName(string systemCode = null)
-        {
-            var result = string.Empty;
-            if (systemCode.IsNullOrEmpty())
-            {
-                systemCode = "Base";
-            }
-            result = systemCode + "PermissionScope";
-            if (BaseSystemInfo.UseBaseTable)
-            {
-                result = "BasePermissionScope";
-            }
-            return result;
-        }
-
-        #endregion
-
         #region 获取Role表名
 
         /// <summary>
