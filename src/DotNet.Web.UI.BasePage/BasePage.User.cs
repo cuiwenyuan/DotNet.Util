@@ -115,53 +115,6 @@ public partial class BasePage : System.Web.UI.Page
     }
 
     /// <summary>
-    /// 获取用户列表
-    /// 获得用户列表(按权限范围)
-    /// </summary>
-    /// <param name="ddlUser">用户选项</param>
-    /// <param name="organizationId">部门主键</param>
-    /// <param name="insertBlank">插入空行</param>
-    /// <param name="permissionCode">权限编码</param>
-    protected void GetUserByPermissionScope(DropDownList ddlUser, string organizationId = null, bool insertBlank = false, string permissionCode = "Resource.ManagePermission")
-    {
-        //ddlUser.Items.Clear();
-        var entityList = new List<BaseUserEntity>();
-        var manager = new BaseUserManager(UserInfo);
-        if (!organizationId.IsNullOrEmpty())
-        {
-            entityList = manager.GetListByOrganizations(new string[] { organizationId });
-        }
-        else
-        {
-            if (UserInfo.IsAdministrator)
-            {
-                entityList = manager.GetList<BaseUserEntity>();
-            }
-            else
-            {
-                entityList = new BasePermissionScopeManager(UserInfo).GetUserList(UserInfo.SystemCode, UserInfo.Id.ToString(), permissionCode);
-                // 至少要把自己显示出来，否则难控制权限了
-                if (entityList.Count == 0)
-                {
-                    entityList = manager.GetList<BaseUserEntity>(new string[] { UserInfo.Id.ToString() });
-                }
-            }
-        }
-        ddlUser.SelectedValue = null;
-        if (entityList != null && entityList.Count > 0)
-        {
-            ddlUser.DataValueField = BaseUserEntity.FieldId;
-            ddlUser.DataTextField = BaseUserEntity.FieldRealName;
-            ddlUser.DataSource = entityList;
-            ddlUser.DataBind();
-        }
-        if (UserInfo.IsAdministrator || insertBlank)
-        {
-            ddlUser.Items.Insert(0, new ListItem());
-        }
-    }
-
-    /// <summary>
     /// 有某个操作权限的所有用户列表
     /// 反向通知有权限的用户
     /// </summary>
@@ -172,20 +125,6 @@ public partial class BasePage : System.Web.UI.Page
     {
         var manager = new BasePermissionManager(UserInfo);
         return manager.GetUserIds(permissionCode, permissionName);
-    }
-
-    /// <summary>
-    /// 对某个部门有某种管理权限的所有用户列表
-    /// 反向通知有权限的用户
-    /// </summary>
-    /// <param name="organizationId">组织机构主键</param>
-    /// <param name="permissionCode">操作权限编号</param>
-    /// <param name="permissionName">操作权限名称</param>
-    /// <returns>用户主键数组</returns>
-    public string[] GetPermissionScopeUserIds(string organizationId, string permissionCode, string permissionName = null)
-    {
-        var manager = new BasePermissionScopeManager(UserInfo);
-        return manager.GetUserIds(organizationId, permissionCode, permissionName);
     }
 
     #region GetRoleCategory 角色类型
