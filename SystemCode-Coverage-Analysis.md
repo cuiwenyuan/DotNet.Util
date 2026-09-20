@@ -277,4 +277,17 @@
 - 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**（29 警告，NU1603 版本解析，与本次无关）。
 - 未自动提交/推送（遵循约定，待用户确认）。
 
-> 注：§8 为 Mode B 切换评估；其中 B3 已实现，其余 B1/B2/B4/B5 待确认范围后继续。
+### 8.6 修订记录（2026-09-20 实施 B4）
+
+- 问题：读路径把 `SystemCode` 以字符串拼接进 SQL（`'"+ systemCode +"'`，部分 `N'`），属注入式写法（原 #7）。覆盖点：
+  - `BaseModuleManager.Manual.cs` `GetDataTableByPage` 共 14 处（:253/:268/:280/:285/:299/:311/:316/:330/:342/:356/:359/:360/:426/:472）；
+  - `BaseRoleManager.Manual.cs` `GetDataTableByPage` 5 处（:282/:292/:303/:318/:330）；
+  - `BaseUserManager.Manual.Role.cs` `GetListByRole`(:596)/`GetDataTableByRole`(:643)/`GetUserRoleDataTable`(:752)，以及共享 `if (systemCode.IsNullOrEmpty()){systemCode="Base";} var userRoleTableName=…` 模式的 `ClearUser`/`ClearRole` 等（SqlSafe 对简单值幂等，无害且一致）；
+  - `BaseLogonLogManager.Manual.cs` 两个 `GetDataTableByPage`（:64/:171）；
+  - `BaseParameterManager.Manual.cs:97` 此前已 `SqlSafe`（本次确认，无需改动）。
+- 改动：在每处方法入口对 `systemCode` 调用 `dbHelper.SqlSafe(systemCode)`（`BaseUserManager` 用 `DbHelper.SqlSafe`，与该文件既有的 `DbHelper.GetParameter` 风格一致）做转义，**拼接写法不变、SQL 结构不变**。转义后简单值（如 `"Business"`）不受影响，注入字符（如 `'`）被转义为 `''`。
+- 为何不用真正参数化：经核实 `BaseManager.GetDataTableByPage`（:49→:103）在 SQL Server 表模式分支调用不接收 `dbParameters` 的 `GetDataTableByPage` 重载，**会丢弃参数**；而 `BaseModule`/`BaseRole` 仅当 `userId`/`roleId` 入参时构建 `sbView`（走可转发参数的 SELECT 分支），多数调用走表模式。若强行 `dbParameters.ToArray()` 转发，表模式会抛“必须声明标量变量 @SystemCode”。对比：`BasePermissionManager` 等用 `DbHelper.ExecuteReader/Fill(commandText, dbParameters)` 直调（参数被转发）才安全——那需把分页逻辑改成手写 SQL，属较大重构，超出 B4 增量范围。故采用与 `BaseParameterManager:96` 一致的 `SqlSafe` 转义，达到同等防注入效果且零回归风险。
+- 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**（警告均为既有 NU1603/CAxxxx，与本次无关）。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+> 注：§8 为 Mode B 切换评估；其中 B3、B4 已实现，其余 B1/B2/B5 待确认范围后继续。

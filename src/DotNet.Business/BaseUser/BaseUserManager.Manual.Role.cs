@@ -631,6 +631,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
@@ -666,6 +669,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             var parameters = new List<KeyValuePair<string, object>> {
@@ -697,6 +703,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             var parameters = new List<KeyValuePair<string, object>> {
@@ -733,6 +742,12 @@ namespace DotNet.Business
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 roleTableName = GetRoleTableName(systemCode);
+            }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            if (!string.IsNullOrWhiteSpace(systemCode))
+            {
+                systemCode = DbHelper.SqlSafe(systemCode);
             }
 
             var commandText = @"SELECT BaseRole.Id
@@ -1169,6 +1184,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             result += manager.CopyRole(systemCode, referenceUserId, targetUserId);
