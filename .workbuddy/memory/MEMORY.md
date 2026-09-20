@@ -1,129 +1,52 @@
 # DotNet.Util 项目长期笔记
 
-## 一、沙箱构建/测试环境（每次命令都要用）
+## 一、沙箱构建/测试环境
+- 每条 Bash 命令开头加：`export PATH="/usr/bin:/bin:$PATH:/c/Users/Troy/.workbuddy/binaries/PortableGit/versions/1.2.0/usr/bin:/c/Program Files/dotnet"`，dotnet 在 `/c/Program Files/dotnet`。
+- env 清空会令 restore/build 崩（`NuGet.targets(782) Path.Combine(null)`）→ 先 `export` 这 6 个：`NUGET_PACKAGES='C:/Users/Troy/.nuget/packages'`、`APPDATA`/`LOCALAPPDATA`→`C:/Users/Troy/AppData/...`、`USERPROFILE`/`HOME`=`C:/Users/Troy`、`PROGRAMDATA`=`C:/ProgramData`。stderr 的 `dirname: command not found`/`cd: null directory` 无害。
+- 必须同时加 `-p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false`（IDE 持 obj 锁 → MSB3491；单加 `-p:TargetFrameworks` 触发 CS0579）。`dotnet build-server shutdown` 对锁无效。
+- CS0579：勿把 `OutputPath`/`IntermediateOutputPath` 指到工程树内（glob 进 `*.AssemblyAttributes.cs` → 多工程批量爆）。临时目录放工程树外。
+- 沙箱 `C:/` 根写被拒 → 重定向失败致 exit=1 误判；log/输出放工作区内。
+- Edit 工具禁并行改同文件（后写覆盖前写仍 success）→ 同文件多处编辑串行 + grep 复核。
 
-**Bash 会话 PATH 被清空**（`ls`/`grep`/`dirname` 全 command not found，但 `pwd`/`echo` 正常 → 不是工具坏）。
-每条命令开头加：
-`export PATH="/usr/bin:/bin:$PATH:/c/Users/Troy/.workbuddy/binaries/PortableGit/versions/1.2.0/usr/bin:/c/Program Files/dotnet"`
-dotnet 在 `/c/Program Files/dotnet`（10.0.401）。stderr 的 `shell-runtime-bash-env.sh: line 3: dirname: command not found` 是无害噪音。
+## 二、测试基线与 flaky
+- 基线 1204 例（排除集成），全量 net8.0 ≈25~38s；MsgTests 40 例。
+- `IntegrationTests`（SQL Server/Redis/QQWry）无外部依赖必 FAIL（预期）。SQL Server 集成可用（本机 1433/1434，Windows 集成免密）：`export DUP_TEST_SQLSERVER='Server=127.0.0.1,1433;Database=master;Trusted_Connection=True;TrustServerCertificate=True;'`
+- flaky 判据：失败点轮换=并行竞争。`HttpUtilTests`（临时端口，`WebException:(410)Gone`，单跑 8/8）、`CacheUtilTests.RemoveByRegex`（共享静态缓存，单跑 3/3）。
+- net48 勿一次跑整个 Db 命名空间（217 例）→ SIGTERM + stdout 空 + 退出码 1；net48 验证拆 filter（net8.0 无限制）。
+- 切 `Msg.CurrentLanguage` 的断言类标 `[Collection(MsgTestCollection.Name)]`（DisableParallelization=true）。
 
-**env 被清空 → restore 崩**：`PROGRAMDATA`/`APPDATA`/`USERPROFILE`/`NUGET_PACKAGES` 为空会抛
-`NuGet.targets(782) → Path.Combine(null): Value cannot be null (Parameter 'path1')`，restore/build/test 全崩；
-`cmd.exe`/`powershell.exe`/`reg.exe` 被沙箱拦截不能借。绕过：先 `export` 这 6 个变量
-（`NUGET_PACKAGES='C:/Users/Troy/.nuget/packages'`、`APPDATA`/`LOCALAPPDATA` 指向 `C:/Users/Troy/AppData/...`、
-`USERPROFILE`/`HOME`=`C:/Users/Troy`、`PROGRAMDATA`=`C:/ProgramData`），再加 `--no-restore`（obj/assets.json 已存在时）。
-本机 VS/PowerShell 无此故障。**PowerShell 工具在本沙箱不可用（返回空 stdout）**，别依赖它。
+## 三、已知缺陷
+- 🔴 `DbHelper.Fill` 丢返回值静默吞异常：`Fill(DataTable dt,...)` catch 后把**局部** dt 置 null 返回，调用方 dt 不变 → 必须接返回值判空。`DbUtil.LockNoWait.cs` 已修（null→-1）。旧写法 12 处：`SQLBuilder.cs:660`、`DbUtil.Common.cs:356,377`、`DbUtil.Method.cs:162`、`DbUtil.ParentChildrens.cs:70,112,140,238,291`、`BaseExceptionManager.Manual.cs:159`、`BaseManager.PreviousNext.cs:53`。彻底修需改 `Fill` 语义（行为变更，待评估）。
+- 🟡 net48 测试宿主禁用 NewLife.Core `ToDecimal`/`ToDouble`（用例通过后宿主崩，返回值正确；`ToInt`/`Convert.ToDecimal` 正常；net8.0 正常）。升 11.18→11.19.2026.901 仍崩，升级健康（10 TFM+14 项目 0 错误）。`DefaultConvert.ToDecimal` 直调也崩 → 嫌疑 `stackalloc`+`Span<Char>`+Range 切片（net4x 靠 System.Memory 垫片）。注意 `Convert.ToDecimal(DBNull.Value)` 抛，不能裸换。仅供测试宿主，生产/net4x 用户不受影响。
 
-**IDE 持有 obj 锁 → MSB3491 Access is denied**。禁用程序集信息生成即可，两个参数**必须同时加**
-（只加 `-p:TargetFrameworks=<单TFM>` 会触发 CS0579）：
-`-p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false`
-`dotnet build-server shutdown` 对此锁无效。
+## 四、CI 发版（publish-nuget.yml）
+- 触发 `push: tags: v*` + `workflow_dispatch`（用户手动、不打 tag）。Secret `NUGET_API_KEY` 勿打印。
+- 版本 `VersionPrefix=1.2`+`VersionSuffix=$([DateTime]::Now.ToString('yyyy.MMdd'))`；PostgreSql 1.1（待统一）。同版本号不可覆盖重推。
+- 流程：`restore src/DotNet.Util.Publish.slnf`→`build -c Release --no-restore`→`pack --no-build -o ./artifacts`→列产物→push。**必须先 build 再 pack --no-build**（直接 pack 会在 net10.0 等编不出 DLL 只报 `not found on disk` 藏错误）。✅ 2026-09-18 首发 13 包成功。
+- 用 `.slnf`（仅 13 库工程，排除 `DotNet.Test`(net6.0)/`DotNet.Test.46` 硬引用未入 Git 的 Aspose/Spire）。
+- net4x 参考程序集：`Directory.Build.props` 给 net46/47/48 加 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3 + **`PrivateAssets="all"`**（否则泄漏 nuspec）。改后须重 restore。
+- ⚠️ `dotnet nuget push` 通配符仅无目录部分时展开 → `"./artifacts/*.nupkg"` 不展开报 `File does not exist`（与"包没生成"同文案）。用 `"./artifacts/**/*.nupkg"` 或 pwsh 枚举 + `--skip-duplicate`。
+- ⚠️ NuGet icon 不显示先查网络：`api.nuget.org` 被 302 到 `nuget.azure.cn` 镜像返回 `application/octet-stream`+`nosniff` 拒渲染 → 包侧无问题勿改 csproj；验证 `wsrv.nl/?url=api.nuget.org/v3-flatcontainer/<id>/<ver>/icon`。
+- 包内 README 在 nuget.org 渲染，依赖段须与 csproj 同步（曾落后一年已修 11 个）。
+- 发版前置：`DotNet.Test` 加 `IsPackable=false`；`DotNet.Test.46.csproj` 加空 `<Target Name="Pack" />`；CHANGELOG 收口。`pack` 须抓退出码。
 
-**CS0579**：绝不把 `OutputPath`/`IntermediateOutputPath` 指到工程树内（如 `verify_obj/`）——其内生成的
-`*.AssemblyAttributes.cs` 会被 glob 进源码 → `Duplicate TargetFrameworkAttribute`，多工程批量爆发。临时目录放工程树外。
+## 五、多语言层 Msg
+- `Msg.cs`+`Resources/MsgPack*.cs`；默认 zh-CN、内置 en、词条 400。回退 `en-US→en→zh-CN→键名`，绝不抛。
+- 248 个 `Msg####` 编号键已改语义键（字段名≠键，`Msg.Get("Msg0001")` 失效静默返回键名；查语义见 `Msg-Key-Rename-Map.md`）。`AppMessage.Msg####`/`Service.*` 静态字段保持不动（二进制兼容），只改调用点。
+- 枚举本地化改读取端 `EnumUtil.ToDescription`/`GetEnumDescriptions`（未登记回退特性原文）。
+- 2026-09-18 强类型层 `Msg.Typed.cs`（400 成员，21 分组）。不提供 culture 重载；成员只持键，`Register`/`LoadJsonOverride` 自动生效。
+- ⚠️ `DotNet.Util.Msg` 同名冲突（2026-09-15，未修）：`DotNet.Web.UI.BasePage` 包内另有同名 `Msg`（WebForm 弹窗）→ 本包 CS0436 警告，消费端两包同引时 `Msg` 二义。根治改名 `WebMsg`（破坏性，待大版本）。
+- 键区分大小写；扫描遗留中文须大小写不敏感。`src/doc/*.md` 已转 UTF-8 无 BOM（全仓非 UTF-8=0）；Edit 保持原编码，改非 UTF-8 后须解码验证。勿加 `.gitattributes eol=crlf`（CRLF/LF 并存）。
 
-**沙箱写入限制**：`C:/` 根目录写入被拒 → 重定向失败会让"命令根本没跑"却报 exit=1，极易误判。log/输出放工作区内。
-
-**Edit 工具绝不能并行改同一文件**：同一条消息多个 Edit 会各自基于原内容写入、后写覆盖前写，
-**只有一处存活**且仍返回 success → 同文件多处编辑**串行**，改完 grep 复核。
-
-## 二、测试基线与 flaky 判据
-
-- 基线 **1204 例**（排除集成测试），全量 net8.0 约 25~38s；`MsgTests` 相关 40 例。
-- `IntegrationTests`（SQL Server/Redis/QQWry）无外部依赖必 FAIL，属预期。SQL Server 集成测试可用（本机 1433/1434 在听，
-  Windows 集成认证免密）：`export DUP_TEST_SQLSERVER='Server=127.0.0.1,1433;Database=master;Trusted_Connection=True;TrustServerCertificate=True;'`
-- **flaky 判据：失败点在不同测试间轮换即并行竞争，不要逐条当新 bug。**
-  `HttpUtilTests`（临时端口 HttpListener 争用，多为 `WebException: (410) Gone`，单独跑 8/8）、
-  `CacheUtilTests.RemoveByRegex_RemovesMatchingKeys`（共享全局静态缓存 key 互删，单独跑 3/3）。
-- **net48 不要一次跑整个 Db 命名空间（217 例）**：会被 SIGTERM、stdout 全空、退出码 1
-  → **net48 验证一律拆 filter**（net8.0 无限制，217 例 704ms）。
-- 断言"默认中文"或会切 `Msg.CurrentLanguage` 的测试类必须标注
-  `[Collection(MsgTestCollection.Name)]`（`Tests/Message/MsgTestCollection.cs`，DisableParallelization=true）。
-
-## 三、已知缺陷与硬坑
-
-**🔴 `DbHelper.Fill` 丢弃返回值会静默吞异常**：`Fill(DataTable dt, ...)` 内部 catch 后把**自己的局部** `dt` 置 null 返回，
-调用方传入的 `dt` 不受影响 → **必须接返回值判空**，否则表现为"空表 + 不报错"。`DbUtil.LockNoWait.cs` 已修（null → -1）。
-其余 12 处旧写法：`SQLBuilder.cs:660`、`DbUtil.Common.cs:356,377`、`DbUtil.Method.cs:162`、
-`DbUtil.ParentChildrens.cs:70,112,140,238,291`、`BaseExceptionManager.Manual.cs:159`、`BaseManager.PreviousNext.cs:53`
-（成功路径等价、失败路径静默）。彻底修需改 `Fill` 语义，属行为变更，待评估。
-
-**🟡 net48 测试宿主下禁用 NewLife.Core 的 `ToDecimal`/`ToDouble`**：在 net48 的 xunit/VSTest 宿主下会让宿主在
-用例通过后崩溃（返回值正确）；`ToInt`、`System.Convert.ToDecimal` 正常；net8.0 正常。**仅供测试宿主**——
-工程树外独立 net48 控制台 EXITCODE=0 → 生产/net4x 用户不受影响。
-升 `NewLife.Core` 11.18.2026.801 → 11.19.2026.901 **仍崩**，但升级本身健康（10 TFM + 14 项目 0 错误、无 NU1605）。
-与输入类型无关，直调 `DefaultConvert.ToDecimal` 照样崩 → 该层 string 分支含 `stackalloc` + `Span<Char>` + Range 切片
-（`tmp[..rs]`），net4x 靠 System.Memory 垫片，首要嫌疑（待 dump）。影响面 `.ToDecimal(` 9 + `.ToDouble(` 7；
-产品 9 处（`RequestUtil.cs`×2、`NewLife/DataUtil.cs`×2、`DbUtil.Aggregate.cs`×1、`ExcelUtil.Export.cs`×4）。
-若改用本库安全转换，注意 `Convert.ToDecimal(DBNull.Value)` 会抛，**不能裸换**，需包一层。
-
-## 四、CI 发版（.github/workflows/publish-nuget.yml）
-
-- 触发：`push: tags: v*` + `workflow_dispatch`（用户走**手动触发、不打 tag**）。Secret `NUGET_API_KEY`（勿打印）。
-- 版本号 `VersionPrefix=1.2` + `VersionSuffix=$([DateTime]::Now.ToString('yyyy.MMdd'))`；**PostgreSql 是 1.1**（待定统一）。
-  同一版本号**不能覆盖重推** → 改动要重发只能等次日。
-- 流程：`restore src/DotNet.Util.Publish.slnf` → `build -c Release --no-restore` → `pack --no-build -o ./artifacts`
-  → 列产物 → push nupkg/snupkg。**必须先 build 再 pack --no-build**（直接 pack 整个 solution 会在 net10.0 等 TFM 上
-  编不出 DLL，只报 `not found on disk`，**藏住真实编译错误**）。✅ 2026-09-18 首发成功（13 包，上一个是 1.2.2025.1011）。
-- **用 `.slnf` 而非整个 sln**：只含 13 个库工程，排除示例工程 `DotNet.Test`(net6.0) 与 `DotNet.Test.452`(工程名
-  `DotNet.Test.46`，硬引用不入 Git 的 Aspose/Spire 商业库 → CI 编不过)。`solution.path` 相对 slnf 自身、projects 相对
-  .sln 目录、用反斜杠。
-- **CI 编 net4x 需参考程序集**（windows-latest 只有 4.6.2+）：`Directory.Build.props` 给 net46/47/48 加
-  `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3 + **必须带 `PrivateAssets="all"`**（否则泄漏进 nuspec 依赖分组；
-  `1.2.2026.918` 13 包已中招、源码已补待重发）。改该文件后**必须重新 restore**，否则 `pack --no-build` 沿用旧 nuspec。
-- ⚠️ **`dotnet nuget push` 通配符只在"不带目录部分"时展开**：`"./artifacts/*.nupkg"` 不展开 → `File does not exist`，
-  **报错文字与"包没生成"完全一样**，极易误判。可用 `"./artifacts/**/*.nupkg"` 或 pwsh 显式枚举 + `--skip-duplicate`。
-- ⚠️ **"NuGet 图标不显示"先查网络再查包**：本机 `api.nuget.org` 被 302 到 `nuget.azure.cn`，镜像 icon 端点返回
-  `application/octet-stream` + `nosniff` → 浏览器拒渲染 → onerror 换默认图。**上游实为 `image/png`、包内 icon 与上一版
-  md5 相同、已签名 → 包侧无问题、勿改 csproj**。独立通道验证：`wsrv.nl/?url=api.nuget.org/v3-flatcontainer/<id>/<ver>/icon`。
-- **包内 README（`PackageReadmeFile`）会在 nuget.org 渲染**，"依赖"段版本须与 csproj `PackageReference` 同步——曾整体
-  落后一年（NewLife.Core `11.7.2025.1001`→`11.19.2026.901` 等），已修 11 个 README。
-- 发版前置一次性改动（已完成）：`DotNet.Test` 加 `IsPackable=false`；`DotNet.Test.46.csproj` 加空 `<Target Name="Pack" />`
-  （否则 MSB4057）；CHANGELOG 收口版本段。**验证 pack 必须抓退出码**。
-
-## 五、多语言层（Msg）现状
-
-- `src/DotNet.Util/Message/Msg.cs` + 内嵌语言包 `src/DotNet.Util/Resources/MsgPack*.cs`；默认 **zh-CN**、内置 **en**、
-  词条 **400**（中英各一套，键序一致）。回退链 `en-US → en → zh-CN → 键名本身`，**绝不抛异常**。
-- **248 个 `Msg####` 编号键已全改语义键**（Common/Logon/Validation/Confirm/Result/Ip/System/Org/Workflow/Sequence/Sign/File
-  + Enum/Service/Log/Exception/Business/Console/Rmb/Qqwry/Sms）。**⚠️ 字段名 ≠ 键**：`AppMessage.Msg####` 字段名与字段数（248）
-  保持不变（二进制兼容），但 `Msg.Get("Msg0001")` **已失效并静默返回 `"Msg0001"`**；查语义按项目根 `Msg-Key-Rename-Map.md`。
-- 兼容决策（用户明确要求）：`AppMessage.Msg####` 与 `AppMessage.Service.*` 静态字段保持不动，多语言只改调用点。
-- 枚举本地化改**读取端**：`[EnumDescription]` 须编译期常量 → 改 `EnumUtil.ToDescription`/`GetEnumDescriptions`，
-  未登记词条回退特性原文（不能返回键名）；`Status.cs`/`AuditStatus.cs` 零改动。
-- **2026-09-18 新增强类型层** `src/DotNet.Util/Message/Msg.Typed.cs`：400 个成员（21 分组、342 属性 + 58 方法），
-  与语言包键**双向零差集**。判定：语言包文本含 `{n}` → `params object[] args` 方法，否则 → 只读属性。
-  ⚠️ 强类型**不提供 culture 重载**（只跟当前语言），需指定语言仍用 `Msg.Get(key, culture)`；
-  成员只持有键、不缓存文本 → `Register`/`LoadJsonOverride` 覆盖对其**自动生效**，无需改 Typed 层。
-- ⚠️ **`DotNet.Util.Msg` 同名冲突（2026-09-15 引入，未修）**：`DotNet.Web.UI.BasePage` 包内另有同名同命名空间
-  `DotNet.Util.Msg`（WebForm 弹窗 `Msg.Alert`/`ShowConfirmAlert`）。partial 不跨程序集 →
-  本包编译出 **`CS0436` 警告**（`MessageBox.cs:24`），消费端同时引用两包时 `Msg` **二义**（CS0104/CS0433）。
-  文档已给命名空间别名方案；根治要把弹窗类改名 `WebMsg`（破坏性变更，待大版本）。
-- 键**区分大小写**（内层 `StringComparer.Ordinal`，外层 culture 字典仍 OrdinalIgnoreCase 以容忍 `"en-us"`）；
-  锁外静态字段（`_initialized`/`_language`）一律 `volatile`。`Msg.Get` 64~93ns，调用点全在异常/日志/失败分支，无热路径。
-- 扫描遗留中文必须**大小写不敏感**（曾漏 `errorMessage` 120 处 / `statusMessage` 18 处）。
-- **文档编码**：`src/doc/*.md` 曾为 **GBK + CRLF**，2026-09-18 已全部转 **UTF-8 无 BOM**（换行保持原样）。
-  全仓 598 个文本文件现**非 UTF-8 = 0**。⚠️ Edit 工具会**保持目标文件原编码**，改非 UTF-8 文件后必须解码验证。
-  换行符 CRLF/LF 并存（md: 17 CRLF / 23 LF）→ **不要加 `.gitattributes` 的 `eol=crlf`**，否则 LF 文件被整体改写。
-
-## 六、Db 测试补齐进度
-
-- **P1~P5 全部完成（累计 119 个连库用例，见 `Db-Test-Coverage-Plan.md`）**；net8.0 Db 288/288、net48 集成 105+1。
-- 存储过程：`GetRecordByPage` 需**手工建**；`DupTestUserList`/`DupTestUserGetById` 由 fixture `EnsureProcedures()` 幂等建
-  （`CREATE PROCEDURE` 须为批处理首语句 → 用 `EXEC('')` 包裹）。调 sp 分页重载**必须显式传 sortExpression**，
-  否则 sp 内拼出 NULL 后 `EXECUTE(NULL)` 报错。
-- 护栏：连接串解析出 Database，非白名单 `DotNetUtilTest` 直接 Assert.Fail；串行集合 `SqlServerTestCollection`。
-- 其他坑：`Delete(table, null)` 有 `List<KeyValuePair>`/`string` 重载二义 → 显式强转；
-  `SqlBuilder.SetWhere(List)` 传 null 会 NRE；`BatchDelete` 无返回值（靠 `AggregateInt(MIN(Id))` 递归终止，只能断言剩余行数）；
-  `Truncate` 会重置 IDENTITY 种子；`DbHelper.ExecuteReader` 用 `CommandBehavior.CloseConnection` → **reader 必须 Dispose**。
-- `DbUtil` 不带 connectionString 的重载一律读 public static 字段 `DbUtil.ConnectionString`/`CurrentDbType`（`DbUtil.cs:179/184`）
-  → 测试必须用 `_fixture.UseStaticConnection()` 作用域包裹并还原。
-- net48 下 `AggregateDecimal` 用 `#if NET48 Skip` 跳过（见第三节 🟡）。
+## 六、Db 测试
+- P1~P5 完成（119 连库用例）；net8.0 Db 288/288、net48 集成 105+1。
+- `GetRecordByPage` sp 需手工建；`DupTestUserList`/`DupTestUserGetById` 由 fixture `EnsureProcedures()` 幂等建（`CREATE PROCEDURE` 须批首语句 → `EXEC('')` 包裹）。调 sp 分页重载须显式传 sortExpression（否则 `EXECUTE(NULL)` 报错）。
+- 护栏：连接串 Database 非白名单 `DotNetUtilTest`→Assert.Fail；串行集合 `SqlServerTestCollection`。
+- 坑：`Delete(table,null)` 重载二义→显式强转；`SqlBuilder.SetWhere(List)` 传 null→NRE；`BatchDelete` 无返回值（靠 `AggregateInt(MIN(Id))` 递归）；`Truncate` 重置 IDENTITY；`ExecuteReader` 用 `CloseConnection`→reader 须 Dispose。
+- `DbUtil` 无 connectionString 重载读 static `DbUtil.ConnectionString`/`CurrentDbType` → 测试用 `_fixture.UseStaticConnection()` 包裹还原。net48 `AggregateDecimal` `#if NET48 Skip`。
 
 ## 七、用户约定
-
-- **禁止自动 `git commit` / `push` / 打 tag**：改动只在本机完成，汇报后等用户明确确认；Git 命令只给文本、
-  由用户在 VS/PowerShell 执行。发版/提交拆成独立 commit。
-- 修复/升级后必须**逐项目/TFM 构建验证 0 错误**；重视 net4x（net46/47/48）老用户兼容性。
-- 代码检查先输出 Bug 清单 + 严重度（🔴/🟠/🟡），等确认后再改；严格增量修改、不擅自扩大范围。
-- 升级 NuGet 前核实许可证（NPOI 2.8.0 商业 EULA 即回退，Apache-2.0 的 2.7.6 为安全上限）与 TFM 兼容性。
+- 禁自动 commit/push/tag：改动本机完成，汇报等确认；Git 命令只给文本。发版/提交拆独立 commit。
+- 修复/升级后必逐项目/TFM 构建验证 0 错误；重视 net4x 兼容。
+- 代码检查先给 Bug 清单+严重度（🔴/🟠/🟡），确认后再改；严格增量、不擅自扩范围。
+- 升级 NuGet 先核实许可证（NPOI 2.8.0 商业 EULA 回退，Apache-2.0 2.7.6 安全上限）与 TFM 兼容。

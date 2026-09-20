@@ -252,7 +252,7 @@
 | B1 | 🔴 | `BaseUserRoleManager.GetDataTable`（:105）/ `GetDataTableByPage`（:48） | 读**不**过滤 `SystemCode`，且缓存键无 systemCode。共享 `BaseUserRole` 表下 → 跨子系统泄漏全部用户-角色行 + 缓存互相污染。 |
 | B2 | 🟠 | 所有管理器写路径（`Add`/`AddEntity`，如 `BaseUserRoleManager.Add`:37、`BaseModuleManager.UniqueAdd`:37、`BaseRoleManager`/`BasePermissionManager` 的 Add） | 写方法**不自行 stamp `entity.SystemCode`**，仅依赖调用方已赋值；基类 `BaseManager` 也无集中 stamp 机制（grep `BaseManager*.cs` 仅 `SaveEntityChangeLog` 用全局 `BaseSystemInfo.SystemCode`）。实体 `SystemCode` 默认 `"Base"`。若任一调用方/种子数据漏设 → 行落 `BaseXxx` 且 `SystemCode="Base"`：被按子系统过滤的读判为“不存在”（数据丢失），或被当作全局共享数据向所有子系统可见（泄漏）。 |
 | B3 | ✅ 已修 | `BaseUserRoleManager.Cache.cs:47-49` `RemoveCache` | 清缓存键改用实例级 `UserInfo.SystemCode`（缺失回退全局），多子系统 Mode B 下精确失效各子系统 UserRole 缓存。 |
-| B4 | 🟡 | 多处读路径字符串拼接 `SystemCode='x'`（#7，如 `BaseModuleManager.Manual.cs:253` 等） | 功能正确但注入式写法；Mode B 下正确性仍取决于传入值，建议参数化。 |
+| B4 | 🟡 已实现 SqlSafe 转义 | 多处读路径字符串拼接 `SystemCode='x'`（#7，如 `BaseModuleManager.Manual.cs` 等） | 2026-09-20 已实现 SqlSafe 转义（§8.6）；同轮尝试的"真正 ADO.NET 参数化"升级（§8.7）已按用户决定整体回退，代码回到 SqlSafe 写法。 |
 | B5 | ⚪ 部署前置 | 数据迁移 | 切 `UseBaseTable=true` 后代码改查 `BaseXxx`；须先把各 `BusinessXxx` 数据迁入 `BaseXxx` 且保留 `SystemCode` 列。否则 `BaseXxx` 为空 → 全量丢失（非代码 Bug，但为切换硬前置）。 |
 
 ### 8.3 现状对照（哪些已具备 Mode B 安全性）
@@ -290,4 +290,30 @@
 - 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**（警告均为既有 NU1603/CAxxxx，与本次无关）。
 - 未自动提交/推送（遵循约定，待用户确认）。
 
-> 注：§8 为 Mode B 切换评估；其中 B3、B4 已实现，其余 B1/B2/B5 待确认范围后继续。
+### 8.7 修订记录（2026-09-20 第二轮：B4 升级为"真正 ADO.NET 参数化"）— ⚠️ 已整体回退
+
+- ⚠️ 已回退：用户 2026-09-20 复核后决定放弃该参数化风格（仍有大量字段未做同类处理），已整体回退代码，本节约作历史留存；当前 B4 仍以 §8.6 的 `SqlSafe` 转义为准。
+- 背景：§8.6 的 B4 仅用 `SqlSafe` 转义（拼接写法不变），仍非真参数化。本轮回应用户指令⑤，将 5 个管理器的 `SystemCode` 过滤改为命名参数 `@SystemCode` 真正下发。
+- 关键架构：新增 `BaseManager.GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName, condition, selectField, IDbDataParameter[] dbParameters)`（opt-in 重载，`BaseManager.GetDataTableByPage.cs:124`）。其：
+  - SELECT 子查询 / MySql / Oracle 分支 → 内联 SQL 并转发 `dbParameters` 到 `DbHelper.ExecuteScalar` / `DbHelper.GetDataTableByPage`（8 参内联重载，:46）；
+  - 表模式分支 → `DbHelper.GetDataTableByPage(out recordCount, tableName, selectField, pageNo, pageSize, condition, dbParameters, orderBy)`（:360，内联 SQL，**真正转发参数**，等价于 `GetRecordByPage` 存储过程语义但支持命名参数）。
+  - 设计取舍：**不翻转**全局 `:103` 的 `GetRecordByPage` 存储过程路径（会丢弃参数、影响约 50 个其他调用方），仅 5 个 SystemCode 管理器走新重载，爆炸半径最小。
+- 改造点（5 个管理器，方法内 `SystemCode` 值拼接全部改为 `= dbHelper.GetParameter(BaseXxxEntity.FieldSystemCode)` 占位符，并 `dbParameters.Add(dbHelper.MakeParameter(BaseXxxEntity.FieldSystemCode, systemCode))`；方法末尾 `GetDataTableByPage(...)` 切到新 8 参重载）：
+  - `BaseModuleManager.Manual.cs` `GetDataTableByPage`：14 处 → 占位符（含 3 处双空格变体）；
+  - `BaseRoleManager.Manual.cs` `GetDataTableByPage`：5 处 → 占位符；
+  - `BaseUserManager.Manual.Role.cs` `GetListByRole`/`GetDataTableByRole`/`GetUserRoleDataTable`：3 方法共 3 处 → 占位符（SQL 内联路径本就转发 `dbParameters`）；
+  - `BaseLogonLogManager.Manual.cs` 两个 `GetDataTableByPage`：2 处 → 占位符（补 `using System.Collections.Generic;`）；
+  - `BaseParameterManager.Manual.cs` `GetDataTableByPage`：1 处（位于 `if (!systemCode.IsNullOrEmpty())` 内）→ 占位符。
+- 残留说明：`BaseModule`/`BaseRole`/`BaseLogonLog` 仍保留方法入口的 `systemCode = …SqlSafe(systemCode)`——它仅影响（已冗余的）参数值、且对受控的 systemCode 值幂等，保留以对齐 §8.6 既有写法、零回归；`BaseUser`/`BaseParameter` 因值为参数化故直接去掉 `SqlSafe`。
+- 发现但未在本轮修（超范围、待确认）：`BaseUserManager.Manual.Role.cs:499` `GetRoleIds` 用 `DbHelper.GetParameter(systemCode)`（把**值**当字段名 → 占位符 `@<systemCode值>`），但其 `dbParameters` 未加对应 `systemCode` 参数 → 运行时“必须声明标量变量”风险。属既有 bug，建议单独修（不在指令⑤的 3 方法范围内）。
+- 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**（仅既有 CAxxxx/NU1603 警告）。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+### 8.8 修订记录（2026-09-20 修复 GetRoleIds 既有 bug）
+
+- 问题：`BaseUserManager.Manual.Role.cs` `GetRoleIds(string systemCode, string userId, string companyId)` 用 `DbHelper.GetParameter(systemCode)`——把**值**当字段名，占位符变成 `@<systemCode值>`（如 `@Business`），但其 `dbParameters` 仅含 UserId/Enabled/Deleted，**未加 systemCode 参数** → 运行时必抛"必须声明标量变量 @Business"。此属既有 bug，与指令⑤的参数化改造无关（当时超范围未改）。
+- 改动：占位符改回 `DbHelper.GetParameter(BaseUserRoleEntity.FieldSystemCode)`（→ `@SystemCode`），并在 `dbParameters` 增加 `DbHelper.MakeParameter(BaseUserRoleEntity.FieldSystemCode, systemCode)`。
+- 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+> 注：§8 为 Mode B 切换评估；其中 B3 已实现、B4 为 SqlSafe 转义（真参数化升级已回退），其余 B1/B2/B5 待确认范围后继续。

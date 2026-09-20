@@ -496,13 +496,14 @@ namespace DotNet.Business
             sb.Append("SELECT " + BaseUserRoleEntity.FieldRoleId);
             sb.Append(" FROM " + userRoleTable);
             sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId));
-            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = " + DbHelper.GetParameter(systemCode));
+            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldSystemCode));
             sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldEnabled));
             sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted));
 
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId),
+                DbHelper.MakeParameter(BaseUserRoleEntity.FieldSystemCode, systemCode),
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldEnabled, 1),
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldDeleted, 0)
             };
