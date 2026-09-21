@@ -379,6 +379,11 @@ namespace DotNet.Business
                 var sqlBuilder = new SqlBuilder(DbHelper);
                 sqlBuilder.BeginUpdate(CurrentTableName);
                 SetEntity(sqlBuilder, t);
+                // Mode B 隔离：共用 BaseXxx 表下 Id 可能跨子系统非全局唯一，更新须按 Id + SystemCode 双条件，避免误改他子系统行
+                if (TryStampSystemCode(t, out var effectiveSystemCode))
+                {
+                    sqlBuilder.SetWhere("SystemCode", effectiveSystemCode);
+                }
                 SetEntityUpdate(sqlBuilder, t, updateIp: updateIp);
                 result = UpdateEntity(sqlBuilder, t);
                 if (result > 0)
@@ -883,6 +888,49 @@ namespace DotNet.Business
         }
         #endregion
 
+        #region private bool TryStampSystemCode<T>(T t, out string effectiveSystemCode) 写路径 SystemCode 兜底（Mode B 隔离）
+        /// <summary>
+        /// 确保分区表实体在写路径带正确的 SystemCode。
+        /// Mode B（BaseSystemInfo.UseBaseTable=true，共用 BaseXxx 表靠 SystemCode 列区分各子系统）下，
+        /// 若调用方/种子数据漏设或保留默认 "Base"，行会落入错误的子系统、破坏隔离。
+        /// 故在写路径集中兜底：当实体含可写 string SystemCode 属性且其值为空或 "Base" 时，
+        /// 对齐为 effSC = UserInfo.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"（与读侧 B1 过滤同源，保证读写同码）。
+        /// 实体类型无 SystemCode 属性（非分区表）则直接跳过，不影响其它表。
+        /// </summary>
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, System.Reflection.PropertyInfo> SystemCodePropertyCache = new System.Collections.Concurrent.ConcurrentDictionary<Type, System.Reflection.PropertyInfo>();
+
+        private bool TryStampSystemCode<T>(T t, out string effectiveSystemCode)
+        {
+            effectiveSystemCode = UserInfo != null ? UserInfo.SystemCode : null;
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = BaseSystemInfo.SystemCode;
+            }
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = "Base";
+            }
+
+            if (t == null)
+            {
+                return false;
+            }
+            var prop = SystemCodePropertyCache.GetOrAdd(t.GetType(), ty => ty.GetProperty("SystemCode"));
+            if (prop == null || !prop.CanWrite || prop.PropertyType != typeof(string))
+            {
+                return false;
+            }
+
+            var current = prop.GetValue(t) as string;
+            // B2-B：空或默认 "Base" 都对齐为 effSC，确保 Mode B 读写同码、隔离闭环；调用方显式设置的其它值保持不变
+            if (string.IsNullOrWhiteSpace(current) || current == "Base")
+            {
+                prop.SetValue(t, effectiveSystemCode);
+            }
+            return true;
+        }
+        #endregion
+
         #region public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t) 给实体赋值
 
         /// <summary>
@@ -893,6 +941,9 @@ namespace DotNet.Business
         /// <param name="t"></param>
         public virtual void SetEntity<T>(SqlBuilder sqlBuilder, T t)
         {
+            // B2：写路径集中兜底 SystemCode，确保 Mode B（共用 BaseXxx 表靠 SystemCode 列区分子系统）隔离闭环
+            TryStampSystemCode(t, out _);
+
             var table = EntityUtil.GetTableExpression(t);
             //var columns = table.Columns.Where(it => !it.IsKey).ToList();
             foreach (var column in table.Columns)
