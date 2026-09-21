@@ -316,7 +316,7 @@
 - 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**。
 - 未自动提交/推送（遵循约定，待用户确认）。
 
-> 注：§8 为 Mode B 切换评估；其中 B3 已实现、B4 为 SqlSafe 转义（真参数化升级已回退），B1 已于 2026-09-21 全部修复（含全库排查补的 3 处扩展缺口）、**B2 已于 2026-09-19 修复（写路径集中 stamp + Update WHERE 追加 SystemCode，Mode B 读写同码闭环）**；仅剩 B5（数据迁移，部署前置）待切换时处理。
+> 注：§8 为 Mode B 切换评估；其中 B3 已实现、B4 为 SqlSafe 转义（真参数化升级已回退），B1 已于 2026-09-21 全部修复（含全库排查补的 3 处扩展缺口）、**B2 已于 2026-09-19 修复（写路径集中 stamp + Update WHERE 追加 SystemCode，Mode B 读写同码闭环）**、**RemoveCache 缓存键对齐已于 2026-09-21 修复（覆盖 GetDataTable 缓存 + override RemoveCache(int id)，见 §8.11）**；仅剩 B5（数据迁移，按用户决定不做）待切换时处理。
 
 ---
 
@@ -348,7 +348,7 @@
 ### 8.9.5 残留 / 待办
 - **B2（🟠）**：写路径仍无集中 stamp 机制（`AddEntity`/`UpdateEntity` 不兜底 `entity.SystemCode`）。若任一调用方/种子数据漏设 → 行 `SystemCode="Base"`，在按子系统过滤的读下不可见（数据丢失）或被当作全局共享（泄漏）。建议后续在 `BaseManager.AddEntity`/`UpdateEntity` 增加集中兜底。
 - **B5（⚪）**：数据迁移 `BusinessXxx → BaseXxx`（保留 `SystemCode` 列）为切换硬前置，非代码 Bug。
-- **RemoveCache 缓存键对齐（B1 残留）**：`RemoveCache` 的 `cacheKeySystemCode = "Dt."+effSC+".UserRole"`（Cache.cs:56）与 `GetDataTable` 新键 `"Dt."+effSC+".BaseUserRole.<companyId>.<flag>` 仍不精确命中 → 写后 `GetDataTable` 缓存可能延迟失效（需 `CacheUtil` 支持前缀/通配删除才能彻底闭环）。
+- **RemoveCache 缓存键对齐（✅ 已修，2026-09-21，见 §8.11）**：`RemoveCache` 新增 `RemoveByRegex("^Dt\.<effSC>\.<CurrentTableName>\.")` 前缀删除，覆盖 `GetDataTable` 全部 `companyId`/`flag` 组合；并 override `RemoveCache(int id)` 先调无参 `RemoveCache()`，使 Update/SetEnabled/SetDeleted 等走 id 重载的写路径也失效 `GetDataTable` 缓存。B1 残留闭环。
 - 两种模式统一过滤的**前置条件**：Mode A 下 `effectiveSystemCode` 须正确解析为对应子系统码（如 `UserInfo.SystemCode`/`BaseSystemInfo.SystemCode` 已设为 `"Business"`）；若为空回退 `"Base"`，可能误把 Mode A 下 `Business` 行过滤掉（与 §8.5 同源风险，已随用户"两种模式都追加"决策被接受）。
 
 ---
@@ -383,5 +383,37 @@
 
 ### 8.10.5 残留 / 待办
 - **B5（⚪）**：数据迁移 `BusinessXxx → BaseXxx`（保留 `SystemCode` 列）为切 Mode B 的部署硬前置，非代码 Bug。
-- **RemoveCache 缓存键对齐（B1 残留）**：`GetDataTable` 新键 `"Dt."+effSC+".BaseUserRole.<companyId>.<flag>` 与 `RemoveCache` 的 `"Dt."+effSC+".UserRole"` 仍不精确命中 → 写后 `GetDataTable` 缓存可能延迟失效（需 `CacheUtil` 前缀/通配删除才能彻底闭环）；属缓存时效问题，不影响数据正确性与 Mode B 隔离。
+- **RemoveCache 缓存键对齐（✅ 已修，2026-09-21，见 §8.11）**：`RemoveCache()` 新增 `RemoveByRegex("^Dt\.<effSC>\.<CurrentTableName>\.")` 前缀删除；override `RemoveCache(int id)` 先调无参 `RemoveCache()`。写后 `GetDataTable` 缓存即时失效，闭环 B1 残留。
 - **DB 回归（建议用户侧执行）**：连库用例（P1~P5）在 `UseBaseTable=true` + 双子系统下验证"互不可见 + 写后读得到自己"；本机无 SQL Server 时仅完成双 TFM 构建验证。
+
+---
+
+## 8.11 修订记录（2026-09-21 实施 RemoveCache 缓存键对齐 — B1 残留闭环）
+
+### 8.11.1 背景与根因
+- B1 给 `BaseUserRoleManager.GetDataTable` 加了 SystemCode 过滤并改缓存键为 `"Dt."+effSC+"."+CurrentTableName+"."+companyId+"."+(myCompanyOnly?"1":"0")`（如 `Dt.Base.BaseUserRole.123.1`）。
+- 但 `BaseUserRoleManager.Cache.cs` 的 `RemoveCache` 仅清 `Dt.<effSC>.UserRole`（**缺表名段**）、`Dt.<effSC>.<UserId>.UserRole`、`List.*.UserRole` 等**历史键**，与 `GetDataTable` 新键不精确命中 → 写后 `GetDataTable` 缓存可能延迟失效（读到旧的用户-角色下拉）。
+- 更隐蔽：**`UpdateEntity<T>` 调 `RemoveCache(entity.Id)`（int 重载）**，而基类 `RemoveCache(int id)` 只删实体缓存（`CurrentTableName+".Entity."+id`），**不调无参 `RemoveCache()`** → 更新路径根本不触发任何列表/表缓存清除。故对齐必须同时覆盖无参 `RemoveCache()` 与 `RemoveCache(int id)` 重载。
+
+### 8.11.2 改动（文件 `src/DotNet.Business/BaseUserRole/BaseUserRoleManager.Cache.cs`）
+1. **无参 `RemoveCache()` 重写**：
+   - 统一在顶部算 `effectiveSystemCode = UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`（与 B1/B3 读侧同源；原代码在 `UserInfo==null` 时硬编码 `"Base"`，现与读侧一致，避免多子系统漏清）。
+   - 新增 `CacheUtil.RemoveByRegex("^Dt\." + Regex.Escape(effSC) + "\." + Regex.Escape(CurrentTableName) + "\.")` —— 前缀删除覆盖 `GetDataTable` 全部 `companyId`/`myCompanyOnly` 组合；`CurrentTableName` 随 Mode A/B 变化（`BusinessUserRole`/`BaseUserRole`），同一写法通用。
+   - 兼容历史键 `Dt.<effSC>.UserRole` / `Dt.<effSC>.<UserId>.UserRole`（缺/不同表名段）以正则一并清除；保留原精确键与 `Dt.<CurrentTableName>` 表级兜底键。
+2. **新增 `RemoveCache(int id)` override**：先调无参 `RemoveCache()`（使 B1 对齐在 Add/Update/SetEnabled/SetDeleted 等所有写路径生效），再保留基类实体缓存清除语义（`CurrentTableName+".Entity."+id`，`id==0` 时正则清全部）。
+
+### 8.11.3 行为影响
+- **Add 路径**：`AddEntity<T>` 调无参 `RemoveCache()` → 即时清 `GetDataTable` 缓存（原已能清，但原键不匹配；现精确）。
+- **Update/SetEnabled/SetDeleted 路径**：此前 `RemoveCache(int id)` 只清实体缓存（BaseUserRole 实体缓存未启用）→ **`GetDataTable` 缓存永不失效**；现 override 先调无参 `RemoveCache()` → 写后下拉立即可见新数据。这是本次修复的关键增益。
+- `Regex.IsMatch` 为 `IgnoreCase`；`effSC`/`CurrentTableName` 经 `Regex.Escape` 防注入式误匹配，仅删目标前缀。
+- 范围仅限 `BaseUserRoleManager`，未触碰其它管理器与 `CacheUtil`（`RemoveByRegex` 为既有 API）。
+
+### 8.11.4 验证
+- `dotnet build DotNet.Business -f net8.0 -c Debug`：**0 错误**（1753 警告，既有 CA 文化/全球化类，无关）。
+- `dotnet build DotNet.Business -f net48 -c Debug`：**0 错误**（71 警告，既有 CS1573，无关）。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+### 8.11.5 说明
+- 用户明确 **B5 不做**（数据迁移为部署前置，跳过）。
+- 同类"读缓存键 vs RemoveCache 键"错位若存在于 `BaseRole`/`BasePermission`/`BaseModule` 等其它管理器，本次**未扩范围**处理；如需一并对齐可另开一轮。
+- DB 回归待用户部署 SQL Server 后执行（连库验证 `UseBaseTable=true` 双子系统下写后 `GetDataTable` 缓存即时失效）。
