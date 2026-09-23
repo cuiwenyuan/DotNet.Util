@@ -1462,33 +1462,12 @@ namespace DotNet.Business
 
             var userEntity = GetEntity(id);
             userInfo = ConvertToUserInfo(userEntity);
-            if (userEntity.IsStaff.Equals("1"))
-            {
-                // 获得员工的信息
-                var staffEntity = new BaseStaffEntity();
-                var staffManager = new BaseStaffManager(DbHelper, UserInfo);
-                var dataTableStaff = staffManager.GetDataTableById(id.ToString());
-                staffEntity.GetSingle(dataTableStaff);
-                userInfo = staffManager.ConvertToUserInfo(userInfo, staffEntity);
-            }
+
             status = Status.Ok;
             // 登录、重新登录、扮演时的在线状态进行更新
             var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
             userLogonManager.ChangeOnline(id);
             return userInfo;
-        }
-        #endregion
-
-        #region public int CheckUserStaff()
-        /// <summary>
-        /// 用户已经被删除的员工的UserId设置为NULL，说白了，是需要整理数据
-        /// </summary>
-        /// <returns>影响行数</returns>
-        public int CheckUserStaff()
-        {
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("UPDATE BaseStaff SET UserId = NULL WHERE UserId NOT IN ( SELECT Id FROM " + BaseUserEntity.CurrentTableName + " WHERE " + BaseStaffEntity.FieldDeleted + " = 0 ) ");
-            return ExecuteNonQuery(sb.Return());
         }
         #endregion
 
@@ -1609,27 +1588,6 @@ namespace DotNet.Business
                 }
             }
             return result;
-        }
-        #endregion
-
-        #region public int GetSortNum(string userId)
-        /// <summary>
-        /// 取得排名
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public int GetSortNum(string userId)
-        {
-            var entity = GetEntity(userId);
-            var sb = PoolUtil.StringBuilder.Get();
-            sb.Append("SELECT COUNT(*) AS UserCount "
-                            + " FROM " + CurrentTableName
-                            + " INNER JOIN " + BaseStaffEntity.CurrentTableName + " ON " + BaseStaffEntity.CurrentTableName + ".Id = " + CurrentTableName + ".Id"
-                            + " WHERE " + CurrentTableName + "." + BaseStaffEntity.FieldDeleted + " = 0 AND " + CurrentTableName + "." + BaseUtil.FieldEnabled + " = 1 and " + CurrentTableName + "." + BaseUserEntity.FieldGender + " IS NOT NULL AND " + BaseStaffEntity.CurrentTableName + "." + BaseStaffEntity.FieldCurrentProvince + " IS NOT NULL AND (" + CurrentTableName + "." + BaseUserEntity.FieldScore
-                            + " > " + entity.Score + " OR (" + CurrentTableName + "."
-                            + BaseUserEntity.FieldSortCode + " < " + entity.SortCode + " AND " + CurrentTableName + "." + BaseUserEntity.FieldScore
-                            + " = " + entity.Score + "))");
-            return DbHelper.ExecuteScalar(sb.Return()).ToInt() + 1;
         }
         #endregion
 
