@@ -249,8 +249,8 @@
 ### 8.2 潜在 Bug（Mode B 视角）
 | 编号 | 严重度 | 位置 | 问题 |
 |------|--------|------|------|
-| B1 | 🔴 | `BaseUserRoleManager.GetDataTable`（:105）/ `GetDataTableByPage`（:48） | 读**不**过滤 `SystemCode`，且缓存键无 systemCode。共享 `BaseUserRole` 表下 → 跨子系统泄漏全部用户-角色行 + 缓存互相污染。 |
-| B2 | 🟠 | 所有管理器写路径（`Add`/`AddEntity`，如 `BaseUserRoleManager.Add`:37、`BaseModuleManager.UniqueAdd`:37、`BaseRoleManager`/`BasePermissionManager` 的 Add） | 写方法**不自行 stamp `entity.SystemCode`**，仅依赖调用方已赋值；基类 `BaseManager` 也无集中 stamp 机制（grep `BaseManager*.cs` 仅 `SaveEntityChangeLog` 用全局 `BaseSystemInfo.SystemCode`）。实体 `SystemCode` 默认 `"Base"`。若任一调用方/种子数据漏设 → 行落 `BaseXxx` 且 `SystemCode="Base"`：被按子系统过滤的读判为“不存在”（数据丢失），或被当作全局共享数据向所有子系统可见（泄漏）。 |
+| B1 | ✅ 已修（两类共 5 处） | `BaseUserRoleManager.GetDataTable`（:105）/ `GetDataTableByPage`（:48）；`BaseRoleManager.Manual.cs:819 GetUserDataTable`；`BaseUserManager.Manual.Role.cs:452 GetUserRole`（含缓存键）；`BaseUserManager.Manual.Role.cs:802 GetDataTableByCompanyByRole` | 上述读路径**均**查询共用 `BaseUserRole` 表却未过滤 `SystemCode` → Mode B 下跨子系统泄漏。`2026-09-21` 按用户口径（**不论 `UseBaseTable` 真假都无条件追加** `AND SystemCode = N'<SqlSafe(effectiveSystemCode)>'`）全部修补；`GetDataTable`/`GetUserRole` 缓存键并入 systemCode 防撞。effectiveSystemCode 来源：两 `override` 用实例 `UserInfo.SystemCode`→`BaseSystemInfo.SystemCode`→`"Base"`；其余 3 处用方法已有的 `systemCode` 参数（空回退 `"Base"`）。 |
+| B2 | ✅ 已修（2026-09-19） | `BaseManager.SetEntity`（写路径单一注入点）+ `BaseManager.UpdateEntity<T>`（WHERE 追加 SystemCode） | 在 `SetEntity` 起点用反射检测实体是否含可写 `string SystemCode` 属性（分区表实体才有，`BaseEntity` 基类无 → 必须反射）；命中且值为**空或 `"Base"`** 时，对齐为 `effSC = UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`（与 B1 读侧同源，保证读写同码）。该注入点覆盖**所有**走标准 CRUD 的写路径（含管理器自定义 `SetEntity`+`AddEntity` 的 insert）。`UpdateEntity<T>` 额外在 WHERE 追加 `SystemCode = effSC`（参数化 `SetWhere`，见 §8.10），防 Mode B 共用 `BaseXxx` 表下按 `Id` 跨子系统误更新。`BaseEntity` 基类及不含 `SystemCode` 属性的非分区表实体自动跳过，不影响其它表。 |
 | B3 | ✅ 已修 | `BaseUserRoleManager.Cache.cs:47-49` `RemoveCache` | 清缓存键改用实例级 `UserInfo.SystemCode`（缺失回退全局），多子系统 Mode B 下精确失效各子系统 UserRole 缓存。 |
 | B4 | 🟡 已实现 SqlSafe 转义 | 多处读路径字符串拼接 `SystemCode='x'`（#7，如 `BaseModuleManager.Manual.cs` 等） | 2026-09-20 已实现 SqlSafe 转义（§8.6）；同轮尝试的"真正 ADO.NET 参数化"升级（§8.7）已按用户决定整体回退，代码回到 SqlSafe 写法。 |
 | B5 | ⚪ 部署前置 | 数据迁移 | 切 `UseBaseTable=true` 后代码改查 `BaseXxx`；须先把各 `BusinessXxx` 数据迁入 `BaseXxx` 且保留 `SystemCode` 列。否则 `BaseXxx` 为空 → 全量丢失（非代码 Bug，但为切换硬前置）。 |
@@ -258,11 +258,11 @@
 ### 8.3 现状对照（哪些已具备 Mode B 安全性）
 - ✅ **读已过滤 `SystemCode`**：`BaseModuleManager.GetDataTableByPage`（:253）+ 递归子查询/INNER JOIN、`BaseModuleManager.GetModuleTree/GetEntitiesByCache/GetEntityByCache`、`BaseRoleManager` 系列（:282 等）、`BasePermissionManager`（:327/:658 参数化）、`BaseLogonLogManager`（:64/:171）、`BaseParameterManager`/`BaseOperationLogManager`、`BaseUserRoleManager.GetList`（:133 带 `systemCode` 参数）、`BaseUserLogonManager` 写（参数化）。
 - ✅ **写依赖调用方设 `SystemCode`**：用户 Mode A 下“分表工作正常”且上述读均按 `SystemCode` 过滤 → 推断调用方**已在写时设 `entity.SystemCode`**（否则 Mode A 读也会空）。故 Mode B 写侧大概率 OK，但**缺集中兜底（B2）**。
-- ❌ **读未过滤**：仅 `BaseUserRoleManager.GetDataTable`/`GetDataTableByPage`（B1）。
+- ❌ **读未过滤（历史）**：原仅 `BaseUserRoleManager.GetDataTable`/`GetDataTableByPage`（B1）。`2026-09-21` 全库排查后又补 3 处同类缺口（`BaseRoleManager.GetUserDataTable`、两个 `BaseUserManager` 角色查询），**现已全部修复（共 5 处）**，详见 §8.9。
 
 ### 8.4 切换到 Mode B 的最小改造清单（待确认）
-1. **修 B1**：`BaseUserRoleManager.GetDataTable`/`GetDataTableByPage` 补 `SystemCode` 过滤 + 缓存键并入 systemCode（因 `GetDataTableByPage` 是 `override` 虚方法，需实例级 `_systemCode` 字段或改基类虚方法签名）。
-2. **修 B2（推荐集中兜底）**：在 `BaseManager.AddEntity`/`UpdateEntity` 增加“若 `entity.SystemCode` 为空则置为实例 `SystemCode`（取自构造入参 / `UserInfo.SystemCode`）”的逻辑，彻底消除漏设风险——这是让 Mode B 真正稳健的关键。
+1. **修 B1（✅ 已完成，2026-09-21）**：`BaseUserRoleManager.GetDataTable`/`GetDataTableByPage` 补 `SystemCode` 过滤 + 缓存键并入 systemCode；并全库排查补 `BaseRoleManager.GetUserDataTable`、`BaseUserManager.GetUserRole`（含缓存键）、`BaseUserManager.GetDataTableByCompanyByRole` 共 3 处同类缺口。全部按"不论 `UseBaseTable` 真假都无条件追加 `AND SystemCode = N'<SqlSafe(effectiveSystemCode)>'`"落地。详见 §8.9。
+2. **修 B2（✅ 已完成，2026-09-19）**：在 `BaseManager.SetEntity`（写路径单一注入点）增加反射集中兜底——若实体含可写 `SystemCode` 属性且值为空或 `"Base"`，置为 `effSC = UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`；`UpdateEntity<T>` 的 WHERE 追加 `SystemCode = effSC`（参数化）。详见 §8.10。
 3. **修 B3**：`RemoveCache` 改用实例级 systemCode。
 4. **前置 B5**：数据迁移脚本 `BusinessXxx → BaseXxx`（保留 `SystemCode` 列值）。
 5. **验证**：net8.0/net48 构建 + 连库用例覆盖 Mode B 双子系统互不可见。
@@ -316,4 +316,104 @@
 - 验证：`dotnet build DotNet.Business -f net8.0` 与 `-f net48` 均 **0 错误**。
 - 未自动提交/推送（遵循约定，待用户确认）。
 
-> 注：§8 为 Mode B 切换评估；其中 B3 已实现、B4 为 SqlSafe 转义（真参数化升级已回退），其余 B1/B2/B5 待确认范围后继续。
+> 注：§8 为 Mode B 切换评估；其中 B3 已实现、B4 为 SqlSafe 转义（真参数化升级已回退），B1 已于 2026-09-21 全部修复（含全库排查补的 3 处扩展缺口）、**B2 已于 2026-09-19 修复（写路径集中 stamp + Update WHERE 追加 SystemCode，Mode B 读写同码闭环）**、**RemoveCache 缓存键对齐已于 2026-09-21 修复（覆盖 GetDataTable 缓存 + override RemoveCache(int id)，见 §8.11）**；仅剩 B5（数据迁移，按用户决定不做）待切换时处理。
+
+---
+
+## 8.9 修订记录（2026-09-21 实施 B1 全量修复 + 全库排查）
+
+### 8.9.1 用户口径变更
+- 用户明确：**不论 `BaseSystemInfo.UseBaseTable` 为 True 或 False，都无条件追加 `AND SystemCode = N'<SqlSafe(effectiveSystemCode)>'`**。即取消"仅 Mode B 过滤"的守卫，两种模式统一按实例/参数 SystemCode 过滤（与 §8.6 既定 SqlSafe 转义写法一致，不走真参数化——因 `override GetDataTableByPage` 等路径最终走 `GetRecordByPage` 存储过程、不转发命名参数）。
+
+### 8.9.2 本轮改动清单（共 5 处）
+| # | 文件:行 | 方法 | 改动 |
+|---|---------|------|------|
+| 1 | `BaseUserRole/BaseUserRoleManager.cs:48`（override `GetDataTableByPage`） | 分页读 | `sb` 追加 `AND SystemCode = N'<SqlSafe(effSC)>'`；effSC = `UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`。 |
+| 2 | `BaseUserRole/BaseUserRoleManager.cs:105`（`GetDataTable(bool)`） | 下拉/缓存读 | `sb` 追加同款过滤；缓存键 `"Dt."+CurrentTableName+...` → `"Dt."+effSC+"."+CurrentTableName+"."+companyId+"."+flag`。 |
+| 3 | `BaseRole/BaseRoleManager.Manual.cs:819`（`GetUserDataTable`） | 用户-角色子查询 | 内联 `FROM BaseUserRole WHERE RoleId=@RoleId AND Deleted=0` → 加 `AND SystemCode = N'<SqlSafe(systemCode)>`'（systemCode 为空回退 `"Base"`）。 |
+| 4 | `BaseUser/BaseUserManager.Manual.Role.cs:452`（`GetUserRole`） | 用户角色列表子查询 | 内联 `FROM BaseUserRole WHERE Enabled=1 AND Deleted=0` → 加 `AND SystemCode = N'<SqlSafe(systemCode)>'`；缓存键 `"Dt."+GetUserRoleTableName(sc)` → `"Dt."+(sc??"Base")+"."+GetUserRoleTableName(sc)`（消除 Mode B 撞键）。 |
+| 5 | `BaseUser/BaseUserManager.Manual.Role.cs:802`（`GetDataTableByCompanyByRole`） | 单位+角色成员子查询 | 内联 `FROM BaseUserRole WHERE RoleId=@RoleId AND Deleted=0` → 加 `AND SystemCode = N'<SqlSafe(systemCode)>'`。 |
+
+### 8.9.3 全库排查方法
+- 静态扫描 `DotNet.Business/**/*.cs`：抽取每个方法体，标记"查询 SystemCode 分区表（`BaseModule`/`BaseRole`/`BaseUserRole`/`BasePermission`/`BaseLogonLog`/`BaseOperationLog`/`BaseParameter`/`BaseUserLogon`/`BaseRoleOrganization`）且 WHERE 未出现 `SystemCode` 的读方法"。
+- 命中候选 5 个，剔除误报 2 个（`BaseStaff.GetAddressDataTable`/`GetAddressDataTableByPage` 查 `BaseStaff` 地址表，非 SystemCode 分区表，仅因注释块含 `BaseRole` 字面被扫中）。
+- 3 个真缺口（上表 #3~#5）均确认查 `BaseUserRole` 共享表却无 SystemCode 过滤，Mode B 下跨子系统泄漏，已修复。
+- 另核实 `BaseUserManager.GetUserRoleDataTable`（:752 附近）**已**自带 `SystemCode = '...'`（§8.6 B4 转义）且缓存键含 systemCode（:779），非缺口；现存无条件 SystemCode 过滤点（BaseModule/BaseRole/BasePermission 等）经 grep `UseBaseTable` 确认均未受 `UseBaseTable` 守卫、本就两种模式都过滤，无需改。
+
+### 8.9.4 验证
+- `dotnet build DotNet.Business -f net8.0 -c Release`：**0 错误**（1721 警告，均为既有 CA 文化/全球化类，与本次无关）。
+- `dotnet build DotNet.Business -f net48 -c Release`：**0 错误**（73 警告，既有 CS1573 XML 注释类）。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+### 8.9.5 残留 / 待办
+- **B2（🟠）**：写路径仍无集中 stamp 机制（`AddEntity`/`UpdateEntity` 不兜底 `entity.SystemCode`）。若任一调用方/种子数据漏设 → 行 `SystemCode="Base"`，在按子系统过滤的读下不可见（数据丢失）或被当作全局共享（泄漏）。建议后续在 `BaseManager.AddEntity`/`UpdateEntity` 增加集中兜底。
+- **B5（⚪）**：数据迁移 `BusinessXxx → BaseXxx`（保留 `SystemCode` 列）为切换硬前置，非代码 Bug。
+- **RemoveCache 缓存键对齐（✅ 已修，2026-09-21，见 §8.11）**：`RemoveCache` 新增 `RemoveByRegex("^Dt\.<effSC>\.<CurrentTableName>\.")` 前缀删除，覆盖 `GetDataTable` 全部 `companyId`/`flag` 组合；并 override `RemoveCache(int id)` 先调无参 `RemoveCache()`，使 Update/SetEnabled/SetDeleted 等走 id 重载的写路径也失效 `GetDataTable` 缓存。B1 残留闭环。
+- 两种模式统一过滤的**前置条件**：Mode A 下 `effectiveSystemCode` 须正确解析为对应子系统码（如 `UserInfo.SystemCode`/`BaseSystemInfo.SystemCode` 已设为 `"Business"`）；若为空回退 `"Base"`，可能误把 Mode A 下 `Business` 行过滤掉（与 §8.5 同源风险，已随用户"两种模式都追加"决策被接受）。
+
+---
+
+## 8.10 修订记录（2026-09-19 实施 B2：写路径集中 SystemCode 兜底）
+
+### 8.10.1 用户决策（指令④ + 本轮回选）
+- 用户明确未来大方向是 **Mode B**，要求"务必确保 Model B 的逻辑是没问题的"。
+- 就 B2 写入语义与 Update WHERE 两个分叉征询用户，结论：
+  - **B2-B（始终对齐 effSC）**：实体 `SystemCode` 为**空或 `"Base"`** 都对齐为 `effSC`（非 `Base` 的显式值保持不变）。→ 彻底保证 Mode B 读写同码、隔离闭环；正确配置下不误伤。
+  - **Update WHERE 追加 SystemCode**：`UpdateEntity<T>` 的 WHERE 在 `Id` 之外追加 `AND SystemCode = effSC`（参数化），防 Mode B 共用表下按 `Id` 跨子系统误更新。
+
+### 8.10.2 实现要点
+- 注入点选 `BaseManager.SetEntity<T>`（`Util/BaseManager.cs`）起点——它是所有写路径（标准 CRUD 及管理器自定义 insert）统一经过的列赋值入口，一处覆盖最大。
+- 新增私有辅助 `TryStampSystemCode<T>(T t, out string effectiveSystemCode)`：
+  - `effSC = UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`（与 B1 读侧完全一致）。
+  - 反射 `t.GetType().GetProperty("SystemCode")`；`BaseEntity` 基类无此属性（仅分区表实体在 `*.Auto.cs` 定义），故须反射；属性不可写或非 `string` 则跳过（非分区表零影响）。
+  - `current` 为空或 `"Base"` → `prop.SetValue(t, effSC)`；否则保留调用方显式值。
+  - 反射结果用 `static ConcurrentDictionary<Type, PropertyInfo> SystemCodePropertyCache` 缓存，避免每次写路径重复反射。
+- `UpdateEntity<T>`（`Util/BaseManager.cs`）在 `SetEntity` 之后、`UpdateEntity(sqlBuilder, t)` 之前，若 `TryStampSystemCode` 命中则 `sqlBuilder.SetWhere("SystemCode", effSC)`；`SetWhere` 本就参数化（见 `SQLBuilder.cs:496`）且多次调用以 ` AND ` 追加，最终 WHERE = `SystemCode=@… AND Id=@…`。
+
+### 8.10.3 行为影响（两种模式）
+- **Mode B**：写必带正确 `SystemCode`、更新按 `Id+SystemCode` 双键，与读侧 `AND SystemCode = effSC` 完全对称 → 子系统间互不可见、隔离闭环。即便调用方/种子数据漏设，也由集中兜底修正，不会落 `"Base"` 被当成全局共享或读不到。
+- **Mode A**：`SystemCode` 列不参与隔离（表名隔离），但兜底使写入值与读侧过滤同码（`effSC`），读/写一致；既存默认 `"Base"` 的行在 `effSC="Base"` 子系统下行为不变（无回归）。
+- **更新对存量 `"Base"` 行的边界**：若某 `BaseXxx` 行 `SystemCode="Base"` 而当前 `effSC="X"`，`UpdateEntity` 会 `SET SystemCode='X' WHERE SystemCode='X'` → WHERE 不命中、影响 0 行（该错隔离行不被本次更新触碰，符合"不能改他子系统行"预期）；修正错隔离数据须走 B5 迁移/专项回填。
+
+### 8.10.4 验证
+- `dotnet build DotNet.Business -f net8.0 -c Debug`：**0 错误**（1753 警告，均为既有 CA 文化/全球化类，与本次无关）。
+- `dotnet build DotNet.Business -f net48 -c Debug`：**0 错误**（71 警告，既有 CS1573 XML 注释类）。
+- 沙箱构建按约定 export PATH + 6 env（`NUGET_PACKAGES`/`APPDATA`/`LOCALAPPDATA`/`USERPROFILE`/`HOME`/`PROGRAMDATA`）+ `-p:GenerateAssemblyInfo=false -p:GenerateTargetFrameworkAttribute=false`。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+### 8.10.5 残留 / 待办
+- **B5（⚪）**：数据迁移 `BusinessXxx → BaseXxx`（保留 `SystemCode` 列）为切 Mode B 的部署硬前置，非代码 Bug。
+- **RemoveCache 缓存键对齐（✅ 已修，2026-09-21，见 §8.11）**：`RemoveCache()` 新增 `RemoveByRegex("^Dt\.<effSC>\.<CurrentTableName>\.")` 前缀删除；override `RemoveCache(int id)` 先调无参 `RemoveCache()`。写后 `GetDataTable` 缓存即时失效，闭环 B1 残留。
+- **DB 回归（建议用户侧执行）**：连库用例（P1~P5）在 `UseBaseTable=true` + 双子系统下验证"互不可见 + 写后读得到自己"；本机无 SQL Server 时仅完成双 TFM 构建验证。
+
+---
+
+## 8.11 修订记录（2026-09-21 实施 RemoveCache 缓存键对齐 — B1 残留闭环）
+
+### 8.11.1 背景与根因
+- B1 给 `BaseUserRoleManager.GetDataTable` 加了 SystemCode 过滤并改缓存键为 `"Dt."+effSC+"."+CurrentTableName+"."+companyId+"."+(myCompanyOnly?"1":"0")`（如 `Dt.Base.BaseUserRole.123.1`）。
+- 但 `BaseUserRoleManager.Cache.cs` 的 `RemoveCache` 仅清 `Dt.<effSC>.UserRole`（**缺表名段**）、`Dt.<effSC>.<UserId>.UserRole`、`List.*.UserRole` 等**历史键**，与 `GetDataTable` 新键不精确命中 → 写后 `GetDataTable` 缓存可能延迟失效（读到旧的用户-角色下拉）。
+- 更隐蔽：**`UpdateEntity<T>` 调 `RemoveCache(entity.Id)`（int 重载）**，而基类 `RemoveCache(int id)` 只删实体缓存（`CurrentTableName+".Entity."+id`），**不调无参 `RemoveCache()`** → 更新路径根本不触发任何列表/表缓存清除。故对齐必须同时覆盖无参 `RemoveCache()` 与 `RemoveCache(int id)` 重载。
+
+### 8.11.2 改动（文件 `src/DotNet.Business/BaseUserRole/BaseUserRoleManager.Cache.cs`）
+1. **无参 `RemoveCache()` 重写**：
+   - 统一在顶部算 `effectiveSystemCode = UserInfo?.SystemCode ?? BaseSystemInfo.SystemCode ?? "Base"`（与 B1/B3 读侧同源；原代码在 `UserInfo==null` 时硬编码 `"Base"`，现与读侧一致，避免多子系统漏清）。
+   - 新增 `CacheUtil.RemoveByRegex("^Dt\." + Regex.Escape(effSC) + "\." + Regex.Escape(CurrentTableName) + "\.")` —— 前缀删除覆盖 `GetDataTable` 全部 `companyId`/`myCompanyOnly` 组合；`CurrentTableName` 随 Mode A/B 变化（`BusinessUserRole`/`BaseUserRole`），同一写法通用。
+   - 兼容历史键 `Dt.<effSC>.UserRole` / `Dt.<effSC>.<UserId>.UserRole`（缺/不同表名段）以正则一并清除；保留原精确键与 `Dt.<CurrentTableName>` 表级兜底键。
+2. **新增 `RemoveCache(int id)` override**：先调无参 `RemoveCache()`（使 B1 对齐在 Add/Update/SetEnabled/SetDeleted 等所有写路径生效），再保留基类实体缓存清除语义（`CurrentTableName+".Entity."+id`，`id==0` 时正则清全部）。
+
+### 8.11.3 行为影响
+- **Add 路径**：`AddEntity<T>` 调无参 `RemoveCache()` → 即时清 `GetDataTable` 缓存（原已能清，但原键不匹配；现精确）。
+- **Update/SetEnabled/SetDeleted 路径**：此前 `RemoveCache(int id)` 只清实体缓存（BaseUserRole 实体缓存未启用）→ **`GetDataTable` 缓存永不失效**；现 override 先调无参 `RemoveCache()` → 写后下拉立即可见新数据。这是本次修复的关键增益。
+- `Regex.IsMatch` 为 `IgnoreCase`；`effSC`/`CurrentTableName` 经 `Regex.Escape` 防注入式误匹配，仅删目标前缀。
+- 范围仅限 `BaseUserRoleManager`，未触碰其它管理器与 `CacheUtil`（`RemoveByRegex` 为既有 API）。
+
+### 8.11.4 验证
+- `dotnet build DotNet.Business -f net8.0 -c Debug`：**0 错误**（1753 警告，既有 CA 文化/全球化类，无关）。
+- `dotnet build DotNet.Business -f net48 -c Debug`：**0 错误**（71 警告，既有 CS1573，无关）。
+- 未自动提交/推送（遵循约定，待用户确认）。
+
+### 8.11.5 说明
+- 用户明确 **B5 不做**（数据迁移为部署前置，跳过）。
+- 同类"读缓存键 vs RemoveCache 键"错位若存在于 `BaseRole`/`BasePermission`/`BaseModule` 等其它管理器，本次**未扩范围**处理；如需一并对齐可另开一轮。
+- DB 回归待用户部署 SQL Server 后执行（连库验证 `UseBaseTable=true` 双子系统下写后 `GetDataTable` 缓存即时失效）。

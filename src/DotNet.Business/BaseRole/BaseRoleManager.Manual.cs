@@ -816,7 +816,7 @@ namespace DotNet.Business
  FROM BaseUser,
                           (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy
  FROM BaseUserRole
-                            WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + @" AND " + BaseUserEntity.FieldDeleted + @" = 0) UserRole 
+                            WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + @" AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + DbHelper.SqlSafe(string.IsNullOrEmpty(systemCode) ? "Base" : systemCode) + @"' AND " + BaseUserEntity.FieldDeleted + @" = 0) UserRole 
                          WHERE BaseUser.Id = UserRole.UserId 
                                AND BaseUser." + BaseUserEntity.FieldDeleted + " = 0";
             if (!searchKey.IsNullOrEmpty())
