@@ -449,13 +449,14 @@ namespace DotNet.Business
 
             var sb = PoolUtil.StringBuilder.Get();
             sb.AppendLine("SELECT BaseRole.Code, BaseRole.Name, BaseRole.Description, UserRole.Id, UserRole.UserId, UserRole.RoleId, UserRole.Enabled, UserRole.Deleted, UserRole.CreateTime, UserRole.CreateBy, UserRole.UpdateTime, UserRole.UpdateBy");
-            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE " + BaseUtil.FieldEnabled + " = 1 AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
+            sb.AppendLine(" FROM BaseRole INNER JOIN (SELECT Id, UserId, RoleId, Enabled, Deleted, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE " + BaseUtil.FieldEnabled + " = 1 AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + DbHelper.SqlSafe(string.IsNullOrEmpty(systemCode) ? "Base" : systemCode) + "' AND " + BaseUserRoleEntity.FieldDeleted + " = 0) UserRole ON BaseRole.Id = UserRole.RoleId");
             sb.AppendLine(" WHERE BaseRole." + BaseUtil.FieldEnabled + " = 1 AND BaseRole." + BaseRoleEntity.FieldDeleted + " = 0 ORDER BY UserRole.CreateTime DESC");
             //替换表名
             sb = sb.Replace("BaseUserRole", userRoleTableName);
             sb = sb.Replace("BaseRole", roleTableName);
 
-            var cacheKey = "Dt." + GetUserRoleTableName(systemCode);
+            // B1 扩展：Mode B 下 GetUserRoleTableName(systemCode) 各子系统均返回 "BaseUserRole"，原缓存键 "Dt.BaseUserRole" 会跨子系统撞键；并入 systemCode 消除污染。
+            var cacheKey = "Dt." + (string.IsNullOrEmpty(systemCode) ? "Base" : systemCode) + "." + GetUserRoleTableName(systemCode);
             //var cacheTime = default(TimeSpan);
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             result = CacheUtil.Cache<DataTable>(cacheKey, () => Fill(sb.Return()), true, false, cacheTime);
@@ -496,13 +497,14 @@ namespace DotNet.Business
             sb.Append("SELECT " + BaseUserRoleEntity.FieldRoleId);
             sb.Append(" FROM " + userRoleTable);
             sb.Append(" WHERE " + BaseUserRoleEntity.FieldUserId + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldUserId));
-            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = " + DbHelper.GetParameter(systemCode));
+            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldSystemCode));
             sb.Append(" AND " + BaseUserRoleEntity.FieldEnabled + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldEnabled));
             sb.Append(" AND " + BaseUserRoleEntity.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted));
 
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldUserId, userId),
+                DbHelper.MakeParameter(BaseUserRoleEntity.FieldSystemCode, systemCode),
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldEnabled, 1),
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldDeleted, 0)
             };
@@ -631,6 +633,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + SelectFields + " FROM " + BaseUserEntity.CurrentTableName
@@ -666,6 +671,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             var parameters = new List<KeyValuePair<string, object>> {
@@ -697,6 +705,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             var parameters = new List<KeyValuePair<string, object>> {
@@ -733,6 +744,12 @@ namespace DotNet.Business
             if (!string.IsNullOrWhiteSpace(systemCode))
             {
                 roleTableName = GetRoleTableName(systemCode);
+            }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            if (!string.IsNullOrWhiteSpace(systemCode))
+            {
+                systemCode = DbHelper.SqlSafe(systemCode);
             }
 
             var commandText = @"SELECT BaseRole.Id
@@ -783,7 +800,7 @@ namespace DotNet.Business
         {
             var result = new DataTable(BaseRoleEntity.CurrentTableName);
 
-            var commandText = @"SELECT A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldCode + ", A." + BaseUserEntity.FieldCompanyName + ", A." + BaseUserEntity.FieldDepartmentName + ", A." + BaseUserEntity.FieldRealName + ", A." + BaseUserEntity.FieldDescription + ", A." + BaseUserEntity.FieldEnabled + ", A." + BaseUserEntity.FieldCreateTime + ", A." + BaseUserEntity.FieldCreateBy + ", A." + BaseUserEntity.FieldUpdateTime + ", A." + BaseUserEntity.FieldUpdateBy + " FROM " + BaseUserEntity.CurrentTableName + @" A RIGHT OUTER JOIN (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUtil.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole ON A.Id = UserRole.UserId  WHERE A." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + " ORDER BY UserRole." + BaseUserRoleEntity.FieldUpdateTime;
+            var commandText = @"SELECT A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldId + ", A." + BaseUserEntity.FieldCode + ", A." + BaseUserEntity.FieldCompanyName + ", A." + BaseUserEntity.FieldDepartmentName + ", A." + BaseUserEntity.FieldRealName + ", A." + BaseUserEntity.FieldDescription + ", A." + BaseUserEntity.FieldEnabled + ", A." + BaseUserEntity.FieldCreateTime + ", A." + BaseUserEntity.FieldCreateBy + ", A." + BaseUserEntity.FieldUpdateTime + ", A." + BaseUserEntity.FieldUpdateBy + " FROM " + BaseUserEntity.CurrentTableName + @" A RIGHT OUTER JOIN (SELECT UserId, Enabled, CreateTime, CreateBy, UpdateTime, UpdateBy FROM BaseUserRole WHERE RoleId = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldRoleId) + " AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + DbHelper.SqlSafe(string.IsNullOrEmpty(systemCode) ? "Base" : systemCode) + "' AND " + BaseUtil.FieldDeleted + " = " + DbHelper.GetParameter(BaseUserRoleEntity.FieldDeleted) + @") UserRole ON A.Id = UserRole.UserId  WHERE A." + BaseUserEntity.FieldCompanyId + " = " + DbHelper.GetParameter(BaseUserEntity.FieldCompanyId) + " ORDER BY UserRole." + BaseUserRoleEntity.FieldUpdateTime;
             var dbParameters = new List<IDbDataParameter>
             {
                 DbHelper.MakeParameter(BaseUserRoleEntity.FieldRoleId, roleId),
@@ -1169,6 +1186,9 @@ namespace DotNet.Business
             {
                 systemCode = "Base";
             }
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            systemCode = DbHelper.SqlSafe(systemCode);
             var userRoleTableName = GetUserRoleTableName(systemCode);
             var manager = new BaseUserRoleManager(DbHelper, UserInfo, userRoleTableName);
             result += manager.CopyRole(systemCode, referenceUserId, targetUserId);

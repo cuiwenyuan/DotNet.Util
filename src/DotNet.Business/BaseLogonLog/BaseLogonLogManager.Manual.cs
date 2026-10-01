@@ -48,6 +48,12 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(string systemCode, string userId, string userName, string companyName, string result, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseUtil.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：BaseManager.GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            if (!systemCode.IsNullOrEmpty())
+            {
+                systemCode = dbHelper.SqlSafe(systemCode);
+            }
             //是否显示无效记录
             if (!showDisabled)
             {
@@ -128,6 +134,12 @@ namespace DotNet.Business
         public DataTable GetDataTableByPage(string companyId, string departmentId, string userId, string startTime, string endTime, string searchKey, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = BaseLogonLogEntity.FieldCreateTime, string sortDirection = "DESC", bool showDisabled = true, bool showDeleted = true, string systemCode = null, string userName = null, string companyName = null, string result = null)
         {
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：BaseManager.GetDataTableByPage 表模式分支不转发 dbParameters，故用 SqlSafe 转义而非参数化。
+            if (!systemCode.IsNullOrEmpty())
+            {
+                systemCode = dbHelper.SqlSafe(systemCode);
+            }
             //是否显示无效记录
             if (!showDisabled)
             {

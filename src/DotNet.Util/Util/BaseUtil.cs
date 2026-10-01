@@ -300,38 +300,6 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region  public static PermissionOrganizationScope GetPermissionScope(string[] organizationIds) 获取权限范围的设置
-        /// <summary>
-        /// 获取权限范围的设置
-        /// </summary>
-        /// <param name="organizationIds">有权限的组织机构</param>
-        /// <returns>权限范围</returns>
-        public static PermissionOrganizationScope GetPermissionScope(string[] organizationIds)
-        {
-            var result = PermissionOrganizationScope.NotAllowed;
-            //foreach (PermissionOrganizationScope permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
-            //{
-            //    if (StringUtil.Exists(organizationIds, permissionScope.ToString()))
-            //    {
-            //        result = permissionScope;
-            //        break;
-            //    }
-            //}
-            #region BUG修复
-            foreach (var permissionScope in (PermissionOrganizationScope[])Enum.GetValues(typeof(PermissionOrganizationScope)))
-            {
-                var scope = permissionScope.ToInt();
-                if (StringUtil.Exists(organizationIds, scope.ToString()))
-                {
-                    result = permissionScope;
-                    break;
-                }
-            }
-            #endregion
-            return result;
-        }
-        #endregion
-
         //
         // WebService 传递参数的专用方法
         //
