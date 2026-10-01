@@ -90,6 +90,19 @@ namespace DotNet.Business
                 searchKey = StringUtil.GetLikeSearchKey(dbHelper.SqlSafe(searchKey));
                 sb.Append(" AND (" + BaseUserRoleEntity.FieldRoleId + " LIKE N'%" + searchKey + "%' OR " + BaseUserRoleEntity.FieldDescription + " LIKE N'%" + searchKey + "%')");
             }
+            // B1 修复：不论 UseBaseTable 真假，统一按实例 SystemCode 过滤，消除 Mode B 共用 BaseUserRole 表下的跨子系统泄漏。
+            // 实例 SystemCode 来源与 B3 一致：UserInfo.SystemCode → 回退 BaseSystemInfo.SystemCode → 回退 "Base"。
+            // 不走真参数化：override 最终走 GetRecordByPage 存储过程路径、不转发命名参数（见 §8.6）。
+            var effectiveSystemCode = UserInfo != null ? UserInfo.SystemCode : null;
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = BaseSystemInfo.SystemCode;
+            }
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = "Base";
+            }
+            sb.Append(" AND " + BaseUserRoleEntity.FieldSystemCode + " = N'" + dbHelper.SqlSafe(effectiveSystemCode) + "'");
             sb.Replace(" 1 = 1 AND ", " ");
             return GetDataTableByPage(out recordCount, pageNo, pageSize, sortExpression, sortDirection, CurrentTableName, sb.Return());
         }
@@ -109,9 +122,21 @@ namespace DotNet.Business
             {
                 //sb.Append("(" + BaseUserRoleEntity.FieldUserCompanyId + " = 0 OR " + BaseUserRoleEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
+            // B1 修复：不论 UseBaseTable 真假，统一按实例 SystemCode 过滤 + 缓存键并入 systemCode，消除跨子系统污染。
+            // 实例 SystemCode 来源与 B3 一致：UserInfo.SystemCode → 回退 BaseSystemInfo.SystemCode → 回退 "Base"。
+            var effectiveSystemCode = UserInfo != null ? UserInfo.SystemCode : null;
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = BaseSystemInfo.SystemCode;
+            }
+            if (string.IsNullOrEmpty(effectiveSystemCode))
+            {
+                effectiveSystemCode = "Base";
+            }
+            sb.Append(BaseUserRoleEntity.FieldSystemCode + " = N'" + dbHelper.SqlSafe(effectiveSystemCode) + "'");
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0));
             var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
-            var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
+            var cacheKey = "Dt." + effectiveSystemCode + "." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)), true, false, cacheTime);
         }

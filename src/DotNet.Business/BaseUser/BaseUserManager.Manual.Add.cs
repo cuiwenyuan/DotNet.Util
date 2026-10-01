@@ -54,35 +54,6 @@ namespace DotNet.Business
                     Status = Status.ErrorCodeExist;
                     StatusCode = Status.ErrorCodeExist.ToString();
                 }
-
-                if (entity.IsStaff == 1)
-                {
-                    var parameters = new List<KeyValuePair<string, object>>
-                    {
-                        new KeyValuePair<string, object>(BaseStaffEntity.FieldUserName, entity.UserName),
-                        new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)
-                    };
-                    if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
-                    {
-                        // 编号已重复
-                        Status = Status.ErrorNameExist;
-                        StatusCode = Status.ErrorNameExist.ToString();
-                    }
-                    if (!(entity.Code).IsNullOrEmpty())
-                    {
-                        parameters = new List<KeyValuePair<string, object>>
-                        {
-                            new KeyValuePair<string, object>(BaseStaffEntity.FieldEmployeeNumber, entity.Code),
-                            new KeyValuePair<string, object>(BaseStaffEntity.FieldDeleted, 0)
-                        };
-                        if (DbHelper.Exists(BaseStaffEntity.CurrentTableName, parameters))
-                        {
-                            // 编号已重复
-                            Status = Status.ErrorCodeExist;
-                            StatusCode = Status.ErrorCodeExist.ToString();
-                        }
-                    }
-                }
             }
         }
         #endregion

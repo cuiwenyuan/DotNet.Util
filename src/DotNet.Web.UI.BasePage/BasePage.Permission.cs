@@ -532,10 +532,6 @@ public partial class BasePage : System.Web.UI.Page
             {
                 HttpRuntime.Cache.Remove(BaseUserEntity.CurrentTableName);
             }
-            if (HttpRuntime.Cache[BaseStaffEntity.CurrentTableName] != null)
-            {
-                HttpRuntime.Cache.Remove(BaseStaffEntity.CurrentTableName);
-            }
         }
     }
     #endregion

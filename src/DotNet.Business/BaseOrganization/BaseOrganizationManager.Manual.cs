@@ -326,28 +326,7 @@ namespace DotNet.Business
             //{
             //    sb.Append(" AND " + BaseOrganizationEntity.CurrentTableName + "." + BaseOrganizationEntity.FieldIsVisible + "  = 1 ";
             //}
-            //角色
-            var tableNameRoleOrganization = GetRoleOrganizationTableName(systemCode);
-            //指定角色
-            if (!roleId.IsNullOrEmpty() && ValidateUtil.IsNumeric(roleId))
-            {
-                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " IN");
-                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
-                sb.Append(" FROM " + tableNameRoleOrganization);
-                sb.Append(" WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " = '" + roleId + "'");
-                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
-            }
-            //排除指定角色
-            if (!roleIdExcluded.IsNullOrEmpty() && ValidateUtil.IsNumeric(roleIdExcluded))
-            {
-                sb.Append(" AND ( " + BaseOrganizationEntity.FieldId + " NOT IN ");
-                sb.Append(" (SELECT DISTINCT " + BaseRoleOrganizationEntity.FieldOrganizationId);
-                sb.Append(" FROM " + tableNameRoleOrganization);
-                sb.Append(" WHERE " + BaseRoleOrganizationEntity.FieldRoleId + " = '" + roleIdExcluded + "'");
-                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldEnabled + " = 1");
-                sb.Append(" AND " + BaseRoleOrganizationEntity.FieldDeleted + " = 0)) ");
-            }
+
             //用户菜单模块表
             var tableNamePermission = GetPermissionTableName(systemCode);
             //指定的菜单模块

@@ -211,6 +211,13 @@ namespace DotNet.Business
         {
             //菜单模块表名
             var tableNameModule = GetModuleTableName(systemCode);
+            // B4 修复：SystemCode 拼入 SQL 前先做 SqlSafe 转义，消除注入式写法（原 #7）。
+            // 注：BaseManager.GetDataTableByPage 的表模式分支（BaseManager.GetDataTableByPage.cs:103）不转发 dbParameters，
+            // 故此处用 SqlSafe 转义而非参数化，与 BaseParameterManager.Manual.cs:96 的防注入做法保持一致。
+            if (!systemCode.IsNullOrEmpty())
+            {
+                systemCode = dbHelper.SqlSafe(systemCode);
+            }
             var sb = PoolUtil.StringBuilder.Get().Append(" 1 = 1");
 
             //是否显示无效记录
