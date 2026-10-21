@@ -34,7 +34,7 @@ namespace DotNet.Util
                 BaseConfiguration.GetSetting();
                 // 默认打开业务数据库，而不是用户中心的数据库
                 // 读取不到，就用用户中心数据库
-                if ((BaseSystemInfo.BusinessDbConnection).IsNullOrEmpty())
+                if (BaseSystemInfo.BusinessDbConnection.IsNullOrEmpty())
                 {
                     ConnectionString = BaseSystemInfo.UserCenterDbConnection;
                 }
