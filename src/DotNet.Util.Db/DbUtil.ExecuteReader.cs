@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null, int commandTimeout = 30) 获取数据表 一参 参数为数组
         /// <summary>
         /// 获取数据表 一参 参数为数组
         /// </summary>
@@ -32,8 +32,9 @@ namespace DotNet.Util
         /// <param name="name">字段名</param>
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             var dbParameters = new List<IDbDataParameter>();
@@ -61,7 +62,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout);
         }
         /// <summary>
         /// ExecuteReader
@@ -72,11 +73,12 @@ namespace DotNet.Util
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string name,
-            object[] values, string order = null) where TModel : new()
+            object[] values, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, name, values, order).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, name, values, order, commandTimeout).ToList<TModel>();
         }
         #endregion
 
@@ -100,7 +102,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition)
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition, int commandTimeout = 30)
 
         /// <summary>
         /// ExecuteReader
@@ -108,15 +110,16 @@ namespace DotNet.Util
         /// <param name="dbHelper"></param>
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string condition, int commandTimeout = 30)
         {
-            return ExecuteReader2(dbHelper, tableName, condition);
+            return ExecuteReader2(dbHelper, tableName, condition, commandTimeout: commandTimeout);
         }
 
         #endregion
 
-        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition) where TModel : new()
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition, int commandTimeout = 30) where TModel : new()
 
         /// <summary>
         /// ExecuteReader
@@ -125,15 +128,16 @@ namespace DotNet.Util
         /// <param name="dbHelper"></param>
         /// <param name="tableName"></param>
         /// <param name="condition"></param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition) where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, condition).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, condition, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
+        #region public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null, int commandTimeout = 30)
 
         /// <summary>
         /// ExecuteReader2
@@ -143,17 +147,18 @@ namespace DotNet.Util
         /// <param name="condition"></param>
         /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null)
+        public static IDataReader ExecuteReader2(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null, int commandTimeout = 30)
         {
             // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
-            return dbHelper.ExecuteReader(sql);
+            return dbHelper.ExecuteReader(sql, commandTimeout);
         }
 
         #endregion
 
-        #region public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null) where TModel : new()
+        #region public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
 
         /// <summary>
         /// ExecuteReader2
@@ -164,10 +169,11 @@ namespace DotNet.Util
         /// <param name="condition"></param>
         /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null) where TModel : new()
+        public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader2(dbHelper, tableName, condition, topLimit, order).ToList<TModel>();
+            return ExecuteReader2(dbHelper, tableName, condition, topLimit, order, commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -277,7 +283,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null, int commandTimeout = 30) 获取数据表 一参 参数为数组
 
         /// <summary>
         /// 获取数据表 一参 参数为数组
@@ -288,8 +294,9 @@ namespace DotNet.Util
         /// <param name="name">字段名</param>
         /// <param name="values">字段值</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, string selectField, string name, object[] values, string order = null, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             var dbParameters = new List<IDbDataParameter>();
@@ -318,7 +325,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray());
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout);
         }
         /// <summary>
         /// ExecuteReader
@@ -330,16 +337,17 @@ namespace DotNet.Util
         /// <param name="name">名称</param>
         /// <param name="values">值</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string selectField, string name,
-            object[] values, string order = null) where TModel : new()
+            object[] values, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, selectField, name, values, order).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, selectField, name, values, order, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, int commandTimeout = 30)
 
         /// <summary>
         /// ExecuteReader
@@ -349,23 +357,24 @@ namespace DotNet.Util
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null)
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, int commandTimeout = 30)
         {
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional), topLimit, order);
             if (parameters != null && parameters.Count > 0)
             {
-                return dbHelper.ExecuteReader(sql, dbHelper.MakeParameters(parameters));
+                return dbHelper.ExecuteReader(sql, dbHelper.MakeParameters(parameters), commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sql);
+                return dbHelper.ExecuteReader(sql, commandTimeout);
             }
         }
 
         #endregion
 
-        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
 
         /// <summary>
         /// ExecuteReader
@@ -376,15 +385,16 @@ namespace DotNet.Util
         /// <param name="parameters">参数</param>
         /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null) where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, parameters, topLimit, order).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, parameters, topLimit, order, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        #region public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30)
 
         /// <summary>
         /// 参数化查询
@@ -396,8 +406,9 @@ namespace DotNet.Util
         /// <param name="topLimit">前多少条</param>
         /// <param name="order">派讯</param>
         /// <param name="selectField">查询的字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        public static IDataReader ExecuteReader(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + selectField + " FROM " + tableName);
@@ -448,17 +459,17 @@ namespace DotNet.Util
             }
             if (parameters != null && parameters.Count > 0)
             {
-                return dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters));
+                return dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Return());
+                return dbHelper.ExecuteReader(sb.Return(), commandTimeout);
             }
         }
 
         #endregion
 
-        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ") where TModel : new()
+        #region public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30) where TModel : new()
         /// <summary>
         /// ExecuteReader
         /// </summary>
@@ -470,10 +481,11 @@ namespace DotNet.Util
         /// <param name="topLimit">前多少行</param>
         /// <param name="order">排序字段(不包含ORDER BY)</param>
         /// <param name="selectField"></param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ") where TModel : new()
+        public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, parameters, conditions, topLimit, order, selectField)
+            return ExecuteReader(dbHelper, tableName, parameters, conditions, topLimit, order, selectField, commandTimeout)
                     .ToList<TModel>();
         }
 

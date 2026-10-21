@@ -31,7 +31,7 @@ namespace DotNet.Util
     /// </summary>
     public abstract partial class DbHelper : IDbHelper
     {
-        #region public virtual IDataReader ExecuteReader(string commandText) 执行查询
+        #region public virtual IDataReader ExecuteReader(string commandText, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
@@ -166,7 +166,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText) 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
+        #region public virtual int ExecuteNonQuery(string commandText, int commandTimeout = 30) 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// <summary>
         /// 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// </summary>
@@ -193,7 +193,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText, CommandType commandType) 执行查询
+        #region public virtual int ExecuteNonQuery(string commandText, CommandType commandType, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
@@ -376,7 +376,7 @@ namespace DotNet.Util
         /// <returns>object</returns>
         public virtual object ExecuteScalar(string commandText, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, null, CommandType.Text);
+            return ExecuteScalar(commandText, null, CommandType.Text, commandTimeout);
         }
         #endregion
 
@@ -390,7 +390,7 @@ namespace DotNet.Util
         /// <returns>Object</returns>
         public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, dbParameters, CommandType.Text);
+            return ExecuteScalar(commandText, dbParameters, CommandType.Text, commandTimeout);
         }
         #endregion
 

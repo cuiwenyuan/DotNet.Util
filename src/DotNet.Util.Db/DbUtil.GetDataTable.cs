@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null) 获取数据表 一参 参数为数组
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null, int commandTimeout = 30) 获取数据表 一参 参数为数组
         /// <summary>
         /// 获取数据表 一参 参数为数组
         /// </summary>
@@ -32,8 +32,9 @@ namespace DotNet.Util
         /// <param name="name">字段名</param>
         /// <param name="values">IN查询字段值</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null)
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, string name, object[] values, string order = null, int commandTimeout = 30)
         {
             tableName = tableName.ToTableName();
             var sb = PoolUtil.StringBuilder.Get();
@@ -64,11 +65,11 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.Fill(sb.Return());
+            return dbHelper.Fill(sb.Return(), commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null, int commandTimeout = 30)
 
         /// <summary>
         /// GetDataTable
@@ -79,8 +80,9 @@ namespace DotNet.Util
         /// <param name="topLimit">TOP记录数</param>
         /// <param name="order">排序（ORDER BY之后内容）</param>
         /// <param name="sqlLogicConditional">SQL查询的逻辑条件AND/OR</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null)
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, string sqlLogicConditional = null, int commandTimeout = 30)
         {
             tableName = tableName.ToTableName();
             var sb = PoolUtil.StringBuilder.Get();
@@ -145,18 +147,18 @@ namespace DotNet.Util
             var dt = new DataTable(tableName);
             if (parameters != null && parameters.Count > 0)
             {
-                dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
+                dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             }
             else
             {
-                dt = dbHelper.Fill(sb.Return());
+                dt = dbHelper.Fill(sb.Return(), commandTimeout: commandTimeout);
             }
             return dt;
         }
 
         #endregion
 
-        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        #region public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30)
 
         /// <summary>
         /// GetDataTable
@@ -168,8 +170,9 @@ namespace DotNet.Util
         /// <param name="topLimit">TOP记录数</param>
         /// <param name="order">排序（ORDER BY之后内容）</param>
         /// <param name="selectField">所选字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ")
+        public static DataTable GetDataTable(this IDbHelper dbHelper, string tableName, IDbDataParameter[] dbParameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30)
         {
             tableName = tableName.ToTableName();
             var sb = PoolUtil.StringBuilder.Get();
@@ -220,11 +223,11 @@ namespace DotNet.Util
             }
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                dt = dbHelper.Fill(sb.Return(), dbParameters);
+                dt = dbHelper.Fill(sb.Return(), dbParameters, commandTimeout: commandTimeout);
             }
             else
             {
-                dt = dbHelper.Fill(sb.Return());
+                dt = dbHelper.Fill(sb.Return(), commandTimeout: commandTimeout);
             }
             return dt;
         }

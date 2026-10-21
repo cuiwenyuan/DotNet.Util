@@ -27,7 +27,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ", int commandTimeout = 30)
         /// <summary>
         /// 使用存储过程获取分页数据
         /// </summary>
@@ -40,8 +40,9 @@ namespace DotNet.Util
         /// <param name="tableName">表名</param>
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ", int commandTimeout = 30)
         {
             IDataReader dataReader = null;
             recordCount = 0;
@@ -65,7 +66,7 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("TableName", tableName));
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
-            dataReader = dbHelper.ExecuteReader("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure);
+            dataReader = dbHelper.ExecuteReader("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout);
             recordCount = dbDataParameter.Value.ToInt();
 
             return dataReader;
@@ -83,18 +84,19 @@ namespace DotNet.Util
         /// <param name="tableName">表名</param>
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null,
-            string condition = null, string selectField = " * ") where TModel : new()
+            string condition = null, string selectField = " * ", int commandTimeout = 30) where TModel : new()
         {
             return
                 ExecuteReaderByPage(dbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName,
-                    condition, selectField).ToList<TModel>();
+                    condition, selectField, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
 
         /// <summary>
         /// 分页获取指定数量的数据
@@ -107,8 +109,9 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
         {
             sortExpression = GetSafeSortExpression(sortExpression);
             sortDirection = GetSafeSortDirection(sortDirection);
@@ -167,7 +170,7 @@ namespace DotNet.Util
                     break;
             }
 
-            return dbHelper.ExecuteReader(commandText, dbParameters);
+            return dbHelper.ExecuteReader(commandText, dbParameters, commandTimeout);
         }
 
         /// <summary>
@@ -181,15 +184,16 @@ namespace DotNet.Util
         /// <param name="dbParameters">参数</param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, recordCount, pageNo, pageSize, sql, dbParameters, sortExpression, sortDirection).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, recordCount, pageNo, pageSize, sql, dbParameters, sortExpression, sortDirection, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据
         /// </summary>
@@ -200,10 +204,11 @@ namespace DotNet.Util
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30)
         {
-            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy);
+            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy, commandTimeout: commandTimeout);
         }
 
         /// <summary>
@@ -216,15 +221,16 @@ namespace DotNet.Util
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, orderBy).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, orderBy, commandTimeout).ToList<TModel>();
         }
 
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
@@ -237,8 +243,9 @@ namespace DotNet.Util
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前索引</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30)
         {
             orderBy = GetSafeSortExpression(orderBy);
             var sqlStart = ((pageNo - 1) * pageSize).ToString();
@@ -278,11 +285,11 @@ namespace DotNet.Util
             //var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                return dbHelper.ExecuteReader(sb.Return(), dbParameters);
+                return dbHelper.ExecuteReader(sb.Return(), dbParameters, commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Return());
+                return dbHelper.ExecuteReader(sb.Return(), commandTimeout);
             }
         }
 
@@ -298,14 +305,15 @@ namespace DotNet.Util
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前索引</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, currentIndex).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, currentIndex, commandTimeout).ToList<TModel>();
         }
         #endregion
 
-        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
+        #region public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
@@ -318,15 +326,16 @@ namespace DotNet.Util
         /// <param name="conditions">查询条件</param>
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy)
+        public static IDataReader ExecuteReaderByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int commandTimeout = 30)
         {
             IDataReader result = null;
             recordCount = 0;
             if (dbHelper != null)
             {
-                recordCount = GetCount(dbHelper, tableName, conditions, dbParameters);
-                result = ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy);
+                recordCount = GetCount(dbHelper, tableName, conditions, dbParameters, commandTimeout: commandTimeout);
+                result = ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout: commandTimeout);
             }
             return result;
         }
@@ -343,10 +352,11 @@ namespace DotNet.Util
         /// <param name="conditions">查询条件</param>
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy) where TModel : new()
+        public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, out recordCount, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, out recordCount, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout).ToList<TModel>();
         }
 
         #endregion

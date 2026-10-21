@@ -24,7 +24,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int? topLimit = null, string orderBy = null) 读取属性
+        #region public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int topLimit = 1, string orderBy = null, int commandTimeout = 30) 读取属性
         /// <summary>
         /// 读取属性
         /// </summary>
@@ -34,8 +34,9 @@ namespace DotNet.Util
         /// <param name="targetField">获取字段</param>
         /// <param name="topLimit">TOP多少行</param>
         /// <param name="orderBy">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>属性</returns>
-        public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int topLimit = 1, string orderBy = null)
+        public static string GetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string targetField, int topLimit = 1, string orderBy = null, int commandTimeout = 30)
         {
             var result = string.Empty;
 
@@ -93,7 +94,7 @@ namespace DotNet.Util
                 }
             }
 
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters));
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToString();

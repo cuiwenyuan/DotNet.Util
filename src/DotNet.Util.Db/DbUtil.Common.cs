@@ -298,7 +298,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue) 更新记录
+        #region public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue, int commandTimeout = 30) 更新记录
         /// <summary>
         /// 更新记录
         /// </summary>
@@ -308,20 +308,21 @@ namespace DotNet.Util
         /// <param name="value">主键值</param>
         /// <param name="targetField">更新字段</param>
         /// <param name="targetValue">更新值</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue)
+        public static int UpdateRecord(this IDbHelper dbHelper, string tableName, string name, string value, string targetField, object targetValue, int commandTimeout = 30)
         {
             var result = 0;
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginUpdate(tableName);
             sqlBuilder.SetValue(targetField, targetValue);
             sqlBuilder.SetWhere(name, value);
-            result = sqlBuilder.EndUpdate();
+            result = sqlBuilder.EndUpdate(commandTimeout);
             return result;
         }
         #endregion
 
-        #region public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues) 设置属性
+        #region public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues, int commandTimeout = 30) 设置属性
         /// <summary>
         /// 设置属性
         /// </summary>
@@ -329,8 +330,9 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="targetFields">更新字段</param>
         /// <param name="targetValues">更新值</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues)
+        public static int Insert(this IDbHelper dbHelper, string tableName, string[] targetFields, Object[] targetValues, int commandTimeout = 30)
         {
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginInsert(tableName);
@@ -338,27 +340,28 @@ namespace DotNet.Util
             {
                 sqlBuilder.SetValue(targetFields[i], targetValues[i]);
             }
-            return sqlBuilder.EndInsert();
+            return sqlBuilder.EndInsert(commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName) 通过存储过程获取表数据
+        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, int commandTimeout = 30) 通过存储过程获取表数据
         /// <summary>
         /// 通过存储过程获取表数据
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="procedureName">存储过程名</param>
         /// <param name="tableName">填充表</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName)
+        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, int commandTimeout = 30)
         {
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, procedureName, (IDbDataParameter[])null, CommandType.StoredProcedure);
+            dbHelper.Fill(dt, procedureName, (IDbDataParameter[])null, CommandType.StoredProcedure, commandTimeout);
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id) 通过存储过程获取表数据
+        #region public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id, int commandTimeout = 30) 通过存储过程获取表数据
         /// <summary>
         /// 通过存储过程获取表数据
         /// </summary>
@@ -366,15 +369,16 @@ namespace DotNet.Util
         /// <param name="procedureName">存储过程名</param>
         /// <param name="tableName">填充表</param>
         /// <param name="id">主键值</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据权限</returns>
-        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id)
+        public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, string id, int commandTimeout = 30)
         {
             var names = new string[1];
             var values = new Object[1];
             names[0] = BaseUtil.FieldId;
             values[0] = id;
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, procedureName, dbHelper.MakeParameters(names, values), CommandType.StoredProcedure);
+            dbHelper.Fill(dt, procedureName, dbHelper.MakeParameters(names, values), CommandType.StoredProcedure, commandTimeout);
             return dt;
         }
         #endregion

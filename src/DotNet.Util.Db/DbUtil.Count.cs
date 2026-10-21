@@ -23,15 +23,16 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int Count(this IDbHelper dbHelper, string tableName, string condition = null) 获取记录数
+        #region public static int Count(this IDbHelper dbHelper, string tableName, string condition = null, int commandTimeout = 30) 获取记录数
         /// <summary>
         /// 获取记录数
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">表名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static int Count(this IDbHelper dbHelper, string tableName, string condition = null)
+        public static int Count(this IDbHelper dbHelper, string tableName, string condition = null, int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -40,7 +41,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -49,7 +50,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null) 获取唯一值记录数
+        #region public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, int commandTimeout = 30) 获取唯一值记录数
         /// <summary>
         /// 获取唯一值记录数
         /// </summary>
@@ -57,8 +58,9 @@ namespace DotNet.Util
         /// <param name="tableName">表名</param>
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null)
+        public static int DistinctCount(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -67,7 +69,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();

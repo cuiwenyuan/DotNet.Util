@@ -21,7 +21,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters) 设置属性
+        #region public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null, int commandTimeout = 30) 设置属性
         /// <summary>
         /// 设置属性
         /// </summary>
@@ -30,8 +30,9 @@ namespace DotNet.Util
         /// <param name="whereParameters">条件字段,条件值</param>
         /// <param name="parameters">更新字段,更新值</param>
         /// <param name="whereSql">条件Sql</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null)
+        public static int SetProperty(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> whereParameters, List<KeyValuePair<string, object>> parameters, string whereSql = null, int commandTimeout = 30)
         {
             var sqlBuilder = new SqlBuilder(dbHelper);
             sqlBuilder.BeginUpdate(tableName);
@@ -46,7 +47,7 @@ namespace DotNet.Util
             {
                 sqlBuilder.SetWhere(whereSql);
             }
-            return sqlBuilder.EndUpdate();
+            return sqlBuilder.EndUpdate(commandTimeout);
         }
         #endregion
     }

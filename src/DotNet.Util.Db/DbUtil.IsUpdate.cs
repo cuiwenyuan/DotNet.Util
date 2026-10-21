@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
+        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime, int commandTimeout = 30) 数据是否已经被别人修改了
 
         /// <summary>
         /// 数据是否已经被别人修改了
@@ -33,14 +33,15 @@ namespace DotNet.Util
         /// <param name="id">主键</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime)
+        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime, int commandTimeout = 30)
         {
-            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime);
+            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime, commandTimeout);
         }
         #endregion
 
-        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime) 数据是否已经被别人修改了
+        #region public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime, int commandTimeout = 30) 数据是否已经被别人修改了
 
         /// <summary>
         /// 数据是否已经被别人修改了
@@ -51,8 +52,9 @@ namespace DotNet.Util
         /// <param name="fieldValue">值</param>
         /// <param name="oldUpdateUserId">最后修改者</param>
         /// <param name="oldUpdateTime">修改时间</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>已被修改</returns>
-        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime)
+        public static bool IsUpdate(this IDbHelper dbHelper, string tableName, string fieldName, Object fieldValue, string oldUpdateUserId, DateTime? oldUpdateTime, int commandTimeout = 30)
         {
             var result = false;
             var sb = PoolUtil.StringBuilder.Get();
@@ -61,7 +63,7 @@ namespace DotNet.Util
                          + "," + BaseUtil.FieldUpdateTime
                          + " FROM " + tableName
                          + " WHERE " + fieldName + " = " + dbHelper.GetParameter(fieldName));
-            var dt = dbHelper.Fill(sb.Return(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) });
+            var dt = dbHelper.Fill(sb.Return(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) }, commandTimeout);
             result = IsUpdate(dt, oldUpdateUserId, oldUpdateTime);
             return result;
         }

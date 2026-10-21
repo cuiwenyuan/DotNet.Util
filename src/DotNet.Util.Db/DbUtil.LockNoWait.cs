@@ -35,24 +35,40 @@ namespace DotNet.Util
         /// <returns>锁定的行数，执行失败返回 -1</returns>
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         {
+            return LockNoWait(dbHelper, tableName, 30, parameters);
+        }
+        #endregion
+
+        #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, int commandTimeout, params KeyValuePair<string, object>[] parameters)
+        /// <summary>
+        /// 锁定表并指定命令超时
+        /// </summary>
+        /// <param name="dbHelper">数据库连接</param>
+        /// <param name="tableName">目标表名</param>
+        /// <param name="commandTimeout">等待命令执行的秒数</param>
+        /// <param name="parameters">参数</param>
+        /// <returns>锁定的行数，执行失败返回 -1</returns>
+        public static int LockNoWait(this IDbHelper dbHelper, string tableName, int commandTimeout, params KeyValuePair<string, object>[] parameters)
+        {
             var parametersList = new List<KeyValuePair<string, object>>();
             for (var i = 0; i < parameters.Length; i++)
             {
                 parametersList.Add(parameters[i]);
             }
-            return LockNoWait(dbHelper, tableName, parametersList);
+            return LockNoWait(dbHelper, tableName, parametersList, commandTimeout);
         }
         #endregion
 
-        #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters) 记录是否存在
+        #region public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int commandTimeout = 30) 记录是否存在
         /// <summary>
         /// 锁定表记录
         /// </summary>
         /// <param name="dbHelper">数据库连接</param>
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">参数</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>锁定的行数，执行失败返回 -1</returns>
-        public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters)
+        public static int LockNoWait(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -64,7 +80,7 @@ namespace DotNet.Util
                 // 必须接收 Fill 的返回值：DbHelper.Fill 内部捕获异常后会把
                 // 它自己的局部变量置 null 并返回，传入的 dt 并不会被改写，
                 // 此时若继续用原 dt，异常就被静默吞掉、结果恒为 0。
-                var filled = dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(parameters));
+                var filled = dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
                 // 返回 null 表示执行失败（Oracle 下多为锁冲突）
                 result = filled == null ? -1 : filled.Rows.Count;
             }

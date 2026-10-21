@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>()) 获取记录数
+        #region public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>(), int commandTimeout = 30) 获取记录数
         /// <summary>
         /// 获取记录数
         /// </summary>
@@ -31,8 +31,9 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">目标字段,值</param>
         /// <param name="parameter">参数</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>行数</returns>
-        public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
+        public static int GetCount(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>(), int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -54,11 +55,11 @@ namespace DotNet.Util
             object obj = null;
             if (parameters != null)
             {
-                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters));
+                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
             }
             else
             {
-                obj = dbHelper.ExecuteScalar(sb.Return());
+                obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             }
             if (obj != null)
             {
@@ -68,7 +69,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null) 获取记录个数
+        #region public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null, int commandTimeout = 30) 获取记录个数
 
         /// <summary>
         /// 获取记录个数
@@ -78,8 +79,9 @@ namespace DotNet.Util
         /// <param name="condition">条件</param>
         /// <param name="dbParameters">参数</param>
         /// <param name="currentIndex"></param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>行数</returns>
-        public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null)
+        public static int GetCount(this IDbHelper dbHelper, string tableName, string condition = null, IDbDataParameter[] dbParameters = null, string currentIndex = null, int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -92,7 +94,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters, commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -102,15 +104,16 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool TableExists(this IDbHelper dbHelper, string tableName) 表是否存在
+        #region public static bool TableExists(this IDbHelper dbHelper, string tableName, int commandTimeout = 30) 表是否存在
 
         /// <summary>
         /// 表是否存在
         /// </summary>
         /// <param name="dbHelper">dbHelper</param>
         /// <param name="tableName">表名</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static bool TableExists(this IDbHelper dbHelper, string tableName)
+        public static bool TableExists(this IDbHelper dbHelper, string tableName, int commandTimeout = 30)
         {
             var result = false;
             var sb = PoolUtil.StringBuilder.Get();
@@ -135,7 +138,7 @@ namespace DotNet.Util
             {
                 return false;
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;
@@ -144,7 +147,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true) Oracle序列是否存在
+        #region public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true, int commandTimeout = 30) Oracle序列是否存在
 
         /// <summary>
         /// Oracle序列是否存在
@@ -152,8 +155,9 @@ namespace DotNet.Util
         /// <param name="dbHelper">dbHelper</param>
         /// <param name="sequenceName">表名</param>
         /// <param name="autoCreate">自动创建</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true)
+        public static bool SequenceExists(this IDbHelper dbHelper, string sequenceName, bool autoCreate = true, int commandTimeout = 30)
         {
             var result = false;
             var sb = PoolUtil.StringBuilder.Get();
@@ -170,20 +174,20 @@ namespace DotNet.Util
             {
                 return false;
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;
             }
             if (!result && dbHelper.CurrentDbType == CurrentDbType.Oracle && autoCreate)
             {
-                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1");
+                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1", commandTimeout);
             }
             return result;
         }
         #endregion
 
-        #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null) 记录是否存在
+        #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null, int commandTimeout = 30) 记录是否存在
 
         /// <summary>
         /// 记录是否存在
@@ -192,10 +196,11 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="parameters">参数</param>
         /// <param name="parameter">参数</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>存在</returns>
-        public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>())
+        public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>(), int commandTimeout = 30)
         {
-            return GetCount(dbHelper, tableName, parameters, parameter) > 0;
+            return GetCount(dbHelper, tableName, parameters, parameter, commandTimeout) > 0;
         }
         #endregion
     }

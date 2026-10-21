@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        #region public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM", int commandTimeout = 30)
         /// <summary>
         /// 获取聚合函数值
         /// </summary>
@@ -32,8 +32,9 @@ namespace DotNet.Util
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        public static int AggregateInt(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM", int commandTimeout = 30)
         {
             var result = 0;
             var sb = PoolUtil.StringBuilder.Get();
@@ -59,7 +60,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -68,7 +69,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        #region public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM", int commandTimeout = 30)
         /// <summary>
         /// 获取聚合函数值
         /// </summary>
@@ -77,8 +78,9 @@ namespace DotNet.Util
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数AVG,MAX,MIN,SUM</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM")
+        public static decimal AggregateDecimal(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "SUM", int commandTimeout = 30)
         {
             var result = 0M;
             var sb = PoolUtil.StringBuilder.Get();
@@ -103,7 +105,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToDecimal();
@@ -112,7 +114,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN")
+        #region public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN", int commandTimeout = 30)
         /// <summary>
         /// 获取DateTime聚合函数值
         /// </summary>
@@ -121,8 +123,9 @@ namespace DotNet.Util
         /// <param name="fieldName">字段名</param>
         /// <param name="condition">查询条件(不包含WHERE)</param>
         /// <param name="function">聚合函数MIN,MAX</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>时间</returns>
-        public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN")
+        public static DateTime AggregateDateTime(this IDbHelper dbHelper, string tableName, string fieldName, string condition = null, string function = "MIN", int commandTimeout = 30)
         {
             var result = DateTime.Now;
             switch (function)
@@ -157,7 +160,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return());
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToDateTime();

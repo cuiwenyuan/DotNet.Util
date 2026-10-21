@@ -25,7 +25,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
+        #region public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
         /// </summary>
@@ -35,8 +35,9 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetParentsByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
@@ -67,12 +68,12 @@ namespace DotNet.Util
             names[0] = fieldCode;
             values[0] = code;
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
+            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout: commandTimeout);
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false, int commandTimeout = 30) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -83,8 +84,9 @@ namespace DotNet.Util
         /// <param name="fieldParentId">父亲节点字段</param>
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false)
+        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId = null, string order = null, bool idOnly = false, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             var dt = new DataTable(tableName);
@@ -109,7 +111,7 @@ namespace DotNet.Util
                 names[0] = fieldId;
                 var values = new Object[1];
                 values[0] = id;
-                dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
+                dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout: commandTimeout);
             }
             else if (dbHelper.CurrentDbType == CurrentDbType.SqlServer)
             {
@@ -137,13 +139,13 @@ namespace DotNet.Util
                              + "SELECT * "
                              + " FROM Tree ");
                 }
-                dbHelper.Fill(dt, sb.Return());
+                dbHelper.Fill(dt, sb.Return(), commandTimeout: commandTimeout);
             }
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly, int commandTimeout = 30) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -154,8 +156,9 @@ namespace DotNet.Util
         /// <param name="fieldParentId">父亲节点字段</param>
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly)
+        public static DataTable GetChildrens(this IDbHelper dbHelper, string tableName, string fieldId, string[] ids, string fieldParentId, string order, bool idOnly, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
@@ -191,13 +194,13 @@ namespace DotNet.Util
             }
             if (parameters.Count > 0)
             {
-                return dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
+                return dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             }
-            return dbHelper.Fill(sb.Return());
+            return dbHelper.Fill(sb.Return(), commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取子节点列表
+        #region public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -207,8 +210,9 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
@@ -235,12 +239,12 @@ namespace DotNet.Util
                 sb.Append(" ORDER BY " + order);
             }
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, sb.Return());
+            dbHelper.Fill(dt, sb.Return(), commandTimeout: commandTimeout);
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly) 获取父子节点列表
+        #region public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30) 获取父子节点列表
         /// <summary>
         /// 获取父子节点列表
         /// </summary>
@@ -250,8 +254,9 @@ namespace DotNet.Util
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
         /// <param name="idOnly">只需要主键</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false)
+        public static DataTable GetParentChildrensByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, bool idOnly = false, int commandTimeout = 30)
         {
             var sb = PoolUtil.StringBuilder.Get();
             if (idOnly)
@@ -288,12 +293,12 @@ namespace DotNet.Util
             values[1] = code;
             values[2] = code;
             var dt = new DataTable("DotNet");
-            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values));
+            dbHelper.Fill(dt, sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout: commandTimeout);
             return dt;
         }
         #endregion
 
-        #region public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父节点列表
+        #region public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30) 获取父节点列表
         /// <summary>
         /// 获取父节点列表
         /// </summary>
@@ -302,14 +307,15 @@ namespace DotNet.Util
         /// <param name="fieldCode">编码字段</param>
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>主键数组</returns>
-        public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
-        #region public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order) 获取子节点列表
+        #region public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, int commandTimeout = 30) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -319,14 +325,15 @@ namespace DotNet.Util
         /// <param name="id">值</param>
         /// <param name="fieldParentId">父亲节点字段</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>主键数组</returns>
-        public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order)
+        public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
-        #region public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取子节点列表
+        #region public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30) 获取子节点列表
         /// <summary>
         /// 获取子节点列表
         /// </summary>
@@ -335,14 +342,15 @@ namespace DotNet.Util
         /// <param name="fieldCode">编码字段</param>
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>主键数组</returns>
-        public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
-        #region public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order) 获取父子节点列表
+        #region public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30) 获取父子节点列表
         /// <summary>
         /// 获取父子节点列表
         /// </summary>
@@ -351,14 +359,15 @@ namespace DotNet.Util
         /// <param name="fieldCode">编码字段</param>
         /// <param name="code">编码</param>
         /// <param name="order">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>主键数组</returns>
-        public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order)
+        public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
-        #region public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code) 获取父节点
+        #region public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, int commandTimeout = 30) 获取父节点
         /// <summary>
         /// 获取父节点
         /// </summary>
@@ -366,8 +375,9 @@ namespace DotNet.Util
         /// <param name="tableName">目标表名</param>
         /// <param name="fieldCode">编码字段</param>
         /// <param name="code">编号</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>主键</returns>
-        public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code)
+        public static string GetParentIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, int commandTimeout = 30)
         {
             var parentId = string.Empty;
             var sb = PoolUtil.StringBuilder.Get();
@@ -379,7 +389,7 @@ namespace DotNet.Util
             var values = new Object[1];
             names[0] = fieldCode;
             values[0] = code;
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values));
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout);
             if (obj != null)
             {
                 parentId = obj.ToString();

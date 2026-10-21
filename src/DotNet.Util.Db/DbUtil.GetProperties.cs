@@ -23,7 +23,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField) 获取数据表
+        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField, int commandTimeout = 30) 获取数据表
         /// <summary>
         /// 获取数据表
         /// 这个方法按道理目标数据不会非常大，所以可以不优化，问题不大
@@ -33,8 +33,9 @@ namespace DotNet.Util
         /// <param name="name">字段名</param>
         /// <param name="values">字段值</param>
         /// <param name="targetField">目标字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField)
+        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, string name, Object[] values, string targetField, int commandTimeout = 30)
         {
             if (values == null || values.Length == 0)
             {
@@ -58,12 +59,12 @@ namespace DotNet.Util
             }
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT " + targetField + " FROM " + tableName + "  WHERE " + name + " IN (" + string.Join(",", placeholders) + ")");
-            var dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters));
+            var dt = dbHelper.Fill(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             return BaseUtil.FieldToArray(dt, targetField).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
-        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null) 获取数据权限
+        #region public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null, int commandTimeout = 30) 获取数据权限
         /// <summary>
         /// 获取数据表
         /// </summary>
@@ -72,8 +73,9 @@ namespace DotNet.Util
         /// <param name="parameters">字段名,字段值</param>
         /// <param name="topLimit">前几个记录</param>
         /// <param name="targetField">目标字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null)
+        public static string[] GetProperties(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int? topLimit = null, string targetField = null, int commandTimeout = 30)
         {
             var result = new List<string>();
 
@@ -127,7 +129,7 @@ namespace DotNet.Util
             }
 
             // 20151008 吉日嘎拉 优化为 DataReader 读取数据，大量数据读取时，效率高，节约内存，提高处理效率
-            var dataReader = dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters));
+            var dataReader = dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())

@@ -28,7 +28,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class DbUtil
     {
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
 
         /// <summary>
         /// 分页获取指定数量的数据
@@ -42,8 +42,9 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, string condition, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
         {
             sortExpression = GetSafeSortExpression(sortExpression);
             sortDirection = GetSafeSortDirection(sortDirection);
@@ -141,11 +142,11 @@ namespace DotNet.Util
                     commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
-            return dbHelper.Fill(commandText, dbParameters);
+            return dbHelper.Fill(commandText, dbParameters, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ", int commandTimeout = 30)
         /// <summary>
         /// 使用存储过程获取分页数据
         /// </summary>
@@ -158,8 +159,9 @@ namespace DotNet.Util
         /// <param name="tableName">表名</param>
         /// <param name="condition">查询条件</param>
         /// <param name="selectField">查询字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ")
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, int pageNo = 1, int pageSize = 20, string sortExpression = null, string sortDirection = null, string tableName = null, string condition = null, string selectField = " * ", int commandTimeout = 30)
         {
             tableName = tableName.ToTableName();
             DataTable dt = null;
@@ -182,14 +184,14 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("TableName", tableName));
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
-            dt = dbHelper.Fill("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure);
+            dt = dbHelper.Fill("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout);
             //修复：输出参数可能为 null/空，避免 int.Parse 抛 FormatException/NullReferenceException
             recordCount = dbDataParameter.Value.ToInt();
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
 
         /// <summary>
         /// 分页获取指定数量的数据
@@ -202,8 +204,9 @@ namespace DotNet.Util
         /// <param name="dbParameters"></param>
         /// <param name="sortExpression">排序字段</param>
         /// <param name="sortDirection">排序</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns></returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30)
         {
             sql = sql.ToTableName();
             sortExpression = GetSafeSortExpression(sortExpression);
@@ -251,11 +254,11 @@ namespace DotNet.Util
                     commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
-            return dbHelper.Fill(commandText, dbParameters);
+            return dbHelper.Fill(commandText, dbParameters, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据
         /// </summary>
@@ -266,14 +269,15 @@ namespace DotNet.Util
         /// <param name="pageSize">每页显示多少条</param>
         /// <param name="conditions">查询条件</param>
         /// <param name="orderBy">排序字段</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30)
         {
-            return GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy);
+            return GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, null, orderBy, commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
@@ -286,8 +290,9 @@ namespace DotNet.Util
         /// <param name="dbParameters">查询参数</param>
         /// <param name="orderBy">排序字段</param>
         /// <param name="currentIndex">当前的索引</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30)
         {
             tableName = tableName.ToTableName();
             orderBy = GetSafeSortExpression(orderBy);
@@ -330,18 +335,18 @@ namespace DotNet.Util
             var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                dt = dbHelper.Fill(sb.Return(), dbParameters);
+                dt = dbHelper.Fill(sb.Return(), dbParameters, commandTimeout: commandTimeout);
             }
             else
             {
-                dt = dbHelper.Fill(sb.Return());
+                dt = dbHelper.Fill(sb.Return(), commandTimeout: commandTimeout);
             }
 
             return dt;
         }
         #endregion
 
-        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, List<KeyValuePair<string, object>> dbParameters, string orderBy)
+        #region public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool showRecordCount = true, int commandTimeout = 30)
         /// <summary>
         /// 获取分页数据（防注入功能的）
         /// </summary>
@@ -356,8 +361,9 @@ namespace DotNet.Util
         /// <param name="orderBy">排序字段</param>
         /// <param name="maxOutPut">最大输出数量</param>
         /// <param name="showRecordCount">是否显示分页数量</param>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>数据表</returns>
-        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool showRecordCount = true)
+        public static DataTable GetDataTableByPage(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int? maxOutPut = null, bool showRecordCount = true, int commandTimeout = 30)
         {
             DataTable result = null;
             recordCount = 0;
@@ -365,10 +371,10 @@ namespace DotNet.Util
             {
                 if (showRecordCount)
                 {
-                    recordCount = GetCount(dbHelper, tableName, conditions, dbParameters);
+                    recordCount = GetCount(dbHelper, tableName, conditions, dbParameters, commandTimeout: commandTimeout);
                     recordCount = recordCount > maxOutPut ? (int)maxOutPut : recordCount;
                 }
-                result = GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy);
+                result = GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout: commandTimeout);
             }
             return result;
         }
