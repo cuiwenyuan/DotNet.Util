@@ -335,7 +335,7 @@ namespace DotNet.Util
             var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                dt = dbHelper.Fill(sb.Return(), dbParameters, commandTimeout: commandTimeout);
+                dt = dbHelper.Fill(sb.Return(), dbParameters: dbParameters, commandTimeout: commandTimeout);
             }
             else
             {
@@ -371,7 +371,7 @@ namespace DotNet.Util
             {
                 if (showRecordCount)
                 {
-                    recordCount = GetCount(dbHelper, tableName, conditions, dbParameters, commandTimeout: commandTimeout);
+                    recordCount = GetCount(dbHelper, tableName, conditions, dbParameters: dbParameters, commandTimeout: commandTimeout);
                     recordCount = recordCount > maxOutPut ? (int)maxOutPut : recordCount;
                 }
                 result = GetDataTableByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout: commandTimeout);

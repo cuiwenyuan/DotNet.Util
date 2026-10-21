@@ -673,7 +673,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public int EndInsert(int commandTimeout = 30)
         {
-            return Execute(commandTimeout);
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -685,7 +685,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public int EndReplace(int commandTimeout = 30)
         {
-            return Execute(commandTimeout);
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -697,7 +697,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public int EndUpdate(int commandTimeout = 30)
         {
-            return Execute(commandTimeout);
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -709,7 +709,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public int EndDelete(int commandTimeout = 30)
         {
-            return Execute(commandTimeout);
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -842,6 +842,7 @@ namespace DotNet.Util
         /// <summary>
         /// 执行语句
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
         private int Execute(int commandTimeout)
         {

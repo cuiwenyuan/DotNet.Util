@@ -35,7 +35,7 @@ namespace DotNet.Util
         /// <returns>锁定的行数，执行失败返回 -1</returns>
         public static int LockNoWait(this IDbHelper dbHelper, string tableName, params KeyValuePair<string, object>[] parameters)
         {
-            return LockNoWait(dbHelper, tableName, 30, parameters);
+            return LockNoWait(dbHelper, tableName, parameters: parameters, commandTimeout: 30);
         }
         #endregion
 

@@ -47,7 +47,7 @@ namespace DotNet.Util
             {
                 sqlBuilder.SetWhere(whereSql);
             }
-            return sqlBuilder.EndUpdate(commandTimeout);
+            return sqlBuilder.EndUpdate(commandTimeout: commandTimeout);
         }
         #endregion
     }

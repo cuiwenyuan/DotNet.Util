@@ -39,7 +39,7 @@ namespace DotNet.Util
             var sb = PoolUtil.StringBuilder.Get();
             sb.Append("SELECT COUNT(*) FROM " + tableName + " WHERE " + GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional));
 
-            if (!(parameter.Key).IsNullOrEmpty())
+            if (!parameter.Key.IsNullOrEmpty())
             {
                 if (parameter.Value != null)
                 {
@@ -187,7 +187,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = null, int commandTimeout = 30) 记录是否存在
+        #region public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>(), int commandTimeout = 30) 记录是否存在
 
         /// <summary>
         /// 记录是否存在
