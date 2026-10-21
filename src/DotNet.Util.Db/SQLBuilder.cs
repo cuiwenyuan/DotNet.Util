@@ -658,7 +658,7 @@ namespace DotNet.Util
             {
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
-            _dbHelper.Fill(dt, CommandText, dbParameters.ToArray(), commandTimeout);
+            _dbHelper.Fill(dt, CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
             // 清除查询参数
             DbParameters.Clear();
             return dt;
@@ -872,11 +872,11 @@ namespace DotNet.Util
                         {
                             _dbHelper.MustCloseConnection = false;
                             // 执行语句
-                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout);
+                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                             if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
                             {
                                 // 获取当前序列主键
-                                var obj = _dbHelper.ExecuteScalar(identitySql, commandTimeout);
+                                var obj = _dbHelper.ExecuteScalar(identitySql, commandTimeout: commandTimeout);
                                 result = obj.ToInt();
                             }
                         }
@@ -891,20 +891,20 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray(), commandTimeout);
+                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                         result = obj.ToInt();
                     }
                 }
                 else
                 {
                     // 执行语句
-                    result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout);
+                    result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                 }
             }
             else
             {
                 // 执行语句
-                result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout);
+                result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
             }
 
             if (!_dbHelper.MustCloseConnection)

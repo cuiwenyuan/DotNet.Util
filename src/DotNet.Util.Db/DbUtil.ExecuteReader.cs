@@ -62,7 +62,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout);
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout: commandTimeout);
         }
         /// <summary>
         /// ExecuteReader
@@ -78,7 +78,7 @@ namespace DotNet.Util
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string name,
             object[] values, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, name, values, order, commandTimeout).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, name, values, order, commandTimeout: commandTimeout).ToList<TModel>();
         }
         #endregion
 
@@ -132,7 +132,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string condition, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, condition, commandTimeout).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, condition, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -153,7 +153,7 @@ namespace DotNet.Util
         {
             // 这里是需要完善的功能，完善了这个，是一次重大突破
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", condition, topLimit, order);
-            return dbHelper.ExecuteReader(sql, commandTimeout);
+            return dbHelper.ExecuteReader(sql, commandTimeout: commandTimeout);
         }
 
         #endregion
@@ -173,7 +173,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static List<TModel> ExecuteReader2<TModel>(this IDbHelper dbHelper, string tableName, string condition, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader2(dbHelper, tableName, condition, topLimit, order, commandTimeout).ToList<TModel>();
+            return ExecuteReader2(dbHelper, tableName, condition, topLimit, order, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -325,7 +325,7 @@ namespace DotNet.Util
             {
                 sb.Append(" ORDER BY " + order);
             }
-            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout);
+            return dbHelper.ExecuteReader(sb.Return(), dbParameters.ToArray(), commandTimeout: commandTimeout);
         }
         /// <summary>
         /// ExecuteReader
@@ -342,7 +342,7 @@ namespace DotNet.Util
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, string selectField, string name,
             object[] values, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, selectField, name, values, order, commandTimeout).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, selectField, name, values, order, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -364,11 +364,11 @@ namespace DotNet.Util
             var sql = ExecuteReaderQueryString(dbHelper, tableName, "*", GetWhereString(dbHelper, parameters, BaseUtil.SqlLogicConditional), topLimit, order);
             if (parameters != null && parameters.Count > 0)
             {
-                return dbHelper.ExecuteReader(sql, dbHelper.MakeParameters(parameters), commandTimeout);
+                return dbHelper.ExecuteReader(sql, dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sql, commandTimeout);
+                return dbHelper.ExecuteReader(sql, commandTimeout: commandTimeout);
             }
         }
 
@@ -389,7 +389,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, int topLimit = 0, string order = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, parameters, topLimit, order, commandTimeout).ToList<TModel>();
+            return ExecuteReader(dbHelper, tableName, parameters, topLimit, order, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -459,11 +459,11 @@ namespace DotNet.Util
             }
             if (parameters != null && parameters.Count > 0)
             {
-                return dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
+                return dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Return(), commandTimeout);
+                return dbHelper.ExecuteReader(sb.Return(), commandTimeout: commandTimeout);
             }
         }
 
@@ -485,7 +485,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static List<TModel> ExecuteReader<TModel>(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, string conditions, int topLimit = 0, string order = null, string selectField = " * ", int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReader(dbHelper, tableName, parameters, conditions, topLimit, order, selectField, commandTimeout)
+            return ExecuteReader(dbHelper, tableName, parameters, conditions, topLimit, order, selectField, commandTimeout: commandTimeout)
                     .ToList<TModel>();
         }
 

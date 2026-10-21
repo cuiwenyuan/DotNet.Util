@@ -55,7 +55,7 @@ namespace DotNet.Util
             {
                 parametersList.Add(parameters[i]);
             }
-            return LockNoWait(dbHelper, tableName, parametersList, commandTimeout);
+            return LockNoWait(dbHelper, tableName, parametersList, commandTimeout: commandTimeout);
         }
         #endregion
 

@@ -37,7 +37,7 @@ namespace DotNet.Util
         /// <returns>已被修改</returns>
         public static bool IsUpdate(this IDbHelper dbHelper, string tableName, Object id, string oldUpdateUserId, DateTime? oldUpdateTime, int commandTimeout = 30)
         {
-            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime, commandTimeout);
+            return IsUpdate(dbHelper, tableName, BaseUtil.FieldId, id, oldUpdateUserId, oldUpdateTime, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -63,7 +63,7 @@ namespace DotNet.Util
                          + "," + BaseUtil.FieldUpdateTime
                          + " FROM " + tableName
                          + " WHERE " + fieldName + " = " + dbHelper.GetParameter(fieldName));
-            var dt = dbHelper.Fill(sb.Return(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) }, commandTimeout);
+            var dt = dbHelper.Fill(sb.Return(), new IDbDataParameter[] { dbHelper.MakeParameter(fieldName, fieldValue) }, commandTimeout: commandTimeout);
             result = IsUpdate(dt, oldUpdateUserId, oldUpdateTime);
             return result;
         }

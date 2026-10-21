@@ -129,7 +129,7 @@ namespace DotNet.Util
             }
 
             // 20151008 吉日嘎拉 优化为 DataReader 读取数据，大量数据读取时，效率高，节约内存，提高处理效率
-            var dataReader = dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
+            var dataReader = dbHelper.ExecuteReader(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             if (dataReader != null && !dataReader.IsClosed)
             {
                 while (dataReader.Read())

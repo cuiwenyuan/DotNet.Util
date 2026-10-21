@@ -376,7 +376,7 @@ namespace DotNet.Util
         /// <returns>object</returns>
         public virtual object ExecuteScalar(string commandText, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, null, CommandType.Text, commandTimeout);
+            return ExecuteScalar(commandText, null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -390,7 +390,7 @@ namespace DotNet.Util
         /// <returns>Object</returns>
         public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, dbParameters, CommandType.Text, commandTimeout);
+            return ExecuteScalar(commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 

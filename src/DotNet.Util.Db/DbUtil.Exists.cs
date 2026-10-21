@@ -55,11 +55,11 @@ namespace DotNet.Util
             object obj = null;
             if (parameters != null)
             {
-                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
+                obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             }
             else
             {
-                obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
+                obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout: commandTimeout);
             }
             if (obj != null)
             {
@@ -94,7 +94,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters, commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters, commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -138,7 +138,7 @@ namespace DotNet.Util
             {
                 return false;
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;
@@ -174,14 +174,14 @@ namespace DotNet.Util
             {
                 return false;
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt() > 0;
             }
             if (!result && dbHelper.CurrentDbType == CurrentDbType.Oracle && autoCreate)
             {
-                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1", commandTimeout);
+                dbHelper.ExecuteNonQuery($"CREATE SEQUENCE {sequenceName.ToUpper()} START WITH 1 INCREMENT BY 1", commandTimeout: commandTimeout);
             }
             return result;
         }
@@ -200,7 +200,7 @@ namespace DotNet.Util
         /// <returns>存在</returns>
         public static bool Exists(this IDbHelper dbHelper, string tableName, List<KeyValuePair<string, object>> parameters, KeyValuePair<string, object> parameter = new KeyValuePair<string, object>(), int commandTimeout = 30)
         {
-            return GetCount(dbHelper, tableName, parameters, parameter, commandTimeout) > 0;
+            return GetCount(dbHelper, tableName, parameters, parameter, commandTimeout: commandTimeout) > 0;
         }
         #endregion
     }

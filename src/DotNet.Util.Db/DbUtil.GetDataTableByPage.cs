@@ -184,7 +184,7 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("TableName", tableName));
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
-            dt = dbHelper.Fill("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout);
+            dt = dbHelper.Fill("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout: commandTimeout);
             //修复：输出参数可能为 null/空，避免 int.Parse 抛 FormatException/NullReferenceException
             recordCount = dbDataParameter.Value.ToInt();
             return dt;

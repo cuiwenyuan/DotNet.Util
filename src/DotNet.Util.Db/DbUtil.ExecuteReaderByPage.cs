@@ -66,7 +66,7 @@ namespace DotNet.Util
             dbParameters.Add(dbHelper.MakeParameter("TableName", tableName));
             dbParameters.Add(dbHelper.MakeParameter("SelectField", selectField));
             dbParameters.Add(dbHelper.MakeParameter("WhereConditional", condition));
-            dataReader = dbHelper.ExecuteReader("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout);
+            dataReader = dbHelper.ExecuteReader("GetRecordByPage", dbParameters.ToArray(), CommandType.StoredProcedure, commandTimeout: commandTimeout);
             recordCount = dbDataParameter.Value.ToInt();
 
             return dataReader;
@@ -91,7 +91,7 @@ namespace DotNet.Util
         {
             return
                 ExecuteReaderByPage(dbHelper, out recordCount, pageNo, pageSize, sortExpression, sortDirection, tableName,
-                    condition, selectField, commandTimeout).ToList<TModel>();
+                    condition, selectField, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -170,7 +170,7 @@ namespace DotNet.Util
                     break;
             }
 
-            return dbHelper.ExecuteReader(commandText, dbParameters, commandTimeout);
+            return dbHelper.ExecuteReader(commandText, dbParameters, commandTimeout: commandTimeout);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, int recordCount, int pageNo, int pageSize, string sql, IDbDataParameter[] dbParameters, string sortExpression = null, string sortDirection = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, recordCount, pageNo, pageSize, sql, dbParameters, sortExpression, sortDirection, commandTimeout).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, recordCount, pageNo, pageSize, sql, dbParameters, sortExpression, sortDirection, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -225,7 +225,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, string orderBy, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, orderBy, commandTimeout).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, orderBy, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion
@@ -285,11 +285,11 @@ namespace DotNet.Util
             //var dt = new DataTable(tableName);
             if (dbParameters != null && dbParameters.Length > 0)
             {
-                return dbHelper.ExecuteReader(sb.Return(), dbParameters, commandTimeout);
+                return dbHelper.ExecuteReader(sb.Return(), dbParameters, commandTimeout: commandTimeout);
             }
             else
             {
-                return dbHelper.ExecuteReader(sb.Return(), commandTimeout);
+                return dbHelper.ExecuteReader(sb.Return(), commandTimeout: commandTimeout);
             }
         }
 
@@ -309,7 +309,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, string currentIndex = null, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, currentIndex, commandTimeout).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, currentIndex, commandTimeout: commandTimeout).ToList<TModel>();
         }
         #endregion
 
@@ -356,7 +356,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static List<TModel> ExecuteReaderByPage<TModel>(this IDbHelper dbHelper, out int recordCount, string tableName, string selectField, int pageNo, int pageSize, string conditions, IDbDataParameter[] dbParameters, string orderBy, int commandTimeout = 30) where TModel : new()
         {
-            return ExecuteReaderByPage(dbHelper, out recordCount, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout).ToList<TModel>();
+            return ExecuteReaderByPage(dbHelper, out recordCount, tableName, selectField, pageNo, pageSize, conditions, dbParameters, orderBy, commandTimeout: commandTimeout).ToList<TModel>();
         }
 
         #endregion

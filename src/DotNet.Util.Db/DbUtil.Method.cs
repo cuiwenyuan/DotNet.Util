@@ -47,7 +47,7 @@ namespace DotNet.Util
         /// <returns>影响行数</returns>
         public static int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text, int commandTimeout = 30)
         {
-            return ExecuteNonQuery(ConnectionString, commandText, dbParameters, commandType, commandTimeout);
+            return ExecuteNonQuery(ConnectionString, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -65,7 +65,7 @@ namespace DotNet.Util
         {
             var result = 0;
             var dbHelper = DbHelperFactory.Create(CurrentDbType, connectionString);
-            result = dbHelper.ExecuteNonQuery(commandText, dbParameters, commandType, commandTimeout);
+            result = dbHelper.ExecuteNonQuery(commandText, dbParameters, commandType, commandTimeout: commandTimeout);
             dbHelper.Close();
             return result;
         }
@@ -82,7 +82,7 @@ namespace DotNet.Util
         /// <returns>object</returns>
         public static object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text, int commandTimeout = 30)
         {
-            return ExecuteScalar(ConnectionString, commandText, dbParameters, commandType, commandTimeout);
+            return ExecuteScalar(ConnectionString, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -100,7 +100,7 @@ namespace DotNet.Util
         {
             object result = null;
             var dbHelper = DbHelperFactory.Create(CurrentDbType, connectionString);
-            result = dbHelper.ExecuteScalar(commandText, dbParameters, commandType, commandTimeout);
+            result = dbHelper.ExecuteScalar(commandText, dbParameters, commandType, commandTimeout: commandTimeout);
             dbHelper.Close();
             return result;
         }
@@ -117,7 +117,7 @@ namespace DotNet.Util
         /// <returns>结果集流</returns>
         public static IDataReader ExecuteReader(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text, int commandTimeout = 30)
         {
-            return ExecuteReader(ConnectionString, commandText, dbParameters, commandType, commandTimeout);
+            return ExecuteReader(ConnectionString, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -134,7 +134,7 @@ namespace DotNet.Util
         public static IDataReader ExecuteReader(string connectionString, string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text, int commandTimeout = 30)
         {
             var dbHelper = DbHelperFactory.Create(CurrentDbType, connectionString);
-            return dbHelper.ExecuteReader(commandText, dbParameters, commandType, commandTimeout);
+            return dbHelper.ExecuteReader(commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -149,7 +149,7 @@ namespace DotNet.Util
         /// <returns>数据表</returns>
         public static DataTable Fill(string commandText, IDbDataParameter[] dbParameters = null, CommandType commandType = CommandType.Text, int commandTimeout = 30)
         {
-            return Fill(ConnectionString, commandText, dbParameters, commandType, commandTimeout);
+            return Fill(ConnectionString, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -167,7 +167,7 @@ namespace DotNet.Util
         {
             var dt = new DataTable("DotNet");
             var dbHelper = DbHelperFactory.Create(CurrentDbType, connectionString);
-            dbHelper.Fill(dt, commandText, dbParameters, commandType, commandTimeout);
+            dbHelper.Fill(dt, commandText, dbParameters, commandType, commandTimeout: commandTimeout);
             dbHelper.Close();
             return dt;
         }
@@ -193,7 +193,7 @@ namespace DotNet.Util
 
                     if (query.Trim().Length > 0)
                     {
-                        ExecuteNonQuery(query, null, CommandType.Text, commandTimeout);
+                        ExecuteNonQuery(query, null, CommandType.Text, commandTimeout: commandTimeout);
                     }
 
                     if (lastPos == -1)
@@ -215,7 +215,7 @@ namespace DotNet.Util
         /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         public static void ExecuteCommandWithSplitter(string commandText, int commandTimeout = 30)
         {
-            ExecuteCommandWithSplitter(commandText, "\r\nGO\r\n", commandTimeout);
+            ExecuteCommandWithSplitter(commandText, "\r\nGO\r\n", commandTimeout: commandTimeout);
         }
         #endregion ExecuteCommandWithSplitter方法结束
     }

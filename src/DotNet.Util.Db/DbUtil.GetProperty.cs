@@ -94,7 +94,7 @@ namespace DotNet.Util
                 }
             }
 
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToString();

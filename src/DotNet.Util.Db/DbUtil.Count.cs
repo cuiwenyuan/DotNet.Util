@@ -41,7 +41,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
@@ -69,7 +69,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();

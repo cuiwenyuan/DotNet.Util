@@ -317,7 +317,7 @@ namespace DotNet.Util
             sqlBuilder.BeginUpdate(tableName);
             sqlBuilder.SetValue(targetField, targetValue);
             sqlBuilder.SetWhere(name, value);
-            result = sqlBuilder.EndUpdate(commandTimeout);
+            result = sqlBuilder.EndUpdate(commandTimeout: commandTimeout);
             return result;
         }
         #endregion
@@ -340,7 +340,7 @@ namespace DotNet.Util
             {
                 sqlBuilder.SetValue(targetFields[i], targetValues[i]);
             }
-            return sqlBuilder.EndInsert(commandTimeout);
+            return sqlBuilder.EndInsert(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -356,7 +356,7 @@ namespace DotNet.Util
         public static DataTable GetFromProcedure(this IDbHelper dbHelper, string procedureName, string tableName, int commandTimeout = 30)
         {
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, procedureName, (IDbDataParameter[])null, CommandType.StoredProcedure, commandTimeout);
+            dbHelper.Fill(dt, procedureName, (IDbDataParameter[])null, CommandType.StoredProcedure, commandTimeout: commandTimeout);
             return dt;
         }
         #endregion
@@ -378,7 +378,7 @@ namespace DotNet.Util
             names[0] = BaseUtil.FieldId;
             values[0] = id;
             var dt = new DataTable(tableName);
-            dbHelper.Fill(dt, procedureName, dbHelper.MakeParameters(names, values), CommandType.StoredProcedure, commandTimeout);
+            dbHelper.Fill(dt, procedureName, dbHelper.MakeParameters(names, values), CommandType.StoredProcedure, commandTimeout: commandTimeout);
             return dt;
         }
         #endregion

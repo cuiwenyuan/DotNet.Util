@@ -311,7 +311,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentsIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetParentsByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout: commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -329,7 +329,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensId(this IDbHelper dbHelper, string tableName, string fieldId, string id, string fieldParentId, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetChildrens(dbHelper, tableName, fieldId, id, fieldParentId, order, true, commandTimeout: commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -346,7 +346,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout: commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -363,7 +363,7 @@ namespace DotNet.Util
         /// <returns>主键数组</returns>
         public static string[] GetParentChildrensIdByCode(this IDbHelper dbHelper, string tableName, string fieldCode, string code, string order, int commandTimeout = 30)
         {
-            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
+            return BaseUtil.FieldToArray(GetParentChildrensByCode(dbHelper, tableName, fieldCode, code, order, true, commandTimeout: commandTimeout), BaseUtil.FieldId).Distinct<string>().Where(t => !t.IsNullOrEmpty()).ToArray();
         }
         #endregion
 
@@ -389,7 +389,7 @@ namespace DotNet.Util
             var values = new Object[1];
             names[0] = fieldCode;
             values[0] = code;
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbHelper.MakeParameters(names, values), commandTimeout: commandTimeout);
             if (obj != null)
             {
                 parentId = obj.ToString();

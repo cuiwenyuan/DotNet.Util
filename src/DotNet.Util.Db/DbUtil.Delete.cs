@@ -40,7 +40,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            return dbHelper.ExecuteNonQuery(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout);
+            return dbHelper.ExecuteNonQuery(sb.Return(), dbHelper.MakeParameters(parameters), commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -61,7 +61,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            return dbHelper.ExecuteNonQuery(sb.Return(), commandTimeout);
+            return dbHelper.ExecuteNonQuery(sb.Return(), commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -86,7 +86,7 @@ namespace DotNet.Util
                 {
                     conditionSql = condition + " AND ";
                 }
-                var result = dbHelper.Delete(tableName, conditionSql + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " < " + maxId, commandTimeout);
+                var result = dbHelper.Delete(tableName, conditionSql + BaseUtil.FieldId + " >= " + minId + " AND " + BaseUtil.FieldId + " < " + maxId, commandTimeout: commandTimeout);
                 Console.WriteLine("tableName: " + tableName + " Id from " + minId + " to " + maxId + " is deleted, total deleted: " + result);
                 BatchDelete(dbHelper, tableName, condition, batchSize: batchSize, commandTimeout: commandTimeout);
             }
@@ -117,7 +117,7 @@ namespace DotNet.Util
             {
                 sb.Append("TRUNCATE TABLE " + tableName);
             }
-            return dbHelper.ExecuteNonQuery(sb.Return(), commandTimeout);
+            return dbHelper.ExecuteNonQuery(sb.Return(), commandTimeout: commandTimeout);
         }
         #endregion
     }
