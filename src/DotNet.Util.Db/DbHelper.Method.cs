@@ -459,7 +459,6 @@ namespace DotNet.Util
                             if (dbParameters[i] != null)
                             {
                                 DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                                // dbCommand.Parameters.Add(dbParameters[i]);
                             }
                         }
                     }

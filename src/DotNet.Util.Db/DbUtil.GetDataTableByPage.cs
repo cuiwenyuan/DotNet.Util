@@ -142,7 +142,7 @@ namespace DotNet.Util
                     commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
-            return dbHelper.Fill(commandText, dbParameters, commandTimeout: commandTimeout);
+            return dbHelper.Fill(commandText, dbParameters: dbParameters, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -254,7 +254,7 @@ namespace DotNet.Util
                     commandText = string.Format("SELECT * FROM {0} ORDER BY {1} {2} LIMIT {3} OFFSET {4}", sql, sortExpression, sortDirection, pageSize, sqlStart);
                     break;
             }
-            return dbHelper.Fill(commandText, dbParameters, commandTimeout: commandTimeout);
+            return dbHelper.Fill(commandText, dbParameters: dbParameters, commandTimeout: commandTimeout);
         }
         #endregion
 

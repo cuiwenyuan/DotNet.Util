@@ -499,7 +499,10 @@ namespace DotNet.Util
             {
                 targetFiledName = targetFiled;
             }
-
+            //whereParameters Troy Cui 12.06.2017
+            //fix the issue - The variable name '%.*ls' has already been declared. Variable names must be unique within a query batch or stored procedure. 
+            //IdWhere就是Id这个字段的WHERE语句中的参数名
+            //NameWhere就是Name这个字段的WHERE语句中的参数名，Troy Cui 2019.07.02补充说明
             var parameterName = targetFiledName + "Where";
             if (DbParameters.Any(t => t.Key.Equals(parameterName, StringComparison.OrdinalIgnoreCase)))
             {
@@ -618,7 +621,7 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public int EndSelect(int commandTimeout = 30) 结束查询
+        #region public DataTable EndSelect(int commandTimeout = 30) 结束查询
         /// <summary>
         /// 结束查询
         /// </summary>

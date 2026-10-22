@@ -94,7 +94,7 @@ namespace DotNet.Util
             {
                 sb.Append(" WHERE " + condition);
             }
-            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters, commandTimeout: commandTimeout);
+            var obj = dbHelper.ExecuteScalar(sb.Return(), dbParameters: dbParameters, commandTimeout: commandTimeout);
             if (obj != null && obj != DBNull.Value)
             {
                 result = obj.ToInt();
