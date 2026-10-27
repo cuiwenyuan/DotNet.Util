@@ -7,7 +7,7 @@ namespace DotNet.Util
     public partial class JsonUtil
     {
         /// <summary>
-        /// �ָ�Json�ַ���Ϊ�ֵ伯�ϡ�
+        /// 分隔Json字符串为字典集合。
         /// </summary>
         internal class JsonSplit
         {
@@ -27,7 +27,7 @@ namespace DotNet.Util
                     for (var i = 0; i < json.Length; i++)
                     {
                         c = json[i];
-                        if (SetCharState(c, ref cs) && cs.ChildrenStart)//���ùؼ�����״̬��
+                        if (SetCharState(c, ref cs) && cs.ChildrenStart)//设置关键符号状态。
                         {
                             var item = json.Substring(i);
                             int err;
@@ -65,14 +65,14 @@ namespace DotNet.Util
                     var cs = new CharState();
                     try
                     {
-                        #region �����߼�
+                        #region 核心逻辑
                         char c;
                         for (var i = 0; i < json.Length; i++)
                         {
                             c = json[i];
-                            if (!SetCharState(c, ref cs))//���ùؼ�����״̬��
+                            if (!SetCharState(c, ref cs))//设置关键符号状态。
                             {
-                                if (cs.JsonStart)//Json�����С�����
+                                if (cs.JsonStart)//Json进行中。。。
                                 {
                                     if (cs.KeyStart > 0)
                                     {
@@ -84,12 +84,12 @@ namespace DotNet.Util
                                         //value += c;
                                     }
                                 }
-                                else if (!cs.ArrayStart)//json�������ֲ������飬���˳���
+                                else if (!cs.ArrayStart)//json结束，又不是数组，则退出。
                                 {
                                     break;
                                 }
                             }
-                            else if (cs.ChildrenStart)//�����ַ���ֵ״̬�¡�
+                            else if (cs.ChildrenStart)//正常字符，值状态下。
                             {
                                 var item = json.Substring(i);
                                 int temp;
@@ -103,7 +103,7 @@ namespace DotNet.Util
                                 cs.SetDicValue = true;
                                 i = i + length - 1;
                             }
-                            if (cs.SetDicValue)//���ü�ֵ�ԡ�
+                            if (cs.SetDicValue)//设置键值对。
                             {
                                 if (!key.IsNullOrEmpty() && !dic.ContainsKey(key))
                                 {
@@ -127,7 +127,7 @@ namespace DotNet.Util
                             if (!cs.JsonStart && dic.Count > 0)
                             {
                                 result.Add(dic);
-                                if (cs.ArrayStart)//�������顣
+                                if (cs.ArrayStart)//处理数组。
                                 {
                                     // 修复 R9-5：数组内每个对象同样用 Ordinal（见上）
                                     dic = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -151,7 +151,7 @@ namespace DotNet.Util
                 return result;
             }
             /// <summary>
-            /// ��ȡֵ�ĳ��ȣ���JsonֵǶ����"{"��"["��ͷʱ��
+            /// 获取值的长度（当Json值嵌套以"{"或"["开头时）
             /// </summary>
             private static int GetValueLength(string json, bool breakOnErr, out int errIndex)
             {
@@ -164,16 +164,16 @@ namespace DotNet.Util
                     for (var i = 0; i < json.Length; i++)
                     {
                         c = json[i];
-                        if (!SetCharState(c, ref cs))//���ùؼ�����״̬��
+                        if (!SetCharState(c, ref cs))//设置关键符号状态。
                         {
-                            if (!cs.JsonStart && !cs.ArrayStart)//json�������ֲ������飬���˳���
+                            if (!cs.JsonStart && !cs.ArrayStart)//json结束，又不是数组，则退出。
                             {
                                 break;
                             }
                         }
-                        else if (cs.ChildrenStart)//�����ַ���ֵ״̬�¡�
+                        else if (cs.ChildrenStart)//正常字符，值状态下。
                         {
-                            var length = GetValueLength(json.Substring(i), breakOnErr, out errIndex);//�ݹ���ֵ������һ�����ȡ�����
+                            var length = GetValueLength(json.Substring(i), breakOnErr, out errIndex);//递归子值，返回一个长度。。。
                             cs.ChildrenStart = false;
                             cs.ValueStart = 0;
                             //cs.state = 0;
@@ -184,9 +184,9 @@ namespace DotNet.Util
                             errIndex = i;
                             return i;
                         }
-                        if (!cs.JsonStart && !cs.ArrayStart)//��¼��ǰ����λ�á�
+                        if (!cs.JsonStart && !cs.ArrayStart)//记录当前结束位置。
                         {
-                            len = i + 1;//���ȱ�����+1
+                            len = i + 1;//长度比索引+1
                             break;
                         }
                     }
@@ -194,60 +194,60 @@ namespace DotNet.Util
                 return len;
             }
             /// <summary>
-            /// �ַ�״̬
+            /// 字符状态
             /// </summary>
             private class CharState
             {
-                internal bool JsonStart = false;//�� "{"��ʼ��...
-                internal bool SetDicValue = false;// ���������ֵ�ֵ�ˡ�
-                internal bool EscapeChar = false;//��"\"ת����ſ�ʼ��
+                internal bool JsonStart = false;//以 "{"开始了...
+                internal bool SetDicValue = false;// 可以设置字典值了。
+                internal bool EscapeChar = false;//以"\"转义符号开始了
                 /// <summary>
-                /// ���鿪ʼ������һ��ͷ���㡿��ֵǶ�׵��ԡ�childrenStart������ʶ��
+                /// 数组开始【仅第一开头才算】，值嵌套的以【childrenStart】来标识。
                 /// </summary>
-                internal bool ArrayStart = false;//��"[" ���ſ�ʼ��
-                internal bool ChildrenStart = false;//�Ӽ�Ƕ�׿�ʼ�ˡ�
+                internal bool ArrayStart = false;//以"[" 符号开始了
+                internal bool ChildrenStart = false;//子级嵌套开始了。
                 /// <summary>
-                /// ��0 ȡ�����С�����1 ȡֵ�С�
+                /// 【0 取名称中】；【1 取值中】
                 /// </summary>
                 internal int State = -1;
 
                 /// <summary>
-                /// ��-1 δ��ʼ������0 δ��ʼ����1 �����ſ�ʼ����2 �����ſ�ʼ����3 ˫���ſ�ʼ��
+                /// 【-1 未初始化】【0 未开始】【1 无引号开始】【2 单引号开始】【3 双引号开始】
                 /// </summary>
                 internal int KeyStart = -1;
                 /// <summary>
-                /// ��-1 δ��ʼ������0 δ��ʼ����1 �����ſ�ʼ����2 �����ſ�ʼ����3 ˫���ſ�ʼ��
+                /// 【-1 未初始化】【0 未开始】【1 无引号开始】【2 单引号开始】【3 双引号开始】
                 /// </summary>
                 internal int ValueStart = -1;
-                internal bool IsError = false;//�Ƿ��﷨����
+                internal bool IsError = false;//是否语法错误。
 
-                internal void CheckIsError(char c)//ֻ����һ����������ΪGetLength��ݹ鵽ÿһ���������
+                internal void CheckIsError(char c)//只当成一级处理（因为GetLength会递归到每一个子项处理）
                 {
                     switch (c)
                     {
                         case '{'://[{ "[{A}]":[{"[{B}]":3,"m":"C"}]}]
-                            IsError = JsonStart && State == 0;//�ظ���ʼ���� ͬʱ����ֵ������
+                            IsError = JsonStart && State == 0;//重复开始错误 同时不是值处理。
                             break;
                         case '}':
-                            IsError = !JsonStart || (KeyStart > -1 && State == 0);//�ظ��������� ���� ��ǰ������
+                            IsError = !JsonStart || (KeyStart > -1 && State == 0);//重复结束错误 或者 提前结束。
                             break;
                         case '[':
-                            IsError = ArrayStart && State == 0;//�ظ���ʼ����
+                            IsError = ArrayStart && State == 0;//重复开始错误
                             break;
                         case ']':
-                            IsError = !ArrayStart;//�ظ���ʼ����
+                            IsError = !ArrayStart;//重复开始错误
                             break;
                         case '"':
                         case '\'':
-                            IsError = !JsonStart;//δ��ʼJson
+                            IsError = !JsonStart;//未开始Json
                             break;
                         case ':':
-                            IsError = !JsonStart || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 1);//δ��ʼJson ͬʱ ֻ�ܴ�����ȡֵ֮ǰ��
+                            IsError = !JsonStart || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 1);//未开始Json 同时 只能处理在取值之前。
                             break;
                         case ',':
-                            IsError = (!JsonStart && !ArrayStart) || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 0);//δ��ʼJson ͬʱ ֻ�ܴ�����ȡֵ֮��
+                            IsError = (!JsonStart && !ArrayStart) || (JsonStart && KeyStart < 2 && ValueStart < 2 && State == 0);//未开始Json 同时 只能处理在取值之后。
                             break;
-                        default: //ֵ��ͷ����
+                        default: //值开头。。
                             IsError = !JsonStart || (KeyStart == 0 && ValueStart == 0 && State == 0);//
                             break;
                     }
@@ -258,14 +258,14 @@ namespace DotNet.Util
                 }
             }
             /// <summary>
-            /// �����ַ�״̬(����true��Ϊ�ؼ��ʣ�����false��Ϊ��ͨ�ַ�������
+            /// 设置字符状态(返回true则为关键词，返回false则当为普通字符处理）
             /// </summary>
             private static bool SetCharState(char c, ref CharState cs)
             {
                 switch (c)
                 {
                     case '{'://[{ "[{A}]":[{"[{B}]":3,"m":"C"}]}]
-                        #region ������
+                        #region 大括号
                         if (cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
                             cs.CheckIsError(c);
@@ -278,19 +278,19 @@ namespace DotNet.Util
                             {
                                 cs.State = 0;
                             }
-                            cs.JsonStart = true;//��ʼ��
+                            cs.JsonStart = true;//开始。
                             return true;
                         }
                         #endregion
                         break;
                     case '}':
-                        #region �����Ž���
+                        #region 大括号结束
                         if (cs.KeyStart <= 0 && cs.ValueStart < 2)
                         {
                             cs.CheckIsError(c);
                             if (cs.JsonStart)
                             {
-                                cs.JsonStart = false;//����������
+                                cs.JsonStart = false;//正常结束。
                                 cs.ValueStart = 0;
                                 cs.SetDicValue = true;
                             }
@@ -300,7 +300,7 @@ namespace DotNet.Util
                         #endregion
                         break;
                     case '[':
-                        #region �����ſ�ʼ
+                        #region 中括号开始
                         if (!cs.JsonStart)
                         {
                             cs.CheckIsError(c);
@@ -317,7 +317,7 @@ namespace DotNet.Util
                         #endregion
                         break;
                     case ']':
-                        #region �����Ž���
+                        #region 中括号结束
                         if (!cs.JsonStart && cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
                             cs.CheckIsError(c);
@@ -332,15 +332,15 @@ namespace DotNet.Util
                     case '"':
                     case '\'':
                         cs.CheckIsError(c);
-                        #region ����
+                        #region 引号
                         if (cs.JsonStart)
                         {
-                            if (cs.State == 0)//key�׶�
+                            if (cs.State == 0)//key阶段
                             {
                                 cs.KeyStart = (cs.KeyStart <= 0 ? (c == '"' ? 3 : 2) : 0);
                                 return true;
                             }
-                            else if (cs.State == 1)//ֵ�׶�
+                            else if (cs.State == 1)//值阶段
                             {
                                 if (cs.ValueStart <= 0)
                                 {
@@ -366,7 +366,7 @@ namespace DotNet.Util
                         break;
                     case ':':
                         cs.CheckIsError(c);
-                        #region ð��
+                        #region 冒号
                         if (cs.JsonStart && cs.KeyStart < 2 && cs.ValueStart < 2 && cs.State == 0)
                         {
                             cs.KeyStart = 0;
@@ -378,7 +378,7 @@ namespace DotNet.Util
                         break;
                     case ',':
                         cs.CheckIsError(c);
-                        #region ����
+                        #region 逗号
                         if (cs.JsonStart && cs.KeyStart < 2 && cs.ValueStart < 2 && cs.State == 1)
                         {
                             cs.State = 0;
@@ -397,12 +397,12 @@ namespace DotNet.Util
                     case '\n':
                         if (cs.JsonStart && cs.KeyStart <= 0 && cs.ValueStart <= 0)
                         {
-                            return true;//�����ո�
+                            return true;//跳过空格。
                         }
                         break;
-                    default: //ֵ��ͷ����
+                    default: //值开头。。
                         cs.CheckIsError(c);
-                        if (c == '\\') //ת�����
+                        if (c == '\\') //转义符号
                         {
                             if (cs.EscapeChar)
                             {
@@ -422,11 +422,11 @@ namespace DotNet.Util
                         {
                             if (cs.KeyStart <= 0 && cs.State <= 0)
                             {
-                                cs.KeyStart = 1;//�����ŵ�
+                                cs.KeyStart = 1;//无引号的
                             }
                             else if (cs.ValueStart <= 0 && cs.State == 1)
                             {
-                                cs.ValueStart = 1;//�����ŵ�
+                                cs.ValueStart = 1;//无引号的
                             }
                         }
                         break;
