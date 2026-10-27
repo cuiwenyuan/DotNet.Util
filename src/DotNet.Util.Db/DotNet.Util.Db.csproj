@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
 	<PropertyGroup>
-		<TargetFrameworks>net46;net47;net48;net6.0;net7.0;net8.0;net9.0;net10.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net46;net47;net48;net6.0;net8.0;net10.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Description>Database access utilities for .NET Framework 4.6/4.7/4.8, .NET 6/7/8/9/10 and .NET Standard 2.0/2.1. The default (and only built-in) database provider is SQL Server (MSSQL): DbHelper.CurrentDbType and DbHelperFactory.Create() default to CurrentDbType.SqlServer. For MySql/Oracle/PostgreSql/SQLite/OleDb, install the corresponding Wangcaisoft.DotNet.Util.Db.* extension package. Please visit https://github.com/cuiwenyuan/DotNet.Util for more information</Description>
 		<Company>www.cuiwenyuan.cn</Company>
 		<Copyright>©2008-2026 Wangcaisoft</Copyright>
