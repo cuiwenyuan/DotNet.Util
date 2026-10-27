@@ -98,7 +98,6 @@ public partial class BasePage : System.Web.UI.Page
     }
     #endregion
 
-
     #region 获取组织的树形选项
     /// <summary>
     /// 获取组织的树形选项
