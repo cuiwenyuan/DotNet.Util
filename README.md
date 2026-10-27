@@ -27,7 +27,8 @@ Quick start
 Repository layout (overview)
 - `src/DotNet.Util` — core utility library
 - `src/DotNet.Util.Plus` — extended utilities (Excel/Word export, compression, etc.)
-- `src/DotNet.Util.Db*` — database adapters and expression helpers (MySql/Oracle/PostgreSql/SQLite/OleDb)
+- `src/DotNet.Util.Db` — SQL Server (MSSQL) data access: **the default database is SQL Server**. `DbHelper.CurrentDbType` and `DbHelperFactory.Create()`/`GetHelper()` all default to `CurrentDbType.SqlServer`. For other databases, use the extension packages below.
+- `src/DotNet.Util.Db.*` — extension database adapters for MySql / Oracle / PostgreSql / SQLite / OleDb, built on top of `DotNet.Util.Db`
 - `src/DotNet.Util.Cache` — cache helpers
 - `src/DotNet.Business*` — example business projects and web demo
 - `src/DotNet.Model` — common models and entities

@@ -2,6 +2,14 @@
 
 > SQL Server / MSSQL 数据访问 / SQL Server data access
 
+> **⚠️ 默认数据库类型说明：本包（`DotNet.Util.Db`，不带任何数据库后缀）默认且仅内置 SQL Server（MSSQL）实现。**
+> 包内所有默认行为均指向 SQL Server：`DbHelper.CurrentDbType` 默认返回 `CurrentDbType.SqlServer`，`DbHelperFactory.Create()` / `GetHelper()` 的 `currentDbType` 参数默认值也是 `CurrentDbType.SqlServer`。
+> 如需使用其他数据库，请安装对应的扩展包：`Wangcaisoft.DotNet.Util.Db.MySql` / `.Oracle` / `.PostgreSql` / `.SQLite` / `.OleDb`。
+>
+> **⚠️ Default database note: this package (`DotNet.Util.Db`, without any database suffix) targets SQL Server (MSSQL) by default and exclusively.**
+> All defaults point to SQL Server: `DbHelper.CurrentDbType` defaults to `CurrentDbType.SqlServer`, and `DbHelperFactory.Create()` / `GetHelper()` default the `currentDbType` parameter to `CurrentDbType.SqlServer`.
+> For other databases, install the corresponding extension package: `Wangcaisoft.DotNet.Util.Db.MySql` / `.Oracle` / `.PostgreSql` / `.SQLite` / `.OleDb`.
+
 ## 简介 / Introduction
 
 `DotNet.Util.Db` 提供面向 SQL Server / MSSQL 的数据访问能力，包含 `DbHelper` 的 SQL Server 实现（`SqlHelper`）、一组静态 CRUD 助手（`DbUtil`）与 SQL 构造器（`SqlBuilder`），以及连接/事务的生命周期管理。
@@ -36,6 +44,10 @@ net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · ne
 ```csharp
 using DotNet.Util;
 
+// 默认即 SQL Server：无需指定数据库类型
+// SQL Server is the default: no database type needs to be specified
+IDbHelper dbHelper = DbHelperFactory.Create(); // => SqlHelper（CurrentDbType.SqlServer）
+
 // 传入连接字符串 + SQL，自动管理连接生命周期
 DataTable dt = DbUtil.Fill(connectionString, "SELECT * FROM Users");
 
@@ -45,6 +57,9 @@ int affected = DbUtil.ExecuteNonQuery(
     "UPDATE Users SET Name = @Name WHERE Id = @Id",
     new System.Data.IDbDataParameter[] { /* 参数 */ });
 ```
+
+> 说明：DbHelperFactory.Create() 不传参数时返回 SqlHelper（SQL Server 实现）。
+> Note: DbHelperFactory.Create() without arguments returns SqlHelper (the SQL Server implementation).
 
 > 更多 API 详见各类型随包提供的 XML 文档注释（IntelliSense）。
 

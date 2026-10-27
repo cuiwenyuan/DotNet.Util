@@ -32,6 +32,7 @@
 4. Data Access（数据访问层）
    - 代表：`DbHelper` / `DbHelperFactory`、`DbUtil`。
    - 责任：数据库连接、命令执行、批量删除、事务与跨数据库类型适配（抽象 CurrentDbType）。
+   - 注意：核心包 `DotNet.Util.Db`（无后缀）默认且唯一内置的数据库提供者是 SQL Server（MSSQL），`DbHelper.CurrentDbType` 与 `DbHelperFactory.Create()` 的默认参数均为 `CurrentDbType.SqlServer`；MySql/Oracle/PostgreSql/SQLite/OleDb 通过 `DotNet.Util.Db.*` 扩展包提供。
 
 5. Domain / Model
    - 命名空间：`DotNet.Model`（实体常量如 `BaseExceptionEntity` 存放字段/表名）

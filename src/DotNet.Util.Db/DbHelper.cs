@@ -44,7 +44,7 @@ namespace DotNet.Util
 
         #region public virtual CurrentDbType CurrentDbType 获取当前数据库类型
         /// <summary>
-        /// 获取当前数据库类型
+        /// 获取当前数据库类型（基类默认返回 CurrentDbType.SqlServer，即本包 DotNet.Util.Db 默认且唯一内置的数据库类型）
         /// </summary>
         public virtual CurrentDbType CurrentDbType => CurrentDbType.SqlServer;
 

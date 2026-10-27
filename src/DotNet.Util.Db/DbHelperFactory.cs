@@ -39,9 +39,9 @@ namespace DotNet.Util
         #region 创建支持并发缓存的单一实例 Create
 
         /// <summary>
-        /// 获取指定的数据库连接
+        /// 获取指定的数据库连接（默认返回 SQL Server 实现 SqlHelper）
         /// </summary>
-        /// <param name="currentDbType">数据库类型</param>
+        /// <param name="currentDbType">数据库类型（默认值：CurrentDbType.SqlServer，即本包默认且唯一内置的数据库类型）</param>
         /// <param name="connectionString">数据库连接串</param>
         /// <returns>数据库访问类</returns>
         public static IDbHelper Create(CurrentDbType currentDbType = CurrentDbType.SqlServer, string connectionString = null)
