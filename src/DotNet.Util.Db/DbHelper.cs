@@ -383,7 +383,7 @@ namespace DotNet.Util
         /// </summary>
         public virtual void Close()
         {
-#if (DEBUG)
+#if DEBUG
             if (_dbConnection != null)
             {
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Close: " + _dbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
@@ -402,7 +402,7 @@ namespace DotNet.Util
         {
             if (DbCommand != null)
             {
-#if (DEBUG)
+#if DEBUG
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbCommand Dispose: " + DbCommand + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbCommand.Dispose();
@@ -410,7 +410,7 @@ namespace DotNet.Util
             }
             if (DbDataAdapter != null)
             {
-#if (DEBUG)
+#if DEBUG
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbDataAdapter Dispose: " + DbDataAdapter + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 DbDataAdapter.Dispose();
@@ -418,7 +418,7 @@ namespace DotNet.Util
             }
             if (_dbTransaction != null && !InTransaction)
             {
-#if (DEBUG)
+#if DEBUG
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :_dbTransaction Dispose: " + _dbTransaction + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 _dbTransaction.Dispose();
@@ -427,7 +427,7 @@ namespace DotNet.Util
             // 关闭数据库连接（事务进行中不关闭，交由事务提交/回滚处理，避免事务状态不一致）
             if (_dbConnection != null && !InTransaction)
             {
-#if (DEBUG)
+#if DEBUG
                 Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :_dbConnection Dispose: " + _dbConnection.Database + " State " + _dbConnection.State + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                 if (_dbConnection.State != ConnectionState.Closed)

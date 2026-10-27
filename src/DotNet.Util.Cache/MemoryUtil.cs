@@ -341,7 +341,7 @@ namespace DotNet.Util
         public static IList<string> SearchByRegex(string pattern)
         {
             var cacheKeys = GetAllKeys();
-            var l = cacheKeys.Where(k => Regex.IsMatch(k, pattern, (RegexOptions.Singleline | (RegexOptions.Compiled | RegexOptions.IgnoreCase)))).ToList();
+            var l = cacheKeys.Where(k => Regex.IsMatch(k, pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
             return l.AsReadOnly();
         }
 

@@ -286,7 +286,7 @@ namespace DotNet.Util
         private void Begin(string tableName, DbOperation dbOperation)
         {
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -296,7 +296,7 @@ namespace DotNet.Util
             _sqlOperation = dbOperation;
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -548,7 +548,7 @@ namespace DotNet.Util
                 return;
             }
             // NULL值
-            if ((targetValue == null))
+            if (targetValue == null)
             {
                 _whereSql.Append(targetFiled + " IS NULL ");
             }

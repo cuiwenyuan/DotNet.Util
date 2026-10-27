@@ -402,7 +402,7 @@ namespace DotNet.Util
         {
             // 输出访问日志
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
             // Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
@@ -421,7 +421,7 @@ namespace DotNet.Util
             // userInfo.OperationId = MethodBase.Name;
             // userInfo.Description = MethodBase.ReflectedType.Name;
             // 输出访问日志
-#if (DEBUG)
+#if DEBUG
             if (userInfo != null)
             {
                 // Console.WriteLine("Company: " + userInfo.CompanyName + "Department: " + userInfo.DepartmentName + "User: " + userInfo.RealName + " IP: " + userInfo.IPAddress);
@@ -445,7 +445,7 @@ namespace DotNet.Util
         {
             var milliEnd = Environment.TickCount;
 
-#if (DEBUG)
+#if DEBUG
 
             if (userInfo != null)
             {
@@ -488,7 +488,7 @@ namespace DotNet.Util
         /// <param name="methodBase"></param>
         public static void WriteDebug(BaseUserInfo userInfo, MethodBase methodBase)
         {
-#if (DEBUG)
+#if DEBUG
             Console.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " " + userInfo.IpAddress + methodBase.ReflectedType.Name + "." + methodBase.Name);
 #endif
         }

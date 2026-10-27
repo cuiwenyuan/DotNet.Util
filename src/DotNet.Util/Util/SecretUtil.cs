@@ -90,7 +90,7 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
-#if (DEBUG)
+#if DEBUG
                 Console.WriteLine(e.Message);
 #endif
             }
@@ -130,7 +130,7 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
-#if (DEBUG)
+#if DEBUG
                 Console.WriteLine(e.Message);
 #endif
                 return false;

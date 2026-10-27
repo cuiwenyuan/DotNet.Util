@@ -834,7 +834,7 @@ namespace DotNet.Util
                 BaseSystemInfo.ApplicationId = ConfigurationManager.AppSettings["ApplicationId"];
             }
 #if NET46_OR_GREATER
-            if ((BaseSystemInfo.ApplicationId).IsNullOrEmpty())
+            if (BaseSystemInfo.ApplicationId.IsNullOrEmpty())
             {
                 if (System.Web.Hosting.HostingEnvironment.ApplicationID != null)
                 {

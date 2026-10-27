@@ -107,7 +107,7 @@ namespace DotNet.Util
                     break;
             }
             if (workbook == null) { return; }
-            var sheet = (dt.TableName).IsNullOrEmpty() ? workbook.CreateSheet("Sheet1") : workbook.CreateSheet(dt.TableName);
+            var sheet = dt.TableName.IsNullOrEmpty() ? workbook.CreateSheet("Sheet1") : workbook.CreateSheet(dt.TableName);
 
             //表头  
             var row = sheet.CreateRow(0);
@@ -392,7 +392,7 @@ namespace DotNet.Util
             var rs = distanceType.IsValueType ? Activator.CreateInstance(distanceType) : null;
 
             // 1.判断传递的单元格是否为空
-            if (sourceCell == null || (sourceCell.ToString()).IsNullOrEmpty())
+            if (sourceCell == null || sourceCell.ToString().IsNullOrEmpty())
             {
                 return rs;
             }

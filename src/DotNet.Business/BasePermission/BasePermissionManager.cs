@@ -116,7 +116,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BasePermissionEntity.FieldUserCompanyId + " = 0 OR " + BasePermissionEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0));
-            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = BaseSystemInfo.CustomerCompanyId.IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BasePermissionEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BasePermissionEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -588,7 +588,7 @@ namespace DotNet.Business
                     var moduleEntities = new BaseModuleManager().GetEntitiesByCache(systemCode);
                     if (moduleEntities != null)
                     {
-                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0)).Select(t => t.Id.ToString()).ToArray();
+                        result = moduleEntities.Where(t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0).Select(t => t.Id.ToString()).ToArray();
                     }
                 }
 
@@ -718,7 +718,7 @@ namespace DotNet.Business
             // 判断当前判断的权限是否存在，否则很容易出现前台设置了权限，后台没此项权限
             // 需要自动的能把前台判断过的权限，都记录到后台来
             var permissionId = string.Empty;
-#if (DEBUG)
+#if DEBUG
             if (permissionId.IsNullOrEmpty())
             {
                 var permissionEntity = new BaseModuleEntity();

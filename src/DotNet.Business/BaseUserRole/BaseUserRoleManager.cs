@@ -135,7 +135,7 @@ namespace DotNet.Business
             }
             sb.Append(BaseUserRoleEntity.FieldSystemCode + " = N'" + dbHelper.SqlSafe(effectiveSystemCode) + "'");
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0));
-            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = BaseSystemInfo.CustomerCompanyId.IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + effectiveSystemCode + "." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseUserRoleEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseUserRoleEntity.FieldDeleted, 0)), true, false, cacheTime);

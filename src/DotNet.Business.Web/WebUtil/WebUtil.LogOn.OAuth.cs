@@ -50,7 +50,7 @@ namespace DotNet.Business
                             systemCode = userInfo.SystemCode;
                         }
                     }
-                    if ((userInfo.IpAddress).IsNullOrEmpty())
+                    if (userInfo.IpAddress.IsNullOrEmpty())
                     {
                         userInfo.IpAddress = Utils.GetIp();
                     }

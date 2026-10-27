@@ -407,7 +407,7 @@ namespace DotNet.Util
                         }
                         else
                         {
-                            if (!(p.Trim()).IsNullOrEmpty())
+                            if (!p.Trim().IsNullOrEmpty())
                             {
                                 mobileList.Add(p.Trim());
                             }

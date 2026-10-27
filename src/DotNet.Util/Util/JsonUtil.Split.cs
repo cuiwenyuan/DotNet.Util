@@ -337,14 +337,14 @@ namespace DotNet.Util
                         {
                             if (cs.State == 0)//key阶段
                             {
-                                cs.KeyStart = (cs.KeyStart <= 0 ? (c == '"' ? 3 : 2) : 0);
+                                cs.KeyStart = cs.KeyStart <= 0 ? (c == '"' ? 3 : 2) : 0;
                                 return true;
                             }
                             else if (cs.State == 1)//值阶段
                             {
                                 if (cs.ValueStart <= 0)
                                 {
-                                    cs.ValueStart = (c == '"' ? 3 : 2);
+                                    cs.ValueStart = c == '"' ? 3 : 2;
                                     return true;
                                 }
                                 else if ((cs.ValueStart == 2 && c == '\'') || (cs.ValueStart == 3 && c == '"'))

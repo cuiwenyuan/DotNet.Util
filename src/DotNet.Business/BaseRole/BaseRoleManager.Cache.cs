@@ -83,7 +83,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
 
-            if (entity != null && !(entity.Id.ToString()).IsNullOrEmpty())
+            if (entity != null && !entity.Id.ToString().IsNullOrEmpty())
             {
                 var key = string.Empty;
                 key = GetRoleTableName(systemCode) + "." + entity.Id;

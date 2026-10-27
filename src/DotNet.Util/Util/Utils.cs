@@ -276,7 +276,7 @@ namespace DotNet.Util
                 return false;
 
             var extname = filename.Substring(filename.LastIndexOf(".") + 1).ToLower();
-            return (extname == "jpg" || extname == "jpeg" || extname == "png" || extname == "bmp" || extname == "gif");
+            return extname == "jpg" || extname == "jpeg" || extname == "png" || extname == "bmp" || extname == "gif";
         }
 
 
@@ -734,7 +734,7 @@ namespace DotNet.Util
             {
                 ip = GetIp();
             }
-            if (!ip.IsNullOrEmpty() && !(BaseSystemInfo.WhiteList).IsNullOrEmpty())
+            if (!ip.IsNullOrEmpty() && !BaseSystemInfo.WhiteList.IsNullOrEmpty())
             {
                 var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                 for (var i = 0; i < whiteLists.Length; i++)

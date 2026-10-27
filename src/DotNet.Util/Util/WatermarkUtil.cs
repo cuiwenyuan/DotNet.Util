@@ -62,7 +62,7 @@ namespace DotNet.Util
 
             var transparency = 0.5F;
             if (watermarkTransparency >= 1 && watermarkTransparency <= 10)
-                transparency = (watermarkTransparency / 10.0F);
+                transparency = watermarkTransparency / 10.0F;
 
 
             float[][] colorMatrixElements = {
@@ -94,7 +94,7 @@ namespace DotNet.Util
                     break;
                 case 3:
                     // 右上
-                    xpos = (int)((img.Width * (float).99) - (watermark.Width));
+                    xpos = (int)((img.Width * (float).99) - watermark.Width);
                     ypos = (int)(img.Height * (float).01);
                     break;
                 case 4:
@@ -109,7 +109,7 @@ namespace DotNet.Util
                     break;
                 case 6:
                     // 右中
-                    xpos = (int)((img.Width * (float).99) - (watermark.Width));
+                    xpos = (int)((img.Width * (float).99) - watermark.Width);
                     ypos = (int)((img.Height * (float).50) - (watermark.Height / 2));
                     break;
                 case 7:
@@ -124,7 +124,7 @@ namespace DotNet.Util
                     break;
                 case 9:
                     // 右下
-                    xpos = (int)((img.Width * (float).99) - (watermark.Width));
+                    xpos = (int)((img.Width * (float).99) - watermark.Width);
                     ypos = (int)((img.Height * (float).99) - watermark.Height);
                     break;
             }

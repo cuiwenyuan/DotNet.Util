@@ -158,7 +158,7 @@ namespace DotNet.Util
             }
 
             //从第2行起添加内容行
-            for (var i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            for (var i = sheet.FirstRowNum + 1; i <= sheet.LastRowNum; i++)
             {
                 var row = sheet.GetRow(i);
                 //修复：跳过空白行，避免 NullReferenceException
@@ -261,7 +261,7 @@ namespace DotNet.Util
                 var rowErrors = new StringBuilder();
                 for (var i = 0; i < checkStrings.Length; i++)
                 {
-                    if ((dt.Rows[j][checkStrings[i]].ToString()).IsNullOrEmpty())
+                    if (dt.Rows[j][checkStrings[i]].ToString().IsNullOrEmpty())
                     {
                         rowErrors.Append("\"" + checkStrings[i] + "\"不能为空。");
                     }

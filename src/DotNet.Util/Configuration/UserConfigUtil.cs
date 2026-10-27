@@ -53,7 +53,7 @@ namespace DotNet.Util
             get
             {
                 var fileName = FileName;
-                if (!(BaseSystemInfo.StartupPath).IsNullOrEmpty())
+                if (!BaseSystemInfo.StartupPath.IsNullOrEmpty())
                 {
                     fileName = BaseSystemInfo.StartupPath + "\\" + FileName;
                 }
@@ -486,7 +486,7 @@ namespace DotNet.Util
             // 客户信息配置
             if (Exists("NeedRegister"))
             {
-                BaseSystemInfo.NeedRegister = (string.Compare(GetValue(_xmlDocument, "NeedRegister"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.NeedRegister = string.Compare(GetValue(_xmlDocument, "NeedRegister"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             // 客户信息配置
             if (Exists("CurrentCompany"))
@@ -514,7 +514,7 @@ namespace DotNet.Util
             }
             if (Exists("MultiLanguage"))
             {
-                BaseSystemInfo.MultiLanguage = (string.Compare(GetValue(_xmlDocument, "MultiLanguage"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.MultiLanguage = string.Compare(GetValue(_xmlDocument, "MultiLanguage"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("CurrentLanguage"))
             {
@@ -522,23 +522,23 @@ namespace DotNet.Util
             }
             if (Exists("RememberPassword"))
             {
-                BaseSystemInfo.RememberPassword = (string.Compare(GetValue(_xmlDocument, "RememberPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.RememberPassword = string.Compare(GetValue(_xmlDocument, "RememberPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("OnInternet"))
             {
-                BaseSystemInfo.OnInternet = (string.Compare(GetValue(_xmlDocument, "OnInternet"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.OnInternet = string.Compare(GetValue(_xmlDocument, "OnInternet"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("AutoLogon"))
             {
-                BaseSystemInfo.AutoLogon = (string.Compare(GetValue(_xmlDocument, "AutoLogon"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.AutoLogon = string.Compare(GetValue(_xmlDocument, "AutoLogon"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("ClientEncryptPassword"))
             {
-                BaseSystemInfo.ClientEncryptPassword = (string.Compare(GetValue(_xmlDocument, "ClientEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.ClientEncryptPassword = string.Compare(GetValue(_xmlDocument, "ClientEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("ServerEncryptPassword"))
             {
-                BaseSystemInfo.ServerEncryptPassword = (string.Compare(GetValue(_xmlDocument, "ServerEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.ServerEncryptPassword = string.Compare(GetValue(_xmlDocument, "ServerEncryptPassword"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
 
             //修复：密码策略配置之前只写不读，保存后重新加载会丢失
@@ -570,55 +570,55 @@ namespace DotNet.Util
 
             if (Exists("OpenNewWebWindow"))
             {
-                BaseSystemInfo.OpenNewWebWindow = (string.Compare(GetValue(_xmlDocument, "OpenNewWebWindow"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.OpenNewWebWindow = string.Compare(GetValue(_xmlDocument, "OpenNewWebWindow"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseBaseTable"))
             {
-                BaseSystemInfo.UseBaseTable = (string.Compare(GetValue(_xmlDocument, "UseBaseTable"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseBaseTable = string.Compare(GetValue(_xmlDocument, "UseBaseTable"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("CheckIPAddress"))
             {
-                BaseSystemInfo.CheckIpAddress = (string.Compare(GetValue(_xmlDocument, "CheckIPAddress"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.CheckIpAddress = string.Compare(GetValue(_xmlDocument, "CheckIPAddress"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("LogException"))
             {
-                BaseSystemInfo.LogException = (string.Compare(GetValue(_xmlDocument, "LogException"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.LogException = string.Compare(GetValue(_xmlDocument, "LogException"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("LogSql"))
             {
-                BaseSystemInfo.LogSql = (string.Compare(GetValue(_xmlDocument, "LogSql"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.LogSql = string.Compare(GetValue(_xmlDocument, "LogSql"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("LogCache"))
             {
-                BaseSystemInfo.LogCache = (string.Compare(GetValue(_xmlDocument, "LogCache"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.LogCache = string.Compare(GetValue(_xmlDocument, "LogCache"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("EventLog"))
             {
-                BaseSystemInfo.EventLog = (string.Compare(GetValue(_xmlDocument, "EventLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.EventLog = string.Compare(GetValue(_xmlDocument, "EventLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("CheckOnline"))
             {
-                BaseSystemInfo.CheckOnline = (string.Compare(GetValue(_xmlDocument, "CheckOnline"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.CheckOnline = string.Compare(GetValue(_xmlDocument, "CheckOnline"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseMessage"))
             {
-                BaseSystemInfo.UseMessage = (string.Compare(GetValue(_xmlDocument, "UseMessage"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseMessage = string.Compare(GetValue(_xmlDocument, "UseMessage"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("Synchronous"))
             {
-                BaseSystemInfo.Synchronous = (string.Compare(GetValue(_xmlDocument, "Synchronous"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.Synchronous = string.Compare(GetValue(_xmlDocument, "Synchronous"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("CheckBalance"))
             {
-                BaseSystemInfo.CheckBalance = (string.Compare(GetValue(_xmlDocument, "CheckBalance"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.CheckBalance = string.Compare(GetValue(_xmlDocument, "CheckBalance"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("ForceHttps"))
             {
-                BaseSystemInfo.ForceHttps = (string.Compare(GetValue(_xmlDocument, "ForceHttps"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.ForceHttps = string.Compare(GetValue(_xmlDocument, "ForceHttps"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("AllowUserRegister"))
             {
-                BaseSystemInfo.AllowUserRegister = (string.Compare(GetValue(_xmlDocument, "AllowUserRegister"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.AllowUserRegister = string.Compare(GetValue(_xmlDocument, "AllowUserRegister"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             // 用户名强制手机号
             if (Exists("UserNameForceMobileNumber"))
@@ -632,7 +632,7 @@ namespace DotNet.Util
             }
             if (Exists("RecordLog"))
             {
-                BaseSystemInfo.RecordLog = (string.Compare(GetValue(_xmlDocument, "RecordLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.RecordLog = string.Compare(GetValue(_xmlDocument, "RecordLog"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("CustomerCompanyId"))
             {
@@ -703,31 +703,31 @@ namespace DotNet.Util
 
             if (Exists("UseOrganizationPermission"))
             {
-                BaseSystemInfo.UseOrganizationPermission = (string.Compare(GetValue(_xmlDocument, "UseOrganizationPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseOrganizationPermission = string.Compare(GetValue(_xmlDocument, "UseOrganizationPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseUserPermission"))
             {
-                BaseSystemInfo.UseUserPermission = (string.Compare(GetValue(_xmlDocument, "UseUserPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseUserPermission = string.Compare(GetValue(_xmlDocument, "UseUserPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseTableColumnPermission"))
             {
-                BaseSystemInfo.UseTableColumnPermission = (string.Compare(GetValue(_xmlDocument, "UseTableColumnPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseTableColumnPermission = string.Compare(GetValue(_xmlDocument, "UseTableColumnPermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseTableScopePermission"))
             {
-                BaseSystemInfo.UseTableScopePermission = (string.Compare(GetValue(_xmlDocument, "UseTableScopePermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseTableScopePermission = string.Compare(GetValue(_xmlDocument, "UseTableScopePermission"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UsePermissionScope"))
             {
-                BaseSystemInfo.UsePermissionScope = (string.Compare(GetValue(_xmlDocument, "UsePermissionScope"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UsePermissionScope = string.Compare(GetValue(_xmlDocument, "UsePermissionScope"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("UseAuthorizationScope"))
             {
-                BaseSystemInfo.UseAuthorizationScope = (string.Compare(GetValue(_xmlDocument, "UseAuthorizationScope"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.UseAuthorizationScope = string.Compare(GetValue(_xmlDocument, "UseAuthorizationScope"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("HandwrittenSignature"))
             {
-                BaseSystemInfo.HandwrittenSignature = (string.Compare(GetValue(_xmlDocument, "HandwrittenSignature"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.HandwrittenSignature = string.Compare(GetValue(_xmlDocument, "HandwrittenSignature"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
 
             //if (Exists("LoadAllUser"))
@@ -857,7 +857,7 @@ namespace DotNet.Util
 
             if (Exists("OrganizationDynamicLoading"))
             {
-                BaseSystemInfo.OrganizationDynamicLoading = (string.Compare(GetValue(_xmlDocument, "OrganizationDynamicLoading"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.OrganizationDynamicLoading = string.Compare(GetValue(_xmlDocument, "OrganizationDynamicLoading"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
             }
             if (Exists("MessageDbConnection"))
             {
@@ -1021,7 +1021,7 @@ namespace DotNet.Util
 
             if (Exists("EncryptDbConnection"))
             {
-                BaseSystemInfo.EncryptDbConnection = (string.Compare(GetValue(_xmlDocument, "EncryptDbConnection"), "TRUE", true, CultureInfo.CurrentCulture) == 0);
+                BaseSystemInfo.EncryptDbConnection = string.Compare(GetValue(_xmlDocument, "EncryptDbConnection"), "TRUE", true, CultureInfo.CurrentCulture) == 0;
 
                 if (BaseSystemInfo.EncryptDbConnection)
                 {
@@ -1066,15 +1066,15 @@ namespace DotNet.Util
             // 若是本地模式运行，然后还缺少数据库配置？
             if (BaseSystemInfo.Service.Equals("DotNet.Business"))
             {
-                if ((BaseSystemInfo.UserCenterDbConnection).IsNullOrEmpty())
+                if (BaseSystemInfo.UserCenterDbConnection.IsNullOrEmpty())
                 {
                     BaseSystemInfo.UserCenterDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if ((BaseSystemInfo.LogonLogDbConnection).IsNullOrEmpty())
+                if (BaseSystemInfo.LogonLogDbConnection.IsNullOrEmpty())
                 {
                     BaseSystemInfo.LogonLogDbConnection = "Data Source=localhost;Initial Catalog=UserCenterV" + BaseSystemInfo.DatabaseTableVersion + ";Integrated Security=SSPI;";
                 }
-                if ((BaseSystemInfo.MessageDbConnection).IsNullOrEmpty())
+                if (BaseSystemInfo.MessageDbConnection.IsNullOrEmpty())
                 {
                     BaseSystemInfo.MessageDbConnection = BaseSystemInfo.UserCenterDbConnection;
                 }

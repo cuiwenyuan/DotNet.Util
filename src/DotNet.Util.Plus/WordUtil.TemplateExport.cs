@@ -387,8 +387,8 @@ namespace DotNet.Util
                     continue;
                 }
 
-                int height = (int)(Math.Ceiling(picture.Height * NPOI_PICTURE_LENGTH_EVERY_CM));
-                int width = (int)(Math.Ceiling(picture.Width * NPOI_PICTURE_LENGTH_EVERY_CM));
+                int height = (int)Math.Ceiling(picture.Height * NPOI_PICTURE_LENGTH_EVERY_CM);
+                int width = (int)Math.Ceiling(picture.Width * NPOI_PICTURE_LENGTH_EVERY_CM);
                 begin_run.AddPicture(pictureData, picture.PictureType.GetHashCode(), picture.FileName, width, height);
 
                 NPOI.OpenXmlFormats.Dml.WordProcessing.CT_Inline inline = begin_run.GetCTR().GetDrawingList()[0].inline[0];

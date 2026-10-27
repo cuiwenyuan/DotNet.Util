@@ -80,12 +80,12 @@ namespace DotNet.Util
                 if (image.Width >= image.Height)
                 {
                     width = maxHeightWidth;
-                    height = (maxHeightWidth * image.Height) / image.Width;
+                    height = maxHeightWidth * image.Height / image.Width;
                 }
                 else
                 {
                     height = maxHeightWidth;
-                    width = (maxHeightWidth * image.Width) / image.Height;
+                    width = maxHeightWidth * image.Width / image.Height;
                 }
             }
             using var thumbnail = image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero);

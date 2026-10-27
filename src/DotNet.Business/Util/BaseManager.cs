@@ -1047,11 +1047,11 @@ namespace DotNet.Business
                     sqlBuilder.SetValue(BaseEntity.FieldCreateBy, UserInfo.RealName);
                     // 5个非必备，但要自动新增的字段
                     var table = EntityUtil.GetTableExpression(t);
-                    var columns = table.Columns.Where(it => (it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
+                    var columns = table.Columns.Where(it => it.ColumnName.Equals(BaseUtil.FieldUserCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserSubCompanyId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserDepartmentId, StringComparison.OrdinalIgnoreCase) ||
                     it.ColumnName.Equals(BaseUtil.FieldUserSubDepartmentId, StringComparison.OrdinalIgnoreCase) ||
-                    it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase))).ToList();
+                    it.ColumnName.Equals(BaseUtil.FieldUserWorkgroupId, StringComparison.OrdinalIgnoreCase)).ToList();
                     foreach (var column in columns)
                     {
                         //var fi = entity.GetType().GetProperty(column.MemberInfo.Name);

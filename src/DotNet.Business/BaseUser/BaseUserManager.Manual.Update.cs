@@ -60,7 +60,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseUserEntity.FieldCompanyId, entity.CompanyId)
                 };
 
-                if (checkCodeExist && !(entity.Code).IsNullOrEmpty()
+                if (checkCodeExist && !entity.Code.IsNullOrEmpty()
                     && entity.Code.Length > 0
                     && Exists(parameters, entity.Id))
                 {
@@ -69,12 +69,12 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    if ((entity.QuickQuery).IsNullOrEmpty())
+                    if (entity.QuickQuery.IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.QuickQuery = StringUtil.GetPinyin(entity.RealName).ToLower();
                     }
-                    if ((entity.SimpleSpelling).IsNullOrEmpty())
+                    if (entity.SimpleSpelling.IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.RealName).ToLower();
@@ -201,7 +201,7 @@ namespace DotNet.Business
             // userEntity.WorkgroupId = result.WorkgroupId;
             // userEntity.WorkgroupName = result.WorkgroupName;
             // 若有主键就是先更新，没主键就是添加
-            if (!(userEntity.Id.ToString()).IsNullOrEmpty())
+            if (!userEntity.Id.ToString().IsNullOrEmpty())
             {
                 result = UpdateEntity(userEntity) > 0;
                 // 若不存在，就是添加的意思

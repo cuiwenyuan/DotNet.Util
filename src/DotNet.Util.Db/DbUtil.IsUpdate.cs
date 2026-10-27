@@ -106,7 +106,7 @@ namespace DotNet.Util
         {
             var result = false;
             if ((dr[BaseUtil.FieldUpdateUserId] != DBNull.Value) &&
-                ((dr[BaseUtil.FieldUpdateTime] != DBNull.Value)))
+                dr[BaseUtil.FieldUpdateTime] != DBNull.Value)
             {
                 var newUpdateTime = dr[BaseUtil.FieldUpdateTime].ToDateTime();
                 var newUpdateUserId = dr[BaseUtil.FieldUpdateUserId].ToString();

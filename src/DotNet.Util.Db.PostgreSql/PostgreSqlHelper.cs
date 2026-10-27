@@ -128,7 +128,7 @@ namespace DotNet.Util
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
 			//统一使用 @ 前缀，与 GetParameter 及静态 DbUtil.GetParameter(PostgreSql) 保持一致
-			return (IDbDataParameter)(new NpgsqlParameter("@" + targetFiled, targetValue ?? DBNull.Value));
+			return (IDbDataParameter)new NpgsqlParameter("@" + targetFiled, targetValue ?? DBNull.Value);
 		}
 		#endregion
 

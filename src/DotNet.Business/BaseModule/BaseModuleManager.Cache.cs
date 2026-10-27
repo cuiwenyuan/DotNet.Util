@@ -104,7 +104,7 @@ namespace DotNet.Business
                 systemCode = "Base";
             }
 
-            if (entity != null && !(entity.Id.ToString()).IsNullOrEmpty())
+            if (entity != null && !entity.Id.ToString().IsNullOrEmpty())
             {
                 var key = GetModuleTableName(systemCode) + "." + entity.Id;
                 CacheUtil.Set<BaseModuleEntity>(key, entity);

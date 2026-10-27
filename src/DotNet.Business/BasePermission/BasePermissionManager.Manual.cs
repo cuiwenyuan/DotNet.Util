@@ -52,7 +52,7 @@ namespace DotNet.Business
             {
                 userId = UserInfo.Id.ToString();
             }
-            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !(entity.Code).IsNullOrEmpty() && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
+            return GetUserPermissionList(UserInfo, userId, systemCode)?.Count(entity => !entity.Code.IsNullOrEmpty() && entity.Code.Equals(permissionCode, StringComparison.OrdinalIgnoreCase)) > 0;
         }
         #endregion
 

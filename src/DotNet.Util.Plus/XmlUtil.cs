@@ -404,7 +404,7 @@ namespace DotNet.Util
                     {
                         if (xn.Attributes != null)
                         {
-                            value = (attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value);
+                            value = attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value;
                         }
                     }
                 }
@@ -670,7 +670,7 @@ namespace DotNet.Util
                     {
                         foreach (var parameter in parameters)
                         {
-                            if (!(parameter.Key).IsNullOrEmpty() && !(parameter.Value).IsNullOrEmpty())
+                            if (!parameter.Key.IsNullOrEmpty() && !parameter.Value.IsNullOrEmpty())
                             {
                                 var node = parameter.Key;
                                 var value = parameter.Value;

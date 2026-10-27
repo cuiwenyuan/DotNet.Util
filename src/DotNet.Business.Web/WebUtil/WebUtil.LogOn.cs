@@ -202,7 +202,7 @@ namespace DotNet.Business
         {
             //这里要考虑，从来没登录过的情况
             var userInfo = GetUserCookie();
-            if (userInfo != null && !(userInfo.IpAddress).IsNullOrEmpty() && !userInfo.IpAddress.Equals(GetUserInfo().IpAddress))
+            if (userInfo != null && !userInfo.IpAddress.IsNullOrEmpty() && !userInfo.IpAddress.Equals(GetUserInfo().IpAddress))
             {
                 userInfo = null;
             }
@@ -226,7 +226,7 @@ namespace DotNet.Business
         {
             var userInfo = GetUserInfo();
             // 已经登录的用户IP地址是否有变化了
-            if (!(userInfo.OpenId).IsNullOrEmpty())
+            if (!userInfo.OpenId.IsNullOrEmpty())
             {
                 var userManager = new BaseUserManager(userInfo);
                 //userInfo = userManager.LogonByOpenId(userInfo.OpenId, userInfo.IPAddress).UserInfo;
@@ -257,7 +257,7 @@ namespace DotNet.Business
                     var username = httpCookie.Values[CookieUserName];
                     username = HttpContext.Current.Server.UrlDecode(username);
 
-                    if ((BaseSystemInfo.UserCenterDbConnection).IsNullOrEmpty())
+                    if (BaseSystemInfo.UserCenterDbConnection.IsNullOrEmpty())
                     {
                         // 若没有能连接数据库，就直接从Cookie读取用户，这里应该重新定位一下用户信息那里，判断用户是否有效等等，密码是否修改了等等。
                         userInfo = GetUserCookie();
@@ -641,7 +641,7 @@ namespace DotNet.Business
             {
                 userInfo.SystemCode = systemCode;
             }
-            if ((userInfo.IpAddress).IsNullOrEmpty())
+            if (userInfo.IpAddress.IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }
@@ -730,7 +730,7 @@ namespace DotNet.Business
             {
                 userInfo.SystemCode = systemCode;
             }
-            if ((userInfo.IpAddress).IsNullOrEmpty())
+            if (userInfo.IpAddress.IsNullOrEmpty())
             {
                 userInfo.IpAddress = Utils.GetIp();
             }

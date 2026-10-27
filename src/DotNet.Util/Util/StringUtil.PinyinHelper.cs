@@ -229,8 +229,8 @@ namespace DotNet.Util
                         {
                             //修复：拼音依赖 GBK 双字节区位码，显式 GBK（Encoding.Default 在 .NET Core 上是 UTF-8，拼音将全错）
                             arr = Utils.GbkEncoding.GetBytes(mChar[j].ToString());
-                            m1 = (short)(arr[0]);
-                            m2 = (short)(arr[1]);
+                            m1 = (short)arr[0];
+                            m2 = (short)arr[1];
                             asc = m1 * 256 + m2 - 65536;
                             if (asc > 0 && asc < 160)
                             {
@@ -263,7 +263,7 @@ namespace DotNet.Util
                                     case -5659:
                                         result += "Tian"; break;
                                     default:
-                                        for (var i = (getValue.Length - 1); i >= 0; i--)
+                                        for (var i = getValue.Length - 1; i >= 0; i--)
                                         {
                                             if (getValue[i] <= asc)//判断汉字的拼音区编码是否在指定范围内
                                             {

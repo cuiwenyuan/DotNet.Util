@@ -98,12 +98,12 @@ namespace DotNet.Util
                     if ((newSize.Width * dHeight) > (newSize.Height * dWidth))
                     {
                         sW = dWidth;
-                        sH = (dWidth * newSize.Height) / newSize.Width;
+                        sH = dWidth * newSize.Height / newSize.Width;
                     }
                     else
                     {
                         sH = dHeight;
-                        sW = (newSize.Width * dHeight) / newSize.Height;
+                        sW = newSize.Width * dHeight / newSize.Height;
                     }
                 }
                 else
@@ -268,7 +268,7 @@ namespace DotNet.Util
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
                                     //seconds(將byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
-                                    double dblGPSLatitude = (((s / 60 + m) / 60) + d);
+                                    double dblGPSLatitude = ((s / 60 + m) / 60) + d;
                                     entity.Latitude = dblGPSLatitude;
                                 }
                                 break;
@@ -281,7 +281,7 @@ namespace DotNet.Util
                                     double m = BitConverter.ToUInt32(item.Value, 8) * 1.0d / BitConverter.ToUInt32(item.Value, 12);
                                     //seconds(将byte[16]~byte[19]转成uint, 除以byte[20]~byte[23]转成的uint)
                                     double s = BitConverter.ToUInt32(item.Value, 16) * 1.0d / BitConverter.ToUInt32(item.Value, 20);
-                                    double dblGPSLongitude = (((s / 60 + m) / 60) + d);
+                                    double dblGPSLongitude = ((s / 60 + m) / 60) + d;
                                     entity.Longitude = dblGPSLongitude;
                                 }
                                 break;

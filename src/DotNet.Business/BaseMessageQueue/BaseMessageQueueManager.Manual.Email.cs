@@ -56,7 +56,7 @@ namespace DotNet.Business
                         SortCode = 1
                     };
                     //entityFailed.Error = "";
-                    if (!(new BaseMessageFailedManager(UserInfo).Add(entityFailed)).IsNullOrEmpty())
+                    if (!new BaseMessageFailedManager(UserInfo).Add(entityFailed).IsNullOrEmpty())
                     {
                         //删除MessageQueue表中的数据
                         Delete(entity.Id);
@@ -79,7 +79,7 @@ namespace DotNet.Business
                             CreateTime = entity.CreateTime,
                             SortCode = 1
                         };
-                        if (!(new BaseMessageSucceedManager(UserInfo).Add(entitySucceed)).IsNullOrEmpty())
+                        if (!new BaseMessageSucceedManager(UserInfo).Add(entitySucceed).IsNullOrEmpty())
                         {
                             //删除MessageQueue表中的数据
                             Delete(entity.Id);

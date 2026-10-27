@@ -666,7 +666,7 @@ namespace DotNet.Business
             var result = string.Empty;
 
             // 加强安全验证防止未授权匿名调用
-#if (!DEBUG)
+#if !DEBUG
             BaseSystemInfo.IsAuthorized(userInfo);
 #endif
 
@@ -781,7 +781,7 @@ namespace DotNet.Business
 
             BaseOrganizationEntity organizationEntity = null;
 
-            if (!(userInfo.CompanyId).IsNullOrEmpty())
+            if (!userInfo.CompanyId.IsNullOrEmpty())
             {
                 try
                 {
@@ -1341,7 +1341,7 @@ namespace DotNet.Business
             foreach (var id in ids)
             {
                 entity = GetEntity(id);
-                if (entity != null && !(entity.RealName).IsNullOrEmpty())
+                if (entity != null && !entity.RealName.IsNullOrEmpty())
                 {
                     userRealNames += "," + entity.RealName;
                 }
@@ -1602,12 +1602,12 @@ namespace DotNet.Business
             var list = GetList<BaseUserEntity>();
             foreach (var entity in list)
             {
-                if ((entity.QuickQuery).IsNullOrEmpty())
+                if (entity.QuickQuery.IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.QuickQuery = StringUtil.GetPinyin(entity.RealName).ToLower();
                 }
-                if ((entity.SimpleSpelling).IsNullOrEmpty())
+                if (entity.SimpleSpelling.IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.RealName).ToLower();

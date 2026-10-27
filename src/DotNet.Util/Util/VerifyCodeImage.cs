@@ -166,7 +166,7 @@ namespace DotNet.Util
                 for (var j = 0; j < bitmap.Height; j++)
                 {
                     double dx = 0;
-                    dx = bXDir ? (Pi2 * (double)j) / dBaseAxisLen : (Pi2 * (double)i) / dBaseAxisLen;
+                    dx = bXDir ? Pi2 * (double)j / dBaseAxisLen : Pi2 * (double)i / dBaseAxisLen;
                     dx += dPhase;
                     var dy = Math.Sin(dx);
 
@@ -250,7 +250,7 @@ namespace DotNet.Util
 
             int left = 0, top = 0, top1 = 1, top2 = 1;
 
-            var n1 = (imageHeight - FontSize - Padding * 2);
+            var n1 = imageHeight - FontSize - Padding * 2;
             var n2 = n1 / 4;
             top1 = n2;
             top2 = n2 * 2;

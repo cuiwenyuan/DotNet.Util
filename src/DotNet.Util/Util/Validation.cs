@@ -80,7 +80,7 @@ namespace DotNet.Util
                     isLetter = char.IsLetter(password[i]);
                 }
             }
-            returnValue = (isDigit && isLetter);
+            returnValue = isDigit && isLetter;
             // 密码至少为6位，为数字加字母
             if (password.Length < 6)
             {

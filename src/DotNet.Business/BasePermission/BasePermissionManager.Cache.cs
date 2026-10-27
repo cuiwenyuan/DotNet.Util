@@ -71,7 +71,7 @@ namespace DotNet.Business
                     var moduleEntities = new BaseModuleManager().GetEntitiesByCache(systemCode);
                     if (moduleEntities != null)
                     {
-                        result = moduleEntities.Where((t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0)).Select(t => t.Id.ToString()).ToArray();
+                        result = moduleEntities.Where(t => t.IsPublic == 1 && t.Enabled == 1 && t.Deleted == 0).Select(t => t.Id.ToString()).ToArray();
                     }
                 }
 

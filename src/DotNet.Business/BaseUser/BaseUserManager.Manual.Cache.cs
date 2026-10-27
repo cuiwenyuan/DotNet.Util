@@ -80,14 +80,14 @@ namespace DotNet.Business
                 key = "User:" + entity.Id;
                 CacheUtil.Set<BaseUserEntity>(key, entity);
 
-                if (!(entity.NickName).IsNullOrEmpty())
+                if (!entity.NickName.IsNullOrEmpty())
                 {
                     key = "User:ByNickName:" + entity.NickName.ToLower();
                     //修复：该键的读取方期望 BaseUserEntity，原来写入 string 造成类型不一致/缓存失效
                     CacheUtil.Set<BaseUserEntity>(key, entity);
                 }
 
-                if (!(entity.Code).IsNullOrEmpty())
+                if (!entity.Code.IsNullOrEmpty())
                 {
                     key = "User:ByCode:" + entity.Code;
                     CacheUtil.Set<BaseUserEntity>(key, entity);
@@ -307,7 +307,7 @@ namespace DotNet.Business
             }
 
             // 02：按用户编号进行缓存
-            if (!(code.Trim()).IsNullOrEmpty())
+            if (!code.Trim().IsNullOrEmpty())
             {
                 for (var i = 6; i <= code.Length; i++)
                 {
@@ -317,7 +317,7 @@ namespace DotNet.Business
                     //redisClient.ExpireEntryAt(key, DateTime.Now.AddDays(15));
                 }
             }
-            if (!(realName.Trim()).IsNullOrEmpty())
+            if (!realName.Trim().IsNullOrEmpty())
             {
                 key = "User:CodeOrRealName:" + realName.ToLower();
                 //redisClient.AddItemToSortedSet(key, user, score);

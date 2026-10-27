@@ -93,7 +93,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -256,7 +256,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -427,7 +427,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -618,7 +618,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -771,7 +771,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -938,7 +938,7 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        valueString = (value + "");
+                        valueString = value + "";
                     }
                     if (commandType.Equals("StoredProcedure", StringComparison.OrdinalIgnoreCase))
                     {

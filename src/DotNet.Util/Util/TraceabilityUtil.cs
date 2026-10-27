@@ -80,7 +80,7 @@ namespace DotNet.Util
                 s += (int)c;
             }
             var len = code.Length;
-            var x = (s % len);
+            var x = s % len;
             var arr = code.ToCharArray();
             var newarr = new char[arr.Length];
             Array.Copy(arr, x, newarr, 0, len - x);
@@ -107,7 +107,7 @@ namespace DotNet.Util
                 s += (int)c;
             }
             var len = code.Length;
-            var x = (s % len);
+            var x = s % len;
             x = len - x;
             var arr = code.ToCharArray();
             var newarr = new char[arr.Length];
@@ -152,7 +152,7 @@ namespace DotNet.Util
             for (var i = len - 1; i >= 0; i--)
             {
                 var t = key.IndexOf(code[i]);
-                double s = (len - i) - 1;
+                double s = len - i - 1;
                 var m = (long)(Math.Pow(62, s) * t);
                 v += m;
             }

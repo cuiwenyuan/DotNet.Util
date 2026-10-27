@@ -92,7 +92,7 @@ namespace DotNet.Business
                     var roleIds = GetRoleIdsByCache(systemCode, userId, companyId);
                     if (roleIds != null && roleIds.Length > 0)
                     {
-                        result = (Array.IndexOf(roleIds, roleId) >= 0);
+                        result = Array.IndexOf(roleIds, roleId) >= 0;
                     }
                 }
             }
@@ -243,7 +243,7 @@ namespace DotNet.Business
             }
 
             var ls = GetUserRoleEntityList(systemCode);
-            result = ls.Exists((t => t.UserId == userId.ToInt() && t.RoleId == roleId.ToInt()));
+            result = ls.Exists(t => t.UserId == userId.ToInt() && t.RoleId == roleId.ToInt());
 
             return result;
         }

@@ -1235,7 +1235,7 @@ namespace DotNet.Business
                                 if (userContactEntity.MobileValidatedTime.HasValue)
                                 {
                                     var timeSpan = DateTime.Now - userContactEntity.MobileValidatedTime.Value;
-                                    if ((timeSpan.TotalDays) > 7)
+                                    if (timeSpan.TotalDays > 7)
                                     {
                                         needVerification = true;
                                     }
@@ -1342,7 +1342,7 @@ namespace DotNet.Business
                                 var isSelf = false;
                                 if (!openId.IsNullOrEmpty())
                                 {
-                                    if (!(userLogonEntity.OpenId).IsNullOrEmpty())
+                                    if (!userLogonEntity.OpenId.IsNullOrEmpty())
                                     {
                                         if (userLogonEntity.OpenId.Equals(openId))
                                         {
@@ -1384,12 +1384,12 @@ namespace DotNet.Business
                     }
 
                         // 11. 密码是否正确(null 与空看成是相等的)
-                        if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
+                        if (!(userLogonEntity.UserPassword.IsNullOrEmpty() && password.IsNullOrEmpty()))
                         {
                             var userPasswordOk = true;
                             errorMark = 201;
                             // 用户密码是空的
-                            if ((userLogonEntity.UserPassword).IsNullOrEmpty())
+                            if (userLogonEntity.UserPassword.IsNullOrEmpty())
                             {
                                 // 但是输入了不为空的密码
                                 if (!password.IsNullOrEmpty())
@@ -1632,14 +1632,14 @@ namespace DotNet.Business
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 userEntity = BaseEntity.Create<BaseUserEntity>(dt.Rows[0]);
-                if (!(userEntity.AuditStatus).IsNullOrEmpty()
+                if (!userEntity.AuditStatus.IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString()))
                 {
                     return false;
                 }
                 var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
                 userLogonEntity = userLogonManager.GetEntityByUserId(userEntity.Id);
-                if (!(userEntity.AuditStatus).IsNullOrEmpty()
+                if (!userEntity.AuditStatus.IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString())
                     && userLogonEntity.PasswordErrorCount == 0)
                 {
@@ -1691,11 +1691,11 @@ namespace DotNet.Business
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)
-                if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
+                if (!(userLogonEntity.UserPassword.IsNullOrEmpty() && password.IsNullOrEmpty()))
                 {
                     var userPasswordOk = true;
                     // 用户密码是空的
-                    if ((userLogonEntity.UserPassword).IsNullOrEmpty())
+                    if (userLogonEntity.UserPassword.IsNullOrEmpty())
                     {
                         // 但是输入了不为空的密码
                         if (!password.IsNullOrEmpty())

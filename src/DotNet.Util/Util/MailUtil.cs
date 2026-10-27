@@ -53,12 +53,12 @@ namespace DotNet.Util
                         //接收人邮箱地址
                         message.To = to;
 
-                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
+                        if (!BaseSystemInfo.MailBcc.IsNullOrEmpty())
                         {
                             message.Bcc = BaseSystemInfo.MailBcc;
                         }
 
-                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
+                        if (!BaseSystemInfo.MailFrom.IsNullOrEmpty())
                         {
                             message.From = BaseSystemInfo.MailFrom;
                         }
@@ -133,7 +133,7 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!(BaseSystemInfo.MailBcc).IsNullOrEmpty())
+                        if (!BaseSystemInfo.MailBcc.IsNullOrEmpty())
                         {
                             //message.Bcc.Add(new MailAddress(BaseSystemInfo.MailBcc));
                             if (!BaseSystemInfo.MailBcc.Contains(",") && !BaseSystemInfo.MailBcc.Contains(";"))
@@ -162,7 +162,7 @@ namespace DotNet.Util
                             }
                         }
 
-                        if (!(BaseSystemInfo.MailFrom).IsNullOrEmpty())
+                        if (!BaseSystemInfo.MailFrom.IsNullOrEmpty())
                         {
                             message.From = new MailAddress(BaseSystemInfo.MailFrom);
                         }

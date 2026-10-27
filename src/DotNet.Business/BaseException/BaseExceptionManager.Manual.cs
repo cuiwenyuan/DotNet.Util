@@ -73,7 +73,7 @@ namespace DotNet.Business
         public static string LogException(IDbHelper dbHelper, BaseUserInfo userInfo, Exception ex, string url = null)
         {
             // 在控制台需要输出错误信息
-#if (DEBUG)
+#if DEBUG
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(ex.InnerException);
             Console.ForegroundColor = ConsoleColor.White;
