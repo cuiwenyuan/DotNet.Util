@@ -2,7 +2,7 @@
 `DotNet.Util` is a collection of C# utility libraries targeting multiple frameworks. The projects provide common helpers (IO, path, reflection, serialization, XML/Word export, database adapters, caching, etc.) intended to be consumed by applications and other libraries.
 
 Supported targets
-- Multi-targeted: `net46`, `net47`, `net48`, `net6.0`, `net7.0`, `net8.0`, `net9.0`,  `net10.0`, `netstandard2.0`, `netstandard2.1`.
+- Multi-targeted: `net46`, `net47`, `net48`, `net6.0`, `net8.0`, `net10.0`, `netstandard2.0`, `netstandard2.1`.
 
 NuGet packages
 - Official packages are published under the `Wangcaisoft.*` namespace on NuGet. Search: https://www.nuget.org/packages?q=wangcaisoft

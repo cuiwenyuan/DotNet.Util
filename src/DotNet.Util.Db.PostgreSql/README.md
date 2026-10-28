@@ -21,7 +21,7 @@ dotnet add package Wangcaisoft.DotNet.Util.Db.PostgreSql
 
 ## 目标框架 / Target Frameworks
 
-net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · netstandard2.1
+net46 · net47 · net48 · net6.0 · net8.0 · net10.0 · netstandard2.1
 （注意：本包不含 netstandard2.0）
 
 ## 依赖 / Dependencies
