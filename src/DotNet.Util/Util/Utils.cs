@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
@@ -15,8 +15,6 @@ using System.Web.UI;
 using System.Collections;
 using System.Net;
 using System.Web.Hosting;
-#elif NETSTANDARD2_0_OR_GREATER
-using Microsoft.Extensions.Hosting.Internal;
 #endif
 
 namespace DotNet.Util
