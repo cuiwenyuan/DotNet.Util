@@ -67,12 +67,14 @@
 	  <PackageReference Include="Npgsql">
 	    <Version>8.0.3</Version>
 	  </PackageReference>
+	  <PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 	  <PackageReference Include="Npgsql">
 	    <Version>8.0.3</Version>
 	  </PackageReference>
+	  <PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
