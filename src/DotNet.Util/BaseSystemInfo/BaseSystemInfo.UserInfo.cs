@@ -36,7 +36,7 @@ namespace DotNet.Util
                     //IP地址
                     if (_userInfo.IpAddress.IsNullOrEmpty())
                     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                         //按照Web应用获取IP地址
                         _userInfo.IpAddress = Utils.GetIp();
 #endif

@@ -7,7 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 #endif
 #if NETSTANDARD2_0_OR_GREATER
@@ -343,7 +343,7 @@ namespace DotNet.Util
             var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
             bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             httpContext.Response.ClearContent();
             httpContext.Response.ContentType = "image/Jpeg";
             httpContext.Response.BinaryWrite(memoryStream.ToArray());

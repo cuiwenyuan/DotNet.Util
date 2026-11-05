@@ -46,7 +46,14 @@
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net10.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="NPOI" Version="2.7.6" />
+		<!--DirectoryServices 9.x/10.x 不再支持 net6.0（会报 "doesn't support net6.0"），8.0.0 是 net6.0 兼容的最高版-->
+		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+		<PackageReference Include="SharpZipLib" Version="1.4.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net10.0'">
 		<PackageReference Include="NPOI" Version="2.7.6" />
 		<PackageReference Include="System.DirectoryServices" Version="10.0.11" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />

@@ -22,7 +22,7 @@ dotnet add package Wangcaisoft.DotNet.Web.UI.BasePage
 
 ## 目标框架 / Target Frameworks
 
-net46 · net47 · net48（仅 .NET Framework）
+net462 · net47 · net48（仅 .NET Framework）
 
 ## 依赖 / Dependencies
 

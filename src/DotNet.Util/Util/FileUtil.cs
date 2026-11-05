@@ -656,7 +656,7 @@ namespace DotNet.Util
             Encoding enc;
             try
             {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                 // .NET Framework 原生支持 GB2312
                 enc = Encoding.GetEncoding(encoding);
 #else

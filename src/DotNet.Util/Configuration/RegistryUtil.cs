@@ -44,7 +44,7 @@ namespace DotNet.Util
         /// <returns>值</returns>
         public static string GetValue(string key)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //修复：子键可能不存在（OpenSubKey 返回 null），且注册表值可能不是 string 类型
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, false);
             return registryKey?.GetValue(key)?.ToString();
@@ -69,7 +69,7 @@ namespace DotNet.Util
         /// <param name="keyValue">值</param>
         public static void SetValue(string key, string keyValue)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //修复：子键不存在时 OpenSubKey 返回 null，需先创建，避免 NullReferenceException
             var registryKey = Registry.LocalMachine.OpenSubKey(SubKey, true);
             if (registryKey == null)
@@ -113,7 +113,7 @@ namespace DotNet.Util
         public static bool Exists(string subKey, string key)
         {
             var result = false;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             var registryKey = Registry.LocalMachine.OpenSubKey(subKey, false);
             if (registryKey != null)
             {

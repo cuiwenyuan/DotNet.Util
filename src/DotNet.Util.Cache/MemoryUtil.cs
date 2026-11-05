@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 using System.Web.Caching;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
@@ -19,7 +19,7 @@ namespace DotNet.Util
     /// </summary>
     public static class MemoryUtil
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         //HttpRuntime.Cache可用于Web和WinForm
         static readonly Cache Cache = HttpRuntime.Cache;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
@@ -32,7 +32,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static bool Contains(string cacheKey)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             return !cacheKey.IsNullOrEmpty() && Cache[cacheKey] != null;
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
@@ -54,7 +54,7 @@ namespace DotNet.Util
         /// <returns></returns>
         public static object Get(string cacheKey)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             return Cache[cacheKey];
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             object obj = null;
@@ -88,14 +88,14 @@ namespace DotNet.Util
         public static void Set(string cacheKey, object cacheValue)
         {
             //向cacheKey对象插入项,使用此方法改写具有相同cacheKey的现有cacheKey项。
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             Cache.Insert(cacheKey, cacheValue);
 #elif NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
             //修复：原分支漏写 || NET5_0_OR_GREATER，导致 net5.0+（含 net8.0）下该方法体为空、Set 静默不生效
             Cache.Set(cacheKey, cacheValue);
 #endif
         }
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         /// <summary>
         /// 设置当前应用程序指定CacheKey的Cache值
         /// </summary>
@@ -309,7 +309,7 @@ namespace DotNet.Util
         /// </summary>
         public static void RemoveAll()
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             var keys = GetAllKeys();
             foreach (var key in keys)
             {
@@ -352,7 +352,7 @@ namespace DotNet.Util
         public static List<string> GetAllKeys()
         {
             var keys = new List<string>();
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             var iDictionaryEnumerator = Cache.GetEnumerator();
             while (iDictionaryEnumerator.MoveNext())
             {

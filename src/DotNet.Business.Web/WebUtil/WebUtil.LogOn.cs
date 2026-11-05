@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -9,7 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Net;
 using System.Text;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 using System.Web.Security;
 #endif
@@ -70,7 +70,7 @@ namespace DotNet.Business
         }
         #endregion
 
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 
         #region public static bool CheckIsLogon(string accessDenyUrl = null) 检查是否已登录
         /// <summary>

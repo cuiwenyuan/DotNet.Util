@@ -6,7 +6,7 @@ using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 using System.Web.Configuration;
 #endif

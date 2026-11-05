@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace DotNet.Business
     /// </summary>
     public partial class WebUtil
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         //LDAP域用户登录部分：包括Windows AD域用户登录
         #region public static BaseUserInfo LogonByLDAP(string domain, string lDAP, string userName, string password, string permissionCode, bool persistCookie, bool formsAuthentication, out Status status, out string statusMessage)
 

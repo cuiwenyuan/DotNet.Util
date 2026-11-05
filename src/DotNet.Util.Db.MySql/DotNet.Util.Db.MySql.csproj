@@ -47,12 +47,13 @@
 		<PackageReference Include="MySql.Data" Version="26.7.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
 		<!--MySql.Data 26.x 不支持 net46，保持 8.0.32.1-->
 		<PackageReference Include="MySql.Data" Version="8.0.32.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
+	<!--26.7.0 不适用于 net462（上方已单独引用 8.0.32.1），否则会触发 NU1504 重复引用警告-->
+	<ItemGroup Condition="'$(TargetFramework)'=='net47' or '$(TargetFramework)'=='net48'">
 		<PackageReference Include="MySql.Data" Version="26.7.0" />
 	</ItemGroup>
 

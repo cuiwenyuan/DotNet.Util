@@ -18,8 +18,8 @@ namespace DotNet.Util
 {
     /// <summary>
     /// ExcelUtil 的纯 NPOI 部分（跨 .NET Framework / .NET Core / 5+ 可用）。
-    /// 与 ExcelUtil.cs（仅含依赖 System.Web/HttpContext 的 Web 方法，受 #if NET46_OR_GREATER 保护）共同组成 partial class ExcelUtil。
-    /// 拆分目的：原本整个 ExcelUtil 类体被 #if NET46_OR_GREATER 包裹，导致 .NET Core / 5+ 下编译为空类、无法使用 NPOI 导入导出能力。
+    /// 与 ExcelUtil.cs（仅含依赖 System.Web/HttpContext 的 Web 方法，受 #if NET462_OR_GREATER 保护）共同组成 partial class ExcelUtil。
+    /// 拆分目的：原本整个 ExcelUtil 类体被 #if NET462_OR_GREATER 包裹，导致 .NET Core / 5+ 下编译为空类、无法使用 NPOI 导入导出能力。
     /// </summary>
     public partial class ExcelUtil
     {

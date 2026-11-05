@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 using System.Web.UI;
 using System.Collections;
@@ -24,7 +24,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class Utils
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         /// <summary>
         /// 得到正则编译参数设置
         /// </summary>
@@ -2372,7 +2372,7 @@ namespace DotNet.Util
         {
             try
             {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                 // .NET Framework 原生支持 GB2312
                 return Encoding.GetEncoding("gb2312");
 #else
@@ -2394,7 +2394,7 @@ namespace DotNet.Util
         public static string GetIp()
         {
             var result = string.Empty;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //优先使用GetRealIp
             result = RequestUtil.GetRealIp();
             //其次使用GetIp
@@ -2596,7 +2596,7 @@ namespace DotNet.Util
         /// <returns>绝对路径</returns>
         public static string GetMapPath(string virtualPath)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //HttpContext.Current并非无处不在
             if (HttpContext.Current != null)
             {
