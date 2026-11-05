@@ -80,12 +80,12 @@ namespace DotNet.Util
                 if (image.Width >= image.Height)
                 {
                     width = maxHeightWidth;
-                    height = (maxHeightWidth * image.Height) / image.Width;
+                    height = maxHeightWidth * image.Height / image.Width;
                 }
                 else
                 {
                     height = maxHeightWidth;
-                    width = (maxHeightWidth * image.Width) / image.Height;
+                    width = maxHeightWidth * image.Width / image.Height;
                 }
             }
             using var thumbnail = image.GetThumbnailImage(width, height, ThumbnailCallback, IntPtr.Zero);
@@ -656,7 +656,7 @@ namespace DotNet.Util
             Encoding enc;
             try
             {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                 // .NET Framework 原生支持 GB2312
                 enc = Encoding.GetEncoding(encoding);
 #else

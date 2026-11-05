@@ -393,7 +393,7 @@ namespace DotNet.Util
                 for (int j = 0; j < dt.Rows.Count; j++)
                 {
                     //var c = (dt.Rows[j][oldColumnName]);
-                    dt.Rows[j][newColumnName] = replaceFunc((OldType)(dt.Rows[j][oldColumnName]));
+                    dt.Rows[j][newColumnName] = replaceFunc((OldType)dt.Rows[j][oldColumnName]);
                 }
                 dt.Columns.Remove(oldColumnName);
             }

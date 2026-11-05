@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Business.Web", "DotN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Test", "DotNet.Test\DotNet.Test.csproj", "{4E145CE2-15B1-4DB4-8E48-B966536F5052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test.46", "DotNet.Test.452\DotNet.Test.46.csproj", "{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Util.Db.MySql", "DotNet.Util.Db.MySql\DotNet.Util.Db.MySql.csproj", "{C96E3016-8ADD-407E-B9A1-5F4D21B28E7E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Util.Db.Oracle", "DotNet.Util.Db.Oracle\DotNet.Util.Db.Oracle.csproj", "{BF3A15B0-9A9D-49B6-B4A0-CA0D8544B893}"
@@ -32,6 +30,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Util.Db.PostgreSql", "DotNet.Util.Db.PostgreSql\DotNet.Util.Db.PostgreSql.csproj", "{922040EE-2B14-49EF-B3AA-6F54A12B3566}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Web.UI.BasePage", "DotNet.Web.UI.BasePage\DotNet.Web.UI.BasePage.csproj", "{2653106D-4B01-217E-3DF4-718037E63A3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Test.46", "DotNet.Test.462\DotNet.Test.46.csproj", "{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +71,6 @@ Global
 		{4E145CE2-15B1-4DB4-8E48-B966536F5052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E145CE2-15B1-4DB4-8E48-B966536F5052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E145CE2-15B1-4DB4-8E48-B966536F5052}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C96E3016-8ADD-407E-B9A1-5F4D21B28E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C96E3016-8ADD-407E-B9A1-5F4D21B28E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C96E3016-8ADD-407E-B9A1-5F4D21B28E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,6 +95,10 @@ Global
 		{2653106D-4B01-217E-3DF4-718037E63A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2653106D-4B01-217E-3DF4-718037E63A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2653106D-4B01-217E-3DF4-718037E63A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A786B81D-2BDA-4CB5-9FBD-F3D6F991D806}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------
-// All Rights Reserved , Copyright (c) 2024 , DotNet.
+// All Rights Reserved , Copyright (c) 2026 , DotNet.
 //-----------------------------------------------------------------
 
 using System;
@@ -128,7 +128,7 @@ namespace DotNet.Util
 		public IDbDataParameter MakeInParam(string targetFiled, object targetValue)
 		{
 			//统一使用 @ 前缀，与 GetParameter 及静态 DbUtil.GetParameter(PostgreSql) 保持一致
-			return (IDbDataParameter)(new NpgsqlParameter("@" + targetFiled, targetValue ?? DBNull.Value));
+			return (IDbDataParameter)new NpgsqlParameter("@" + targetFiled, targetValue ?? DBNull.Value);
 		}
 		#endregion
 

@@ -90,7 +90,7 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
-#if (DEBUG)
+#if DEBUG
                 Console.WriteLine(e.Message);
 #endif
             }
@@ -130,7 +130,7 @@ namespace DotNet.Util
             }
             catch (CryptographicException e)
             {
-#if (DEBUG)
+#if DEBUG
                 Console.WriteLine(e.Message);
 #endif
                 return false;
@@ -296,7 +296,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 计算用户口令的 PBKDF2-HMAC-SHA256 哈希（R9-1 修复：无盐/快速 MD5 改为加盐慢哈希）。
-        /// 采用手写 PBKDF2 以保证 net46 / netstandard2.0 / net8+ 全 TFM 可用且统一为 SHA-256（非弱 SHA-1）。
+        /// 采用手写 PBKDF2 以保证 net462 / netstandard2.0 / net8+ 全 TFM 可用且统一为 SHA-256（非弱 SHA-1）。
         /// </summary>
         /// <param name="password">原始口令（不可为 null）</param>
         /// <param name="iterations">迭代次数，默认 <see cref="DefaultPbkdf2Iterations"/></param>

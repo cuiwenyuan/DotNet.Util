@@ -557,7 +557,7 @@ namespace DotNet.Business
                 //添加一行数据
                 var row = dtNew.NewRow();
                 row["Id"] = t["Id"].ToInt();
-                if ((t["ParentId"].ToString()).IsNullOrEmpty())
+                if (t["ParentId"].ToString().IsNullOrEmpty())
                 {
                     row["ParentId"] = 0;
                 }

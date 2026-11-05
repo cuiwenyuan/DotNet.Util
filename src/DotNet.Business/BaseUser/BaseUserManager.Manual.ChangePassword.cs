@@ -36,7 +36,7 @@ namespace DotNet.Business
         /// <returns>影响行数</returns>
         public virtual BaseUserInfo ChangePassword(string userId, string oldPassword, string newPassword)
         {
-            #if (DEBUG)
+            #if DEBUG
                 var milliStart = Environment.TickCount;
             #endif
 

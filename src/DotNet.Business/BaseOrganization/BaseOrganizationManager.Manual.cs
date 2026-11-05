@@ -146,12 +146,12 @@ namespace DotNet.Business
                 }
                 else
                 {
-                    if ((entity.QuickQuery).IsNullOrEmpty())
+                    if (entity.QuickQuery.IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                     }
-                    if ((entity.SimpleSpelling).IsNullOrEmpty())
+                    if (entity.SimpleSpelling.IsNullOrEmpty())
                     {
                         // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                         entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();
@@ -468,7 +468,7 @@ namespace DotNet.Business
                 //添加一行数据
                 var row = dtNew.NewRow();
                 row["Id"] = dr[i]["Id"].ToInt();
-                if ((dr[i]["ParentId"].ToString()).IsNullOrEmpty())
+                if (dr[i]["ParentId"].ToString().IsNullOrEmpty())
                 {
                     row["ParentId"] = 0;
                 }

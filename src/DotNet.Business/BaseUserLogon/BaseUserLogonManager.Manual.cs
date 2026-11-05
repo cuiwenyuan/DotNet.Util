@@ -506,7 +506,7 @@ namespace DotNet.Business
                 return result;
             }
 
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
 #endif
             var sb = PoolUtil.StringBuilder.Get();
@@ -534,7 +534,7 @@ namespace DotNet.Business
             result += ExecuteNonQuery(sb.Return());
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.Online(" + userId + ")");
 #endif
@@ -559,7 +559,7 @@ namespace DotNet.Business
                 return result;
             }
 
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
 #endif
             var sb = PoolUtil.StringBuilder.Get();
@@ -589,7 +589,7 @@ namespace DotNet.Business
             }
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnline()");
 #endif
@@ -606,7 +606,7 @@ namespace DotNet.Business
         {
             var result = false;
 
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
 #endif
 
@@ -624,7 +624,7 @@ namespace DotNet.Business
             }
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " " + " BaseUserManager.CheckOnlineLimit()");
 #endif
@@ -668,7 +668,7 @@ namespace DotNet.Business
             // 是自己在线，然后重新登录为别人时，需要把自己注销掉
             if (UserInfo != null && UserInfo.UserId > 0)
             {
-                if (!(UserInfo.OpenId).IsNullOrEmpty() && !UserInfo.UserId.Equals(id))
+                if (!UserInfo.OpenId.IsNullOrEmpty() && !UserInfo.UserId.Equals(id))
                 {
                     // 要设置为下线状态，这里要判断游客状态
                     if (SignOut(UserInfo.OpenId))
@@ -801,12 +801,12 @@ namespace DotNet.Business
                         if (userLogonEntity.LastVisitTime.HasValue)
                         {
                             ts = DateTime.Now.Subtract((DateTime)userLogonEntity.LastVisitTime);
-                            mobileNeedValiated = (ts.TotalDays > 7);
+                            mobileNeedValiated = ts.TotalDays > 7;
                         }
                         else if (userLogonEntity.FirstVisitTime.HasValue)
                         {
                             ts = DateTime.Now.Subtract((DateTime)userLogonEntity.FirstVisitTime);
-                            mobileNeedValiated = (ts.TotalDays > 7);
+                            mobileNeedValiated = ts.TotalDays > 7;
                         }
                         if (mobileNeedValiated)
                         {
@@ -967,11 +967,11 @@ namespace DotNet.Business
 
             //Troy.Cui 2020-02-29 强制每次都自动生成，但对于可并发用户，OpenId过期了才更新一下OpenId
             //Troy.Cui 并发用户需要检测下OpenId过期时间 2020-06-17
-            if (createOpenId && userLogonEntity.ConcurrentUser == 1 && userLogonEntity.OpenIdTimeoutTime.HasValue && !(userLogonEntity.OpenId).IsNullOrEmpty())
+            if (createOpenId && userLogonEntity.ConcurrentUser == 1 && userLogonEntity.OpenIdTimeoutTime.HasValue && !userLogonEntity.OpenId.IsNullOrEmpty())
             {
                 //var timeSpan = DateTime.Now - userLogonEntity.OpenIdTimeoutTime.Value;
                 var timeSpan = userLogonEntity.OpenIdTimeoutTime.Value - DateTime.Now;
-                if ((timeSpan.TotalSeconds) < 0)
+                if (timeSpan.TotalSeconds < 0)
                 {
                     openId = userLogonEntity.OpenId;
                 }

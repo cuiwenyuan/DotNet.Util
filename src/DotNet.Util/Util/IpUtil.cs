@@ -193,10 +193,10 @@ namespace DotNet.Util
             var ipInfo = FindIp(ip);
             if (ipInfo != null)
             {
-                if (!(ipInfo.Province).IsNullOrEmpty())
+                if (!ipInfo.Province.IsNullOrEmpty())
                 {
                     result = ipInfo.Province;
-                    if (!(ipInfo.City).IsNullOrEmpty())
+                    if (!ipInfo.City.IsNullOrEmpty())
                     {
                         if (!ipInfo.Province.Equals(ipInfo.City))
                         {
@@ -227,7 +227,7 @@ namespace DotNet.Util
                 // 检查是否在公司新任的列表里
                 if (!result)
                 {
-                    if (!(BaseSystemInfo.WhiteList).IsNullOrEmpty())
+                    if (!BaseSystemInfo.WhiteList.IsNullOrEmpty())
                     {
                         var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                         for (var i = 0; i < whiteLists.Length; i++)

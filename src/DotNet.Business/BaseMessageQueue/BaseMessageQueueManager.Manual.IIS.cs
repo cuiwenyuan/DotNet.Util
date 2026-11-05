@@ -37,7 +37,7 @@ namespace DotNet.Business
         public bool ApplicationRestart()
         {
             var result = false;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //发送邮件，写入数据库
             var entity = new BaseMessageQueueEntity
             {

@@ -30,7 +30,7 @@ namespace DotNet.Business
         public virtual string GetTableSuffix()
         {
             var result = string.Empty;
-            if (UserInfo != null && !(UserInfo.CompanyId).IsNullOrEmpty() && !UserInfo.IsAdministrator)
+            if (UserInfo != null && !UserInfo.CompanyId.IsNullOrEmpty() && !UserInfo.IsAdministrator)
             {
                 result = UserInfo.CompanyId.ToString();
             }

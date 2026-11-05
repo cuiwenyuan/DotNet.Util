@@ -128,7 +128,7 @@ namespace DotNet.Business
                 //sb.Append("(" + BaseOrganizationEntity.FieldUserCompanyId + " = 0 OR " + BaseOrganizationEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0));
-            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = BaseSystemInfo.CustomerCompanyId.IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseOrganizationEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseOrganizationEntity.FieldDeleted, 0)), true, false, cacheTime);
@@ -514,12 +514,12 @@ namespace DotNet.Business
             var list = GetList<BaseOrganizationEntity>();
             foreach (var entity in list)
             {
-                if ((entity.QuickQuery).IsNullOrEmpty())
+                if (entity.QuickQuery.IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.QuickQuery = StringUtil.GetPinyin(entity.Name).ToLower();
                 }
-                if ((entity.SimpleSpelling).IsNullOrEmpty())
+                if (entity.SimpleSpelling.IsNullOrEmpty())
                 {
                     // 2015-12-11 吉日嘎拉 全部小写，提高Oracle的效率
                     entity.SimpleSpelling = StringUtil.GetSimpleSpelling(entity.Name).ToLower();

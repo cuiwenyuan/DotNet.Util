@@ -31,7 +31,7 @@ namespace DotNet.Util
     /// </summary>
     public abstract partial class DbHelper : IDbHelper
     {
-        #region public virtual IDataReader ExecuteReader(string commandText) 执行查询
+        #region public virtual IDataReader ExecuteReader(string commandText, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
@@ -93,7 +93,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -166,7 +166,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText) 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
+        #region public virtual int ExecuteNonQuery(string commandText, int commandTimeout = 30) 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// <summary>
         /// 执行查询, SQL BUILDER 用了这个东西？参数需要保存, 不能丢失.
         /// </summary>
@@ -193,7 +193,7 @@ namespace DotNet.Util
         }
         #endregion
 
-        #region public virtual int ExecuteNonQuery(string commandText, CommandType commandType) 执行查询
+        #region public virtual int ExecuteNonQuery(string commandText, CommandType commandType, int commandTimeout = 30) 执行查询
         /// <summary>
         /// 执行查询
         /// </summary>
@@ -256,7 +256,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -285,10 +285,10 @@ namespace DotNet.Util
                         for (var i = 0; i < dbParameters.Length; i++)
                         {
                             //修复：与 ExecuteScalar/ExecuteReader 保持一致，忽略 null 参数，避免 NullReferenceException
-                            if (dbParameters[i] != null)
-                            {
-                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                            }
+                            //if (dbParameters[i] != null)
+                            //{
+                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            //}
                         }
                     }
 
@@ -376,7 +376,7 @@ namespace DotNet.Util
         /// <returns>object</returns>
         public virtual object ExecuteScalar(string commandText, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, null, CommandType.Text);
+            return ExecuteScalar(commandText, null, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -390,7 +390,7 @@ namespace DotNet.Util
         /// <returns>Object</returns>
         public virtual object ExecuteScalar(string commandText, IDbDataParameter[] dbParameters, int commandTimeout = 30)
         {
-            return ExecuteScalar(commandText, dbParameters, CommandType.Text);
+            return ExecuteScalar(commandText, dbParameters, CommandType.Text, commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -427,7 +427,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -456,11 +456,10 @@ namespace DotNet.Util
                         DbCommand.Parameters.Clear();
                         for (var i = 0; i < dbParameters.Length; i++)
                         {
-                            if (dbParameters[i] != null)
-                            {
-                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                                // dbCommand.Parameters.Add(dbParameters[i]);
-                            }
+                            //if (dbParameters[i] != null)
+                            //{
+                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            //}
                         }
                     }
 
@@ -619,7 +618,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -772,7 +771,7 @@ namespace DotNet.Util
             {
                 try
                 {
-#if (DEBUG)
+#if DEBUG
                     Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :DbConnection Start: " + DbConnection.Database + " ,ThreadId: " + Thread.CurrentThread.ManagedThreadId);
 #endif
                     DbCommand.Connection = DbConnection;
@@ -799,10 +798,10 @@ namespace DotNet.Util
                     {
                         for (var i = 0; i < dbParameters.Length; i++)
                         {
-                            if (dbParameters[i] != null)
-                            {
-                                DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
-                            }
+                            //if (dbParameters[i] != null)
+                            //{
+                            DbCommand.Parameters.Add(((ICloneable)dbParameters[i]).Clone());
+                            //}
                         }
                         // dbCommand.Parameters.AddRange(dbParameters);
                     }
@@ -939,7 +938,7 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        valueString = (value + "");
+                        valueString = value + "";
                     }
                     if (commandType.Equals("StoredProcedure", StringComparison.OrdinalIgnoreCase))
                     {

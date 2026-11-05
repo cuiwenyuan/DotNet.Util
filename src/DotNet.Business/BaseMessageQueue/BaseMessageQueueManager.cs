@@ -412,7 +412,7 @@ namespace DotNet.Business
                 sb.Append("(" + BaseMessageQueueEntity.FieldUserCompanyId + " = 0 OR " + BaseMessageQueueEntity.FieldUserCompanyId + " = " + UserInfo.CompanyId + ")");
             }
             //return GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldDeleted, 0));
-            var companyId = (BaseSystemInfo.CustomerCompanyId).IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
+            var companyId = BaseSystemInfo.CustomerCompanyId.IsNullOrEmpty() ? UserInfo.CompanyId : BaseSystemInfo.CustomerCompanyId;
             var cacheKey = "Dt." + CurrentTableName + "." + companyId + "." + (myCompanyOnly ? "1" : "0");
             var cacheTime = TimeSpan.FromMilliseconds(86400000);
             return CacheUtil.Cache<DataTable>(cacheKey, () => GetDataTable(sb.Return(), null, new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldEnabled, 1), new KeyValuePair<string, object>(BaseMessageQueueEntity.FieldDeleted, 0)), true, false, cacheTime);

@@ -43,7 +43,7 @@ namespace DotNet.Business
             sb.Append("SELECT Id "
                             + " FROM " + CurrentTableName
                             + " WHERE (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId)
-                            + " AND " + (BaseUtil.FieldDeleted) + " = " + (deletionStateCode ? 1 : 0) + ")"
+                            + " AND " + BaseUtil.FieldDeleted + " = " + (deletionStateCode ? 1 : 0) + ")"
                             + " ORDER BY " + order);
             var names = new string[1];
             var values = new Object[1];
@@ -145,7 +145,7 @@ namespace DotNet.Business
                                       + " WHERE (" + BaseUtil.FieldCreateTime + "> (SELECT " + BaseUtil.FieldCreateTime
                                       + " FROM " + CurrentTableName
                                       + " WHERE " + BaseUtil.FieldId + " = " + DbHelper.GetParameter(BaseUtil.FieldId) + "))");
-            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + ") AND ( " + (BaseUtil.FieldDeleted) + " = 0 )) ");
+            sb.Append(" AND (" + BaseUtil.FieldCreateUserId + " = " + DbHelper.GetParameter(BaseUtil.FieldCreateUserId) + ") AND ( " + BaseUtil.FieldDeleted + " = 0 )) ");
             var names = new string[2];
             var values = new Object[2];
             names[0] = BaseUtil.FieldId;

@@ -286,7 +286,7 @@ namespace DotNet.Util
         private void Begin(string tableName, DbOperation dbOperation)
         {
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -296,7 +296,7 @@ namespace DotNet.Util
             _sqlOperation = dbOperation;
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -499,7 +499,10 @@ namespace DotNet.Util
             {
                 targetFiledName = targetFiled;
             }
-
+            //whereParameters Troy Cui 12.06.2017
+            //fix the issue - The variable name '%.*ls' has already been declared. Variable names must be unique within a query batch or stored procedure. 
+            //IdWhere就是Id这个字段的WHERE语句中的参数名
+            //NameWhere就是Name这个字段的WHERE语句中的参数名，Troy Cui 2019.07.02补充说明
             var parameterName = targetFiledName + "Where";
             if (DbParameters.Any(t => t.Key.Equals(parameterName, StringComparison.OrdinalIgnoreCase)))
             {
@@ -545,7 +548,7 @@ namespace DotNet.Util
                 return;
             }
             // NULL值
-            if ((targetValue == null))
+            if (targetValue == null)
             {
                 _whereSql.Append(targetFiled + " IS NULL ");
             }
@@ -618,12 +621,13 @@ namespace DotNet.Util
 
         #endregion
 
-        #region public int EndSelect() 结束查询
+        #region public DataTable EndSelect(int commandTimeout = 30) 结束查询
         /// <summary>
         /// 结束查询
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public DataTable EndSelect()
+        public DataTable EndSelect(int commandTimeout = 30)
         {
             var dt = new DataTable(_tableName);
             if (_topN != null)
@@ -657,54 +661,58 @@ namespace DotNet.Util
             {
                 dbParameters.Add(_dbHelper.MakeParameter(parameter.Key, parameter.Value));
             }
-            _dbHelper.Fill(dt, CommandText, dbParameters.ToArray());
+            _dbHelper.Fill(dt, CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
             // 清除查询参数
             DbParameters.Clear();
             return dt;
         }
         #endregion
 
-        #region public int EndInsert() 结束插入
+        #region public int EndInsert(int commandTimeout = 30) 结束插入
         /// <summary>
         /// 结束插入
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public int EndInsert()
+        public int EndInsert(int commandTimeout = 30)
         {
-            return Execute();
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public int EndReplace() 结束插入
+        #region public int EndReplace(int commandTimeout = 30) 结束插入
         /// <summary>
         /// 结束插入
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public int EndReplace()
+        public int EndReplace(int commandTimeout = 30)
         {
-            return Execute();
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public int EndUpdate() 结束更新
+        #region public int EndUpdate(int commandTimeout = 30) 结束更新
         /// <summary>
         /// 结束更新
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public int EndUpdate()
+        public int EndUpdate(int commandTimeout = 30)
         {
-            return Execute();
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
-        #region public int EndDelete() 结束删除
+        #region public int EndDelete(int commandTimeout = 30) 结束删除
         /// <summary>
         /// 结束删除
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        public int EndDelete()
+        public int EndDelete(int commandTimeout = 30)
         {
-            return Execute();
+            return Execute(commandTimeout: commandTimeout);
         }
         #endregion
 
@@ -833,12 +841,13 @@ namespace DotNet.Util
 
         #endregion
 
-        #region private int Execute() 执行语句
+        #region private int Execute(int commandTimeout) 执行语句
         /// <summary>
         /// 执行语句
         /// </summary>
+        /// <param name="commandTimeout">等待命令执行的秒数。默认值为30。</param>
         /// <returns>影响行数</returns>
-        private int Execute()
+        private int Execute(int commandTimeout)
         {
             // 处理返回值
             var result = 0;
@@ -867,11 +876,11 @@ namespace DotNet.Util
                         {
                             _dbHelper.MustCloseConnection = false;
                             // 执行语句
-                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                            result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                             if (result > 0 && !identitySql.IsNullOrEmpty() && !PreIdentity && ReturnId)
                             {
                                 // 获取当前序列主键
-                                var obj = _dbHelper.ExecuteScalar(identitySql);
+                                var obj = _dbHelper.ExecuteScalar(identitySql, commandTimeout: commandTimeout);
                                 result = obj.ToInt();
                             }
                         }
@@ -886,20 +895,20 @@ namespace DotNet.Util
                     }
                     else
                     {
-                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray());
+                        var obj = _dbHelper.ExecuteScalar(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                         result = obj.ToInt();
                     }
                 }
                 else
                 {
                     // 执行语句
-                    result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                    result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
                 }
             }
             else
             {
                 // 执行语句
-                result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray());
+                result = _dbHelper.ExecuteNonQuery(CommandText, dbParameters.ToArray(), commandTimeout: commandTimeout);
             }
 
             if (!_dbHelper.MustCloseConnection)

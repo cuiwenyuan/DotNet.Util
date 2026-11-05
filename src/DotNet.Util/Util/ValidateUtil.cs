@@ -576,7 +576,7 @@ namespace DotNet.Util
                 }
 
                 //修复：原代码中“包含123”的判断会被下面的赋值覆盖（死代码），需要合并进最终结果
-                result = (isDigit && isLetter && password.IndexOf("123", StringComparison.OrdinalIgnoreCase) < 0);
+                result = isDigit && isLetter && password.IndexOf("123", StringComparison.OrdinalIgnoreCase) < 0;
                 // 密码至少为8位，为数字加字母
                 if (password.Length < 8)
                 {
@@ -682,11 +682,11 @@ namespace DotNet.Util
                 {
                     if (i % 2 == 0)
                     {
-                        sum += (code.Substring(code.Length - 1 - i, 1)).ToInt() * 3;
+                        sum += code.Substring(code.Length - 1 - i, 1).ToInt() * 3;
                     }
                     else
                     {
-                        sum += (code.Substring(code.Length - 1 - i, 1)).ToInt();
+                        sum += code.Substring(code.Length - 1 - i, 1).ToInt();
                     }
 
                 }
