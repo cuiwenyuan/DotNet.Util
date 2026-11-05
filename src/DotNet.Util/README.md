@@ -4,9 +4,9 @@
 
 ## 简介 / Introduction
 
-`DotNet.Util` 是一套覆盖 .NET 10/9/8/7/6/5 与 .NET Standard 2.0/2.1，并向下兼容 .NET Framework 4.62/4.7/4.8 的通用工具集合。本包是整套 `Wangcaisoft.DotNet.*` 系列的基础依赖，提供字符串/类型转换、日期、加解密、IO、HTTP、IP 与地理位置、验证码、文件上传、缓存、全局配置等能力。
+`DotNet.Util` 是一套覆盖 .NET 10/8/6 与 .NET Standard 2.0/2.1，并向下兼容 .NET Framework 4.62/4.7/4.8 的通用工具集合。
 
-`DotNet.Util` is a general-purpose utility set targeting .NET 10/9/8/7/6/5, .NET Standard 2.0/2.1 and .NET Framework 4.62/4.7/4.8. It is the foundational dependency of the `Wangcaisoft.DotNet.*` family, offering string/type conversion, date, cryptography, IO, HTTP, IP/geo, captcha, upload, caching and global configuration.
+`DotNet.Util` is a general-purpose utility set targeting .NET 10/8/6, .NET Standard 2.0/2.1 and .NET Framework 4.62/4.7/4.8.
 
 ## 包含内容 / What's Inside
 
