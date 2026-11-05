@@ -31,10 +31,10 @@ net462 · net47 · net48 · net6.0 · net8.0 · net10.0 · netstandard2.0 · net
 - `Wangcaisoft.DotNet.Util`
 - [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json) `13.0.4`
 - [NPOI](https://www.nuget.org/packages/NPOI) `2.7.6`（.NET Framework 用 `2.5.6`）
-- [SharpZipLib](https://www.nuget.org/packages/SharpZipLib) `1.4.2`（net46/net47 用 `1.3.3`）
-- [System.DirectoryServices](https://www.nuget.org/packages/System.DirectoryServices) `10.0.11`
-- [Microsoft.Net.Http.Headers](https://www.nuget.org/packages/Microsoft.Net.Http.Headers) `2.3.12` / `8.0.20` / `9.0.9` / `10.0.11`（按框架）
-- [Portable.BouncyCastle](https://www.nuget.org/packages/Portable.BouncyCastle) `1.9.0`（仅 .NET Framework）
+- [SharpZipLib](https://www.nuget.org/packages/SharpZipLib) `1.4.2`（net462/net47 用 `1.3.3`）
+- [System.DirectoryServices](https://www.nuget.org/packages/System.DirectoryServices) `10.0.11`（net6.0 用 `8.0.0`）
+- [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) `10.0.11`（net6.0 用 `8.0.1`）
+- [Microsoft.Extensions.FileProviders.Physical](https://www.nuget.org/packages/Microsoft.Extensions.FileProviders.Physical) `10.0.11`（net6.0 用 `8.0.0`）
 
 ## 快速使用 / Quick Start
 

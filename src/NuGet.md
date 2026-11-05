@@ -118,8 +118,10 @@
 | 包 | 版本 | 适用 TFM |
 |---|---|---|
 | Oracle.ManagedDataAccess | 19.22.0 | net462 |
-| Oracle.ManagedDataAccess | 21.20.0 | net462 / net47 |
+| Oracle.ManagedDataAccess | 21.20.0 | net47 |
 | Oracle.ManagedDataAccess | 23.26.300 | net48 |
+
+> 注：net462 仅引用 19.22.0，已从 21.20.0 组排除以避免 NU1504 重复引用。
 | Oracle.ManagedDataAccess.Core | 2.19.290 | netstandard2.0 |
 | Oracle.ManagedDataAccess.Core | 23.26.300 | netstandard2.1 / net6.0 / net8.0 / net10.0 |
 | System.ValueTuple | 4.6.2 | net462 / net47 / net48 |
@@ -132,11 +134,11 @@
 
 | 包 | 版本 | 适用 TFM |
 |---|---|---|
-| MySql.Data | 8.0.32.1 | net462（26.x 不支持 net46，用此版） |
+| MySql.Data | 8.0.32.1 | net462（26.x 不支持 net462，用此版） |
 | MySql.Data | 26.7.0 | net47 / net48 / net6.0 / net8.0 / net10.0 / netstandard2.0 / netstandard2.1 |
 | System.ValueTuple | 4.6.2 | 全部 |
 
-> 注：csproj 中 `MySql.Data 8.0.32.1` 的条件写的是 `net462 or net461`，但项目 TFM 无 net461，实际仅 net462 命中。net462 已从 26.7.0 组排除以避免 NU1504 重复引用。
+> 注：net462 仅引用 8.0.32.1，已从 26.7.0 组排除以避免 NU1504 重复引用。
 
 ---
 

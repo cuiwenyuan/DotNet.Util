@@ -47,7 +47,8 @@
 		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.22.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net47'">
+	<!--net462 已由上方单独引用 19.22.0，此处不再含 net462，否则触发 NU1504 重复引用警告-->
+	<ItemGroup Condition="'$(TargetFramework)'=='net47'">
 		<PackageReference Include="Oracle.ManagedDataAccess" Version="21.20.0" />
 	</ItemGroup>
 
