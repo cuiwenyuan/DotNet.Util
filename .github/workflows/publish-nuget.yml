@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write  # Trusted Publishing：换取 OIDC token 必需
 
 env:
   DOTNET_NOLOGO: true
@@ -54,6 +55,14 @@ jobs:
           Write-Host "artifacts 目录共 $($files.Count) 个文件："
           $files | ForEach-Object { Write-Host ("  {0}  ({1:N0} bytes)" -f $_.Name, $_.Length) }
 
+      # Trusted Publishing：用 GitHub OIDC token 换 NuGet.org 短期密钥（约 1 小时），
+      # 不再使用长期 NUGET_API_KEY secret。需在 nuget.org → Trusted Publishing 配置策略：
+      # repository owner: cuiwenyuan / repository: DotNet.Util / workflow: publish-nuget.yml
+      - name: NuGet login (Trusted Publishing)
+        uses: NuGet/login@v1
+        with:
+          user: troy.cui
+
       # 坑：`dotnet nuget push "目录/*.nupkg"` 不会展开「带目录路径」的通配符，
       # 会把整串当字面文件名 → 报 "File does not exist (./artifacts/*.nupkg)"。
       # 实测只有「不带目录部分的 *.nupkg（在当前目录下）」或「带 ** 的模式」才会被展开。
@@ -61,8 +70,6 @@ jobs:
       # 版本已存在而失败（版本号是日期制，同一天重跑必然重复）。
       - name: Push packages to NuGet.org
         shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $ErrorActionPreference = 'Continue'
           $packages = @(Get-ChildItem -Path ./artifacts -Filter *.nupkg -File)
@@ -73,15 +80,13 @@ jobs:
           $failed = $false
           foreach ($p in $packages) {
             Write-Host "==> pushing $($p.Name)"
-            dotnet nuget push $p.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+            dotnet nuget push $p.FullName --source https://api.nuget.org/v3/index.json --skip-duplicate
             if ($LASTEXITCODE -ne 0) { $failed = $true }
           }
           if ($failed) { Write-Host "::error::有包推送失败，见上方日志"; exit 1 }
 
       - name: Push symbols to NuGet.org
         shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $ErrorActionPreference = 'Continue'
           $symbols = @(Get-ChildItem -Path ./artifacts -Filter *.snupkg -File)
@@ -92,7 +97,7 @@ jobs:
           $failed = $false
           foreach ($s in $symbols) {
             Write-Host "==> pushing symbols $($s.Name)"
-            dotnet nuget push $s.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+            dotnet nuget push $s.FullName --source https://api.nuget.org/v3/index.json --skip-duplicate
             if ($LASTEXITCODE -ne 0) { $failed = $true }
           }
           if ($failed) { Write-Host "::error::有符号包推送失败，见上方日志"; exit 1 }
