@@ -6,7 +6,7 @@
 
 概述
 ------
-本仓库为企业级 .NET 工程集合，包含工具库（DotNet.Util）、业务层（DotNet.Business）、数据实体（DotNet.Model）以及测试/示例程序（DotNet.Test._452）等模块。项目支持多目标框架（.NET Framework 4.6/4.7/4.8、.NET Standard 2.0/2.1、.NET 6/7/8/9/10），便于在不同运行时环境中复用核心库。
+本仓库为企业级 .NET 工程集合，包含工具库（DotNet.Util）、业务层（DotNet.Business）、数据实体（DotNet.Model）以及测试/示例程序（DotNet.Test._452）等模块。项目支持多目标框架（.NET Framework 4.62/4.7/4.8、.NET Standard 2.0/2.1、.NET 6/7/8/9/10），便于在不同运行时环境中复用核心库。
 
 目标受众
 --------
