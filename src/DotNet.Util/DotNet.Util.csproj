@@ -37,14 +37,16 @@
 	     故 net6/net7 的 Extensions 包须用 8.0.0（含 netstandard2.0 资产，兼容 net6/net7）；
 	     System.* 包无此约束，用 6.0.0（原生支持 net6.0）。 -->
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<ExtensionsVersion>8.0.0</ExtensionsVersion>
-		<SystemVersion>8.0.0</SystemVersion>
+		<ExtensionsVersion>8.0.1</ExtensionsVersion>
+		<SystemVersion>8.0.30</SystemVersion>
 		<SystemVersionLegacy>8.0.0</SystemVersionLegacy>
+		<CodePagesVersion>8.0.0</CodePagesVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
 		<ExtensionsVersion>10.0.11</ExtensionsVersion>
 		<SystemVersion>10.0.11</SystemVersion>
 		<SystemVersionLegacy>10.0.11</SystemVersionLegacy>
+		<CodePagesVersion>10.0.14</CodePagesVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -74,14 +76,14 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net10.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.12" />
-		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.13" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Drawing.Common" Version="$(SystemVersion)" />
 		<PackageReference Include="System.Management" Version="$(SystemVersionLegacy)" />
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemVersionLegacy)" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="$(CodePagesVersion)" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
