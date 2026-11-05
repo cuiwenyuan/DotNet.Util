@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-#if !NET46_OR_GREATER
+#if !NET462_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 
@@ -73,7 +73,7 @@ namespace DotNet.Business
         public static string LogException(IDbHelper dbHelper, BaseUserInfo userInfo, Exception ex, string url = null)
         {
             // 在控制台需要输出错误信息
-#if (DEBUG)
+#if DEBUG
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(ex.InnerException);
             Console.ForegroundColor = ConsoleColor.White;
@@ -88,7 +88,7 @@ namespace DotNet.Business
             }
             // Windows系统异常中
             //修复：EventLog 仅 Windows 支持，非 Windows 平台（net6.0+ on Linux）调用会抛 PlatformNotSupportedException
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             if (BaseSystemInfo.EventLog)
 #else
             if (BaseSystemInfo.EventLog && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

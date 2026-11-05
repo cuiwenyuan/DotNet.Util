@@ -188,7 +188,7 @@ namespace DotNet.Util
                            response.EnsureSuccessStatusCode();
 
                            var contentType = response.Content.Headers.ContentType;
-                           if ((contentType.CharSet).IsNullOrEmpty())
+                           if (contentType.CharSet.IsNullOrEmpty())
                            {
                                contentType.CharSet = "utf-8";
                            }

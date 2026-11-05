@@ -1,4 +1,4 @@
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -112,7 +112,7 @@ namespace DotNet.Util
         {
             // 设置 原图片 对象的 EncoderParameters 对象
             var parameters = new EncoderParameters(1);
-            parameters.Param[0] = new EncoderParameter(Encoder.Quality, ((long)100));
+            parameters.Param[0] = new EncoderParameter(Encoder.Quality, (long)100);
             // 设置图片的Exif信息为原始信息
             if (pis != null)
             {

@@ -167,7 +167,7 @@ namespace DotNet.Util
                 {
                     if (fieldValue.IsNullOrEmpty())
                     {
-                        if ((dr[fieldName].ToString()).IsNullOrEmpty())
+                        if (dr[fieldName].ToString().IsNullOrEmpty())
                         {
                             toDelete.Add(dr);
                         }
@@ -184,7 +184,7 @@ namespace DotNet.Util
                 {
                     if (fieldValue.IsNullOrEmpty())
                     {
-                        if (!(dr[fieldName].ToString()).IsNullOrEmpty())
+                        if (!dr[fieldName].ToString().IsNullOrEmpty())
                         {
                             toDelete.Add(dr);
                         }

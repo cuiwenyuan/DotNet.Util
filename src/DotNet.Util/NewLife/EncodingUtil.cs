@@ -279,13 +279,13 @@ namespace DotNet.Util
             // UTF-16
             // LE 小端 在英语或欧洲环境，经常使用奇数个0（以0开始），而很少用偶数个0
             // BE 大端 在英语或欧洲环境，经常使用偶数个0（以0开始），而很少用奇数个0
-            if (((evenBinaryNullsInSample * 2.0) / data.Length) < 0.2
-                && ((oddBinaryNullsInSample * 2.0) / data.Length) > 0.6
+            if ((evenBinaryNullsInSample * 2.0 / data.Length) < 0.2
+                && (oddBinaryNullsInSample * 2.0 / data.Length) > 0.6
                 )
                 return Encoding.Unicode;
 
-            if (((oddBinaryNullsInSample * 2.0) / data.Length) < 0.2
-                && ((evenBinaryNullsInSample * 2.0) / data.Length) > 0.6
+            if ((oddBinaryNullsInSample * 2.0 / data.Length) < 0.2
+                && (evenBinaryNullsInSample * 2.0 / data.Length) > 0.6
                 )
                 return Encoding.BigEndianUnicode;
 

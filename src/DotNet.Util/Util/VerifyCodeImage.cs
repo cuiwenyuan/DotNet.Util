@@ -7,7 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 #endif
 #if NETSTANDARD2_0_OR_GREATER
@@ -166,7 +166,7 @@ namespace DotNet.Util
                 for (var j = 0; j < bitmap.Height; j++)
                 {
                     double dx = 0;
-                    dx = bXDir ? (Pi2 * (double)j) / dBaseAxisLen : (Pi2 * (double)i) / dBaseAxisLen;
+                    dx = bXDir ? Pi2 * (double)j / dBaseAxisLen : Pi2 * (double)i / dBaseAxisLen;
                     dx += dPhase;
                     var dy = Math.Sin(dx);
 
@@ -250,7 +250,7 @@ namespace DotNet.Util
 
             int left = 0, top = 0, top1 = 1, top2 = 1;
 
-            var n1 = (imageHeight - FontSize - Padding * 2);
+            var n1 = imageHeight - FontSize - Padding * 2;
             var n2 = n1 / 4;
             top1 = n2;
             top2 = n2 * 2;
@@ -343,7 +343,7 @@ namespace DotNet.Util
             var memoryStream = new System.IO.MemoryStream();
             var bitmap = CreateImage(code, multValue);
             bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             httpContext.Response.ClearContent();
             httpContext.Response.ContentType = "image/Jpeg";
             httpContext.Response.BinaryWrite(memoryStream.ToArray());

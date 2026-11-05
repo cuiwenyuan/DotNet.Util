@@ -6,7 +6,7 @@ using System;
 using System.Data;
 using System.IO;
 using System.Text;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Windows.Forms;
 #endif
 using NPOI.SS.UserModel;
@@ -36,7 +36,7 @@ namespace DotNet.Util
         {
             get { return _returnMessage; }
         }
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         /// <summary>
         /// 选择要导入的Excel文件
         /// </summary>
@@ -158,7 +158,7 @@ namespace DotNet.Util
             }
 
             //从第2行起添加内容行
-            for (var i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            for (var i = sheet.FirstRowNum + 1; i <= sheet.LastRowNum; i++)
             {
                 var row = sheet.GetRow(i);
                 //修复：跳过空白行，避免 NullReferenceException
@@ -261,7 +261,7 @@ namespace DotNet.Util
                 var rowErrors = new StringBuilder();
                 for (var i = 0; i < checkStrings.Length; i++)
                 {
-                    if ((dt.Rows[j][checkStrings[i]].ToString()).IsNullOrEmpty())
+                    if (dt.Rows[j][checkStrings[i]].ToString().IsNullOrEmpty())
                     {
                         rowErrors.Append("\"" + checkStrings[i] + "\"不能为空。");
                     }

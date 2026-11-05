@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
@@ -9,14 +9,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 using System.Web.UI;
 using System.Collections;
 using System.Net;
 using System.Web.Hosting;
-#elif NETSTANDARD2_0_OR_GREATER
-using Microsoft.Extensions.Hosting.Internal;
 #endif
 
 namespace DotNet.Util
@@ -26,7 +24,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class Utils
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         /// <summary>
         /// 得到正则编译参数设置
         /// </summary>
@@ -276,7 +274,7 @@ namespace DotNet.Util
                 return false;
 
             var extname = filename.Substring(filename.LastIndexOf(".") + 1).ToLower();
-            return (extname == "jpg" || extname == "jpeg" || extname == "png" || extname == "bmp" || extname == "gif");
+            return extname == "jpg" || extname == "jpeg" || extname == "png" || extname == "bmp" || extname == "gif";
         }
 
 
@@ -734,7 +732,7 @@ namespace DotNet.Util
             {
                 ip = GetIp();
             }
-            if (!ip.IsNullOrEmpty() && !(BaseSystemInfo.WhiteList).IsNullOrEmpty())
+            if (!ip.IsNullOrEmpty() && !BaseSystemInfo.WhiteList.IsNullOrEmpty())
             {
                 var whiteLists = BaseSystemInfo.WhiteList.Split(',');
                 for (var i = 0; i < whiteLists.Length; i++)
@@ -2374,7 +2372,7 @@ namespace DotNet.Util
         {
             try
             {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                 // .NET Framework 原生支持 GB2312
                 return Encoding.GetEncoding("gb2312");
 #else
@@ -2396,7 +2394,7 @@ namespace DotNet.Util
         public static string GetIp()
         {
             var result = string.Empty;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //优先使用GetRealIp
             result = RequestUtil.GetRealIp();
             //其次使用GetIp
@@ -2598,7 +2596,7 @@ namespace DotNet.Util
         /// <returns>绝对路径</returns>
         public static string GetMapPath(string virtualPath)
         {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
             //HttpContext.Current并非无处不在
             if (HttpContext.Current != null)
             {

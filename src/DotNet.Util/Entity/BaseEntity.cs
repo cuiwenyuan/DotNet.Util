@@ -408,7 +408,7 @@ namespace DotNet.Model
                 var value = propertyInfo.GetValue(this, null);
                 if ((propertyInfo.PropertyType.IsValueType || propertyInfo.PropertyType.Name.StartsWith("String")) && value != null)
                 {
-                    var validObject = (GetType().GetProperty(name)?.GetCustomAttributes(typeof(StringLengthAttribute), false));
+                    var validObject = GetType().GetProperty(name)?.GetCustomAttributes(typeof(StringLengthAttribute), false);
                     if (validObject != null && validObject.Length > 0)
                     {
                         var stringLengthAttribute = (StringLengthAttribute)validObject[0];

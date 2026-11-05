@@ -600,7 +600,7 @@ namespace DotNet.Util
                 case "Month":
                     return now.AddMonths(1).AddDays(-now.AddMonths(1).Day + 1).AddDays(-1);
                 case "Season":
-                    var time = now.AddMonths((3 - ((now.Month - 1) % 3) - 1));
+                    var time = now.AddMonths(3 - ((now.Month - 1) % 3) - 1);
                     return time.AddMonths(1).AddDays(-time.AddMonths(1).Day + 1).AddDays(-1);
                 case "Year":
                     var time2 = now.AddYears(1);

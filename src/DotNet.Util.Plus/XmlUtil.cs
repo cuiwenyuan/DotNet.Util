@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 #else
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +45,7 @@ namespace DotNet.Util
             return LoadXmlDocumentSecure(filePath);
         }
 
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 #else
         /// <summary>
         /// If set, XmlUtil will use this IFileProvider to resolve relative file paths.
@@ -95,7 +95,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
@@ -135,7 +135,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -181,7 +181,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -217,7 +217,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -282,7 +282,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -325,7 +325,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -382,7 +382,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -404,7 +404,7 @@ namespace DotNet.Util
                     {
                         if (xn.Attributes != null)
                         {
-                            value = (attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value);
+                            value = attribute.IsNullOrEmpty() ? xn.InnerText : xn.Attributes[attribute].Value;
                         }
                     }
                 }
@@ -441,7 +441,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -525,7 +525,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -597,7 +597,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     var fileProvider = ResolveFileProvider();
@@ -656,7 +656,7 @@ namespace DotNet.Util
             {
                 if (!filePath.Contains(@":\") && filePath.Contains(@"/"))
                 {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
                     filePath = System.Web.HttpContext.Current.Server.MapPath(filePath);
 #else
                     IFileProvider fileProvider = new PhysicalFileProvider(AppContext.BaseDirectory);
@@ -670,7 +670,7 @@ namespace DotNet.Util
                     {
                         foreach (var parameter in parameters)
                         {
-                            if (!(parameter.Key).IsNullOrEmpty() && !(parameter.Value).IsNullOrEmpty())
+                            if (!parameter.Key.IsNullOrEmpty() && !parameter.Value.IsNullOrEmpty())
                             {
                                 var node = parameter.Key;
                                 var value = parameter.Value;

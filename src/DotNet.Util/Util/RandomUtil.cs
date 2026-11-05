@@ -53,7 +53,7 @@ namespace DotNet.Util
 
         /// <summary>
         /// 生成 [minInclusive, maxExclusive) 范围内的加密安全随机整数。
-        /// RandomNumberGenerator.GetInt32 仅 net6+ 可用，此处用字节重采样以兼容 net46/netstandard2.0。
+        /// RandomNumberGenerator.GetInt32 仅 net6+ 可用，此处用字节重采样以兼容 net462/netstandard2.0。
         /// </summary>
         private static int NextInt(int minInclusive, int maxExclusive)
         {

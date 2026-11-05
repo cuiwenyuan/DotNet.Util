@@ -117,7 +117,7 @@ namespace DotNet.Util
             var buf = new List<byte>();
 
             var i = 0;
-            for (i = 0, buf.Add((byte)_fs.ReadByte()); buf[i] != (byte)(0); ++i, buf.Add((byte)_fs.ReadByte()))
+            for (i = 0, buf.Add((byte)_fs.ReadByte()); buf[i] != (byte)0; ++i, buf.Add((byte)_fs.ReadByte()))
             {
             }
 
@@ -138,7 +138,7 @@ namespace DotNet.Util
             _fs.Position = offset;
             for (var i = 0; i < length; i++)
             {
-                ret |= ((_fs.ReadByte() << (i * 8)) & (0xFF * ((long)Math.Pow(16, i * 2))));
+                ret |= (_fs.ReadByte() << (i * 8)) & (0xFF * ((long)Math.Pow(16, i * 2)));
             }
 
             return ret;

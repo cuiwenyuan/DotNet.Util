@@ -264,7 +264,7 @@ namespace DotNet.Business
                 sequence = entity.Sequence.ToString();
                 if (FillZeroPrefix)
                 {
-                    sequence = StringUtil.RepeatString("0", (SequenceLength - entity.Sequence.ToString().Length)) + entity.Sequence;
+                    sequence = StringUtil.RepeatString("0", SequenceLength - entity.Sequence.ToString().Length) + entity.Sequence;
                 }
                 if (UsePrefix)
                 {
@@ -286,7 +286,7 @@ namespace DotNet.Business
             var reduction = entity.Reduction.ToString();
             if (fillZeroPrefix)
             {
-                reduction = StringUtil.RepeatString("0", (SequenceLength - entity.Reduction.ToString().Length)) + entity.Reduction;
+                reduction = StringUtil.RepeatString("0", SequenceLength - entity.Reduction.ToString().Length) + entity.Reduction;
             }
             if (usePrefix)
             {
@@ -479,7 +479,7 @@ namespace DotNet.Business
             DefaultDelimiter = delimiter;
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -570,7 +570,7 @@ namespace DotNet.Business
             }
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -635,7 +635,7 @@ namespace DotNet.Business
         public string GetReduction(string name, int defaultSequence)
         {
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -728,7 +728,7 @@ namespace DotNet.Business
             }
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -870,7 +870,7 @@ namespace DotNet.Business
         public string[] GetBatchSequence(string name, int sequenceCount, int defaultSequence)
         {
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliStart = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " :Begin: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif
@@ -907,7 +907,7 @@ namespace DotNet.Business
             }
 
             // 写入调试信息
-#if (DEBUG)
+#if DEBUG
             var milliEnd = Environment.TickCount;
             Trace.WriteLine(DateTime.Now.ToString(BaseSystemInfo.DateTimeLongFormat) + " Ticks: " + TimeSpan.FromMilliseconds(milliEnd - milliStart).ToString() + " :End: " + MethodBase.GetCurrentMethod()?.ReflectedType?.Name + "." + MethodBase.GetCurrentMethod()?.Name);
 #endif

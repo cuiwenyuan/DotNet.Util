@@ -1,4 +1,4 @@
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System;
 using System.Collections;
 using System.Web;

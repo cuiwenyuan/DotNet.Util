@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
 using System.Web;
 #endif
 using NPOI.XSSF.UserModel;
@@ -37,11 +37,11 @@ namespace DotNet.Util
     /// <remarks>
     /// 纯 NPOI 的导入导出方法（ExcelToDataTable / DataTableToExcel / ExcelToEntityList / EntityListToExcel2003 等）
     /// 已拆分至 ExcelUtil.Npoi.cs，跨 .NET Framework / .NET Core / 5+ 均可用。
-    /// 本文件仅保留依赖 System.Web / HttpContext 的 Web 方法，受 #if NET46_OR_GREATER 保护；在 .NET Core / 5+ 下本类仅由 Npoi 部分提供方法。
+    /// 本文件仅保留依赖 System.Web / HttpContext 的 Web 方法，受 #if NET462_OR_GREATER 保护；在 .NET Core / 5+ 下本类仅由 Npoi 部分提供方法。
     /// </remarks>
     public partial class ExcelUtil
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         #region ExcelToHtml
         /// <summary>
         /// Excel转Html

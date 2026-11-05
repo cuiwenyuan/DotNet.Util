@@ -118,7 +118,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
+                if (!entity.OrganizationId.ToString().IsNullOrEmpty())
                 {
                     parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -130,7 +130,7 @@ namespace DotNet.Business
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0),
                     new KeyValuePair<string, object>(BaseRoleEntity.FieldEnabled, 1)
                 };
-                if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
+                if (!entity.OrganizationId.ToString().IsNullOrEmpty())
                 {
                     parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 }
@@ -488,7 +488,7 @@ namespace DotNet.Business
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldCode, entity.Code),
                 new KeyValuePair<string, object>(BaseRoleEntity.FieldDeleted, 0)
             };
-            if (!(entity.OrganizationId.ToString()).IsNullOrEmpty())
+            if (!entity.OrganizationId.ToString().IsNullOrEmpty())
             {
                 parameters.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));
                 parametersCode.Add(new KeyValuePair<string, object>(BaseRoleEntity.FieldOrganizationId, entity.OrganizationId));

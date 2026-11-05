@@ -52,7 +52,7 @@ public partial class BasePage : System.Web.UI.Page
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null && HttpContext.Current.Session["UserInfo"] != null)
             {
-                _userInfo = ((CurrentUserInfo)Session["UserInfo"]);
+                _userInfo = (CurrentUserInfo)Session["UserInfo"];
             }
             if (_userInfo == null)
             {

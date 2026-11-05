@@ -34,7 +34,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class ExcelUtil
     {
-#if NET46_OR_GREATER
+#if NET462_OR_GREATER
         #region private void DeleteExistFile(string fileName) 删除已经存在的文件
         /// <summary>
         /// 删除已经存在的文件

@@ -25,12 +25,12 @@ dotnet add package Wangcaisoft.DotNet.Util.Db.MySql
 
 ## 目标框架 / Target Frameworks
 
-net46 · net47 · net48 · net6.0 · net7.0 · net8.0 · net9.0 · net10.0 · netstandard2.0 · netstandard2.1
+net462 · net47 · net48 · net6.0 · net8.0 · net10.0 · netstandard2.0 · netstandard2.1
 
 ## 依赖 / Dependencies
 
 - `Wangcaisoft.DotNet.Util.Db`
-- [MySql.Data](https://www.nuget.org/packages/MySql.Data) `26.7.0`（net46/461 用 `8.0.32.1`）
+- [MySql.Data](https://www.nuget.org/packages/MySql.Data) `26.7.0`（net462 用 `8.0.32.1`）
 - [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple) `4.5.0` / `4.6.2`（按框架）
 
 ## 快速使用 / Quick Start

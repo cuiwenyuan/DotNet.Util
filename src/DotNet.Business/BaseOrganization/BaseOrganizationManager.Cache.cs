@@ -223,7 +223,7 @@ namespace DotNet.Business
             var key = string.Empty;
             // 02：父级主键缓存数据方法
             var parentId = organizationEntity.ParentId;
-            if (!(parentId.ToString()).IsNullOrEmpty())
+            if (!parentId.ToString().IsNullOrEmpty())
             {
                 if (!code.IsNullOrEmpty())
                 {

@@ -80,7 +80,7 @@ namespace DotNet.Business
             var result = false;
 
             // 若有主键就是先更新，没主键就是添加
-            if (!(entity.Id.ToString()).IsNullOrEmpty())
+            if (!entity.Id.ToString().IsNullOrEmpty())
             {
                 result = Update(entity) > 0;
                 // 若不存在，就是添加的意思

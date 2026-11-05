@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // All Rights Reserved. Copyright (c) 2026, DotNet.
 //-----------------------------------------------------------------
 
@@ -64,73 +64,6 @@ namespace DotNet.Business
         /// 对应的缓存服务区分
         /// </summary>
         public string CachingSystemCode = "";
-
-        #region GetAuthorizationCode
-        /// <summary>
-        /// 获取登录操作的验证码
-        /// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。
-        /// </summary>
-        /// <param name="userInfo">用户信息</param>
-        /// <returns>操作码</returns>
-        public static BaseResult GetAuthorizationCode(BaseUserInfo userInfo)
-        {
-            var result = new BaseResult();
-
-            if (ServiceUtil.VerifySignature(userInfo))
-            {
-                // 产生一个授权码
-                var authorizationCode = Guid.NewGuid().ToString("N");
-                var key = "code:" + authorizationCode;
-                // 缓存五分钟
-                var cacheTime = TimeSpan.FromMilliseconds(300000);
-                CacheUtil.Set(key, userInfo.OpenId, cacheTime);
-
-                result.Result = authorizationCode;
-                result.Status = true;
-                result.StatusCode = Status.Ok.ToString();
-                result.StatusMessage = Status.Ok.ToDescription();
-                //result.CreateSignature(userInfo);
-            }
-
-            return result;
-        }
-        #endregion
-
-        #region VerifyAuthorizationCode
-        /// <summary>
-        /// 验证授权码
-        /// 用掉一次后，一定要消费掉，确保只能用一次。
-        /// </summary>
-        /// <param name="userInfo">当前用户信息</param>
-        /// <param name="code">授权码</param>
-        /// <param name="openId">用户唯一识别码</param>
-        /// <returns>验证成功</returns>
-        public static bool VerifyAuthorizationCode(BaseUserInfo userInfo, string code, out string openId)
-        {
-            var result = false;
-            openId = string.Empty;
-
-            if (userInfo != null && !ServiceUtil.VerifySignature(userInfo))
-            {
-                return result;
-            }
-
-            // 2016-03-03 吉日嘎拉 让缓存早点儿失效
-            var key = "code:" + code;
-            openId = CacheUtil.Get<string>(key);
-            if (!openId.IsNullOrEmpty())
-            {
-                result = true;
-                if (userInfo != null && !(userInfo.OpenId).IsNullOrEmpty())
-                {
-                    result = userInfo.OpenId.Equals(openId);
-                }
-            }
-            CacheUtil.Remove(key);
-
-            return result;
-        }
-        #endregion
 
         #region CallLimit
 
@@ -1302,7 +1235,7 @@ namespace DotNet.Business
                                 if (userContactEntity.MobileValidatedTime.HasValue)
                                 {
                                     var timeSpan = DateTime.Now - userContactEntity.MobileValidatedTime.Value;
-                                    if ((timeSpan.TotalDays) > 7)
+                                    if (timeSpan.TotalDays > 7)
                                     {
                                         needVerification = true;
                                     }
@@ -1409,7 +1342,7 @@ namespace DotNet.Business
                                 var isSelf = false;
                                 if (!openId.IsNullOrEmpty())
                                 {
-                                    if (!(userLogonEntity.OpenId).IsNullOrEmpty())
+                                    if (!userLogonEntity.OpenId.IsNullOrEmpty())
                                     {
                                         if (userLogonEntity.OpenId.Equals(openId))
                                         {
@@ -1451,12 +1384,12 @@ namespace DotNet.Business
                     }
 
                         // 11. 密码是否正确(null 与空看成是相等的)
-                        if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
+                        if (!(userLogonEntity.UserPassword.IsNullOrEmpty() && password.IsNullOrEmpty()))
                         {
                             var userPasswordOk = true;
                             errorMark = 201;
                             // 用户密码是空的
-                            if ((userLogonEntity.UserPassword).IsNullOrEmpty())
+                            if (userLogonEntity.UserPassword.IsNullOrEmpty())
                             {
                                 // 但是输入了不为空的密码
                                 if (!password.IsNullOrEmpty())
@@ -1699,14 +1632,14 @@ namespace DotNet.Business
             {
                 // 05. 判断密码，是否允许登录，是否离职是否正确
                 userEntity = BaseEntity.Create<BaseUserEntity>(dt.Rows[0]);
-                if (!(userEntity.AuditStatus).IsNullOrEmpty()
+                if (!userEntity.AuditStatus.IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString()))
                 {
                     return false;
                 }
                 var userLogonManager = new BaseUserLogonManager(DbHelper, UserInfo);
                 userLogonEntity = userLogonManager.GetEntityByUserId(userEntity.Id);
-                if (!(userEntity.AuditStatus).IsNullOrEmpty()
+                if (!userEntity.AuditStatus.IsNullOrEmpty()
                     && userEntity.AuditStatus.EndsWith(AuditStatus.WaitForAudit.ToString())
                     && userLogonEntity.PasswordErrorCount == 0)
                 {
@@ -1758,11 +1691,11 @@ namespace DotNet.Business
                 }
 
                 // 11. 密码是否正确(null 与空看成是相等的)
-                if (!((userLogonEntity.UserPassword).IsNullOrEmpty() && password.IsNullOrEmpty()))
+                if (!(userLogonEntity.UserPassword.IsNullOrEmpty() && password.IsNullOrEmpty()))
                 {
                     var userPasswordOk = true;
                     // 用户密码是空的
-                    if ((userLogonEntity.UserPassword).IsNullOrEmpty())
+                    if (userLogonEntity.UserPassword.IsNullOrEmpty())
                     {
                         // 但是输入了不为空的密码
                         if (!password.IsNullOrEmpty())

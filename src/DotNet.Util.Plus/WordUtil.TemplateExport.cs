@@ -32,7 +32,7 @@ namespace DotNet.Util
     /// </summary>
     public partial class WordUtil
     {
-        //修复：解除 NET46_OR_GREATER 守卫——本类仅依赖 NPOI/System.IO（无 System.Web），net6+ 亦应可用
+        //修复：解除 NET462_OR_GREATER 守卫——本类仅依赖 NPOI/System.IO（无 System.Web），net6+ 亦应可用
         //在NPOI中，每厘米对应的长度数值
         private const int NPOI_PICTURE_LENGTH_EVERY_CM = 360144;
 
@@ -387,8 +387,8 @@ namespace DotNet.Util
                     continue;
                 }
 
-                int height = (int)(Math.Ceiling(picture.Height * NPOI_PICTURE_LENGTH_EVERY_CM));
-                int width = (int)(Math.Ceiling(picture.Width * NPOI_PICTURE_LENGTH_EVERY_CM));
+                int height = (int)Math.Ceiling(picture.Height * NPOI_PICTURE_LENGTH_EVERY_CM);
+                int width = (int)Math.Ceiling(picture.Width * NPOI_PICTURE_LENGTH_EVERY_CM);
                 begin_run.AddPicture(pictureData, picture.PictureType.GetHashCode(), picture.FileName, width, height);
 
                 NPOI.OpenXmlFormats.Dml.WordProcessing.CT_Inline inline = begin_run.GetCTR().GetDrawingList()[0].inline[0];
